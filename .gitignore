@@ -1,0 +1,15 @@
+# ignore IDE/hidden/testing/OS cache files
+.*
+*~
+/nbproject
+/nb-configuration.xml
+Session.vim
+*.tmproj
+*.tmproject
+tmtags
+Thumbs.db
+Desktop.ini
+
+# don't ignore special configs
+!/.travis.yml
+!.gitignore

@@ -1,0 +1,16 @@
+{
+  "name": "Dark Wallet",
+  "description": "Your keys. Your privacy. Your sovereignty.",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "icons": {
+    "128": "icon_128.png"
+  },
+  "browser_action": {
+    "default_icon": "icon_128.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "tabs", "http://*/*", "https://*/*"
+  ]
+}
