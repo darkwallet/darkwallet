@@ -1,11 +1,292 @@
 <!doctype html>
-<html ng-app ng-csp>
-  <head>
-    <title>Dark Wallet</title>
-    <script src="js/angular.min.js"></script>
-  </head>
-  <body>
-    <h2>Dark Wallet</h2>
-  </body>
-</html>
+<html lang="en" ng-app ng-csp>
 
+<head>
+	<meta charset="utf-8" />
+	<title>Dark Wallet</title>
+	<meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+    <script src="js/angular.min.js"></script>
+	<link rel="stylesheet" href="./stylesheets/screen.css">
+	<link rel="stylesheet" href="./stylesheets/fonts.css">
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+</head>
+
+<body>
+	<section class="blank">
+		<nav class="navigation">
+			<ul>
+				<li>
+					<a href="#" class="focus navigation-home">
+						<i class="icon-large icon-home"></i> Dark Wallet
+					</a>
+				</li>
+				<li>
+					<a href="#">Wallet</a>
+				</li>
+				<li>
+					<a href="#">Contacts</a>
+				</li>
+				<li>
+					<a href="#">Settings</a>
+				</li>
+				<li class="righty last-menu-item">
+					<a href="#" class="navigation-settings">
+						<i class="icon-large icon-cog "></i>
+					</a>
+				</li>
+				<li class="righty">
+					<a href="#" class="navigation-user">
+						<i class="icon-large icon-user"></i> identity3924948 <i id="drop" class="icon-sort-down "></i>
+					</a>
+				</li>
+			</ul>
+			<br class="clear">
+		</nav>
+	</section>
+    
+    	<section class="blank">
+		<nav class="navigation tabs">
+			<ul>
+				<li>
+					<a href="#">History</a>
+				</li>
+				<li>
+					<a href="#" class="active">Send</a>
+				</li>
+				<li>
+					<a href="#">Receive</a>
+				</li>
+			</ul>
+			<br class="clear">
+		</nav>
+	</section>
+    
+    	<div class="container login">
+		<form>
+			<label>
+				<h2>Recipient address:</h2>
+				<input type="text" class="long">
+			</label>
+
+			<label>
+				<h2>Amount</h2>
+				<input type="password" class="long">
+			</label>
+
+			<button class="button-submit">Send</button>
+		</form>
+	</div>
+    
+    <section class="blank">
+        <div class="flash error">
+			<a href="#" class="close"><i class="icon icon-remove"></i></a>
+			<span><i class="icon-2x icon-warning-sign"></i></span>
+			<p>This could compromise your identity!</p>
+		</div>
+    </section>
+        
+	<div class="container blank">
+		<ul class="dropdown">
+			<li>
+				<a href="#">Identity dropdown</a>
+			</li>
+			<li>
+				<a href="#">Another option</a>
+			</li>
+			<li>
+				<a href="#">Third option</a>
+			</li>
+			<li id="newidentity">
+				<a href="#">New identity</a>
+			</li>
+		</ul>
+	</div>
+
+    <section class="blank">
+    		<div class="activity">
+			<h1 class="item-header">Recent Activity</h1>
+
+			<div class="activity-list-update">
+				<img src="http://lorempixel.com/50/50/" alt="Image">
+				<p>Payment received</p>
+                <strong>0.22432345 BTC</strong> 5m ago
+				<div class="clear"></div>
+			</div>
+
+			<div class="activity-list-update">
+				<img src="http://lorempixel.com/50/50/" alt="Image">
+				<p>Payment sent to <strong>Satoshi Dice</strong></p>
+                <strong>0.22432345 BTC</strong> 5m ago
+				<div class="clear"></div>
+			</div>
+
+			<a href="#" class="item-footer green">
+				Go to history...
+			</a>
+		</div>
+    </section>
+    
+    <section class="blank">
+		<div class="progress-steps">
+			<a href="#" class="step">
+				<i class="icon-3x icon-home"></i>
+				<h1>Import existing wallet</h1>
+				<p>Something something, do the stuff</p>
+				<ul>
+					<li>
+						An option for the stuff of the stuff
+					</li>
+					<li>
+						Another list item
+					</li>
+					<li>
+						And the last list item over here
+					</li>
+				</ul>
+
+				<div class="button button-small button-inverted button-buy">
+					IMPORT WALLET
+				</div>
+			</a>
+
+			<a href="#" class="step">
+				<i class="icon-3x icon-home"></i>
+				<h1>Create a new wallet</h1>
+				<p>Something something, do the stuff</p>
+				<ul>
+					<li>
+						An option for the stuff of the stuff
+					</li>
+					<li>
+						Another list item
+					</li>
+					<li>
+						And the last list item over here
+					</li>
+				</ul>
+
+				<div class="button button-small button-inverted button-buy">
+					create wallet
+				</div>
+			</a>
+
+		
+			<div class="clear"></div>
+		</div>
+	</section>
+    
+	<section class="blank">
+		<div class="flash">
+			<a href="#" class="close"><i class="icon icon-remove"></i></a>
+			<span><i class="icon-2x icon-star"></i></span>
+			<p>Such a generic message</p>
+		</div>
+
+
+		<div class="flash success">
+			<a href="#" class="close"><i class="icon icon-remove"></i></a>
+			<span><i class="icon-2x icon-smile"></i></span>
+			<p>Payment sent!</p>
+		</div>
+	</section>
+
+
+
+	<section>
+		<div>
+			<a href="#" class="button">This is a button</a>
+
+			<a href="#" class="button button-submit">This is a save button</a>
+
+			<a href="#" class="button">Button with a counter <span class="notification">22</span></a>
+
+			<a href="#" class="button button-and-icon">
+				<div><i class="icon-large icon-cog"></i></div>Button with an icon
+			</a>
+		</div>
+
+		<hr>
+
+		<div>
+			<a href="#" class="button button-submit">Submit</a>
+			<a href="#" class="button button-cancel">Cancel</a>
+			<a href="#" class="button button-delete">Delete</a>
+		</div>
+
+		<hr>
+		
+		<div>
+			<a href="#" class="button button-small">Smaller button</a>
+		</div>
+
+		<hr>
+		
+		<div>
+			<a href="#" class="button button-buy">big button (full width for columns)</a>
+		</div>
+	</section>
+
+	<section class="blank blurb">
+		<img src="http://lorempixel.com/1400/560/" alt="Image">
+		<div>
+			<h1>dark wallet</h1>
+			<h2>the safest bitcoin wallet yet</h2>
+			<hr>
+			<p>Welcome to Dark Wallet! Thanks for trusting us with your bitcoins! bla bla bla</p>
+			<a href="#" class="button button-cta">import a wallet</a> <a href="#" class="button button-cta">generate a wallet</a>
+		</div>
+	</section>
+
+	<section class="blank">
+
+		<div class="typography">
+			<h1>Header 1</h1>
+			<h1 class="big">Header 1 (big)</h1>
+			<h2>Header 2</h2>
+			<h2 class="big">Header 2 (big)</h2>
+			<h3>Header 3</h3>
+			<h3 class="big">Header 3 (big)</h3>
+			<h4>Header 4</h4>
+			<h4 class="big">Header 4 (big)</h4>
+			<h5>Header 5</h5>
+			<h5 class="big">Header 5 (big)</h5>
+			<p>This is a paragraph <a href="#">and this is a link</a>.</p>
+			<ul>
+				<li>This is a list</li>
+				<li>It has list items</li>
+				<li>More than two</li>
+				<li>Certainly more than four</li>
+				<li>This is the last one</li>
+			</ul>
+		</div>
+	</section>
+    
+
+	<section class="blank">
+		<div class="progress-bar">
+			<div class="progress-bar-90">
+				Loading (90%)
+			</div>
+		</div>
+	</section>
+
+	<section class="blank">
+		<div class="progress-bar progress-bar-small">
+			<div class="progress-bar-30">
+			</div>
+		</div>
+	</section>
+
+	<section class="blank">
+		<div class="progress-bar progress-bar-small">
+			<div class="progress-bar-90">
+			</div>
+		</div>
+	</section>
+
+
+
+	
+</body>
+</html>
