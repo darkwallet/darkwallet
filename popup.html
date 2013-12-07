@@ -2,12 +2,41 @@
 <html ng-app ng-csp>
   <head>
     <title>Dark Wallet</title>
+    <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
     <script src="js/angular.min.js"></script>
     <script src="js/popup.js"></script>
+	  <link rel="stylesheet" href="./stylesheets/screen.css">
+	  <link rel="stylesheet" href="./stylesheets/fonts.css">
+	  <link href='./stylesheets/opensans.css' rel='stylesheet' type='text/css'>
+	  <link href="./stylesheets/font-awesome.css" rel="stylesheet">
   </head>
   <body>
     <h2>Dark Wallet</h2>
-    <a href="#page" id="page">Page</a>
+    <select>
+      <option value="id0">Id 0</option>
+      <option value="id1">Id 1</option>
+    </select>
+  	<div class="activity">
+		  <h1 class="item-header">Recent Activity</h1>
+
+		  <div class="activity-list-update">
+			  <img src="./images/lorem50.png" alt="Image">
+			  <p>Payment received</p>
+                <strong>0.22432345 BTC</strong> 5m ago
+			  <div class="clear"></div>
+		  </div>
+
+		  <div class="activity-list-update">
+			  <img src="./images/lorem50.png" alt="Image">
+			  <p>Payment sent to <strong>Satoshi Dice</strong></p>
+                <strong>0.22432345 BTC</strong> 5m ago
+			  <div class="clear"></div>
+		  </div>
+
+		  <a href="#history" id="history" class="item-footer green">
+			  Go to history...
+		  </a>
+		</div>
   </body>
 </html>
 
