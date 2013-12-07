@@ -10,32 +10,23 @@
 	  <link href='./stylesheets/opensans.css' rel='stylesheet' type='text/css'>
 	  <link href="./stylesheets/font-awesome.css" rel="stylesheet">
   </head>
-  <body>
+  <body ng-controller="PopupCtrl">
     <h2>Dark Wallet</h2>
-    <select>
-      <option value="id0">Id 0</option>
-      <option value="id1">Id 1</option>
-    </select>
-  	<div class="activity">
-		  <h1 class="item-header">Recent Activity</h1>
-
-		  <div class="activity-list-update">
-			  <img src="./images/lorem50.png" alt="Image">
-			  <p>Payment received</p>
-                <strong>0.22432345 BTC</strong> 5m ago
-			  <div class="clear"></div>
+    <div>
+      <select ng-model="identity" ng-options="id.id for id in identities"
+      ng-change="identityChange()"></select>
+      <h3 class="item-header">Recent Activity</h3>
+    	<div class="activity">
+		    <div class="activity-list-update" ng-repeat="update in activity">
+			    <img src="./images/lorem50.png" alt="Image">
+			    <p>{{update.action}}</p>
+                  <strong>{{update.amount}} BTC</strong> {{update.timestamp}}
+			    <div class="clear"></div>
+		    </div>
+		    <a href="#history" id="history" class="item-footer green">
+			    Go to history...
+		    </a>
 		  </div>
-
-		  <div class="activity-list-update">
-			  <img src="./images/lorem50.png" alt="Image">
-			  <p>Payment sent to <strong>Satoshi Dice</strong></p>
-                <strong>0.22432345 BTC</strong> 5m ago
-			  <div class="clear"></div>
-		  </div>
-
-		  <a href="#history" id="history" class="item-footer green">
-			  Go to history...
-		  </a>
 		</div>
   </body>
 </html>
