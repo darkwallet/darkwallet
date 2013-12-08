@@ -55,6 +55,10 @@ a img {
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
   display: block; }
 
+/* line 23, ../sass/screen.scss */
+.der {
+  display: inline-block; }
+
 /* line 24, ../sass/screen.scss */
 #drop {
   vertical-align: text-top; }
@@ -894,18 +898,26 @@ section.flatby {
 /* line 1078, ../sass/screen.scss */
 .flash {
   position: relative;
-  padding: 1em;
   border-radius: 4px;
   color: #fff;
   background: #303030;
   text-align: center;
-  margin-bottom: 1em; }
-  /* line 1087, ../sass/screen.scss */
+  margin-bottom: 1em;
+  transition: all 0.3s ease 0s;
+  -moz-transition: all 0.3s ease 0s;
+  -webkit-transition: all 0.3s ease 0s;
+  height: 0;
+  overflow: hidden; }
+  /* line 1090, ../sass/screen.scss */
   .flash p {
     margin-bottom: 0; }
-  /* line 1091, ../sass/screen.scss */
+  /* line 1093, ../sass/screen.scss */
+  .flash.shown {
+    height: auto;
+    padding: 1em; }
+  /* line 1097, ../sass/screen.scss */
   .flash.error {
     background: #f2594b; }
-  /* line 1095, ../sass/screen.scss */
+  /* line 1101, ../sass/screen.scss */
   .flash.success {
     background: #14a19a; }

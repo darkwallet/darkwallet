@@ -20,7 +20,7 @@ $navigation-link-color: #cecece;
 $universal-border-color: #595959;
 $universal-border-color-light: #cdcdcd;
 
-
+.der {display: inline-block; }
 #drop { vertical-align: text-top}
 #newidentity { text-align: center; background: $main-color;  }
 
@@ -1077,17 +1077,23 @@ section.flatby {
 
 .flash {
 	position: relative;
-	padding: 1em;
 	border-radius: 4px;
 	color: #fff;
 	background: #303030;
 	text-align: center;
 	margin-bottom: 1em;
-
+	transition: all 0.3s ease 0s;
+	-moz-transition: all 0.3s ease 0s;
+	-webkit-transition: all 0.3s ease 0s;
+    height: 0;
+    overflow: hidden;
 	p {
 		margin-bottom: 0;
 	}
-
+    &.shown {
+        height: auto;
+    	padding: 1em;
+    }
 	&.error {
 		background: #f2594b;
 	}

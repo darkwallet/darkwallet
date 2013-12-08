@@ -36,7 +36,7 @@
 					</a>
 				</li>
 				<li class="righty">
-					<a href="#" class="navigation-user">
+					<a id="drop" href="#" class="navigation-user">
 						<i class="icon-large icon-user"></i> identity3924948 <i id="drop" class="icon-sort-down "></i>
 					</a>
 				</li>
@@ -62,21 +62,35 @@
 		</nav>
 	</section>
     
-    	<div class="container login">
+    <div class="container login">
 		<form>
 			<label>
 				<h2>Recipient address:</h2>
-				<input type="text" class="long">
+				<input type="text" class="long" placeholder="Enter bitcoin address here">
 			</label>
 
 			<label>
 				<h2>Amount</h2>
-				<input type="password" class="long">
+				<input type="text" class="long" placeholder="BTC">
 			</label>
-
+            
+			<label>
+				<h2>Fee</h2>
+				<input type="text" class="long" value="0,00002">
+			</label>
 			<button class="button-submit">Send</button>
 		</form>
+        <div class="der">lalala</div>
 	</div>
+    
+    <section class="blank">
+        <div class="flash success shown">
+			<a href="#" class="close"><i class="icon icon-remove"></i></a>
+			<span><i class="icon-2x icon-ok-sign"></i></span>
+			<p>Payment sent.</p>
+            <p>TXID: 3c1ca06fe24be9cea5c2a877931f064905a8b15d31621c75a26f2bd9ac11fe70</p>
+		</div>
+    </section>
     
     <section class="blank">
         <div class="flash error">
