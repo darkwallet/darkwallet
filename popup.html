@@ -11,12 +11,14 @@
 	  <link href="./stylesheets/font-awesome.css" rel="stylesheet">
   </head>
   <body ng-controller="PopupCtrl">
-    <h2>Dark Wallet</h2>
     <div>
       <select ng-model="identity" ng-options="id.id for id in identities"
       ng-change="identityChange()"></select>
-      <h3 class="item-header">Recent Activity</h3>
     	<div class="activity">
+            <a href="#" class="item-footer green">Dark Wallet</a>
+            <a href="#" class="item-footer">
+			    <i class="icon-large icon-user"></i> identity3924948 <i id="drop" class="icon-sort-down "></i>
+		    </a>
 		    <div class="activity-list-update" ng-repeat="update in activity">
 			    <img src="./images/lorem50.png" alt="Image">
 			    <p>{{update.action}}</p>

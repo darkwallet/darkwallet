@@ -57,7 +57,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 /* line 23, ../sass/screen.scss */
 .der {
-  display: inline-block; }
+  position: relative;
+  top: 0;
+  float: right; }
 
 /* line 24, ../sass/screen.scss */
 #drop {
@@ -337,7 +339,7 @@ ul.dropdown {
     width: 1px;
     height: 1px;
     position: absolute;
-    left: 20px;
+    left: 320px;
     top: -10px;
     border: 5px solid rgba(0, 0, 0, 0);
     border-bottom: 5px solid #444444; }

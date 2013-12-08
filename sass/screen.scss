@@ -20,7 +20,7 @@ $navigation-link-color: #cecece;
 $universal-border-color: #595959;
 $universal-border-color-light: #cdcdcd;
 
-.der {display: inline-block; }
+.der { position: relative; top: 0; float: right; }
 #drop { vertical-align: text-top}
 #newidentity { text-align: center; background: $main-color;  }
 
@@ -381,7 +381,7 @@ ul.dropdown {
 		width: 1px;
 		height: 1px;
 		position: absolute;
-		left: 20px;
+		left: 320px;
 		top: -10px;
 		border: 5px solid rgba(0, 0, 0, 0.0);
 		border-bottom: 5px solid $dark-background;
