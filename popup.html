@@ -4,6 +4,8 @@
     <title>Dark Wallet</title>
     <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
     <script src="js/angular.min.js"></script>
+    <script src="vendors/sjcl/sjcl.js"></script>
+    <script src="js/classes.js"></script>
     <script src="js/popup.js"></script>
 	  <link rel="stylesheet" href="./stylesheets/screen.css">
 	  <link rel="stylesheet" href="./stylesheets/fonts.css">
@@ -29,7 +31,7 @@
                     <div class="clear"></div>
                 </div>
         </div>
-    	<div class="activity">
+    	<div class="activity shown">
 		    <div class="activity-list-update" ng-repeat="update in activity">
 			    <img src="./images/lorem50.png" alt="Image">
 			    <p>{{update.action}}</p>

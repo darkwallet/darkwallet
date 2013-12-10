@@ -11,6 +11,6 @@
     "default_popup": "popup.html"
   },
   "permissions": [
-    "tabs", "storage", "ws://*/*"
+    "tabs", "storage"
   ]
 }

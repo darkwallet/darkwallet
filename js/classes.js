@@ -18,36 +18,82 @@ function Transaction(tx) {
   return this;
 }
 
-var load = function(callback) {
-  callback = callback || function() {};
+Database = function(name, password, callback) {
+  var callback = callback || function(){};
+  this.name = name;
+  this.password = password;
+  this.data = {};
   var self = this;
-  chrome.storage.local.get(self.constructor.name + "_" + self.key, function(obj) {
-    obj = obj[self.constructor.name + "_" + self.key];
-    for (var prop in obj) {
-      self[prop] = obj[prop];
+  chrome.storage.local.get(name, function(obj) {
+    if (!obj || !obj[name]) {
+      console.log("Creating database");
+      self._save(callback);
+    } else {
+      console.log("Loading database");
+      self._load(callback);
     }
-    self._loaded = true;
+  });
+}
+
+Database.prototype._load = function(callback) {
+  var callback = callback || function(){};
+  var self = this;
+  chrome.storage.local.get(this.name, function(obj) {
+    self.data = JSON.parse(sjcl.decrypt(self.password, obj[self.name]));
     callback();
   });
 }
 
-var save = function(callback) {
-  // @todo Encrypt data before saving it
-  callback = callback || function() {};
-  if (!this.key || !this._loaded) {
-    callback(false);
-  }
+Database.prototype._save = function(callback) {
+  var callback = callback || function(){};
+  var cipher = sjcl.encrypt(this.password, JSON.stringify(this.data));
   var obj = {};
-  obj[this.constructor.name + "_" + this.key] = this;
+  obj[this.name] = cipher;
   chrome.storage.local.set(obj, callback);
 }
 
-Identity.prototype.load = 
-Contact.prototype.load = 
-Address.prototype.load = 
-Transaction.prototype.load = load;
+Database.prototype.create = function(key, obj, callback) {
+  var self = this;
+  var callback = callback || function(){};
+  this._load(function() {
+    if (typeof self.data[key] != "undefined") {
+      throw new Error(key + " already exists in database.");
+    }
+    self.data[key] = obj;
+    self._save(callback);
+  });
+}
 
-Identity.prototype.save = 
-Contact.prototype.save = 
-Address.prototype.save = 
-Transaction.prototype.save = save;
+Database.prototype.read = function(key, callback) {
+  var self = this;
+  var callback = callback || function(){};
+  this._load(function() {
+    if (key === null) {
+      callback(self.data);
+    } else {
+      callback(self.data[key]);
+    }
+  });
+}
+
+Database.prototype.update = function(key, obj, callback) {
+  var self = this;
+  var callback = callback || function(){};
+  this._load(function() {
+    if (typeof self.data[key] == "undefined") {
+      throw new Error(key + " is not previously present in database.");
+    }
+    self.data[key] = obj;
+    self._save(callback);
+  });
+}
+
+Database.prototype.remove = function(key, callback) {
+  var self = this;
+  var callback = callback || function(){};
+  this._load(function() {
+    delete self.data[key];
+    self._save(callback);
+  });
+}
+
