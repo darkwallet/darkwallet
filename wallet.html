@@ -18,7 +18,7 @@
 			<ul>
 				<li>
 					<a href="#" class="focus navigation-home">
-						<i class="icon-large icon-home"></i> Dark Wallet
+						<i class="icon-large icon-rocket"></i> Dark Wallet
 					</a>
 				</li>
 				<li>
@@ -63,12 +63,55 @@
 	</section>
     
     <div class="container login">
+        <div class="der">
+            <a href="#" class="button button-and-icon">
+				<div><i class="icon-large icon-qrcode"></i></div>Scan QR code
+			</a>
+            <a href="#" class="button button-and-icon">
+				<div><i class="icon-large icon-user"></i></div>Select from contacts
+			</a>
+        </div>
 		<form>
 			<label>
-				<h2>Recipient address:</h2>
+				<h2>Recipient address</h2>
 				<input type="text" class="long" placeholder="Enter bitcoin address here">
 			</label>
-
+            <div class="der down">
+                <div class="sqicon"><i class="icon-search"></i></div>
+                <input type="text" class="full" placeholder="Search">
+            <table class="">
+            <tr>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Total sent</th>
+            </tr>
+            <tr>
+              <td>Sean's Outpost</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>234.45553</td>
+            </tr>
+            <tr>
+              <td>Unsystem</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>1.2349593</td>
+            </tr>
+            <tr>
+              <td>FSF</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>2.4459248</td>
+            </tr>
+            <tr>
+              <td>EFF</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td>Internet Archive</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>6.4353534</td>
+            </tr>
+          </table>
+            </div>
 			<label>
 				<h2>Amount</h2>
 				<input type="text" class="long" placeholder="BTC">
@@ -78,11 +121,159 @@
 				<h2>Fee</h2>
 				<input type="text" class="long" value="0,00002">
 			</label>
-			<button class="button-submit">Send</button>
+			<button class="button-and-icon button-submit"><div><i class="icon-large icon-btc"></i></div>Send</button>
 		</form>
-        <div class="der">lalala</div>
+        
 	</div>
-    
+    <div class="container">
+        <h2>Unused addresses</h2>
+        <table class="full">
+            <tr>
+              <th>Name</th>
+              <th>Address</th>
+              <th>QR Code</th>
+              <th>Payment Request</th>
+            </tr>
+            <tr>
+              <td>Sean's Outpost</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+            </tr>
+            <tr>
+              <td>Unsystem</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+            </tr>
+            <tr>
+              <td>FSF</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+            </tr>
+            <tr>
+              <td>EFF</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+            </tr>
+            <tr>
+              <td>Internet Archive</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+            </tr>
+          </table>
+            <a href="#" class="button button-and-icon sep">
+				<div><i class="icon-large icon-btc"></i></div>Generate new address
+			</a>
+    </div>
+    <section>
+        <h2>Used addresses</h2>
+        <table class="full">
+            <tr>
+              <th>Name</th>
+              <th>Address</th>
+              <th>QR Code</th>
+              <th>Payment Request</th>
+              <th>Transactions</th>
+              <th>Balance</th>
+            </tr>
+            <tr>
+              <td>Sean's Outpost</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td>Unsystem</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td>FSF</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td>EFF</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td>Internet Archive</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td><i class="icon-large icon-qrcode"></i></td>
+              <td><i class="icon-large icon-money"></i></td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+          </table>
+    </section>
+     <section>
+        <table class="full">
+            <tr>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Amount</th>
+              <th>Balance</th>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>26 minutes ago</td>
+              <td>dfsdf</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3.4534556</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>1 hour 32 minutes ago</td>
+              <td>dsfgsg</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>20/12/2013 19:43</td>
+              <td>kjdfds</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>20/12/2013 19:43</td>
+              <td>Payment to Amir</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>20/12/2013 19:43</td>
+              <td>kkjk</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+          </table>
+    </section>
     <section class="blank">
         <div class="flash success shown">
 			<a href="#" class="close"><i class="icon icon-remove"></i></a>
@@ -116,30 +307,6 @@
 			</li>
 		</ul>
 	</div>
-
-    <section class="blank">
-    		<div class="activity">
-			<h1 class="item-header">Recent Activity</h1>
-
-			<div class="activity-list-update">
-				<img src="./images/lorem50.png" alt="Image">
-				<p>Payment received</p>
-                <strong>0.22432345 BTC</strong> 5m ago
-				<div class="clear"></div>
-			</div>
-
-			<div class="activity-list-update">
-				<img src="./images/lorem50.png" alt="Image">
-				<p>Payment sent to <strong>Satoshi Dice</strong></p>
-                <strong>0.22432345 BTC</strong> 5m ago
-				<div class="clear"></div>
-			</div>
-
-			<a href="#" class="item-footer green">
-				Go to history...
-			</a>
-		</div>
-    </section>
     
 	<section class="blank">
 		<div class="flash">
