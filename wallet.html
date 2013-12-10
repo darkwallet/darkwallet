@@ -17,18 +17,18 @@
 		<nav class="navigation">
 			<ul>
 				<li>
-					<a href="#" class="focus navigation-home">
+					<a href="#" class="focus navigation-home" ng-click="section='darkwallet'">
 						<i class="icon-large icon-rocket"></i> Dark Wallet
 					</a>
 				</li>
 				<li>
-					<a href="#">Wallet</a>
+					<a href="#" ng-click="section='darkwallet'">Wallet</a>
 				</li>
 				<li>
-					<a href="#">Contacts</a>
+					<a href="#" ng-click="section='contacts'">Contacts</a>
 				</li>
 				<li>
-					<a href="#">Settings</a>
+					<a href="#" ng-click="section='settings'">Settings</a>
 				</li>
 				<li class="righty last-menu-item">
 					<a href="#" class="navigation-settings">
@@ -36,7 +36,7 @@
 					</a>
 				</li>
 				<li class="righty">
-					<a id="drop" href="#" class="navigation-user">
+					<a id="drop" href="#" class="navigation-user" ng-click="section='identity'">
 						<i class="icon-large icon-user"></i> identity3924948 <i id="drop" class="icon-sort-down "></i>
 					</a>
 				</li>
@@ -49,25 +49,25 @@
 		<nav class="navigation tabs">
 			<ul>
 				<li>
-					<a href="#">History</a>
+					<a href="#" ng-click="section='history'">History</a>
 				</li>
 				<li>
-					<a href="#" class="active">Send</a>
+					<a href="#" ng-click="section='send'" class="active">Send</a>
 				</li>
 				<li>
-					<a href="#">Receive</a>
+					<a href="#" ng-click="section='receive'">Receive</a>
 				</li>
 			</ul>
 			<br class="clear">
 		</nav>
 	</section>
     
-    <div class="container login">
+    <div class="container login" ng-show="section=='send'">
         <div class="der">
             <a href="#" class="button button-and-icon">
 				<div><i class="icon-large icon-qrcode"></i></div>Scan QR code
 			</a>
-            <a href="#" class="button button-and-icon">
+            <a href="#" class="button button-and-icon" ng-click="showContacts=!showContacts">
 				<div><i class="icon-large icon-user"></i></div>Select from contacts
 			</a>
         </div>
@@ -76,7 +76,7 @@
 				<h2>Recipient address</h2>
 				<input type="text" class="long" placeholder="Enter bitcoin address here">
 			</label>
-            <div class="der down">
+            <div class="der down" ng-show="showContacts">
                 <div class="sqicon"><i class="icon-search"></i></div>
                 <input type="text" class="full" placeholder="Search">
             <table class="">
@@ -125,7 +125,7 @@
 		</form>
         
 	</div>
-    <div class="container">
+    <div class="container" ng-show="section=='receive'">
         <h2>Unused addresses</h2>
         <table class="full">
             <tr>
@@ -169,7 +169,7 @@
 				<div><i class="icon-large icon-btc"></i></div>Generate new address
 			</a>
     </div>
-    <section>
+    <section ng-show="section=='receive'">
         <h2>Used addresses</h2>
         <table class="full">
             <tr>
@@ -222,7 +222,7 @@
             </tr>
           </table>
     </section>
-     <section>
+     <section ng-show="section=='history'">
         <table class="full">
             <tr>
               <th>Status</th>
@@ -274,7 +274,7 @@
             </tr>
           </table>
     </section>
-    <section class="blank">
+    <section class="blank" ng-show="section=='send'">
         <div class="flash success shown">
 			<a href="#" class="close"><i class="icon icon-remove"></i></a>
 			<span><i class="icon-2x icon-ok-sign"></i></span>
@@ -291,7 +291,7 @@
 		</div>
     </section>
         
-	<div class="container blank">
+	<div class="container blank" ng-show="section=='identity'">
 		<ul class="dropdown">
 			<li>
 				<a href="#">Identity dropdown</a>
@@ -308,7 +308,7 @@
 		</ul>
 	</div>
     
-	<section class="blank">
+	<section class="blank" ng-show="section=='send'">
 		<div class="flash">
 			<a href="#" class="close"><i class="icon icon-remove"></i></a>
 			<span><i class="icon-2x icon-star"></i></span>
@@ -325,7 +325,7 @@
 
 
 
-	<section>
+	<section ng-show="section=='settings'">
 		<div>
 			<a href="#" class="button">Button</a>
 
@@ -357,8 +357,8 @@
 		</div>
 	</section>
 
-	<section class="blank blurb">
-		<img src="./images/lorem1400x560.png" alt="Image">
+	<section class="blank blurb" ng-show="section=='darkwallet'">
+		<img src="./images/lorem1400x560.png" alt="Image" />
 		<div>
 			<h1>dark wallet</h1>
 			<h2>the safest bitcoin wallet yet</h2>
@@ -368,7 +368,7 @@
 		</div>
 	</section>
 
-	<section class="blank">
+	<section class="blank" ng-show="section=='settings'">
 
 		<div class="typography">
 			<h1>Header 1</h1>
