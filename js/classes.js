@@ -39,17 +39,27 @@ Database.prototype._load = function(callback) {
   var callback = callback || function(){};
   var self = this;
   chrome.storage.local.get(this.name, function(obj) {
-    self.data = JSON.parse(sjcl.decrypt(self.password, obj[self.name]));
-    callback();
+    try {
+      self.data = JSON.parse(sjcl.decrypt(self.password, obj[self.name]));
+      callback();
+    } catch(e) {
+      callback(true);
+    }
   });
 }
 
 Database.prototype._save = function(callback) {
   var callback = callback || function(){};
-  var cipher = sjcl.encrypt(this.password, JSON.stringify(this.data));
-  var obj = {};
-  obj[this.name] = cipher;
-  chrome.storage.local.set(obj, callback);
+  try {
+    var cipher = sjcl.encrypt(this.password, JSON.stringify(this.data));
+    var obj = {};
+    obj[this.name] = cipher;
+    chrome.storage.local.set(obj, function() {
+      callback();
+    });
+  } catch(e) {
+    callback(true);
+  }
 }
 
 Database.prototype.create = function(key, obj, callback) {

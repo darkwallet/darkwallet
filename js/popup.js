@@ -14,6 +14,7 @@ function PopupCtrl($scope) {
       $scope.activity = [
         {action: 'Received bitcoins', amount: '0.1', timestamp: '15 minutes ago'},
         {action: 'Received bitcoins', amount: '2', timestamp: '26 minutes ago'},
+        {action: 'Received bitcoins', amount: '0.2', timestamp: '31 minutes ago'},
       ];
     }
   }
