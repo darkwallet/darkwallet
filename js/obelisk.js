@@ -52,8 +52,10 @@ ObeliskClient.prototype.send = function(command, data, success, error) {
  */
 ObeliskClient.prototype.onMessage = function(event) {
     var msg = JSON.parse(event.data);
-    if (this.callbacks[msg.id] && this.callbacks[msg.id][0]) {
-        this.callbacks[msg.id][0](msg.result);
+    if (this.callbacks[msg.id]) {
+        if (this.callbacks[msg.id][0]) {
+            this.callbacks[msg.id][0](msg.result);
+        }
         delete this.callbacks[msg.id];
     }
 }
