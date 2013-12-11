@@ -7,41 +7,41 @@
     <script src="vendors/sjcl/sjcl.js"></script>
     <script src="js/classes.js"></script>
     <script src="js/popup.js"></script>
-	  <link rel="stylesheet" href="./stylesheets/screen.css">
-	  <link rel="stylesheet" href="./stylesheets/fonts.css">
-	  <link href='./stylesheets/opensans.css' rel='stylesheet' type='text/css'>
-	  <link href="./stylesheets/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="./stylesheets/screen.css">
+    <link rel="stylesheet" href="./stylesheets/fonts.css">
+    <link href='./stylesheets/opensans.css' rel='stylesheet' type='text/css'>
+    <link href="./stylesheets/font-awesome.css" rel="stylesheet">
   </head>
   <body ng-controller="PopupCtrl">
     <div>
       <select ng-model="identity" ng-options="id.id for id in identities"
-      ng-change="identityChange()"></select>
-        <div class="activity shown">
-            <a href="#" class="item-footer green">Dark Wallet</a>
-            <a href="#" class="item-footer">
-			    <i class="icon-large icon-user"></i> identity3924948 <i id="drop" class="icon-sort-down "></i>
-		    </a>
+              ng-change="identityChange()"></select>
+      <div class="activity shown">
+        <a href="#" class="item-footer green">Dark Wallet</a>
+        <a href="#" class="item-footer">
+          <i class="icon-large icon-user"></i> identity3924948 <i id="drop" class="icon-sort-down "></i>
+        </a>
+      </div>
+      <div class="activity shown">
+        
+        <div class="activity-list-update">
+          <img src="./images/lorem50.png" alt="Image">
+          <p>Identity 1</p>
+          Latest activity 5 days ago
+          <div class="clear"></div>
         </div>
-        <div class="activity shown">
-
-                <div class="activity-list-update">
-                    <img src="./images/lorem50.png" alt="Image">
-                    <p>Identity 1</p>
-                    Latest activity 5 days ago
-                    <div class="clear"></div>
-                </div>
+      </div>
+      <div class="activity shown">
+        <div class="activity-list-update" ng-repeat="update in activity">
+          <img src="./images/lorem50.png" alt="Image">
+          <p>{{update.action}}</p>
+          <strong>{{update.amount}} BTC</strong> {{update.timestamp}}
+          <div class="clear"></div>
         </div>
-    	<div class="activity shown">
-		    <div class="activity-list-update" ng-repeat="update in activity">
-			    <img src="./images/lorem50.png" alt="Image">
-			    <p>{{update.action}}</p>
-                  <strong>{{update.amount}} BTC</strong> {{update.timestamp}}
-			    <div class="clear"></div>
-		    </div>
-		    <a href="wallet.html#history" target="_blank" class="item-footer green">
-			    Go to history...
-		    </a>
-        </div>
-		</div>
+        <a href="wallet.html#history" target="_blank" class="item-footer green">
+          Go to history...
+        </a>
+      </div>
+    </div>
   </body>
 </html>

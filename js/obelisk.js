@@ -4,8 +4,8 @@
  * Manages connections to an obelisk server.
  */
 function ObeliskClient() {
-    this.nonce = 0;
-    this.initWebSocket("ws://localhost:9000")
+  this.nonce = 0;
+  this.initWebSocket("ws://localhost:9000")
 };
 
 
@@ -16,16 +16,16 @@ function ObeliskClient() {
  *  * address: websocket url
  */
 ObeliskClient.prototype.initWebSocket = function(address) {
-    var self = this,
-        ws   = new WebSocket(address);
+  var self = this,
+          ws   = new WebSocket(address);
 
-    ws.onopen = function (event) {
-        // get last height to test api
-        self.getHeight(function(res){console.log('Height arrived', res)});
-    }
-    ws.onmessage = function(event) {self.onMessage(event)};
-    this.socket = ws;
-    this.callbacks = {};
+  ws.onopen = function (event) {
+    // get last height to test api
+    self.getHeight(function(res){console.log('Height arrived', res)});
+  }
+  ws.onmessage = function(event) {self.onMessage(event)};
+  this.socket = ws;
+  this.callbacks = {};
 }
 
 /**
@@ -36,14 +36,14 @@ ObeliskClient.prototype.initWebSocket = function(address) {
  *  * error: error callback
  */
 ObeliskClient.prototype.send = function(command, data, success, error) {
-    this.nonce += 1;
-    msg = {'command': command, 'id': this.nonce};
-    if (data) {
-        msg['data'] = data;
-    }
-    this.callbacks[this.nonce] = [success, error];
+  this.nonce += 1;
+  msg = {'command': command, 'id': this.nonce};
+  if (data) {
+    msg['data'] = data;
+  }
+  this.callbacks[this.nonce] = [success, error];
 
-    this.socket.send(JSON.stringify(msg));
+  this.socket.send(JSON.stringify(msg));
 }
 
 /**
@@ -51,13 +51,13 @@ ObeliskClient.prototype.send = function(command, data, success, error) {
  *  * event: Incoming event
  */
 ObeliskClient.prototype.onMessage = function(event) {
-    var msg = JSON.parse(event.data);
-    if (this.callbacks[msg.id]) {
-        if (this.callbacks[msg.id][0]) {
-            this.callbacks[msg.id][0](msg.result);
-        }
-        delete this.callbacks[msg.id];
+  var msg = JSON.parse(event.data);
+  if (this.callbacks[msg.id]) {
+    if (this.callbacks[msg.id][0]) {
+      this.callbacks[msg.id][0](msg.result);
     }
+    delete this.callbacks[msg.id];
+  }
 }
 
 /**
@@ -66,7 +66,7 @@ ObeliskClient.prototype.onMessage = function(event) {
  *  * error: error callback
  */
 ObeliskClient.prototype.getHeight = function(success, error) {
-    this.send('fetch_height', false, success, error);
+  this.send('fetch_height', false, success, error);
 }
 
 /**
@@ -76,7 +76,7 @@ ObeliskClient.prototype.getHeight = function(success, error) {
  *  * error: error callback
  */
 ObeliskClient.prototype.getHistory = function(address, success, error) {
-    this.send("fetch_history", address, success, error);
+  this.send("fetch_history", address, success, error);
 }
 
 /**

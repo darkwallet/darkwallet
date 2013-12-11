@@ -1,89 +1,89 @@
 <!doctype html>
 <html lang="en" ng-app ng-csp>
-
-<head>
-	<meta charset="utf-8" />
-	<title>Dark Wallet</title>
-	<meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
-  <script src="js/angular.min.js"></script>
-  <script src="js/obelisk.js"></script>
-  <script src="vendors/sjcl/sjcl.js"></script>
-  <script src="js/classes.js"></script>
-  <script src="js/wallet.js"></script>
-	<link rel="stylesheet" href="./stylesheets/screen.css">
-	<link rel="stylesheet" href="./stylesheets/fonts.css">
-	<link href='./stylesheets/opensans.css' rel='stylesheet' type='text/css'>
-	<link href="./stylesheets/font-awesome.css" rel="stylesheet">
-</head>
-
-<body ng-controller="WalletCtrl">
-	<section class="blank">
-		<nav class="navigation">
-			<ul>
-				<li>
-					<a href="#" class="focus navigation-home" ng-click="section='darkwallet'">
-						<i class="icon-large icon-rocket"></i> Dark Wallet
-					</a>
-				</li>
-				<li>
-					<a href="#" ng-click="section='darkwallet'">Wallet</a>
-				</li>
-				<li>
-					<a href="#" ng-click="section='contacts'">Contacts</a>
-				</li>
-				<li>
-					<a href="#" ng-click="section='settings'">Settings</a>
-				</li>
-				<li class="righty last-menu-item">
-					<a href="#" class="navigation-settings">
-						<i class="icon-large icon-cog "></i>
-					</a>
-				</li>
-				<li class="righty">
-					<a id="drop" href="#" class="navigation-user" ng-click="section='identity'">
-						<i class="icon-large icon-user"></i> identity3924948 <i id="drop" class="icon-sort-down "></i>
-					</a>
-				</li>
-			</ul>
-			<br class="clear">
-		</nav>
-	</section>
+  
+  <head>
+    <meta charset="utf-8" />
+    <title>Dark Wallet</title>
+    <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+    <script src="js/angular.min.js"></script>
+    <script src="js/obelisk.js"></script>
+    <script src="vendors/sjcl/sjcl.js"></script>
+    <script src="js/classes.js"></script>
+    <script src="js/wallet.js"></script>
+    <link rel="stylesheet" href="./stylesheets/screen.css">
+    <link rel="stylesheet" href="./stylesheets/fonts.css">
+    <link href='./stylesheets/opensans.css' rel='stylesheet' type='text/css'>
+    <link href="./stylesheets/font-awesome.css" rel="stylesheet">
+  </head>
+  
+  <body ng-controller="WalletCtrl">
+    <section class="blank">
+      <nav class="navigation">
+        <ul>
+          <li>
+            <a href="#" class="focus navigation-home" ng-click="section='darkwallet'">
+              <i class="icon-large icon-rocket"></i> Dark Wallet
+            </a>
+          </li>
+          <li>
+            <a href="#" ng-click="section='darkwallet'">Wallet</a>
+          </li>
+          <li>
+            <a href="#" ng-click="section='contacts'">Contacts</a>
+          </li>
+          <li>
+            <a href="#" ng-click="section='settings'">Settings</a>
+          </li>
+          <li class="righty last-menu-item">
+            <a href="#" class="navigation-settings">
+              <i class="icon-large icon-cog "></i>
+            </a>
+          </li>
+          <li class="righty">
+            <a id="drop" href="#" class="navigation-user" ng-click="section='identity'">
+              <i class="icon-large icon-user"></i> identity3924948 <i id="drop" class="icon-sort-down "></i>
+            </a>
+          </li>
+        </ul>
+        <br class="clear">
+      </nav>
+    </section>
     
-    	<section class="blank">
-		<nav class="navigation tabs">
-			<ul>
-				<li>
-					<a href="#" ng-click="section='history'" ng-class="{active: section=='history'}">History</a>
-				</li>
-				<li>
-					<a href="#" ng-click="section='send'" ng-class="{active: section=='send'}">Send</a>
-				</li>
-				<li>
-					<a href="#" ng-click="section='receive'" ng-class="{active: section=='receive'}">Receive</a>
-				</li>
-			</ul>
-			<br class="clear">
-		</nav>
-	</section>
+    <section class="blank">
+      <nav class="navigation tabs">
+        <ul>
+          <li>
+            <a href="#" ng-click="section='history'" ng-class="{active: section=='history'}">History</a>
+          </li>
+          <li>
+            <a href="#" ng-click="section='send'" ng-class="{active: section=='send'}">Send</a>
+          </li>
+          <li>
+            <a href="#" ng-click="section='receive'" ng-class="{active: section=='receive'}">Receive</a>
+          </li>
+        </ul>
+        <br class="clear">
+      </nav>
+    </section>
     
     <div class="container login" ng-show="section=='send'">
-        <div class="der">
-            <a href="#" class="button button-and-icon">
-				<div><i class="icon-large icon-qrcode"></i></div>Scan QR code
-			</a>
-            <a href="#" class="button button-and-icon" ng-click="showContacts=!showContacts">
-				<div><i class="icon-large icon-user"></i></div>Select from contacts
-			</a>
-        </div>
-		<form>
-			<label>
-				<h2>Recipient address</h2>
-				<input type="text" class="long" placeholder="Enter bitcoin address here">
-			</label>
-            <div class="der down" ng-show="showContacts">
-                <div class="sqicon"><i class="icon-search"></i></div>
-                <input type="text" class="full" placeholder="Search">
-            <table class="">
+      <div class="der">
+        <a href="#" class="button button-and-icon">
+          <div><i class="icon-large icon-qrcode"></i></div>Scan QR code
+        </a>
+        <a href="#" class="button button-and-icon" ng-click="showContacts=!showContacts">
+          <div><i class="icon-large icon-user"></i></div>Select from contacts
+        </a>
+      </div>
+      <form>
+        <label>
+          <h2>Recipient address</h2>
+          <input type="text" class="long" placeholder="Enter bitcoin address here">
+        </label>
+        <div class="der down" ng-show="showContacts">
+          <div class="sqicon"><i class="icon-search"></i></div>
+          <input type="text" class="full" placeholder="Search">
+          <table class="">
             <tr>
               <th>Name</th>
               <th>Address</th>
@@ -115,312 +115,312 @@
               <td>6.4353534</td>
             </tr>
           </table>
-            </div>
-			<label>
-				<h2>Amount</h2>
-				<input type="text" class="long" placeholder="BTC">
-			</label>
-            
-			<label>
-				<h2>Fee</h2>
-				<input type="text" class="long" value="0,00002">
-			</label>
-			<button class="button-and-icon button-submit"><div><i class="icon-large icon-btc"></i></div>Send</button>
-		</form>
+        </div>
+        <label>
+          <h2>Amount</h2>
+          <input type="text" class="long" placeholder="BTC">
+        </label>
         
-	</div>
+        <label>
+          <h2>Fee</h2>
+          <input type="text" class="long" value="0,00002">
+        </label>
+        <button class="button-and-icon button-submit"><div><i class="icon-large icon-btc"></i></div>Send</button>
+      </form>
+      
+    </div>
     <div class="container" ng-show="section=='receive'">
-        <h2>Unused addresses</h2>
-        <table class="full">
-            <tr>
-              <th>Name</th>
-              <th>Address</th>
-              <th>QR Code</th>
-              <th>Payment Request</th>
-            </tr>
-            <tr>
-              <td>Sean's Outpost</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-            </tr>
-            <tr>
-              <td>Unsystem</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-            </tr>
-            <tr>
-              <td>FSF</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-            </tr>
-            <tr>
-              <td>EFF</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-            </tr>
-            <tr>
-              <td>Internet Archive</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-            </tr>
-          </table>
-            <a href="#" class="button button-and-icon sep">
-				<div><i class="icon-large icon-btc"></i></div>Generate new address
-			</a>
+      <h2>Unused addresses</h2>
+      <table class="full">
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>QR Code</th>
+          <th>Payment Request</th>
+        </tr>
+        <tr>
+          <td>Sean's Outpost</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+        </tr>
+        <tr>
+          <td>Unsystem</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+        </tr>
+        <tr>
+          <td>FSF</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+        </tr>
+        <tr>
+          <td>EFF</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+        </tr>
+        <tr>
+          <td>Internet Archive</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+        </tr>
+      </table>
+      <a href="#" class="button button-and-icon sep">
+        <div><i class="icon-large icon-btc"></i></div>Generate new address
+      </a>
     </div>
     <section ng-show="section=='receive'">
-        <h2>Used addresses</h2>
-        <table class="full">
-            <tr>
-              <th>Name</th>
-              <th>Address</th>
-              <th>QR Code</th>
-              <th>Payment Request</th>
-              <th>Transactions</th>
-              <th>Balance</th>
-            </tr>
-            <tr>
-              <td>Sean's Outpost</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td>Unsystem</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td>FSF</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td>EFF</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td>Internet Archive</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td><i class="icon-large icon-qrcode"></i></td>
-              <td><i class="icon-large icon-money"></i></td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-          </table>
+      <h2>Used addresses</h2>
+      <table class="full">
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>QR Code</th>
+          <th>Payment Request</th>
+          <th>Transactions</th>
+          <th>Balance</th>
+        </tr>
+        <tr>
+          <td>Sean's Outpost</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+          <td>3</td>
+          <td>4.4343452</td>
+        </tr>
+        <tr>
+          <td>Unsystem</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+          <td>3</td>
+          <td>4.4343452</td>
+        </tr>
+        <tr>
+          <td>FSF</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+          <td>3</td>
+          <td>4.4343452</td>
+        </tr>
+        <tr>
+          <td>EFF</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+          <td>3</td>
+          <td>4.4343452</td>
+        </tr>
+        <tr>
+          <td>Internet Archive</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+          <td>3</td>
+          <td>4.4343452</td>
+        </tr>
+      </table>
     </section>
-     <section ng-show="section=='history'">
-        <table class="full">
-            <tr>
-              <th>Status</th>
-              <th>Date</th>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Amount</th>
-              <th>Balance</th>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>26 minutes ago</td>
-              <td>dfsdf</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3.4534556</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>1 hour 32 minutes ago</td>
-              <td>dsfgsg</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>20/12/2013 19:43</td>
-              <td>kjdfds</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>20/12/2013 19:43</td>
-              <td>Payment to Amir</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>20/12/2013 19:43</td>
-              <td>kkjk</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-          </table>
+    <section ng-show="section=='history'">
+      <table class="full">
+        <tr>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Amount</th>
+          <th>Balance</th>
+        </tr>
+        <tr>
+          <td><i class="icon-large icon-ok"></i></td>
+          <td>26 minutes ago</td>
+          <td>dfsdf</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td>3.4534556</td>
+          <td>4.4343452</td>
+        </tr>
+        <tr>
+          <td><i class="icon-large icon-ok"></i></td>
+          <td>1 hour 32 minutes ago</td>
+          <td>dsfgsg</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td>3</td>
+          <td>4.4343452</td>
+        </tr>
+        <tr>
+          <td><i class="icon-large icon-ok"></i></td>
+          <td>20/12/2013 19:43</td>
+          <td>kjdfds</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td>3</td>
+          <td>4.4343452</td>
+        </tr>
+        <tr>
+          <td><i class="icon-large icon-ok"></i></td>
+          <td>20/12/2013 19:43</td>
+          <td>Payment to Amir</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td>3</td>
+          <td>4.4343452</td>
+        </tr>
+        <tr>
+          <td><i class="icon-large icon-ok"></i></td>
+          <td>20/12/2013 19:43</td>
+          <td>kkjk</td>
+          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <td>3</td>
+          <td>4.4343452</td>
+        </tr>
+      </table>
     </section>
     <section class="blank" ng-show="section=='send'">
-        <div class="flash success shown">
-			<a href="#" class="close"><i class="icon icon-remove"></i></a>
-			<span><i class="icon-2x icon-ok-sign"></i></span>
-			<p>Payment sent.</p>
-            <p>TXID: 3c1ca06fe24be9cea5c2a877931f064905a8b15d31621c75a26f2bd9ac11fe70</p>
-		</div>
+      <div class="flash success shown">
+        <a href="#" class="close"><i class="icon icon-remove"></i></a>
+        <span><i class="icon-2x icon-ok-sign"></i></span>
+        <p>Payment sent.</p>
+        <p>TXID: 3c1ca06fe24be9cea5c2a877931f064905a8b15d31621c75a26f2bd9ac11fe70</p>
+      </div>
     </section>
     
     <section class="blank">
-        <div class="flash error">
-			<a href="#" class="close"><i class="icon icon-remove"></i></a>
-			<span><i class="icon-2x icon-warning-sign"></i></span>
-			<p>This could compromise your identity!</p>
-		</div>
+      <div class="flash error">
+        <a href="#" class="close"><i class="icon icon-remove"></i></a>
+        <span><i class="icon-2x icon-warning-sign"></i></span>
+        <p>This could compromise your identity!</p>
+      </div>
     </section>
+    
+    <div class="container blank" ng-show="section=='identity'">
+      <ul class="dropdown">
+        <li>
+          <a href="#">Identity dropdown</a>
+        </li>
+        <li>
+          <a href="#">Another option</a>
+        </li>
+        <li>
+          <a href="#">Third option</a>
+        </li>
+        <li id="newidentity">
+          <a href="#">New identity</a>
+        </li>
+      </ul>
+    </div>
+    
+    <section class="blank" ng-show="section=='send'">
+      <div class="flash">
+        <a href="#" class="close"><i class="icon icon-remove"></i></a>
+        <span><i class="icon-2x icon-star"></i></span>
+        <p>Such a generic message</p>
+      </div>
+      
+      
+      <div class="flash success">
+        <a href="#" class="close"><i class="icon icon-remove"></i></a>
+        <span><i class="icon-2x icon-smile"></i></span>
+        <p>Payment sent!</p>
+      </div>
+    </section>
+    
+    
+    
+    <section ng-show="section=='settings'">
+      <div>
+        <a href="#" class="button">Button</a>
         
-	<div class="container blank" ng-show="section=='identity'">
-		<ul class="dropdown">
-			<li>
-				<a href="#">Identity dropdown</a>
-			</li>
-			<li>
-				<a href="#">Another option</a>
-			</li>
-			<li>
-				<a href="#">Third option</a>
-			</li>
-			<li id="newidentity">
-				<a href="#">New identity</a>
-			</li>
-		</ul>
-	</div>
+        <a href="#" class="button">Button with a counter <span class="notification">22</span></a>
+        
+        <a href="#" class="button button-and-icon">
+          <div><i class="icon-large icon-cog"></i></div>Button with an icon
+        </a>
+      </div>
+      
+      <hr>
+      
+      <div>
+        <a href="#" class="button button-submit">Submit</a>
+        <a href="#" class="button button-cancel">Cancel</a>
+        <a href="#" class="button button-delete">Delete</a>
+      </div>
+      
+      <hr>
+      
+      <div>
+        <a href="#" class="button button-small">Smaller button</a>
+      </div>
+      
+      <hr>
+      
+      <div>
+        <a href="#" class="button button-buy">big button (full width for columns)</a>
+      </div>
+    </section>
     
-	<section class="blank" ng-show="section=='send'">
-		<div class="flash">
-			<a href="#" class="close"><i class="icon icon-remove"></i></a>
-			<span><i class="icon-2x icon-star"></i></span>
-			<p>Such a generic message</p>
-		</div>
-
-
-		<div class="flash success">
-			<a href="#" class="close"><i class="icon icon-remove"></i></a>
-			<span><i class="icon-2x icon-smile"></i></span>
-			<p>Payment sent!</p>
-		</div>
-	</section>
-
-
-
-	<section ng-show="section=='settings'">
-		<div>
-			<a href="#" class="button">Button</a>
-
-			<a href="#" class="button">Button with a counter <span class="notification">22</span></a>
-
-			<a href="#" class="button button-and-icon">
-				<div><i class="icon-large icon-cog"></i></div>Button with an icon
-			</a>
-		</div>
-
-		<hr>
-
-		<div>
-			<a href="#" class="button button-submit">Submit</a>
-			<a href="#" class="button button-cancel">Cancel</a>
-			<a href="#" class="button button-delete">Delete</a>
-		</div>
-
-		<hr>
-		
-		<div>
-			<a href="#" class="button button-small">Smaller button</a>
-		</div>
-
-		<hr>
-		
-		<div>
-			<a href="#" class="button button-buy">big button (full width for columns)</a>
-		</div>
-	</section>
-
-	<section class="blank blurb" ng-show="section=='darkwallet'">
-		<img src="./images/lorem1400x560.png" alt="Image" />
-		<div>
-			<h1>dark wallet</h1>
-			<h2>the safest bitcoin wallet yet</h2>
-			<hr>
-			<p>Welcome to Dark Wallet! Thanks for trusting us with your bitcoins! bla bla bla</p>
-			<a href="#" class="button button-cta">import a wallet</a> <a href="#" class="button button-cta">generate a wallet</a>
-		</div>
-	</section>
-
-	<section class="blank" ng-show="section=='settings'">
-
-		<div class="typography">
-			<h1>Header 1</h1>
-			<h1 class="big">Header 1 (big)</h1>
-			<h2>Header 2</h2>
-			<h2 class="big">Header 2 (big)</h2>
-			<h3>Header 3</h3>
-			<h3 class="big">Header 3 (big)</h3>
-			<h4>Header 4</h4>
-			<h4 class="big">Header 4 (big)</h4>
-			<h5>Header 5</h5>
-			<h5 class="big">Header 5 (big)</h5>
-			<p>This is a paragraph <a href="#">and this is a link</a>.</p>
-			<ul>
-				<li>This is a list</li>
-				<li>It has list items</li>
-				<li>More than two</li>
-				<li>Certainly more than four</li>
-				<li>This is the last one</li>
-			</ul>
-		</div>
-	</section>
+    <section class="blank blurb" ng-show="section=='darkwallet'">
+      <img src="./images/lorem1400x560.png" alt="Image" />
+      <div>
+        <h1>dark wallet</h1>
+        <h2>the safest bitcoin wallet yet</h2>
+        <hr>
+        <p>Welcome to Dark Wallet! Thanks for trusting us with your bitcoins! bla bla bla</p>
+        <a href="#" class="button button-cta">import a wallet</a> <a href="#" class="button button-cta">generate a wallet</a>
+      </div>
+    </section>
     
-
-	<section class="blank">
-		<div class="progress-bar">
-			<div class="progress-bar-90">
-				Loading (90%)
-			</div>
-		</div>
-	</section>
-
-	<section class="blank">
-		<div class="progress-bar progress-bar-small">
-			<div class="progress-bar-30">
-			</div>
-		</div>
-	</section>
-
-	<section class="blank">
-		<div class="progress-bar progress-bar-small">
-			<div class="progress-bar-90">
-			</div>
-		</div>
-	</section>
-
-
-
-	
-</body>
+    <section class="blank" ng-show="section=='settings'">
+      
+      <div class="typography">
+        <h1>Header 1</h1>
+        <h1 class="big">Header 1 (big)</h1>
+        <h2>Header 2</h2>
+        <h2 class="big">Header 2 (big)</h2>
+        <h3>Header 3</h3>
+        <h3 class="big">Header 3 (big)</h3>
+        <h4>Header 4</h4>
+        <h4 class="big">Header 4 (big)</h4>
+        <h5>Header 5</h5>
+        <h5 class="big">Header 5 (big)</h5>
+        <p>This is a paragraph <a href="#">and this is a link</a>.</p>
+        <ul>
+          <li>This is a list</li>
+          <li>It has list items</li>
+          <li>More than two</li>
+          <li>Certainly more than four</li>
+          <li>This is the last one</li>
+        </ul>
+      </div>
+    </section>
+    
+    
+    <section class="blank">
+      <div class="progress-bar">
+        <div class="progress-bar-90">
+          Loading (90%)
+        </div>
+      </div>
+    </section>
+    
+    <section class="blank">
+      <div class="progress-bar progress-bar-small">
+        <div class="progress-bar-30">
+        </div>
+      </div>
+    </section>
+    
+    <section class="blank">
+      <div class="progress-bar progress-bar-small">
+        <div class="progress-bar-90">
+        </div>
+      </div>
+    </section>
+    
+    
+    
+    
+  </body>
 </html>
