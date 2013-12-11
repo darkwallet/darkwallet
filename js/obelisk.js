@@ -64,7 +64,7 @@ ObeliskClient.prototype.onMessage = function(event) {
  *  * error: error callback
  */
 ObeliskClient.prototype.getHeight = function(success, error) {
-    this.send('getheight', false, success, error);
+    this.send('fetch_height', false, success, error);
 }
 
 /**
@@ -74,7 +74,7 @@ ObeliskClient.prototype.getHeight = function(success, error) {
  *  * error: error callback
  */
 ObeliskClient.prototype.getHistory = function(address, success, error) {
-    this.send("gethistory", address, success, error);
+    this.send("fetch_history", address, success, error);
 }
 
 /**
