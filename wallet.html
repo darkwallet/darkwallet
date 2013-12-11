@@ -15,7 +15,7 @@
 	<link href="./stylesheets/font-awesome.css" rel="stylesheet">
 </head>
 
-<body>
+<body ng-controller="WalletCtrl">
 	<section class="blank">
 		<nav class="navigation">
 			<ul>
@@ -52,13 +52,13 @@
 		<nav class="navigation tabs">
 			<ul>
 				<li>
-					<a href="#" ng-click="section='history'">History</a>
+					<a href="#" ng-click="section='history'" ng-class="{active: section=='history'}">History</a>
 				</li>
 				<li>
-					<a href="#" ng-click="section='send'" class="active">Send</a>
+					<a href="#" ng-click="section='send'" ng-class="{active: section=='send'}">Send</a>
 				</li>
 				<li>
-					<a href="#" ng-click="section='receive'">Receive</a>
+					<a href="#" ng-click="section='receive'" ng-class="{active: section=='receive'}">Receive</a>
 				</li>
 			</ul>
 			<br class="clear">

@@ -16,4 +16,7 @@ chrome.storage.cipher = {
   transactions: new Database('transactions', password, onLoad)
 };
 
+function WalletCtrl($scope) {
+  $scope.section = "history";
+}
 
