@@ -26,7 +26,7 @@
             </a>
           </li>
           <li>
-            <a href="#" ng-click="section='darkwallet'">Wallet</a>
+            <a href="#" ng-click="section='wallet'">Wallet</a>
           </li>
           <li>
             <a href="#" ng-click="section='contacts'">Contacts</a>
@@ -48,25 +48,36 @@
         <br class="clear">
       </nav>
     </section>
-    
-    <section class="blank">
+    <section class="blank" ng-show="alert">
+      <div class="flash success">
+        <a href="#" class="close"><i class="icon icon-remove"></i></a>
+        <span><i class="icon-2x icon-ok-sign"></i></span>
+        <p>Payment sent.</p>
+        <p>TXID: 3c1ca06fe24be9cea5c2a877931f064905a8b15d31621c75a26f2bd9ac11fe70</p>
+      </div>
+      <div class="flash error">
+        <a href="#" class="close"><i class="icon icon-remove"></i></a>
+        <span><i class="icon-2x icon-warning-sign"></i></span>
+        <p>This could compromise your identity!</p>
+      </div>
+    </section>
+    <section class="blank" ng-show="section=='wallet'">
       <nav class="navigation tabs">
         <ul>
           <li>
-            <a href="#" ng-click="section='history'" ng-class="{active: section=='history'}">History</a>
+            <a href="#" ng-click="subsection='history'" ng-class="{active: subsection=='history'}">History</a>
           </li>
           <li>
-            <a href="#" ng-click="section='send'" ng-class="{active: section=='send'}">Send</a>
+            <a href="#" ng-click="subsection='send'" ng-class="{active: subsection=='send'}">Send</a>
           </li>
           <li>
-            <a href="#" ng-click="section='receive'" ng-class="{active: section=='receive'}">Receive</a>
+            <a href="#" ng-click="subsection='receive'" ng-class="{active: subsection=='receive'}">Receive</a>
           </li>
         </ul>
         <br class="clear">
       </nav>
-    </section>
     
-    <div class="container login" ng-show="section=='send'">
+    <div class="container login" ng-show="subsection=='send'">
       <div class="der">
         <a href="#" class="button button-and-icon">
           <div><i class="icon-large icon-qrcode"></i></div>Scan QR code
@@ -127,9 +138,8 @@
         </label>
         <button class="button-and-icon button-submit"><div><i class="icon-large icon-btc"></i></div>Send</button>
       </form>
-      
     </div>
-    <div class="container" ng-show="section=='receive'">
+    <div class="container" ng-show="subsection=='receive'">
       <h2>Unused addresses</h2>
       <table class="full">
         <tr>
@@ -173,7 +183,7 @@
         <div><i class="icon-large icon-btc"></i></div>Generate new address
       </a>
     </div>
-    <section ng-show="section=='receive'">
+    <section ng-show="subsection=='receive'">
       <h2>Used addresses</h2>
       <table class="full">
         <tr>
@@ -226,8 +236,8 @@
         </tr>
       </table>
     </section>
-    <section ng-show="section=='history'">
-      <table class="full">
+    <section ng-show="subsection=='history'">
+      <table class="full history">
         <tr>
           <th>Status</th>
           <th>Date</th>
@@ -278,21 +288,6 @@
         </tr>
       </table>
     </section>
-    <section class="blank" ng-show="section=='send'">
-      <div class="flash success shown">
-        <a href="#" class="close"><i class="icon icon-remove"></i></a>
-        <span><i class="icon-2x icon-ok-sign"></i></span>
-        <p>Payment sent.</p>
-        <p>TXID: 3c1ca06fe24be9cea5c2a877931f064905a8b15d31621c75a26f2bd9ac11fe70</p>
-      </div>
-    </section>
-    
-    <section class="blank">
-      <div class="flash error">
-        <a href="#" class="close"><i class="icon icon-remove"></i></a>
-        <span><i class="icon-2x icon-warning-sign"></i></span>
-        <p>This could compromise your identity!</p>
-      </div>
     </section>
     
     <div class="container blank" ng-show="section=='identity'">
@@ -311,22 +306,6 @@
         </li>
       </ul>
     </div>
-    
-    <section class="blank" ng-show="section=='send'">
-      <div class="flash">
-        <a href="#" class="close"><i class="icon icon-remove"></i></a>
-        <span><i class="icon-2x icon-star"></i></span>
-        <p>Such a generic message</p>
-      </div>
-      
-      
-      <div class="flash success">
-        <a href="#" class="close"><i class="icon icon-remove"></i></a>
-        <span><i class="icon-2x icon-smile"></i></span>
-        <p>Payment sent!</p>
-      </div>
-    </section>
-    
     
     
     <section ng-show="section=='settings'">
@@ -360,17 +339,27 @@
         <a href="#" class="button button-buy">big button (full width for columns)</a>
       </div>
     </section>
-    
-    <section class="blank blurb" ng-show="section=='darkwallet'">
+<div class="flip-container" ng-show="section=='darkwallet'">
+	<div class="flipper">
+		<div class="front">
+			    <section class="blank blurb">
       <img src="./images/lorem1400x560.png" alt="Image" />
       <div>
         <h1>dark wallet</h1>
         <h2>the safest bitcoin wallet yet</h2>
         <hr>
         <p>Welcome to Dark Wallet! Thanks for trusting us with your bitcoins! bla bla bla</p>
+        <p>Another line here, por si las moscas...</p>
         <a href="#" class="button button-cta">import a wallet</a> <a href="#" class="button button-cta">generate a wallet</a>
       </div>
     </section>
+		</div>
+		<div class="back">
+			sdsdfsdfdfsdfds
+		</div>
+	</div>
+</div>
+
     
     <section class="blank" ng-show="section=='settings'">
       
@@ -395,32 +384,6 @@
         </ul>
       </div>
     </section>
-    
-    
-    <section class="blank">
-      <div class="progress-bar">
-        <div class="progress-bar-90">
-          Loading (90%)
-        </div>
-      </div>
-    </section>
-    
-    <section class="blank">
-      <div class="progress-bar progress-bar-small">
-        <div class="progress-bar-30">
-        </div>
-      </div>
-    </section>
-    
-    <section class="blank">
-      <div class="progress-bar progress-bar-small">
-        <div class="progress-bar-90">
-        </div>
-      </div>
-    </section>
-    
-    
-    
     
   </body>
 </html>
