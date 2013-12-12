@@ -8,6 +8,27 @@ function ObeliskClient() {
   this.initWebSocket("ws://localhost:9000")
 };
 
+/**
+ * test
+ *
+ * Perform some tests
+ */
+
+ObeliskClient.prototype.test = function() {
+  this.getHistory('1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY', function(res){
+      var rows = res[0],
+          balance = 0;
+      for(var idx=0; idx<rows.length; idx++) {
+        var entry = rows[idx];
+        if (entry[6] == 0xffffffff) {
+            balance += entry[3];
+        }
+      }
+      console.log('History arrived:', res, 'balance', balance, res.length)
+  });
+  this.getLastHeight(function(res){console.log('Height arrived', res)});
+  this.subscribeAddress('1dice8EMZmqKvrGE4Qc9bUFf9PX3xaYDp', function(res){console.log('Subscribe ok', res)});
+}
 
 /**
  * initWebSocket
@@ -17,14 +38,9 @@ function ObeliskClient() {
  */
 ObeliskClient.prototype.initWebSocket = function(address) {
   var self = this,
-          ws   = new WebSocket(address);
+      ws   = new WebSocket(address);
 
-  ws.onopen = function (event) {
-    // get last height to test api
-    self.getHistory('1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY', function(res){console.log('History arrived', res)});
-    self.getLastHeight(function(res){console.log('Height arrived', res)});
-    self.subscribeAddress('1dice8EMZmqKvrGE4Qc9bUFf9PX3xaYDp', function(res){console.log('Subscribe ok', res)});
-  }
+  ws.onopen = function(event) {self.test(event)};
   ws.onmessage = function(event) {self.onMessage(event)};
   this.socket = ws;
   this.callbacks = {};
