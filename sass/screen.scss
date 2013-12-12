@@ -20,12 +20,52 @@ $navigation-link-color: #cecece;
 $universal-border-color: #595959;
 $universal-border-color-light: #cdcdcd;
 
+$experimental-support-for-opera : false;
+$experimental-support-for-microsoft : false;
+$experimental-support-for-khtml : false;
+
+.flip-container {
+	@include perspective(1000);
+    margin: 0 auto;
+}
+	/* flip the pane when hovered */
+	.flip-container.hover .flipper {
+		@include transform(rotateY(180deg));
+	}
+
+.flip-container, .front, .back {
+ width: 100%;
+}
+
+/* flip speed goes here */
+.flipper {
+	@include transition(0.6s);
+	@include transform-style(preserve-3d);
+	position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+	@include backface-visibility(hidden);
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+/* front pane, placed above back */
+.front {
+	z-index: 2;
+}
+
+/* back, initially hidden pane */
+.back {
+	@include transform(rotateY(180deg));
+}
+
 input[type="text"]:focus,
 input[type="password"]:focus { 
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    -webkit-appearance: none;
+    @include box-shadow(none);
+    @include appearance(none);
 }
 
 input.full { 
@@ -42,11 +82,10 @@ table.full { width: 100%; }
 table th, table td { padding: 2px 6px; }
 table tr:nth-child(even) { background: $main-background; }
 table tr td:nth-child(odd) { background: rgba(0, 0, 0, 0.02); }
+table.history tr td:nth-child(1) { text-align: center; }
 
-.button, input[type="button"], button, .flash, .activity {
-	transition: all 0.3s ease 0s;
-	-moz-transition: all 0.3s ease 0s;
-	-webkit-transition: all 0.3s ease 0s;
+.button, input[type="button"], button, .flash, .activity, a {
+	@include transition(all 0.3s ease 0s);
     }
 
 		.sqicon {
@@ -339,7 +378,7 @@ nav {
 
 	&.tabs {
 		background: none;
-
+        margin-left: 10px;
 		ul {
 
 			li {
@@ -347,14 +386,9 @@ nav {
 				a {
 					
 					color: inherit;
-					border: 1px solid rgba(0, 0, 0, 0.0);
-
-					border-bottom: 1px solid $universal-border-color-light;
 
 					&.active {
-						border: 1px solid $universal-border-color-light;
-						border-bottom: 1px solid rgba(0, 0, 0, 0.0);
-						margin-right: -1px;
+                        background: white;
 					}
 
 					&:hover {
@@ -1108,19 +1142,23 @@ section.flatby {
 
 .flash {
 	position: relative;
-	border-radius: 4px;
 	color: #fff;
 	background: #303030;
 	text-align: center;
-	margin-bottom: 1em;
     height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
 	p {
 		margin-bottom: 0;
 	}
     &.shown {
+        border-radius: 4px;
         height: auto;
+        opacity: 1;
     	padding: 1em;
+        margin-bottom: 1em;
     }
 	&.error {
 		background: #f2594b;
