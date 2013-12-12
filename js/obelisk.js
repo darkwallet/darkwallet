@@ -21,7 +21,9 @@ ObeliskClient.prototype.initWebSocket = function(address) {
 
   ws.onopen = function (event) {
     // get last height to test api
-    self.getHeight(function(res){console.log('Height arrived', res)});
+    self.getHistory('1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY', function(res){console.log('History arrived', res)});
+    self.getLastHeight(function(res){console.log('Height arrived', res)});
+    self.subscribeAddress('1dice8EMZmqKvrGE4Qc9bUFf9PX3xaYDp', function(res){console.log('Subscribe ok', res)});
   }
   ws.onmessage = function(event) {self.onMessage(event)};
   this.socket = ws;
@@ -68,8 +70,8 @@ ObeliskClient.prototype.onMessage = function(event) {
  *  * success: success callback
  *  * error: error callback
  */
-ObeliskClient.prototype.getHeight = function(success, error) {
-  this.send('fetch_height', false, success, error);
+ObeliskClient.prototype.getLastHeight = function(success, error) {
+  this.send('fetch_last_height', false, success, error);
 }
 
 /**
@@ -79,8 +81,19 @@ ObeliskClient.prototype.getHeight = function(success, error) {
  *  * error: error callback
  */
 ObeliskClient.prototype.getHistory = function(address, success, error) {
-  this.send("fetch_history", address, success, error);
+  this.send("fetch_history", {address: address}, success, error);
 }
+
+/**
+ * Subscribe to address notifications
+ *  * address: bitcoin address
+ *  * success: success callback
+ *  * error: error callback
+ */
+ObeliskClient.prototype.subscribeAddress = function(address, success, error) {
+  this.send("subscribe_address", {address: address}, success, error);
+}
+
 
 /**
  * Initialize an obelisk client
