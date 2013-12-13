@@ -23,3 +23,29 @@ function PopupCtrl($scope) {
   $scope.identityChange();
 }
 
+function PasswdCtrl($scope) {
+  $scope.passwd = "";
+  $scope.submit = function() {
+    var random = new Uint8Array(16);
+    var seed = [];
+    window.crypto.getRandomValues(random);
+    for (var i in random) {
+      seed[i] = random[i];
+    }
+    seed = Bitcoin.convert.bytesToString(seed);
+    var key = new Bitcoin.BIP32key(seed);
+    var pubKey = key.getPub().serialize();
+    var privKey = key.serialize();
+    privKey = sjcl.encrypt($scope.passwd, privKey);
+    chrome.storage.local.set({pubKey: pubKey});
+    chrome.storage.local.set({privKey: privKey});
+    chrome.storage.local.get('pubKey', function(pubKey){
+      $scope.pubKey = pubKey.pubKey;
+      $scope.$apply();
+    });
+    chrome.storage.local.get('privKey', function(privKey){
+      $scope.privKey = sjcl.decrypt($scope.passwd, privKey.privKey);
+      $scope.$apply();
+    });
+  };
+}
