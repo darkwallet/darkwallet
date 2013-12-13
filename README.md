@@ -8,20 +8,20 @@ We want to start with a simple premise: Bitcoin in your browser. We want a beaut
 This wallet will serve as a platform or a starting codebase to deliver a high quality Bitcoin that serves you, the users.
 
 Running
-==========
+-----------
 If you got this from git, first you need to download submodules:
 
-git submodule init
-git submodule update
+    git submodule init
+    git submodule update
 
 Now you can load the extension into chrome by going to extensions, enabling development mode and clicking the "Load uncompressed extension" button.
 
 Development
-==========
+-----------
 You are welcome to participate in the development by contributing or forking the code at:
 
 https://github.com/darkwallet/darkwallet
 
---
+- - -
 
 - unsystem dev
