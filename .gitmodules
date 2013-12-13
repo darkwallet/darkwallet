@@ -1,0 +1,3 @@
+[submodule "vendors/bitcoinjs-lib"]
+	path = vendors/bitcoinjs-lib
+	url = git://github.com/darkwallet/bitcoinjs-lib.git
