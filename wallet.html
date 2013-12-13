@@ -8,6 +8,7 @@
     <script src="js/angular.min.js"></script>
     <script src="js/obelisk.js"></script>
     <script src="vendors/sjcl/sjcl.js"></script>
+    <script src="vendors/bitcoinjs-lib/bitcoinjs.js"></script>
     <script src="js/classes.js"></script>
     <script src="js/wallet.js"></script>
     <link rel="stylesheet" href="./stylesheets/screen.css">
@@ -148,33 +149,9 @@
           <th>QR Code</th>
           <th>Payment Request</th>
         </tr>
-        <tr>
-          <td>Sean's Outpost</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-        </tr>
-        <tr>
-          <td>Unsystem</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-        </tr>
-        <tr>
-          <td>FSF</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-        </tr>
-        <tr>
-          <td>EFF</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-        </tr>
-        <tr>
-          <td>Internet Archive</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+        <tr ng-repeat="address in addresses">
+          <td>{{address.label}}</td>
+          <td>{{address.address}}</td>
           <td><i class="icon-large icon-qrcode"></i></td>
           <td><i class="icon-large icon-money"></i></td>
         </tr>
@@ -309,6 +286,10 @@
     
     
     <section ng-show="section=='settings'">
+      <div>
+        <p>Your master publick key</p>
+        <p>{{masterPublicKey}}</p>
+      </div>
       <div>
         <a href="#" class="button">Button</a>
         

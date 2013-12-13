@@ -24,28 +24,38 @@ function PopupCtrl($scope) {
 }
 
 function PasswdCtrl($scope) {
-  $scope.passwd = "";
   $scope.submit = function() {
     var random = new Uint8Array(16);
     var seed = [];
+    // generate random, this should be done using
+    // api from bitcoin-js
     window.crypto.getRandomValues(random);
     for (var i in random) {
       seed[i] = random[i];
     }
+
+    // Intializing the key from seed
+    // We save the keys so we don't need access
+    // to the seed any more
     seed = Bitcoin.convert.bytesToString(seed);
     var key = new Bitcoin.BIP32key(seed);
     var pubKey = key.getPub().serialize();
     var privKey = key.serialize();
-    privKey = sjcl.encrypt($scope.passwd, privKey);
+
+    // Now save in local storage
+    privKey = sjcl.encrypt(passwd, privKey);
     chrome.storage.local.set({pubKey: pubKey});
     chrome.storage.local.set({privKey: privKey});
+
+    // Examples of getting the keys below
     chrome.storage.local.get('pubKey', function(pubKey){
+      // test and save the pubKey here for now
       $scope.pubKey = pubKey.pubKey;
       $scope.$apply();
     });
     chrome.storage.local.get('privKey', function(privKey){
-      $scope.privKey = sjcl.decrypt($scope.passwd, privKey.privKey);
-      $scope.$apply();
+      // test opening the private key but don't save it
+      sjcl.decrypt(passwd, privKey.privKey);
     });
   };
 }
