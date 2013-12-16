@@ -214,56 +214,85 @@
       </table>
     </section>
     <section ng-show="subsection=='history'">
-      <table class="full history">
-        <tr>
-          <th>Status</th>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Address</th>
-          <th>Amount</th>
-          <th>Balance</th>
-        </tr>
-        <tr>
-          <td><i class="icon-large icon-ok"></i></td>
-          <td>26 minutes ago</td>
-          <td>dfsdf</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td>3.4534556</td>
-          <td>4.4343452</td>
-        </tr>
-        <tr>
-          <td><i class="icon-large icon-ok"></i></td>
-          <td>1 hour 32 minutes ago</td>
-          <td>dsfgsg</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td>3</td>
-          <td>4.4343452</td>
-        </tr>
-        <tr>
-          <td><i class="icon-large icon-ok"></i></td>
-          <td>20/12/2013 19:43</td>
-          <td>kjdfds</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td>3</td>
-          <td>4.4343452</td>
-        </tr>
-        <tr>
-          <td><i class="icon-large icon-ok"></i></td>
-          <td>20/12/2013 19:43</td>
-          <td>Payment to Amir</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td>3</td>
-          <td>4.4343452</td>
-        </tr>
-        <tr>
-          <td><i class="icon-large icon-ok"></i></td>
-          <td>20/12/2013 19:43</td>
-          <td>kkjk</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td>3</td>
-          <td>4.4343452</td>
-        </tr>
-      </table>
+    <div class="wallets">
+        <div class="pockets">
+            <div class="main-balance">324.45346 BTC</div>
+            <div class="wallet-list">
+            <ul>
+                <li>mini wallet number 1</li>
+                <li>bla bla wallet</li>
+                <li>my salary</li>
+            </ul>
+            </div>
+            <div id="newpocket">New mini-wallet</div>
+        </div>
+        <div class="infos">
+            <h2>My mini-wallet 1</h2>
+            <div class="der down"><h2>4586.894465 BTC</h2></div>
+            <h6>Master address: 15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</h6>
+                  <nav class="navigation tabs">
+        <ul>
+          <li>
+            <a href="#" ng-click="subsection='history'" ng-class="{active: subsection=='history'}">History</a>
+          </li>
+          <li>
+            <a href="#" ng-click="subsection='send'" ng-class="{active: subsection=='send'}">Addresses</a>
+          </li>
+        </ul>
+        <br class="clear">
+      </nav>
+          <table class="history">
+            <tr>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Amount</th>
+              <th>Balance</th>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>26 minutes ago</td>
+              <td>dfsdf</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3.4534556</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>1 hour 32 minutes ago</td>
+              <td>dsfgsg</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>20/12/2013 19:43</td>
+              <td>kjdfds</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>20/12/2013 19:43</td>
+              <td>Payment to Amir</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+            <tr>
+              <td><i class="icon-large icon-ok"></i></td>
+              <td>20/12/2013 19:43</td>
+              <td>kkjk</td>
+              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <td>3</td>
+              <td>4.4343452</td>
+            </tr>
+          </table>
+        </div>
+    </div>
     </section>
     </section>
     

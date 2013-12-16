@@ -73,18 +73,65 @@ input.full {
     float: right;
 }
 
-.der { float: right; display: block; }
-.der.down { position: relative; top: -30px; }
-#drop { vertical-align: text-top}
+.der { float: right; text-align: right; }
+
+.der.down { position: absolute; left: 300px; top: 32px; right: 30px; }
+
+.wallets { height: 400px; }
+.wallets > div { float: left; }
+.pockets { 
+    width: 18%; 
+    margin-right: 2%;
+}
+.wallet-list { background: $dark-background; height: 345px; }
+.pockets > div { text-align: center; }
+.pockets ul li { 
+    color: $main-background;
+    list-style: none;
+    cursor: pointer; 
+    padding: 0.2em;
+    &:hover { background: $navigation-link-color; color: $dark-background; }
+}
+.infos { width: 80%; height: 100%; }
+.main-balance {
+    font-size: 120%; 
+    background: $main-background;
+    border-radius: 4px 4px 0 0;
+}
+#newpocket { 
+    background: $navigation-link-color; 
+    border-radius: 0 0 4px 4px;
+    cursor: pointer; 
+    padding: 0.2em;
+    &:hover { background: $main-color; color: $primary-link-color; }
+}
+
+.buticon { 
+    text-decoration: none;
+    &:hover { color: black;}
+}
+
+#drop { vertical-align: text-top; }
+
 #newidentity { text-align: center; background: $main-color;  }
+
 a.button.sep { margin-top: 16px; }
+
 table.full { width: 100%; }
+
 table th, table td { padding: 2px 6px; }
 table tr:nth-child(even) { background: $main-background; }
 table tr td:nth-child(odd) { background: rgba(0, 0, 0, 0.02); }
 table.history tr td:nth-child(1) { text-align: center; }
 
-.button, input[type="button"], button, .flash, .activity, a {
+.button, 
+input[type="button"], 
+button, 
+.flash,
+.activity,
+a, 
+#newpocket,
+.pockets ul li {
 	@include transition(all 0.3s ease 0s);
     }
 
