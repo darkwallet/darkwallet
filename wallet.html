@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" ng-app ng-csp>
-  
+
   <head>
     <meta charset="utf-8" />
     <title>Dark Wallet</title>
@@ -11,12 +11,12 @@
     <script src="vendors/bitcoinjs-lib/bitcoinjs.js"></script>
     <script src="js/classes.js"></script>
     <script src="js/wallet.js"></script>
-    <link rel="stylesheet" href="./stylesheets/screen.css">
-    <link rel="stylesheet" href="./stylesheets/fonts.css">
-    <link href='./stylesheets/opensans.css' rel='stylesheet' type='text/css'>
-    <link href="./stylesheets/font-awesome.css" rel="stylesheet">
+    <link href="stylesheets/screen.css" rel="stylesheet">
+    <link href="stylesheets/fonts.css" rel="stylesheet">
+    <link href="stylesheets/opensans.css" rel="stylesheet">
+    <link href="stylesheets/font-awesome.css" rel="stylesheet">
   </head>
-  
+
   <body ng-controller="WalletCtrl">
     <section class="blank">
       <nav class="navigation">
@@ -63,6 +63,7 @@
       </div>
     </section>
     <section class="blank" ng-show="section=='wallet'">
+
       <nav class="navigation tabs">
         <ul>
           <li>
@@ -77,225 +78,233 @@
         </ul>
         <br class="clear">
       </nav>
-    
-    <div class="container login" ng-show="subsection=='send'">
-      <div class="der">
-        <a href="#" class="button button-and-icon">
-          <div><i class="icon-large icon-qrcode"></i></div>Scan QR code
-        </a>
-        <a href="#" class="button button-and-icon" ng-click="showContacts=!showContacts">
-          <div><i class="icon-large icon-user"></i></div>Select from contacts
+
+      <div class="container login" ng-show="subsection=='send'">
+
+        <div class="der">
+          <a href="#" class="button button-and-icon">
+            <div><i class="icon-large icon-qrcode"></i></div>Scan QR code
+          </a>
+          <a href="#" class="button button-and-icon" ng-click="showContacts=!showContacts">
+            <div><i class="icon-large icon-user"></i></div>Select from contacts
+          </a>
+        </div>
+
+        <form>
+          <label>
+            <h2>Recipient address</h2>
+            <input type="text" class="long" placeholder="Enter bitcoin address here">
+          </label>
+
+          <div class="der down" ng-show="showContacts">
+            <div class="sqicon"><i class="icon-search"></i></div>
+            <input type="text" class="full" placeholder="Search">
+            <table class="">
+              <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Total sent</th>
+              </tr>
+              <tr>
+                <td>Sean's Outpost</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>234.45553</td>
+              </tr>
+              <tr>
+                <td>Unsystem</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>1.2349593</td>
+              </tr>
+              <tr>
+                <td>FSF</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>2.4459248</td>
+              </tr>
+              <tr>
+                <td>EFF</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>4.4343452</td>
+              </tr>
+              <tr>
+                <td>Internet Archive</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>6.4353534</td>
+              </tr>
+            </table>
+          </div>
+
+          <label>
+            <h2>Amount</h2>
+            <input type="text" class="long" placeholder="BTC">
+          </label>
+
+          <label>
+            <h2>Fee</h2>
+            <input type="text" class="long" value="0,00002">
+          </label>
+          <button class="button-and-icon button-submit"><div><i class="icon-large icon-btc"></i></div>Send</button>
+        </form>
+      </div>
+
+      <div class="container" ng-show="subsection=='receive'">
+        <h2>Unused addresses</h2>
+        <table class="full">
+          <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>QR Code</th>
+            <th>Payment Request</th>
+          </tr>
+          <tr ng-repeat="address in addresses">
+            <td>{{address.label}}</td>
+            <td>{{address.address}}</td>
+            <td><i class="icon-large icon-qrcode"></i></td>
+            <td><i class="icon-large icon-money"></i></td>
+          </tr>
+        </table>
+        <a href="#" class="button button-and-icon sep">
+          <div><i class="icon-large icon-btc"></i></div>Generate new address
         </a>
       </div>
-      <form>
-        <label>
-          <h2>Recipient address</h2>
-          <input type="text" class="long" placeholder="Enter bitcoin address here">
-        </label>
-        <div class="der down" ng-show="showContacts">
-          <div class="sqicon"><i class="icon-search"></i></div>
-          <input type="text" class="full" placeholder="Search">
-          <table class="">
-            <tr>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Total sent</th>
-            </tr>
-            <tr>
-              <td>Sean's Outpost</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>234.45553</td>
-            </tr>
-            <tr>
-              <td>Unsystem</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>1.2349593</td>
-            </tr>
-            <tr>
-              <td>FSF</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>2.4459248</td>
-            </tr>
-            <tr>
-              <td>EFF</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td>Internet Archive</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>6.4353534</td>
-            </tr>
-          </table>
-        </div>
-        <label>
-          <h2>Amount</h2>
-          <input type="text" class="long" placeholder="BTC">
-        </label>
-        
-        <label>
-          <h2>Fee</h2>
-          <input type="text" class="long" value="0,00002">
-        </label>
-        <button class="button-and-icon button-submit"><div><i class="icon-large icon-btc"></i></div>Send</button>
-      </form>
-    </div>
-    <div class="container" ng-show="subsection=='receive'">
-      <h2>Unused addresses</h2>
-      <table class="full">
-        <tr>
-          <th>Name</th>
-          <th>Address</th>
-          <th>QR Code</th>
-          <th>Payment Request</th>
-        </tr>
-        <tr ng-repeat="address in addresses">
-          <td>{{address.label}}</td>
-          <td>{{address.address}}</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-        </tr>
-      </table>
-      <a href="#" class="button button-and-icon sep">
-        <div><i class="icon-large icon-btc"></i></div>Generate new address
-      </a>
-    </div>
-    <section ng-show="subsection=='receive'">
-      <h2>Used addresses</h2>
-      <table class="full">
-        <tr>
-          <th>Name</th>
-          <th>Address</th>
-          <th>QR Code</th>
-          <th>Payment Request</th>
-          <th>Transactions</th>
-          <th>Balance</th>
-        </tr>
-        <tr>
-          <td>Sean's Outpost</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-          <td>3</td>
-          <td>4.4343452</td>
-        </tr>
-        <tr>
-          <td>Unsystem</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-          <td>3</td>
-          <td>4.4343452</td>
-        </tr>
-        <tr>
-          <td>FSF</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-          <td>3</td>
-          <td>4.4343452</td>
-        </tr>
-        <tr>
-          <td>EFF</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-          <td>3</td>
-          <td>4.4343452</td>
-        </tr>
-        <tr>
-          <td>Internet Archive</td>
-          <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-          <td><i class="icon-large icon-qrcode"></i></td>
-          <td><i class="icon-large icon-money"></i></td>
-          <td>3</td>
-          <td>4.4343452</td>
-        </tr>
-      </table>
-    </section>
-    <section ng-show="subsection=='history'">
-    <div class="wallets">
-        <div class="pockets">
+
+      <section ng-show="subsection=='receive'">
+        <h2>Used addresses</h2>
+        <table class="full">
+          <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>QR Code</th>
+            <th>Payment Request</th>
+            <th>Transactions</th>
+            <th>Balance</th>
+          </tr>
+          <tr>
+            <td>Sean's Outpost</td>
+            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+            <td><i class="icon-large icon-qrcode"></i></td>
+            <td><i class="icon-large icon-money"></i></td>
+            <td>3</td>
+            <td>4.4343452</td>
+          </tr>
+          <tr>
+            <td>Unsystem</td>
+            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+            <td><i class="icon-large icon-qrcode"></i></td>
+            <td><i class="icon-large icon-money"></i></td>
+            <td>3</td>
+            <td>4.4343452</td>
+          </tr>
+          <tr>
+            <td>FSF</td>
+            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+            <td><i class="icon-large icon-qrcode"></i></td>
+            <td><i class="icon-large icon-money"></i></td>
+            <td>3</td>
+            <td>4.4343452</td>
+          </tr>
+          <tr>
+            <td>EFF</td>
+            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+            <td><i class="icon-large icon-qrcode"></i></td>
+            <td><i class="icon-large icon-money"></i></td>
+            <td>3</td>
+            <td>4.4343452</td>
+          </tr>
+          <tr>
+            <td>Internet Archive</td>
+            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+            <td><i class="icon-large icon-qrcode"></i></td>
+            <td><i class="icon-large icon-money"></i></td>
+            <td>3</td>
+            <td>4.4343452</td>
+          </tr>
+        </table>
+      </section>
+
+      <section ng-show="subsection=='history'">
+        <div class="wallets">
+          <div class="pockets">
             <div class="main-balance">324.45346 BTC</div>
             <div class="wallet-list">
-            <ul>
+              <ul>
                 <li>mini wallet number 1</li>
                 <li>bla bla wallet</li>
                 <li>my salary</li>
-            </ul>
+              </ul>
             </div>
             <div id="newpocket">New mini-wallet</div>
-        </div>
-        <div class="infos">
+          </div>
+          <div class="infos">
             <h2>My mini-wallet 1</h2>
             <div class="der down"><h2>4586.894465 BTC</h2></div>
             <h6>Master address: 15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</h6>
-                  <nav class="navigation tabs">
-        <ul>
-          <li>
-            <a href="#" ng-click="subsection='history'" ng-class="{active: subsection=='history'}">History</a>
-          </li>
-          <li>
-            <a href="#" ng-click="subsection='send'" ng-class="{active: subsection=='send'}">Addresses</a>
-          </li>
-        </ul>
-        <br class="clear">
-      </nav>
-          <table class="history">
-            <tr>
-              <th>Status</th>
-              <th>Date</th>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Amount</th>
-              <th>Balance</th>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>26 minutes ago</td>
-              <td>dfsdf</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3.4534556</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>1 hour 32 minutes ago</td>
-              <td>dsfgsg</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>20/12/2013 19:43</td>
-              <td>kjdfds</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>20/12/2013 19:43</td>
-              <td>Payment to Amir</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-            <tr>
-              <td><i class="icon-large icon-ok"></i></td>
-              <td>20/12/2013 19:43</td>
-              <td>kkjk</td>
-              <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-              <td>3</td>
-              <td>4.4343452</td>
-            </tr>
-          </table>
+            <nav class="navigation tabs">
+              <ul>
+                <li>
+                  <a href="#" ng-click="subsection='history'" ng-class="{active: subsection=='history'}">History</a>
+                </li>
+                <li>
+                  <a href="#" ng-click="subsection='send'" ng-class="{active: subsection=='send'}">Addresses</a>
+                </li>
+              </ul>
+              <br class="clear">
+            </nav>
+            <table class="history">
+              <tr>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Amount</th>
+                <th>Balance</th>
+              </tr>
+              <tr>
+                <td><i class="icon-large icon-ok"></i></td>
+                <td>26 minutes ago</td>
+                <td>dfsdf</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>3.4534556</td>
+                <td>4.4343452</td>
+              </tr>
+              <tr>
+                <td><i class="icon-large icon-ok"></i></td>
+                <td>1 hour 32 minutes ago</td>
+                <td>dsfgsg</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>3</td>
+                <td>4.4343452</td>
+              </tr>
+              <tr>
+                <td><i class="icon-large icon-ok"></i></td>
+                <td>20/12/2013 19:43</td>
+                <td>kjdfds</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>3</td>
+                <td>4.4343452</td>
+              </tr>
+              <tr>
+                <td><i class="icon-large icon-ok"></i></td>
+                <td>20/12/2013 19:43</td>
+                <td>Payment to Amir</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>3</td>
+                <td>4.4343452</td>
+              </tr>
+              <tr>
+                <td><i class="icon-large icon-ok"></i></td>
+                <td>20/12/2013 19:43</td>
+                <td>kkjk</td>
+                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+                <td>3</td>
+                <td>4.4343452</td>
+              </tr>
+            </table>
+          </div>
         </div>
-    </div>
-    </section>
-    </section>
-    
+      </section>
+
+    </section><!-- close section=='wallet' -->
+
     <div class="container blank" ng-show="section=='identity'">
       <ul class="dropdown">
         <li>
@@ -312,67 +321,57 @@
         </li>
       </ul>
     </div>
-    
-    
+
     <section ng-show="section=='settings'">
       <div>
-        <p>Your master publick key</p>
+        <p>Your master public key</p>
         <p>{{masterPublicKey}}</p>
       </div>
       <div>
         <a href="#" class="button">Button</a>
-        
         <a href="#" class="button">Button with a counter <span class="notification">22</span></a>
-        
         <a href="#" class="button button-and-icon">
           <div><i class="icon-large icon-cog"></i></div>Button with an icon
         </a>
       </div>
-      
       <hr>
-      
       <div>
         <a href="#" class="button button-submit">Submit</a>
         <a href="#" class="button button-cancel">Cancel</a>
         <a href="#" class="button button-delete">Delete</a>
       </div>
-      
       <hr>
-      
       <div>
         <a href="#" class="button button-small">Smaller button</a>
       </div>
-      
       <hr>
-      
       <div>
         <a href="#" class="button button-buy">big button (full width for columns)</a>
       </div>
     </section>
-<div class="flip-container" ng-show="section=='darkwallet'">
-	<div class="flipper">
-		<div class="front">
-			    <section class="blank blurb">
-      <img src="./images/lorem1400x560.png" alt="Image" />
-      <div>
-        <h1>dark wallet</h1>
-        <h2>the safest bitcoin wallet yet</h2>
-        <hr>
-        <p>Welcome to Dark Wallet! Thanks for trusting us with your bitcoins! bla bla bla</p>
-        <p>Another line here, por si las moscas...</p>
-        <a href="#" class="button button-cta">import a wallet</a> <a href="#" class="button button-cta">generate a wallet</a>
-      </div>
-    </section>
-		</div>
-		<div class="back">
-			sdsdfsdfdfsdfds
-		</div>
-	</div>
-</div>
 
-    
+    <div class="flip-container" ng-show="section=='darkwallet'">
+    	<div class="flipper">
+    		<div class="front">
+    		  <section class="blank blurb">
+            <img src="./images/lorem1400x560.png" alt="Image" />
+            <div>
+              <h1>dark wallet</h1>
+              <h2>the safest bitcoin wallet yet</h2>
+              <hr>
+              <p>Welcome to Dark Wallet! Thanks for trusting us with your bitcoins! bla bla bla</p>
+              <p>Another line here, por si las moscas...</p>
+              <a href="#" class="button button-cta">import a wallet</a> <a href="#" class="button button-cta">generate a wallet</a>
+            </div>
+          </section>
+    		</div>
+    		<div class="back">
+    			sdsdfsdfdfsdfds
+    		</div>
+    	</div>
+    </div>
+
     <section class="blank" ng-show="section=='settings'">
-      
       <div class="typography">
         <h1>Header 1</h1>
         <h1 class="big">Header 1 (big)</h1>
@@ -394,6 +393,6 @@
         </ul>
       </div>
     </section>
-    
+
   </body>
 </html>
