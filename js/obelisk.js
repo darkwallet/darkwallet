@@ -5,7 +5,7 @@
  */
 function ObeliskClient() {
   this.nonce = 0;
-  this.initWebSocket("ws://localhost:9000")
+  this.initWebSocket("ws://85.25.198.97:8888")
 };
 
 /**
