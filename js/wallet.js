@@ -44,9 +44,9 @@ function WalletCtrl($scope) {
     // add to scope
     $scope.addresses.push(walletAddress);
   }
-
   // get public key from local storage
   chrome.storage.local.get('pubKey', function(pubKey){
+
     // save it in ng scope so we can access it easily for now
     $scope.masterPublicKey = pubKey.pubKey;
 
