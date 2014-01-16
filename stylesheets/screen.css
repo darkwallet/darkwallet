@@ -1103,3 +1103,7 @@ section.flatby {
   /* line 1214, ../sass/screen.scss */
   .flash.success {
     background: #14a19a; }
+
+/* line 1222, ../sass/screen.scss */
+section.createwallet .error {
+  color: #A00; }
