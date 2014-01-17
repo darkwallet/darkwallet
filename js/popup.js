@@ -36,6 +36,7 @@ function PasswdCtrl($scope) {
     if( $scope.passwd != $scope.passwd2 ){
       $scope.message = "Passwords are not the same"
       $scope.pubKey = "";
+      $scope.privKey = "";
       return ;
     }
  
@@ -67,7 +68,8 @@ function PasswdCtrl($scope) {
     });
     chrome.storage.local.get('privKey', function(privKey){
       // test opening the private key but don't save it
-      sjcl.decrypt(passwd, privKey.privKey);
+      $scope.privKey = sjcl.decrypt(passwd, privKey.privKey);
+      $scope.$apply();
     });
   };
 }
