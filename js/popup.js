@@ -24,19 +24,20 @@ function PopupCtrl($scope) {
 }
 
 function PasswdCtrl($scope) {
-  $scope.submit = function() {
+
+   $scope.submit = function() {
     var random = new Uint8Array(16);
     var seed = [];
     var passwd = $scope.passwd;
-    // validate same password on inputs
-    if ( $scope.passwd != $scope.passwd2 ) {
-        // TODO: change a better copy.
-        $scope.message = "passwd not as the same";
-        return ; 
-    } else {
-         $scope.message = "";
-    }
 
+    $scope.resultShow =true;
+
+    // validate
+    if( $scope.passwd != $scope.passwd2 ){
+      $scope.message = "Passwords are not the same"
+      return ;
+    }
+ 
     // generate random, this should be done using
     // api from bitcoin-js
     window.crypto.getRandomValues(random);
