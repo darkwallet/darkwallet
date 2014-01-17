@@ -24,9 +24,22 @@ function PopupCtrl($scope) {
 }
 
 function PasswdCtrl($scope) {
-  $scope.submit = function() {
+
+   $scope.submit = function() {
     var random = new Uint8Array(16);
     var seed = [];
+    var passwd = $scope.passwd;
+
+    $scope.resultShow =true;
+
+    // validate
+    if( $scope.passwd != $scope.passwd2 ){
+      $scope.message = "Passwords are not the same"
+      $scope.pubKey = "";
+      $scope.privKey = "";
+      return ;
+    }
+ 
     // generate random, this should be done using
     // api from bitcoin-js
     window.crypto.getRandomValues(random);
@@ -55,7 +68,8 @@ function PasswdCtrl($scope) {
     });
     chrome.storage.local.get('privKey', function(privKey){
       // test opening the private key but don't save it
-      sjcl.decrypt(passwd, privKey.privKey);
+      $scope.privKey = sjcl.decrypt(passwd, privKey.privKey);
+      $scope.$apply();
     });
   };
 }
