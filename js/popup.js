@@ -36,7 +36,6 @@ function PasswdCtrl($scope) {
     } else {
          $scope.message = "";
     }
-    $scope.$apply();
 
     // generate random, this should be done using
     // api from bitcoin-js
