@@ -35,6 +35,7 @@ function PasswdCtrl($scope) {
     // validate
     if( $scope.passwd != $scope.passwd2 ){
       $scope.message = "Passwords are not the same"
+      $scope.pubKey = "";
       return ;
     }
  
