@@ -64,10 +64,10 @@ Database = function(keys, password, callback) {
   var self = this;
   chrome.storage.local.get(name, function(obj) {
     if (!obj || !obj[name]) {
-      console.log("Creating database");
+      console.log('Creating database');
       self._save(callback);
     } else {
-      console.log("Loading database");
+      console.log('Loading database');
       self._load(callback);
     }
   });
@@ -123,8 +123,8 @@ Database.prototype.create = function(key, obj, callback) {
   var self = this;
   var callback = callback || function(){};
   this._load(function() {
-    if (typeof self.data[key] != "undefined") {
-      throw new Error(key + " already exists in database.");
+    if (typeof self.data[key] != 'undefined') {
+      throw new Error(key + ' already exists in database.');
     }
     self.data[key] = obj;
     self._save(callback);
@@ -160,8 +160,8 @@ Database.prototype.update = function(key, obj, callback) {
   var self = this;
   var callback = callback || function(){};
   this._load(function() {
-    if (typeof self.data[key] == "undefined") {
-      throw new Error(key + " is not previously present in database.");
+    if (typeof self.data[key] == 'undefined') {
+      throw new Error(key + ' is not previously present in database.');
     }
     self.data[key] = obj;
     self._save(callback);
