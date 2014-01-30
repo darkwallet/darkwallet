@@ -1107,3 +1107,7 @@ section.flatby {
 /* line 1222, ../sass/screen.scss */
 section.createwallet .error {
   color: #A00; }
+
+.hidden {
+  display: none;
+}
