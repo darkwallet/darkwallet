@@ -43,6 +43,9 @@ function WalletCtrl($scope) {
   // generated addresses
   $scope.addresses = [];
 
+  var keyRing = new IdentityKeyRing();
+  console.log(keyRing);
+
   // scope function to generate a new address
   $scope.generateAddress = function() {
     var idx = $scope.addresses.length;
