@@ -21,18 +21,6 @@ function onLoad(err) {
 
 
 /**
- * Object containing Database instances.
- * @enum {Database}
- */
-chrome.storage.cipher = {
-  identities: new Database('identities', ''),
-  contacts: new Database('contacts', password, onLoad),
-  addresses: new Database('addresses', password, onLoad),
-  transactions: new Database('transactions', password, onLoad)
-};
-
-
-/**
  * Wallet constructor class.
  * @param {Object} $scope Angular scope.
  * @constructor

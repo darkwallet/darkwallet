@@ -3,6 +3,12 @@
  *
  * Main object holding identity properties and data.
  */
+
+/**
+ * Identity class.
+ * @param {dict} store Object store
+ * @constructor
+ */
 function Identity(store, seed, password) {
     this.id = store.id;
     this.store = store;

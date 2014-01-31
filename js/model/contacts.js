@@ -1,6 +1,12 @@
 /*
  * Contacts
  */
+
+/**
+ * Contacts class.
+ * @param {dict} store Object store
+ * @constructor
+ */
 function Contacts(store) {
     this.store = store;
     if (!this.store.contacts) {
