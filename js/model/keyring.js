@@ -5,49 +5,56 @@
  */
 function IdentityKeyRing() {
     this.identities = {};
-    this._keys = [];
+    this.availableIdentities = [];
     this.loadIdentities();
 }
 
-IdentityKeyRing.prototype.get = function(key, callback) {
-    if (this.identities[key]) {
-        callback(this.identities[key]);
-    } else if (this._keys.indexOf(key) != -1) {
-        this.load(key, callback)
+IdentityKeyRing.prototype.get = function(name, callback) {
+    if (this.identities[name]) {
+        callback(this.identities[name]);
+    } else if (this.availableIdentities.indexOf(name) != -1) {
+        this.load(name, callback);
     } else {
-        // XXX seed and password should come from somewhere else here
-        var password = 'bar';
-        var seed = 23;
-        this.createIdentity(key, seed, password, callback);
+        throw "Identity doesn't exist";
     }
 }
 
-IdentityKeyRing.prototype.keys = function() {
-    return this._keys;
+IdentityKeyRing.prototype.getIdentities = function() {
+    return this.availableIdentities;
 }
 
-IdentityKeyRing.prototype.loadIdentities = function(callback) {
-    var self = this;
-    chrome.storage.local.get(null, function(obj) {
-        self._keys = Object.keys(obj);
-    });
-}
-
-IdentityKeyRing.prototype.load = function(id, callback) {
-    chrome.storage.local.get(id, callback);
-}
-
-IdentityKeyRing.prototype.save = function(id, data, callback) {
-    chrome.storage.local.set({id: data}, callback);
-}
-
-IdentityKeyRing.prototype.close = function(id, callback) {
+IdentityKeyRing.prototype.close = function(name, callback) {
    delete this.identities[name];
 }
 
 IdentityKeyRing.prototype.createIdentity = function(name, seed, password) {
-   var identity = new Identity(new Store({id: name}, this), seed, password);
+   var identity = new Identity(new Store({name: name}, this), seed, password);
    this.identities[name] = identity;
    return identity;
 }
+
+/*
+ * @private
+ */
+IdentityKeyRing.prototype.loadIdentities = function(callback) {
+    var self = this;
+    chrome.storage.local.get(null, function(obj) {
+        self.availableIdentity = Object.keys(obj);
+    });
+}
+
+/*
+ * @private
+ */
+IdentityKeyRing.prototype.load = function(name, callback) {
+    chrome.storage.local.get(name, callback);
+}
+
+/*
+ * @private
+ */
+IdentityKeyRing.prototype.save = function(name, data, callback) {
+    chrome.storage.local.set({name: data}, callback);
+}
+
 

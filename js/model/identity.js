@@ -10,7 +10,7 @@
  * @constructor
  */
 function Identity(store, seed, password) {
-    this.id = store.id;
+    this.name = store.name;
     this.store = store;
     if (seed && password) {
         self.generate(seed, password)
@@ -31,7 +31,7 @@ Identity.prototype.generate = function(seed, password) {
     var privData = this.encrypt({privKey: privKey}, password);
 
     data = {'mpk': pubKey,
-	    'id': name,
+	    'name': this.name,
 	    'version': 1,
 	    'pubkeys': {},
 	    'private': privData,
