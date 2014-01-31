@@ -30,7 +30,12 @@ Wallet.prototype.getAddress = function(n, is_change) {
         // (mpKey.key.getBitcoinAddress doesn't work since 'key' is not a key
         // object but binary representation).
         var childKey = mpKey.ckd(is_change).ckd(n);
-        var mpKeyHash = Bitcoin.Util.sha256ripe160(childKey.key.getPub());
+        var mpKeyHash;
+        if (childKey.key.length) {
+            Bitcoin.Util.sha256ripe160(childKey.key);
+        } else {
+            Bitcoin.Util.sha256ripe160(childKey.key.getPub());
+        }
         var address = new Bitcoin.Address(mpKeyHash);
 
         this.pubKeys[addrId] = address.toString();
