@@ -1,12 +1,12 @@
 /*
- * Identity
- *
- * Main object holding identity properties and data.
+ * @fileOverview Identity properties and data.
  */
 
 /**
  * Identity class.
- * @param {dict} store Object store
+ * @param {Object} store Object store
+ * @param {String} seed Seed in string form
+ * @param {String} password Password for the identity crypt
  * @constructor
  */
 function Identity(store, seed, password) {
@@ -19,10 +19,21 @@ function Identity(store, seed, password) {
     this.contacts = new Contacts(store);
 }
 
+/**
+ * Encrypt identity private information
+ * @param {Object} data Contact information.
+ * @param {String} password Password for the identity crypt
+ */
 Identity.prototype.encrypt = function(data, password) {
     return sjcl.encrypt(password, JSON.stringify(data));
 }
 
+/**
+ * @private
+ * Generate master keys for this identity.
+ * @param {String} seed Seed in string form
+ * @param {String} password Password for the identity crypt
+ */
 Identity.prototype.generate = function(seed, password) {
     var key = new Bitcoin.BIP32key(seed);
     var pubKey = key.getPub().serialize();

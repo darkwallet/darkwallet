@@ -1,7 +1,11 @@
 /*
- * Wallet
- *
- * Access to the identity bitcoin keys
+ * @fileOverview Access to the identity bitcoin keys
+ */
+
+/**
+ * Wallet class.
+ * @param {Object} store Store for the object.
+ * @constructor
  */
 function Wallet(store) {
     this.is_cold = store.get('is_cold');
@@ -13,11 +17,16 @@ function Wallet(store) {
     this.store = store;
 }
 
-Wallet.prototype.getAddress = function(n, is_change) {
-    if (!is_change) {
-        is_change = 0;
+/**
+ * Get an address from this wallet.
+ * @param {Integer} n Sequence number for the address.
+ * @param {Boolean/Integer} pocket Pocket to use (pocket 0 is default, 1 is change, >2 are used defined).
+ */
+Wallet.prototype.getAddress = function(n, pocket) {
+    if (!pocket) {
+        pocket = 0;
     }
-    var addrId = [is_change, n];
+    var addrId = [pocket, n];
     if (this.pubKeys[addrId]) {
         return this.pubKeys[addrId];
     }
@@ -29,7 +38,7 @@ Wallet.prototype.getAddress = function(n, is_change) {
         // from pubkey yet, unless we do it custom like here...:
         // (mpKey.key.getBitcoinAddress doesn't work since 'key' is not a key
         // object but binary representation).
-        var childKey = mpKey.ckd(is_change).ckd(n);
+        var childKey = mpKey.ckd(pocket).ckd(n);
         var mpKeyHash;
         if (childKey.key.length) {
             mpKeyHash = Bitcoin.Util.sha256ripe160(childKey.key);

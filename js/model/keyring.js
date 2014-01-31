@@ -1,17 +1,25 @@
 /*
- * IdentityKeyRing
- *
- * Manages and serializes identities.
+ * @fileOverview Manage and serialize identities.
  */
 
+// DarkWallet namespace for the local storage.
 var DW_NS = 'dw:identity:';
 
+/**
+ * IdentityKeyRing class.
+ * @constructor
+ */
 function IdentityKeyRing() {
     this.identities = {};
     this.availableIdentities = [];
     this.loadIdentities();
 }
 
+/**
+ * Get an identity from cache or store.
+ * @param {String} name Identity identifier.
+ * @param {Function} callback Callback providing results for the function.
+ */
 IdentityKeyRing.prototype.get = function(name, callback) {
     if (this.identities[name]) {
         callback(this.identities[name]);
@@ -22,22 +30,37 @@ IdentityKeyRing.prototype.get = function(name, callback) {
     }
 }
 
+/**
+ * Get names for all identities available.
+ */
 IdentityKeyRing.prototype.getIdentityNames = function() {
     return this.availableIdentities;
 }
 
-IdentityKeyRing.prototype.close = function(name, callback) {
+/**
+ * Release resources for an identity.
+ * @param {String} name Identity identifier.
+ */
+IdentityKeyRing.prototype.close = function(name) {
     delete this.identities[name];
 }
 
+/**
+ * Create an identity.
+ * @param {String} name Identity identifier.
+ * @param {String} seed Seed for the keys in string format.
+ * @param {String} password Password for the identity crypt.
+ */
 IdentityKeyRing.prototype.createIdentity = function(name, seed, password) {
     var identity = new Identity(new Store({name: name}, this), seed, password);
     this.identities[name] = identity;
     return identity;
 }
 
-/*
+/**
  * @private
+ * Load a list of all available identities.
+ * @param {Function} callback Callback providing results for the function.
  */
 IdentityKeyRing.prototype.loadIdentities = function(callback) {
     var self = this;
@@ -58,8 +81,11 @@ IdentityKeyRing.prototype.loadIdentities = function(callback) {
     });
 }
 
-/*
+/**
  * @private
+ * Load an identity from database.
+ * @param {String} name Identity identifier.
+ * @param {Function} callback Callback providing results for the function.
  */
 IdentityKeyRing.prototype.load = function(name, callback) {
     var self = this;
@@ -75,6 +101,10 @@ IdentityKeyRing.prototype.load = function(name, callback) {
 
 /*
  * @private
+ * Save an identity into the database.
+ * @param {String} name Identity identifier.
+ * @param {Object} data Identity data (mapping).
+ * @param {Function} callback Callback providing results for the function.
  */
 IdentityKeyRing.prototype.save = function(name, data, callback) {
     var pars = {};
