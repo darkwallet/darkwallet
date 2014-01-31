@@ -3,14 +3,15 @@
  */
 
 // TODO: Namespace these.
-var password = prompt('Password');
+/*var password = prompt('Password');
 var prev_err = false;
-
+*/
 
 /**
  * Database callback function.
  * @param {Function} err Callback function.
  */
+/*
 function onLoad(err) {
   if (!prev_err && err) {
     prev_err = true;
@@ -18,7 +19,7 @@ function onLoad(err) {
     window.close();
   }
 }
-
+*/
 
 /**
  * Wallet constructor class.
@@ -32,20 +33,27 @@ function WalletCtrl($scope) {
   $scope.addresses = [];
 
   var keyRing = DarkWallet.keyRing;
-  var identity = keyRing.get(keyRing.getIdentityNames()[0]);
+  DarkWallet.keyRing.loadIdentities(function(names) {
+    if (!names) {
+       console.log("bad loading");
+       return;
+    }
+    keyRing.get(names[0], function(identity) {
+      $scope.identity = identity;
+      /* Get 5 addresses */
+      $scope.generateAddress();
+      $scope.generateAddress();
+      $scope.generateAddress();
+      $scope.generateAddress();
+      $scope.generateAddress();
+      $scope.$apply();
+    });
+  });
 
   // scope function to generate a new address
   $scope.generateAddress = function() {
     var idx = $scope.addresses.length;
-
-    // BIP32 js support is still missing some part and we can't get addresses
-    // from pubkey yet, unless we do it custom like here...:
-    // (mpKey.key.getBitcoinAddress doesn't work since 'key' is not a key
-    // object but binary representation).
-    var childKey = mpKey.ckd(idx);
-    var mpKeyHash = Bitcoin.Util.sha256ripe160(childKey.key);
-    var address = new Bitcoin.Address(mpKeyHash);
-    console.log(address.toString())
+    var address = $scope.identity.wallet.getAddress(idx);
 
     var walletAddress = {
       'label': 'unused',
@@ -55,27 +63,6 @@ function WalletCtrl($scope) {
     // add to scope
     $scope.addresses.push(walletAddress);
   };
-
-  // Get public key from local storage.
-  chrome.storage.local.get('pubKey', function(pubKey) {
-
-    // Save it in ng scope so we can access it easily for now.
-    $scope.masterPublicKey = pubKey.pubKey;
-
-    // Save on local scope.
-    pubKey = pubKey.pubKey;
-    mpKey = new Bitcoin.BIP32key(pubKey);
-
-    // Generate some addresses for testing.
-    $scope.generateAddress();
-    $scope.generateAddress();
-    $scope.generateAddress();
-    $scope.generateAddress();
-    $scope.generateAddress();
-
-    // Apply scope since we're not in an angular callback.
-    $scope.$apply();
-  });
 
   $scope.section = 'history';
 };

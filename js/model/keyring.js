@@ -3,6 +3,9 @@
  *
  * Manages and serializes identities.
  */
+
+var DW_NS = 'dw:identity:';
+
 function IdentityKeyRing() {
     this.identities = {};
     this.availableIdentities = [];
@@ -24,13 +27,13 @@ IdentityKeyRing.prototype.getIdentityNames = function() {
 }
 
 IdentityKeyRing.prototype.close = function(name, callback) {
-   delete this.identities[name];
+    delete this.identities[name];
 }
 
 IdentityKeyRing.prototype.createIdentity = function(name, seed, password) {
-   var identity = new Identity(new Store({name: name}, this), seed, password);
-   this.identities[name] = identity;
-   return identity;
+    var identity = new Identity(new Store({name: name}, this), seed, password);
+    this.identities[name] = identity;
+    return identity;
 }
 
 /*
@@ -38,10 +41,19 @@ IdentityKeyRing.prototype.createIdentity = function(name, seed, password) {
  */
 IdentityKeyRing.prototype.loadIdentities = function(callback) {
     var self = this;
+    var _callback = callback;
     chrome.storage.local.get(null, function(obj) {
-        self.availableIdentities = Object.keys(obj);
-        if (callback) {
-            callback(self.availableIdentities);
+        var keys = Object.keys(obj);
+        for(var idx=0; idx<keys.length; idx++) {
+            if (keys[idx].substring(0, DW_NS.length) == DW_NS) {
+                var name = keys[idx].substring(DW_NS.length);
+                if (self.availableIdentities.indexOf(name) == -1) {
+                    self.availableIdentities.push(name);
+                }
+            }
+        }
+        if (_callback) {
+            _callback(self.availableIdentities);
         }
     });
 }
@@ -51,10 +63,12 @@ IdentityKeyRing.prototype.loadIdentities = function(callback) {
  */
 IdentityKeyRing.prototype.load = function(name, callback) {
     var self = this;
-    chrome.storage.local.get(name, function(obj) {
-        self.identities[name] = obj[name];
-        if (callback) {
-            callback(obj[name]);
+    var _name = name;
+    var _callback = callback;
+    chrome.storage.local.get(DW_NS+name, function(obj) {
+        self.identities[_name] = new Identity(new Store(obj[DW_NS+_name], self));
+        if (_callback) {
+            _callback(self.identities[_name]);
         }
     });
 }
@@ -64,7 +78,7 @@ IdentityKeyRing.prototype.load = function(name, callback) {
  */
 IdentityKeyRing.prototype.save = function(name, data, callback) {
     var pars = {};
-    pars[name] = data;
+    pars[DW_NS+name] = data;
     chrome.storage.local.set(pars, callback);
 }
 
