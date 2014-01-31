@@ -1,0 +1,9 @@
+Immediate:
+ * DarkWallet namespace
+ * Use require.js
+ * Run background page for access to common services
+ * Angular services to interconnect services to frontend
+ * Get history from obelisk for user addresses
+ * Implement generate new address button (also load generated addresses, not just 5)
+ * Prepare api to send a transaction
+ * Review and stabilize gateway
