@@ -14,13 +14,7 @@ Store.prototype.get = function(key) {
 Store.prototype.set = function(key, value) {
     this.store[key] = value;
 }
-Store.prototype.iter = function() {
-    return this.store;
-}
-Store.prototype.length = function() {
-    return this.store.length;
-}
-Store.prototype.save = function(key) {
+Store.prototype.save = function() {
     this.keyring.save(this.store.id, this.store)
 }
 

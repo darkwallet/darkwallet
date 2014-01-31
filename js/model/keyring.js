@@ -27,8 +27,9 @@ IdentityKeyRing.prototype.keys = function() {
 }
 
 IdentityKeyRing.prototype.loadIdentities = function(callback) {
+    var self = this;
     chrome.storage.local.get(null, function(obj) {
-        this._keys = Object.keys(obj);
+        self._keys = Object.keys(obj);
     });
 }
 
