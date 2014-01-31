@@ -22,23 +22,29 @@
   </head>
   <body>
     <section class="createwallet" ng-controller="NewWalletCtrl">
-      <form class="{{passwordHidden}}" ng-submit="passwordSubmit()">
+      <h1>Create new wallet</h1>
+      <form class="hidden-{{activeForm!='password'}}" ng-submit="passwordSubmit()">
+        <div>Register an identity</div>
         <div><input type="text" ng-model="name" placeholder="Identity Name" autofocus ng-required="true" /></div>
         <div><input type="password" ng-model="passwd" placeholder="Password" ng-required="true" /></div>
         <div><input type="password" ng-model="passwd2" placeholder="Repeat password" ng-required="true" /></div>
+        <div>Do you want a new wallet or want to restore a previous one from a seed?</div>
+        <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="create" value="create" /><label for="create">Create</label><br>
+        <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="restore" value="restore" /><label for="restore">Restore</label><br>
         <div>
           <input type="submit" value="Create" class="item-footer">
         </div>
       </form>
-      <form class="{{mnemonicHidden}}" ng-submit="mnemonicSubmit()">
+      <form class="hidden-{{activeForm!='mnemonic'}}" ng-submit="mnemonicSubmit()">
+	<div>Write this seed in a paper and save it.</div>
         <div><textarea type="text" readonly ng-model="mnemonicWords"></textarea></div>
-	<div>Gu&aacute;rdala en un papel</div>
         <div>
           <input type="submit" value="Accept" class="item-footer">
         </div>
       </form>
-      <form class="{{mnemonic2Hidden}}" ng-submit="mnemonic2Submit()">
-        <div><textarea type="text" ng-model="mnemonic2Words"></textarea></div>
+      <form class="hidden-{{activeForm!='mnemonic2'}}" ng-submit="mnemonic2Submit()">
+        <div>Write the seed again</div>
+        <div><textarea type="text" placeholder="price bleed trail suspend..." ng-model="mnemonic2Words"></textarea></div>
         <div>
           <input type="submit" value="Accept" class="item-footer">
         </div>

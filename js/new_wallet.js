@@ -11,9 +11,8 @@
  */
 function NewWalletCtrl($scope, $location) {
 
-  $scope.passwordHidden = '';
-  $scope.mnemonicHidden = 'hidden';
-  $scope.mnemonic2Hidden = 'hidden';
+  $scope.activeForm = 'password';
+  $scope.create_or_restore = 'create';
 
   $scope.passwordSubmit = function() {
     var passwd = $scope.passwd;
@@ -25,22 +24,22 @@ function NewWalletCtrl($scope, $location) {
       $scope.privKey = '';
       return;
     }
-    
-    var mnemonic = new Mnemonic(128);
 
-    $scope.passwordHidden = "hidden";
-    $scope.mnemonicHidden = "";
-
-    $scope.mnemonicWords = mnemonic.toWords().join(' ');
+    if ($scope.create_or_restore == 'create') {
+      var mnemonic = new Mnemonic(128);
+      $scope.mnemonicWords = mnemonic.toWords().join(' ');
+      $scope.activeForm = 'mnemonic';
+    } else {
+      $scope.activeForm = 'mnemonic2';
+    }
   };
   
   $scope.mnemonicSubmit = function() {
-    $scope.mnemonicHidden = "hidden";
-    $scope.mnemonic2Hidden = "";
+    $scope.activeForm = 'mnemonic2';
   };
 
   $scope.mnemonic2Submit = function() {
-    if ($scope.mnemonicWords != $scope.mnemonic2Words) {
+    if ($scope.mnemonicWords && $scope.mnemonicWords != $scope.mnemonic2Words) {
       alert("ey!");
       return;
     }
@@ -49,6 +48,6 @@ function NewWalletCtrl($scope, $location) {
     var mnemonic = new Mnemonic(words);
 
     DarkWallet.keyRing.createIdentity($scope.name, $scope.passwd, mnemonic.toHex());
+    window.location = 'wallet.html'
   }
 };
-
