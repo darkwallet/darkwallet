@@ -9,12 +9,12 @@ function Store(data, keyring) {
 }
 
 Store.prototype.get = function(key) {
-    return this.store.get(key);
+    return this.store[key];
 }
 Store.prototype.set = function(key, value) {
     this.store[key] = value;
 }
 Store.prototype.save = function() {
-    this.keyring.save(this.store.id, this.store)
+    this.keyring.save(this.store.name, this.store);
 }
 

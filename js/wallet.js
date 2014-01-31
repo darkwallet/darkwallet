@@ -31,8 +31,8 @@ function WalletCtrl($scope) {
   // generated addresses
   $scope.addresses = [];
 
-  var keyRing = new IdentityKeyRing();
-  console.log(keyRing);
+  var keyRing = DarkWallet.keyRing;
+  var identity = keyRing.get(keyRing.getIdentityNames()[0]);
 
   // scope function to generate a new address
   $scope.generateAddress = function() {

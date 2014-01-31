@@ -9,7 +9,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-function NewWalletCtrl($scope) {
+function NewWalletCtrl($scope, $location) {
 
   $scope.passwordHidden = '';
   $scope.mnemonicHidden = 'hidden';
@@ -47,7 +47,8 @@ function NewWalletCtrl($scope) {
     
     var words = $scope.mnemonic2Words.split(' ');
     var mnemonic = new Mnemonic(words);
-    alert(mnemonic.toHex());
-  };
+
+    DarkWallet.keyRing.createIdentity($scope.name, $scope.passwd, mnemonic.toHex());
+  }
 };
 

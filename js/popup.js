@@ -8,13 +8,22 @@
  * @constructor
  */
 function PopupCtrl($scope) {
-  $scope.identities = [
-    {id: 'gengix'},
-    {id: 'sem'}
-  ];
-
+  DarkWallet.keyRing.loadIdentities(function(identityNames) {
+    var identities = [];
+    identityNames.forEach(function(item) {
+      identities.push({id: item});
+    });
+    $scope.identities = identities;
+    $scope.identityNames = identityNames;
+    $scope.identity = $scope.identities[0];
+    $scope.identityChange();
+    $scope.$apply();
+  });
   $scope.identityChange = function() {
-    if ($scope.identity.id == 'gengix') {
+    if (!$scope.identity) {
+        return;
+    }
+    if ($scope.identity.id == $scope.identityNames[0]) {
       $scope.activity = [
         {action: 'Received bitcoins', amount: '0.05', timestamp: '5 minutes ago'},
         {action: 'Received bitcoins', amount: '0.01', timestamp: '6 minutes ago'}
@@ -28,8 +37,6 @@ function PopupCtrl($scope) {
     }
   };
 
-  $scope.identity = $scope.identities[0];
-  $scope.identityChange();
 };
 
 
@@ -41,6 +48,7 @@ function PopupCtrl($scope) {
 function PasswdCtrl($scope) {
 
   $scope.submit = function() {
+    var keyRing = DarkWallet.keyRing;
     var random = new Uint8Array(16);
     var seed = [];
     var passwd = $scope.passwd;
@@ -68,28 +76,7 @@ function PasswdCtrl($scope) {
     // Initializing the key from seed.
     // We save the keys so we don't need access to the seed any more.
     seed = Bitcoin.convert.bytesToString(seed);
-    var key = new Bitcoin.BIP32key(seed);
-    var pubKey = key.getPub().serialize();
-    var privKey = key.serialize();
 
-    // Now save in local storage.
-    privKey = sjcl.encrypt(passwd, privKey);
-    chrome.storage.local.set({pubKey: pubKey});
-    chrome.storage.local.set({privKey: privKey});
-
-    // Examples of getting the keys below.
-    chrome.storage.local.get('pubKey', function(pubKey){
-      // Test and save the pubKey here for now.
-      $scope.pubKey = pubKey.pubKey;
-      $scope.$apply();
-    });
-
-    // Retrieve the privKey.
-    chrome.storage.local.get('privKey', function(privKey){
-      // Test opening the private key but don't save it.
-      $scope.privKey = sjcl.decrypt(passwd, privKey.privKey);
-      $scope.$apply();
-    });
-
+    keyRing.createIdentity($scope.name, seed, $scope.passwd);
   };
 };

@@ -19,7 +19,7 @@ IdentityKeyRing.prototype.get = function(name, callback) {
     }
 }
 
-IdentityKeyRing.prototype.getIdentities = function() {
+IdentityKeyRing.prototype.getIdentityNames = function() {
     return this.availableIdentities;
 }
 
@@ -39,7 +39,10 @@ IdentityKeyRing.prototype.createIdentity = function(name, seed, password) {
 IdentityKeyRing.prototype.loadIdentities = function(callback) {
     var self = this;
     chrome.storage.local.get(null, function(obj) {
-        self.availableIdentity = Object.keys(obj);
+        self.availableIdentities = Object.keys(obj);
+        if (callback) {
+            callback(self.availableIdentities);
+        }
     });
 }
 
@@ -47,14 +50,21 @@ IdentityKeyRing.prototype.loadIdentities = function(callback) {
  * @private
  */
 IdentityKeyRing.prototype.load = function(name, callback) {
-    chrome.storage.local.get(name, callback);
+    var self = this;
+    chrome.storage.local.get(name, function(obj) {
+        self.identities[name] = obj[name];
+        if (callback) {
+            callback(obj[name]);
+        }
+    });
 }
 
 /*
  * @private
  */
 IdentityKeyRing.prototype.save = function(name, data, callback) {
-    chrome.storage.local.set({name: data}, callback);
+    var pars = {};
+    pars[name] = data;
+    chrome.storage.local.set(pars, callback);
 }
-
 

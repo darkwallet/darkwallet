@@ -9,6 +9,7 @@ function Wallet(store) {
     this.mpk = store.get('mpk');
     if (!this.mpk) {
          console.log("Wallet without mpk!", this.mpk);
+         console.log(store);
     }
     this.store = store;
 }

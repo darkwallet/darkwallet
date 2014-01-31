@@ -13,7 +13,7 @@ function Identity(store, seed, password) {
     this.name = store.name;
     this.store = store;
     if (seed && password) {
-        self.generate(seed, password)
+        this.generate(seed, password);
     }
     this.wallet = new Wallet(store);
     this.contacts = new Contacts(store);
@@ -30,14 +30,11 @@ Identity.prototype.generate = function(seed, password) {
 
     var privData = this.encrypt({privKey: privKey}, password);
 
-    data = {'mpk': pubKey,
-	    'name': this.name,
-	    'version': 1,
-	    'pubkeys': {},
-	    'private': privData,
-	    'contacts': {},
-	    'transactions': {}};
-    // recreate the store with new data
-    this.store = new Store(data, this.store.keyring)
+    this.store.set('mpk', pubKey);
+    this.store.set('version', 1);
+    this.store.set('pubkeys', {});
+    this.store.set('private', privData);
+    this.store.set('contacts', {});
+    this.store.set('transactions', {});
     this.store.save()
 }
