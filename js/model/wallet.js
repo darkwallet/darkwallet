@@ -9,7 +9,7 @@
  */
 function Wallet(store) {
     this.is_cold = store.get('is_cold');
-    this.pubKeys = store.get('pubkeys');
+    this.pubKeys = store.init('pubkeys', {});
     this.mpk = store.get('mpk');
     if (!this.mpk) {
          console.log("Wallet without mpk!", this.mpk);

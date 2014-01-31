@@ -9,10 +9,7 @@
  */
 function Contacts(store) {
     this.store = store;
-    if (!this.store.get('contacts')) {
-        this.store.set('contacts', {});
-    }
-    this.contacts = this.store.get('contacts');
+    this.contacts = this.store.init('contacts', {});
 }
 
 /**
