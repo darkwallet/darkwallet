@@ -7,3 +7,5 @@ var DarkWallet = {};
 
 // Identity key ring. Holds all identities.
 DarkWallet.keyRing = new IdentityKeyRing();
+DarkWallet.obeliskClient = new ObeliskClient();
+

@@ -33,6 +33,7 @@ function WalletCtrl($scope) {
   $scope.addresses = [];
 
   var keyRing = DarkWallet.keyRing;
+
   DarkWallet.keyRing.loadIdentities(function(names) {
     if (!names) {
        console.log("bad loading");
@@ -47,6 +48,20 @@ function WalletCtrl($scope) {
       $scope.generateAddress();
       $scope.generateAddress();
       $scope.$apply();
+      function heightFetched(err, height) {
+          console.log("height fetched", height);
+      }
+      function historyFetched(err, walletAddress, history) {
+          console.log("history fetched", walletAddress.address, history);
+      }
+      function handleConnect() {
+          var client = DarkWallet.obeliskClient.client;
+          client.fetch_last_height(heightFetched);
+          $scope.addresses.forEach(function(walletAddress) {
+              client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
+          });
+      }
+      DarkWallet.obeliskClient.connect('ws://85.25.198.97:8888', handleConnect);
     });
   });
 
