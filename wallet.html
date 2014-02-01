@@ -161,7 +161,7 @@
             <th>QR Code</th>
             <th>Payment Request</th>
           </tr>
-          <tr ng-repeat="address in addresses">
+          <tr ng-repeat="address in addresses" ng-show="address.balance == 0">
             <td>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td><i class="icon-large icon-qrcode"></i></td>
@@ -184,45 +184,13 @@
             <th>Transactions</th>
             <th>Balance</th>
           </tr>
-          <tr>
-            <td>Sean's Outpost</td>
-            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+          <tr ng-repeat="address in addresses" ng-show="address.balance > 0">
+            <td>{{address.label}}</td>
+            <td>{{address.address}}</td>
             <td><i class="icon-large icon-qrcode"></i></td>
             <td><i class="icon-large icon-money"></i></td>
-            <td>3</td>
-            <td>4.4343452</td>
-          </tr>
-          <tr>
-            <td>Unsystem</td>
-            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-            <td><i class="icon-large icon-qrcode"></i></td>
-            <td><i class="icon-large icon-money"></i></td>
-            <td>3</td>
-            <td>4.4343452</td>
-          </tr>
-          <tr>
-            <td>FSF</td>
-            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-            <td><i class="icon-large icon-qrcode"></i></td>
-            <td><i class="icon-large icon-money"></i></td>
-            <td>3</td>
-            <td>4.4343452</td>
-          </tr>
-          <tr>
-            <td>EFF</td>
-            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-            <td><i class="icon-large icon-qrcode"></i></td>
-            <td><i class="icon-large icon-money"></i></td>
-            <td>3</td>
-            <td>4.4343452</td>
-          </tr>
-          <tr>
-            <td>Internet Archive</td>
-            <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-            <td><i class="icon-large icon-qrcode"></i></td>
-            <td><i class="icon-large icon-money"></i></td>
-            <td>3</td>
-            <td>4.4343452</td>
+            <td>{{address.nOutputs}}</td>
+            <td>{{address.balance/100000000}}</td>
           </tr>
         </table>
       </section>

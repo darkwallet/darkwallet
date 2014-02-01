@@ -47,16 +47,32 @@ function WalletCtrl($scope) {
       $scope.generateAddress();
       $scope.generateAddress();
       $scope.generateAddress();
+      $scope.addresses.push({address: '1Evy47MqD82HGx6n1KHkHwBgCwbsbQQT8m', label: 'hackafou'});
       $scope.$apply();
       function heightFetched(err, height) {
           console.log("height fetched", height);
       }
       function historyFetched(err, walletAddress, history) {
-          console.log("history fetched", walletAddress.address, history);
+          walletAddress.balance = 0;
+          walletAddress.height = 0;
+          walletAddress.nOutputs = 0;
+          history.forEach(function(tx) {
+              // sum unspent outputs for the address
+              var outTxHash = tx[0];
+              var inTxHash = tx[4];
+              walletAddress.nOutputs += 1;
+              if (inTxHash == null) {
+                  walletAddress.balance += tx[3];
+                  if (tx[2] > walletAddress.height) {
+                      walletAddress.height = tx[2];
+                  }
+              }
+          });
       }
       function handleConnect() {
           var client = DarkWallet.obeliskClient.client;
           client.fetch_last_height(heightFetched);
+          // get balance for addresses
           $scope.addresses.forEach(function(walletAddress) {
               client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
           });
@@ -72,6 +88,8 @@ function WalletCtrl($scope) {
 
     var walletAddress = {
       'label': 'unused',
+      'balance': 0,
+      'nOutputs': 0,
       'address': address.toString(),
       'raw': address
     };
