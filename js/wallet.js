@@ -68,6 +68,13 @@ function WalletCtrl($scope) {
                   }
               }
           });
+          var client = DarkWallet.obeliskClient.client;
+          var address = walletAddress.address;
+          client.subscribe(walletAddress.address, function(err, res) {
+              console.log("subscribed", address, err, res);
+          }, function(addressUpdate) {
+              console.log("update", addressUpdate)
+          });
       }
       function handleConnect() {
           var client = DarkWallet.obeliskClient.client;
