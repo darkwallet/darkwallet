@@ -25,7 +25,8 @@ function Identity(store, seed, password) {
  * @param {String} password Password for the identity crypt
  */
 Identity.prototype.encrypt = function(data, password) {
-    return sjcl.encrypt(password, JSON.stringify(data));
+    var passwordDigest = Crypto.SHA256(Crypto.SHA256(Crypto.SHA256( password )));
+    return sjcl.encrypt(passwordDigest, JSON.stringify(data));
 }
 
 /**
