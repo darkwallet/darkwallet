@@ -10,7 +10,7 @@
  * @constructor
  */
 function Identity(store, seed, password) {
-    this.name = store.name;
+    this.name = store.get('name');
     this.store = store;
     if (seed && password) {
         this.generate(seed, password);
