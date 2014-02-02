@@ -99,7 +99,7 @@
         <form>
           <label>
             <h2>Recipient address</h2>
-            <input type="text" class="long" placeholder="Enter bitcoin address here">
+            <input ng-model="send.recipient" type="text" class="long" placeholder="Enter bitcoin address here">
           </label>
 
           <div class="der down" ng-show="showContacts">
@@ -141,14 +141,14 @@
 
           <label>
             <h2>Amount</h2>
-            <input type="text" class="long" placeholder="BTC">
+            <input ng-model="send.amount" type="text" class="long" placeholder="BTC">
           </label>
 
           <label>
             <h2>Fee</h2>
-            <input type="text" class="long" value="0,00002">
+            <input ng-model="send.fee" type="text" class="long" value="0,00002">
           </label>
-          <button class="button-and-icon button-submit"><div><i class="icon-large icon-btc"></i></div>Send</button>
+          <button class="button-and-icon button-submit" ng-click="sendBitcoins()"><div><i class="icon-large icon-btc"></i></div>Send</button>
         </form>
       </div>
 
