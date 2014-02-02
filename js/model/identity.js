@@ -25,6 +25,7 @@ function Identity(store, seed, password) {
  * @param {String} password Password for the identity crypt
  */
 Identity.prototype.encrypt = function(data, password) {
+    var Crypto = Bitcoin.Crypto;
     var passwordDigest = Crypto.SHA256(Crypto.SHA256(Crypto.SHA256( password )));
     return sjcl.encrypt(passwordDigest, JSON.stringify(data));
 }
@@ -36,7 +37,10 @@ Identity.prototype.encrypt = function(data, password) {
  * @param {String} password Password for the identity crypt
  */
 Identity.prototype.generate = function(seed, password) {
-    var key = new Bitcoin.BIP32key(seed);
+    // dont use constructor directly since it doesn't manage hex seed properly
+    var rawSeed = Bitcoin.convert.hexToBytes(seed);
+    var key = Bitcoin.BIP32key.prototype.fromMasterKey(rawSeed);
+
     var pubKey = key.getPub().serialize();
     var privKey = key.serialize();
 
