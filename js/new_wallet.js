@@ -46,8 +46,7 @@ function NewWalletCtrl($scope, $location) {
     
     var words = $scope.mnemonic2Words.split(' ');
     var mnemonic = new Mnemonic(words);
-
-    DarkWallet.keyRing.createIdentity($scope.name, $scope.passwd, mnemonic.toHex());
+    DarkWallet.keyRing.createIdentity($scope.name, mnemonic.toHex(), $scope.passwd);
     window.location = 'wallet.html'
   }
 };

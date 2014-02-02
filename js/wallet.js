@@ -34,6 +34,10 @@ function WalletCtrl($scope) {
 
   var keyRing = DarkWallet.keyRing;
 
+  $scope.clearStorage = function() {
+      chrome.storage.local.clear();
+  }
+
   DarkWallet.keyRing.loadIdentities(function(names) {
     if (!names) {
        console.log("bad loading");
