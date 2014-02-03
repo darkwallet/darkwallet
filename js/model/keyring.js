@@ -112,3 +112,9 @@ IdentityKeyRing.prototype.save = function(name, data, callback) {
     chrome.storage.local.set(pars, callback);
 }
 
+/*
+ * Clear database (DANGEROUS!)
+ */
+IdentityKeyRing.prototype.clear = function() {
+      chrome.storage.local.clear();
+}
