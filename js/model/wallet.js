@@ -92,6 +92,19 @@ Wallet.prototype.getAddress = function(n, pocket) {
 }
 
 /**
+ * Get the (relative) bip32 sequence for an address.
+ * @private
+ */
+Wallet.prototype.getAddressSequence(address) {
+    Object.keys(this.pubKeys).forEach(function(addressSequence) {
+         var walletAddress = this.pubKeys[addressSequence];
+         if (walletAddress.address == address) {
+             return walletAddress.index;
+         }
+    });
+}
+
+/**
  * Send bitcoins from this wallet.
  * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
  */
@@ -103,7 +116,6 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     var txHash = utxo1.output.split(':')[0];
     var outIndex = parseInt(utxo1.output.split(':')[1]);
     var outAmount = utxo1.value;
-    var outAddress = utxo1.address;
 
     // now prepare transaction
     var newTx = new Bitcoin.Transaction();
@@ -117,12 +129,12 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
 
     console.log("sending:", recipient ,"change", change, "sending", amount+fee, "utxo", outAmount);
 
-    // might need to sign several inputs
+    // XXX Might need to sign several inputs
     var pocket, n;
-    // XXX  oops we don't have addresses indexed by string
-    if (utxo.address.index) {
-        pocket = utxo.address.index[0];
-        n = utxo.address.index[1];
+    var seq = this.getAddressSequence(utxo1.address);
+    if (seq) {
+        pocket = seq[0];
+        n = seq[1];
     } else {
         // XXX testing only
         pocket = 0;
