@@ -17,6 +17,11 @@ function Wallet(store) {
     this.store = store;
 }
 
+Wallet.prototype.getPrivateKey = function(n, pocket, callback) {
+    // XXX need to actually extract the appropriate private key here.
+    callback(new Bitcoin.BIP32key("foo"));
+}
+
 /**
  * Get an address from this wallet.
  * @param {Integer} n Sequence number for the address.

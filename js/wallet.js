@@ -32,6 +32,7 @@ function WalletCtrl($scope) {
   // generated addresses
   $scope.addresses = [];
   $scope.changeAddresses = [];
+  $scope.utxo = [];
 
   var keyRing = DarkWallet.keyRing;
 
@@ -39,13 +40,14 @@ function WalletCtrl($scope) {
       chrome.storage.local.clear();
   }
 
-  DarkWallet.keyRing.loadIdentities(function(names) {
+  keyRing.loadIdentities(function(names) {
     if (!names) {
        console.log("bad loading");
        return;
     }
     keyRing.get(names[0], function(identity) {
       $scope.identity = identity;
+      $scope.utxo = [];
       /* Get 5 addresses */
       $scope.generateAddress();
       $scope.generateAddress();
@@ -58,6 +60,7 @@ function WalletCtrl($scope) {
           console.log("height fetched", height);
       }
       function historyFetched(err, walletAddress, history) {
+          console.log("history", walletAddress);
           walletAddress.balance = 0;
           walletAddress.height = 0;
           walletAddress.nOutputs = 0;
@@ -71,6 +74,8 @@ function WalletCtrl($scope) {
                   if (tx[2] > walletAddress.height) {
                       walletAddress.height = tx[2];
                   }
+                  var utxo = {amount: tx[3], index: tx[1], height: tx[2], hash: tx[0], address: walletAddress};
+                  $scope.utxo.push(utxo);
               }
           });
           var client = DarkWallet.obeliskClient.client;
@@ -104,6 +109,7 @@ function WalletCtrl($scope) {
     var address = $scope.identity.wallet.getAddress(idx, isChange);
 
     var walletAddress = {
+      'index': [isChange, idx],
       'label': 'unused',
       'balance': 0,
       'nOutputs': 0,
@@ -118,23 +124,47 @@ function WalletCtrl($scope) {
     }
     return walletAddress;
   };
-  $scope.send = {recipient: '', amount: 0.2, fee: 0.00002}
+  $scope.send = {recipient: '', amount: 0.2, fee: 0.00002};
+
+  function findUtxo(amount) {
+      for(var idx=0; idx<$scope.utxo.length; idx++) {
+          console.log($scope.utxo[idx].amount, amount);
+          if ($scope.utxo[idx].amount >= amount) {
+              return $scope.utxo[idx];
+          }
+      }
+  }
+
   $scope.sendBitcoins = function() {
       var changeAddress = $scope.generateAddress(1);
       var amount = $scope.send.amount*100000000;
       var fee = $scope.send.fee * 100000000;
+
       // now prepare transaction
       var newTx = new Bitcoin.Transaction();
+
       // need to select unspent outputs with enough funds...
-      var tx = "";
-      var outIndex = 0;
-      var outAmount = 500000000;
+      var utxo = findUtxo(amount+fee);
+      var txHash = utxo.hash;
+      var outIndex = utxo.index;
+      var outAmount = utxo.amount;
+      var outAddress = utxo.address;
+
       // add inputs
-      newTx.addInput(tx, outIndex);
+      newTx.addInput(txHash, outIndex);
       var change = outAmount - (amount + fee);
+
       // add outputs
       newTx.addOutput($scope.send.recipient, amount);
       newTx.addOutput(changeAddress.address, change);
+
+      console.log("change", change, "sending", amount+fee, "utxo", utxo.amount);
+
+      // might need to sign several inputs
+      var outKey = keyRing.wallet.getPrivateKey(utxo.address.index[1], utxo.address.index[0]);
+      newTx.sign(0, outKey);
+
+      // XXX send transaction
       console.log($scope.send.recipient, $scope.send.amount, $scope.send.fee, newTx);
   }
 
