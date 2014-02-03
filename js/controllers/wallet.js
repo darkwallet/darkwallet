@@ -13,12 +13,11 @@ function WalletCtrl($scope) {
   // generated addresses
   $scope.addresses = [];
   $scope.changeAddresses = [];
-  $scope.utxo = [];
 
   var keyRing = DarkWallet.keyRing;
 
   $scope.clearStorage = function() {
-      chrome.storage.local.clear();
+      keyRing.clear();
   }
 
   keyRing.loadIdentities(function(names) {
@@ -28,48 +27,36 @@ function WalletCtrl($scope) {
     }
     keyRing.get(names[0], function(identity) {
       $scope.identity = identity;
-      $scope.utxo = [];
-      /* Get 5 addresses */
+      /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var splitKey = pubKeyIndex.split(",");
           $scope.generateAddress(parseInt(splitKey[0]));
       });
+      /* Initialize if empty wallet */
       if ($scope.addresses.length == 0) {
           // generate 5 addresses for now
-          $scope.generateAddress();
-          $scope.generateAddress();
-          $scope.generateAddress();
-          $scope.generateAddress();
-          $scope.generateAddress();
+          for(var idx=0; idx<5; idx++) {
+              $scope.generateAddress();
+          }
       }
       // testing address:
       // $scope.addresses.push({address: '1Evy47MqD82HGx6n1KHkHwBgCwbsbQQT8m', label: 'hackafou'});
+      // identity.wallet.wallet.addresses.push('1Evy47MqD82HGx6n1KHkHwBgCwbsbQQT8m');
+
+      // apply scope
       $scope.$apply();
+
       function heightFetched(err, height) {
           console.log("height fetched", height);
       }
       function historyFetched(err, walletAddress, history) {
-          walletAddress.balance = 0;
-          walletAddress.height = 0;
-          walletAddress.nOutputs = 0;
-          history.forEach(function(tx) {
-              // sum unspent outputs for the address
-              var outTxHash = tx[0];
-              var inTxHash = tx[4];
-              walletAddress.nOutputs += 1;
-              if (inTxHash == null) {
-                  walletAddress.balance += tx[3];
-                  if (tx[2] > walletAddress.height) {
-                      walletAddress.height = tx[2];
-                  }
-                  var utxo = {amount: tx[3], index: tx[1], height: tx[2], hash: tx[0], address: walletAddress};
-                  $scope.utxo.push(utxo);
-              }
-          });
           var client = DarkWallet.obeliskClient.client;
-          var address = walletAddress.address;
+          // pass to the wallet to process outputs
+          $scope.identity.wallet.processHistory(walletAddress, history);
+
+          // now subscribe the address for notifications
           client.subscribe(walletAddress.address, function(err, res) {
-              console.log("subscribed", address, err, res);
+              console.log("subscribed", walletAddress.address, err, res);
           }, function(addressUpdate) {
               console.log("update", addressUpdate)
           });
@@ -86,7 +73,7 @@ function WalletCtrl($scope) {
     });
   });
 
-  // scope function to generate a new address
+  // scope function to generate (or load from cache) a new address
   $scope.generateAddress = function(isChange) {
     var addressArray = isChange ? $scope.changeAddresses : $scope.addresses;
     var walletAddress = $scope.identity.wallet.getAddress(addressArray.length, isChange);
@@ -97,14 +84,6 @@ function WalletCtrl($scope) {
   };
   $scope.send = {recipient: '', amount: 0.2, fee: 0.00002};
 
-  function findUtxo(utxoSet, amount) {
-      for(var idx=0; idx<utxoSet.length; idx++) {
-          if (utxoSet[idx].amount >= amount) {
-              return utxoSet[idx];
-          }
-      }
-  }
-
   $scope.sendBitcoins = function() {
       // get a free change address
       var changeAddress = $scope.generateAddress(1);
@@ -114,15 +93,11 @@ function WalletCtrl($scope) {
       var amount = $scope.send.amount * satoshis;
       var fee = $scope.send.fee * satoshis;
 
-      // find an output with enough funds
-      var utxo = findUtxo($scope.utxo, amount+fee);
-
       // prepare the transaction
       $scope.identity.wallet.sendBitcoins($scope.send.recipient,
                                           changeAddress,
                                           amount,
                                           fee,
-                                          utxo,
                                           $scope.send.password);
   }
 

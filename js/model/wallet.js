@@ -14,7 +14,21 @@ function Wallet(store) {
     if (!this.mpk) {
          console.log("Wallet without mpk!", this.mpk);
     }
+    // internal bitcoinjs-lib wallet to keep track of utxo (for now)
+    this.wallet = new Bitcoin.Wallet(this.mpk);
     this.store = store;
+    this.loadPubKeys();
+}
+
+/**
+ * Load wallet addresses into internal Bitcoin.Wallet
+ * @private
+ */
+Wallet.prototype.loadPubKeys = function() {
+    var self = this;
+    Object.keys(this.pubKeys).forEach(function(index) {
+        self.wallet.addresses.push(self.pubKeys[index].address);
+    });
 }
 
 /**
@@ -71,6 +85,8 @@ Wallet.prototype.getAddress = function(n, pocket) {
            'address': address.toString()
         };
         this.store.save();
+        // add to internal bitcoinjs-lib wallet
+        this.wallet.addresses.push(address.toString());
         return this.pubKeys[addrId];
     }
 }
@@ -79,12 +95,15 @@ Wallet.prototype.getAddress = function(n, pocket) {
  * Send bitcoins from this wallet.
  * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
  */
-Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, utxo, password) {
+Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, password) {
+    // find an output with enough funds
+    var utxo = this.wallet.getUtxoToPay(amount+fee);
     // prepare some parameters
-    var txHash = utxo.hash;
-    var outIndex = utxo.index;
-    var outAmount = utxo.amount;
-    var outAddress = utxo.address;
+    var utxo1 = utxo[0];
+    var txHash = utxo1.output.split(':')[0];
+    var outIndex = parseInt(utxo1.output.split(':')[1]);
+    var outAmount = utxo1.value;
+    var outAddress = utxo1.address;
 
     // now prepare transaction
     var newTx = new Bitcoin.Transaction();
@@ -96,10 +115,11 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     newTx.addOutput(recipient, amount);
     newTx.addOutput(changeAddress.address, change);
 
-    console.log("sending:", recipient ,"change", change, "sending", amount+fee, "utxo", utxo.amount);
+    console.log("sending:", recipient ,"change", change, "sending", amount+fee, "utxo", outAmount);
 
     // might need to sign several inputs
     var pocket, n;
+    // XXX  oops we don't have addresses indexed by string
     if (utxo.address.index) {
         pocket = utxo.address.index[0];
         n = utxo.address.index[1];
@@ -118,3 +138,34 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     });
 }
 
+/**
+ * Process an output from an external source
+ * @see Bitcoin.Wallet.processOutput
+ */
+Wallet.prototype.processOutput = function(output) {
+    this.wallet.processOutput(output);
+}
+
+/**
+ * Process history report from obelisk
+ */
+Wallet.prototype.processHistory = function(walletAddress, history) {
+    var self = this;
+    // reset some numbers for the address
+    walletAddress.balance = 0;
+    walletAddress.height = 0;
+    walletAddress.nOutputs = 0;
+    // process history
+    history.forEach(function(tx) {
+         // sum unspent outputs for the address
+        var outTxHash = tx[0];
+        var inTxHash = tx[4];
+        walletAddress.nOutputs += 1;
+        if (inTxHash == null) {
+            walletAddress.balance += tx[3];
+            walletAddress.height = Math.max(tx[2], walletAddress.height);
+        }
+        // pass on to internal Bitcoin.Wallet
+        self.processOutput({ output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
+    });
+}
