@@ -1,12 +1,13 @@
-/*
+/**
  * @fileOverview Identity properties and data.
  */
 
+
 /**
  * Identity class.
- * @param {Object} store Object store
- * @param {String} seed Seed in string form
- * @param {String} password Password for the identity crypt
+ * @param {Store} store Object store.
+ * @param {String} seed Seed in string form.
+ * @param {String} password Password for the identity crypt.
  * @constructor
  */
 function Identity(store, seed, password) {
@@ -19,25 +20,29 @@ function Identity(store, seed, password) {
     this.contacts = new Contacts(store);
 }
 
+
 /**
- * Encrypt identity private information
- * @param {Object} data Contact information.
- * @param {String} password Password for the identity crypt
+ * Encrypts identity private information.
+ * @param {Object} data Information to be encrypted.
+ * @param {String} password Password for the identity crypt.
+ * @return {String} The ciphertext serialized data.
  */
 Identity.prototype.encrypt = function(data, password) {
     var Crypto = Bitcoin.Crypto;
-    var passwordDigest = Crypto.SHA256(Crypto.SHA256(Crypto.SHA256( password )));
+    var passwordDigest = Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password)));
     return sjcl.encrypt(passwordDigest, JSON.stringify(data));
 }
 
+
 /**
- * @private
  * Generate master keys for this identity.
- * @param {String} seed Seed in string form
- * @param {String} password Password for the identity crypt
+ * TODO: Consider naming private methods with trailing underscore_.
+ * @param {String} seed Seed in string form.
+ * @param {String} password Password for the identity crypt.
+ * @private
  */
 Identity.prototype.generate = function(seed, password) {
-    // dont use constructor directly since it doesn't manage hex seed properly
+    // Don't use constructor directly since it doesn't manage hex seed properly.
     var rawSeed = Bitcoin.convert.hexToBytes(seed);
     var key = Bitcoin.BIP32key.prototype.fromMasterKey(rawSeed);
     var identityKey = key.ckd(0x80000000);
@@ -55,5 +60,5 @@ Identity.prototype.generate = function(seed, password) {
     this.store.set('private', privData);
     this.store.set('contacts', {});
     this.store.set('transactions', {});
-    this.store.save()
+    this.store.save();
 }
