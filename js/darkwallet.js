@@ -3,9 +3,12 @@
  */
 
 // DarkWallet object.
-var DarkWallet = {};
+var DarkWallet = {
 
-// Identity key ring. Holds all identities.
-DarkWallet.keyRing = new IdentityKeyRing();
-DarkWallet.obeliskClient = new ObeliskClient();
+    // Identity key ring. Holds all identities.
+    keyRing: new IdentityKeyRing(),
+
+    // Light client
+    obeliskClient: new ObeliskClient()
+};
 
