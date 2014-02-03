@@ -2,25 +2,6 @@
  * @fileOverview Wallet classes.
  */
 
-// TODO: Namespace these.
-/*var password = prompt('Password');
-var prev_err = false;
-*/
-
-/**
- * Database callback function.
- * @param {Function} err Callback function.
- */
-/*
-function onLoad(err) {
-  if (!prev_err && err) {
-    prev_err = true;
-    alert('Invalid password');
-    window.close();
-  }
-}
-*/
-
 /**
  * Wallet constructor class.
  * @param {Object} $scope Angular scope.
@@ -50,7 +31,8 @@ function WalletCtrl($scope) {
       $scope.utxo = [];
       /* Get 5 addresses */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
-          $scope.generateAddress(parseInt(pubKeyIndex.split(",")[0]));
+          var splitKey = pubKeyIndex.split(",");
+          $scope.generateAddress(parseInt(splitKey[0]));
       });
       if ($scope.addresses.length == 0) {
           // generate 5 addresses for now
@@ -106,84 +88,42 @@ function WalletCtrl($scope) {
 
   // scope function to generate a new address
   $scope.generateAddress = function(isChange) {
-    var idx;
-    if (isChange) {
-        idx  = $scope.changeAddresses.length;
-    } else {
-        idx  = $scope.addresses.length;
-    }
-    var address = $scope.identity.wallet.getAddress(idx, isChange);
+    var addressArray = isChange ? $scope.changeAddresses : $scope.addresses;
+    var walletAddress = $scope.identity.wallet.getAddress(addressArray.length, isChange);
 
-    var walletAddress = {
-      'index': [isChange, idx],
-      'label': 'unused',
-      'balance': 0,
-      'nOutputs': 0,
-      'address': address.toString(),
-      'raw': address
-    };
     // add to scope
-    if (isChange) {
-        $scope.changeAddresses.push(walletAddress);
-    } else {
-        $scope.addresses.push(walletAddress);
-    }
+    addressArray.push(walletAddress)
     return walletAddress;
   };
   $scope.send = {recipient: '', amount: 0.2, fee: 0.00002};
 
-  function findUtxo(amount) {
-      for(var idx=0; idx<$scope.utxo.length; idx++) {
-          console.log($scope.utxo[idx].amount, amount);
-          if ($scope.utxo[idx].amount >= amount) {
-              return $scope.utxo[idx];
+  function findUtxo(utxoSet, amount) {
+      for(var idx=0; idx<utxoSet.length; idx++) {
+          if (utxoSet[idx].amount >= amount) {
+              return utxoSet[idx];
           }
       }
   }
 
   $scope.sendBitcoins = function() {
+      // get a free change address
       var changeAddress = $scope.generateAddress(1);
-      var amount = $scope.send.amount*100000000;
-      var fee = $scope.send.fee * 100000000;
 
-      // now prepare transaction
-      var newTx = new Bitcoin.Transaction();
+      // prepare amounts
+      var satoshis = 100000000;
+      var amount = $scope.send.amount * satoshis;
+      var fee = $scope.send.fee * satoshis;
 
-      // need to select unspent outputs with enough funds...
-      var utxo = findUtxo(amount+fee);
-      var txHash = utxo.hash;
-      var outIndex = utxo.index;
-      var outAmount = utxo.amount;
-      var outAddress = utxo.address;
+      // find an output with enough funds
+      var utxo = findUtxo($scope.utxo, amount+fee);
 
-      // add inputs
-      newTx.addInput(txHash, outIndex);
-      var change = outAmount - (amount + fee);
-
-      // add outputs
-      newTx.addOutput($scope.send.recipient, amount);
-      newTx.addOutput(changeAddress.address, change);
-
-      console.log("sending: change", change, "sending", amount+fee, "utxo", utxo.amount);
-
-      // might need to sign several inputs
-      var pocket, n;
-      if (utxo.address.index) {
-          pocket = utxo.address.index[0];
-          n = utxo.address.index[1];
-      } else {
-          // XXX testing only
-          pocket = 0;
-          n = 0;
-      }
-      // XXX should catch exception on bad password:
-      //   sjcl.exception.corrupt {toString: function, message: "ccm: tag doesn't match"}
-      $scope.identity.wallet.getPrivateKey(n, pocket, $scope.send.password, function(outKey) {
-          newTx.sign(0, outKey.key);
-
-          // XXX send transaction
-          console.log($scope.send.recipient, $scope.send.amount, $scope.send.fee, newTx);
-      });
+      // prepare the transaction
+      $scope.identity.wallet.sendBitcoins($scope.send.recipient,
+                                          changeAddress,
+                                          amount,
+                                          fee,
+                                          utxo,
+                                          $scope.send.password);
   }
 
   $scope.section = 'history';
