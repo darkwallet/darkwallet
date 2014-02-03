@@ -49,18 +49,24 @@ function WalletCtrl($scope) {
       $scope.identity = identity;
       $scope.utxo = [];
       /* Get 5 addresses */
-      $scope.generateAddress();
-      $scope.generateAddress();
-      $scope.generateAddress();
-      $scope.generateAddress();
-      $scope.generateAddress();
-      $scope.addresses.push({address: '1Evy47MqD82HGx6n1KHkHwBgCwbsbQQT8m', label: 'hackafou'});
+      Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
+          $scope.generateAddress(parseInt(pubKeyIndex.split(",")[0]));
+      });
+      if ($scope.addresses.length == 0) {
+          // generate 5 addresses for now
+          $scope.generateAddress();
+          $scope.generateAddress();
+          $scope.generateAddress();
+          $scope.generateAddress();
+          $scope.generateAddress();
+      }
+      // testing address:
+      // $scope.addresses.push({address: '1Evy47MqD82HGx6n1KHkHwBgCwbsbQQT8m', label: 'hackafou'});
       $scope.$apply();
       function heightFetched(err, height) {
           console.log("height fetched", height);
       }
       function historyFetched(err, walletAddress, history) {
-          console.log("history", walletAddress);
           walletAddress.balance = 0;
           walletAddress.height = 0;
           walletAddress.nOutputs = 0;
