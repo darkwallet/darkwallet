@@ -39,9 +39,6 @@ function WalletCtrl($scope) {
               $scope.generateAddress();
           }
       }
-      // testing address:
-      // $scope.addresses.push({address: '1Evy47MqD82HGx6n1KHkHwBgCwbsbQQT8m', label: 'hackafou'});
-      // identity.wallet.wallet.addresses.push('1Evy47MqD82HGx6n1KHkHwBgCwbsbQQT8m');
 
       // apply scope
       $scope.$apply();
@@ -52,7 +49,7 @@ function WalletCtrl($scope) {
       function historyFetched(err, walletAddress, history) {
           var client = DarkWallet.obeliskClient.client;
           // pass to the wallet to process outputs
-          $scope.identity.wallet.processHistory(walletAddress, history);
+          $scope.identity.wallet.processHistory(walletAddress.address, history);
 
           // now subscribe the address for notifications
           client.subscribe(walletAddress.address, function(err, res) {

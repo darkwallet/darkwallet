@@ -92,16 +92,25 @@ Wallet.prototype.getAddress = function(n, pocket) {
 }
 
 /**
- * Get the (relative) bip32 sequence for an address.
- * @private
+ * Get the wallet address structure for an address.
+ * The structure has the following fields:
+ *   index: bip32 sequence
+ *   label: label
+ *   balance: satoshis
+ *   nOutputs: number of outputs
+ *   address: address hash
  */
-Wallet.prototype.getAddressSequence(address) {
-    Object.keys(this.pubKeys).forEach(function(addressSequence) {
-         var walletAddress = this.pubKeys[addressSequence];
+Wallet.prototype.getWalletAddress = function(address) {
+    var keys = Object.keys(this.pubKeys);
+    for (var idx=0; idx<keys.length; idx++) {
+         var walletAddress = this.pubKeys[keys[idx]];
          if (walletAddress.address == address) {
-             return walletAddress.index;
+             return walletAddress;
          }
-    });
+    }
+    // following is for testing only
+    console.log("loading default label for unknown address");
+    return {address: address, label: 'hackafou'}
 }
 
 /**
@@ -131,8 +140,9 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
 
     // XXX Might need to sign several inputs
     var pocket, n;
-    var seq = this.getAddressSequence(utxo1.address);
-    if (seq) {
+    var outAddress = this.getWalletAddress(utxo1.address);
+    if (outAddress) {
+        var seq = outAddress.index;
         pocket = seq[0];
         n = seq[1];
     } else {
@@ -161,8 +171,13 @@ Wallet.prototype.processOutput = function(output) {
 /**
  * Process history report from obelisk
  */
-Wallet.prototype.processHistory = function(walletAddress, history) {
+Wallet.prototype.processHistory = function(address, history) {
     var self = this;
+    var walletAddress = this.getWalletAddress(address);
+    if (!walletAddress) {
+        console.log("no wallet record for", address);
+        return;
+    }
     // reset some numbers for the address
     walletAddress.balance = 0;
     walletAddress.height = 0;
