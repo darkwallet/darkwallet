@@ -148,6 +148,10 @@
             <h2>Fee</h2>
             <input ng-model="send.fee" type="text" class="long" value="0,00002">
           </label>
+          <label>
+            <h2>Password</h2>
+            <input ng-model="send.password" type="password" class="password" value="">
+          </label>
           <button class="button-and-icon button-submit" ng-click="sendBitcoins()"><div><i class="icon-large icon-btc"></i></div>Send</button>
         </form>
       </div>
@@ -184,7 +188,7 @@
             <th>Transactions</th>
             <th>Balance</th>
           </tr>
-          <tr ng-repeat="address in addresses" ng-show="address.balance > 0">
+          <tr ng-repeat="address in addresses" ng-show="address.balance != 0">
             <td>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td><i class="icon-large icon-qrcode"></i></td>

@@ -23,9 +23,13 @@ function Wallet(store) {
  * @param {Boolean/Integer} pocket Pocket to use (pocket 0 is default, 1 is change, >2 are used defined).
  * @param {Function} callback A callback where the private key will be provided.
  */
-Wallet.prototype.getPrivateKey = function(n, pocket, callback) {
+Wallet.prototype.getPrivateKey = function(n, pocket, password, callback) {
     // XXX need to actually extract the appropriate private key here.
-    callback(new Bitcoin.BIP32key("foo"));
+    var SHA256 = Bitcoin.Crypto.SHA256;
+    var passwordDigest = SHA256(SHA256(SHA256( password )));
+    var data = JSON.parse(sjcl.decrypt(passwordDigest, this.store.get('private')));
+    var masterPrivateKey = new Bitcoin.BIP32key(data.privKey);
+    callback(masterPrivateKey.ckd(pocket).ckd(n));
 }
 
 /**

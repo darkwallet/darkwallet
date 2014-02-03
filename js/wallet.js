@@ -158,14 +158,26 @@ function WalletCtrl($scope) {
       newTx.addOutput($scope.send.recipient, amount);
       newTx.addOutput(changeAddress.address, change);
 
-      console.log("change", change, "sending", amount+fee, "utxo", utxo.amount);
+      console.log("sending: change", change, "sending", amount+fee, "utxo", utxo.amount);
 
       // might need to sign several inputs
-      var outKey = keyRing.wallet.getPrivateKey(utxo.address.index[1], utxo.address.index[0]);
-      newTx.sign(0, outKey);
+      var pocket, n;
+      if (utxo.address.index) {
+          pocket = utxo.address.index[0];
+          n = utxo.address.index[1];
+      } else {
+          // XXX testing only
+          pocket = 0;
+          n = 0;
+      }
+      // XXX should catch exception on bad password:
+      //   sjcl.exception.corrupt {toString: function, message: "ccm: tag doesn't match"}
+      $scope.identity.wallet.getPrivateKey(n, pocket, $scope.send.password, function(outKey) {
+          newTx.sign(0, outKey.key);
 
-      // XXX send transaction
-      console.log($scope.send.recipient, $scope.send.amount, $scope.send.fee, newTx);
+          // XXX send transaction
+          console.log($scope.send.recipient, $scope.send.amount, $scope.send.fee, newTx);
+      });
   }
 
   $scope.section = 'history';
