@@ -108,9 +108,6 @@ Wallet.prototype.getWalletAddress = function(address) {
              return walletAddress;
          }
     }
-    // following is for testing only
-    console.log("loading default label for unknown address");
-    return {address: address, label: 'hackafou'}
 }
 
 /**
