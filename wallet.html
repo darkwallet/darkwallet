@@ -16,6 +16,7 @@
     <script src="js/model/wallet.js"></script>
     <script src="js/model/identity.js"></script>
     <script src="js/controllers/wallet.js"></script>
+    <script src="js/controllers/contacts.js"></script>
     <script src="js/darkwallet.js"></script>
     <link href="stylesheets/screen.css" rel="stylesheet">
     <link href="stylesheets/fonts.css" rel="stylesheet">
@@ -68,26 +69,32 @@
         <p>This could compromise your identity!</p>
       </div>
     </section>
-    <section class="blank" ng-show="section=='contacts'">
+    <section class="blank" ng-show="section=='contacts'" ng-controller="ContactsCtrl">
       <div class="container">
       <h2>Contacts</h2>
       <div class="contact" ng-repeat="contact in identity.contacts.contacts">
          {{contact.name}}
          {{contact.address}}
+         <button class="button" ng-click="editContact(contact)">Edit</button>
+         <button class="button" ng-click="deleteContact(contact)">Delete</button>
       </div>
+      <button class="button button-submit" ng-click="startCreateContact()">Create Contact</button>
       </div>
-      <div class="container">
-      <h2>Create contact</h2>
-      <form>
+      <div class="container" ng-show="subsection=='create' || subsection=='edit'">
+      <h2 ng-show="subsection=='create'">Create contact</h2>
+      <h2 ng-show="subsection=='edit'">Edit contact</h2>
+      <form name="contactForm">
           <label>
             <h2>Name</h2>
-            <input ng-model="newContact.name" type="text" />
+            <input ng-model="newContact.name" required type="text" />
           </label>
           <label>
             <h2>Address</h2>
-            <input ng-model="newContact.address" type="text" />
+            <input ng-model="newContact.address" required type="text" />
           </label>
-         <button class="button button-submit" ng-click="createContact()">Create</button>
+         <button ng-disabled="contactForm.$invalid" ng-show="subsection=='create'" class="button button-submit" ng-click="createContact()">Create</button>
+         <button ng-disabled="contactForm.$invalid" ng-show="subsection=='edit'" class="button button-submit" ng-click="createContact()">Save</button>
+         <button class="button" ng-click="subsection=''">Cancel</button>
       </form>
     </section>
     <section class="blank" ng-show="section=='wallet'">

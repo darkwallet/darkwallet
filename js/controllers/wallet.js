@@ -1,4 +1,4 @@
-/**
+
  * @fileOverview Wallet classes.
  */
 
@@ -13,11 +13,6 @@ function WalletCtrl($scope) {
   // generated addresses
   $scope.addresses = [];
   $scope.changeAddresses = [];
-
-  $scope.newContact = {};
-  $scope.createContact = function() {
-      $scope.identity.contacts.addContact($scope.newContact.name, $scope.newContact)
-  }
 
   var keyRing = DarkWallet.keyRing;
 
