@@ -10,6 +10,7 @@
 function Wallet(store) {
     this.is_cold = store.get('is_cold');
     this.pubKeys = store.init('pubkeys', {});
+    this.pockets = store.init('pockets', ['default', 'change']);
     this.mpk = store.get('mpk');
     if (!this.mpk) {
          console.log("Wallet without mpk!", this.mpk);
@@ -18,6 +19,44 @@ function Wallet(store) {
     this.wallet = new Bitcoin.Wallet(this.mpk);
     this.store = store;
     this.loadPubKeys();
+}
+
+/**
+ * Get balance for a specific pocket or all pockets
+ * @param {String or undefined} pocket Pocket number or all pockets if undefined
+ */
+Wallet.prototype.getBalance = function(pocket) {
+    var balance = 0;
+    var allAddresses = [];
+    var keys = Object.keys(this.pubKeys);
+    if (pocket === undefined) {
+        for(var idx=0; idx<keys.length; idx++) {
+            allAddresses.push(this.pubKeys[keys[idx]]);
+        }
+    } else {
+       var pocketIndex = this.pockets.indexOf(pocket);
+        for(var idx=0; idx<keys.length; idx++) {
+            var walletAddress = this.pubKeys[keys[idx]];
+            if (walletAddress.index[0] == pocketIndex) {
+                allAddresses.push(walletAddress);
+           }
+        }
+    }
+    allAddresses.forEach(function(walletAddress) {
+        balance += walletAddress.balance;
+    });
+    return balance;
+}
+
+/**
+ * Create pocket with the given name
+ * @param {String} name Name for the new pocket
+ */
+Wallet.prototype.createPocket = function(name) {
+    if (this.pockets.indexOf(name) == -1) {
+        this.pockets.push(name);
+        this.store.save();
+    }
 }
 
 /**

@@ -17,6 +17,7 @@
     <script src="js/model/identity.js"></script>
     <script src="js/controllers/wallet.js"></script>
     <script src="js/controllers/contacts.js"></script>
+    <script src="js/controllers/history.js"></script>
     <script src="js/darkwallet.js"></script>
     <link href="stylesheets/screen.css" rel="stylesheet">
     <link href="stylesheets/fonts.css" rel="stylesheet">
@@ -72,12 +73,21 @@
     <section class="blank" ng-show="section=='contacts'" ng-controller="ContactsCtrl">
       <div class="container">
       <h2>Contacts</h2>
-      <div class="contact" ng-repeat="contact in identity.contacts.contacts">
-         {{contact.name}}
-         {{contact.address}}
-         <button class="button" ng-click="editContact(contact)">Edit</button>
-         <button class="button" ng-click="deleteContact(contact)">Delete</button>
-      </div>
+      <table class="">
+       <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Total sent</th>
+                <th>Actions</th>
+       </tr>
+       <tr ng-repeat="contact in identity.contacts.contacts">
+                <td>{{contact.name}}</td>
+                <td>{{contact.address}}</td>
+                <td>{{contact.sent}}</td>
+               <td><button class="button" ng-click="editContact(contact)">Edit</button>
+                   <button class="button" ng-click="deleteContact(contact)">Delete</button></td>
+       </tr>
+      </table>
       <button class="button button-submit" ng-click="startCreateContact()">Create Contact</button>
       </div>
       <div class="container" ng-show="subsection=='create' || subsection=='edit'">
@@ -208,22 +218,20 @@
         </table>
       </section>
 
-      <section ng-show="subsection=='history'">
+      <section ng-show="subsection=='history'" ng-controller="HistoryCtrl">
         <div class="wallets">
           <div class="pockets">
-            <div class="main-balance">324.45346 BTC</div>
+            <div class="main-balance" ng-click="selectPocket()">{{totalBalance}} BTC</div>
             <div class="wallet-list">
               <ul>
-                <li>mini wallet number 1</li>
-                <li>bla bla wallet</li>
-                <li>my salary</li>
+                <li ng-repeat="pocket in identity.wallet.pockets" ng-click="selectPocket(pocket)" >{{pocket}}</li>
               </ul>
             </div>
             <div id="newpocket">New mini-wallet</div>
           </div>
           <div class="infos">
-            <h2>My mini-wallet 1</h2>
-            <div class="der down"><h2>4586.894465 BTC</h2></div>
+            <h2>{{pocketName}}</h2>
+            <div class="der down"><h2>{{balance}} BTC</h2></div>
             <h6>Master address: 15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</h6>
             <nav class="navigation tabs">
               <ul>

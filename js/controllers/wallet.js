@@ -1,4 +1,4 @@
-
+/**
  * @fileOverview Wallet classes.
  */
 
@@ -13,6 +13,7 @@ function WalletCtrl($scope) {
   // generated addresses
   $scope.addresses = [];
   $scope.changeAddresses = [];
+  $scope.subsection = 'history';
 
   var keyRing = DarkWallet.keyRing;
 
@@ -27,6 +28,7 @@ function WalletCtrl($scope) {
     }
     keyRing.get(names[0], function(identity) {
       $scope.identity = identity;
+      $scope.totalBalance = $scope.identity.wallet.getBalance();
       /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var splitKey = pubKeyIndex.split(",");
@@ -57,6 +59,7 @@ function WalletCtrl($scope) {
           }, function(addressUpdate) {
               console.log("update", addressUpdate)
           });
+          $scope.totalBalance = $scope.identity.wallet.getBalance();
       }
       function handleConnect() {
           var client = DarkWallet.obeliskClient.client;
