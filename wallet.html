@@ -68,6 +68,28 @@
         <p>This could compromise your identity!</p>
       </div>
     </section>
+    <section class="blank" ng-show="section=='contacts'">
+      <div class="container">
+      <h2>Contacts</h2>
+      <div class="contact" ng-repeat="contact in identity.contacts.contacts">
+         {{contact.name}}
+         {{contact.address}}
+      </div>
+      </div>
+      <div class="container">
+      <h2>Create contact</h2>
+      <form>
+          <label>
+            <h2>Name</h2>
+            <input ng-model="newContact.name" type="text" />
+          </label>
+          <label>
+            <h2>Address</h2>
+            <input ng-model="newContact.address" type="text" />
+          </label>
+         <button class="button button-submit" ng-click="createContact()">Create</button>
+      </form>
+    </section>
     <section class="blank" ng-show="section=='wallet'">
 
       <nav class="navigation tabs">
@@ -111,30 +133,10 @@
                 <th>Address</th>
                 <th>Total sent</th>
               </tr>
-              <tr>
-                <td>Sean's Outpost</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
+              <tr ng-repeat="contact in identity.contacts.contacts">
+                <td>{{contact.name}}</td>
+                <td>{{contact.address}}</td>
                 <td>234.45553</td>
-              </tr>
-              <tr>
-                <td>Unsystem</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-                <td>1.2349593</td>
-              </tr>
-              <tr>
-                <td>FSF</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-                <td>2.4459248</td>
-              </tr>
-              <tr>
-                <td>EFF</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-                <td>4.4343452</td>
-              </tr>
-              <tr>
-                <td>Internet Archive</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-                <td>6.4353534</td>
               </tr>
             </table>
           </div>
