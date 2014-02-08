@@ -111,16 +111,20 @@ Wallet.prototype.getAddress = function(n, pocket) {
         if (childKey.key.length) {
             mpPubKey = childKey.key;
         } else {
-            mpPubKey = Bitcoin.Util.sha256ripe160(childKey.key.getPub());
+            mpPubKey = childKey.key.getPub();
         }
         var mpKeyHash = Bitcoin.Util.sha256ripe160(mpPubKey);
         var address = new Bitcoin.Address(mpKeyHash);
+
+        var stealth = [0x09].concat(mpPubKey.concat([0,0]))
 
         this.pubKeys[addrId] = {
            'index': [pocket, n],
            'label': 'unused',
            'balance': 0,
            'nOutputs': 0,
+           'pubKey': mpPubKey,
+           'stealth': Bitcoin.base58.checkEncode(stealth),
            'address': address.toString()
         };
         this.store.save();
