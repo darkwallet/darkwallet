@@ -116,7 +116,7 @@ Wallet.prototype.getAddress = function(n, pocket) {
         var mpKeyHash = Bitcoin.Util.sha256ripe160(mpPubKey);
         var address = new Bitcoin.Address(mpKeyHash);
 
-        var stealth = [0x09].concat(mpPubKey.concat([0,0]))
+        var stealth = this.getStealthAddress(mpPubKey);
 
         this.pubKeys[addrId] = {
            'index': [pocket, n],
@@ -124,7 +124,7 @@ Wallet.prototype.getAddress = function(n, pocket) {
            'balance': 0,
            'nOutputs': 0,
            'pubKey': mpPubKey,
-           'stealth': Bitcoin.base58.checkEncode(stealth),
+           'stealth': Bitcoin.base58.checkEncode(stealth).slice(1),
            'address': address.toString()
         };
         this.store.save();
@@ -235,4 +235,108 @@ Wallet.prototype.processHistory = function(address, history) {
         // pass on to internal Bitcoin.Wallet
         self.processOutput({ output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
     });
+}
+
+/******************************************************
+ * Methods related to stealth addresses.
+ * Will be moved to another file and at the moment independent
+ * from the rest of the class.
+ */
+
+/*
+ * Create a bitcoin key with just public component.
+ * @private
+ */
+Wallet.prototype.importPublic = function(Q) {
+    //console.log('Q', Bitcoin.convert.bytesToHex(Q));
+    var key = new Bitcoin.Key();
+    delete key.priv;
+    key.setPub(Q);
+    return key;
+}
+
+/*
+ * Perform curvedh and stealth formatting
+ * @private
+ */
+Wallet.prototype.stealthDH = function(e, decKey) {
+    // diffie hellman stage
+    var point = decKey.getPubPoint().multiply(e);
+    //console.log('pub point', decKey.getPubPoint().toString());
+    //console.log('diffie point', point.toString());
+
+    // start the second stage
+    var S1 = [3].concat(point.getX().toBigInteger().toByteArrayUnsigned());
+    //console.log('S1', Bitcoin.convert.bytesToHex(S1));
+    var c = Bitcoin.Crypto.SHA256(S1, {asBytes: true});
+    return c;
+}
+
+
+/*
+ * Get the stealth address for a public key
+ */
+Wallet.prototype.getStealthAddress = function(mpPubKey) {
+    var stealth = [9].concat(mpPubKey.concat([0,0]));
+    return stealth;
+}
+
+/*
+ * Generate a nonce and related address to send to for a stealth address
+ * pubKey is bytes array
+ */
+Wallet.prototype.initiateStealth = function(pubKey) {
+    // new magic key
+    var encKey = new Bitcoin.Key();
+    var nonce = encKey.getPubPoint().getEncoded(true);
+
+    var decKey = this.importPublic(pubKey);
+    var c = this.stealthDH(encKey.priv, decKey)
+
+    // Now generate address
+    var bytes = decKey.getPubPoint()
+                          .add(new Bitcoin.Key(c).getPubPoint())
+                          .getEncoded(true);
+    // Turn to address
+    var mpKeyHash = Bitcoin.Util.sha256ripe160(bytes);
+    var address = new Bitcoin.Address(mpKeyHash);
+    return [address, Bitcoin.convert.bytesToHex(nonce)]
+}
+
+/*
+ * Generate key for receiving for a stealth address with a given nonce
+ */
+Wallet.prototype.uncoverStealth = function(masterSecret, nonce) {
+    var ecN = new Bitcoin.BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
+    var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret);
+
+    var decKey = this.importPublic(nonce);
+    var c = this.stealthDH(priv, decKey)
+
+    // Generate the specific secret for this keypair from our master
+    var secretInt = priv
+                        .add(Bitcoin.BigInteger.fromByteArrayUnsigned(c))
+                        .mod(ecN)
+
+    console.log('secretInt', secretInt.toString())
+
+    // generate point in curve...
+    var finalKey = new Bitcoin.Key(secretInt);
+    finalKey.compressed = true;
+    console.log(finalKey.getBitcoinAddress().toString());
+}
+
+
+/*
+ * Some tests...
+ */
+Wallet.prototype.testFinishStealth = function(secret, nonce) {
+    nonce = Bitcoin.convert.hexToBytes(nonce)
+    secret = Bitcoin.convert.hexToBytes(secret)
+    console.log(this.uncoverStealth(secret, nonce));
+}
+
+Wallet.prototype.testStealth = function(address) {
+    var bytes = Bitcoin.base58.checkDecode(address);
+    console.log(this.initiateStealth(bytes.slice(0,33)));
 }
