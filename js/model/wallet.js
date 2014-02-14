@@ -160,6 +160,10 @@ Wallet.prototype.getWalletAddress = function(address) {
 Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, password) {
     // find an output with enough funds
     var utxo = this.wallet.getUtxoToPay(amount+fee);
+    if (utxo.length > 1) {
+        console.log("several inputs not supported yet!");
+        return;
+    }
     // prepare some parameters
     var utxo1 = utxo[0];
     var outAmount = utxo1.value;
@@ -184,9 +188,8 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
         pocket = seq[0];
         n = seq[1];
     } else {
-        // XXX testing only
-        pocket = 0;
-        n = 0;
+        console.log("This address is not managed by the wallet!");
+        return;
     }
     // XXX should catch exception on bad password:
     //   sjcl.exception.corrupt {toString: function, message: "ccm: tag doesn't match"}
@@ -196,6 +199,14 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
         // XXX send transaction
         console.log("send tx", newTx);
         console.log("send tx", newTx.serializeHex());
+        var notifyTx = function(error, count) {
+            if (error) {
+                console.log("Error sending tx: " + error);
+                return;
+            }
+            console.log("tx radar: " + count);
+        }
+        DarkWallet.obeliskClient.broadcast_transaction(newTx.serializeHex(), notifyTx)
     });
 }
 
