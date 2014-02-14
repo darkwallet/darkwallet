@@ -287,7 +287,7 @@ Wallet.prototype.stealthDH = function(e, decKey) {
  * Get the stealth address for a public key
  */
 Wallet.prototype.getStealthAddress = function(mpPubKey) {
-    var stealth = [9].concat(mpPubKey.concat([0,0]));
+    var stealth = [6].concat(mpPubKey.concat([0,0,0,0,0]));
     return stealth;
 }
 
