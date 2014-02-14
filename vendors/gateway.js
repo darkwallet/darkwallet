@@ -28,7 +28,7 @@ function GatewayClient(connect_uri, handle_connect) {
  * @param {Function} handle_fetch Callback to handle the returned height
  */
 GatewayClient.prototype.fetch_last_height = function(handle_fetch) {
-    GatewayClient._checkFunction(handle_fetch);
+    GatewayClient._check_function(handle_fetch);
 
     this.make_request("fetch_last_height", [], function(response) {
         handle_fetch(response["error"], response["result"][0]);
@@ -39,11 +39,11 @@ GatewayClient.prototype.fetch_last_height = function(handle_fetch) {
  * Fetch transaction
  *
  * @param {String}   tx_hash Transaction identifier hash
- * @param {Function} handle_fetch Callback to handle the JSON object representing
- * the transaction 
+ * @param {Function} handle_fetch Callback to handle the JSON object
+ * representing the transaction 
  */
 GatewayClient.prototype.fetch_transaction = function(tx_hash, handle_fetch) {
-    GatewayClient._checkFunction(handle_fetch);
+    GatewayClient._check_function(handle_fetch);
 
     this.make_request("fetch_transaction", [tx_hash], function(response) {
         handle_fetch(response["error"], response["result"][0]);
@@ -54,11 +54,11 @@ GatewayClient.prototype.fetch_transaction = function(tx_hash, handle_fetch) {
  * Fetch history
  *
  * @param {String}   address
- * @param {Function} handle_fetch Callback to handle the JSON object representing
- * the history of the address
+ * @param {Function} handle_fetch Callback to handle the JSON object
+ * representing the history of the address
  */
 GatewayClient.prototype.fetch_history = function(address, handle_fetch) {
-    GatewayClient._checkFunction(handle_fetch);
+    GatewayClient._check_function(handle_fetch);
 
     this.make_request("fetch_history", [address], function(response) {
         handle_fetch(response["error"], response["result"][0]);
@@ -70,27 +70,86 @@ GatewayClient.prototype.fetch_history = function(address, handle_fetch) {
  *
  * @param {String}   address
  * @param {Function} handle_fetch Callback to handle subscription result
- * @param {Function} handle_update Callback to handle the JSON object representing
- * for updates
+ * @param {Function} handle_update Callback to handle the JSON object
+ * representing for updates
  */
-GatewayClient.prototype.subscribe = function(address, handle_fetch, handle_update)
+GatewayClient.prototype.subscribe = function(
+    address, handle_fetch, handle_update)
 {
     var self = this;
     this.make_request("subscribe_address", [address], function(response) {
         handle_fetch(response["error"], response["result"][0]);
         if (handle_update) {
-            self.handler_map["update."+address] = handle_update;
+            self.handler_map["update." + address] = handle_update;
         }
     });
 }
+
+GatewayClient.prototype.fetch_block_header = function(index, handle_fetch) {
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("fetch_block_header", [index], function(response) {
+        handle_fetch(response["error"], response["result"][0]);
+    });
+};
+
+GatewayClient.prototype.fetch_block_transaction_hashes = function(
+    index, handle_fetch)
+{
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("fetch_block_transaction_hashes", [index],
+        function(response) {
+            handle_fetch(response["error"], response["result"][0]);
+        });
+};
+
+GatewayClient.prototype.fetch_spend = function(outpoint, handle_fetch) {
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("fetch_spend", [outpoint], function(response) {
+        handle_fetch(response["error"], response["result"][0]);
+    });
+};
+
+GatewayClient.prototype.fetch_transaction_index = function(
+    tx_hash, handle_fetch)
+{
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("fetch_transaction_index", [tx_hash],
+        function(response) {
+            result = response["result"];
+            handle_fetch(response["error"], result[0], result[1]);
+        });
+};
+
+GatewayClient.prototype.fetch_block_height = function(blk_hash, handle_fetch)
+{
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("fetch_block_height", [blk_hash], function(response) {
+        handle_fetch(response["error"], response["result"][0]);
+    });
+};
+
+GatewayClient.prototype.broadcast_transaction = function(
+    raw_tx, handle_fetch)
+{
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("broadcast_transaction", [raw_tx], function(response) {
+        handle_fetch(response["error"], response["result"][0]);
+    });
+};
 
 /**
  * Renew
  *
  * @param {String}   address
  * @param {Function} handle_fetch Callback to handle subscription result
- * @param {Function} handle_update Callback to handle the JSON object representing
- * for updates
+ * @param {Function} handle_update Callback to handle the JSON object
+ * representing for updates
  */
 GatewayClient.prototype.renew = function(address, handle_fetch, handle_update)
 {
@@ -111,7 +170,7 @@ GatewayClient.prototype.renew = function(address, handle_fetch, handle_update)
  * @param {Function} handler 
  */
 GatewayClient.prototype.make_request = function(command, params, handler) {
-    GatewayClient._checkFunction(handler);
+    GatewayClient._check_function(handler);
 
     var id = GatewayClient._random_integer();
     var request = {
@@ -153,19 +212,16 @@ GatewayClient.prototype._on_message = function(evt) {
     this.on_message(evt)
     response = JSON.parse(evt.data);
     id = response.id;
-    if (this.handler_map[id]) {
-        handler = this.handler_map[id];
-        handler(response);
-    } else {
-        if (response.name == "update") {
-            handler = this.handler_map["update."+response.address];
-            if (handler) {
-                handler(response);
-            } else {
-                console.log("no handler for update");
-            }
-        }
+    // Should be a separate map entirely. This is a hack.
+    if (response.name == "update")
+        id = "update." + response.address;
+    // Prefer flat code over nested.
+    if (!this.handler_map[id]) {
+        console.log("Handler not found");
+        return;
     }
+    handler = this.handler_map[id];
+    handler(response);
 };
 
 /**
@@ -194,7 +250,7 @@ GatewayClient._random_integer = function() {
  * @throws {String} Parameter is not a function
  * @protected
  */
-GatewayClient._checkFunction = function(func) {
+GatewayClient._check_function = function(func) {
     if (typeof func !== 'function') {
         throw "Parameter is not a function";
     }
