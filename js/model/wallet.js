@@ -206,7 +206,7 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
             }
             console.log("tx radar: " + count);
         }
-        DarkWallet.obeliskClient.broadcast_transaction(newTx.serializeHex(), notifyTx)
+        DarkWallet.obeliskClient.client.broadcast_transaction(newTx.serializeHex(), notifyTx)
     });
 }
 
