@@ -176,6 +176,7 @@
       </div>
 
       <div class="container" ng-show="subsection=='receive'">
+        <h1>Balance: {{totalBalance/100000000}} btc</h1>
         <h2>Unused addresses</h2>
         <table class="full">
           <tr>
@@ -184,7 +185,7 @@
             <th>QR Code</th>
             <th>Payment Request</th>
           </tr>
-          <tr ng-repeat="address in addresses" ng-show="address.balance == 0">
+          <tr ng-repeat="address in addresses" ng-show="address.nOutputs == 0">
             <td>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td><i class="icon-large icon-qrcode"></i></td>
@@ -207,11 +208,27 @@
             <th>Transactions</th>
             <th>Balance</th>
           </tr>
-          <tr ng-repeat="address in addresses" ng-show="address.balance != 0">
+          <tr ng-repeat="address in addresses" ng-show="address.nOutputs != 0">
             <td>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td><i class="icon-large icon-qrcode"></i></td>
             <td><i class="icon-large icon-money"></i></td>
+            <td>{{address.nOutputs}}</td>
+            <td>{{address.balance/100000000}}</td>
+          </tr>
+        </table>
+      </section>
+
+      <section ng-show="subsection=='receive'">
+        <h2>Change addresses</h2>
+        <table class="full">
+          <tr>
+            <th>Address</th>
+            <th>Transactions</th>
+            <th>Balance</th>
+          </tr>
+          <tr ng-repeat="address in changeAddresses">
+            <td>{{address.address}}</td>
             <td>{{address.nOutputs}}</td>
             <td>{{address.balance/100000000}}</td>
           </tr>

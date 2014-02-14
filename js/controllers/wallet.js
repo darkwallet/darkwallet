@@ -60,12 +60,16 @@ function WalletCtrl($scope) {
               console.log("update", addressUpdate)
           });
           $scope.totalBalance = $scope.identity.wallet.getBalance();
+          $scope.$apply();
       }
       function handleConnect() {
           var client = DarkWallet.obeliskClient.client;
           client.fetch_last_height(heightFetched);
           // get balance for addresses
           $scope.addresses.forEach(function(walletAddress) {
+              client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
+          });
+          $scope.changeAddresses.forEach(function(walletAddress) {
               client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
           });
       }
