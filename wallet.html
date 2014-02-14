@@ -233,6 +233,9 @@
             <td>{{address.balance/100000000}}</td>
           </tr>
         </table>
+        <button class="button button-and-icon sep" ng-click="generateAddress(1)">
+          <div><i class="icon-large icon-btc"></i></div>Generate change address
+        </button>
       </section>
 
       <section ng-show="subsection=='history'" ng-controller="HistoryCtrl">
