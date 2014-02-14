@@ -162,14 +162,12 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     var utxo = this.wallet.getUtxoToPay(amount+fee);
     // prepare some parameters
     var utxo1 = utxo[0];
-    var txHash = utxo1.output.split(':')[0];
-    var outIndex = parseInt(utxo1.output.split(':')[1]);
     var outAmount = utxo1.value;
 
     // now prepare transaction
     var newTx = new Bitcoin.Transaction();
     // add inputs
-    newTx.addInput(txHash, outIndex);
+    newTx.addInput(utxo1.output);
     var change = outAmount - (amount + fee);
 
     // add outputs
@@ -197,6 +195,7 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
 
         // XXX send transaction
         console.log("send tx", newTx);
+        console.log("send tx", newTx.serializeHex());
     });
 }
 
