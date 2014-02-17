@@ -6,6 +6,7 @@ Stealth = {};
 
 /*
  * Create a bitcoin key with just public component.
+ * @param {Object} Q public key
  * @private
  */
 Stealth.importPublic = function(Q) {
@@ -18,6 +19,8 @@ Stealth.importPublic = function(Q) {
 
 /*
  * Perform curvedh and stealth formatting
+ * @param {Bitcoin.BigInteger} e private part
+ * @param {Bitcoin.Key} decKey public key
  * @private
  */
 Stealth.stealthDH = function(e, decKey) {
@@ -36,6 +39,7 @@ Stealth.stealthDH = function(e, decKey) {
 
 /*
  * Get the stealth address for a public key
+ * @param {Object} mpPubKey Public key as byte array
  */
 Stealth.getStealthAddress = function(mpPubKey) {
     var stealth = [6].concat(mpPubKey.concat([0,0,0,0,0]));
@@ -44,7 +48,7 @@ Stealth.getStealthAddress = function(mpPubKey) {
 
 /*
  * Generate a key and related address to send to for a stealth address
- * pubKey is bytes array
+ * @param {Object} pubKey Public key as byte array
  */
 Stealth.initiateStealth = function(pubKey) {
     // new magic key
@@ -66,6 +70,8 @@ Stealth.initiateStealth = function(pubKey) {
 
 /*
  * Generate key for receiving for a stealth address with a given ephemkey
+ * @param {Object} masterSecret Secret as byte array
+ * @param {Object} ephemKey Ephemeral key data as byte array
  */
 Stealth.uncoverStealth = function(masterSecret, ephemKey) {
     var ecN = new Bitcoin.BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
@@ -88,6 +94,21 @@ Stealth.uncoverStealth = function(masterSecret, ephemKey) {
     return finalKey;
 }
 
+/*
+ * Build the stealth nonce output so it can be addred to a transaction.
+ * returns a Bitcoin.TransactionOut object.
+ * @param {Object} ephemKey Ephemeral key data as byte array
+ * @param {Number} nonce Nonce for the output
+ */
+Stealth.buildNonceOutput = function(ephemKey, nonce) {
+    var ephemScript = new Bitcoin.Script();
+    ephemScript.writeOp(Bitcoin.Opcode.map.OP_RETURN);
+    var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4);
+    ephemScript.writeBytes([6].concat(nonceBytes.concat(ephemKey)));
+    var stealthOut = new Bitcoin.TransactionOut({script: ephemScript, value: 0});
+    return stealthOut;
+}
+
 
 /*
  * Some tests...
@@ -103,14 +124,5 @@ Stealth.testStealth = function(address) {
     console.log(Stealth.initiateStealth(bytes.slice(1,34)));
 }
 
-
-Stealth.buildNonceOutput = function(ephemKey, nonce) {
-    var ephemScript = new Bitcoin.Script();
-    ephemScript.writeOp(Bitcoin.Opcode.map.OP_RETURN);
-    var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4);
-    ephemScript.writeBytes([6].concat(nonceBytes.concat(ephemKey)));
-    var stealthOut = new Bitcoin.TransactionOut({script: ephemScript, value: 0});
-    return stealthOut;
-}
 
 
