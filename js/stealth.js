@@ -2,12 +2,6 @@
  * @fileOverview Stealth support.
  */
 
-/******************************************************
- * Methods related to stealth addresses.
- * Will be moved to another file and at the moment independent
- * from the rest of the class.
- */
-
 Stealth = {};
 
 /*
