@@ -8,6 +8,7 @@
     <script src="vendors/angular.min.js"></script>
     <script src="vendors/gateway.js"></script>
     <script src="js/obelisk.js"></script>
+    <script src="js/stealth.js"></script>
     <script src="vendors/sjcl/sjcl.js"></script>
     <script src="vendors/bitcoinjs-lib/bitcoinjs.js"></script>
     <script src="js/model/store.js"></script>
@@ -178,7 +179,6 @@
 
       <div class="container" ng-show="subsection=='receive'">
         <h1>Balance: {{totalBalance/100000000}} btc</h1>
-        <b>Stealth: {{stealthAddress}}</b>
         <h2>Unused addresses</h2>
         <table class="full">
           <tr>
