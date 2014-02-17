@@ -161,11 +161,11 @@ Wallet.prototype.getWalletAddress = function(address) {
  */
 Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, password) {
     // test for stealth
-    var ephemKey;
+    var ephemKey, stealthPrefix;
     if (recipient[0] == 'S') {
-        console.log("Stealth payment");
         var bytes = Bitcoin.base58.checkDecode('1'+recipient);
-        var stealthData = this.initiateStealth(bytes.slice(0,33));
+        stealthPrefix = bytes.slice(34, 39);
+        var stealthData = this.initiateStealth(bytes.slice(1,34));
         recipient = stealthData[0].toString();
         ephemKey = stealthData[1];
     }
@@ -189,10 +189,12 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     newTx.addOutput(recipient, amount);
     newTx.addOutput(changeAddress.address, change);
     if (ephemKey) {
-        var ephemScript = new Bitcoin.Script();
-        ephemScript.writeOp(Bitcoin.Opcode.map.OP_RETURN);
-        ephemScript.writeBytes(Bitcoin.convert.hexToBytes('06deadbeef'+ephemKey));
-        var stealthOut = new Bitcoin.TransactionOut({script: ephemScript});
+        if (stealthPrefix[0] > 0) {
+            console.log("Stealth prefix not supported yet!");
+            return;
+        }
+        var nonce = 0;
+        var stealthOut = this.buildNonceOutput(ephemKey, nonce);
         newTx.addOutput(stealthOut);
     }
 
@@ -269,6 +271,17 @@ Wallet.prototype.processHistory = function(address, history) {
     });
 }
 
+
+Wallet.prototype.buildNonceOutput = function(ephemKey, nonce) {
+    var ephemScript = new Bitcoin.Script();
+    ephemScript.writeOp(Bitcoin.Opcode.map.OP_RETURN);
+    var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4);
+    ephemScript.writeBytes([6].concat(nonceBytes.concat(ephemKey)));
+    var stealthOut = new Bitcoin.TransactionOut({script: ephemScript, value: 0});
+    return stealthOut;
+}
+
+
 /**
  * Process stealth array from obelisk.
  * The array comes 
@@ -335,13 +348,13 @@ Wallet.prototype.getStealthAddress = function(mpPubKey) {
 }
 
 /*
- * Generate a nonce and related address to send to for a stealth address
+ * Generate a key and related address to send to for a stealth address
  * pubKey is bytes array
  */
 Wallet.prototype.initiateStealth = function(pubKey) {
     // new magic key
     var encKey = new Bitcoin.Key();
-    var nonce = encKey.getPubPoint().getEncoded(true);
+    var ephemKey = encKey.getPubPoint().getEncoded(true);
 
     var decKey = this.importPublic(pubKey);
     var c = this.stealthDH(encKey.priv, decKey)
@@ -353,17 +366,17 @@ Wallet.prototype.initiateStealth = function(pubKey) {
     // Turn to address
     var mpKeyHash = Bitcoin.Util.sha256ripe160(bytes);
     var address = new Bitcoin.Address(mpKeyHash);
-    return [address, Bitcoin.convert.bytesToHex(nonce)]
+    return [address, ephemKey]
 }
 
 /*
- * Generate key for receiving for a stealth address with a given nonce
+ * Generate key for receiving for a stealth address with a given ephemkey
  */
-Wallet.prototype.uncoverStealth = function(masterSecret, nonce) {
+Wallet.prototype.uncoverStealth = function(masterSecret, ephemKey) {
     var ecN = new Bitcoin.BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
     var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret);
 
-    var decKey = this.importPublic(nonce);
+    var decKey = this.importPublic(ephemKey);
     var c = this.stealthDH(priv, decKey)
 
     // Generate the specific secret for this keypair from our master
@@ -384,13 +397,13 @@ Wallet.prototype.uncoverStealth = function(masterSecret, nonce) {
 /*
  * Some tests...
  */
-Wallet.prototype.testFinishStealth = function(secret, nonce) {
-    nonce = Bitcoin.convert.hexToBytes(nonce)
+Wallet.prototype.testFinishStealth = function(secret, ephemKey) {
+    ephemKey = Bitcoin.convert.hexToBytes(ephemKey)
     secret = Bitcoin.convert.hexToBytes(secret)
-    console.log(this.uncoverStealth(secret, nonce));
+    console.log(this.uncoverStealth(secret, ephemKey));
 }
 
 Wallet.prototype.testStealth = function(address) {
     var bytes = Bitcoin.base58.checkDecode('1'+address);
-    console.log(this.initiateStealth(bytes.slice(0,33)));
+    console.log(this.initiateStealth(bytes.slice(1,34)));
 }
