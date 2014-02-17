@@ -172,11 +172,13 @@
             <input ng-model="send.password" type="password" class="password" value="">
           </label>
           <button class="button-and-icon button-submit" ng-click="sendBitcoins()"><div><i class="icon-large icon-btc"></i></div>Send</button>
+          <button class="button-and-icon button-submit" ng-click="receiveStealth()"><div><i class="icon-large icon-btc"></i></div>Receive stealth</button>
         </form>
       </div>
 
       <div class="container" ng-show="subsection=='receive'">
         <h1>Balance: {{totalBalance/100000000}} btc</h1>
+        <b>Stealth: {{stealthAddress}}</b>
         <h2>Unused addresses</h2>
         <table class="full">
           <tr>
@@ -251,8 +253,9 @@
           </div>
           <div class="infos">
             <h2>{{pocket.name}}</h2>
-            <div class="der down"><h2>{{balance}} BTC</h2></div>
+            <div class="der down"><h2>{{balance/100000000}} BTC</h2></div>
             <h6 ng-show="pocket.mpk">Master address: {{pocket.mpk}}</h6>
+            <h6 ng-show="pocket.stealth">Stealth address: {{pocket.stealth}}</h6>
             <nav class="navigation tabs">
               <ul>
                 <li>

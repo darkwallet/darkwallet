@@ -32,13 +32,16 @@ function WalletCtrl($scope) {
       /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var splitKey = pubKeyIndex.split(",");
-          $scope.generateAddress(parseInt(splitKey[0]));
+          // Regular addresses
+          if (splitKey.length == 2) {
+              $scope.generateAddress(parseInt(splitKey[0]));
+          }
       });
       /* Initialize if empty wallet */
       if ($scope.addresses.length == 0) {
           // generate 5 addresses for now
           for(var idx=0; idx<5; idx++) {
-              $scope.generateAddress();
+              $scope.generateAddress(0);
           }
       }
 
@@ -80,7 +83,7 @@ function WalletCtrl($scope) {
   // scope function to generate (or load from cache) a new address
   $scope.generateAddress = function(isChange) {
     var addressArray = isChange ? $scope.changeAddresses : $scope.addresses;
-    var walletAddress = $scope.identity.wallet.getAddress(addressArray.length, isChange);
+    var walletAddress = $scope.identity.wallet.getAddress([isChange, addressArray.length]);
 
     // add to scope
     addressArray.push(walletAddress)
@@ -105,5 +108,17 @@ function WalletCtrl($scope) {
                                           $scope.send.password);
   }
 
+  $scope.receiveStealth = function() {
+      var client = DarkWallet.obeliskClient.client;
+      var stealth_fetched = function(error, results) {
+          if (error) {
+              write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
+              return;
+          }
+          console.log("STEALTH", results);
+          $scope.identity.wallet.processStealth(results, $scope.send.password);
+      }
+      client.fetch_stealth([0,0], stealth_fetched, 0);
+  }
   $scope.section = 'history';
 };

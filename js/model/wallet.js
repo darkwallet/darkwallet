@@ -72,41 +72,43 @@ Wallet.prototype.loadPubKeys = function() {
 
 /**
  * Get the private key for the given address index
- * @param {Integer} n Sequence number for the address.
- * @param {Boolean/Integer} pocket Pocket to use (pocket 0 is default, 1 is change, >2 are used defined).
+ * @param {Array} seq Array for the bip32 sequence to retrieve address for
  * @param {Function} callback A callback where the private key will be provided.
  */
-Wallet.prototype.getPrivateKey = function(n, pocket, password, callback) {
-    // XXX need to actually extract the appropriate private key here.
+Wallet.prototype.getPrivateKey = function(seq, password, callback) {
+    // clone seq since we're mangling it
+    var workSeq = seq.slice(0);
     var SHA256 = Bitcoin.Crypto.SHA256;
     var passwordDigest = SHA256(SHA256(SHA256( password )));
     var data = JSON.parse(sjcl.decrypt(passwordDigest, this.store.get('private')));
-    var masterPrivateKey = new Bitcoin.BIP32key(data.privKey);
-    callback(masterPrivateKey.ckd(pocket).ckd(n));
+    var key = new Bitcoin.BIP32key(data.privKey);
+    while(workSeq.length) {
+        key = key.ckd(workSeq.shift());
+    }
+    callback(key);
 }
 
 /**
  * Get an address from this wallet.
- * @param {Integer} n Sequence number for the address.
- * @param {Boolean/Integer} pocket Pocket to use (pocket 0 is default, 1 is change, >2 are used defined).
+ * @param {Array} seq Array for the bip32 sequence to retrieve address for
  */
-Wallet.prototype.getAddress = function(n, pocket) {
-    if (!pocket) {
-        pocket = 0;
-    }
-    var addrId = [pocket, n];
-    if (this.pubKeys[addrId]) {
-        return this.pubKeys[addrId];
+Wallet.prototype.getAddress = function(seq) {
+    if (this.pubKeys[seq]) {
+        return this.pubKeys[seq];
     }
     else {
         // derive from mpk
         var mpKey = new Bitcoin.BIP32key(this.mpk);
 
+        var workSeq = seq.slice(0);
+        var childKey = mpKey;
+        while(workSeq.length) {
+            childKey = childKey.ckd(workSeq.shift());
+        }
         // BIP32 js support is still missing some part and we can't get addresses
         // from pubkey yet, unless we do it custom like here...:
         // (mpKey.key.getBitcoinAddress doesn't work since 'key' is not a key
         // object but binary representation).
-        var childKey = mpKey.ckd(pocket).ckd(n);
         var mpPubKey;
         if (childKey.key.length) {
             mpPubKey = childKey.key;
@@ -118,8 +120,8 @@ Wallet.prototype.getAddress = function(n, pocket) {
 
         var stealth = this.getStealthAddress(mpPubKey);
 
-        this.pubKeys[addrId] = {
-           'index': [pocket, n],
+        this.pubKeys[seq] = {
+           'index': seq,
            'label': 'unused',
            'balance': 0,
            'nOutputs': 0,
@@ -130,7 +132,7 @@ Wallet.prototype.getAddress = function(n, pocket) {
         this.store.save();
         // add to internal bitcoinjs-lib wallet
         this.wallet.addresses.push(address.toString());
-        return this.pubKeys[addrId];
+        return this.pubKeys[seq];
     }
 }
 
@@ -209,7 +211,7 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     }
     // XXX should catch exception on bad password:
     //   sjcl.exception.corrupt {toString: function, message: "ccm: tag doesn't match"}
-    this.getPrivateKey(n, pocket, password, function(outKey) {
+    this.getPrivateKey([pocket, n], password, function(outKey) {
         newTx.sign(0, outKey.key);
 
         // XXX send transaction
@@ -264,6 +266,27 @@ Wallet.prototype.processHistory = function(address, history) {
         }
         // pass on to internal Bitcoin.Wallet
        self.processOutput({ output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
+    });
+}
+
+/**
+ * Process stealth array from obelisk.
+ * The array comes 
+ */
+Wallet.prototype.processStealth = function(stealthArray, password) {
+    var self = this;
+    stealthArray.forEach(function(stealthData) {
+        var ephemkey = Bitcoin.convert.hexToBytes(stealthData[0]).slice(5);
+        var address = stealthData[1];
+        var txId = stealthData[2];
+
+        // for now checking just the first stealth address derived from pocket 0 "default"
+        self.getPrivateKey([0], password, function(privKey) {
+            var stAddr = self.uncoverStealth(privKey.key.export('bytes'), ephemkey);
+            if (address == stAddr.getBitcoinAddress().toString()) {
+                console.log("STEALTH MATCH!!");
+            }
+        });
     });
 }
 
@@ -354,6 +377,7 @@ Wallet.prototype.uncoverStealth = function(masterSecret, nonce) {
     var finalKey = new Bitcoin.Key(secretInt);
     finalKey.compressed = true;
     console.log(finalKey.getBitcoinAddress().toString());
+    return finalKey;
 }
 
 

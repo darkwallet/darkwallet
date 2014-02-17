@@ -10,6 +10,8 @@ function HistoryCtrl($scope) {
       if (pocket === undefined) {
           $scope.pocket.name = "All Pockets";
           $scope.pocket.index = undefined;
+          $scope.pocket.mpk = undefined;
+          $scope.pocket.stealth = undefined;
       } else {
           $scope.pocket.index = $scope.identity.wallet.pockets.indexOf(pocket);
           $scope.pocket.name = pocket;
@@ -18,6 +20,7 @@ function HistoryCtrl($scope) {
 	  var mpKey = new Bitcoin.BIP32key($scope.identity.wallet.mpk);
           var childKey = mpKey.ckd($scope.pocket.index);
           $scope.pocket.mpk = childKey.getPub().serialize().substring(0,64)+'...';
+          $scope.pocket.stealth = $scope.identity.wallet.getAddress([$scope.pocket.index]).stealth;
       }
       $scope.balance = $scope.identity.wallet.getBalance(pocket);
   }
