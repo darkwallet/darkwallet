@@ -75,7 +75,7 @@ Stealth.initiateStealth = function(pubKey) {
  */
 Stealth.uncoverStealth = function(masterSecret, ephemKey) {
     var ecN = new Bitcoin.BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
-    var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret);
+    var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
 
     var decKey = Stealth.importPublic(ephemKey);
     var c = Stealth.stealthDH(priv, decKey)
@@ -85,7 +85,7 @@ Stealth.uncoverStealth = function(masterSecret, ephemKey) {
                         .add(Bitcoin.BigInteger.fromByteArrayUnsigned(c))
                         .mod(ecN)
 
-    console.log('secretInt', secretInt.toString())
+    console.log('secretInt', secretInt.toString());
 
     // generate point in curve...
     var finalKey = new Bitcoin.Key(secretInt);
@@ -119,9 +119,15 @@ Stealth.testFinishStealth = function(secret, ephemKey) {
     console.log(Stealth.uncoverStealth(secret, ephemKey));
 }
 
-Stealth.testStealth = function(address) {
+Stealth.testStealth = function(identity, password, address) {
     var bytes = Bitcoin.base58.checkDecode('1'+address);
-    console.log(Stealth.initiateStealth(bytes.slice(1,34)));
+    var res1 = Stealth.initiateStealth(bytes.slice(1,34));
+    var address = res1[0];
+    console.log(address.toString())
+    var ephemkey = res1[1];
+    DarkWallet.keyRing.identities[identity].wallet.getPrivateKey([0], password, function(privKey) {
+        Stealth.uncoverStealth(privKey.key.export('bytes').slice(0,32), ephemkey);
+    });
 }
 
 
