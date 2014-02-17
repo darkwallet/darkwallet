@@ -158,6 +158,15 @@ Wallet.prototype.getWalletAddress = function(address) {
  * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
  */
 Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, password) {
+    // test for stealth
+    var ephemKey;
+    if (recipient[0] == 'S') {
+        console.log("Stealth payment");
+        var bytes = Bitcoin.base58.checkDecode('1'+recipient);
+        var stealthData = this.initiateStealth(bytes.slice(0,33));
+        recipient = stealthData[0].toString();
+        ephemKey = stealthData[1];
+    }
     // find an output with enough funds
     var utxo = this.wallet.getUtxoToPay(amount+fee);
     if (utxo.length > 1) {
@@ -177,6 +186,13 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     // add outputs
     newTx.addOutput(recipient, amount);
     newTx.addOutput(changeAddress.address, change);
+    if (ephemKey) {
+        var ephemScript = new Bitcoin.Script();
+        ephemScript.writeOp(Bitcoin.Opcode.map.OP_RETURN);
+        ephemScript.writeBytes(Bitcoin.convert.hexToBytes('06deadbeef'+ephemKey));
+        var stealthOut = new Bitcoin.TransactionOut({script: ephemScript});
+        newTx.addOutput(stealthOut);
+    }
 
     console.log("sending:", recipient ,"change", change, "sending", amount+fee, "utxo", outAmount);
 
@@ -206,7 +222,11 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
             }
             console.log("tx radar: " + count);
         }
-        DarkWallet.obeliskClient.client.broadcast_transaction(newTx.serializeHex(), notifyTx)
+        if (ephemKey) {
+            console.log("not broadcasting stealth tx yet...");
+        } else {
+            DarkWallet.obeliskClient.client.broadcast_transaction(newTx.serializeHex(), notifyTx)
+        }
     });
 }
 
@@ -243,7 +263,7 @@ Wallet.prototype.processHistory = function(address, history) {
             walletAddress.height = Math.max(tx[2], walletAddress.height);
         }
         // pass on to internal Bitcoin.Wallet
-        self.processOutput({ output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
+       self.processOutput({ output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
     });
 }
 
@@ -347,6 +367,6 @@ Wallet.prototype.testFinishStealth = function(secret, nonce) {
 }
 
 Wallet.prototype.testStealth = function(address) {
-    var bytes = Bitcoin.base58.checkDecode(address);
+    var bytes = Bitcoin.base58.checkDecode('1'+address);
     console.log(this.initiateStealth(bytes.slice(0,33)));
 }
