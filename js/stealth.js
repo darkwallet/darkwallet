@@ -152,25 +152,11 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
 }
 
 /*
- * Some tests...
+ * Add stealth output to the given transaction and return destination address.
+ * returns the new recipient (standard bitcoin address)
+ * @param {String} recipient Stealth address in base58 format.
+ * @param {Bitcoin.Transaction} newTx Transaction where we want to add stealth outputs.
  */
-Stealth.testFinishStealth = function(secret, ephemKey) {
-    ephemKey = Bitcoin.convert.hexToBytes(ephemKey)
-    secret = Bitcoin.convert.hexToBytes(secret)
-    console.log(Stealth.uncoverStealth(secret, ephemKey));
-}
-
-Stealth.testStealth = function(identity, password, address) {
-    var bytes = Bitcoin.base58.checkDecode(address);
-    var res1 = Stealth.initiateStealth(bytes.slice(0,33));
-    var address = res1[0];
-    console.log(address.toString(), bytes, bytes.slice(0,33))
-    var ephemkey = res1[1];
-    DarkWallet.keyRing.identities[identity].wallet.getPrivateKey([0], password, function(privKey) {
-        Stealth.uncoverStealth(privKey.key.export('bytes').slice(0,32), ephemkey);
-    });
-}
-
 
 Stealth.addStealth = function(recipient, newTx) {
     var stealthData, outHash, ephemKey, nonce;
@@ -197,4 +183,26 @@ Stealth.addStealth = function(recipient, newTx) {
     newTx.addOutput(stealthOut);
     return recipient;
 }
+
+/*
+ * Some tests...
+ */
+Stealth.testFinishStealth = function(secret, ephemKey) {
+    ephemKey = Bitcoin.convert.hexToBytes(ephemKey)
+    secret = Bitcoin.convert.hexToBytes(secret)
+    console.log(Stealth.uncoverStealth(secret, ephemKey));
+}
+
+Stealth.testStealth = function(identity, password, address) {
+    var bytes = Bitcoin.base58.checkDecode(address);
+    var res1 = Stealth.initiateStealth(bytes.slice(0,33));
+    var address = res1[0];
+    console.log(address.toString(), bytes, bytes.slice(0,33))
+    var ephemkey = res1[1];
+    DarkWallet.keyRing.identities[identity].wallet.getPrivateKey([0], password, function(privKey) {
+        Stealth.uncoverStealth(privKey.key.export('bytes').slice(0,32), ephemkey);
+    });
+}
+
+
 
