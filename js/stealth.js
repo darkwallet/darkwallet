@@ -172,4 +172,29 @@ Stealth.testStealth = function(identity, password, address) {
 }
 
 
+Stealth.addStealth = function(recipient, newTx) {
+    var stealthData, outHash, ephemKey, nonce;
+    var stealthBytes = Bitcoin.base58.checkDecode(recipient);
+    var stealthPrefix = stealthBytes.slice(33, 38);
+    // iterate since we might not find a nonce for our required prefix then
+    // we need to create a new ephemkey
+    do {
+        stealthData = Stealth.initiateStealth(stealthBytes.slice(0,33));
+        recipient = stealthData[0].toString();
+        ephemKey = stealthData[1];
+        nonce = 0;
+        // iterate through nonces to find a match for given prefix
+        do {
+	    var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4)
+            outHash = Bitcoin.Util.sha256ripe160(nonceBytes.concat(ephemKey));
+            nonce += 1;
+        } while(nonce < 4294967296 && !Stealth.checkPrefix(outHash, stealthPrefix));
+
+    } while(!Stealth.checkPrefix(outHash, stealthPrefix));
+
+    // we finally mined the ephemKey that makes the hash match
+    var stealthOut = Stealth.buildNonceOutput(ephemKey, nonce);
+    newTx.addOutput(stealthOut);
+    return recipient;
+}
 
