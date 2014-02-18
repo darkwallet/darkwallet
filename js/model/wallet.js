@@ -66,6 +66,7 @@ Wallet.prototype.createPocket = function(name) {
 Wallet.prototype.loadPubKeys = function() {
     var self = this;
     Object.keys(this.pubKeys).forEach(function(index) {
+        console.log("load key", self.pubKeys[index].address);
         self.wallet.addresses.push(self.pubKeys[index].address);
     });
 }
@@ -78,12 +79,7 @@ Wallet.prototype.loadPubKeys = function() {
 Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     // clone seq since we're mangling it
     var workSeq = seq.slice(0);
-    var SHA256 = Bitcoin.Crypto.SHA256;
-    var passwordDigest = SHA256(SHA256(SHA256( password )));
-    var data = JSON.parse(sjcl.decrypt(passwordDigest, this.store.get('private')));
-    if (!data.privKeys) {
-        data.privKeys = {};
-    }
+    var data = this.getPrivateData(password);
     if (data.privKeys[seq]) {
         var key = Bitcoin.Key(data.privKeys[seq]);
         callback(key);
@@ -98,18 +94,38 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     callback(key.key);
 }
 
-Wallet.prototype.storePrivateKey = function(seq, password, key) {
+/**
+ * Get the decrypted private user data.
+ * @param {String} password Password to decrypt the private data
+ */
+Wallet.prototype.getPrivateData = function(password) {
     var SHA256 = Bitcoin.Crypto.SHA256;
     var passwordDigest = SHA256(SHA256(SHA256( password )));
     var data = JSON.parse(sjcl.decrypt(passwordDigest, this.store.get('private')));
     if (!data.privKeys) {
         data.privKeys = {};
     }
+    return data;
+}
+
+/**
+ * Store the given private key
+ * @param {Array} seq Address sequence (bip32 or stealth id)
+ * @param {String} password Password to decrypt the private data
+ * @param {Bitcoin.Key} key Private key to store
+ */
+Wallet.prototype.storePrivateKey = function(seq, password, key) {
+    var data = this.getPrivateData(password);
     data.privKeys[seq] = key.export('bytes');
     var privData = Identity.encrypt(data, password);
     this.store.set('private', privData);
 }
 
+/**
+ * Store the given public address
+ * @param {Array} seq Address sequence (bip32 or stealth id)
+ * @param {Bitcoin.Key} key Bitcoin.Key or public key bytes
+ */
 Wallet.prototype.storeAddress = function(seq, key) {
     // BIP32 js support is still missing some part and we can't get addresses
     // from pubkey yet, unless we do it custom like here...:
