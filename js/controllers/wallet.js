@@ -33,8 +33,12 @@ function WalletCtrl($scope) {
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var splitKey = pubKeyIndex.split(",");
           // Regular addresses
-          if (splitKey.length == 2) {
-              $scope.generateAddress(parseInt(splitKey[0]));
+          if (splitKey.length >= 2) {
+              var walletAddress = $scope.identity.wallet.getAddress(pubKeyIndex);
+
+              // add to scope
+              var addressArray = parseInt(splitKey[0]) ? $scope.changeAddresses : $scope.addresses;
+              addressArray.push(walletAddress)
           }
       });
       /* Initialize if empty wallet */
@@ -81,9 +85,12 @@ function WalletCtrl($scope) {
   });
 
   // scope function to generate (or load from cache) a new address
-  $scope.generateAddress = function(isChange) {
+  $scope.generateAddress = function(isChange, n) {
     var addressArray = isChange ? $scope.changeAddresses : $scope.addresses;
-    var walletAddress = $scope.identity.wallet.getAddress([isChange, addressArray.length]);
+    if (n === undefined || n === null) {
+        n = addressArray.length;
+    }
+    var walletAddress = $scope.identity.wallet.getAddress([isChange, n]);
 
     // add to scope
     addressArray.push(walletAddress)

@@ -27,7 +27,7 @@ function Identity(store, seed, password) {
  * @param {String} password Password for the identity crypt.
  * @return {String} The ciphertext serialized data.
  */
-Identity.prototype.encrypt = function(data, password) {
+Identity.encrypt = function(data, password) {
     var Crypto = Bitcoin.Crypto;
     var passwordDigest = Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password)));
     return sjcl.encrypt(passwordDigest, JSON.stringify(data));
@@ -52,7 +52,7 @@ Identity.prototype.generate = function(seed, password) {
 
     // TODO we probably don't want to save the seed later here, but let's do it
     // for now to make development easier.
-    var privData = this.encrypt({privKey: privKey, seed: seed}, password);
+    var privData = Identity.encrypt({privKey: privKey, seed: seed}, password);
 
     this.store.set('mpk', pubKey);
     this.store.set('version', 1);

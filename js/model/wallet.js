@@ -81,11 +81,64 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     var SHA256 = Bitcoin.Crypto.SHA256;
     var passwordDigest = SHA256(SHA256(SHA256( password )));
     var data = JSON.parse(sjcl.decrypt(passwordDigest, this.store.get('private')));
+    if (!data.privKeys) {
+        data.privKeys = {};
+    }
+    if (data.privKeys[seq]) {
+        var key = Bitcoin.Key(data.privKeys[seq]);
+        callback(key);
+        return;
+    }
     var key = new Bitcoin.BIP32key(data.privKey);
     while(workSeq.length) {
         key = key.ckd(workSeq.shift());
     }
-    callback(key);
+    this.storePrivateKey(seq, password, key.key);
+   
+    callback(key.key);
+}
+
+Wallet.prototype.storePrivateKey = function(seq, password, key) {
+    var SHA256 = Bitcoin.Crypto.SHA256;
+    var passwordDigest = SHA256(SHA256(SHA256( password )));
+    var data = JSON.parse(sjcl.decrypt(passwordDigest, this.store.get('private')));
+    if (!data.privKeys) {
+        data.privKeys = {};
+    }
+    data.privKeys[seq] = key.export('bytes');
+    var privData = Identity.encrypt(data, password);
+    this.store.set('private', privData);
+}
+
+Wallet.prototype.storeAddress = function(seq, key) {
+    // BIP32 js support is still missing some part and we can't get addresses
+    // from pubkey yet, unless we do it custom like here...:
+    // (mpKey.key.getBitcoinAddress doesn't work since 'key' is not a key
+    // object but binary representation).
+    var mpPubKey;
+    if (key.length) {
+        mpPubKey = key;
+    } else {
+        mpPubKey = key.getPub();
+    }
+    var mpKeyHash = Bitcoin.Util.sha256ripe160(mpPubKey);
+    var address = new Bitcoin.Address(mpKeyHash);
+
+    var stealth = Stealth.getStealthAddress(mpPubKey);
+
+    this.pubKeys[seq] = {
+       'index': seq,
+       'label': 'unused',
+       'balance': 0,
+       'nOutputs': 0,
+       'pubKey': mpPubKey,
+       'stealth': Bitcoin.base58.checkEncode(stealth.slice(1), 6),
+       'address': address.toString()
+    };
+    this.store.save();
+    // add to internal bitcoinjs-lib wallet
+    this.wallet.addresses.push(address.toString());
+    return this.pubKeys[seq];
 }
 
 /**
@@ -105,34 +158,7 @@ Wallet.prototype.getAddress = function(seq) {
         while(workSeq.length) {
             childKey = childKey.ckd(workSeq.shift());
         }
-        // BIP32 js support is still missing some part and we can't get addresses
-        // from pubkey yet, unless we do it custom like here...:
-        // (mpKey.key.getBitcoinAddress doesn't work since 'key' is not a key
-        // object but binary representation).
-        var mpPubKey;
-        if (childKey.key.length) {
-            mpPubKey = childKey.key;
-        } else {
-            mpPubKey = childKey.key.getPub();
-        }
-        var mpKeyHash = Bitcoin.Util.sha256ripe160(mpPubKey);
-        var address = new Bitcoin.Address(mpKeyHash);
-
-        var stealth = Stealth.getStealthAddress(mpPubKey);
-
-        this.pubKeys[seq] = {
-           'index': seq,
-           'label': 'unused',
-           'balance': 0,
-           'nOutputs': 0,
-           'pubKey': mpPubKey,
-           'stealth': Bitcoin.base58.checkEncode(stealth.slice(1), 6),
-           'address': address.toString()
-        };
-        this.store.save();
-        // add to internal bitcoinjs-lib wallet
-        this.wallet.addresses.push(address.toString());
-        return this.pubKeys[seq];
+        return this.storeAddress(seq, childKey.key);
     }
 }
 
@@ -187,7 +213,9 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
 
     // add outputs
     newTx.addOutput(recipient, amount);
-    newTx.addOutput(changeAddress.address, change);
+    if (change) {
+        newTx.addOutput(changeAddress.address, change);
+    }
     if (ephemKey) {
         if (stealthPrefix[0] > 0) {
             console.log("Stealth prefix not supported yet!");
@@ -201,20 +229,18 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     console.log("sending:", recipient ,"change", change, "sending", amount+fee, "utxo", outAmount);
 
     // XXX Might need to sign several inputs
-    var pocket, n;
+    var pocket, n, seq;
     var outAddress = this.getWalletAddress(utxo1.address);
     if (outAddress) {
         var seq = outAddress.index;
-        pocket = seq[0];
-        n = seq[1];
     } else {
         console.log("This address is not managed by the wallet!");
         return;
     }
     // XXX should catch exception on bad password:
     //   sjcl.exception.corrupt {toString: function, message: "ccm: tag doesn't match"}
-    this.getPrivateKey([pocket, n], password, function(outKey) {
-        newTx.sign(0, outKey.key);
+    this.getPrivateKey(seq, password, function(outKey) {
+        newTx.sign(0, outKey);
 
         // XXX send transaction
         console.log("send tx", newTx);
@@ -279,15 +305,21 @@ Wallet.prototype.processHistory = function(address, history) {
 Wallet.prototype.processStealth = function(stealthArray, password) {
     var self = this;
     stealthArray.forEach(function(stealthData) {
-        var ephemkey = Bitcoin.convert.hexToBytes(stealthData[0]).slice(5);
+        var nonceArray = Bitcoin.convert.hexToBytes(stealthData[0]);
+        var ephemkey = Bitcoin.convert.hexToBytes(stealthData[0]);
         var address = stealthData[1];
         var txId = stealthData[2];
 
         // for now checking just the first stealth address derived from pocket 0 "default"
         self.getPrivateKey([0], password, function(privKey) {
-            var stAddr = Stealth.uncoverStealth(privKey.key.export('bytes'), ephemkey);
+            var stAddr = Stealth.uncoverStealth(privKey.export('bytes'), ephemkey);
             if (address == stAddr.getBitcoinAddress().toString()) {
                 console.log("STEALTH MATCH!!");
+                var seq = [0, 's'].concat(ephemkey);
+                var walletAddress = self.storeAddress(seq, stAddr);
+                walletAddress.ephemkey = ephemkey;
+                self.store.save();
+                self.storePrivateKey(seq, password, stAddr);
             }
         });
     });
