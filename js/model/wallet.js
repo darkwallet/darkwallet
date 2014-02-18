@@ -164,8 +164,8 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     var ephemKey, stealthPrefix;
     if (recipient[0] == 'S') {
         var bytes = Bitcoin.base58.checkDecode(recipient);
-        stealthPrefix = bytes.slice(34, 39);
-        var stealthData = Stealth.initiateStealth(bytes.slice(1,34));
+        stealthPrefix = bytes.slice(33, 38);
+        var stealthData = Stealth.initiateStealth(bytes.slice(0,33));
         recipient = stealthData[0].toString();
         ephemKey = stealthData[1];
     }
