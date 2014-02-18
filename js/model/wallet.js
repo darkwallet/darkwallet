@@ -216,10 +216,10 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     console.log("sending:", recipient ,"change", change, "sending", amount+fee, "utxo", outAmount);
 
     // XXX Might need to sign several inputs
-    var pocket, n, seq;
+    var seq;
     var outAddress = this.getWalletAddress(utxo1.address);
     if (outAddress) {
-        var seq = outAddress.index;
+        seq = outAddress.index;
     } else {
         console.log("This address is not managed by the wallet!");
         return;
