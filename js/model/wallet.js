@@ -186,15 +186,7 @@ Wallet.prototype.getWalletAddress = function(address) {
  * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
  */
 Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, password) {
-    // test for stealth
-    var ephemKey, stealthPrefix;
-    if (recipient[0] == 'S') {
-        var bytes = Bitcoin.base58.checkDecode(recipient);
-        var stealthData = Stealth.initiateStealth(bytes.slice(0,33));
-        stealthPrefix = bytes.slice(33, 38);
-        recipient = stealthData[0].toString();
-        ephemKey = stealthData[1];
-    }
+    var isStealth = false;
     // find an output with enough funds
     var utxo = this.wallet.getUtxoToPay(amount+fee);
     if (utxo.length > 1) {
@@ -211,23 +203,35 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     newTx.addInput(utxo1.output);
     var change = outAmount - (amount + fee);
 
-    // add outputs
+    // test for stealth
+    if (recipient[0] == 'S') {
+        isStealth = true;
+        var stealthData, outHash, ephemKey, nonce;
+        var stealthBytes = Bitcoin.base58.checkDecode(recipient);
+        var stealthPrefix = stealthBytes.slice(33, 38);
+        // iterate since we might not find a nonce for our required prefix then
+        // we need to create a new ephemkey
+        do {
+            stealthData = Stealth.initiateStealth(stealthBytes.slice(0,33));
+            recipient = stealthData[0].toString();
+            ephemKey = stealthData[1];
+            nonce = 0;
+            // iterate through nonces to find a match for given prefix
+            do {
+	        var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4)
+                outHash = Bitcoin.Util.sha256ripe160(nonceBytes.concat(ephemKey));
+                nonce += 1;
+            } while(nonce < 4294967296 && !Stealth.checkPrefix(outHash, stealthPrefix));
+
+        } while(!Stealth.checkPrefix(outHash, stealthPrefix));
+
+        // we finally mined the ephemKey that makes the hash match
+        var stealthOut = Stealth.buildNonceOutput(ephemKey, nonce);
+        newTx.addOutput(stealthOut);
+    }
     newTx.addOutput(recipient, amount);
     if (change) {
         newTx.addOutput(changeAddress.address, change);
-    }
-    if (ephemKey) {
-        if (stealthPrefix[0] > 0) {
-            console.log("Stealth prefix not supported yet!");
-            return;
-        }
-        var nonce = 0;
-        var stealthOut = Stealth.buildNonceOutput(ephemKey, nonce);
-        newTx.addOutput(stealthOut);
-	var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4)
-        var outHash = Bitcoin.Util.sha256ripe160(nonceBytes.concat(ephemKey));
-        // XXX compare first bits of outHash to first bits of stealthPrefix
-
     }
 
     console.log("sending:", recipient ,"change", change, "sending", amount+fee, "utxo", outAmount);
@@ -256,7 +260,7 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
             }
             console.log("tx radar: " + count);
         }
-        if (ephemKey) {
+        if (isStealth) {
             console.log("not broadcasting stealth tx yet...");
         } else {
             DarkWallet.obeliskClient.client.broadcast_transaction(newTx.serializeHex(), notifyTx)

@@ -109,6 +109,47 @@ Stealth.buildNonceOutput = function(ephemKey, nonce) {
     return stealthOut;
 }
 
+/*
+ * Generate bit mask for a given prefix
+ * returns true or false
+ * @param {Object} outHash byte array to compare to
+ * @param {Number} prefix prefix array including first byte defining maskq
+ */
+Stealth.prefixBitMask = function(prefixN) {
+    var mask = 0;
+    var remainder = 32 - prefixN
+    while(prefixN) {
+        mask = (mask<<1) + 1;
+        prefixN--;
+    }
+    while (remainder) {
+        mask = (mask<<1);
+        remainder--;
+    }
+    return mask;
+}
+
+/*
+ * Check prefix against the given array
+ * returns true or false
+ * @param {Object} outHash byte array to compare to
+ * @param {Number} prefix prefix array including first byte defining mask
+ */
+Stealth.checkPrefix = function(outHash, stealthPrefix) {
+    var prefixN = stealthPrefix[0];
+    var prefix = stealthPrefix.slice(1);
+    if (prefixN) {
+        var mask = Stealth.prefixBitMask(prefixN);
+        var prefixNum = Bitcoin.Util.bytesToNum(prefix);
+        var hashNum = Bitcoin.Util.bytesToNum(outHash.slice(0,4));
+        if ((mask & prefixNum) == hashNum) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
 
 /*
  * Some tests...
