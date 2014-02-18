@@ -126,7 +126,7 @@ Wallet.prototype.getAddress = function(seq) {
            'balance': 0,
            'nOutputs': 0,
            'pubKey': mpPubKey,
-           'stealth': Bitcoin.base58.checkEncode(stealth).slice(1),
+           'stealth': Bitcoin.base58.checkEncode(stealth.slice(1), 6),
            'address': address.toString()
         };
         this.store.save();
@@ -163,7 +163,7 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     // test for stealth
     var ephemKey, stealthPrefix;
     if (recipient[0] == 'S') {
-        var bytes = Bitcoin.base58.checkDecode('1'+recipient);
+        var bytes = Bitcoin.base58.checkDecode(recipient);
         stealthPrefix = bytes.slice(34, 39);
         var stealthData = Stealth.initiateStealth(bytes.slice(1,34));
         recipient = stealthData[0].toString();

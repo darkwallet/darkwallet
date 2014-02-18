@@ -120,10 +120,10 @@ Stealth.testFinishStealth = function(secret, ephemKey) {
 }
 
 Stealth.testStealth = function(identity, password, address) {
-    var bytes = Bitcoin.base58.checkDecode('1'+address);
-    var res1 = Stealth.initiateStealth(bytes.slice(1,34));
+    var bytes = Bitcoin.base58.checkDecode(address);
+    var res1 = Stealth.initiateStealth(bytes.slice(0,33));
     var address = res1[0];
-    console.log(address.toString())
+    console.log(address.toString(), bytes, bytes.slice(0,33))
     var ephemkey = res1[1];
     DarkWallet.keyRing.identities[identity].wallet.getPrivateKey([0], password, function(privKey) {
         Stealth.uncoverStealth(privKey.key.export('bytes').slice(0,32), ephemkey);
