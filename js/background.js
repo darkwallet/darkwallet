@@ -110,11 +110,15 @@ function DarkWalletService() {
     this.connect = function(userCallback) {
         console.log("connect");
         if (connected) {
-            userCallback()
+            if (userCallback) {
+                userCallback();
+            }
         } else {
             obeliskClient.connect('ws://85.25.198.97:8888', function() {
                 handleInitialConnect();
-                userCallback();
+                if (userCallback) {
+                    userCallback();
+                }
             });
             connected = true;
         }

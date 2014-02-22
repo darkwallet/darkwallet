@@ -18,18 +18,19 @@ function WalletCtrl($scope) {
 
   var bg = DarkWallet.service();
 
-  // Listen for 
+  // Listen for messages from the background service
   bg.addListener(function(message, send) {
     if (message.name == 'guiUpdate' || message.name == 'balanceUpdate') {
-        if(!$scope.$$phase) {
-          $scope.$apply();
-        }
         if (message.name == 'balanceUpdate') {
             $scope.totalBalance = $scope.identity.wallet.getBalance();
         }
     }
     if (message.name == 'height') {
         $scope.currentHeight = message.value;
+    }
+    // apply interface changes
+    if(['height', 'guiUpdate', 'balanceUpdate'].indexOf(message.name) > -1 && !$scope.$$phase) {
+        $scope.$apply();
     }
   });
 
@@ -55,10 +56,6 @@ function WalletCtrl($scope) {
       });
   }
 
-  function handleConnect() {
-      // Connected
-  }
-
   function loadIdentity(identity) {
       // set some links
       $scope.identity = identity;
@@ -76,10 +73,11 @@ function WalletCtrl($scope) {
       if(!$scope.$$phase) {
           $scope.$apply();
       }
-      bg.connect(handleConnect);
+      // this will connect to obelisk if we're not yet connected
+      bg.connect();
   };
 
-  // Load identities
+  // Load identity
   bg.loadIdentity(0, loadIdentity);
 
   // scope function to generate (or load from cache) a new address
