@@ -5,10 +5,13 @@
 // DarkWallet object.
 var DarkWallet = {
 
+    // Get the wallet service.
+    service: function() {return chrome.extension.getBackgroundPage();},
+
     // Identity key ring. Holds all identities.
-    keyRing: new IdentityKeyRing(),
+    getKeyRing: function() {return DarkWallet.service().getKeyRing()},
 
     // Light client
-    obeliskClient: new ObeliskClient()
+    getClient: function() {return DarkWallet.service().getClient()}
 };
 

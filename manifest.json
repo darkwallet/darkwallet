@@ -10,6 +10,22 @@
     "default_icon": "icon_128.png",
     "default_popup": "popup.html"
   },
+  "background": {
+    "scripts": ["vendors/gateway.js",
+                "js/obelisk.js",
+                "js/stealth.js",
+                "vendors/sjcl/sjcl.js",
+                "vendors/bitcoinjs-lib/bitcoinjs.js",
+                "js/model/store.js",
+                "js/model/contacts.js",
+                "js/model/txdb.js",
+                "js/model/history.js",
+                "js/model/wallet.js",
+                "js/model/identity.js",
+                "js/model/keyring.js",
+                "js/darkwallet.js",
+                "js/background.js"]
+  },
   "permissions": [
     "tabs", "storage"
   ]

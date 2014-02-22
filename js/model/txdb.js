@@ -22,7 +22,7 @@ function TransactionDatabase(store) {
 TransactionDatabase.prototype.fetchTransaction = function(txHash, callback, userData) {
     var self = this;
     if (!this.transactions[txHash]) {
-        var client = DarkWallet.obeliskClient.client;
+        var client = DarkWallet.getClient();
         var gotTransaction = function(err, tx) {
             self.transactions[txHash] = tx;
             self.store.save();

@@ -199,7 +199,7 @@ Stealth.testStealth = function(identity, password, address) {
     var address = res1[0];
     console.log(address.toString(), bytes, bytes.slice(0,33))
     var ephemkey = res1[1];
-    DarkWallet.keyRing.identities[identity].wallet.getPrivateKey([0], password, function(privKey) {
+    DarkWallet.getKeyRing().identities[identity].wallet.getPrivateKey([0], password, function(privKey) {
         Stealth.uncoverStealth(privKey.key.export('bytes').slice(0,32), ephemkey);
     });
 }

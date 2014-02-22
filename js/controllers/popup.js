@@ -8,7 +8,10 @@
  * @constructor
  */
 function PopupCtrl($scope) {
-  DarkWallet.keyRing.loadIdentities(function(identityNames) {
+  // we don't have the same background page here, so we initialize our
+  // own keyring just for choosing identities, just for now...
+  var keyRing = new IdentityKeyRing();
+  keyRing.loadIdentities(function(identityNames) {
     var identities = [];
     identityNames.forEach(function(item) {
       identities.push({id: item});
@@ -23,7 +26,7 @@ function PopupCtrl($scope) {
     if (!$scope.identity) {
         return;
     }
-    if ($scope.identity.id == $scope.identityNames[0]) {
+    /*if ($scope.identity.id == $scope.identityNames[0]) {
       $scope.activity = [
         {action: 'Received bitcoins', amount: '0.05', timestamp: '5 minutes ago'},
         {action: 'Received bitcoins', amount: '0.01', timestamp: '6 minutes ago'}
@@ -34,7 +37,7 @@ function PopupCtrl($scope) {
         {action: 'Received bitcoins', amount: '2', timestamp: '26 minutes ago'},
         {action: 'Received bitcoins', amount: '0.2', timestamp: '31 minutes ago'}
       ];
-    }
+    }*/
   };
 
 };

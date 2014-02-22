@@ -16,52 +16,22 @@ function WalletCtrl($scope) {
   $scope.subsection = 'history';
   $scope.section = 'wallet';
 
-  var keyRing = DarkWallet.keyRing;
+  var bg = DarkWallet.service();
 
-  // Got history for an address
-  function historyFetched(err, walletAddress, history) {
-      var client = DarkWallet.obeliskClient.client;
-
-      // pass to the wallet to process outputs
-      $scope.identity.wallet.processHistory(walletAddress.address, history);
-
-      // now subscribe the address for notifications
-      client.subscribe(walletAddress.address, function(err, res) {
-          console.log("subscribed", walletAddress.address, err, res);
-
-          // fill history after subscribing to ensure we got all histories already (for now).
-          $scope.identity.history.fillHistory(history);
-      }, function(addressUpdate) {
-          console.log("update", addressUpdate)
-      });
-      $scope.totalBalance = $scope.identity.wallet.getBalance();
-      $scope.$apply();
-  }
-
-  // Start up history for an address
-  function initAddress(walletAddress) {
-      var client = DarkWallet.obeliskClient.client;
-      client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
-      if (walletAddress.history) {
-          $scope.identity.history.fillHistory(walletAddress.history)
-      }
-  }
-
-  // We got initial current blockchain height
-  function heightFetched(err, height) {
-      console.log("height fetched", height);
-      $scope.currentHeight = height;
-  }
-
-  // Handle initial connection to obelisk
-  function handleConnect() {
-      var client = DarkWallet.obeliskClient.client;
-      client.fetch_last_height(heightFetched);
-
-      // get balance for addresses
-      $scope.addresses.forEach(initAddress);
-      $scope.changeAddresses.forEach(initAddress);
-  }
+  // Listen for 
+  bg.addListener(function(message, send) {
+    if (message.name == 'guiUpdate' || message.name == 'balanceUpdate') {
+        if(!$scope.$$phase) {
+          $scope.$apply();
+        }
+        if (message.name == 'balanceUpdate') {
+            $scope.totalBalance = $scope.identity.wallet.getBalance();
+        }
+    }
+    if (message.name == 'height') {
+        $scope.currentHeight = message.value;
+    }
+  });
 
   // Initialize if empty wallet
   function initializeEmpty() {
@@ -72,9 +42,7 @@ function WalletCtrl($scope) {
           }
       }
   }
-
-  function loadAddresses() {
-      var identity = $scope.identity;
+  function loadAddresses(identity) {
       /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var walletAddress = identity.wallet.getAddress(pubKeyIndex);
@@ -87,35 +55,32 @@ function WalletCtrl($scope) {
       });
   }
 
+  function handleConnect() {
+      // Connected
+  }
+
   function loadIdentity(identity) {
       // set some links
       $scope.identity = identity;
       $scope.history = identity.history.history;
       // set history update callback
-      identity.history.update = function() { $scope.$apply(); }
       $scope.totalBalance = identity.wallet.getBalance();
 
       // load addresses into angular
-      loadAddresses();
+      loadAddresses(identity);
 
       // initialize if empty wallet
       initializeEmpty();
 
       // apply scope changes
-      $scope.$apply();
-
-      DarkWallet.obeliskClient.connect('ws://85.25.198.97:8888', handleConnect);
+      if(!$scope.$$phase) {
+          $scope.$apply();
+      }
+      bg.connect(handleConnect);
   };
 
   // Load identities
-  keyRing.loadIdentities(function(names) {
-    if (!names) {
-       console.log("bad loading");
-       return;
-    }
-    // get the first identity
-    keyRing.get(names[0], loadIdentity);
-  });
+  bg.loadIdentity(0, loadIdentity);
 
   // scope function to generate (or load from cache) a new address
   $scope.generateAddress = function(isChange, n) {
@@ -129,7 +94,7 @@ function WalletCtrl($scope) {
     addressArray.push(walletAddress)
 
     // get history for the new address
-    initAddress(walletAddress);
+    bg.initAddress(walletAddress);
     return walletAddress;
   };
 
@@ -145,7 +110,7 @@ function WalletCtrl($scope) {
 
   // function to receive stealth information
   $scope.receiveStealth = function() {
-      var client = DarkWallet.obeliskClient.client;
+      var client = DarkWallet.getClient();
       var stealth_fetched = function(error, results) {
           if (error) {
               write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
@@ -157,3 +122,6 @@ function WalletCtrl($scope) {
       client.fetch_stealth([0,0], stealth_fetched, 0);
   }
 };
+
+
+

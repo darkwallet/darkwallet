@@ -259,7 +259,7 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
         if (isStealth) {
             console.log("not broadcasting stealth tx yet...");
         } else {
-            DarkWallet.obeliskClient.client.broadcast_transaction(newTx.serializeHex(), notifyTx)
+            DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
         }
     });
 }

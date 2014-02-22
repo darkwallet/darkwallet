@@ -1,7 +1,6 @@
 function WalletSettingsCtrl($scope) {
-  var keyRing = DarkWallet.keyRing;
-
   $scope.clearStorage = function() {
+      var keyRing = DarkWallet.getKeyRing();
       keyRing.clear();
   }
 }
