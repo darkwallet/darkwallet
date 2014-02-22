@@ -66,8 +66,9 @@ Wallet.prototype.createPocket = function(name) {
 Wallet.prototype.loadPubKeys = function() {
     var self = this;
     Object.keys(this.pubKeys).forEach(function(index) {
-        console.log("load key", self.pubKeys[index].address);
         self.wallet.addresses.push(self.pubKeys[index].address);
+        if (self.pubKeys[index].history)
+            self.processHistory(self.pubKeys[index].address, self.pubKeys[index].history);
     });
 }
 
@@ -285,9 +286,10 @@ Wallet.prototype.processHistory = function(address, history) {
     walletAddress.balance = 0;
     walletAddress.height = 0;
     walletAddress.nOutputs = 0;
+    walletAddress.history = history;
     // process history
     history.forEach(function(tx) {
-         // sum unspent outputs for the address
+        // sum unspent outputs for the address
         var outTxHash = tx[0];
         var inTxHash = tx[4];
         walletAddress.nOutputs += 1;
@@ -296,8 +298,9 @@ Wallet.prototype.processHistory = function(address, history) {
             walletAddress.height = Math.max(tx[2], walletAddress.height);
         }
         // pass on to internal Bitcoin.Wallet
-       self.processOutput({ output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
+        self.processOutput({ output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
     });
+    this.store.save();
 }
 
 
