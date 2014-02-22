@@ -14,6 +14,8 @@
     <script src="js/model/store.js"></script>
     <script src="js/model/keyring.js"></script>
     <script src="js/model/contacts.js"></script>
+    <script src="js/model/txdb.js"></script>
+    <script src="js/model/history.js"></script>
     <script src="js/model/wallet.js"></script>
     <script src="js/model/identity.js"></script>
     <script src="js/controllers/wallet.js"></script>
@@ -276,45 +278,13 @@
                 <th>Amount</th>
                 <th>Balance</th>
               </tr>
-              <tr>
+              <tr ng-repeat="row in history">
                 <td><i class="icon-large icon-ok"></i></td>
-                <td>26 minutes ago</td>
-                <td>dfsdf</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-                <td>3.4534556</td>
-                <td>4.4343452</td>
-              </tr>
-              <tr>
-                <td><i class="icon-large icon-ok"></i></td>
-                <td>1 hour 32 minutes ago</td>
-                <td>dsfgsg</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-                <td>3</td>
-                <td>4.4343452</td>
-              </tr>
-              <tr>
-                <td><i class="icon-large icon-ok"></i></td>
-                <td>20/12/2013 19:43</td>
-                <td>kjdfds</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-                <td>3</td>
-                <td>4.4343452</td>
-              </tr>
-              <tr>
-                <td><i class="icon-large icon-ok"></i></td>
-                <td>20/12/2013 19:43</td>
-                <td>Payment to Amir</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-                <td>3</td>
-                <td>4.4343452</td>
-              </tr>
-              <tr>
-                <td><i class="icon-large icon-ok"></i></td>
-                <td>20/12/2013 19:43</td>
-                <td>kkjk</td>
-                <td>15ADn3ZokboSXTTgz2xC46eTGaPyW14e2e</td>
-                <td>3</td>
-                <td>4.4343452</td>
+                <td>height: {{row.height}}</td>
+                <td>no label</td>
+                <td>{{row.address}}</td>
+                <td>{{(row.myOutValue-row.myInValue)/100000000}}</td>
+                <td>{{row.balance/100000000}}</td>
               </tr>
             </table>
           </div>

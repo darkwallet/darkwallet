@@ -17,6 +17,8 @@ function Identity(store, seed, password) {
         this.generate(seed, password);
     }
     this.wallet = new Wallet(store);
+    this.txdb = new TransactionDatabase(store);
+    this.history = new History(store, this);
     this.contacts = new Contacts(store);
 }
 

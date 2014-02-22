@@ -20,7 +20,6 @@ function WalletCtrl($scope) {
   $scope.clearStorage = function() {
       keyRing.clear();
   }
-
   keyRing.loadIdentities(function(names) {
     if (!names) {
        console.log("bad loading");
@@ -28,6 +27,9 @@ function WalletCtrl($scope) {
     }
     keyRing.get(names[0], function(identity) {
       $scope.identity = identity;
+      $scope.history = identity.history.history;
+      // set history update callback
+      identity.history.update = function() { $scope.$apply(); }
       $scope.totalBalance = $scope.identity.wallet.getBalance();
       /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
@@ -57,12 +59,15 @@ function WalletCtrl($scope) {
       }
       function historyFetched(err, walletAddress, history) {
           var client = DarkWallet.obeliskClient.client;
+
           // pass to the wallet to process outputs
           $scope.identity.wallet.processHistory(walletAddress.address, history);
 
           // now subscribe the address for notifications
           client.subscribe(walletAddress.address, function(err, res) {
               console.log("subscribed", walletAddress.address, err, res);
+              // fill history after subscribing to ensure we got all histories already (for now).
+              $scope.identity.history.fillHistory(history);
           }, function(addressUpdate) {
               console.log("update", addressUpdate)
           });
@@ -74,9 +79,15 @@ function WalletCtrl($scope) {
           client.fetch_last_height(heightFetched);
           // get balance for addresses
           $scope.addresses.forEach(function(walletAddress) {
+              if (walletAddress.history) {
+                  $scope.identity.history.fillHistory(walletAddress.history)
+              }
               client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
           });
           $scope.changeAddresses.forEach(function(walletAddress) {
+              if (walletAddress.history) {
+                  $scope.identity.history.fillHistory(walletAddress.history)
+              }
               client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
           });
       }
