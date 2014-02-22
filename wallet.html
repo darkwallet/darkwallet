@@ -19,8 +19,10 @@
     <script src="js/model/wallet.js"></script>
     <script src="js/model/identity.js"></script>
     <script src="js/controllers/wallet.js"></script>
+    <script src="js/controllers/send.js"></script>
     <script src="js/controllers/contacts.js"></script>
     <script src="js/controllers/history.js"></script>
+    <script src="js/controllers/settings.js"></script>
     <script src="js/darkwallet.js"></script>
     <link href="stylesheets/screen.css" rel="stylesheet">
     <link href="stylesheets/fonts.css" rel="stylesheet">
@@ -127,7 +129,7 @@
         <br class="clear">
       </nav>
 
-      <div class="container login" ng-show="subsection=='send'">
+      <div class="container login" ng-controller="WalletSendCtrl" ng-show="subsection=='send'">
 
         <div class="der">
           <a href="#" class="button button-and-icon">
@@ -310,7 +312,7 @@
       </ul>
     </div>
 
-    <section ng-show="section=='settings'">
+    <section ng-controller="WalletSettingsCtrl" ng-show="section=='settings'">
       <div>
         <p>Your master public key</p>
         <p>{{masterPublicKey}}</p>

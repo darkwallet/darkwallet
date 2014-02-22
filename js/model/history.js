@@ -29,6 +29,7 @@ History.prototype.findIndexForRow = function(newRow) {
             return idx+1;
         }
     }
+    return 0;
 }
 
 /*
