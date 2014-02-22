@@ -14,6 +14,7 @@ function WalletCtrl($scope) {
   $scope.addresses = [];
   $scope.changeAddresses = [];
   $scope.subsection = 'history';
+  $scope.section = 'wallet';
 
   var keyRing = DarkWallet.keyRing;
 
@@ -155,5 +156,4 @@ function WalletCtrl($scope) {
       }
       client.fetch_stealth([0,0], stealth_fetched, 0);
   }
-  $scope.section = 'history';
 };
