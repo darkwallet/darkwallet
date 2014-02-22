@@ -29,6 +29,7 @@ function DarkWalletService() {
 
     this.loadIdentity = function(idx, userCallback) {
         var name = keyRing.availableIdentities[idx];
+        currentIdentity = name;
         console.log("load", name);
         keyRing.get(name, function(identity) {
             identity.history.update = function() { sendInternalMessage({name: 'guiUpdate'}); };
@@ -37,10 +38,14 @@ function DarkWalletService() {
     }
 
     // Get an identity from the keyring
-    this.getIdentity = function(idx, loadIdentity) {
+    this.getIdentity = function(idx) {
         var identity = keyRing.availableIdentities[idx];
+        currentIdentity = identity;
         return keyRing.identities[identity];
 
+    }
+    this.getCurrentIdentity = function() {
+        return keyRing.identities[currentIdentity];
     }
     /***************************************
     /* History and address subscription
@@ -51,7 +56,7 @@ function DarkWalletService() {
             return;
         }
         var client = obeliskClient.client;
-        var identity = this.getIdentity(0);
+        var identity = this.getCurrentIdentity();
 
         // pass to the wallet to process outputs
         identity.wallet.processHistory(walletAddress.address, history);
@@ -70,7 +75,7 @@ function DarkWalletService() {
     // Start up history for an address
     this.initAddress = function(walletAddress) {
         var client = obeliskClient.client;
-        var identity = this.getIdentity(0);
+        var identity = this.getCurrentIdentity();
         client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
         if (walletAddress.history) {
             identity.history.fillHistory(walletAddress.history)
@@ -89,7 +94,7 @@ function DarkWalletService() {
         client.fetch_last_height(handleHeight);
 
         // get balance for addresses
-        var identity = this.getIdentity(0);
+        var identity = this.getCurrentIdentity();
         Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
             var walletAddress = identity.wallet.pubKeys[pubKeyIndex];
             if (walletAddress.index.length > 1) {
@@ -149,6 +154,7 @@ window.connect = service.connect;
 
 window.loadIdentity = service.loadIdentity;
 window.getIdentity = service.getIdentity;
+window.getCurrentIdentity = service.getCurrentIdentity;
 
 window.getKeyRing = service.getKeyRing;
 
