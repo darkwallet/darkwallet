@@ -11,12 +11,9 @@
  *   - sanitizes use of obj.iter
  */
 sjcl.misc.cachedPbkdf2 = function (password, obj) {
-  var iter;
-  
   obj = obj || {};
-  iter = obj.iter || 1000;
   if (!obj.iter) {
-       obj.iter = iter;
+       obj.iter = 1000;
   }
   
   obj.salt = obj.salt ? obj.salt.slice(0) : sjcl.random.randomWords(16,0);
