@@ -77,9 +77,6 @@ function WalletCtrl($scope) {
       bg.connect();
   };
 
-  // Load identity
-  bg.loadIdentity(0, loadIdentity);
-
   // scope function to generate (or load from cache) a new address
   $scope.generateAddress = function(isChange, n) {
     var addressArray = isChange ? $scope.changeAddresses : $scope.addresses;
@@ -119,6 +116,10 @@ function WalletCtrl($scope) {
       }
       client.fetch_stealth([0,0], stealth_fetched, 0);
   }
+
+  // Load identity
+  bg.loadIdentity(0, loadIdentity);
+
 };
 
 
