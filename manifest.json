@@ -13,9 +13,10 @@
   "background": {
     "scripts": ["vendors/gateway.js",
                 "js/obelisk.js",
-                "js/stealth.js",
                 "vendors/sjcl/sjcl.js",
                 "vendors/bitcoinjs-lib/bitcoinjs.js",
+                "js/fixes.js",
+                "js/stealth.js",
                 "js/model/store.js",
                 "js/model/contacts.js",
                 "js/model/txdb.js",
