@@ -201,9 +201,6 @@ Stealth.encrypt = function(pubKey, message) {
 
     var decKey = Stealth.importPublic(pubKey);
     var c = Stealth.stealthDH(encKey.priv, decKey);
-    var bytes = decKey.getPubPoint()
-                          .add(new Bitcoin.Key(c).getPubPoint())
-                          .getEncoded(true);
     var _pass = Bitcoin.convert.bytesToString(c);
     //var _pass = c.slice(0, 256)
     var encrypted = sjcl.encrypt(_pass, message, {ks: 256, ts: 128});
