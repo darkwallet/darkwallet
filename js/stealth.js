@@ -3,6 +3,9 @@
  */
 
 Stealth = {};
+ 
+// Elliptic curve N (couldn't find a way to get it from bitcoin api, so just hardcoded it here...)
+Stealth.ecN = new Bitcoin.BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
 
 /*
  * Create a bitcoin key with just public component.
@@ -74,7 +77,6 @@ Stealth.initiateStealth = function(pubKey) {
  * @param {Object} ephemKey Ephemeral key data as byte array
  */
 Stealth.uncoverStealth = function(masterSecret, ephemKey) {
-    var ecN = new Bitcoin.BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
     var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
 
     var decKey = Stealth.importPublic(ephemKey);
@@ -83,7 +85,7 @@ Stealth.uncoverStealth = function(masterSecret, ephemKey) {
     // Generate the specific secret for this keypair from our master
     var secretInt = priv
                         .add(Bitcoin.BigInteger.fromByteArrayUnsigned(c))
-                        .mod(ecN)
+                        .mod(Stealth.ecN)
 
     console.log('secretInt', secretInt.toString());
 
@@ -184,7 +186,56 @@ Stealth.addStealth = function(recipient, newTx) {
     return recipient;
 }
 
+/*************************************
+ * Test encrypt / decrypt using similar derivation as stealth
+ */
+
 /*
+ * Encrypt the given message
+ * @param {Object} pubKey Public key as byte array
+ * @param {String} Message to encrypt
+ */
+Stealth.encrypt = function(pubKey, message) {
+    var encKey = new Bitcoin.Key();
+    var ephemKey = encKey.getPubPoint().getEncoded(true);
+
+    var decKey = Stealth.importPublic(pubKey);
+    var c = Stealth.stealthDH(encKey.priv, decKey);
+    var bytes = decKey.getPubPoint()
+                          .add(new Bitcoin.Key(c).getPubPoint())
+                          .getEncoded(true);
+    var _pass = Bitcoin.convert.bytesToString(c);
+    //var _pass = c.slice(0, 256)
+    var encrypted = sjcl.encrypt(_pass, message, {ks: 256, ts: 128});
+    return {pub: ephemKey, data: sjcl.json.decode(encrypted)}
+}
+
+
+/*
+ * Decrypt the given message
+ * @param {Object} pubKey Public key as byte array
+ * @param {DarkWallet.Identity} identity Identity to use
+ * @param {Array} seq Key seq to use for decryption
+ * @param {String} password Password for the user private keys
+ * @param {Object} callback Callback receiving the decrypted data
+ */
+Stealth.decrypt = function(message, identity, seq, password, callback) {
+  identity.wallet.getPrivateKey(seq, password, function(privKey) {
+    var masterSecret = privKey.export('bytes')
+    var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
+
+    var decKey = Stealth.importPublic(message.pub);
+    var c = Stealth.stealthDH(priv, decKey)
+    var _pass = Bitcoin.convert.bytesToString(c);
+
+    var decrypted = sjcl.decrypt(_pass, sjcl.json.encode(message.data));
+
+    callback(decrypted);
+  });
+}
+
+
+/*************************************
  * Some tests...
  */
 Stealth.testFinishStealth = function(secret, ephemKey) {
