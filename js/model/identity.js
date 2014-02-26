@@ -32,7 +32,7 @@ function Identity(store, seed, password) {
 Identity.encrypt = function(data, password) {
     var Crypto = Bitcoin.Crypto;
     var passwordDigest = Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password)));
-    return sjcl.encrypt(passwordDigest, JSON.stringify(data), {ks: 256});
+    return sjcl.encrypt(passwordDigest, JSON.stringify(data), {ks: 256, ts: 128});
 }
 
 
