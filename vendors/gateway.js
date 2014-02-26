@@ -174,6 +174,39 @@ GatewayClient.prototype.renew = function(address, handle_fetch, handle_update)
 }
 
 /**
+ * Chan functionality
+ */
+GatewayClient.prototype.chan_post = function(section_name, thread_id, data, handle_fetch) {
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("chan_post", [section_name, thread_id, data], function(response) {
+        if (handle_fetch)
+            console.log("raw chan post", response["result"]);
+            handle_fetch(response["error"], response["result"]);
+    });
+};
+
+GatewayClient.prototype.chan_list = function(section_name, handle_fetch) {
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("chan_list", [section_name], function(response) {
+        if (handle_fetch)
+            handle_fetch(response["error"], response["result"]);
+    });
+};
+
+
+GatewayClient.prototype.chan_get = function(section_name, thread_id, handle_fetch) {
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("chan_get", [section_name, thread_id], function(response) {
+        if (handle_fetch)
+            handle_fetch(response["error"], response["result"]);
+    });
+};
+
+
+/**
  * Make requests to the server
  *
  * @param {String} command
