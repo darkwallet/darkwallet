@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app ng-csp>
+<html lang="en" ng-app="DarkWallet" ng-csp>
 
   <head>
     <meta charset="utf-8" />
@@ -7,13 +7,17 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width">
 
     <script src="vendors/angular/angular.min.js"></script>
-    <script src="vendors/bitcoinjs-lib/bitcoinjs.js"></script>
+    <script src="vendors/angular/angular-animate.min.js"></script>
+    <script src="vendors/ngProgress/ngProgress.js"></script>
+    <script src="vendors/ngToaster/toaster.js"></script>
 
+    <script src="vendors/bitcoinjs-lib/bitcoinjs.js"></script>
     <script src="vendors/sjcl/sjcl.js"></script>
     <script src="js/fixes.js"></script>
 
     <script src="js/darkwallet.js"></script>
     <script src="js/stealth.js"></script>
+    <script src="js/ng-app.js"></script>
 
     <script src="js/controllers/wallet.js"></script>
     <script src="js/controllers/send.js"></script>
@@ -21,13 +25,17 @@
     <script src="js/controllers/history.js"></script>
     <script src="js/controllers/settings.js"></script>
 
+    <link href="vendors/angular/angular-csp.css" rel="stylesheet">
     <link href="stylesheets/screen.css" rel="stylesheet">
     <link href="stylesheets/fonts.css" rel="stylesheet">
     <link href="stylesheets/opensans.css" rel="stylesheet">
     <link href="stylesheets/font-awesome.css" rel="stylesheet">
+    <link href="vendors/ngProgress/ngProgress.css" rel="stylesheet">
+    <link href="vendors/ngToaster/toaster.css" rel="stylesheet">
   </head>
 
   <body ng-controller="WalletCtrl">
+    <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
     <section class="blank">
       <nav class="navigation">
         <ul>

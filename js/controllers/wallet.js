@@ -7,7 +7,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-function WalletCtrl($scope) {
+function WalletCtrl($scope, ngProgress, toaster) {
   var pubKey, mpKey, addressIndex;
 
   // generated addresses
@@ -74,7 +74,8 @@ function WalletCtrl($scope) {
           $scope.$apply();
       }
       // this will connect to obelisk if we're not yet connected
-      bg.connect();
+      ngProgress.start();
+      bg.connect(function() {ngProgress.complete()});
   };
 
   // scope function to generate (or load from cache) a new address
@@ -105,6 +106,9 @@ function WalletCtrl($scope) {
 
   // function to receive stealth information
   $scope.receiveStealth = function() {
+      toaster.pop('note', "stealth", "receiving")
+      ngProgress.start();
+      
       var client = DarkWallet.getClient();
       var stealth_fetched = function(error, results) {
           if (error) {
@@ -112,6 +116,7 @@ function WalletCtrl($scope) {
               return;
           }
           console.log("STEALTH", results);
+          ngProgress.complete();
           $scope.identity.wallet.processStealth(results, $scope.send.password);
       }
       client.fetch_stealth([0,0], stealth_fetched, 0);
