@@ -16,7 +16,7 @@ sjcl.misc.cachedPbkdf2 = function (password, obj) {
        obj.iter = 1000;
   }
   
-  obj.salt = obj.salt ? obj.salt.slice(0) : sjcl.random.randomWords(16,0);
+  obj.salt = obj.salt ? obj.salt.slice(0) : sjcl.random.randomWords(4,0);
   
   var val = sjcl.misc.pbkdf2(password, obj.salt, obj.iter);
   return { key: val.slice(0), salt: obj.salt.slice(0) };
