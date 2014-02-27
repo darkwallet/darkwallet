@@ -1,5 +1,5 @@
 
-function WalletSendCtrl($scope) {
+function WalletSendCtrl($scope, toaster) {
   $scope.send = {recipient: '', amount: 0.2, fee: 0.00002};
 
   $scope.sendBitcoins = function() {
@@ -17,5 +17,8 @@ function WalletSendCtrl($scope) {
                                           amount,
                                           fee,
                                           $scope.send.password);
+      // this should actually be a starting note, but we don't have a finishing callback yet.
+      // we can also use something to show radar progress
+      toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + amount) + ' satoshis');
   }
 }

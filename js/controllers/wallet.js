@@ -69,13 +69,17 @@ function WalletCtrl($scope, ngProgress, toaster) {
       // initialize if empty wallet
       initializeEmpty();
 
+      // this will connect to obelisk if we're not yet connected
+      ngProgress.color('firebrick');
+      ngProgress.start();
+      bg.connect(function() {
+          ngProgress.color('green');
+          ngProgress.complete();
+      });
       // apply scope changes
       if(!$scope.$$phase) {
           $scope.$apply();
       }
-      // this will connect to obelisk if we're not yet connected
-      ngProgress.start();
-      bg.connect(function() {ngProgress.complete()});
   };
 
   // scope function to generate (or load from cache) a new address
@@ -106,18 +110,24 @@ function WalletCtrl($scope, ngProgress, toaster) {
 
   // function to receive stealth information
   $scope.receiveStealth = function() {
-      toaster.pop('note', "stealth", "receiving")
+      // toaster.pop('note', "stealth", "receiving")
       ngProgress.start();
       
       var client = DarkWallet.getClient();
       var stealth_fetched = function(error, results) {
           if (error) {
-              write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
+              toaster.pop('error', "stealth", error)
+              //write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
               return;
           }
           console.log("STEALTH", results);
+          try {
+              $scope.identity.wallet.processStealth(results, $scope.send.password);
+              toaster.pop('success', "stealth", "ok")
+          } catch (e) {
+              toaster.pop('error', "stealth", e.message)
+          }
           ngProgress.complete();
-          $scope.identity.wallet.processStealth(results, $scope.send.password);
       }
       client.fetch_stealth([0,0], stealth_fetched, 0);
   }
