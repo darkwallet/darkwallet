@@ -1,0 +1,33 @@
+{
+  "name": "darkwallet",
+  "version": "0.1",
+  "homepage": "https://darkwallet.unsystem.net",
+  "authors": [
+    "Caedes <caedes@sindominio.net>",
+    "Sem <sembrestels@riseup.net>"
+  ],
+  "description": "Your keys. Your privacy. Your sovereignty.",
+  "main": "js/main.js",
+  "keywords": [
+    "bitcoin",
+    "crypto"
+  ],
+  "license": "GPLv3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "mnemonic.js": "~1.0.0",
+    "sjcl": "~1.0.0",
+    "darkwallet_gateway": "git://github.com/Darkwallet/Gateway",
+    "bitcoinjs-lib": "git://github.com/Darkwallet/bitcoinjs-lib"
+  },
+  "resolutions": {
+    "angular": "v1.0.8"
+  }
+}

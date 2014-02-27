@@ -1,4 +1,4 @@
-//    Mnemonic.js v. 1.0
+//    Mnemonic.js v. 1.0.0
 
 //    (c) 2012 Yiorgis Gozadinos, Crypho AS.
 //    Mnemonic.js is distributed under the MIT license.

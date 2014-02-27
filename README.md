@@ -9,12 +9,8 @@ This wallet will serve as a platform or a starting codebase to deliver a high qu
 
 Running
 -----------
-If you got this from git, first you need to download submodules:
 
-    git submodule init
-    git submodule update
-
-Now you can load the extension into chrome by going to extensions, enabling development mode and clicking the "Load uncompressed extension" button.
+You can load the extension into chrome by going to extensions, enabling development mode and clicking the "Load uncompressed extension" button.
 
 Development
 -----------

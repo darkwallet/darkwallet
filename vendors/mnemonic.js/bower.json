@@ -1,0 +1,25 @@
+{
+  "name": "mnemonic.js",
+  "repo": "ggozad/mnemonic.js",
+  "description": "Memorable random passphrases of known strength",
+  "keywords": [
+    "security",
+    "passwords"
+  ],
+  "main": [
+    "mnemonic.js"
+  ],
+  "devDependencies": {
+    "jasmine": ""
+  },
+  "ignore": [
+    "tests",
+    "**/.*"
+  ],
+  "version": "1.0.0",
+  "homepage": "https://github.com/ggozad/mnemonic.js",
+  "authors": [
+    "Yiorgis Gozadinos <ggozad@crypho.com>"
+  ],
+  "license": "MIT"
+}

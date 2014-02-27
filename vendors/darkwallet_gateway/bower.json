@@ -1,0 +1,27 @@
+{
+  "name": "darkwallet_gateway",
+  "version": "0.1",
+  "homepage": "https://github.com/darkwallet/gateway",
+  "authors": [
+    "Amir Taaki <genjix@riseup.net>",
+    "Robert Williamson <bobalot@gmail.com>",
+    "Caedes <caedes@sindominio.net>",
+    "Sem <sembrestels@riseup.net>"
+  ],
+  "description": "Gateway library to connect browser with server.",
+  "main": "client/gateway.js",
+  "keywords": [
+    "bitcoin",
+    "crypto"
+  ],
+  "license": "AGPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "*.py",
+    "brc"
+  ]
+}
