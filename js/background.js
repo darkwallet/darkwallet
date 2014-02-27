@@ -5,6 +5,7 @@
 function DarkWalletService() {
     var keyRing = new IdentityKeyRing();
     var obeliskClient = new ObeliskClient();
+
     var currentIdentity = 0;
 
     var identityNames = [];
@@ -75,6 +76,11 @@ function DarkWalletService() {
     // Start up history for an address
     this.initAddress = function(walletAddress) {
         var client = obeliskClient.client;
+        if (!client) {
+            // TODO manage this case better
+            console.log("trying to init address but not connected yet!... skipping :P");
+            return;
+        }
         var identity = this.getCurrentIdentity();
         client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
         if (walletAddress.history) {
@@ -85,7 +91,7 @@ function DarkWalletService() {
     // Handle initial connection to obelisk
     function handleHeight(err, height) {
         currentHeight = height;
-        // sendInternalMessage({name: "height", value: height});
+        //sendInternalMessage({name: "height", value: height});
         console.log("height fetched", height);
     }
 
@@ -108,7 +114,6 @@ function DarkWalletService() {
      */
 
     this.connect = function(userCallback) {
-        console.log("connect");
         if (connected) {
             if (userCallback) {
                 userCallback();
