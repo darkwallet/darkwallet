@@ -18,6 +18,15 @@ You are welcome to participate in the development by contributing or forking the
 
 https://github.com/darkwallet/darkwallet
 
+### Adding/Upgrading dependencies with bower
+If you want to add/upgrade a dependency, use bower.
+
+```bash
+$ bower install angular --save # --save option modify bower.json file
+```
+
+Read [bower documentation](http://bower.io) for more info.
+
 - - -
 
 - unsystem dev

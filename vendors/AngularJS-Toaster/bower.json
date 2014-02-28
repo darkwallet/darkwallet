@@ -1,0 +1,18 @@
+{
+  "name": "AngularJS-Toaster",
+  "version": "0.4.3",
+  "main": [
+    "toaster.js",
+    "toaster.css"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "angular": "~1.2.13",
+    "angular-animate": "~1.2.13",
+    "bootstrap": "~3.1.1"
+  }
+}

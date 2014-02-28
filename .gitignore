@@ -13,3 +13,10 @@ Desktop.ini
 # don't ignore special configs
 !/.travis.yml
 !.gitignore
+
+# ignore some vendor's files
+vendors/mnemonic.js/chrome
+vendors/sjcl
+!vendors/sjcl/sjcl.js
+vendors/bootstrap
+vendors/jquery
