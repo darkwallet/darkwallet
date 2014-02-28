@@ -32,7 +32,7 @@ function LobbyCtrl($scope, toaster) {
             decrypted = sjcl.decrypt(pairCodeHash, message.data);
             $scope.requests.push({data: decrypted});
             if (decrypted != pubKeyHash) {
-                startPairing(pairCodeHash, $scope.pairCode);
+                startPairing($scope.pairCode, decrypted);
             }
         // Stealth message to us (maybe)
         } else if (decoded.pub) {
@@ -46,7 +46,7 @@ function LobbyCtrl($scope, toaster) {
     }
 
     // Start pairing with another identity
-    var startPairing = function(pubKey, channel) {
+    var startPairing = function(channel, pubKey) {
         // pair to a specific user session public key
         var msg = 'hello';
         var encrypted = Stealth.encrypt(pubKey, msg);
