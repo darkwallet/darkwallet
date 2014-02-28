@@ -5,6 +5,57 @@ function LobbyCtrl($scope, toaster) {
     $scope.subscribed = false;
     var SHA256 = Bitcoin.Crypto.SHA256;
     var tmpKey = Bitcoin.Key();
+
+    // Subscribe to given channel
+    var channelSubscribe = function(channel, callback, update_cb) {
+        client = DarkWallet.getClient();
+        var channelHash = SHA256(SHA256($scope.pairCode)+$scope.pairCode);
+        client.chan_subscribe("b", channelHash, callback, update_cb);
+    }
+
+    // Post to given channel
+    var channelPost = function(channel, data, callback) {
+        var channelHash = SHA256(SHA256(channel)+channel);
+        client = DarkWallet.getClient();
+        client.chan_post("b", channelHash, data, callback);
+    }
+
+    // Callback for data received on channel
+    var onChannelData = function(message) {
+        console.log("data for channel", message);
+        var decrypted;
+        var pubKeyHash = Bitcoin.convert.bytesToHex(tmpKey.getPubKeyHash())
+        var pairCodeHash = $scope.subscribed;
+        var decoded = JSON.parse(message.data);
+        // Just an encrypted message
+        if (decoded.cipher) {
+            decrypted = sjcl.decrypt(pairCodeHash, message.data);
+            $scope.requests.push({data: decrypted});
+            if (decrypted != pubKeyHash) {
+                startPairing(pairCodeHash, $scope.pairCode);
+            }
+        // Stealth message to us (maybe)
+        } else if (decoded.pub) {
+            decrypted = Stealth.decrypt(tmpKey, decoded);
+        }
+        console.log("data for channel", decrypted);
+        if(!$scope.$$phase) {
+            $scope.$apply();
+        }
+  
+    }
+
+    // Start pairing with another identity
+    var startPairing = function(pubKey, channel) {
+        // pair to a specific user session public key
+        var msg = 'hello';
+        var encrypted = Stealth.encrypt(pubKey, msg);
+        channelPost(channel, JSON.stringify(encrypted), function(err, data){
+            console.log("channel post2", err, data)
+        });
+    }
+
+    // Action to start announcements and reception
     $scope.announceSelf = function() {
         client = DarkWallet.getClient();
         var pairCodeHash = SHA256(SHA256($scope.pairCode)+$scope.pairCode);
@@ -13,26 +64,17 @@ function LobbyCtrl($scope, toaster) {
         // chan tests
         if ($scope.subscribed != pairCodeHash) {
             console.log("announcing", pairCodeHash, pubKeyHash, encrypted);
-            client.chan_subscribe("b", pairCodeHash, function(err, data){
+            channelSubscribe($scope.pairCode, function(err, data){
                 if (!err) {
                     $scope.subscribed = pairCodeHash;
                 }
                 console.log("channel subscribed", err, data)
-            }, function(_data) {
-                console.log("data for channel", _data);
-                var decrypted = sjcl.decrypt(pairCodeHash, _data.data);
-                console.log("data for channel", decrypted);
-                $scope.requests.push({data: decrypted});
-
-                if(!$scope.$$phase) {
-                    $scope.$apply();
-                }
-            });
+            }, onChannelData);
         }
-        client.chan_post("b", pairCodeHash, encrypted, function(err, data){
+        channelPost($scope.pairCode, encrypted, function(err, data){
             console.log("channel post", err, data)
         });
-        /*client.chan_post("b", "announcements", "hi " + $scope.pairCode, function(err, data){console.log("channel post", err, data)})
+        /*
         client.chan_get("b", "announcements", function(err, data){console.log("channel get", err, data)})
         client.chan_list("b", function(err, data){console.log("channel list", err, data)})*/
  
