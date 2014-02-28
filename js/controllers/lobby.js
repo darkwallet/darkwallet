@@ -31,16 +31,18 @@ function LobbyCtrl($scope, toaster) {
         // Just an encrypted message
         if (decoded.cipher) {
             decrypted = sjcl.decrypt(pairCodeHash, message.data);
-            $scope.requests.push({data: decrypted});
-            //if (decrypted != pubKeyHash) {
+            if (decrypted != pubKeyHash) {
                 startPairing($scope.pairCode, Bitcoin.convert.hexToBytes(decrypted));
-            //}
+            }
         // Stealth message to us (maybe)
         } else if (decoded.pub) {
             console.log("stealth", tmpKey, decoded);
             decrypted = Stealth.decrypt(tmpKey, decoded);
         }
-        console.log("data for channel", decrypted);
+        if (decrypted) {
+            $scope.requests.push({data: decrypted});
+            console.log("data for channel", decrypted);
+        }
         if(!$scope.$$phase) {
             $scope.$apply();
         }
