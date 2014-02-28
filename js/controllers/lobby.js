@@ -5,6 +5,7 @@ function LobbyCtrl($scope, toaster) {
     $scope.subscribed = false;
     var SHA256 = Bitcoin.Crypto.SHA256;
     var tmpKey = Bitcoin.Key();
+    tmpKey.compressed = true;
 
     // Subscribe to given channel
     var channelSubscribe = function(channel, callback, update_cb) {
@@ -24,18 +25,19 @@ function LobbyCtrl($scope, toaster) {
     var onChannelData = function(message) {
         console.log("data for channel", message);
         var decrypted;
-        var pubKeyHash = Bitcoin.convert.bytesToHex(tmpKey.getPubKeyHash())
+        var pubKeyHash = Bitcoin.convert.bytesToHex(tmpKey.getPub())
         var pairCodeHash = $scope.subscribed;
         var decoded = JSON.parse(message.data);
         // Just an encrypted message
         if (decoded.cipher) {
             decrypted = sjcl.decrypt(pairCodeHash, message.data);
             $scope.requests.push({data: decrypted});
-            if (decrypted != pubKeyHash) {
-                startPairing($scope.pairCode, decrypted);
-            }
+            //if (decrypted != pubKeyHash) {
+                startPairing($scope.pairCode, Bitcoin.convert.hexToBytes(decrypted));
+            //}
         // Stealth message to us (maybe)
         } else if (decoded.pub) {
+            console.log("stealth", tmpKey, decoded);
             decrypted = Stealth.decrypt(tmpKey, decoded);
         }
         console.log("data for channel", decrypted);
@@ -59,7 +61,7 @@ function LobbyCtrl($scope, toaster) {
     $scope.announceSelf = function() {
         client = DarkWallet.getClient();
         var pairCodeHash = SHA256(SHA256($scope.pairCode)+$scope.pairCode);
-        var pubKeyHash = Bitcoin.convert.bytesToHex(tmpKey.getPubKeyHash())
+        var pubKeyHash = Bitcoin.convert.bytesToHex(tmpKey.getPub())
         var encrypted = sjcl.encrypt(pairCodeHash, pubKeyHash, {ks: 256, ts: 128});
         // chan tests
         if ($scope.subscribed != pairCodeHash) {
