@@ -205,6 +205,19 @@ GatewayClient.prototype.chan_get = function(section_name, thread_id, handle_fetc
     });
 };
 
+GatewayClient.prototype.chan_subscribe = function(section_name, thread_id, handle_fetch, handle_update) {
+    GatewayClient._check_function(handle_fetch);
+    var self = this;
+    this.make_request("chan_subscribe", [section_name, thread_id], function(response) {
+        if (handle_fetch)
+            handle_fetch(response["error"], response["result"]);
+        if (handle_update) {
+            self.handler_map["chan.update." + thread_id] = handle_update;
+        }
+
+    });
+};
+
 
 /**
  * Make requests to the server
@@ -257,11 +270,13 @@ GatewayClient.prototype._on_message = function(evt) {
     response = JSON.parse(evt.data);
     id = response.id;
     // Should be a separate map entirely. This is a hack.
-    if (response.name == "update")
+    if (response.type == "update")
         id = "update." + response.address;
+    if (response.type == "chan_update")
+        id = "chan.update." + response.thread;
     // Prefer flat code over nested.
     if (!this.handler_map[id]) {
-        console.log("Handler not found");
+        console.log("Handler not found", id);
         return;
     }
     handler = this.handler_map[id];
