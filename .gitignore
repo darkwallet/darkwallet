@@ -15,8 +15,10 @@ Desktop.ini
 !.gitignore
 
 # ignore some vendor's files
-vendors/mnemonic.js/chrome
-vendors/sjcl
-!vendors/sjcl/sjcl.js
-vendors/bootstrap
-vendors/jquery
+/vendors/mnemonic.js/chrome/
+/vendors/sjcl/*
+!/vendors/sjcl/sjcl.js
+/vendors/bootstrap/
+/vendors/jquery/
+/vendors/bitcoinjs-lib/*
+!vendors/bitcoinjs-lib/src/
