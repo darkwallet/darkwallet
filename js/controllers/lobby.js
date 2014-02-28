@@ -6,8 +6,12 @@ function LobbyCtrl($scope, toaster) {
     $scope.peerIds = [];
     $scope.subscribed = false;
     var SHA256 = Bitcoin.Crypto.SHA256;
-    var tmpKey = Bitcoin.Key();
-    tmpKey.compressed = true;
+    var identity = DarkWallet.getIdentity();
+    if (!identity.sessionKey) {
+        identity.sessionKey = new Bitcoin.Key();
+        identity.sessionKey.compressed = true;
+    }
+    var sessionKey = identity.sessionKey;
 
     // Subscribe to given channel
     var channelSubscribe = function(channel, callback, update_cb) {
@@ -23,6 +27,7 @@ function LobbyCtrl($scope, toaster) {
         client.chan_post("b", channelHash, data, callback);
     }
 
+    // Get a simple mnemonic name
     var getMnemoname = function(dataBytes) {
         var mnemonic = new Mnemonic(64);
         mnemonic.random = [];
@@ -33,37 +38,48 @@ function LobbyCtrl($scope, toaster) {
 
     }
 
-    var addPeer = function(pubKeyHex) {
-        var pubKeyBytes = Bitcoin.convert.hexToBytes(pubKeyHex);
+    // Initialize peer structure
+    var initializePeer = function(pubKeyBytes, iconSize) {
+        var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
         var mnemoname = getMnemoname(pubKeyBytes);
-        $scope.peerIds.push(pubKeyHex);
-        $scope.peers.push({pubKeyHex: pubKeyHex, name: mnemoname});
+        var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname};
+        // TODO the identicon should be loaded in an angular directive,
+        // but we do it now here for testing
         setTimeout(function(){
-            new Identicon('peer'+pubKeyHex, Bitcoin.Util.bytesToNum(pubKeyBytes.slice(8,16)), 24);
+            new Identicon('peer'+pubKeyHex, Bitcoin.Util.bytesToNum(pubKeyBytes.slice(8,16)), iconSize);
         },1000);
+        return newPeer;
+
     }
-    addPeer(Bitcoin.convert.bytesToHex(tmpKey.getPub()));
+
+    // Initialize and add peer to scope
+    var addPeer = function(pubKeyBytes) {
+        var newPeer = initializePeer(pubKeyBytes, 24);
+        $scope.peerIds.push(newPeer.pubKeyHex);
+        $scope.peers.push(newPeer);
+    }
+    // Initialize some own data
+    $scope.myself = initializePeer(sessionKey.getPub(), 32);
 
     // Callback for data received on channel
-    var onChannelData = function(message) {
+    var onChannelData = function(pairCodeHash, message) {
         console.log("data for channel", message);
         var decrypted;
-        var pubKeyHash = Bitcoin.convert.bytesToHex(tmpKey.getPub())
-        var pairCodeHash = $scope.subscribed;
+        var pubKeyHash = Bitcoin.convert.bytesToHex(sessionKey.getPub())
         var decoded = JSON.parse(message.data);
         // Just an encrypted message
         if (decoded.cipher) {
             decrypted = sjcl.decrypt(pairCodeHash, message.data);
-            if ($scope.peerIds.indexOf(decrypted) == -1) {
-                addPeer(decrypted);
-            }
-            if (decrypted != pubKeyHash) {
+            if (decrypted != myPubKeyHex) {
+                if ($scope.peerIds.indexOf(decrypted) == -1) {
+                    addPeer(decrypted);
+                }
                 startPairing($scope.pairCode, Bitcoin.convert.hexToBytes(decrypted));
             }
         // Stealth message to us (maybe)
         } else if (decoded.pub) {
-            console.log("stealth", tmpKey, decoded);
-            decrypted = Stealth.decrypt(tmpKey, decoded);
+            console.log("stealth", sessionKey, decoded);
+            decrypted = Stealth.decrypt(sessionKey, decoded);
         }
         if (decrypted) {
             $scope.requests.push({data: decrypted});
@@ -89,17 +105,17 @@ function LobbyCtrl($scope, toaster) {
     $scope.announceSelf = function() {
         client = DarkWallet.getClient();
         var pairCodeHash = SHA256(SHA256($scope.pairCode)+$scope.pairCode);
-        var pubKeyHash = Bitcoin.convert.bytesToHex(tmpKey.getPub())
+        var pubKeyHash = Bitcoin.convert.bytesToHex(sessionKey.getPub())
         var encrypted = sjcl.encrypt(pairCodeHash, pubKeyHash, {ks: 256, ts: 128});
         // chan tests
-        if ($scope.subscribed != pairCodeHash) {
+        if ($scope.subscribed != pairCodeHash && !client.handler_map["chan.update." + pairCodeHash]) {
             console.log("announcing", pairCodeHash, pubKeyHash, encrypted);
             channelSubscribe($scope.pairCode, function(err, data){
                 if (!err) {
                     $scope.subscribed = pairCodeHash;
                 }
                 console.log("channel subscribed", err, data)
-            }, onChannelData);
+            }, function(_data) {onChannelData(pairCodeHash, _data)});
         }
         channelPost($scope.pairCode, encrypted, function(err, data){
             console.log("channel post", err, data)
