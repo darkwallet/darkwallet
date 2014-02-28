@@ -82,16 +82,16 @@ function LobbyCtrl($scope, toaster) {
     var onChannelData = function(pairCodeHash, message) {
         console.log("data for channel", message);
         var decrypted;
-        var pubKeyHash = Bitcoin.convert.bytesToHex(sessionKey.getPub())
         var decoded = JSON.parse(message.data);
         // Just an encrypted message
         if (decoded.cipher) {
             decrypted = sjcl.decrypt(pairCodeHash, message.data);
-            if (decrypted != myPubKeyHex) {
+            var decryptedBytes = Bitcoin.convert.hexToBytes(decrypted);
+            if (decrypted != $scope.myself.pubKeyHex) {
                 if ($scope.peerIds.indexOf(decrypted) == -1) {
-                    addPeer(decrypted);
+                    addPeer(decryptedBytes);
                 }
-                startPairing($scope.pairCode, Bitcoin.convert.hexToBytes(decrypted));
+                startPairing($scope.pairCode, decryptedBytes);
             }
         // Stealth message to us (maybe)
         } else if (decoded.pub) {
