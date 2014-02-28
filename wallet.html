@@ -24,6 +24,7 @@
     <script src="js/controllers/contacts.js"></script>
     <script src="js/controllers/history.js"></script>
     <script src="js/controllers/settings.js"></script>
+    <script src="js/controllers/lobby.js"></script>
 
     <link href="vendors/angular/angular-csp.css" rel="stylesheet">
     <link href="stylesheets/screen.css" rel="stylesheet">
@@ -52,6 +53,9 @@
           </li>
           <li>
             <a href="#" ng-click="section='settings'">Settings</a>
+          </li>
+          <li>
+            <a href="#" ng-click="section='lobby'">Lobby</a>
           </li>
           <li class="righty last-menu-item">
             <a href="#" class="navigation-settings">
@@ -184,7 +188,6 @@
             <input ng-model="send.password" type="password" class="password" value="">
           </label>
           <button class="button-and-icon button-submit" ng-click="sendBitcoins()"><div><i class="icon-large icon-btc"></i></div>Send</button>
-          <button class="button-and-icon button-submit" ng-click="receiveStealth()"><div><i class="icon-large icon-btc"></i></div>Receive stealth</button>
         </form>
       </div>
 
@@ -319,6 +322,21 @@
       </ul>
     </div>
 
+    <section ng-controller="LobbyCtrl" ng-show="section=='lobby'">
+        <form>
+             <label>
+              <h2>Code</h2>
+              <input ng-model="pairCode" type="password" class="password" value="">
+             </label>
+             <a href="#" class="button button-and-icon" ng-click="announceSelf();">
+            <div><i class="icon-large icon-qrcode"></i></div>Announce
+          </a>
+        </form>
+        <h2>Requests</h2>
+        <div ng-repeat="request in requests">
+        {{request.data}}
+        </div>
+    </section>
     <section ng-controller="WalletSettingsCtrl" ng-show="section=='settings'">
       <div>
         <p>Your master public key</p>
@@ -389,6 +407,15 @@
           <li>This is the last one</li>
         </ul>
       </div>
+        <form>
+          <label>
+            <h2>Password</h2>
+            <input ng-model="stealth.password" type="password" class="password" value="">
+          </label>
+          <button class="button-and-icon button-submit" ng-click="receiveStealth()"><div><i class="icon-large icon-btc"></i></div>Receive stealth</button>
+        </form>
+      </div>
+
 
       <a href="#" class="button button-and-icon" ng-click="clearStorage();">
         <div><i class="icon-large icon-qrcode"></i></div>Clear storage (DANGEROUS!!)
