@@ -7,9 +7,11 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width">
 
     <script src="vendors/angular/angular.min.js"></script>
+    <script src="vendors/mnemonic.js/mnemonic.js"></script>
     <script src="vendors/angular-animate/angular-animate.min.js"></script>
     <script src="vendors/ngprogress/build/ngProgress.js"></script>
     <script src="vendors/AngularJS-Toaster/toaster.js"></script>
+    <script src="vendors/identicon/identicon.js"></script>
 
     <script src="vendors/bitcoinjs-lib/bitcoinjs.js"></script>
     <script src="vendors/sjcl/sjcl.js"></script>
@@ -323,6 +325,8 @@
     </div>
 
     <section ng-controller="LobbyCtrl" ng-show="section=='lobby'">
+      <table>
+        <tr><td>
         <form>
              <label>
               <h2>Code</h2>
@@ -332,10 +336,17 @@
             <div><i class="icon-large icon-qrcode"></i></div>Announce
           </a>
         </form>
-        <h2>Requests</h2>
-        <div ng-repeat="request in requests">
-        {{request.data}}
+        </td><td>
+        <h2>Peers</h2>
+        <div ng-repeat="peer in peers">
+        {{peer.name}} <canvas id="peer{{peer.pubKeyHex}}" width="24" height="24"title="{{peer.pubKeyHex}}"></canvas>
         </div>
+        </td></tr>
+      <table>
+      <h2>Requests</h2>
+      <div ng-repeat="request in requests">
+        {{request.data}}
+      </div>
     </section>
     <section ng-controller="WalletSettingsCtrl" ng-show="section=='settings'">
       <div>
