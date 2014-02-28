@@ -23,7 +23,8 @@ function LobbyCtrl($scope, toaster) {
                 console.log("channel subscribed", err, data)
             }, function(_data) {
                 console.log("data for channel", _data);
-                var decrypted = sjcl.decrypt(pairCodeHash, data);
+                var decrypted = sjcl.decrypt(pairCodeHash, _data);
+                console.log("data for channel", decrypted);
                 $scope.requests.push({data: decrypted});
 
                 if(!$scope.$$phase) {
