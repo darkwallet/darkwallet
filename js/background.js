@@ -40,6 +40,9 @@ function DarkWalletService() {
 
     // Get an identity from the keyring
     this.getIdentity = function(idx) {
+        if (idx === null || idx === undefined) {
+            return this.getCurrentIdentity();
+        }
         var identity = keyRing.availableIdentities[idx];
         currentIdentity = identity;
         return keyRing.identities[identity];
@@ -162,7 +165,7 @@ var service = new DarkWalletService();
 window.connect = service.connect;
 
 window.loadIdentity = service.loadIdentity;
-window.getIdentity = service.getIdentity;
+window.getIdentity = function(idx) { return service.getIdentity(idx); };
 window.getCurrentIdentity = service.getCurrentIdentity;
 
 window.getKeyRing = service.getKeyRing;

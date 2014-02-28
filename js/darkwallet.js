@@ -12,6 +12,9 @@ var DarkWallet = {
     getKeyRing: function() {return DarkWallet.service().getKeyRing()},
 
     // Light client
-    getClient: function() {return DarkWallet.service().getClient()}
+    getClient: function() {return DarkWallet.service().getClient()},
+
+    // Get identity
+    getIdentity: function(idx) {return DarkWallet.service().getIdentity(idx)}
 };
 
