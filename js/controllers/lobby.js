@@ -11,7 +11,7 @@ function LobbyCtrl($scope, toaster) {
         var pubKeyHash = Bitcoin.convert.bytesToHex(tmpKey.getPubKeyHash())
         var encrypted = sjcl.encrypt(pairCodeHash, pubKeyHash, {ks: 256, ts: 128});
         // chan tests
-        if (!$scope.subscribed == pairCodeHash) {
+        if ($scope.subscribed != pairCodeHash) {
             console.log("announcing", pairCodeHash, pubKeyHash, encrypted);
             client.chan_post("b", pairCodeHash, encrypted, function(err, data){
                 console.log("channel post", err, data)
