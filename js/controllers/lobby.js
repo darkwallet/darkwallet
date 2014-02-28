@@ -13,9 +13,6 @@ function LobbyCtrl($scope, toaster) {
         // chan tests
         if ($scope.subscribed != pairCodeHash) {
             console.log("announcing", pairCodeHash, pubKeyHash, encrypted);
-            client.chan_post("b", pairCodeHash, encrypted, function(err, data){
-                console.log("channel post", err, data)
-            });
             client.chan_subscribe("b", pairCodeHash, function(err, data){
                 if (!err) {
                     $scope.subscribed = pairCodeHash;
@@ -23,7 +20,7 @@ function LobbyCtrl($scope, toaster) {
                 console.log("channel subscribed", err, data)
             }, function(_data) {
                 console.log("data for channel", _data);
-                var decrypted = sjcl.decrypt(pairCodeHash, _data);
+                var decrypted = sjcl.decrypt(pairCodeHash, _data.data);
                 console.log("data for channel", decrypted);
                 $scope.requests.push({data: decrypted});
 
@@ -32,6 +29,9 @@ function LobbyCtrl($scope, toaster) {
                 }
             });
         }
+        client.chan_post("b", pairCodeHash, encrypted, function(err, data){
+            console.log("channel post", err, data)
+        });
         /*client.chan_post("b", "announcements", "hi " + $scope.pairCode, function(err, data){console.log("channel post", err, data)})
         client.chan_get("b", "announcements", function(err, data){console.log("channel get", err, data)})
         client.chan_list("b", function(err, data){console.log("channel list", err, data)})*/
