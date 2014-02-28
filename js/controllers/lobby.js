@@ -87,7 +87,7 @@ function LobbyCtrl($scope, toaster) {
         if (decoded.cipher) {
             decrypted = sjcl.decrypt(pairCodeHash, message.data);
             var decryptedBytes = Bitcoin.convert.hexToBytes(decrypted);
-            if (decrypted != $scope.myself.pubKeyHex) {
+            if (decrypted != $scope.comms.pubKeyHex) {
                 if ($scope.peerIds.indexOf(decrypted) == -1) {
                     addPeer(decryptedBytes);
                 }
