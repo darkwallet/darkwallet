@@ -125,14 +125,20 @@ function LobbyCtrl($scope, toaster) {
         var pubKeyHash = Bitcoin.convert.bytesToHex(sessionKey.getPub())
         var encrypted = sjcl.encrypt(pairCodeHash, pubKeyHash, {ks: 256, ts: 128});
         // chan tests
-        if ($scope.subscribed != pairCodeHash && !client.handler_map["chan.update." + pairCodeHash]) {
-            console.log("announcing", pairCodeHash, pubKeyHash, encrypted);
-            channelSubscribe($scope.pairCode, function(err, data){
-                if (!err) {
-                    $scope.subscribed = pairCodeHash;
-                }
-                console.log("channel subscribed", err, data)
-            }, function(_data) {onChannelData(pairCodeHash, _data)});
+        if ($scope.subscribed != pairCodeHash) {
+            var _onChannelData = function(_data) {onChannelData(pairCodeHash, _data);};
+            if (client.handler_map["chan.update." + pairCodeHash]) {
+                // update callback
+                client.handler_map["chan.update." + pairCodeHash] = _onChannelData;
+            } else {
+                console.log("announcing", pairCodeHash, pubKeyHash, encrypted);
+                channelSubscribe($scope.pairCode, function(err, data){
+                    if (!err) {
+                        $scope.subscribed = pairCodeHash;
+                    }
+                    console.log("channel subscribed", err, data)
+                }, _onChannelData);
+            }
         }
         channelPost($scope.pairCode, encrypted, function(err, data){
             console.log("channel post", err, data)
