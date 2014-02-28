@@ -14,9 +14,20 @@ function DarkWalletService() {
 
     var currentHeight = 0;
 
+    var isReady = 0;
+    var readyCallbacks = [];
+
     /***************************************
     /* Identities
      */
+
+    this.ready = function(callback) {
+        if (isReady) {
+            callback();
+        } else {
+            readyCallbacks.push(callback);
+        }
+    }
 
     // Load identity names
     keyRing.loadIdentities(function(names) {
@@ -35,6 +46,9 @@ function DarkWalletService() {
         keyRing.get(name, function(identity) {
             identity.history.update = function() { sendInternalMessage({name: 'guiUpdate'}); };
             userCallback(identity);
+            isReady = true;
+            readyCallbacks.forEach(function(cb) {cb();})
+            readyCallbacks = [];
         });
     }
 
@@ -171,6 +185,7 @@ window.getCurrentIdentity = service.getCurrentIdentity;
 window.getKeyRing = service.getKeyRing;
 
 window.getClient = service.getClient;
+window.ready = function(_cb) {service.ready(_cb)};
 
 window.initAddress = function(_w) {return service.initAddress(_w)};
 

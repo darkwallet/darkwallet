@@ -339,6 +339,8 @@
         </td><td>
         <h2>Self</h2>
         <div class="wrapper"><canvas id="peer{{myself.pubKeyHex}}" width="32" height="32"title="{{myself.pubKeyHex}}"></canvas> {{myself.name}}</div>
+        <h3>Channel</h3>
+        <div class="wrapper"><canvas id="peer{{comms.pubKeyHex}}" width="32" height="32"title="{{comms.pubKeyHex}}"></canvas> {{comms.name}}</div>
         <h2>Peers</h2>
         <div ng-repeat="peer in peers">
         <canvas id="peer{{peer.pubKeyHex}}" width="24" height="24"title="{{peer.pubKeyHex}}"></canvas> {{peer.name}}

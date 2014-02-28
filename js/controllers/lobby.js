@@ -1,5 +1,6 @@
 
 function LobbyCtrl($scope, toaster) {
+  DarkWallet.service().ready(function() {
     $scope.pairCode = '';
     $scope.requests = [];
     $scope.peers = [];
@@ -7,11 +8,25 @@ function LobbyCtrl($scope, toaster) {
     $scope.subscribed = false;
     var SHA256 = Bitcoin.Crypto.SHA256;
     var identity = DarkWallet.getIdentity();
+
+    // Session key
     if (!identity.sessionKey) {
         identity.sessionKey = new Bitcoin.Key();
         identity.sessionKey.compressed = true;
     }
     var sessionKey = identity.sessionKey;
+
+    // Identity (communications) key
+    var selfKey;
+    if (identity.store.get('commsKey')) {
+        selfKey = new Bitcoin.Key(identity.store.get('commsKey'));
+    }
+    else {
+        selfKey = new Bitcoin.Key();
+        selfKey.compressed = true;
+        identity.store.set('commsKey', selfKey.export('bytes'));
+        identity.store.save();
+    }
 
     // Subscribe to given channel
     var channelSubscribe = function(channel, callback, update_cb) {
@@ -58,8 +73,10 @@ function LobbyCtrl($scope, toaster) {
         $scope.peerIds.push(newPeer.pubKeyHex);
         $scope.peers.push(newPeer);
     }
+
     // Initialize some own data
-    $scope.myself = initializePeer(sessionKey.getPub(), 32);
+    $scope.comms = initializePeer(sessionKey.getPub(), 32);
+    $scope.myself = initializePeer(selfKey.getPub(), 32);
 
     // Callback for data received on channel
     var onChannelData = function(pairCodeHash, message) {
@@ -125,4 +142,5 @@ function LobbyCtrl($scope, toaster) {
         client.chan_list("b", function(err, data){console.log("channel list", err, data)})*/
  
     }
+  });
 }
