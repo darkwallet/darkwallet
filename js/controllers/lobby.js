@@ -31,7 +31,7 @@ function LobbyCtrl($scope, toaster) {
     // Subscribe to given channel
     var channelSubscribe = function(channel, callback, update_cb) {
         client = DarkWallet.getClient();
-        var channelHash = SHA256(SHA256($scope.pairCode)+$scope.pairCode);
+        var channelHash = SHA256(SHA256(channel)+channel);
         client.chan_subscribe("b", channelHash, callback, update_cb);
     }
 
