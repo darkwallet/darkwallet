@@ -6,28 +6,6 @@
     <title>Dark Wallet</title>
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width">
 
-    <script src="vendors/angular/angular.min.js"></script>
-    <script src="vendors/mnemonic.js/mnemonic.js"></script>
-    <script src="vendors/angular-animate/angular-animate.min.js"></script>
-    <script src="vendors/ngprogress/build/ngProgress.js"></script>
-    <script src="vendors/AngularJS-Toaster/toaster.js"></script>
-    <script src="vendors/identicon/identicon.js"></script>
-
-    <script src="vendors/bitcoinjs-lib/bitcoinjs.js"></script>
-    <script src="vendors/sjcl/sjcl.js"></script>
-    <script src="js/fixes.js"></script>
-
-    <script src="js/darkwallet.js"></script>
-    <script src="js/stealth.js"></script>
-    <script src="js/ng-app.js"></script>
-
-    <script src="js/controllers/wallet.js"></script>
-    <script src="js/controllers/send.js"></script>
-    <script src="js/controllers/contacts.js"></script>
-    <script src="js/controllers/history.js"></script>
-    <script src="js/controllers/settings.js"></script>
-    <script src="js/controllers/lobby.js"></script>
-
     <link href="vendors/angular/angular-csp.css" rel="stylesheet">
     <link href="stylesheets/screen.css" rel="stylesheet">
     <link href="stylesheets/fonts.css" rel="stylesheet">
@@ -36,28 +14,28 @@
     <link href="vendors/ngprogress/ngProgress.css" rel="stylesheet">
     <link href="vendors/AngularJS-Toaster/toaster.css" rel="stylesheet">
   </head>
-
   <body ng-controller="WalletCtrl">
+    
     <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
     <section class="blank">
       <nav class="navigation">
         <ul>
           <li>
-            <a href="#" class="focus navigation-home" ng-click="section='darkwallet'">
+            <a href="#/darkwallet" class="focus navigation-home" ng-click="section='darkwallet'">
               <i class="icon-large icon-rocket"></i> Dark Wallet
             </a>
           </li>
           <li>
-            <a href="#" ng-click="section='wallet'">Wallet</a>
+            <a href="#/wallet" ng-click="section='wallet'">Wallet</a>
           </li>
           <li>
-            <a href="#" ng-click="section='contacts'">Contacts</a>
+            <a href="#/contacts" ng-click="section='contacts'">Contacts</a>
           </li>
           <li>
-            <a href="#" ng-click="section='settings'">Settings</a>
+            <a href="#/settings" ng-click="section='settings'">Settings</a>
           </li>
           <li>
-            <a href="#" ng-click="section='lobby'">Lobby</a>
+            <a href="#/lobby" ng-click="section='lobby'">Lobby</a>
           </li>
           <li class="righty last-menu-item">
             <a href="#" class="navigation-settings">
@@ -88,354 +66,34 @@
     </section>
     <section class="blank" ng-show="section=='welcome'">
     </section>
-    <section class="blank" ng-show="section=='contacts'" ng-controller="ContactsCtrl">
-      <div class="container">
-      <h2>Contacts</h2>
-      <table class="">
-       <tr>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Total sent</th>
-                <th>Actions</th>
-       </tr>
-       <tr ng-repeat="contact in identity.contacts.contacts">
-                <td>{{contact.name}}</td>
-                <td>{{contact.address}}</td>
-                <td>{{contact.sent}}</td>
-               <td><button class="button" ng-click="editContact(contact)">Edit</button>
-                   <button class="button" ng-click="deleteContact(contact)">Delete</button></td>
-       </tr>
-      </table>
-      <button class="button button-submit" ng-click="startCreateContact()">Create Contact</button>
-      </div>
-      <div class="container" ng-show="subsection=='create' || subsection=='edit'">
-      <h2 ng-show="subsection=='create'">Create contact</h2>
-      <h2 ng-show="subsection=='edit'">Edit contact</h2>
-      <form name="contactForm">
-          <label>
-            <h2>Name</h2>
-            <input ng-model="newContact.name" required type="text" />
-          </label>
-          <label>
-            <h2>Address</h2>
-            <input ng-model="newContact.address" required type="text" />
-          </label>
-         <button ng-disabled="contactForm.$invalid" ng-show="subsection=='create'" class="button button-submit" ng-click="createContact()">Create</button>
-         <button ng-disabled="contactForm.$invalid" ng-show="subsection=='edit'" class="button button-submit" ng-click="createContact()">Save</button>
-         <button class="button" ng-click="subsection=''">Cancel</button>
-      </form>
-    </section>
-    <section class="blank" ng-show="section=='wallet'">
-
-      <nav class="navigation tabs">
-        <ul>
-          <li>
-            <a href="#" ng-click="subsection='history'" ng-class="{active: subsection=='history'}">History</a>
-          </li>
-          <li>
-            <a href="#" ng-click="subsection='send'" ng-class="{active: subsection=='send'}">Send</a>
-          </li>
-          <li>
-            <a href="#" ng-click="subsection='receive'" ng-class="{active: subsection=='receive'}">Receive</a>
-          </li>
-        </ul>
-        <br class="clear">
-      </nav>
-
-      <div class="container login" ng-controller="WalletSendCtrl" ng-show="subsection=='send'">
-
-        <div class="der">
-          <a href="#" class="button button-and-icon">
-            <div><i class="icon-large icon-qrcode"></i></div>Scan QR code
-          </a>
-          <a href="#" class="button button-and-icon" ng-click="showContacts=!showContacts">
-            <div><i class="icon-large icon-user"></i></div>Select from contacts
-          </a>
-        </div>
-
-        <form>
-          <label>
-            <h2>Recipient address</h2>
-            <input ng-model="send.recipient" type="text" class="long" placeholder="Enter bitcoin address here">
-          </label>
-
-          <div class="der down" ng-show="showContacts">
-            <div class="sqicon"><i class="icon-search"></i></div>
-            <input type="text" class="full" placeholder="Search">
-            <table class="">
-              <tr>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Total sent</th>
-              </tr>
-              <tr ng-repeat="contact in identity.contacts.contacts">
-                <td>{{contact.name}}</td>
-                <td>{{contact.address}}</td>
-                <td>234.45553</td>
-              </tr>
-            </table>
-          </div>
-
-          <label>
-            <h2>Amount</h2>
-            <input ng-model="send.amount" type="text" class="long" placeholder="BTC">
-          </label>
-
-          <label>
-            <h2>Fee</h2>
-            <input ng-model="send.fee" type="text" class="long" value="0,00002">
-          </label>
-          <label>
-            <h2>Password</h2>
-            <input ng-model="send.password" type="password" class="password" value="">
-          </label>
-          <button class="button-and-icon button-submit" ng-click="sendBitcoins()"><div><i class="icon-large icon-btc"></i></div>Send</button>
-        </form>
-      </div>
-
-      <div class="container" ng-show="subsection=='receive'">
-        <h1>Balance: {{totalBalance/100000000}} btc</h1>
-        <h2>Unused addresses</h2>
-        <table class="full">
-          <tr>
-            <th>Name</th>
-            <th>Address</th>
-            <th>QR Code</th>
-            <th>Payment Request</th>
-          </tr>
-          <tr ng-repeat="address in addresses" ng-show="address.nOutputs == 0">
-            <td>{{address.label}}</td>
-            <td>{{address.address}}</td>
-            <td><i class="icon-large icon-qrcode"></i></td>
-            <td><i class="icon-large icon-money"></i></td>
-          </tr>
-        </table>
-        <button class="button button-and-icon sep" ng-click="generateAddress()">
-          <div><i class="icon-large icon-btc"></i></div>Generate new address
-        </button>
-      </div>
-
-      <section ng-show="subsection=='receive'">
-        <h2>Used addresses</h2>
-        <table class="full">
-          <tr>
-            <th>Name</th>
-            <th>Address</th>
-            <th>QR Code</th>
-            <th>Payment Request</th>
-            <th>Transactions</th>
-            <th>Balance</th>
-          </tr>
-          <tr ng-repeat="address in addresses" ng-show="address.nOutputs != 0">
-            <td>{{address.label}}</td>
-            <td>{{address.address}}</td>
-            <td><i class="icon-large icon-qrcode"></i></td>
-            <td><i class="icon-large icon-money"></i></td>
-            <td>{{address.nOutputs}}</td>
-            <td>{{address.balance/100000000}}</td>
-          </tr>
-        </table>
-      </section>
-
-      <section ng-show="subsection=='receive'">
-        <h2>Change addresses</h2>
-        <table class="full">
-          <tr>
-            <th>Address</th>
-            <th>Transactions</th>
-            <th>Balance</th>
-          </tr>
-          <tr ng-repeat="address in changeAddresses">
-            <td>{{address.address}}</td>
-            <td>{{address.nOutputs}}</td>
-            <td>{{address.balance/100000000}}</td>
-          </tr>
-        </table>
-        <button class="button button-and-icon sep" ng-click="generateAddress(1)">
-          <div><i class="icon-large icon-btc"></i></div>Generate change address
-        </button>
-      </section>
-
-      <section ng-show="subsection=='history'" ng-controller="HistoryCtrl">
-        <div class="wallets">
-          <div class="pockets">
-            <div class="main-balance" ng-click="selectPocket()">{{totalBalance}} BTC</div>
-            <div class="wallet-list">
-              <ul>
-                <li ng-repeat="pocket in identity.wallet.pockets" ng-click="selectPocket(pocket)" >{{pocket}}</li>
-              </ul>
-            </div>
-            <div id="newpocket">New mini-wallet</div>
-          </div>
-          <div class="infos">
-            <h2>{{pocket.name}}</h2>
-            <div class="der down"><h2>{{balance/100000000}} BTC</h2></div>
-            <h6 ng-show="pocket.mpk">Master address: {{pocket.mpk}}</h6>
-            <h6 ng-show="pocket.stealth">Stealth address: {{pocket.stealth}}</h6>
-            <nav class="navigation tabs">
-              <ul>
-                <li>
-                  <a href="#" ng-click="subsection='history'" ng-class="{active: subsection=='history'}">History</a>
-                </li>
-                <li>
-                  <a href="#" ng-click="subsection='send'" ng-class="{active: subsection=='send'}">Addresses</a>
-                </li>
-              </ul>
-              <br class="clear">
-            </nav>
-            <table class="history">
-              <tr>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Amount</th>
-                <th>Balance</th>
-              </tr>
-              <tr ng-repeat="row in history">
-                <td><i class="icon-large icon-ok"></i></td>
-                <td>height: {{row.height}}</td>
-                <td>no label</td>
-                <td>{{row.address}}</td>
-                <td>{{(row.myOutValue-row.myInValue)/100000000}}</td>
-                <td>{{row.balance/100000000}}</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </section>
-
-    </section><!-- close section=='wallet' -->
-
-    <div class="container blank" ng-show="section=='identity'">
-      <ul class="dropdown">
-        <li>
-          <a href="#">Identity dropdown</a>
-        </li>
-        <li>
-          <a href="#">Another option</a>
-        </li>
-        <li>
-          <a href="#">Third option</a>
-        </li>
-        <li id="newidentity">
-          <a href="#">New identity</a>
-        </li>
-      </ul>
-    </div>
-
-    <section ng-controller="LobbyCtrl" ng-show="section=='lobby'">
-      <table>
-        <tr><td>
-        <form>
-             <label>
-              <h2>Code</h2>
-              <input ng-model="pairCode" type="password" class="password" value="" />
-             </label>
-             <a href="#" class="button button-and-icon" ng-click="announceSelf();">
-            <div><i class="icon-large icon-qrcode"></i></div>Announce
-          </a>
-        </form>
-        </td><td>
-        <h2>Self</h2>
-        <div class="wrapper"><canvas id="peer{{myself.pubKeyHex}}" width="32" height="32"title="{{myself.pubKeyHex}}"></canvas> {{myself.name}}</div>
-        <h3>Channel</h3>
-        <div class="wrapper"><canvas id="peer{{comms.pubKeyHex}}" width="32" height="32"title="{{comms.pubKeyHex}}"></canvas> {{comms.name}}</div>
-        <h2>Peers</h2>
-        <div ng-repeat="peer in peers">
-        <canvas id="peer{{peer.pubKeyHex}}" width="24" height="24"title="{{peer.pubKeyHex}}"></canvas> {{peer.name}}
-        </div>
-        </td></tr>
-      </table>
-      <h2>Requests</h2>
-      <div ng-repeat="request in requests">
-        {{request.data}}
-      </div>
-    </section>
-    <section ng-controller="WalletSettingsCtrl" ng-show="section=='settings'">
-      <div>
-        <p>Your master public key</p>
-        <p>{{masterPublicKey}}</p>
-      </div>
-      <div>
-        <a href="#" class="button">Button</a>
-        <a href="#" class="button">Button with a counter <span class="notification">22</span></a>
-        <a href="#" class="button button-and-icon">
-          <div><i class="icon-large icon-cog"></i></div>Button with an icon
-        </a>
-      </div>
-      <hr>
-      <div>
-        <a href="#" class="button button-submit">Submit</a>
-        <a href="#" class="button button-cancel">Cancel</a>
-        <a href="#" class="button button-delete">Delete</a>
-      </div>
-      <hr>
-      <div>
-        <a href="#" class="button button-small">Smaller button</a>
-      </div>
-      <hr>
-      <div>
-        <a href="#" class="button button-buy">big button (full width for columns)</a>
-      </div>
+    <section class="blank">
+      <div ng-view></div>
     </section>
 
-    <div class="flip-container" ng-show="section=='darkwallet'">
-    	<div class="flipper">
-    		<div class="front">
-    		  <section class="blank blurb">
-            <img src="./images/lorem1400x560.png" alt="Image" />
-            <div>
-              <h1>dark wallet</h1>
-              <h2>the safest bitcoin wallet yet</h2>
-              <hr>
-              <p>Welcome to Dark Wallet! Thanks for trusting us with your bitcoins! bla bla bla</p>
-              <p>Another line here, por si las moscas...</p>
-              <a href="#" class="button button-cta">import a wallet</a> <a href="#" class="button button-cta">generate a wallet</a>
-            </div>
-          </section>
-    		</div>
-    		<div class="back">
-    			sdsdfsdfdfsdfds
-    		</div>
-    	</div>
-    </div>
+    <script src="vendors/angular/angular.min.js"></script>
+    <script src="vendors/angular-route/angular-route.js"></script>
+    <script src="vendors/mnemonic.js/mnemonic.js"></script>
+    <script src="vendors/angular-animate/angular-animate.min.js"></script>
+    <script src="vendors/ngprogress/build/ngProgress.js"></script>
+    <script src="vendors/AngularJS-Toaster/toaster.js"></script>
+    <script src="vendors/identicon/identicon.js"></script>
 
-    <section class="blank" ng-show="section=='settings'">
-      <div class="typography">
-        <h1>Header 1</h1>
-        <h1 class="big">Header 1 (big)</h1>
-        <h2>Header 2</h2>
-        <h2 class="big">Header 2 (big)</h2>
-        <h3>Header 3</h3>
-        <h3 class="big">Header 3 (big)</h3>
-        <h4>Header 4</h4>
-        <h4 class="big">Header 4 (big)</h4>
-        <h5>Header 5</h5>
-        <h5 class="big">Header 5 (big)</h5>
-        <p>This is a paragraph <a href="#">and this is a link</a>.</p>
-        <ul>
-          <li>This is a list</li>
-          <li>It has list items</li>
-          <li>More than two</li>
-          <li>Certainly more than four</li>
-          <li>This is the last one</li>
-        </ul>
-      </div>
-        <form>
-          <label>
-            <h2>Password</h2>
-            <input ng-model="stealth.password" type="password" class="password" value="">
-          </label>
-          <button class="button-and-icon button-submit" ng-click="receiveStealth()"><div><i class="icon-large icon-btc"></i></div>Receive stealth</button>
-        </form>
-      </div>
+    <script src="vendors/bitcoinjs-lib/bitcoinjs.js"></script>
+    <script src="vendors/sjcl/sjcl.js"></script>
+    <script src="js/fixes.js"></script>
 
+    <script src="js/darkwallet.js"></script>
+    <script src="js/stealth.js"></script>
+    <script src="js/app.js"></script>
 
-      <a href="#" class="button button-and-icon" ng-click="clearStorage();">
-        <div><i class="icon-large icon-qrcode"></i></div>Clear storage (DANGEROUS!!)
-      </a>
-    </section>
-
+    <script src="js/controllers/module.js"></script>
+    <script src="js/controllers/wallet.js"></script>
+    <script src="js/controllers/darkwallet.js"></script>
+    <script src="js/controllers/send.js"></script>
+    <script src="js/controllers/contacts.js"></script>
+    <script src="js/controllers/history.js"></script>
+    <script src="js/controllers/receive.js"></script>
+    <script src="js/controllers/settings.js"></script>
+    <script src="js/controllers/lobby.js"></script>
   </body>
 </html>

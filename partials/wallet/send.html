@@ -1,0 +1,53 @@
+<section class="blank">
+  <div ng-include="'partials/wallet/menu.html'"></div> 
+  <div class="container login">
+    
+    <div class="der">
+      <a href="#" class="button button-and-icon">
+        <div><i class="icon-large icon-qrcode"></i></div>Scan QR code
+      </a>
+      <a href="#" class="button button-and-icon" ng-click="showContacts=!showContacts">
+        <div><i class="icon-large icon-user"></i></div>Select from contacts
+      </a>
+    </div>
+      
+    <form>
+      <label>
+        <h2>Recipient address</h2>
+        <input ng-model="send.recipient" type="text" class="long" placeholder="Enter bitcoin address here">
+      </label>
+        
+      <div class="der down" ng-show="showContacts">
+        <div class="sqicon"><i class="icon-search"></i></div>
+        <input type="text" class="full" placeholder="Search">
+        <table class="">
+          <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Total sent</th>
+          </tr>
+          <tr ng-repeat="contact in identity.contacts.contacts">
+            <td>{{contact.name}}</td>
+            <td>{{contact.address}}</td>
+            <td>234.45553</td>
+          </tr>
+        </table>
+      </div>
+        
+      <label>
+        <h2>Amount</h2>
+        <input ng-model="send.amount" type="text" class="long" placeholder="BTC">
+      </label>
+        
+      <label>
+        <h2>Fee</h2>
+        <input ng-model="send.fee" type="text" class="long" value="0,00002">
+      </label>
+      <label>
+        <h2>Password</h2>
+        <input ng-model="send.password" type="password" class="password" value="">
+      </label>
+      <button class="button-and-icon button-submit" ng-click="sendBitcoins()"><div><i class="icon-large icon-btc"></i></div>Send</button>
+    </form>
+  </div>
+</section>

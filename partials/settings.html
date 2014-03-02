@@ -1,0 +1,35 @@
+<section>
+  <div class="container">
+    <div class="typography">
+      <h1>Header 1</h1>
+      <h1 class="big">Header 1 (big)</h1>
+      <h2>Header 2</h2>
+      <h2 class="big">Header 2 (big)</h2>
+      <h3>Header 3</h3>
+      <h3 class="big">Header 3 (big)</h3>
+      <h4>Header 4</h4>
+      <h4 class="big">Header 4 (big)</h4>
+      <h5>Header 5</h5>
+      <h5 class="big">Header 5 (big)</h5>
+      <p>This is a paragraph <a href="#">and this is a link</a>.</p>
+      <ul>
+        <li>This is a list</li>
+        <li>It has list items</li>
+        <li>More than two</li>
+        <li>Certainly more than four</li>
+        <li>This is the last one</li>
+      </ul>
+    </div>
+    <form>
+      <label>
+        <h2>Password</h2>
+        <input ng-model="stealth.password" type="password" class="password" value="">
+      </label>
+      <button class="button-and-icon button-submit" ng-click="receiveStealth()"><div><i class="icon-large icon-btc"></i></div>Receive stealth</button>
+    </form>
+    
+    <a href="#" class="button button-and-icon" ng-click="clearStorage();">
+      <div><i class="icon-large icon-qrcode"></i></div>Clear storage (DANGEROUS!!)
+    </a>
+  </div>
+</section>

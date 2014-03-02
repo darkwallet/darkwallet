@@ -1,0 +1,30 @@
+<section ng-controller="LobbyCtrl">
+  <div class="container">
+    <table>
+      <tr><td>
+          <form>
+            <label>
+              <h2>Code</h2>
+              <input ng-model="pairCode" type="password" class="password" value="" />
+            </label>
+            <button class="button button-and-icon" ng-click="announceSelf();">
+              <div><i class="icon-large icon-qrcode"></i></div>Announce
+            </button>
+          </form>
+        </td><td>
+          <h2>Self</h2>
+          <div class="wrapper"><canvas id="peer{{myself.pubKeyHex}}" width="32" height="32"title="{{myself.pubKeyHex}}"></canvas> {{myself.name}}</div>
+          <h3>Channel</h3>
+          <div class="wrapper"><canvas id="peer{{comms.pubKeyHex}}" width="32" height="32"title="{{comms.pubKeyHex}}"></canvas> {{comms.name}}</div>
+          <h2>Peers</h2>
+          <div ng-repeat="peer in peers">
+            <canvas id="peer{{peer.pubKeyHex}}" width="24" height="24"title="{{peer.pubKeyHex}}"></canvas> {{peer.name}}
+          </div>
+        </td></tr>
+    </table>
+    <h2>Requests</h2>
+    <div ng-repeat="request in requests">
+      {{request.data}}
+    </div>
+  </div>
+</section>
