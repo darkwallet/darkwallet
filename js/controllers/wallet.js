@@ -7,7 +7,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-function WalletCtrl($scope, ngProgress, toaster) {
+angular.module('DarkWallet.controllers').controller('WalletCtrl', ['$scope', 'ngProgress', 'toaster', function($scope, ngProgress, toaster) {
   var pubKey, mpKey, addressIndex;
 
   // generated addresses
@@ -137,7 +137,4 @@ function WalletCtrl($scope, ngProgress, toaster) {
   // Load identity
   bg.loadIdentity(0, loadIdentity);
 
-};
-
-
-
+}]);

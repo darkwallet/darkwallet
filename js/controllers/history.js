@@ -2,7 +2,7 @@
  * @fileOverview HistoryCtrl angular controller
  */
 
-function HistoryCtrl($scope) {
+angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', function($scope) {
   $scope.balance = 0;
   $scope.pocketName = "All Pockets";
   $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined};
@@ -24,5 +24,5 @@ function HistoryCtrl($scope) {
       }
       $scope.balance = $scope.identity.wallet.getBalance(pocket);
   }
-}
+}]);
 

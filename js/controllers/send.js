@@ -1,5 +1,4 @@
-
-function WalletSendCtrl($scope, toaster) {
+angular.module('DarkWallet.controllers').controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
   $scope.send = {recipient: '', amount: 0.2, fee: 0.00002};
 
   $scope.sendBitcoins = function() {
@@ -21,4 +20,4 @@ function WalletSendCtrl($scope, toaster) {
       // we can also use something to show radar progress
       toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + amount) + ' satoshis');
   }
-}
+}]);

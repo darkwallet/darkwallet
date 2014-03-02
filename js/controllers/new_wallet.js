@@ -9,7 +9,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-function NewWalletCtrl($scope, $location) {
+angular.module('DarkWallet.controllers').controller('NewWalletCtrl', ['$scope', function($scope) {
 
   $scope.activeForm = 'password';
   $scope.create_or_restore = 'create';
@@ -49,4 +49,4 @@ function NewWalletCtrl($scope, $location) {
     DarkWallet.getKeyRing().createIdentity($scope.name, mnemonic.toHex(), $scope.passwd);
     window.location = 'wallet.html'
   }
-};
+}]);
