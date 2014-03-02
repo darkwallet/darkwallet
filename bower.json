@@ -29,6 +29,7 @@
     "bitcoinjs-lib": "git://github.com/Darkwallet/bitcoinjs-lib",
     "angular": "~1.2.13",
     "ngprogress": "~1.0.4",
-    "AngularJS-Toaster": "~0.4.3"
+    "AngularJS-Toaster": "~0.4.3",
+    "angular-route": "~1.2.14"
   }
 }
