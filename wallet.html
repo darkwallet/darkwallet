@@ -26,16 +26,16 @@
             </a>
           </li>
           <li>
-            <a href="#/wallet" ng-click="section='wallet'">Wallet</a>
+            <a href="#/wallet">Wallet</a>
           </li>
           <li>
-            <a href="#/contacts" ng-click="section='contacts'">Contacts</a>
+            <a href="#/contacts">Contacts</a>
           </li>
           <li>
-            <a href="#/settings" ng-click="section='settings'">Settings</a>
+            <a href="#/settings">Settings</a>
           </li>
           <li>
-            <a href="#/lobby" ng-click="section='lobby'">Lobby</a>
+            <a href="#/lobby">Lobby</a>
           </li>
           <li class="righty last-menu-item">
             <a href="#" class="navigation-settings">
@@ -43,7 +43,7 @@
             </a>
           </li>
           <li class="righty">
-            <a id="drop" href="#" class="navigation-user" ng-click="section='identity'">
+            <a id="drop" href="#" class="navigation-user">
               <i class="icon-large icon-user"></i>{{identity.name}}<i id="drop" class="icon-sort-down "></i>
             </a>
           </li>
@@ -64,7 +64,7 @@
         <p>This could compromise your identity!</p>
       </div>
     </section>
-    <section class="blank" ng-show="section=='welcome'">
+    <section class="blank">
     </section>
     <section class="blank">
       <div ng-view></div>
