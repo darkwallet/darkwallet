@@ -139,6 +139,7 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
   }
 
   // Load identity
-  bg.loadIdentity(0, loadIdentity);
-
+  if (bg.getKeyRing().availableIdentities.length) {
+    bg.loadIdentity(0, loadIdentity);
+  }
 }]);
