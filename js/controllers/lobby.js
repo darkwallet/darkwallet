@@ -1,5 +1,4 @@
-
-function LobbyCtrl($scope, toaster) {
+angular.module('DarkWallet.controllers').controller('LobbyCtrl', ['$scope', function($scope) {
   DarkWallet.service().ready(function() {
     $scope.pairCode = '';
     $scope.requests = [];
@@ -149,4 +148,4 @@ function LobbyCtrl($scope, toaster) {
  
     }
   });
-}
+}]);

@@ -7,14 +7,18 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-function WalletCtrl($scope, ngProgress, toaster) {
+angular.module('DarkWallet.controllers').controller('WalletCtrl',
+  ['$scope', '$location' ,'ngProgress', 'toaster', function($scope, $location, ngProgress, toaster) {
   var pubKey, mpKey, addressIndex;
+
+  // Tabs
+  $scope.isActive = function(route) {
+    return route === $location.path();
+  }
 
   // generated addresses
   $scope.addresses = [];
   $scope.changeAddresses = [];
-  $scope.subsection = 'history';
-  $scope.section = 'wallet';
 
   var bg = DarkWallet.service();
 
@@ -135,9 +139,7 @@ function WalletCtrl($scope, ngProgress, toaster) {
   }
 
   // Load identity
-  bg.loadIdentity(0, loadIdentity);
-
-};
-
-
-
+  if (bg.getKeyRing().availableIdentities.length) {
+    bg.loadIdentity(0, loadIdentity);
+  }
+}]);

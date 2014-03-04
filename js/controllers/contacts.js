@@ -2,7 +2,7 @@
  * @fileOverview ContactsCtrl angular controller
  */
 
-function ContactsCtrl($scope) {
+angular.module('DarkWallet.controllers').controller('ContactsCtrl', ['$scope', function($scope) {
   $scope.newContact = {};
   $scope.createContact = function() {
       if ($scope.subsection == 'edit') {
@@ -28,5 +28,4 @@ function ContactsCtrl($scope) {
       $scope.newContact = {};
       $scope.subsection = 'create'; 
   }
-}
-
+}]);

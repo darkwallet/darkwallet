@@ -7,7 +7,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-function PopupCtrl($scope) {
+angular.module('DarkWallet.controllers').controller('PopupCtrl', ['$scope', function($scope) {
   // we don't have the same background page here, so we initialize our
   // own keyring just for choosing identities, just for now...
   var keyRing = new IdentityKeyRing();
@@ -39,16 +39,13 @@ function PopupCtrl($scope) {
       ];
     }*/
   };
-
-};
-
-
+}])
 /**
  * Password class constructor.
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-function PasswdCtrl($scope) {
+.controller('PasswordCtrl' ['$scope', function($scope) {
 
   $scope.submit = function() {
     var keyRing = DarkWallet.keyRing;
@@ -82,4 +79,4 @@ function PasswdCtrl($scope) {
 
     keyRing.createIdentity($scope.name, seed, $scope.passwd);
   };
-};
+}]);

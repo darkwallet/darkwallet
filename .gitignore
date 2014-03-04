@@ -22,3 +22,5 @@ Desktop.ini
 /vendors/jquery/
 /vendors/bitcoinjs-lib/*
 !vendors/bitcoinjs-lib/src/
+/vendors/angular-route/*
+!/vendors/angular-route/*.min.js

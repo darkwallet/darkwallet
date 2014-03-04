@@ -1,0 +1,29 @@
+<section class="createwallet">
+  <h1>Create new wallet</h1>
+  <form ng-show="activeForm=='password'" ng-submit="passwordSubmit()">
+    <div>Register an identity</div>
+    <div><input type="text" ng-model="name" placeholder="Identity Name" autofocus ng-required="true" /></div>
+    <div><input type="password" ng-model="passwd" placeholder="Password" ng-required="true" /></div>
+    <div><input type="password" ng-model="passwd2" placeholder="Repeat password" ng-required="true" /></div>
+    <div>Do you want a new wallet or want to restore a previous one from a seed?</div>
+    <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="create" value="create" /><label for="create">Create</label><br>
+    <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="restore" value="restore" /><label for="restore">Restore</label><br>
+    <div>
+      <input type="submit" value="Create" class="item-footer">
+    </div>
+  </form>
+  <form ng-show="activeForm=='mnemonic'" ng-submit="mnemonicSubmit()">
+    <div>Write this seed in a paper and save it.</div>
+    <div><textarea type="text" readonly ng-model="mnemonicWords"></textarea></div>
+    <div>
+      <input type="submit" value="Accept" class="item-footer">
+    </div>
+  </form>
+  <form ng-show="activeForm=='mnemonic2'" ng-submit="mnemonic2Submit()">
+    <div>Write the seed again</div>
+    <div><textarea type="text" placeholder="price bleed trail suspend..." ng-model="mnemonic2Words"></textarea></div>
+    <div>
+      <input type="submit" value="Accept" class="item-footer">
+    </div>
+  </form>
+</section>

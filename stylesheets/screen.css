@@ -1108,10 +1108,6 @@ section.flatby {
 section.createwallet .error {
   color: #A00; }
 
-.hidden, .hidden-true {
-  display: none;
-}
-
 input[type=radio]+label {
   display: inline;
   margin-left: 0;
