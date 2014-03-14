@@ -24,15 +24,15 @@ Desktop.ini
 !vendors/bitcoinjs-lib/src/
 /vendors/angular-route/*
 !/vendors/angular-route/*.min.js
-/vendors/foundation/*
+/vendors/angular-foundation/*
+!/vendors/angular-foundation/mm-foundation-tpls.min.js
 /vendors/font-awesome/*
-!/vendors/font-awesome/fonts/*
-!/vendors/font-awesome/css/*.min.css
-/vendors/jquery.cookie/*
-/vendors/jquery-placeholder/*
-/vendors/foundation/js/vendor/*
-/vendors/modernizr/*
-/vendors/fastclick/*
+!/vendors/font-awesome/fonts
+/vendors/font-awesome/fonts/*
+!/vendors/font-awesome/fonts/fontawesome-webfont.woff
+!/vendors/font-awesome/css
+/vendors/font-awesome/css/*
+!/vendors/font-awesome/css/font-awesome.min.css
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*

@@ -21,39 +21,13 @@
     <link rel="stylesheet" href="stylesheets/font-awesome.css">
   </head>
   <body ng-controller="PopupCtrl">
-    <div>
-      <select ng-model="identity" ng-options="id.id for id in identities" ng-change="identityChange()"></select>
       <div class="activity shown">
-        <a href="#" class="item-footer green">Dark Wallet</a>
-        <a href="#" class="item-footer" ng-show="identities.length">
-          <i class="icon-large icon-user"></i>{{identity.id}}<i id="drop" class="icon-sort-down "></i>
-        </a>
-      </div>
-
-      <div class="activity shown" ng-show="identities.length">
-        <div class="activity-list-update">
-          <img src="./images/lorem50.png" alt="Image">
-          <p>Identity 1</p>
-          Latest activity 5 days ago
-          <div class="clear"></div>
-        </div>
-      </div>
-
-      <div class="activity shown">
-        <div class="activity-list-update" ng-repeat="update in activity">
-          <img src="images/lorem50.png" alt="Image">
-          <p>{{update.action}}</p>
-          <strong>{{update.amount}} BTC</strong> {{update.timestamp}}
-          <div class="clear"></div>
-        </div>
-        <a href="wallet.html#history" target="_blank" class="item-footer green" ng-show="identities.length">
+        <a href="index.html#history" target="_blank" class="item-footer green" ng-show="identities.length">
           Go to history...
         </a>
-        <a href="wallet.html#new_wallet" target="_blank" class="item-footer green">
+        <a href="index.html#new_wallet" target="_blank" class="item-footer green">
           Create new wallet...
         </a>
       </div>
-
-    </div>
   </body>
 </html>
