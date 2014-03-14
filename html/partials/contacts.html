@@ -17,20 +17,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Content Goes Here</td>
-          <td>3cc7e35fbb78d17d207e53d0fe950d1db571be889b3ff87aec653e50175926</td>
-          <td class="text-right"><a class="button square fa fa-edit"></a><a class="button square fa fa-trash-o"></a></td>
-        </tr>
-        <tr>
-          <td>Content Goes Here</td>
-          <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
-          <td class="text-right"><a class="button square fa fa-edit"></a><a class="button square fa fa-trash-o"></a></td>
+        <tr ng-repeat="contact in identity.contacts.contacts">
+          <td>{{contact.name}}</td>
+          <td>{{contact.address}}</td>
+          <td class="text-right">
+            <button ng-click="editContact(contact)" class="button square fa fa-edit"></button>
+            <button ng-click="deleteContact(contact)" class="button square fa fa-trash-o"></button>
+          </td>
         </tr>
         <tr class="editrow">
-          <td><input type="text" value="lalala" /></td>
-          <td><input type="text" value="1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8" /></td>
-          <td class="text-right"><a class="button small expand">Save</a></td>
+          <td><input ng-model="newContact.name" type="text" placeholder="Write a new contact name" /></td>
+          <td><input ng-model="newContact.address" type="text" placeholder="Bitcoin address" /></td>
+          <td class="text-right"><button ng-click="createContact()" class="button small expand">Save</button></td>
         </tr>
       </tbody>
     </table>
