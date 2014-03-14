@@ -33,6 +33,8 @@ Desktop.ini
 !/vendors/font-awesome/css
 /vendors/font-awesome/css/*
 !/vendors/font-awesome/css/font-awesome.min.css
+/vendors/foundation/*
+/vendors/fastclick/*
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*
