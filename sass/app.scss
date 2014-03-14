@@ -1,0 +1,90 @@
+@import "normalize";
+@import "settings";
+@import "foundation";
+
+.aright { text-align: right; }
+
+@-webkit-keyframes glowpulse {
+  from { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: darken($primary-color, 10%); -webkit-box-shadow: 0 0 18px $primary-color; }
+  to { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
+}
+
+a.glow.button {
+  -webkit-animation-name: glowpulse;
+  -webkit-animation-duration: 4s;
+  -webkit-animation-iteration-count: infinite;
+}
+
+a.glow.button:hover {
+	-webkit-animation: none;
+}
+
+.button:active, table.history tr:nth-child(odd) a.button:active { 
+	background: darken($primary-color, 20%); 
+	-webkit-transition: none;
+	-moz-transition: none;
+	transition: none;
+ }
+
+.splitcus {
+  @include split-button();
+}
+table.history tr td:first-child {
+	padding: 0;
+	a.button { margin-right: 0.6em; } 
+}
+
+table.history tr:nth-child(odd) a.button { 
+	background: darken($primary-color, 5%);
+	}
+
+table.expand { width: 100%; text-overflow: ellipsis; }
+.editrow td { padding: 0; }
+.editrow td.edit-balance { padding-right: 0.7em; text-align: right; }
+.editrow .button { margin: 0; padding-bottom: rem-calc(11); }
+.editrow td input[type="text"] { margin: 0; }
+
+.button.fa:before {
+	font-family: FontAwesome;
+}
+
+#newcontact { margin: 0;}
+.button.square { padding: 0.6em; margin: 0 0.1em;}
+.button.postfix.fa:before { 
+
+	background: darken($primary-color, 10%); 
+	position: absolute; 
+	left: 0px; 
+	padding: 0.1em 1em;
+	}
+
+.button.postfix.fa { padding-left: 2em; }
+
+#settings:hover i { 
+  -webkit-animation: spin 2s infinite linear;
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+ }
+
+.top-bar a { @include single-transition(); }
+
+li.colorhead, li.colorhead:hover { 
+	text-align: center;
+	padding: 0.6em 0;
+	background: #444; 
+	}
+
+li.colorhead h6 { color: white; margin: 0; }
+
+#wallets:before, #wallets:after { border-bottom-color: #444; }
+
+#wallets { 
+	border: 2px solid #444;
+	border-radius: 4px;
+	 }
+
+.address-postfix { margin-top: 2.1em; }
+
+.side-nav a.button { color: white; }
