@@ -1,38 +1,82 @@
-<div ng-include="'partials/wallet/menu.html'"></div>
-<section>
-  <div class="wallets">
-    <div class="pockets">
-      <div class="main-balance" ng-click="selectPocket()">{{totalBalance}} BTC</div>
-      <div class="wallet-list">
-        <ul>
-          <li ng-repeat="pocket in identity.wallet.pockets" ng-click="selectPocket(pocket)" >{{pocket}}</li>
-        </ul>
-      </div>
-      <div id="newpocket">New mini-wallet</div>
-    </div>
-    <div class="infos">
-      <h2>{{pocket.name}}</h2>
-      <div class="der down"><h2>{{balance/100000000}} BTC</h2></div>
-      <h6 ng-show="pocket.mpk">Master address: {{pocket.mpk}}</h6>
-      <h6 ng-show="pocket.stealth">Stealth address: {{pocket.stealth}}</h6>
-      <table class="history">
-        <tr>
-          <th>Status</th>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Address</th>
-          <th>Amount</th>
-          <th>Balance</th>
-        </tr>
-        <tr ng-repeat="row in history">
-          <td><i class="icon-large icon-ok"></i></td>
-          <td>height: {{row.height}}</td>
-          <td>no label</td>
-          <td>{{row.address}}</td>
-          <td>{{(row.myOutValue-row.myInValue)/100000000}}</td>
-          <td>{{row.balance/100000000}}</td>
-        </tr>
-      </table>
-    </div>
+<div class="row">
+  <div class="large-2 columns">
+    <ul class="side-nav">
+      <li>Pockets on my wallet</li>
+      <li class="active"><a href="#">Main</a></li>
+      <li><a href="#">Donations</a></li>
+      <li><a href="#">Savings</a></li>
+      <li><a class="button small">New Pocket</a></li>
+      <li class="divider"></li>
+      <li>My multisig funds</li>
+      <li><a href="#">Unsystem</a></li>
+      <li><a href="#">Multisig 3</a></li>
+      <li><a class="button small">New Multisig fund</a></li>
+    </ul>
   </div>
-</section>
+  <div class="large-10 columns">
+    <div class="row">
+      <div class="large-2 columns">
+        <h3>Main</h3>
+      </div>
+      <div class="large-10 columns text-right">
+        <a class="button tiny">Mix funds automatically</a>
+        <a class="button tiny">Move funds to another pocket</a>
+        <a class="button tiny">Delete pocket</a>
+      </div>
+    </div>
+    <span class="label">Master</span>xpub6BSAFBWXRxbimPu4zGfchGvBcGoYfBi583bcUFiWwQXsbjCfD3xE4xsyB5y7
+    <span class="label">Stealth</span>xpub6BSAFBWXRxbimPu4zGfchGvBcGoYfBi583bcUFiWwQXsbjCfD3xE4xsyB5y7
+    <table class="expand history">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Amount</th>
+          <th class="text-right">Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a class="button square fa fa-info"></a>Content Goes Here</td>
+          <td>32452345</td>
+          <td class="text-right">756473452</td>
+        </tr>
+        <tr>
+          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
+          <td>342345256</td>
+          <td class="text-right">12346433</td>
+        </tr>
+        <tr>
+          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
+          <td>342345256</td>
+          <td class="text-right">12346433</td>
+        </tr>
+        <tr>
+          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
+          <td>342345256</td>
+          <td class="text-right">12346433</td>
+        </tr>
+        <tr>
+          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
+          <td>342345256</td>
+          <td class="text-right">12346433</td>
+        </tr>
+        <tr>
+          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
+          <td>342345256</td>
+          <td class="text-right">12346433</td>
+        </tr>
+        <tr>
+          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
+          <td>342345256</td>
+          <td class="text-right">12346433</td>
+        </tr>
+        <tr>
+          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
+          <td>342345256</td>
+          <td class="text-right">12346433</td>
+        </tr>
+          
+      </tbody>
+    </table>
+  </div>
+</div>

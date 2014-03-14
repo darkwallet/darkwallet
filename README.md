@@ -27,6 +27,14 @@ $ bower install angular --save # --save option modify bower.json file
 
 Read [bower documentation](http://bower.io) for more info.
 
+### Grunt tasks
+
+* `grunt` - watching (Sass, Server on 127.0.0.1:9000 with LiveReload)
+* `grunt build` - Sass
+* `grunt validate-js` - JSHint
+* `grunt publish` - dist directory
+* `grunt server-dist` - server on 127.0.0.1:9001 - dist directory (preview only)
+
 - - -
 
 - unsystem dev

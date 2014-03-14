@@ -1,53 +1,55 @@
-<section class="blank">
-  <div ng-include="'partials/wallet/menu.html'"></div> 
-  <div class="container login">
-    
-    <div class="der">
-      <a href="#" class="button button-and-icon">
-        <div><i class="icon-large icon-qrcode"></i></div>Scan QR code
-      </a>
-      <a href="#" class="button button-and-icon" ng-click="showContacts=!showContacts">
-        <div><i class="icon-large icon-user"></i></div>Select from contacts
-      </a>
-    </div>
-      
-    <form>
-      <label>
-        <h2>Recipient address</h2>
-        <input ng-model="send.recipient" type="text" class="long" placeholder="Enter bitcoin address here">
-      </label>
-        
-      <div class="der down" ng-show="showContacts">
-        <div class="sqicon"><i class="icon-search"></i></div>
-        <input type="text" class="full" placeholder="Search">
-        <table class="">
-          <tr>
-            <th>Name</th>
-            <th>Address</th>
-            <th>Total sent</th>
-          </tr>
-          <tr ng-repeat="contact in identity.contacts.contacts">
-            <td>{{contact.name}}</td>
-            <td>{{contact.address}}</td>
-            <td>234.45553</td>
-          </tr>
-        </table>
+<div class="row">
+  <div class="small-12 columns">
+    <h3>Send</h3>
+    <div class="row">
+      <div class="large-10 columns">
+        <div class="row collapse">
+          <div class="large-8 columns">
+            <h6>Description</h6>
+            <input type="text" placeholder="Enter a short description for this transaction." />
+          </div>
+          <div class="large-2 columns">
+            <h6>Coin mixing</h6>
+            <a href="#" class="fa button postfix fa-check-square-o">Enabled</a>
+          </div>
+          <div class="large-2 columns">
+            <h6>Sending from</h6>
+            <a href="#" data-dropdown="wallets" class="fa button postfix fa-chevron-circle-down">Main wallet</a>
+          </div>
+        </div>
       </div>
-        
-      <label>
-        <h2>Amount</h2>
-        <input ng-model="send.amount" type="text" class="long" placeholder="BTC">
-      </label>
-        
-      <label>
-        <h2>Fee</h2>
-        <input ng-model="send.fee" type="text" class="long" value="0,00002">
-      </label>
-      <label>
-        <h2>Password</h2>
-        <input ng-model="send.password" type="password" class="password" value="">
-      </label>
-      <button class="button-and-icon button-submit" ng-click="sendBitcoins()"><div><i class="icon-large icon-btc"></i></div>Send</button>
-    </form>
+      
+      <div class="large-2 medium-6 columns">
+        <h6>Fee</h6>
+        <input type="text" value="0.000001" />
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="medium-10 columns">
+        <h6>Bitcoin address:</h6>
+        <div class="row collapse">
+          <div class="large-8 columns">
+            <input type="text" value="1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8" />
+          </div>
+          <div class="large-2 small-6 columns">
+            <a href="#" class="fa button postfix fa-qrcode">Scan code</a>
+          </div>
+          <div class="large-2 small-6 columns">
+            <a href="#" class="fa button postfix fa-users">Contacts</a>
+          </div>
+        </div>
+      </div>
+      <div class="medium-2 columns">
+        <h6>Amount</h6>
+        <input type="text" value="0.000001" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="medium-10 columns">
+        <a href="#">Send to more than one recipient...</a>
+      </div>
+      <div class="medium-2 columns aright"><a class="button glow radius expand">Send</a></div>
+    </div>
   </div>
-</section>
+</div>
