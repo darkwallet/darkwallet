@@ -5298,39 +5298,6 @@ a.glow.button:hover {
   -moz-transition: none;
   transition: none; }
 
-.splitcus {
-  position: relative;
-  padding-right: 5.0625rem; }
-  .splitcus span {
-    display: block;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    top: 0;
-    border-left: solid 1px; }
-    .splitcus span:before {
-      position: absolute;
-      content: "";
-      width: 0;
-      height: 0;
-      display: block;
-      border-style: inset;
-      top: 50%;
-      left: 50%; }
-    .splitcus span:active {
-      background-color: rgba(0, 0, 0, 0.1); }
-  .splitcus span {
-    border-left-color: rgba(255, 255, 255, 0.5); }
-  .splitcus span {
-    width: 3.09375rem; }
-    .splitcus span:before {
-      border-top-style: solid;
-      border-width: 0.375rem;
-      top: 48%;
-      margin-left: -0.375rem; }
-  .splitcus span:before {
-    border-color: #fff transparent transparent transparent; }
-
 table.history tr td:first-child {
   padding: 0; }
   table.history tr td:first-child a.button {
@@ -5371,21 +5338,18 @@ table.expand {
   background: #1e8448;
   position: absolute;
   left: 0px;
-  padding: 0.1em 1em; }
+  padding: 0.11em 1em; }
 
 .button.postfix.fa {
   padding-left: 2em; }
-
-#settings:hover i {
-  -webkit-animation: spin 2s infinite linear;
-  -moz-animation: spin 2s infinite linear;
-  -o-animation: spin 2s infinite linear;
-  animation: spin 2s infinite linear; }
 
 .top-bar a {
   -webkit-transition: all 300ms ease-out;
   -moz-transition: all 300ms ease-out;
   transition: all 300ms ease-out; }
+
+.top-bar a:before {
+  position: absolute; }
 
 li.colorhead, li.colorhead:hover {
   text-align: center;
@@ -5407,11 +5371,12 @@ li.colorhead h6 {
   margin-top: 2.1em; }
 
 .side-nav li.active {
-  border: 1px solid #27ae60;
+  border-bottom: 1px solid #27ae60;
   border-left-style: none; }
 
 .side-nav a.button {
-  color: white; }
+  color: white;
+  margin-bottom: 0.6em; }
 
 .tabs dd > a {
   font-size: 90%;

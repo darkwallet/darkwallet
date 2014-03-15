@@ -27,9 +27,6 @@ a.glow.button:hover {
 	transition: none;
  }
 
-.splitcus {
-  @include split-button();
-}
 table.history tr td:first-child {
 	padding: 0;
 	a.button { margin-right: 0.6em; } 
@@ -56,20 +53,14 @@ table.expand { width: 100%; text-overflow: ellipsis; }
 	background: darken($primary-color, 10%); 
 	position: absolute; 
 	left: 0px; 
-	padding: 0.1em 1em;
+	padding: 0.11em 1em;
 	}
 
 .button.postfix.fa { padding-left: 2em; }
 
-#settings:hover i { 
-  -webkit-animation: spin 2s infinite linear;
-  -moz-animation: spin 2s infinite linear;
-  -o-animation: spin 2s infinite linear;
-  animation: spin 2s infinite linear;
- }
 
 .top-bar a { @include single-transition(); }
-
+.top-bar a:before { position: absolute; }
 li.colorhead, li.colorhead:hover { 
 	text-align: center;
 	padding: 0.6em 0;
@@ -88,9 +79,10 @@ li.colorhead h6 { color: white; margin: 0; }
 .address-postfix { margin-top: 2.1em; }
 
 .side-nav li.active { 
-	border: 1px solid $primary-color;
+	border-bottom: 1px solid $primary-color;
 	border-left-style: none; }
-.side-nav a.button { color: white; }
+
+.side-nav a.button { color: white; margin-bottom: 0.6em; }
 
 .tabs dd > a { 
 	font-size: 90%;
