@@ -32,6 +32,7 @@
     "ngprogress": "~1.0.4",
     "AngularJS-Toaster": "~0.4.3",
     "angular-route": "~1.2.14",
+    "foundation": "zurb/bower-foundation"  ,
     "angular-foundation": "~0.1.0"
   }
 }

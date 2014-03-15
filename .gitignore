@@ -35,6 +35,9 @@ Desktop.ini
 !/vendors/font-awesome/css/font-awesome.min.css
 /vendors/foundation/*
 /vendors/fastclick/*
+/vendors/jquery-placeholder/*
+/vendors/modernizr/*
+/vendors/jquery.cookie/*
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*
