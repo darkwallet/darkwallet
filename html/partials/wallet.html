@@ -1,7 +1,6 @@
 <div class="row">
   <div class="large-2 columns panel">
     <ul class="side-nav">
-      <li>{{totalBalance/100000000}}</li>
       <li>Pockets on my wallet</li>
       <li ng-class="{true:'active', false:''}[selectedPocket===undefined]" class="active" ng-click="selectPocket()"><a>All</a></li>
       <li ng-class="{true:'active', false:''}[$index==selectedPocket]" ng-repeat="pocketName in identity.wallet.pockets" ng-click="selectPocket(pocketName, $index)" ><a>{{pocketName}}</a></li>
@@ -15,7 +14,7 @@
   </div>
   <div class="large-10 columns">
     <h3>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance)/100000000}} BTC</small></h3>
-    <b ng-show="pocket.stealth">Stealth: {{pocket.stealth}}</b>
+    
 
   <tabset>
     <tab heading="History">
@@ -36,7 +35,9 @@
         </tbody>
       </table>
     </tab>
-    <tab heading="Addresses">Addresses
+    <tab heading="Addresses">
+  <label ng-show="pocket.stealth">Stealth Address</label>
+  <div ng-show="pocket.stealth">{{pocket.stealth}}</div>
   <table class="full">
     <tr>
       <th>Name</th>
