@@ -87,4 +87,16 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .address-postfix { margin-top: 2.1em; }
 
+.side-nav li.active { 
+	border: 1px solid $primary-color;
+	border-left-style: none; }
 .side-nav a.button { color: white; }
+
+.tabs dd > a { 
+	font-size: 90%;
+	padding: 0.5em 1.1em;
+	background: darken($primary-color, 10%); 
+	color: white;
+	&:hover { background: $primary-color; }
+}
+.tabs dd.active > a { background: lighten($primary-color, 10%); }

@@ -1,81 +1,53 @@
 <div class="row">
-  <div class="large-2 columns">
+  <div class="large-2 columns panel">
     <ul class="side-nav">
       <li>Pockets on my wallet</li>
       <li class="active"><a href="#">Main</a></li>
       <li><a href="#">Donations</a></li>
       <li><a href="#">Savings</a></li>
-      <li><a class="button small">New Pocket</a></li>
+      <li><a class="button small expand">New Pocket</a></li>
       <li class="divider"></li>
       <li>My multisig funds</li>
       <li><a href="#">Unsystem</a></li>
       <li><a href="#">Multisig 3</a></li>
-      <li><a class="button small">New Multisig fund</a></li>
+      <li><a class="button small expand">New Multisig fund</a></li>
     </ul>
   </div>
   <div class="large-10 columns">
-    <div class="row">
-      <div class="large-6 columns">
-        <h3>Main <small>0.00345563 BTC</small></h3>
-      </div>
-      <div class="large-6 columns text-right">
-        <a class="button square">History</a>
-        <a class="button square">Addresses</a>
-        <a class="button square">Actions</a>
-      </div>
-    </div>
+    <h3>Main <small>0.00345563 BTC</small></h3>
 
-    <table class="expand history">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Amount</th>
-          <th class="text-right">Balance</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><a class="button square fa fa-info"></a>Content Goes Here</td>
-          <td>32452345</td>
-          <td class="text-right">756473452</td>
-        </tr>
-        <tr>
-          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
-          <td>342345256</td>
-          <td class="text-right">12346433</td>
-        </tr>
-        <tr>
-          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
-          <td>342345256</td>
-          <td class="text-right">12346433</td>
-        </tr>
-        <tr>
-          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
-          <td>342345256</td>
-          <td class="text-right">12346433</td>
-        </tr>
-        <tr>
-          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
-          <td>342345256</td>
-          <td class="text-right">12346433</td>
-        </tr>
-        <tr>
-          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
-          <td>342345256</td>
-          <td class="text-right">12346433</td>
-        </tr>
-        <tr>
-          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
-          <td>342345256</td>
-          <td class="text-right">12346433</td>
-        </tr>
-        <tr>
-          <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
-          <td>342345256</td>
-          <td class="text-right">12346433</td>
-        </tr>
-          
-      </tbody>
-    </table>
+  <tabset>
+    <tab heading="History">
+      <table class="expand history">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th class="text-right">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a class="button square fa fa-info"></a>Content Goes Here</td>
+            <td>32452345</td>
+            <td class="text-right">756473452</td>
+          </tr>
+          <tr>
+            <td><a class="button square fa fa-info"></a>1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8</td>
+            <td>342345256</td>
+            <td class="text-right">12346433</td>
+          </tr>
+        </tbody>
+      </table>
+    </tab>
+    <tab heading="Addresses">Addresses</tab>
+    <tab heading="Actions">
+      <a class="button">Automatically mix funds on this pocket</a>
+      <a class="button">Move funds to another pocket</a>
+      <a class="button alert">Delete Pocket</a>
+    </tab>
+  </tabset>
+
+
   </div>
 </div>
