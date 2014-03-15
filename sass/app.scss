@@ -46,7 +46,6 @@ table.expand { width: 100%; text-overflow: ellipsis; }
 	font-family: FontAwesome;
 }
 
-#newcontact { margin: 0;}
 .button.square, button.square { padding: 0.6em; margin: 0 0.1em;}
 .button.postfix.fa:before, button.postfix.fa:before { 
 
@@ -58,6 +57,7 @@ table.expand { width: 100%; text-overflow: ellipsis; }
 
 .button.postfix.fa { padding-left: 2em; }
 
+.button.topright { margin: 0.7em 0 0 0; }
 
 .top-bar a { @include single-transition(); }
 .top-bar a:before { position: absolute; }

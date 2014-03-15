@@ -2902,12 +2902,12 @@ span.postfix, label.postfix {
 /* We use this to get basic styling on all basic form elements */
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea {
   -webkit-appearance: none;
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: #3c3c3c;
   font-family: inherit;
   border: 1px none #cccccc;
   -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  color: rgba(0, 0, 0, 0.75);
+  color: rgba(200, 200, 200, 0.75);
   display: block;
   font-size: 0.875rem;
   margin: 0 0 1rem 0;
@@ -2929,7 +2929,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
     box-shadow: 0 0 5px #999999;
     border-color: #999999; }
   input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, textarea:focus {
-    background: #fafafa;
+    background: #282828;
     border-color: #999999;
     outline: none; }
   input[type="text"][disabled], fieldset[disabled] input[type="text"], input[type="password"][disabled], fieldset[disabled] input[type="password"], input[type="date"][disabled], fieldset[disabled] input[type="date"], input[type="datetime"][disabled], fieldset[disabled] input[type="datetime"], input[type="datetime-local"][disabled], fieldset[disabled] input[type="datetime-local"], input[type="month"][disabled], fieldset[disabled] input[type="month"], input[type="week"][disabled], fieldset[disabled] input[type="week"], input[type="email"][disabled], fieldset[disabled] input[type="email"], input[type="number"][disabled], fieldset[disabled] input[type="number"], input[type="search"][disabled], fieldset[disabled] input[type="search"], input[type="tel"][disabled], fieldset[disabled] input[type="tel"], input[type="time"][disabled], fieldset[disabled] input[type="time"], input[type="url"][disabled], fieldset[disabled] input[type="url"], textarea[disabled], fieldset[disabled] textarea {
@@ -5327,9 +5327,6 @@ table.expand {
 .button.fa:before {
   font-family: FontAwesome; }
 
-#newcontact {
-  margin: 0; }
-
 .button.square, button.square {
   padding: 0.6em;
   margin: 0 0.1em; }
@@ -5342,6 +5339,9 @@ table.expand {
 
 .button.postfix.fa {
   padding-left: 2em; }
+
+.button.topright {
+  margin: 0.7em 0 0 0; }
 
 .top-bar a {
   -webkit-transition: all 300ms ease-out;
