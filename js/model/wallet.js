@@ -86,9 +86,9 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
         callback(key);
         return;
     }
-    var key = new Bitcoin.BIP32key(data.privKey);
+    var key = Bitcoin.HDWallet.fromBase58(data.privKey);
     while(workSeq.length) {
-        key = key.ckd(workSeq.shift());
+        key = key.derive(workSeq.shift());
     }
     this.storePrivateKey(seq, password, key.key);
    
@@ -168,12 +168,12 @@ Wallet.prototype.getAddress = function(seq) {
     }
     else {
         // derive from mpk
-        var mpKey = new Bitcoin.BIP32key(this.mpk);
+        var mpKey = Bitcoin.HDWallet.fromBase58(this.mpk);
 
         var workSeq = seq.slice(0);
         var childKey = mpKey;
         while(workSeq.length) {
-            childKey = childKey.ckd(workSeq.shift());
+            childKey = childKey.derive(workSeq.shift());
         }
         return this.storeAddress(seq, childKey.key);
     }

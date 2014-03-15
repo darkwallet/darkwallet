@@ -20,9 +20,9 @@ angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 't
           $scope.pocket.name = pocket;
           // derive mpk here for now so we can show as master address
           // this is a bit slow and key should be cached...
-	  var mpKey = new Bitcoin.BIP32key($scope.identity.wallet.mpk);
-          var childKey = mpKey.ckd($scope.pocket.index);
-          $scope.pocket.mpk = childKey.getPub().serialize().substring(0,64)+'...';
+	  var mpKey = Bitcoin.HDWallet.fromBase58($scope.identity.wallet.mpk);
+          var childKey = mpKey.derive($scope.pocket.index);
+          $scope.pocket.mpk = childKey.toBase58(false).substring(0,64)+'...';
           $scope.pocket.stealth = $scope.identity.wallet.getAddress([$scope.pocket.index]).stealth;
       }
       $scope.selectedPocket = pocketIndex;

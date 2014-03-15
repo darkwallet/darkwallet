@@ -46,11 +46,11 @@ Identity.encrypt = function(data, password) {
 Identity.prototype.generate = function(seed, password) {
     // Don't use constructor directly since it doesn't manage hex seed properly.
     var rawSeed = Bitcoin.convert.hexToBytes(seed);
-    var key = Bitcoin.BIP32key.prototype.fromMasterKey(rawSeed);
-    var identityKey = key.ckd(0x80000000);
+    var key = Bitcoin.HDWallet.fromBytes(rawSeed);
+    var identityKey = key.derive(0x80000000);
 
-    var pubKey = identityKey.getPub().serialize();
-    var privKey = identityKey.serialize();
+    var pubKey = identityKey.toBase58(false);
+    var privKey = identityKey.toBase58();
 
     // TODO we probably don't want to save the seed later here, but let's do it
     // for now to make development easier.

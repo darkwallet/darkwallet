@@ -14,9 +14,9 @@ Stealth.ecN = new Bitcoin.BigInteger("115792089237316195423570985008687907852837
  */
 Stealth.importPublic = function(Q) {
     //console.log('Q', Bitcoin.convert.bytesToHex(Q));
-    var key = new Bitcoin.Key();
-    delete key.priv;
-    key.setPub(Q);
+    var key = new Bitcoin.ECPubKey(Q);
+    //delete key.priv;
+    //key.setPub(Q);
     return key;
 }
 
