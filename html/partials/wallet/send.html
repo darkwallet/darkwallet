@@ -16,31 +16,7 @@
           </div>
           <div class="large-2 columns">
             <h6>Sending from</h6>
-            <a href="#" data-dropdown="wallets" class="fa button postfix fa-chevron-circle-down">Main wallet</a>
-          </div>
-        </div>
-      </div>
-      
-      <div class="large-2 medium-6 columns">
-        <h6>Fee</h6>
-        <input type="text" value="0.000001" />
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="large-10 columns">
-        <div class="row collapse">
-          <div class="large-8 columns">
-            <h6>Description</h6>
-            <input type="text" placeholder="Enter a short description for this transaction." />
-          </div>
-          <div class="large-2 columns">
-            <h6>Coin mixing</h6>
-            <a href="#" class="fa button postfix fa-check-square-o">Enabled</a>
-          </div>
-          <div class="large-2 columns">
-            <h6>Sending from</h6>
-            <a href="#" data-dropdown="wallets" class="fa button postfix fa-chevron-circle-down">Main wallet</a>
+            <a href="#" dropdown-toggle="#wallets" class="fa button postfix fa-chevron-circle-down">Main wallet</a>
           </div>
         </div>
       </div>
@@ -77,3 +53,11 @@
       </div>
       <div class="medium-2 columns aright"><a class="button glow radius expand">Send</a></div>
     </div>
+        <ul id="wallets" class="f-dropdown">
+          <li class="colorhead"><h6>My wallets</h6></li>
+          <li><a href="#">This is a wallet</a></li>
+          <li><a href="#">Yet another</a></li>
+          <li class="colorhead"><h6>Multisig funds</h6></li>
+          <li><a href="#">This is a multisig wallet</a></li>
+          <li><a href="#">Yet another</a></li>
+        </ul>
