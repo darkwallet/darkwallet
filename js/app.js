@@ -16,5 +16,5 @@ config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/popup', {templateUrl: 'partials/popup.html', controller: 'PopupCtrl'});
   $routeProvider.when('/send', {templateUrl: 'partials/send.html', controller: 'WalletSendCtrl'});
   $routeProvider.when('/settings', {templateUrl: 'partials/settings.html', controller: 'WalletSettingsCtrl'});
-  $routeProvider.otherwise({redirectTo: '/history'});
+  $routeProvider.otherwise({redirectTo: '/dashboard'});
 }]);
