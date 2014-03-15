@@ -36,22 +36,49 @@
       </table>
     </tab>
     <tab heading="Addresses">
-  <label ng-show="pocket.stealth">Stealth Address</label>
-  <div ng-show="pocket.stealth">{{pocket.stealth}}</div>
-  <table class="full">
-    <tr>
-      <th>Name</th>
-      <th>Address</th>
-      <th>QR Code</th>
-      <th>Payment Request</th>
-    </tr>
-    <tr ng-repeat="address in addresses" ng-show="address.nOutputs == 0">
-      <td>{{address.label}}</td>
-      <td>{{address.address}}</td>
-      <td><i class="icon-large icon-qrcode"></i></td>
-      <td><i class="icon-large icon-money"></i></td>
-    </tr>
-  </table>
+          <div class="row collapse">
+            <div class="medium-2 columns">
+              <span class="prefix radius">Stealth Address</span>
+            </div>
+            <div class="medium-6 columns">
+              <input type="text" disabled="true" value="{{pocket.stealth}}" />
+            </div>
+            <div class="medium-2 columns">
+              <a class="button postfix fa fa-clipboard">Copy</a>
+            </div>
+            <div class="medium-2 columns">
+              <a class="button postfix radius fa fa-qrcode">QR</a>
+            </div>
+          </div>
+          <div class="row collapse">
+            <div class="medium-2 columns">
+              <span class="prefix radius">Master Address</span>
+            </div>
+            <div class="medium-6 columns">
+              <input type="text" disabled="true" value="{{pocket.mpk}}" />
+            </div>
+            <div class="medium-2 columns">
+              <a class="button postfix fa fa-clipboard">Copy</a>
+            </div>
+            <div class="medium-2 columns">
+              <a class="button postfix radius fa fa-qrcode">QR</a>
+            </div>
+          </div>         
+      <table class="expand">
+        <thead>
+          <th>Name</th>
+          <th>Address</th>
+          <th>QR Code</th>
+          <th>Payment Request</th>
+        </thead>
+        <tr ng-repeat="address in addresses" ng-show="address.nOutputs == 0">
+          <td>{{address.label}}</td>
+          <td>{{address.address}}</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+        </tr>
+      </table>
+      <a class="button small">New address</a>
     </tab>
     <tab heading="Actions">
       <div class="row">
