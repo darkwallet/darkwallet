@@ -1,6 +1,8 @@
-<div class="row">
-  <div class="small-12 columns">
-    <h3>Send</h3>
+    <div class="row">
+      <div class="small-12 columns">
+        <h3>Send</h3>
+      </div>
+    </div>
     <div class="row">
       <div class="large-10 columns">
         <div class="row collapse">
@@ -14,7 +16,7 @@
           </div>
           <div class="large-2 columns">
             <h6>Sending from</h6>
-            <a href="#" data-dropdown="wallets" class="fa button postfix fa-chevron-circle-down">Main wallet</a>
+            <a href="#" dropdown-toggle="#wallets" class="fa button postfix fa-chevron-circle-down">Main wallet</a>
           </div>
         </div>
       </div>
@@ -24,7 +26,7 @@
         <input type="text" value="0.000001" />
       </div>
     </div>
-    
+
     <div class="row">
       <div class="medium-10 columns">
         <h6>Bitcoin address:</h6>
@@ -51,5 +53,11 @@
       </div>
       <div class="medium-2 columns aright"><a class="button glow radius expand">Send</a></div>
     </div>
-  </div>
-</div>
+        <ul id="wallets" class="f-dropdown">
+          <li class="colorhead"><h6>My wallets</h6></li>
+          <li><a href="#">This is a wallet</a></li>
+          <li><a href="#">Yet another</a></li>
+          <li class="colorhead"><h6>Multisig funds</h6></li>
+          <li><a href="#">This is a multisig wallet</a></li>
+          <li><a href="#">Yet another</a></li>
+        </ul>
