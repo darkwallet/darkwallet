@@ -27,7 +27,7 @@
     "mnemonic.js": "~1.0.0",
     "sjcl": "~1.0.0",
     "darkwallet_gateway": "git://github.com/darkwallet/gateway",
-    "bitcoinjs-lib": "git://github.com/Darkwallet/bitcoinjs-lib",
+    "bitcoinjs-lib": "git://github.com/bitcoinjs/bitcoinjs-lib#master",
     "angular": "~1.2.13",
     "ngprogress": "~1.0.4",
     "AngularJS-Toaster": "~0.4.3",

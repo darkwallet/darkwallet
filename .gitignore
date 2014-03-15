@@ -21,7 +21,7 @@ Desktop.ini
 /vendors/bootstrap/
 /vendors/jquery/
 /vendors/bitcoinjs-lib/*
-!vendors/bitcoinjs-lib/src/
+!/vendors/bitcoinjs-lib/bitcoinjs.js
 /vendors/angular-route/*
 !/vendors/angular-route/*.min.js
 /vendors/angular-foundation/*
