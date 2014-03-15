@@ -19,5 +19,20 @@ angular.module('DarkWallet.controllers').controller('WalletSendCtrl', ['$scope',
       // this should actually be a starting note, but we don't have a finishing callback yet.
       // we can also use something to show radar progress
       toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + amount) + ' satoshis');
+      
+  }
+
+  $scope.repeatedFields = {
+    fields: [
+      { address: '', amount: '' }
+    ],
+    field_proto: { address: '', amount: '' }
+  };
+
+  $scope.addField = function() {
+    // add the new option to the model
+    $scope.repeatedFields.fields.push($scope.repeatedFields.field_proto);
+    // clear the option.
+    $scope.repeatedFields.field_proto = { address: '', amount: '' };
   }
 }]);
