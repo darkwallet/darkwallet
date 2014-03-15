@@ -5363,11 +5363,11 @@ table.expand {
 #newcontact {
   margin: 0; }
 
-.button.square {
+.button.square, button.square {
   padding: 0.6em;
   margin: 0 0.1em; }
 
-.button.postfix.fa:before {
+.button.postfix.fa:before, button.postfix.fa:before {
   background: #1e8448;
   position: absolute;
   left: 0px;

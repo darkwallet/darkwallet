@@ -50,8 +50,8 @@ table.expand { width: 100%; text-overflow: ellipsis; }
 }
 
 #newcontact { margin: 0;}
-.button.square { padding: 0.6em; margin: 0 0.1em;}
-.button.postfix.fa:before { 
+.button.square, button.square { padding: 0.6em; margin: 0 0.1em;}
+.button.postfix.fa:before, button.postfix.fa:before { 
 
 	background: darken($primary-color, 10%); 
 	position: absolute; 

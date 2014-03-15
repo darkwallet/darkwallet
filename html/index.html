@@ -9,7 +9,23 @@
   </head>
   <body class="antialiased" ng-controller="WalletCtrl">
     <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
-      <nav class="top-bar" data-topbar>
+<div class="off-canvas-wrap show-for-small">
+  <div class="inner-wrap">
+
+    <button id="menu-mobile">Menu</button> 
+    <a href="#darkwallet"><img src="../images/logo.svg" width="32" height="32" />Dark Wallet</a>
+    <!-- Off Canvas Menu -->
+    <aside class="left-off-canvas-menu">
+        <ul>
+          <li><a href="#">Menu goes here</a></li>
+        </ul>
+    </aside>
+
+  <a class="exit-off-canvas"></a>
+
+  </div>
+</div>
+      <nav class="top-bar hide-for-small">
       <ul class="title-area">
         <li class="name">
           <h1><a href="#darkwallet"><img src="../images/logo.svg" width="32" height="32" />Dark Wallet</a></h1>
@@ -20,15 +36,14 @@
         <!-- Right Nav Section -->
         <ul class="right">
           <li id="settings"><a href="#settings"><i class="fa fa-cog"></i> Settings</a></li>
-          <li class="has-dropdown">
-            <a href="#"><i class="fa fa-user"></i> My_name</a>
+          <li>
+            <a href="#"><i class="fa fa-user"></i> MyName</a>
             <ul class="dropdown">
               <li><a href="#">Identity 2</a></li>
               <li><a href="#" id="manage" class="button">Manage wallets...</a></li>
             </ul>
           </li>
         </ul>
-
         <!-- Left Nav Section -->
         <ul class="left">
           <li><a href="#history">History</a></li>
