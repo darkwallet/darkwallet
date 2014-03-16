@@ -20,12 +20,16 @@ angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 't
       } else {
           $scope.pocket.index = $scope.identity.wallet.pockets.indexOf(pocket);
           $scope.pocket.name = pocket;
-          // derive mpk here for now so we can show as master address
-          // this is a bit slow and key should be cached...
-	  var mpKey = Bitcoin.HDWallet.fromBase58($scope.identity.wallet.mpk);
-          var childKey = mpKey.derive($scope.pocket.index);
-          $scope.pocket.mpk = childKey.toBase58(false).substring(0,64)+'...';
-          $scope.pocket.stealth = $scope.identity.wallet.getAddress([$scope.pocket.index]).stealth;
+          var walletAddress = $scope.identity.wallet.getAddress([$scope.pocket.index]);
+          if (!walletAddress.mpk) {
+              // derive mpk here for now so we can show as master address
+	      var mpKey = Bitcoin.HDWallet.fromBase58($scope.identity.wallet.mpk);
+              var childKey = mpKey.derive($scope.pocket.index);
+              walletAddress.mpk = childKey.toBase58(false);
+              $scope.identity.wallet.store.save();
+          }
+          $scope.pocket.mpk = walletAddress.mpk.substring(0,64)+'...';
+          $scope.pocket.stealth = walletAddress.stealth;
           $scope.pocket.addresses = $scope.addresses[$scope.pocket.index];
           $scope.isAll = false;
       }
@@ -55,6 +59,16 @@ angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 't
       // this should actually be a starting note, but we don't have a finishing callback yet.
       // we can also use something to show radar progress
       toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + amount) + ' satoshis');
+  }
+
+  // Pockets
+  $scope.newPocketName = '';
+  $scope.createPocket = function() {
+      if ($scope.newPocketName) {
+          $scope.identity.wallet.createPocket($scope.newPocketName);
+          $scope.identity.wallet.createPocket($scope.newPocketName+'-change');
+          $scope.newPocketName = '';
+      }
   }
 
 
