@@ -38,3 +38,10 @@
     </div>
   </div>
 </div>
+<script type="text/ng-template" id="confirm.html">
+    <h3>I'm a modal!</h3>
+    <h3>Are you sure you want to delete <i>{{contact.name}}</i>?</h3>
+    <button class="button" ng-click="ok()">OK</button>
+    <button class="button" ng-click="cancel()">Cancel</button>
+    <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
+</script>

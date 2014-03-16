@@ -2,7 +2,7 @@
  * @fileOverview ContactsCtrl angular controller
  */
 
-angular.module('DarkWallet.controllers').controller('ContactsCtrl', ['$scope', function($scope) {
+angular.module('DarkWallet.controllers').controller('ContactsCtrl', ['$scope', '$modal', function($scope, $modal) {
   $scope.newContact = {};
   $scope.contactFormShown = false;
 
@@ -17,7 +17,27 @@ angular.module('DarkWallet.controllers').controller('ContactsCtrl', ['$scope', f
     $scope.contactFormShown = false;
   };
 
+  var ConfirmInstanceCtrl = function ($scope, $modalInstance, contact) {
+    $scope.contact = contact;
+    $scope.ok = function () {
+      $modalInstance.close();
+    };
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
   $scope.deleteContact = function(contact) {
+    $modal.open({
+      templateUrl: 'confirm.html',
+      controller: ConfirmInstanceCtrl,
+      resolve: {
+        contact:  function() {
+          return contact
+        }
+      }
+    }).result.then(function() {
       $scope.identity.contacts.deleteContact(contact);
+    });
   };
 }]);
