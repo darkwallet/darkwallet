@@ -7,7 +7,9 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-angular.module('DarkWallet.controllers').controller('WalletCtrl',
+define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
+  'use strict';
+  controllers.controller('WalletCtrl',
   ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', function($scope, $location, ngProgress, toaster, $modal) {
   var pubKey, mpKey, addressIndex;
 
@@ -191,3 +193,4 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
     bg.loadIdentity(0, loadIdentity);
   }
 }]);
+});

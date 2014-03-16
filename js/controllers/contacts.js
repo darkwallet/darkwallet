@@ -2,7 +2,9 @@
  * @fileOverview ContactsCtrl angular controller
  */
 
-angular.module('DarkWallet.controllers').controller('ContactsCtrl', ['$scope', '$modal', function($scope, $modal) {
+define(['./module'], function (controllers) {
+  'use strict';
+  controllers.controller('ContactsCtrl', ['$scope', '$modal', function($scope, $modal) {
   $scope.newContact = {};
   $scope.contactFormShown = false;
 
@@ -41,3 +43,4 @@ angular.module('DarkWallet.controllers').controller('ContactsCtrl', ['$scope', '
     });
   };
 }]);
+});

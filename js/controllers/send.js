@@ -1,4 +1,6 @@
-angular.module('DarkWallet.controllers').controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
+define(['./module'], function (controllers) {
+  'use strict';
+  controllers.controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
   $scope.send = {recipient: '', amount: 0.2, fee: 0.00002};
 
   $scope.sendBitcoins = function() {
@@ -36,3 +38,4 @@ angular.module('DarkWallet.controllers').controller('WalletSendCtrl', ['$scope',
     $scope.repeatedFields.field_proto = { address: '', amount: '' };
   }
 }]);
+});

@@ -4,7 +4,14 @@
  * below, you can see we bring in our services and constants modules 
  * which avails each controller of, for example, the `config` constants object.
  **/
-define(['angular'], function (ng) {
-    'use strict';
-    return ng.module('DarkWallet.controllers', []);
-});
+define([
+    './contacts',
+    './dashboard',
+    './history',
+    './lobby',
+    './new_wallet',
+    './popup',
+    './send',
+    './settings',
+    './wallet'
+], function () {});

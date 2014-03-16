@@ -1,4 +1,7 @@
-angular.module('DarkWallet.controllers').controller('LobbyCtrl', ['$scope', function($scope) {
+define(['./module', 'darkwallet', 'stealth', 'bitcoinjs-lib', 'mnemonicjs', 'identicon'],
+function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic, Identicon) {
+  'use strict';
+  controllers.controller('LobbyCtrl', ['$scope', function($scope) {
   DarkWallet.service().ready(function() {
     $scope.pairCode = '';
     $scope.requests = [];
@@ -155,3 +158,4 @@ angular.module('DarkWallet.controllers').controller('LobbyCtrl', ['$scope', func
     }
   });
 }]);
+});
