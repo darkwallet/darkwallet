@@ -72,14 +72,20 @@
           <th>QR Code</th>
           <th>Payment Request</th>
         </thead>
-        <tr ng-repeat="address in addresses" ng-show="address.nOutputs == 0">
+        <tr ng-repeat="address in pocket.addresses" ng-show="address.nOutputs == 0">
           <td>{{address.label}}</td>
           <td>{{address.address}}</td>
           <td><i class="icon-large icon-qrcode"></i></td>
           <td><i class="icon-large icon-money"></i></td>
         </tr>
+        <tr ng-repeat="address in pocket.addresses" ng-show="address.nOutputs != 0">
+          <td>{{address.label}}</td>
+          <td>{{address.address}} ({{address.balance/100000000}})</td>
+          <td><i class="icon-large icon-qrcode"></i></td>
+          <td><i class="icon-large icon-money"></i></td>
+        </tr>
       </table>
-      <a class="button small">New address</a>
+      <a class="button small" ng-click="generateAddress(pocket.index)">New address</a>
     </tab>
     <tab heading="Actions">
       <div class="row">

@@ -17,8 +17,8 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
   }
 
   // generated addresses
-  $scope.addresses = [];
-  $scope.changeAddresses = [];
+  $scope.addresses = {};
+  $scope.allAddresses = [];
 
   var bg = DarkWallet.service();
 
@@ -26,7 +26,8 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
   bg.addListener(function(message, send) {
     if (message.name == 'guiUpdate' || message.name == 'balanceUpdate') {
         if (message.name == 'balanceUpdate') {
-            $scope.totalBalance = $scope.identity.wallet.getBalance();
+            console.log("balance update message", message);
+            //$scope.totalBalance = $scope.identity.wallet.getBalance();
         }
     }
     if (message.name == 'height') {
@@ -40,10 +41,11 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
 
   // Initialize if empty wallet
   function initializeEmpty() {
-      if ($scope.addresses.length == 0) {
+      if (Object.keys($scope.addresses).length == 0) {
           // generate 5 addresses for now
           for(var idx=0; idx<5; idx++) {
               $scope.generateAddress(0);
+              $scope.generateAddress(1);
           }
       }
   }
@@ -54,8 +56,13 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
           // Regular addresses
           if (walletAddress.index.length > 1) {
               // add to scope
-              var addressArray = walletAddress.index[0] ? $scope.changeAddresses : $scope.addresses;
+              var pocketIndex = walletAddress.index[0];
+              if (!$scope.addresses[pocketIndex]) {
+                  $scope.addresses[pocketIndex] = [];
+              }
+              var addressArray = $scope.addresses[pocketIndex];
               addressArray.push(walletAddress);
+              $scope.allAddresses.push(walletAddress);
           }
       });
   }
@@ -76,6 +83,7 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
       // this will connect to obelisk if we're not yet connected
       ngProgress.color('firebrick');
       ngProgress.start();
+      console.log("connect");
       bg.connect(function() {
           ngProgress.color('green');
           ngProgress.complete();
@@ -88,14 +96,21 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
 
   // scope function to generate (or load from cache) a new address
   $scope.generateAddress = function(isChange, n) {
-    var addressArray = isChange ? $scope.changeAddresses : $scope.addresses;
+    if (!isChange) {
+        isChange = 0;
+    }
+    if (!$scope.addresses[isChange]) {
+        $scope.addresses[isChange] = [];
+    }
+    var addressArray = $scope.addresses[isChange];
     if (n === undefined || n === null) {
         n = addressArray.length;
     }
     var walletAddress = $scope.identity.wallet.getAddress([isChange, n]);
 
     // add to scope
-    addressArray.push(walletAddress)
+    addressArray.push(walletAddress);
+    $scope.allAddresses.push(walletAddress);
 
     // get history for the new address
     bg.initAddress(walletAddress);
