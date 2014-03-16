@@ -8,7 +8,7 @@
  * @constructor
  */
 angular.module('DarkWallet.controllers').controller('WalletCtrl',
-  ['$scope', '$location' ,'ngProgress', 'toaster', function($scope, $location, ngProgress, toaster) {
+  ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', function($scope, $location, ngProgress, toaster, $modal) {
   var pubKey, mpKey, addressIndex;
 
   // Tabs
@@ -155,6 +155,23 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
           ngProgress.complete();
       }
       client.fetch_stealth([0,0], stealth_fetched, 0);
+  }
+
+  // Test modals
+  var TestModalCtrl = function ($scope, $modalInstance) {
+    $scope.ok = function () {
+      $modalInstance.close();
+    };
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
+  $scope.openModal = function(tplName) {
+    return $modal.open({
+      templateUrl: tplName,
+      controller: TestModalCtrl
+    });
   }
 
   // Load identity

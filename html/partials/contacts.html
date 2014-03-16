@@ -22,7 +22,8 @@
           <td ng-hide="contactFormShown === $index">{{contact.address}}</td>
           <td class="text-right" ng-hide="contactFormShown === $index">
             <button ng-click="contactFormShown = $index" class="button square fa fa-edit"></button>
-            <button ng-click="deleteContact(contact)" class="button square alert fa fa-trash-o"></button>
+            <button ng-click="openModal('confirm')" class="button square alert fa fa-trash-o"></button>
+            <!--<button ng-click="deleteContact(contact)" class="button square alert fa fa-trash-o"></button>-->
           </td>
           <td ng-show="contactFormShown === $index"><input class="contact-name" ng-model="contact.name" type="text" placeholder="Write a new contact name" /></td>
           <td ng-show="contactFormShown === $index">{{contact.address}}</td>
@@ -38,7 +39,7 @@
     </div>
   </div>
 </div>
-<script type="text/ng-template" id="confirm.html">
+<script type="text/ng-template" id="confirm">
     <h6>Are you sure you want to delete <i>{{contact.name}}</i>?</h6>
     <button class="button alert small" ng-click="ok()">OK</button>
     <button class="button small" ng-click="cancel()">Cancel</button>
