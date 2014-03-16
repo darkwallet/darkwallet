@@ -174,6 +174,18 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
     });
   }
 
+  $scope.copyClipboard = function(text, element) {
+    var copyDiv = document.createElement('div');
+    copyDiv.contentEditable = true;
+    document.body.insertBefore(copyDiv, document.body.firstChild)
+    copyDiv.innerHTML = text;
+    copyDiv.unselectable = "off";
+    copyDiv.focus();
+    document.execCommand('SelectAll');
+    document.execCommand("Copy", false, null);
+    document.body.removeChild(copyDiv);
+  }
+
   // Load identity
   if (bg.getKeyRing().availableIdentities.length) {
     bg.loadIdentity(0, loadIdentity);

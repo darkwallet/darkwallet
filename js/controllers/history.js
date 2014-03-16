@@ -28,7 +28,7 @@ angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 't
               walletAddress.mpk = childKey.toBase58(false);
               $scope.identity.wallet.store.save();
           }
-          $scope.pocket.mpk = walletAddress.mpk.substring(0,64)+'...';
+          $scope.pocket.mpk = walletAddress.mpk;
           $scope.pocket.stealth = walletAddress.stealth;
           $scope.pocket.addresses = $scope.addresses[$scope.pocket.index];
           $scope.isAll = false;
