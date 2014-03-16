@@ -38,6 +38,8 @@ Desktop.ini
 /vendors/jquery-placeholder/*
 /vendors/modernizr/*
 /vendors/jquery.cookie/*
+/vendors/requirejs*/*
+!/vendors/requirejs*/*.js
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*
