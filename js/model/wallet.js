@@ -133,7 +133,7 @@ Wallet.prototype.storeAddress = function(seq, key) {
     // from pubkey yet, unless we do it custom like here...:
     // (mpKey.key.getBitcoinAddress doesn't work since 'key' is not a key
     // object but binary representation).
-    var mpPubKey;
+    var mpPubKey, label;
     if (key.length) {
         mpPubKey = key;
     } else {
@@ -144,9 +144,18 @@ Wallet.prototype.storeAddress = function(seq, key) {
 
     var stealth = Stealth.getStealthAddress(mpPubKey);
 
+    var label = 'unused';
+    if (seq.length == 1) {
+        label = 'pocket';
+    } else if (seq.length > 1 && seq[0]%2 == 1) {
+        label = 'change';
+    } else {
+        label = 'unused';
+    }
+
     this.pubKeys[seq] = {
        'index': seq,
-       'label': 'unused',
+       'label': label,
        'balance': 0,
        'nOutputs': 0,
        'pubKey': mpPubKey,
