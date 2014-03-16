@@ -61,8 +61,10 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
                   $scope.addresses[pocketIndex] = [];
               }
               var addressArray = $scope.addresses[pocketIndex];
-              addressArray.push(walletAddress);
-              $scope.allAddresses.push(walletAddress);
+              if ($scope.allAddresses.indexOf(walletAddress) == -1) {
+                  addressArray.push(walletAddress);
+                  $scope.allAddresses.push(walletAddress);
+              }
           }
       });
   }
@@ -109,8 +111,10 @@ angular.module('DarkWallet.controllers').controller('WalletCtrl',
     var walletAddress = $scope.identity.wallet.getAddress([isChange, n]);
 
     // add to scope
-    addressArray.push(walletAddress);
-    $scope.allAddresses.push(walletAddress);
+    if ($scope.allAddresses.indexOf(walletAddress) == -1) {
+        addressArray.push(walletAddress);
+        $scope.allAddresses.push(walletAddress);
+    }
 
     // get history for the new address
     bg.initAddress(walletAddress);
