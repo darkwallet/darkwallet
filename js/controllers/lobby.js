@@ -27,17 +27,23 @@ angular.module('DarkWallet.controllers').controller('LobbyCtrl', ['$scope', func
         identity.store.save();
     }
 
+    var hashChannelName = function(channel) {
+        var channelHash = SHA256(SHA256(channel)+channel);
+        channelHash = Bitcoin.convert.wordArrayToBytes(channelHash);
+        return Bitcoin.convert.bytesToString(channelHash);
+    }
+
     // Subscribe to given channel
     var channelSubscribe = function(channel, callback, update_cb) {
-        client = DarkWallet.getClient();
-        var channelHash = SHA256(SHA256(channel)+channel);
+        var client = DarkWallet.getClient();
+        var channelHash = hashChannelName(channel);
         client.chan_subscribe("b", channelHash, callback, update_cb);
     }
 
     // Post to given channel
     var channelPost = function(channel, data, callback) {
-        var channelHash = SHA256(SHA256(channel)+channel);
-        client = DarkWallet.getClient();
+        var client = DarkWallet.getClient();
+        var channelHash = hashChannelName(channel);
         client.chan_post("b", channelHash, data, callback);
     }
 
@@ -119,9 +125,9 @@ angular.module('DarkWallet.controllers').controller('LobbyCtrl', ['$scope', func
 
     // Action to start announcements and reception
     $scope.announceSelf = function() {
-        client = DarkWallet.getClient();
-        var pairCodeHash = SHA256(SHA256($scope.pairCode)+$scope.pairCode);
-        var pubKeyHash = Bitcoin.convert.bytesToHex(sessionKey.getPub())
+        var client = DarkWallet.getClient();
+        var pairCodeHash = hashChannelName($scope.pairCode);
+        var pubKeyHash = sessionKey.getPub().toHex(true);
         var encrypted = sjcl.encrypt(pairCodeHash, pubKeyHash, {ks: 256, ts: 128});
         // chan tests
         if ($scope.subscribed != pairCodeHash) {
