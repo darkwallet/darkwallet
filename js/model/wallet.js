@@ -90,9 +90,9 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     while(workSeq.length) {
         key = key.derive(workSeq.shift());
     }
-    this.storePrivateKey(seq, password, key.key);
+    this.storePrivateKey(seq, password, key.priv);
    
-    callback(key.key);
+    callback(key.priv);
 }
 
 /**
@@ -136,7 +136,7 @@ Wallet.prototype.storeAddress = function(seq, key) {
     if (key.length) {
         mpPubKey = key;
     } else {
-        mpPubKey = key.getPub();
+        mpPubKey = key.toBytes();
     }
     var mpKeyHash = Bitcoin.Util.sha256ripe160(mpPubKey);
     var address = new Bitcoin.Address(mpKeyHash);
@@ -175,7 +175,7 @@ Wallet.prototype.getAddress = function(seq) {
         while(workSeq.length) {
             childKey = childKey.derive(workSeq.shift());
         }
-        return this.storeAddress(seq, childKey.key);
+        return this.storeAddress(seq, childKey.pub);
     }
 }
 

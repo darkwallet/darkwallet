@@ -31,7 +31,8 @@ function Identity(store, seed, password) {
  */
 Identity.encrypt = function(data, password) {
     var Crypto = Bitcoin.Crypto;
-    var passwordDigest = Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password)));
+    var passwordDigest = Bitcoin.convert.wordArrayToBytes(Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password))));
+    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
     return sjcl.encrypt(passwordDigest, JSON.stringify(data), {ks: 256, ts: 128});
 }
 
@@ -46,11 +47,11 @@ Identity.encrypt = function(data, password) {
 Identity.prototype.generate = function(seed, password) {
     // Don't use constructor directly since it doesn't manage hex seed properly.
     var rawSeed = Bitcoin.convert.hexToBytes(seed);
-    var key = Bitcoin.HDWallet.fromBytes(rawSeed);
+    var key = Bitcoin.HDWallet.fromMasterHex(seed);
     var identityKey = key.derive(0x80000000);
 
     var pubKey = identityKey.toBase58(false);
-    var privKey = identityKey.toBase58();
+    var privKey = identityKey.toBase58(true);
 
     // TODO we probably don't want to save the seed later here, but let's do it
     // for now to make development easier.
