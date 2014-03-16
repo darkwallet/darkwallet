@@ -6,9 +6,9 @@ angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 't
 
   // History
   
-  $scope.balance = 0;
   $scope.pocketName = "All Pockets";
   $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $scope.allAddresses};
+  $scope.isAll = true;
   $scope.selectPocket = function(pocket, pocketIndex) {
       if (pocket === undefined) {
           $scope.pocket.name = "All Pockets";
@@ -16,6 +16,7 @@ angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 't
           $scope.pocket.mpk = undefined;
           $scope.pocket.stealth = undefined;
           $scope.pocket.addresses = $scope.allAddresses;
+          $scope.isAll = true;
       } else {
           $scope.pocket.index = $scope.identity.wallet.pockets.indexOf(pocket);
           $scope.pocket.name = pocket;
@@ -26,6 +27,7 @@ angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 't
           $scope.pocket.mpk = childKey.toBase58(false).substring(0,64)+'...';
           $scope.pocket.stealth = $scope.identity.wallet.getAddress([$scope.pocket.index]).stealth;
           $scope.pocket.addresses = $scope.addresses[$scope.pocket.index];
+          $scope.isAll = false;
       }
       $scope.selectedPocket = pocketIndex;
       $scope.balance = $scope.identity.wallet.getBalance(pocket);
