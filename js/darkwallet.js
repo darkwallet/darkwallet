@@ -2,6 +2,7 @@
  * @fileOverview Main object for generic dark wallet api.
  */
 
+define(function() {
 // DarkWallet object.
 var DarkWallet = {
 
@@ -17,4 +18,5 @@ var DarkWallet = {
     // Get identity
     getIdentity: function(idx) {return DarkWallet.service().getIdentity(idx)}
 };
-
+return DarkWallet;
+});

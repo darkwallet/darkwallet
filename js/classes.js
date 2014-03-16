@@ -1,6 +1,7 @@
 /**
  * @fileOverview Classes.
  */
+define(['sjcl'], function() {
 
 
 /**
@@ -138,3 +139,5 @@ Database.prototype.remove = function(key, callback) {
     self._save(callback);
   });
 };
+return Database;
+});
