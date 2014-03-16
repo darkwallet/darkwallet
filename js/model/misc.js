@@ -1,3 +1,4 @@
+define(function() {
 /**
  * Contact class.
  * @param {string} address Contact's address.
@@ -30,4 +31,9 @@ function Transaction(tx) {
   return this;
 }
 
-
+return {
+  Contact: Contact,
+  Address: Address,
+  Transaction: Transaction
+};
+});

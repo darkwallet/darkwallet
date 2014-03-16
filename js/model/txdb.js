@@ -2,6 +2,7 @@
  * @fileOverview Transaction Store
  */
 
+define(['darkwallet'], function(DarkWallet) {
 /**
  * TransactionDatabase class.
  * @param {Object} store Store for the object.
@@ -35,3 +36,6 @@ TransactionDatabase.prototype.fetchTransaction = function(txHash, callback, user
         callback(this.transactions[txHash], userData);
     }
 }
+
+return TransactionDatabase;
+});

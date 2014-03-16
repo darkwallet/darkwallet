@@ -2,6 +2,7 @@
  * @fileOverview Manage and serialize identities.
  */
 
+define(['./identity', './store'], function(Identity, Store) {
 // DarkWallet namespace for the local storage.
 var DW_NS = 'dw:identity:';
 
@@ -121,3 +122,6 @@ IdentityKeyRing.prototype.save = function(name, data, callback) {
 IdentityKeyRing.prototype.clear = function() {
       chrome.storage.local.clear();
 }
+
+return IdentityKeyRing;
+});
