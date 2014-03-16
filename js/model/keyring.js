@@ -54,6 +54,7 @@ IdentityKeyRing.prototype.close = function(name) {
 IdentityKeyRing.prototype.createIdentity = function(name, seed, password) {
     var identity = new Identity(new Store({name: name}, this), seed, password);
     this.identities[name] = identity;
+    this.availableIdentities.push(name);
     return identity;
 }
 
