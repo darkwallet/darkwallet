@@ -3555,7 +3555,7 @@ dialog, .reveal-modal {
   width: 100vw;
   top: 0;
   left: 0;
-  background-color: #fff;
+  background-color: #222;
   padding: 1.25rem;
   border: solid 1px #666;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
