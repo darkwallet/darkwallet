@@ -7,16 +7,6 @@
     <link rel="stylesheet" href="../vendors/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../vendors/angular/angular-csp.css">
     <link rel="stylesheet" href="../css/app.css">
-    <script src="vendors/angular/angular.min.js"></script>
-    <script src="vendors/angular-route/angular-route.min.js"></script>
-    <script src="vendors/angular-animate/angular-animate.min.js"></script>
-    <script src="vendors/ngprogress/build/ngProgress.js"></script>
-    <script src="vendors/AngularJS-Toaster/toaster.js"></script>
-    <script src="js/model/keyring.js"></script>
-    <script src="js/darkwallet.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/controllers/module.js"></script>
-    <script src="js/controllers/popup.js"></script>
   </head>
   <body ng-controller="PopupCtrl">
     <div class="popupcontainer">
@@ -36,5 +26,6 @@
         </div>
       </div>
     </div>
+    <script src="../vendors/requirejs/require.js" data-main="../js/main.js"></script>
   </body>
 </html>
