@@ -8,7 +8,13 @@
 
   </div>
 <div class="row">
-      <div class="large-4 columns panel">
+      <div class="large-4 columns">
+        <div class="panel">
+          <h5>Base unit</h5>
+            <input type="radio" name="baseunit" value="BTC" id="btc-radio"><label for="btc-radior">BTC</label>
+            <input type="radio" name="baseunit" value="mBTC" id="mbtc-radio"><label for="mbtc-radio">mBTC</label>
+        </div>
+        <div class="panel">
           <h5>Local currency</h5>
           <select>
             <option value="eur">Euros</option>
@@ -16,11 +22,17 @@
             <option value="gbp">UK Pounds</option>
             <option value="jpy">Japanese Yen</option>
           </select>
+        </div>
       </div>
       <div class="large-4 columns panel">
           <button ng-click="receiveStealth()">Receive stealth</button>
           <button>Show seed</button>
           <button>Change password</button>
+          <h5>Change your password</h5>
+          <label>Enter your current password</label>
+          <input type="password" class="password" value="">
+          <label>Enter your new password</label>
+          <input type="password" class="password" value="">
       </div>
       <div class="large-4 columns panel">
         <a href="" class="button button-and-icon" ng-click="clearStorage();">

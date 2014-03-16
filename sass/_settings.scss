@@ -691,7 +691,7 @@ $input-focus-bg-color: darken($input-bg-color, 8%);
 $input-prefix-bg: scale-color(#222, $lightness: -5%);
 $input-prefix-border-color: $input-disabled-bg;
 // $input-prefix-border-size: 1px;
-// $input-prefix-border-type: solid;
+$input-prefix-border-type: none;
 // $input-prefix-overflow: hidden;
 // $input-prefix-font-color: #333;
 // $input-prefix-font-color-alt: #fff;

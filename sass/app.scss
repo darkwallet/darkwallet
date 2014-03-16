@@ -2,6 +2,10 @@
 @import "settings";
 @import "foundation";
 
+*:focus { outline: 0; } /* Remove webkit's default outline */
+
+
+
 /* BUTTONS ----------- */
 a.glow.button {
   -webkit-animation-name: glowpulse;
@@ -30,7 +34,7 @@ a.glow.button:hover {
 	background: darken($primary-color, 10%); 
 	position: absolute; 
 	left: 0px; 
-	padding: 0.11em 1em;
+	padding: 0.16em 1em;
 	}
 
 .button.postfix.fa { padding-left: 2em; }
@@ -61,7 +65,7 @@ table.expand { width: 100%; text-overflow: ellipsis; }
 .editrow .button { margin: 0; padding-bottom: rem-calc(11); }
 .editrow td input[type="text"] { margin: 0; }
 
-
+/* Wallets dropdown ----------------  */
 
 li.colorhead, li.colorhead:hover { 
 	text-align: center;
@@ -107,4 +111,5 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .top-bar a { @include single-transition(); }
 
+#pop-identities { background: $primary-color; width: 100%; }
 .popupcontainer { min-width: 350px; }

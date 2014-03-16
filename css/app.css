@@ -2167,7 +2167,7 @@ select::-ms-expand {
   width: 100%;
   padding-top: 0;
   padding-bottom: 0;
-  border-style: solid;
+  border-style: none;
   border-width: 1px;
   overflow: hidden;
   font-size: 0.875rem;
@@ -5388,6 +5388,10 @@ th.hide-for-touch {
 .touch th.show-for-touch {
   display: table-cell !important; }
 
+*:focus {
+  outline: 0; }
+
+/* Remove webkit's default outline */
 /* BUTTONS ----------- */
 a.glow.button {
   -webkit-animation-name: glowpulse;
@@ -5414,7 +5418,7 @@ a.glow.button:hover {
   background: #1e8448;
   position: absolute;
   left: 0px;
-  padding: 0.11em 1em; }
+  padding: 0.16em 1em; }
 
 .button.postfix.fa {
   padding-left: 2em; }
@@ -5462,6 +5466,7 @@ table.expand {
 .editrow td input[type="text"] {
   margin: 0; }
 
+/* Wallets dropdown ----------------  */
 li.colorhead, li.colorhead:hover {
   text-align: center;
   padding: 0.6em 0;
@@ -5518,6 +5523,10 @@ li.colorhead h6 {
   -webkit-transition: all 300ms ease-out;
   -moz-transition: all 300ms ease-out;
   transition: all 300ms ease-out; }
+
+#pop-identities {
+  background: #27ae60;
+  width: 100%; }
 
 .popupcontainer {
   min-width: 350px; }
