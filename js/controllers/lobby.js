@@ -45,8 +45,8 @@ angular.module('DarkWallet.controllers').controller('LobbyCtrl', ['$scope', func
     var getMnemoname = function(dataBytes) {
         var mnemonic = new Mnemonic(64);
         mnemonic.random = [];
-        mnemonic.random[0] = Bitcoin.Util.bytesToNum(dataBytes.slice(0,4));
-        mnemonic.random[1] = Bitcoin.Util.bytesToNum(dataBytes.slice(8,16));
+        mnemonic.random[0] = Bitcoin.convert.bytesToNum(dataBytes.slice(0,4));
+        mnemonic.random[1] = Bitcoin.convert.bytesToNum(dataBytes.slice(8,16));
         var mnemoName = mnemonic.toWords().slice(0,4).join(" ");
         return mnemoName;
 
@@ -60,7 +60,7 @@ angular.module('DarkWallet.controllers').controller('LobbyCtrl', ['$scope', func
         // TODO the identicon should be loaded in an angular directive,
         // but we do it now here for testing
         setTimeout(function(){
-            new Identicon('peer'+pubKeyHex, Bitcoin.Util.bytesToNum(pubKeyBytes.slice(8,16)), iconSize);
+            new Identicon('peer'+pubKeyHex, Bitcoin.convert.bytesToNum(pubKeyBytes.slice(8,16)), iconSize);
         },1000);
         return newPeer;
 
@@ -74,8 +74,8 @@ angular.module('DarkWallet.controllers').controller('LobbyCtrl', ['$scope', func
     }
 
     // Initialize some own data
-    $scope.comms = initializePeer(sessionKey.getPub(), 32);
-    $scope.myself = initializePeer(selfKey.getPub(), 32);
+    $scope.comms = initializePeer(sessionKey.getPub().toBytes(true), 32);
+    $scope.myself = initializePeer(selfKey.getPub().toBytes(true), 32);
 
     // Callback for data received on channel
     var onChannelData = function(pairCodeHash, message) {
