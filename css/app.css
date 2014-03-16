@@ -5420,7 +5420,7 @@ a.glow.button:hover {
   left: 0px;
   padding: 0.16em 1em; }
 
-.button.postfix.fa {
+.button.postfix.fa, button.postfix.fa {
   padding-left: 2em; }
 
 .button.topright {
@@ -5490,6 +5490,10 @@ li.colorhead h6 {
 #wallets {
   border: 2px solid #444;
   border-radius: 4px; }
+
+.contact-mosaic .panel:hover {
+  background: #27ae60;
+  cursor: pointer; }
 
 .address-postfix {
   margin-top: 2.1em; }

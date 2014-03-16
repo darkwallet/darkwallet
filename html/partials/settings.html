@@ -1,12 +1,4 @@
-    <form>
-      <label>
-        Password
-        <input ng-model="stealth.password" type="password" class="password" value="">
-      </label>
-    </form>
-    
 
-  </div>
 <div class="row">
       <div class="large-4 columns">
         <div class="panel">
@@ -23,20 +15,27 @@
             <option value="jpy">Japanese Yen</option>
           </select>
         </div>
+        <div class="panel">
+          <h5>Security</h5>
+          <button class="small">Show seed</button>
+        </div>
       </div>
       <div class="large-4 columns panel">
-          <button ng-click="receiveStealth()">Receive stealth</button>
-          <button>Show seed</button>
-          <button>Change password</button>
           <h5>Change your password</h5>
           <label>Enter your current password</label>
           <input type="password" class="password" value="">
           <label>Enter your new password</label>
           <input type="password" class="password" value="">
+          <button class="small">Change password</button>
       </div>
       <div class="large-4 columns panel">
         <a href="" class="button button-and-icon" ng-click="clearStorage();">
           <div><i class="icon-large icon-qrcode"></i></div>Clear storage (DANGEROUS!!)
         </a>
+                  <button ng-click="receiveStealth()">Receive stealth</button>
+                        <label>
+        Password
+        <input ng-model="stealth.password" type="password" class="password" value="">
+      </label>
       </div>
-    </div>
+</div>
