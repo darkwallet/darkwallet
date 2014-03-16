@@ -60,7 +60,7 @@ table.history tr:nth-child(odd) a.button {
 	}
 
 table.expand { width: 100%; text-overflow: ellipsis; }
-.editrow td { padding: 0; }
+.editrow td input.contact-name { max-width: 300px; }
 .editrow td.edit-balance { padding-right: 0.7em; text-align: right; }
 .editrow .button { margin: 0; padding-bottom: rem-calc(11); }
 .editrow td input[type="text"] { margin: 0; }
