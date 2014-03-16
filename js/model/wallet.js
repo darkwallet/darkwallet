@@ -101,7 +101,8 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
  */
 Wallet.prototype.getPrivateData = function(password) {
     var SHA256 = Bitcoin.Crypto.SHA256;
-    var passwordDigest = SHA256(SHA256(SHA256( password )));
+    var passwordDigest = Bitcoin.convert.wordArrayToBytes(SHA256(SHA256(SHA256(password))));
+    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
     var data = JSON.parse(sjcl.decrypt(passwordDigest, this.store.get('private')));
     if (!data.privKeys) {
         data.privKeys = {};
