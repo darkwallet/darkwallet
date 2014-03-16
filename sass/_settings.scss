@@ -944,7 +944,7 @@ $select-bg-color: $input-bg-color;
 // $include-html-panel-classes: $include-html-classes;
 
 // We use these to control the background and border styles
- $panel-bg: scale-color(#444, $lightness: -5%);
+ $panel-bg: scale-color(#222, $lightness: -5%);
 // $panel-border-style: solid;
 // $panel-border-size: 1px;
 
@@ -1371,7 +1371,7 @@ $table-row-font-color: #eee;
 //
 
 // $include-html-type-classes: $include-html-classes;
-// $include-open-sans: true;
+$include-open-sans: false;
 
 // We use these to control header font styles
 // $header-font-family: join("Open Sans", $body-font-family);

@@ -2,14 +2,7 @@
 @import "settings";
 @import "foundation";
 
-.aright { text-align: right; }
-
-@-webkit-keyframes glowpulse {
-  from { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
-  50% { background-color: darken($primary-color, 10%); -webkit-box-shadow: 0 0 18px $primary-color; }
-  to { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
-}
-
+/* BUTTONS ----------- */
 a.glow.button {
   -webkit-animation-name: glowpulse;
   -webkit-animation-duration: 4s;
@@ -26,21 +19,6 @@ a.glow.button:hover {
 	-moz-transition: none;
 	transition: none;
  }
-
-table.history tr td:first-child {
-	padding: 0;
-	a.button { margin-right: 0.6em; } 
-}
-
-table.history tr:nth-child(odd) a.button { 
-	background: darken($primary-color, 5%);
-	}
-
-table.expand { width: 100%; text-overflow: ellipsis; }
-.editrow td { padding: 0; }
-.editrow td.edit-balance { padding-right: 0.7em; text-align: right; }
-.editrow .button { margin: 0; padding-bottom: rem-calc(11); }
-.editrow td input[type="text"] { margin: 0; }
 
 .button.fa:before {
 	font-family: FontAwesome;
@@ -59,8 +37,32 @@ table.expand { width: 100%; text-overflow: ellipsis; }
 
 .button.topright { margin: 0.7em 0 0 0; }
 
-.top-bar a { @include single-transition(); }
-.top-bar a:before { position: absolute; }
+
+@-webkit-keyframes glowpulse {
+  from { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: darken($primary-color, 10%); -webkit-box-shadow: 0 0 18px $primary-color; }
+  to { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
+}
+
+/* TABLES ----------- */
+
+table.history tr td:first-child {
+	padding: 0;
+	a.button { margin-right: 0.6em; } 
+}
+
+table.history tr:nth-child(odd) a.button { 
+	background: darken($primary-color, 5%);
+	}
+
+table.expand { width: 100%; text-overflow: ellipsis; }
+.editrow td { padding: 0; }
+.editrow td.edit-balance { padding-right: 0.7em; text-align: right; }
+.editrow .button { margin: 0; padding-bottom: rem-calc(11); }
+.editrow td input[type="text"] { margin: 0; }
+
+
+
 li.colorhead, li.colorhead:hover { 
 	text-align: center;
 	padding: 0.6em 0;
@@ -78,6 +80,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .address-postfix { margin-top: 2.1em; }
 
+.panel .side-nav { padding-top: 0; }
 .side-nav li.active { 
 	border-bottom: 1px solid $primary-color;
 	border-left-style: none; }
@@ -92,3 +95,7 @@ li.colorhead h6 { color: white; margin: 0; }
 	&:hover { background: $primary-color; }
 }
 .tabs dd.active > a { background: lighten($primary-color, 10%); }
+
+.top-bar a { @include single-transition(); }
+
+.popupcontainer { min-width: 350px; }

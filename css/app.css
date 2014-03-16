@@ -3416,10 +3416,10 @@ ul.pagination {
 .panel {
   border-style: solid;
   border-width: 1px;
-  border-color: #393939;
+  border-color: #1d1d1d;
   margin-bottom: 1.25rem;
   padding: 1.25rem;
-  background: #414141; }
+  background: #202020; }
   .panel > :first-child {
     margin-top: 0; }
   .panel > :last-child {
@@ -5389,22 +5389,7 @@ th.hide-for-touch {
 .touch th.show-for-touch {
   display: table-cell !important; }
 
-.aright {
-  text-align: right; }
-
-@-webkit-keyframes glowpulse {
-  from {
-    background-color: #27ae60;
-    -webkit-box-shadow: 0 0 9px #333; }
-
-  50% {
-    background-color: #1e8448;
-    -webkit-box-shadow: 0 0 18px #27ae60; }
-
-  to {
-    background-color: #27ae60;
-    -webkit-box-shadow: 0 0 9px #333; } }
-
+/* BUTTONS ----------- */
 a.glow.button {
   -webkit-animation-name: glowpulse;
   -webkit-animation-duration: 4s;
@@ -5419,6 +5404,39 @@ a.glow.button:hover {
   -moz-transition: none;
   transition: none; }
 
+.button.fa:before {
+  font-family: FontAwesome; }
+
+.button.square, button.square {
+  padding: 0.6em;
+  margin: 0 0.1em; }
+
+.button.postfix.fa:before, button.postfix.fa:before {
+  background: #1e8448;
+  position: absolute;
+  left: 0px;
+  padding: 0.11em 1em; }
+
+.button.postfix.fa {
+  padding-left: 2em; }
+
+.button.topright {
+  margin: 0.7em 0 0 0; }
+
+@-webkit-keyframes glowpulse {
+  from {
+    background-color: #27ae60;
+    -webkit-box-shadow: 0 0 9px #333; }
+
+  50% {
+    background-color: #1e8448;
+    -webkit-box-shadow: 0 0 18px #27ae60; }
+
+  to {
+    background-color: #27ae60;
+    -webkit-box-shadow: 0 0 9px #333; } }
+
+/* TABLES ----------- */
 table.history tr td:first-child {
   padding: 0; }
   table.history tr td:first-child a.button {
@@ -5445,33 +5463,6 @@ table.expand {
 .editrow td input[type="text"] {
   margin: 0; }
 
-.button.fa:before {
-  font-family: FontAwesome; }
-
-.button.square, button.square {
-  padding: 0.6em;
-  margin: 0 0.1em; }
-
-.button.postfix.fa:before, button.postfix.fa:before {
-  background: #1e8448;
-  position: absolute;
-  left: 0px;
-  padding: 0.11em 1em; }
-
-.button.postfix.fa {
-  padding-left: 2em; }
-
-.button.topright {
-  margin: 0.7em 0 0 0; }
-
-.top-bar a {
-  -webkit-transition: all 300ms ease-out;
-  -moz-transition: all 300ms ease-out;
-  transition: all 300ms ease-out; }
-
-.top-bar a:before {
-  position: absolute; }
-
 li.colorhead, li.colorhead:hover {
   text-align: center;
   padding: 0.6em 0;
@@ -5491,6 +5482,9 @@ li.colorhead h6 {
 .address-postfix {
   margin-top: 2.1em; }
 
+.panel .side-nav {
+  padding-top: 0; }
+
 .side-nav li.active {
   border-bottom: 1px solid #27ae60;
   border-left-style: none; }
@@ -5509,3 +5503,11 @@ li.colorhead h6 {
 
 .tabs dd.active > a {
   background: #36d277; }
+
+.top-bar a {
+  -webkit-transition: all 300ms ease-out;
+  -moz-transition: all 300ms ease-out;
+  transition: all 300ms ease-out; }
+
+.popupcontainer {
+  min-width: 350px; }
