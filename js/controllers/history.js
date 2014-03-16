@@ -67,6 +67,7 @@ angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 't
       if ($scope.newPocketName) {
           $scope.identity.wallet.createPocket($scope.newPocketName);
           $scope.identity.wallet.createPocket($scope.newPocketName+'-change');
+          $scope.selectPocket($scope.newPocketName, $scope.identity.wallet.pockets.length-2);
           $scope.newPocketName = '';
       }
   }
