@@ -5524,9 +5524,10 @@ li.colorhead h6 {
   -moz-transition: all 300ms ease-out;
   transition: all 300ms ease-out; }
 
-#pop-identities {
-  background: #27ae60;
-  width: 100%; }
+.popupcontainer .panel {
+  background: #27ae60; }
+  .popupcontainer .panel a {
+    color: white; }
 
 .popupcontainer {
   min-width: 350px; }

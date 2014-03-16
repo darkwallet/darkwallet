@@ -111,5 +111,8 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .top-bar a { @include single-transition(); }
 
-#pop-identities { background: $primary-color; width: 100%; }
+.popupcontainer .panel { 
+	background: $primary-color; 
+	a { color: white; }
+}
 .popupcontainer { min-width: 350px; }
