@@ -3416,10 +3416,10 @@ ul.pagination {
 .panel {
   border-style: solid;
   border-width: 1px;
-  border-color: #393939;
+  border-color: #1d1d1d;
   margin-bottom: 1.25rem;
   padding: 1.25rem;
-  background: #414141; }
+  background: #202020; }
   .panel > :first-child {
     margin-top: 0; }
   .panel > :last-child {
@@ -5481,6 +5481,9 @@ li.colorhead h6 {
 
 .address-postfix {
   margin-top: 2.1em; }
+
+.panel .side-nav {
+  padding-top: 0; }
 
 .side-nav li.active {
   border-bottom: 1px solid #27ae60;
