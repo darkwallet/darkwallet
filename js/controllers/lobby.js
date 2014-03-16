@@ -30,7 +30,7 @@ angular.module('DarkWallet.controllers').controller('LobbyCtrl', ['$scope', func
     var hashChannelName = function(channel) {
         var channelHash = SHA256(SHA256(channel)+channel);
         channelHash = Bitcoin.convert.wordArrayToBytes(channelHash);
-        return Bitcoin.convert.bytesToString(channelHash);
+        return Bitcoin.convert.bytesToHex(channelHash);
     }
 
     // Subscribe to given channel
