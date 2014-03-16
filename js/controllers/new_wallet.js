@@ -47,6 +47,6 @@ angular.module('DarkWallet.controllers').controller('NewWalletCtrl', ['$scope', 
     var words = $scope.mnemonic2Words.split(' ');
     var mnemonic = new Mnemonic(words);
     DarkWallet.getKeyRing().createIdentity($scope.name, mnemonic.toHex(), $scope.passwd);
-    window.location = 'wallet.html'
+    window.location = 'index.html#/wallet'
   }
 }]);
