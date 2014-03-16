@@ -5474,6 +5474,14 @@ li.colorhead h6 {
 #wallets:before, #wallets:after {
   border-bottom-color: #444; }
 
+#wallets li:not(.colorhead) {
+  background: #27ae60; }
+  #wallets li:not(.colorhead):hover {
+    background: #36d277; }
+
+#wallets li a {
+  color: white; }
+
 #wallets {
   border: 2px solid #444;
   border-radius: 4px; }
@@ -5491,6 +5499,9 @@ li.colorhead h6 {
 .side-nav a.button {
   color: white;
   margin-bottom: 0.6em; }
+
+.tabs {
+  border-bottom: 1px solid #27ae60; }
 
 .tabs dd > a {
   font-size: 90%;
