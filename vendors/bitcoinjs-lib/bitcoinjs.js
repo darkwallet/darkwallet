@@ -5008,6 +5008,8 @@ var ECKey = _dereq_('./eckey').ECKey;
 var ECDSA = _dereq_('./ecdsa');
 var Address = _dereq_('./address');
 var Message = _dereq_('./message');
+var Crypto = _dereq_('crypto-js');
+var SHA256 = Crypto.SHA256;
 
 var Transaction = function (doc) {
     if (!(this instanceof Transaction)) { return new Transaction(doc); }
@@ -5208,7 +5210,8 @@ function (connectedScript, inIndex, hashType)
 
   buffer = buffer.concat(convert.numToBytes(parseInt(hashType),4));
 
-  return Message.getHash(buffer)
+  buffer = convert.bytesToWordArray(buffer);
+  return convert.wordArrayToBytes(SHA256(SHA256(buffer)));
 };
 
 /**
@@ -5218,8 +5221,8 @@ function (connectedScript, inIndex, hashType)
  */
 Transaction.prototype.getHash = function ()
 {
-  var buffer = this.serialize();
-  return Message.getHash(buffer).reverse()
+  var buffer = convert.bytesToWordArray(this.serialize());
+  return convert.wordArrayToBytes(SHA256(SHA256(buffer))).reverse();
 };
 
 /**
@@ -5589,7 +5592,7 @@ module.exports.Transaction = Transaction;
 module.exports.TransactionIn = TransactionIn;
 module.exports.TransactionOut = TransactionOut;
 
-},{"./address":43,"./convert":45,"./ecdsa":46,"./eckey":47,"./jsbn/jsbn":51,"./message":55,"./script":58,"./util":60,"./wallet":61}],60:[function(_dereq_,module,exports){
+},{"./address":43,"./convert":45,"./ecdsa":46,"crypto-js":17,"./eckey":47,"./jsbn/jsbn":51,"./message":55,"./script":58,"./util":60,"./wallet":61}],60:[function(_dereq_,module,exports){
 var convert = _dereq_('./convert.js')
 var Crypto = _dereq_('crypto-js');
 var RIPEMD160 = Crypto.RIPEMD160;
