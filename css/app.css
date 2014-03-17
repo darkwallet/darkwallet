@@ -5440,12 +5440,12 @@ a.glow.button:hover {
     -webkit-box-shadow: 0 0 9px #333; } }
 
 /* TABLES ----------- */
-table.history tr td:first-child {
+td.icon {
   padding: 0; }
-  table.history tr td:first-child a.button {
+  td.icon a.button {
     margin-right: 0.6em; }
 
-table.history tr:nth-child(odd) a.button {
+table tr:nth-child(odd) a.button {
   background: #229954; }
 
 table.expand {
@@ -5466,7 +5466,7 @@ table.expand {
 .editrow td input[type="text"] {
   margin: 0; }
 
-/* Wallets dropdown ----------------  */
+/* Wallets dropdown ---------------------  */
 li.colorhead, li.colorhead:hover {
   text-align: center;
   padding: 0.6em 0;

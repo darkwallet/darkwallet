@@ -50,12 +50,12 @@ a.glow.button:hover {
 
 /* TABLES ----------- */
 
-table.history tr td:first-child {
+td.icon {
 	padding: 0;
 	a.button { margin-right: 0.6em; } 
 }
 
-table.history tr:nth-child(odd) a.button { 
+table tr:nth-child(odd) a.button { 
 	background: darken($primary-color, 5%);
 	}
 
@@ -65,7 +65,8 @@ table.expand { width: 100%; text-overflow: ellipsis; }
 .editrow .button { margin: 0; padding-bottom: rem-calc(11); }
 .editrow td input[type="text"] { margin: 0; }
 
-/* Wallets dropdown ----------------  */
+
+/* Wallets dropdown ---------------------  */
 
 li.colorhead, li.colorhead:hover { 
 	text-align: center;
