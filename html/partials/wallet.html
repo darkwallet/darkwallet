@@ -86,8 +86,8 @@
           </tr>
           <tr ng-repeat="address in pocket.addresses track by $index" ng-show="address.nOutputs != 0">
             <td class="icon"><a class="button square fa fa-pencil-square"></a>{{address.label}}</td>
-            <td>{{address.address}} ({{address.balance/100000000}})</td>
-            <th>0</th>
+            <td>{{address.address}}</td>
+            <td>{{address.balance/100000000}}</td>
             <td class="icon text-right"><a class="button square fa fa-qrcode"></a><a class="button square fa fa-clipboard"></a></td>
           </tr>
         </tbody>
