@@ -13,7 +13,7 @@
         <tr>
           <th>Name</th>
           <th>Address</th>
-          <th class="text-right">Edit/Delete</th>
+          <th class="text-right">Copy/QR/Edit/Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -21,6 +21,8 @@
           <td ng-hide="contactFormShown === $index">{{contact.name}}</td>
           <td ng-hide="contactFormShown === $index">{{contact.address}}</td>
           <td class="text-right" ng-hide="contactFormShown === $index">
+            <button class="button square fa fa-clipboard"></button>
+            <button class="button square fa fa-qrcode"></button>
             <button ng-click="contactFormShown = $index" class="button square fa fa-edit"></button>
             <button ng-click="openModal('confirm')" class="button square alert fa fa-trash-o"></button>
             <!--<button ng-click="deleteContact(contact)" class="button square alert fa fa-trash-o"></button>-->
