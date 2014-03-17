@@ -10,7 +10,8 @@ define([
     'ngProgress',
     'toaster',
     './controllers/index',
-    './filters/index',
+    './directives/index',
+    './filters/index'
 ], function (angular) {
     'use strict';
 
@@ -18,6 +19,7 @@ define([
       'ngRoute', 'mm.foundation',
       'ngProgress', 'ngAnimate', 'toaster',
       'DarkWallet.controllers',
+      'DarkWallet.directives',
       'DarkWallet.filters'
     ]);
 });

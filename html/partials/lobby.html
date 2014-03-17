@@ -13,12 +13,12 @@
           </form>
         </td><td>
           <h2>Self</h2>
-          <div class="wrapper"><canvas id="peer{{myself.pubKeyHex}}" width="32" height="32"title="{{myself.pubKeyHex}}"></canvas> {{myself.name}}</div>
+          <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
           <h3>Channel</h3>
-          <div class="wrapper"><canvas id="peer{{comms.pubKeyHex}}" width="32" height="32"title="{{comms.pubKeyHex}}"></canvas> {{comms.name}}</div>
+          <div class="wrapper"><identicon title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></identicon> {{comms.name}}</div>
           <h2>Peers</h2>
           <div ng-repeat="peer in peers">
-            <canvas id="peer{{peer.pubKeyHex}}" width="24" height="24"title="{{peer.pubKeyHex}}"></canvas> {{peer.name}}
+            <identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}
           </div>
         </td></tr>
     </table>

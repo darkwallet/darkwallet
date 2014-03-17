@@ -1,5 +1,5 @@
-define(['./module', 'darkwallet', 'stealth', 'bitcoinjs-lib', 'mnemonicjs', 'identicon'],
-function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic, Identicon) {
+define(['./module', 'darkwallet', 'stealth', 'bitcoinjs-lib', 'mnemonicjs'],
+function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic) {
   'use strict';
   controllers.controller('LobbyCtrl', ['$scope', function($scope) {
   DarkWallet.service().ready(function() {
@@ -66,11 +66,6 @@ function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic, Identicon) {
         var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
         var mnemoname = getMnemoname(pubKeyBytes);
         var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname};
-        // TODO the identicon should be loaded in an angular directive,
-        // but we do it now here for testing
-        setTimeout(function(){
-            new Identicon('peer'+pubKeyHex, Bitcoin.convert.bytesToNum(pubKeyBytes.slice(8,16)), iconSize);
-        },1000);
         return newPeer;
 
     }
