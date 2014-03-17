@@ -42,10 +42,10 @@
         </ul>
         <!-- Left Nav Section -->
         <ul class="left">
-          <li><a href="#wallet">Wallet</a></li>
-          <li><a href="#send">Send</a></li>
-          <li><a href="#contacts">Contacts</a></li>
-		  <li><a href="#lobby">Lobby</a></li>
+          <li ng-class="{active:isActive('/wallet')}"><a href="#wallet">Wallet</a></li>
+          <li ng-class="{active:isActive('/send')}"><a href="#send">Send</a></li>
+          <li ng-class="{active:isActive('/contacts')}"><a href="#contacts">Contacts</a></li>
+		  <li ng-class="{active:isActive('/lobby')}"><a href="#lobby">Lobby</a></li>
         </ul>
       </section>
     </nav>    
