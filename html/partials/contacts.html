@@ -25,24 +25,30 @@
             <button ng-click="openModal('confirm')" class="button square alert fa fa-trash-o"></button>
             <!--<button ng-click="deleteContact(contact)" class="button square alert fa fa-trash-o"></button>-->
           </td>
-          <td ng-show="contactFormShown === $index"><input class="contact-name" ng-model="contact.name" type="text" placeholder="Write a new contact name" /></td>
+          <td ng-show="contactFormShown === $index">
+            <form ng-submit="contactFormShown = false; editContact(contact)">
+              <input class="contact-name" ng-model="contact.name" type="text" placeholder="Write a new contact name" />
+            </form>
+          </td>
           <td ng-show="contactFormShown === $index">{{contact.address}}</td>
           <td class="text-right" ng-show="contactFormShown === $index"><button ng-click="contactFormShown = false; editContact(contact)" class="button small">Save</button></td>
         </tr>
       </tbody>
     </table>
-    <div class="row collapse" ng-show="contactFormShown === true">
+    <form ng-submit="createContact()" ng-show="contactFormShown === true">
+    <div class="row collapse">
       <div class="large-3 columns"><input ng-model="newContact.name" type="text" placeholder="Write a new contact name" /></div>  
       <div class="large-5 columns"><input ng-model="newContact.address" type="text" placeholder="Enter a bitcoin address here or use the buttons on the right." /></div>
-      <div class="large-2 columns"><button ng-click="newContact.address = pasteClipboard()" class="button postfix fa fa-clipboard">Paste</button></div>
-      <div class="large-2 columns"><button class="button postfix fa fa-qrcode">Scan</button></div>
+      <div class="large-2 columns"><a href="" ng-click="newContact.address = pasteClipboard()" class="button postfix fa fa-clipboard">Paste</a></div>
+      <div class="large-2 columns"><a href="" class="button postfix fa fa-qrcode">Scan</a></div>
     </div>
-    <div class="row text-right" ng-show="contactFormShown === true">
+    <div class="row text-right">
        <div class="small-12 columns">
-		<button ng-click="contactFormShown = false" class="button alert small">Cancel</button>
-		<button ng-click="createContact()" class="button small">Save</button>
+		<a href="" ng-click="contactFormShown = false" class="button alert small">Cancel</a>
+		<input type="submit" class="button small" value="Save" />
 	   </div>
 	</div>
+    </form>
   </div>
 </div>
 <script type="text/ng-template" id="confirm">

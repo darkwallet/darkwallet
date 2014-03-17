@@ -1,3 +1,4 @@
+  <form>
     <div class="row">
       <div class="small-12 columns">
         <h3>Send</h3>
@@ -59,7 +60,7 @@
       <div class="medium-10 columns">
         <a href="" ng-click="enableAutoAddFields()" ng-hide="autoAddEnabled">Send to more than one recipient...</a>
       </div>
-      <div class="medium-2 columns aright"><a class="button glow radius expand">Send</a></div>
+      <div class="medium-2 columns aright"><input type="submit" class="button glow radius expand" value="Send" /></div>
     </div>
         <ul id="wallets" class="f-dropdown">
           <li class="colorhead"><h6>My wallets</h6></li>
@@ -69,6 +70,7 @@
           <li><a href="">This is a multisig wallet</a></li>
           <li><a href="">Yet another</a></li>
         </ul>
+  </form>
 
 <script type="text/ng-template" id="pick-contact">
   <div class="contact-mosaic">
