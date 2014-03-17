@@ -69,6 +69,15 @@ IdentityKeyRing.prototype.createIdentity = function(name, seed, password) {
 IdentityKeyRing.prototype.loadIdentities = function(callback) {
     var self = this;
     var _callback = callback;
+
+    // See if we have cached list
+    if (this.availableIdentities.length) {
+       if (_callback) {
+            _callback(this.availableIdentities);
+       }
+       return;
+    }
+    // Load from local storage
     chrome.storage.local.get(null, function(obj) {
         var keys = Object.keys(obj);
         for(var idx=0; idx<keys.length; idx++) {

@@ -7,12 +7,17 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet', '../model/keyring'], function (controllers, DarkWallet, IdentityKeyRing) {
+define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   'use strict';
   controllers.controller('PopupCtrl', ['$scope', function($scope) {
   // we don't have the same background page here, so we initialize our
   // own keyring just for choosing identities, just for now...
-  var keyRing = new IdentityKeyRing();
+  var keyRing = DarkWallet.getKeyRing();
+  $scope.identityChange = function() {
+    if (!$scope.identity) {
+        return;
+    }
+  };
   keyRing.loadIdentities(function(identityNames) {
     var identities = [];
     identityNames.forEach(function(item) {
@@ -22,25 +27,10 @@ define(['./module', 'darkwallet', '../model/keyring'], function (controllers, Da
     $scope.identityNames = identityNames;
     $scope.identity = $scope.identities[0];
     $scope.identityChange();
-    $scope.$apply();
-  });
-  $scope.identityChange = function() {
-    if (!$scope.identity) {
-        return;
+    if(!$scope.$$phase) {
+      $scope.$apply();
     }
-    /*if ($scope.identity.id == $scope.identityNames[0]) {
-      $scope.activity = [
-        {action: 'Received bitcoins', amount: '0.05', timestamp: '5 minutes ago'},
-        {action: 'Received bitcoins', amount: '0.01', timestamp: '6 minutes ago'}
-      ];
-    } else {
-      $scope.activity = [
-        {action: 'Received bitcoins', amount: '0.1', timestamp: '15 minutes ago'},
-        {action: 'Received bitcoins', amount: '2', timestamp: '26 minutes ago'},
-        {action: 'Received bitcoins', amount: '0.2', timestamp: '31 minutes ago'}
-      ];
-    }*/
-  };
+  });
 }]);
 /**
  * Password class constructor.
