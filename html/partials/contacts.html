@@ -34,7 +34,7 @@
     <div class="row collapse" ng-show="contactFormShown === true">
       <div class="large-3 columns"><input ng-model="newContact.name" type="text" placeholder="Write a new contact name" /></div>  
       <div class="large-5 columns"><input ng-model="newContact.address" type="text" placeholder="Enter a bitcoin address here or use the buttons on the right." /></div>
-      <div class="large-2 columns"><button class="button postfix fa fa-clipboard">Paste</button></div>
+      <div class="large-2 columns"><button ng-click="newContact.address = pasteClipboard()" class="button postfix fa fa-clipboard">Paste</button></div>
       <div class="large-2 columns"><button class="button postfix fa fa-qrcode">Scan</button></div>
     </div>
     <div class="row text-right" ng-show="contactFormShown === true">

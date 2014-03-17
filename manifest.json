@@ -14,6 +14,6 @@
     "page": "html/background.html"
   },
   "permissions": [
-    "tabs", "storage"
+    "tabs", "storage", "clipboardRead", "clipboardWrite"
   ]
 }

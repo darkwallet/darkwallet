@@ -41,7 +41,7 @@
             <input type="text" ng-model="field.address" ng-change="autoAddField()" placeholder="Paste a bitcoin address here or use the buttons on the right." />
           </div>
           <div class="large-2 columns">
-            <a href="" class="fa button postfix fa-clipboard">Paste</a>
+            <a href="" ng-click="field.address = pasteClipboard(); autoAddField()" class="fa button postfix fa-clipboard">Paste</a>
           </div>
           <div class="large-2 small-6 columns">
             <a href="" class="fa button postfix fa-qrcode">Scan code</a>
