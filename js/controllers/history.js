@@ -4,7 +4,7 @@
 
 define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
   'use strict';
-  controllers.controller('HistoryCtrl', ['$scope', 'toaster', function($scope, toaster) {
+  controllers.controller('HistoryCtrl', ['$scope', '$timeout', 'toaster', function($scope, $timeout, toaster) {
 
   // History
   
@@ -76,9 +76,9 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
       }
     } else {
       // wait a bit since we can't focus till the element is shown
-      setTimeout(function() {
+      $timeout(function() {
         document.getElementById('pocketNameInput').focus()
-      }, 10);
+      });
     }
     $scope.creatingPocket = !$scope.creatingPocket;
   }
