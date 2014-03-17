@@ -17,7 +17,7 @@ a.glow.button:hover {
 	-webkit-animation: none;
 }
 
-.button:active, table.history tr:nth-child(odd) a.button:active { 
+.button:active, table tr:nth-child(odd) a.button:active { 
 	background: darken($primary-color, 20%); 
 	-webkit-transition: none;
 	-moz-transition: none;
@@ -33,8 +33,8 @@ a.glow.button:hover {
 
 	background: darken($primary-color, 10%); 
 	position: absolute; 
-	left: 0px; 
-	padding: 0.16em 1em;
+	left: 0px; top: 0px;
+	padding: 0.18em 1em;
 	}
 
 .button.postfix.fa, button.postfix.fa { padding-left: 2em; }
