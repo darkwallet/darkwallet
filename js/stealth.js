@@ -1,3 +1,4 @@
+define(['darkwallet','bitcoinjs-lib', 'sjcl'], function(DarkWallet, Bitcoin, sjcl) {
 /*
  * @fileOverview Stealth support.
  */
@@ -258,6 +259,5 @@ Stealth.testStealth = function(identity, password, address) {
         Stealth.uncoverStealth(privKey.key.export('bytes').slice(0,32), ephemkey);
     });
 }
-
-
-
+return Stealth;
+});

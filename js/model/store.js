@@ -2,6 +2,7 @@
  * @fileOverview Mapping coordinating with the app's database.
  */
 
+define(function() {
 /**
  * Store class.
  * @constructor
@@ -49,3 +50,5 @@ Store.prototype.save = function() {
     this.keyring.save(this.store.name, this.store);
 }
 
+return Store;
+});

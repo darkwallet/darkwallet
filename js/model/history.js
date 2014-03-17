@@ -2,6 +2,7 @@
  * @fileOverview User oriented history view
  */
 
+define(['bitcoinjs-lib'], function(Bitcoin) {
 /**
  * History class.
  * @param {Object} store Store for the object.
@@ -149,3 +150,6 @@ History.prototype.fillHistory = function(history) {
 History.prototype.update = function() {
     console.log("Program needs to register an update callback!");
 }
+
+return History;
+});

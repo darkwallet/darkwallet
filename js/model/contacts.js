@@ -2,6 +2,7 @@
  * @fileOverview Contacts (Address book).
  */
 
+define(function() {
 /**
  * Contacts class.
  * @param {Object} store Object store
@@ -39,3 +40,6 @@ Contacts.prototype.deleteContact = function (data) {
   delete this.contacts[data.address];
   this.store.save();
 };
+
+return Contacts;
+});

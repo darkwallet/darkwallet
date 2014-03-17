@@ -2,6 +2,7 @@
  * @fileOverview Fixes for frightening things in other libraries
  */
 
+define(['/vendors/sjcl/sjcl'], function() {
 /*
  * Uncached version of apparently very frightening sjcl function
  * (gets called by sjcl.encrypt and sjcl.decrypt)
@@ -21,3 +22,4 @@ sjcl.misc.cachedPbkdf2 = function (password, obj) {
   var val = sjcl.misc.pbkdf2(password, obj.salt, obj.iter);
   return { key: val.slice(0), salt: obj.salt.slice(0) };
 };
+});

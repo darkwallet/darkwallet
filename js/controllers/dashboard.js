@@ -1,2 +1,5 @@
-angular.module('DarkWallet.controllers').controller('DashboardCtrl', ['$scope', function($scope) {
+define(['./module'], function (controllers) {
+  'use strict';
+  controllers.controller('DashboardCtrl', ['$scope', function($scope) {
 }]);
+});

@@ -2,7 +2,9 @@
  * @fileOverview HistoryCtrl angular controller
  */
 
-angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 'toaster', function($scope, toaster) {
+define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
+  'use strict';
+  controllers.controller('HistoryCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
   // History
   
@@ -74,3 +76,4 @@ angular.module('DarkWallet.controllers').controller('HistoryCtrl', ['$scope', 't
 
 
 }]);
+});

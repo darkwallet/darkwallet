@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="DarkWallet" ng-csp>
+<html lang="en" ng-csp>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,33 +49,6 @@
       </section>
     </nav>    
     <div ng-view></div>
-
-    <script src="../vendors/angular/angular.min.js"></script>
-    <script src="../vendors/angular-route/angular-route.min.js"></script>
-    <script src="../vendors/mnemonic.js/mnemonic.js"></script>
-    <script src="../vendors/angular-animate/angular-animate.min.js"></script>
-    <script src="../vendors/angular-foundation/mm-foundation-tpls.min.js"></script>
-    <script src="../vendors/ngprogress/build/ngProgress.js"></script>
-    <script src="../vendors/AngularJS-Toaster/toaster.js"></script>
-    <script src="../vendors/identicon/identicon.js"></script>
-
-    <script src="../vendors/bitcoinjs-lib/bitcoinjs.js"></script>
-    <script src="../vendors/sjcl/sjcl.js"></script>
-    <script src="../js/fixes.js"></script>
-
-    <script src="../js/darkwallet.js"></script>
-    <script src="../js/stealth.js"></script>
-
-    <script src="../js/app.js"></script>
-    
-    <script src="../js/controllers/module.js"></script>
-    <script src="../js/controllers/wallet.js"></script>
-    <script src="../js/controllers/new_wallet.js"></script>
-    <script src="../js/controllers/dashboard.js"></script>
-    <script src="../js/controllers/send.js"></script>
-    <script src="../js/controllers/contacts.js"></script>
-    <script src="../js/controllers/history.js"></script>
-    <script src="../js/controllers/settings.js"></script>
-    <script src="../js/controllers/lobby.js"></script>
+    <script src="../vendors/requirejs/require.js" data-main="../js/main.js"></script>
   </body>
 </html>

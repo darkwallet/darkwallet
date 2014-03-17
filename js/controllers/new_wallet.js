@@ -9,7 +9,9 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-angular.module('DarkWallet.controllers').controller('NewWalletCtrl', ['$scope', function($scope) {
+define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWallet, Mnemonic) {
+  'use strict';
+  controllers.controller('NewWalletCtrl', ['$scope', function($scope) {
 
   $scope.activeForm = 'password';
   $scope.create_or_restore = 'create';
@@ -47,6 +49,7 @@ angular.module('DarkWallet.controllers').controller('NewWalletCtrl', ['$scope', 
     var words = $scope.mnemonic2Words.split(' ');
     var mnemonic = new Mnemonic(words);
     DarkWallet.getKeyRing().createIdentity($scope.name, mnemonic.toHex(), $scope.passwd);
-    window.location = 'index.html#/wallet'
+    window.location = 'index.html'
   }
 }]);
+});

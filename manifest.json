@@ -11,21 +11,7 @@
     "default_popup": "html/popup.html"
   },
   "background": {
-    "scripts": ["vendors/darkwallet_gateway/client/gateway.js",
-                "js/obelisk.js",
-                "vendors/sjcl/sjcl.js",
-                "vendors/bitcoinjs-lib/bitcoinjs.js",
-                "js/fixes.js",
-                "js/stealth.js",
-                "js/model/store.js",
-                "js/model/contacts.js",
-                "js/model/txdb.js",
-                "js/model/history.js",
-                "js/model/wallet.js",
-                "js/model/identity.js",
-                "js/model/keyring.js",
-                "js/darkwallet.js",
-                "js/background.js"]
+    "page": "html/background.html"
   },
   "permissions": [
     "tabs", "storage"

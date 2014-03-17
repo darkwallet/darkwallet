@@ -1,7 +1,7 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-
+require(['model/keyring', 'obelisk'], function(IdentityKeyRing, ObeliskClient) {
 function DarkWalletService() {
     var keyRing = new IdentityKeyRing();
     var obeliskClient = new ObeliskClient();
@@ -191,3 +191,4 @@ window.initAddress = function(_w) {return service.initAddress(_w)};
 
 window.addListener = addListener
 window.sendInternalMessage = sendInternalMessage;
+});
