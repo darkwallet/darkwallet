@@ -7,7 +7,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
+define(['./module', 'darkwallet', '../model/keyring'], function (controllers, DarkWallet, IdentityKeyRing) {
   'use strict';
   controllers.controller('PopupCtrl', ['$scope', function($scope) {
   // we don't have the same background page here, so we initialize our
