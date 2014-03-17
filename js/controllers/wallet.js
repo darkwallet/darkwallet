@@ -176,7 +176,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     });
   }
 
-  $scope.copyClipboard = function(text, element) {
+  $scope.copyClipboard = function(text) {
     var copyDiv = document.createElement('div');
     copyDiv.contentEditable = true;
     document.body.insertBefore(copyDiv, document.body.firstChild)
@@ -186,6 +186,19 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     document.execCommand('SelectAll');
     document.execCommand("Copy", false, null);
     document.body.removeChild(copyDiv);
+  }
+  
+  $scope.pasteClipboard = function() {
+    var pasteDiv = document.createElement('div');
+    pasteDiv.contentEditable = true;
+    document.body.insertBefore(pasteDiv, document.body.firstChild)
+    pasteDiv.innerHTML = '';
+    pasteDiv.unselectable = "off";
+    pasteDiv.focus();
+    document.execCommand("paste");
+    var text = pasteDiv.innerText;
+    document.body.removeChild(pasteDiv);
+    return text;
   }
 
   // Load identity
