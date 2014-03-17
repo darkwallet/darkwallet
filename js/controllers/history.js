@@ -65,13 +65,22 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
 
   // Pockets
   $scope.newPocketName = '';
+  $scope.creatingPocket = false;
   $scope.createPocket = function() {
+    if ($scope.creatingPocket) {
       if ($scope.newPocketName) {
           $scope.identity.wallet.createPocket($scope.newPocketName);
           $scope.identity.wallet.createPocket($scope.newPocketName+'-change');
           $scope.selectPocket($scope.newPocketName, $scope.identity.wallet.pockets.length-2);
           $scope.newPocketName = '';
       }
+    } else {
+      // wait a bit since we can't focus till the element is shown
+      setTimeout(function() {
+        document.getElementById('pocketNameInput').focus()
+      }, 10);
+    }
+    $scope.creatingPocket = !$scope.creatingPocket;
   }
 
 

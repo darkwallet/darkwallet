@@ -4,8 +4,8 @@
       <li>Pockets on my wallet</li>
       <li ng-class="{true:'active', false:''}[selectedPocket===undefined]" class="active" ng-click="selectPocket()"><a>All</a></li>
       <li ng-class="{true:'active', false:''}[$index==selectedPocket]" ng-repeat="pocketName in identity.wallet.pockets" ng-click="selectPocket(pocketName, $index)" ><a>{{pocketName}}</a></li>
-      <li><input type="text" ng-model="newPocketName" placeholder="Name your pocket..." /></li>
-      <li><a class="button small expand" ng-click="createPocket()">{{newPocketName?'Ok':'New Pocket'}}</a></li>
+      <li ng-show="creatingPocket"><input type="text" id="pocketNameInput" ng-model="newPocketName" placeholder="Name your pocket..." /></li>
+      <li><a class="button small expand" ng-click="createPocket()">{{creatingPocket?'Ok':'New Pocket'}}</a></li>
       <li class="divider"></li>
       <li>My multisig funds</li>
       <li><a href="">Unsystem</a></li>
