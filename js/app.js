@@ -10,12 +10,14 @@ define([
     'ngProgress',
     'toaster',
     './controllers/index',
+    './filters/index',
 ], function (angular) {
     'use strict';
 
     return angular.module('DarkWallet', [
       'ngRoute', 'mm.foundation',
       'ngProgress', 'ngAnimate', 'toaster',
-      'DarkWallet.controllers'
+      'DarkWallet.controllers',
+      'DarkWallet.filters'
     ]);
 });
