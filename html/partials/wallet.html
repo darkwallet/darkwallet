@@ -47,7 +47,8 @@
         </table>
       </tab>
       <tab heading="Addresses">
-        <div class="row collapse" ng-hide="isAll">
+        <div class="panel" ng-hide="isAll">
+        <div class="row collapse">
           <div class="medium-2 columns">
             <span class="prefix radius">Stealth Address</span>
           </div>
@@ -61,19 +62,20 @@
             <button class="button postfix radius fa fa-qrcode">QR</button>
           </div>
         </div>
-        <div class="row collapse" ng-hide="isAll">
+        <div class="row collapse">
           <div class="medium-2 columns">
             <span class="prefix radius">Master Address</span>
           </div>
           <div class="medium-6 columns">
-            <input type="text" disabled="true" value="{{pocket.mpk}}" />
+            <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.mpk}}" />
           </div>
           <div class="medium-2 columns">
-            <button ng-click="copyClipboard(pocket.mpk)" class="button postfix fa fa-clipboard">Copy</button>
+            <button ng-click="copyClipboard(pocket.mpk)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
           </div>
           <div class="medium-2 columns">
-            <button class="button postfix radius fa fa-qrcode">QR</button>
+            <button class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
           </div>
+        </div>
         </div>         
         <table class="expand">
           <thead>
@@ -90,7 +92,7 @@
             <td class="icon text-right"><a class="button square fa fa-qrcode"></a><a class="button square fa fa-clipboard"></a></td>
           </tr>
           <tr ng-repeat="address in pocket.addresses track by $index" ng-show="address.nOutputs != 0">
-            <td class="icon"><a class="button square fa fa-pencil-square"></a>{{address.label}}</td>
+            <td class="icon"><a class="button square fa fa-edit"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>{{address.balance | currencyFilter}}</td>
             <td class="icon text-right"><a class="button square fa fa-qrcode"></a><a class="button square fa fa-clipboard"></a></td>

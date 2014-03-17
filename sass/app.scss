@@ -3,7 +3,7 @@
 @import "foundation";
 
 *:focus { outline: 0; } /* Remove webkit's default outline */
-
+.nomarginbottom { margin-bottom: 0 !important; }
 
 
 /* BUTTONS ----------- */
@@ -90,13 +90,10 @@ li.colorhead h6 { color: white; margin: 0; }
 .address-postfix { margin-top: 2.1em; }
 
 .panel .side-nav { padding-top: 0; }
-.side-nav li.active { 
-	border-bottom: 1px solid $primary-color;
-	border-left-style: none; }
 
 .side-nav a.button { color: white; margin-bottom: 0.6em; }
 
-.tabs { border-bottom: 1px solid $primary-color; }
+.tabs { border-bottom: 1px solid scale-color($primary-color, $lightness: -46%); }
 
 .tabs dd > a { 
 	font-size: 90%;
@@ -105,7 +102,8 @@ li.colorhead h6 { color: white; margin: 0; }
 	color: white;
 	&:hover { background: $primary-color; }
 }
-.tabs dd.active > a { background: lighten($primary-color, 10%); }
+
+.tabs dd.active > a { background: lighten($primary-color, 10%); color: black; }
 
 .top-bar a { @include single-transition(); }
 

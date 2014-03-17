@@ -3651,8 +3651,8 @@ dialog[open] {
       .side-nav li a:not(.button):hover, .side-nav li a:not(.button):focus {
         color: #55d98c; }
     .side-nav li.active > a:first-child:not(.button) {
-      color: #55d98c;
-      font-weight: normal;
+      color: white;
+      font-weight: bold;
       font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; }
     .side-nav li.divider {
       border-top: 1px solid;
@@ -4737,10 +4737,10 @@ meta.foundation-mq-topbar {
     background: #272727;
     color: #fff; }
   .top-bar-section ul li.active > a {
-    background: #27ae60;
-    color: #fff; }
+    background: #bbb;
+    color: #111; }
     .top-bar-section ul li.active > a:hover {
-      background: #229652;
+      background: #a1a1a1;
       color: #fff; }
   .top-bar-section .has-form {
     padding: 15px; }
@@ -4863,10 +4863,10 @@ meta.foundation-mq-topbar {
     .top-bar-section li.active:not(.has-form) a:not(.button) {
       padding: 0 15px;
       line-height: 45px;
-      color: #fff;
-      background: #27ae60; }
+      color: #111;
+      background: #bbb; }
       .top-bar-section li.active:not(.has-form) a:not(.button):hover {
-        background: #229652; }
+        background: #a1a1a1; }
     .top-bar-section .has-dropdown > a {
       padding-right: 35px !important; }
       .top-bar-section .has-dropdown > a:after {
@@ -4945,8 +4945,8 @@ meta.foundation-mq-topbar {
     background: #272727;
     color: #fff; }
   .no-js .top-bar-section ul li:active > a {
-    background: #27ae60;
-    color: #fff; }
+    background: #bbb;
+    color: #111; }
   .no-js .top-bar-section .has-dropdown:hover > .dropdown {
     display: block;
     position: static !important;
@@ -5392,6 +5392,9 @@ th.hide-for-touch {
   outline: 0; }
 
 /* Remove webkit's default outline */
+.nomarginbottom {
+  margin-bottom: 0 !important; }
+
 /* BUTTONS ----------- */
 a.glow.button, button.glow, input[type="submit"].glow {
   -webkit-animation-name: glowpulse;
@@ -5497,16 +5500,12 @@ li.colorhead h6 {
 .panel .side-nav {
   padding-top: 0; }
 
-.side-nav li.active {
-  border-bottom: 1px solid #27ae60;
-  border-left-style: none; }
-
 .side-nav a.button {
   color: white;
   margin-bottom: 0.6em; }
 
 .tabs {
-  border-bottom: 1px solid #27ae60; }
+  border-bottom: 1px solid #155e33; }
 
 .tabs dd > a {
   font-size: 90%;
@@ -5517,7 +5516,8 @@ li.colorhead h6 {
     background: #27ae60; }
 
 .tabs dd.active > a {
-  background: #36d277; }
+  background: #36d277;
+  color: black; }
 
 .top-bar a {
   -webkit-transition: all 300ms ease-out;
