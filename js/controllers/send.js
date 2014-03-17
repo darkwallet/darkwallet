@@ -2,6 +2,7 @@ define(['./module'], function (controllers) {
   'use strict';
   controllers.controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
   $scope.send = {recipient: '', amount: 0.2, fee: 0.00002};
+  $scope.autoAddEnabled = false;
 
   $scope.sendBitcoins = function() {
       // get a free change address
@@ -36,6 +37,27 @@ define(['./module'], function (controllers) {
     $scope.repeatedFields.fields.push($scope.repeatedFields.field_proto);
     // clear the option.
     $scope.repeatedFields.field_proto = { address: '', amount: '' };
-  }
+  };
+  
+  $scope.autoAddField = function() {
+    if (!$scope.autoAddEnabled) {
+      return;
+    }
+    var fields = $scope.repeatedFields.fields;
+    var lastFields = fields[fields.length - 1];
+    var field_keys = Object.keys($scope.repeatedFields.field_proto);
+    var empty;
+    field_keys.forEach(function(key) {
+      empty = empty || lastFields[key];
+    });
+    if (empty) {
+      $scope.addField();
+    }
+  };
+  
+  $scope.enableAutoAddFields = function() {
+    $scope.addField();
+    $scope.autoAddEnabled = true;
+  };
 }]);
 });
