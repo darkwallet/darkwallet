@@ -1,9 +1,35 @@
 Immediate:
- * DarkWallet namespace
- * Use require.js
- * Run background page for access to common services
- * Angular services to interconnect services to frontend
- * Get history from obelisk for user addresses
- * Implement generate new address button (also load generated addresses, not just 5)
- * Prepare api to send a transaction
  * Review and stabilize gateway
+ * Currency support
+   * Select BTC/mBTC
+   * Show as EUR/USD/CNY... (get prices from https://bitcoinaverage.com/api.htm)
+ * Multisig support
+   * Create funds
+   * Share / Import funds
+ * Send:
+   * Review sending
+   * Several destinations support
+   * Implement send from pocket
+   * Implement choose from contacts
+   * Better radar feedback
+ * Implement multiParty from cryptocat (ed25519 curves)
+   * link contacts using lobby (sync stealth, mpk...)
+   * then finish CoinJoin
+ * Pocket actions:
+   * Move funds to another pocket
+   * Move funds to another identity
+   * Set as mixing
+   * Rename
+   * Delete
+ * QR show and scan support
+ * Allow switching identities
+
+Other:
+ * Cache address history and resume
+ * Notifications
+  * when receiving funds
+  * new multisig
+  * multisig spend
+  * radar when sending
+ * Watch only pockets
+ * Blockchain.info compatible coinjoin
