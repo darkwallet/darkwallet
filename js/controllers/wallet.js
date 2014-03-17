@@ -179,25 +179,26 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.copyClipboard = function(text) {
     var copyDiv = document.createElement('div');
     copyDiv.contentEditable = true;
-    document.body.insertBefore(copyDiv, document.body.firstChild)
+    copyDiv.style="position: fixed;";
+    document.getElementById('fixed').appendChild(copyDiv);
     copyDiv.innerHTML = text;
     copyDiv.unselectable = "off";
     copyDiv.focus();
     document.execCommand('SelectAll');
     document.execCommand("Copy", false, null);
-    document.body.removeChild(copyDiv);
+    document.getElementById('fixed').removeChild(copyDiv);
   }
   
   $scope.pasteClipboard = function() {
     var pasteDiv = document.createElement('div');
     pasteDiv.contentEditable = true;
-    document.body.insertBefore(pasteDiv, document.body.firstChild)
+    document.getElementById('fixed').appendChild(pasteDiv);
     pasteDiv.innerHTML = '';
     pasteDiv.unselectable = "off";
     pasteDiv.focus();
     document.execCommand("paste");
     var text = pasteDiv.innerText;
-    document.body.removeChild(pasteDiv);
+    document.getElementById('fixed').removeChild(pasteDiv);
     return text;
   }
 
