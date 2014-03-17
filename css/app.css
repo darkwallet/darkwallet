@@ -3502,10 +3502,10 @@ ul.pagination {
 
 /* Progress Bar */
 .progress {
-  background-color: #f6f6f6;
-  height: 1.5625rem;
-  border: 1px solid white;
-  padding: 0.125rem;
+  background-color: #000;
+  height: 1.875rem;
+  border: 1px none white;
+  padding: 0.0625rem;
   margin-bottom: 0.625rem; }
   .progress .meter {
     background: #27ae60;
@@ -5491,10 +5491,6 @@ li.colorhead h6 {
   border: 2px solid #444;
   border-radius: 4px; }
 
-.contact-mosaic .panel:hover {
-  background: #27ae60;
-  cursor: pointer; }
-
 .address-postfix {
   margin-top: 2.1em; }
 
@@ -5529,9 +5525,16 @@ li.colorhead h6 {
   transition: all 300ms ease-out; }
 
 .popupcontainer .panel {
-  background: #27ae60; }
+  background: #333; }
   .popupcontainer .panel a {
     color: white; }
 
 .popupcontainer {
   min-width: 350px; }
+
+span.meter {
+  padding: 5px 0 0 5px; }
+
+.contact-mosaic .panel:hover, .popupcontainer .panel:hover {
+  background: #27ae60;
+  cursor: pointer; }

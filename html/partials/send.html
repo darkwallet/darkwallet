@@ -38,7 +38,7 @@
       <div class="medium-10 columns">
         <div class="row collapse">
           <div class="large-6 columns">
-            <input type="text" ng-model="field.address" placeholder="Paste a bitcoin address here or use the buttons on the right." />
+            <input type="text" ng-model="field.address" ng-change="autoAddField()" placeholder="Paste a bitcoin address here or use the buttons on the right." />
           </div>
           <div class="large-2 columns">
             <a href="" class="fa button postfix fa-clipboard">Paste</a>
@@ -52,12 +52,12 @@
         </div>
       </div>
       <div class="medium-2 columns">
-        <input type="text" ng-model="field.amount" placeholder="Enter amount" />
+        <input type="text" ng-model="field.amount" ng-change="autoAddField()" placeholder="Enter amount" />
       </div>
     </div>
     <div class="row">
       <div class="medium-10 columns">
-        <a href="" ng-click="addField()">Send to more than one recipient...</a>
+        <a href="" ng-click="enableAutoAddFields()" ng-hide="autoAddEnabled">Send to more than one recipient...</a>
       </div>
       <div class="medium-2 columns aright"><a class="button glow radius expand">Send</a></div>
     </div>

@@ -10,8 +10,27 @@
   </head>
   <body ng-controller="PopupCtrl">
     <div class="popupcontainer">
+ <div class="popupcontainer">
       <div class="panel text-center">
         <a ng-cloak href="" id="pop-identities"><i class="fa fa-user"></i> {{identity.id}}</a>
+      </div>
+      <div class="panel">
+        Receiving transaction (+0.36 BTC)<br>
+        <small>Sh7wxWeyejqwZcDPXRF5nH7puVVgj2WHgY8ibaL3Qysa8rDZSmxAfWkgnM</small>
+        <progressbar value="55">55%</progressbar>
+      </div>
+      <div class="panel">
+        Sending transaction (-0.36 BTC)<br>
+        <small>Sh7wxWeyejqwZcDPXRF5nH7puVVgj2WHgY8ibaL3Qysa8rDZSmxAfWkgnM</small>
+        <progressbar value="55">55%</progressbar>
+      </div>
+      <div class="panel">
+        You have a spend approval request on the "Unsystem" multisig fund<br>
+        <small>2 out of 5 signatures still needed</small>
+      </div>
+      <div class="panel">
+        You have been invited to the "dark wallet" multisig fund<br>
+        <small>Click for more info</small>
       </div>
       <div class="row">
         <div class="small-6 columns">
@@ -25,6 +44,7 @@
           </a>
         </div>
       </div>
+    </div>
     </div>
     <script src="../vendors/requirejs/require.js" data-main="../js/main.js"></script>
   </body>

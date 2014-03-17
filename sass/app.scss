@@ -89,8 +89,6 @@ li.colorhead h6 { color: white; margin: 0; }
 	border-radius: 4px;
 	 }
 
-.contact-mosaic .panel:hover { background: $primary-color; cursor: pointer; }
-
 .address-postfix { margin-top: 2.1em; }
 
 .panel .side-nav { padding-top: 0; }
@@ -114,7 +112,11 @@ li.colorhead h6 { color: white; margin: 0; }
 .top-bar a { @include single-transition(); }
 
 .popupcontainer .panel { 
-	background: $primary-color; 
+	background: #333; 
 	a { color: white; }
 }
 .popupcontainer { min-width: 350px; }
+
+span.meter { padding: 5px 0 0 5px; }
+
+.contact-mosaic .panel:hover, .popupcontainer .panel:hover { background: $primary-color; cursor: pointer; }
