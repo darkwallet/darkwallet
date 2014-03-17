@@ -2235,7 +2235,7 @@ select::-ms-expand {
 
 /* Separate prefix and postfix styles when on span or label so buttons keep their own */
 span.prefix, label.prefix {
-  background: #202020;
+  background: #000;
   border-right: none;
   color: #fff;
   border-color: #888; }
@@ -2250,7 +2250,7 @@ span.prefix, label.prefix {
     border-top-left-radius: 3px; }
 
 span.postfix, label.postfix {
-  background: #202020;
+  background: #000;
   border-left: none;
   color: #fff;
   border-color: #888; }
@@ -5393,13 +5393,12 @@ th.hide-for-touch {
 
 /* Remove webkit's default outline */
 /* BUTTONS ----------- */
-a.glow.button {
+a.glow.button, button.glow, input[type="submit"].glow {
   -webkit-animation-name: glowpulse;
   -webkit-animation-duration: 4s;
   -webkit-animation-iteration-count: infinite; }
-
-a.glow.button:hover {
-  -webkit-animation: none; }
+  a.glow.button:hover, button.glow:hover, input[type="submit"].glow:hover {
+    -webkit-animation: none; }
 
 .button:active, table tr:nth-child(odd) a.button:active {
   background: #145b32;

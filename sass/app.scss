@@ -7,14 +7,11 @@
 
 
 /* BUTTONS ----------- */
-a.glow.button {
+a.glow.button, button.glow, input[type="submit"].glow {
   -webkit-animation-name: glowpulse;
   -webkit-animation-duration: 4s;
   -webkit-animation-iteration-count: infinite;
-}
-
-a.glow.button:hover {
-	-webkit-animation: none;
+  &:hover { -webkit-animation: none; }
 }
 
 .button:active, table tr:nth-child(odd) a.button:active { 

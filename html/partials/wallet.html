@@ -11,24 +11,22 @@
         </form>
       </li>
       <li ng-hide="creatingPocket">
-        <a class="button small expand" ng-click="createPocket()">New Pocket</a>
+        <a class="button small expand radius" ng-click="createPocket()">New Pocket</a>
       </li>
       <li class="divider"></li>
       <li>My multisig funds</li>
       <li><a href="">Unsystem</a></li>
       <li><a href="">Multisig 3</a></li>
-      <li><a class="button small expand">New Multisig fund</a></li>
+      <li><a class="button small expand radius" ng-click="openModal('newmultisig')">New Multisig fund</a></li>
       <li class="divider"></li>
       <li>Watch-only pockets</li>
       <li><a href="">My smartphone</a></li>
       <li><a href="">My cold wallet</a></li>
-      <li><a class="button small expand">Add watch-only pocket</a></li>
+      <li><a class="button small expand radius">Add watch-only pocket</a></li>
     </ul>
   </div>
   <div class="large-10 columns">
     <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | currencyFilter}} BTC</small></h4>
-      
-      
     <tabset>
       <tab heading="History">
         <table class="expand">
@@ -123,3 +121,26 @@
     </tabset>
   </div>
 </div>
+
+
+<script type="text/ng-template" id="newmultisig">
+    <h3>Start a Multisig fund</h3>
+    <span>Multisig funds are wallets that require multiple passwords in order to spend the funds. Useful when you need to manage a wallet between multiple people or devices.</span>
+    <h4>Name</h4>
+    <input type="text" placeholder="Name your multisig fund..." />
+    <h4>Other than you, who will manage this fund?</h4>
+    <button class="button small radius">Select from contacts</button>
+    <button class="button small radius">Scan a QR code</button>
+    <button class="button small radius">Paste a Master/Stealth address</button>
+    <h4>How many signatures will be needed in order to spend?</h4>
+    <div class="row collapse">
+        <div class="small-6 columns">
+          <input type="number" />
+        </div>
+        <div class="small-6 columns">
+          <span class="postfix radius">Out of N signatures</span>
+        </div>
+    </div>
+    <input type="submit" class="button glow radius" value="Start multisig" />
+    <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
+</script>
