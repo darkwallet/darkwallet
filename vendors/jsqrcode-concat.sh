@@ -1,0 +1,17 @@
+cat jsqrcode/src/grid.js
+cat jsqrcode/src/version.js
+cat jsqrcode/src/detector.js
+cat jsqrcode/src/formatinf.js
+cat jsqrcode/src/errorlevel.js
+cat jsqrcode/src/bitmat.js
+cat jsqrcode/src/datablock.js
+cat jsqrcode/src/bmparser.js
+cat jsqrcode/src/datamask.js
+cat jsqrcode/src/rsdecoder.js
+cat jsqrcode/src/gf256poly.js
+cat jsqrcode/src/gf256.js
+cat jsqrcode/src/decoder.js
+cat jsqrcode/src/qrcode.js
+cat jsqrcode/src/findpat.js
+cat jsqrcode/src/alignpat.js
+cat jsqrcode/src/databr.js

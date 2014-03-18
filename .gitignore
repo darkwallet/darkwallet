@@ -40,6 +40,8 @@ Desktop.ini
 /vendors/jquery.cookie/*
 /vendors/requirejs*/*
 !/vendors/requirejs*/*.js
+/vendors/jsqrcode/*
+!/vendors/jsqrcode/jsqrcode.js
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*
