@@ -1,3 +1,27 @@
+define(['bitcoinjs-lib', 'util/djbec'], function(Bitcoin, Curve25519) {
+
+var CryptoJS = Bitcoin.Crypto;
+var BigInteger = Bitcoin.BigInteger;
+var ecdsa = Bitcoin.ecdsa;
+var convert =  Bitcoin.convert;
+
+// Leave this here for now so it doesn't crash
+var Cryptocat = {
+    sendPublicKey: function() {console.log('send public key')},
+    addToConversation: function() {console.log('add to conversation')},
+    myNickName: 'nickname'
+}
+
+var getRawBytes = function(number) {
+    var bytes = new Uint8Array(number);
+    return bytes;
+}
+var getRandomBytes = function(number) {
+    var bytes = getRawBytes(number);
+    window.crypto.getRandomValues(bytes);
+    return bytes;
+}
+
 var multiParty = function() {};
 (function(){
 
@@ -69,7 +93,9 @@ function HMAC(msg, key) {
 // Generate private key (32 random bytes)
 // Represented as BigInt
 multiParty.genPrivateKey = function() {
-	myPrivateKey = BigInt.randBigInt(256)
+        var bytes = new Uint8Array(32);
+        window.crypto.getRandomValues(bytes);
+        myPrivateKey = BigInteger.fromByteArrayUnsigned(bytes);
 	return myPrivateKey
 }
 
@@ -92,14 +118,14 @@ multiParty.genPublicKey = function() {
 multiParty.genSharedSecret = function(user) {
 	//I need to convert the BigInt to WordArray here. I do it using the Base64 representation.
 	var sharedSecret = CryptoJS.SHA512(
-		CryptoJS.enc.Base64.parse(
-			BigInt.bigInt2base64(
+		convert.bytesToWordArray(
+			convert.numToBytes(
 				Curve25519.ecDH(
 					myPrivateKey,
 					publicKeys[user]
 				),
 				32
-			)
+                        )
 		)
 	)
 	sharedSecrets[user] = {
@@ -119,8 +145,8 @@ multiParty.genFingerprint = function(user) {
 		key = publicKeys[user]
 	}
 	fingerprints[user] = CryptoJS.SHA512(
-		CryptoJS.enc.Base64.parse(
-			BigInt.bigInt2base64(key, 32)
+		convert.bytesToWordArray(
+			convert.numToBytes(key, 32)
 		)
 	)
 		.toString()
@@ -144,7 +170,7 @@ multiParty.sendPublicKey = function(user) {
 	answer['type'] = 'publicKey'
 	answer['text'] = {}
 	answer['text'][user] = {}
-	answer['text'][user]['message'] = BigInt.bigInt2base64(myPublicKey, 32)
+	answer['text'][user]['message'] = convert.bytesToBase64(convert.numToBytes(myPublicKey, 32))
 	return JSON.stringify(answer)
 }
 
@@ -162,8 +188,9 @@ multiParty.users = function() {
 
 // Issue a warning for decryption failure to the main conversation window
 multiParty.messageWarning = function(sender) {
-	var messageWarning = Cryptocat.locale['warnings']['messageWarning']
-		.replace('(NICKNAME)', sender)
+	/*var messageWarning = Cryptocat.locale['warnings']['messageWarning']
+		.replace('(NICKNAME)', sender)*/
+	var messageWarning = "Warning (NICKNAME)".replace('(NICKNAME)', sender)
 	Cryptocat.addToConversation(messageWarning, sender, 'main-Conversation', 'warning')
 }
 
@@ -182,7 +209,7 @@ multiParty.sendMessage = function(message) {
 	//Convert from UTF8
 	message = CryptoJS.enc.Utf8.parse(message)
 	// Add 64 bytes of padding
-	message.concat(Cryptocat.random.rawBytes(64))
+	message.concat(getRawBytes(64))
 	var encrypted = {}
 	encrypted['text'] = {}
 	encrypted['type'] = 'message'
@@ -193,10 +220,12 @@ multiParty.sendMessage = function(message) {
 	var i, iv
 	for (i = 0; i !== sortedRecipients.length; i++) {
 		//Generate a random IV
-		iv = Cryptocat.random.encodedBytes(12, CryptoJS.enc.Base64)
+		//iv = Cryptocat.random.encodedBytes(12, CryptoJS.enc.Base64)
+		iv = convert.bytesToBase64(getRandomBytes(12));
 		// Do not reuse IVs
 		while (usedIVs.indexOf(iv) >= 0) {
-			iv = Cryptocat.random.encodedBytes(12, CryptoJS.enc.Base64)
+			//iv = Cryptocat.random.encodedBytes(12, CryptoJS.enc.Base64)
+		        iv = convert.bytesToBase64(getRandomBytes(12));
 		}
 		usedIVs.push(iv)
 		//Encrypt the message
@@ -237,11 +266,11 @@ multiParty.receiveMessage = function(sender, myName, message) {
 				return false
 			}
 			if (!publicKeys.hasOwnProperty(sender)) {
-				var publicKey = BigInt.base642bigInt(message['text'][myName]['message'])
+				var publicKey = BigInteger.fromByteArrayUnsigned(convert.base64ToBytes(message['text'][myName]['message']))
 				publicKeys[sender] = publicKey
 				multiParty.genFingerprint(sender)
 				multiParty.genSharedSecret(sender)
-				Cryptocat.xmpp.sendPublicKey(sender)
+				Cryptocat.sendPublicKey(sender)
 			}
 			return false
 		}
@@ -354,3 +383,6 @@ multiParty.reset = function() {
 }
 
 })()//:3
+
+return multiParty;
+});
