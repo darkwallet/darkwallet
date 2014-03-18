@@ -1,3 +1,12 @@
+define(['bitcoinjs-lib'], function(Bitcoin) {
+
+// March 2014
+// Change dependencies to use libs from bitcoinjs, removes jsSHA dependency
+//  - darkwallet devs
+
+var BigInteger = Bitcoin.BigInteger;
+var SHA512 = Bitcoin.Crypto.SHA512;
+var convert = Bitcoin.convert;
 
 //  Ed25519 - digital signatures based on curve25519
 //  Adapted from http://ed25519.cr.yp.to/python/ed25519.py by Ron Garret
@@ -63,8 +72,8 @@ function bi(s, base) {
 }
 
 function sha512(s) {                      // Requires jsSHA
-  var shaObj = new jsSHA(s, "ASCII");
-  return bi2bytes(hex2bi(shaObj.getHash("SHA-512", "HEX")), 64).reverse();
+  var hashed = SHA512(s);
+  return convert.wordArrayToBytes(hashed);
 }
 
 function inthash(s) {
@@ -316,3 +325,20 @@ function dh_test(sk1, sk2) {
   pk2 = curve25519(sk2);
   return curve25519(sk1, pk2).equals(curve25519(sk2, pk1));
 }
+
+return {
+  'curve25519': curve25519,
+  'isoncurve': isoncurve,
+  'encodeint': encodeint,
+  'decodeint': decodeint,
+  'decodepoint': decodepoint,
+  'encodepoint': encodepoint,
+  'publickey': publickey,
+  'signature': signature,
+  'checksig': checksig,
+  'sig_test': sig_test,
+  'inthash': inthash,
+  'ecDH': curve25519
+};
+
+});
