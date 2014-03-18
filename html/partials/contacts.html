@@ -24,7 +24,7 @@
             <button ng-click="copyClipboard(contact.address)" class="button square fa fa-clipboard"></button>
             <button class="button square fa fa-qrcode"></button>
             <button ng-click="contactFormShown = $index" class="button square fa fa-edit"></button>
-            <button ng-click="openModal('confirm')" class="button square alert fa fa-trash-o"></button>
+            <button ng-click="openModal('confirm', {contact: contact}, deleteContact)" class="button square alert fa fa-trash-o"></button>
             <!--<button ng-click="deleteContact(contact)" class="button square alert fa fa-trash-o"></button>-->
           </td>
           <td ng-show="contactFormShown === $index">
@@ -54,8 +54,8 @@
   </div>
 </div>
 <script type="text/ng-template" id="confirm">
-    <h6>Are you sure you want to delete <i>{{contact.name}}</i>?</h6>
-    <button class="button alert small" ng-click="ok()">OK</button>
+    <h6>Are you sure you want to delete <i>{{vars.contact.name}}</i>?</h6>
+    <button class="button alert small" ng-click="ok(vars.contact)">OK</button>
     <button class="button small" ng-click="cancel()">Cancel</button>
     <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
 </script>
