@@ -159,45 +159,48 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
       client.fetch_stealth([0,0], stealth_fetched, 0);
   }
 
-  // Test modals
-  var TestModalCtrl = function ($scope, $modalInstance, vars) {
-    $scope.vars = vars;
-    $scope.ok = function (value) {
-      $modalInstance.close(value);
-    };
-    $scope.cancel = function () {
-      $modalInstance.dismiss('cancel');
-    };
-  };
+  /**
+   * Opens a modal
+   * 
+   * @param {string} tplName Name of the template to be loaded
+   * @param {object} vars Key-value pairs object that passes parameters from main
+   * scope to the modal one. You can get the variables in the modal accessing to
+   * `$scope.vars` variable.
+   * @param {function} okCallback Function called when clicked on Ok button. The
+   * first parameter is the data returned by the modal and the second one the vars
+   * parameter passed to this function.
+   * @param {function} cancelCallback Function called when modal is cancelled. The
+   * first parameter is the reason because the modal has been cancelled and the
+   * second one the vars parameter passed to this function.
+   */
+  $scope.openModal = function(tplName, vars, okCallback, cancelCallback) {
 
-  $scope.openModal = function(tplName, vars) {
-    return $modal.open({
+    var ModalCtrl = function ($scope, $modalInstance, vars) {
+      $scope.vars = vars;
+      $scope.ok = function (value) {
+        $modalInstance.close(value);
+      };
+      $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+      };
+    };
+
+    var ok = function(data) {
+      okCallback ? (vars ? okCallback(data, vars) : okCallback(data)) : null;
+    };
+    var cancel = function(reason) {
+      cancelCallback ? (vars ? cancelCallback(reason, vars) : cancelCallback(reason)) : null;
+    };
+
+    $modal.open({
       templateUrl: tplName,
+      controller: ModalCtrl,
       resolve: {
         vars: function() {
           return vars;
         }
-      },
-      controller: TestModalCtrl
-    });
-  }
-
-  // TODO: Do it more generic
-  $scope.openQrModal = function(field) {
-    $modal.open({
-      templateUrl: 'scan-qr',
-      controller: function ($scope, $modalInstance) {
-        $scope.ok = function (value) {
-          $modalInstance.close(value);
-        };
-        $scope.cancel = function () {
-          localMediaStream.stop();
-          $modalInstance.dismiss('cancel');
-        };
       }
-    }).result.then(function(data) {
-      field.address = data;
-    });
+    }).result.then(ok, cancel);
   };
 
   $scope.copyClipboard = function(text) {

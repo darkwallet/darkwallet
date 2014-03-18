@@ -59,5 +59,14 @@ define(['./module'], function (controllers) {
     $scope.addField();
     $scope.autoAddEnabled = true;
   };
+  
+  $scope.onQrModalOk = function(data, vars) {
+    localMediaStream.stop();
+    vars.field.address = data;
+  };
+  
+  $scope.onQrModalClose = function(data, vars) {
+    localMediaStream.stop();
+  };
 }]);
 });
