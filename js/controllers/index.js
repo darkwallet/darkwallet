@@ -8,6 +8,7 @@ define([
     './contacts',
     './dashboard',
     './history',
+    './identities',
     './lobby',
     './new_wallet',
     './popup',
