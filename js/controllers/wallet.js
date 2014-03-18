@@ -212,6 +212,15 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
       }
     }).result.then(ok, cancel);
   };
+  
+  $scope.onQrModalOk = function(data, vars) {
+    localMediaStream.stop();
+    vars.field.address = data;
+  };
+  
+  $scope.onQrModalCancel = function(data, vars) {
+    localMediaStream.stop();
+  };
 
   $scope.copyClipboard = function(text) {
     var copyDiv = document.createElement('div');
