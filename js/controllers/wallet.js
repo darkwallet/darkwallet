@@ -160,7 +160,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   }
 
   // Test modals
-  var TestModalCtrl = function ($scope, $modalInstance) {
+  var TestModalCtrl = function ($scope, $modalInstance, vars) {
+    $scope.vars = vars;
     $scope.ok = function (value) {
       $modalInstance.close(value);
     };
@@ -169,9 +170,14 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     };
   };
 
-  $scope.openModal = function(tplName) {
+  $scope.openModal = function(tplName, vars) {
     return $modal.open({
       templateUrl: tplName,
+      resolve: {
+        vars: function() {
+          return vars;
+        }
+      },
       controller: TestModalCtrl
     });
   }
