@@ -11,12 +11,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   'use strict';
   controllers.controller('WalletCtrl',
   ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', function($scope, $location, ngProgress, toaster, $modal) {
-  var pubKey, mpKey, addressIndex;
 
   // Tabs
   $scope.isActive = function(route) {
     return route === $location.path();
-  }
+  };
 
   // generated addresses
   $scope.addresses = {};
@@ -26,13 +25,13 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   // Listen for messages from the background service
   bg.addListener(function(message, send) {
-    if (message.name == 'guiUpdate' || message.name == 'balanceUpdate') {
-        if (message.name == 'balanceUpdate') {
+    if (message.name === 'guiUpdate' || message.name === 'balanceUpdate') {
+        if (message.name === 'balanceUpdate') {
             console.log("balance update message", message);
             //$scope.totalBalance = $scope.identity.wallet.getBalance();
         }
     }
-    if (message.name == 'height') {
+    if (message.name === 'height') {
         $scope.currentHeight = message.value;
     }
     // apply interface changes
@@ -43,7 +42,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   // Initialize if empty wallet
   function initializeEmpty() {
-      if (Object.keys($scope.addresses).length == 0) {
+      if (Object.keys($scope.addresses).length === 0) {
           // generate 5 addresses for now
           for(var idx=0; idx<5; idx++) {
               $scope.generateAddress(0);
@@ -63,7 +62,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
                   $scope.addresses[pocketIndex] = [];
               }
               var addressArray = $scope.addresses[pocketIndex];
-              if ($scope.allAddresses.indexOf(walletAddress) == -1) {
+              if ($scope.allAddresses.indexOf(walletAddress) === -1) {
                   addressArray.push(walletAddress);
                   $scope.allAddresses.push(walletAddress);
               }
@@ -113,7 +112,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     var walletAddress = $scope.identity.wallet.getAddress([isChange, n]);
 
     // add to scope
-    if ($scope.allAddresses.indexOf(walletAddress) == -1) {
+    if ($scope.allAddresses.indexOf(walletAddress) === -1) {
         addressArray.push(walletAddress);
         $scope.allAddresses.push(walletAddress);
     }
@@ -126,38 +125,38 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   // get a free change address or a new one
   $scope.getChangeAddress = function() {
     for(var idx=0; $scope.changeAddresses.length; idx++) {
-        if ($scope.changeAddresses[idx].balance == 0) {
+        if ($scope.changeAddresses[idx].balance === 0) {
             return $scope.changeAddresses[idx];
         }
     }
     return $scope.generateAddress(1);
-  }
+  };
 
   // function to receive stealth information
   $scope.stealth = {'password': ''};
   $scope.receiveStealth = function() {
-      toaster.pop('note', "stealth", "initializing")
+      toaster.pop('note', "stealth", "initializing");
       ngProgress.start();
       
       var client = DarkWallet.getClient();
       var stealth_fetched = function(error, results) {
           if (error) {
               console.log("error on stealth");
-              toaster.pop('error', "stealth", error)
+              toaster.pop('error', "stealth", error);
               //write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
               return;
           }
           console.log("STEALTH", results);
           try {
               $scope.identity.wallet.processStealth(results, $scope.stealth.password);
-              toaster.pop('success', "stealth", "ok")
+              toaster.pop('success', "stealth", "ok");
           } catch (e) {
-              toaster.pop('error', "stealth", e.message)
+              toaster.pop('error', "stealth", e.message);
           }
           ngProgress.complete();
-      }
+      };
       client.fetch_stealth([0,0], stealth_fetched, 0);
-  }
+  };
 
   /**
    * Opens a modal
@@ -214,7 +213,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     document.execCommand('SelectAll');
     document.execCommand("Copy", false, null);
     document.getElementById('fixed').removeChild(copyDiv);
-  }
+  };
   
   $scope.pasteClipboard = function() {
     var pasteDiv = document.createElement('div');
@@ -227,7 +226,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     var text = pasteDiv.innerText;
     document.getElementById('fixed').removeChild(pasteDiv);
     return text;
-  }
+  };
 
   // Load identity
   if (bg.getKeyRing().availableIdentities.length) {

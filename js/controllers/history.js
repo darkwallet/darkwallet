@@ -4,7 +4,7 @@
 
 define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
   'use strict';
-  controllers.controller('HistoryCtrl', ['$scope', '$timeout', 'toaster', function($scope, $timeout, toaster) {
+  controllers.controller('HistoryCtrl', ['$scope', '$timeout', function($scope, $timeout) {
 
   // History
   
@@ -37,7 +37,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
       }
       $scope.selectedPocket = pocketIndex;
       $scope.balance = $scope.identity.wallet.getBalance(pocket);
-  }
+  };
 
   // Pockets
   $scope.newPocketName = '';
@@ -53,11 +53,11 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
     } else {
       // wait a bit since we can't focus till the element is shown
       $timeout(function() {
-        document.getElementById('pocketNameInput').focus()
+        document.getElementById('pocketNameInput').focus();
       });
     }
     $scope.creatingPocket = !$scope.creatingPocket;
-  }
+  };
 
 
 }]);

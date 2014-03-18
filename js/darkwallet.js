@@ -10,13 +10,13 @@ var DarkWallet = {
     service: function() {return chrome.extension.getBackgroundPage();},
 
     // Identity key ring. Holds all identities.
-    getKeyRing: function() {return DarkWallet.service().getKeyRing()},
+    getKeyRing: function() {return DarkWallet.service().getKeyRing();},
 
     // Light client
-    getClient: function() {return DarkWallet.service().getClient()},
+    getClient: function() {return DarkWallet.service().getClient();},
 
     // Get identity
-    getIdentity: function(idx) {return DarkWallet.service().getIdentity(idx)}
+    getIdentity: function(idx) {return DarkWallet.service().getIdentity(idx);}
 };
 return DarkWallet;
 });

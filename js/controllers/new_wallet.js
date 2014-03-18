@@ -20,14 +20,14 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
     var passwd = $scope.passwd;
 
     // Check that passwords match.
-    if ($scope.passwd != $scope.passwd2) {
+    if ($scope.passwd !== $scope.passwd2) {
       $scope.message = 'Passwords are not the same';
       $scope.pubKey = '';
       $scope.privKey = '';
       return;
     }
 
-    if ($scope.create_or_restore == 'create') {
+    if ($scope.create_or_restore === 'create') {
       var mnemonic = new Mnemonic(128);
       $scope.mnemonicWords = mnemonic.toWords().join(' ');
       $scope.activeForm = 'mnemonic';
@@ -41,7 +41,8 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
   };
 
   $scope.mnemonic2Submit = function() {
-    if ($scope.mnemonicWords && $scope.mnemonicWords != $scope.mnemonic2Words) {
+    if ($scope.mnemonicWords && $scope.mnemonicWords !== $scope.mnemonic2Words) {
+      // TODO
       alert("ey!");
       return;
     }

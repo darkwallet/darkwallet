@@ -27,7 +27,7 @@ function DarkWalletService() {
         } else {
             readyCallbacks.push(callback);
         }
-    }
+    };
 
     // Load identity names
     keyRing.loadIdentities(function(names) {
@@ -47,10 +47,10 @@ function DarkWalletService() {
             identity.history.update = function() { sendInternalMessage({name: 'guiUpdate'}); };
             userCallback(identity);
             isReady = true;
-            readyCallbacks.forEach(function(cb) {cb();})
+            readyCallbacks.forEach(function(cb) {cb();});
             readyCallbacks = [];
         });
-    }
+    };
 
     // Get an identity from the keyring
     this.getIdentity = function(idx) {
@@ -61,10 +61,10 @@ function DarkWalletService() {
         currentIdentity = identity;
         return keyRing.identities[identity];
 
-    }
+    };
     this.getCurrentIdentity = function() {
         return keyRing.identities[currentIdentity];
-    }
+    };
     /***************************************
     /* History and address subscription
      */
@@ -86,7 +86,7 @@ function DarkWalletService() {
             // fill history after subscribing to ensure we got all histories already (for now).
             identity.history.fillHistory(history);
         }, function(addressUpdate) {
-            console.log("update", addressUpdate)
+            console.log("update", addressUpdate);
         });
         sendInternalMessage({name: "balanceUpdate"});
     }
@@ -101,9 +101,9 @@ function DarkWalletService() {
         var identity = this.getCurrentIdentity();
         client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
         if (walletAddress.history) {
-            identity.history.fillHistory(walletAddress.history)
+            identity.history.fillHistory(walletAddress.history);
         }
-    }
+    };
 
     // Handle initial connection to obelisk
     function handleHeight(err, height) {
@@ -144,21 +144,21 @@ function DarkWalletService() {
             });
             connected = true;
         }
-    }
+    };
     this.getKeyRing = function() {
         return keyRing;
-    }
+    };
 
     this.getClient = function() {
         return obeliskClient.client;
-    }
+    };
 }
 
 /***************************************
 /* Communications
  */
 var sendInternalMessage = function(msg) {
-    chrome.runtime.sendMessage(chrome.runtime.id, msg)
+    chrome.runtime.sendMessage(chrome.runtime.id, msg);
 };
 
 var addListener = function(callback) {
@@ -185,10 +185,10 @@ window.getCurrentIdentity = service.getCurrentIdentity;
 window.getKeyRing = service.getKeyRing;
 
 window.getClient = service.getClient;
-window.ready = function(_cb) {service.ready(_cb)};
+window.ready = function(_cb) {service.ready(_cb);};
 
-window.initAddress = function(_w) {return service.initAddress(_w)};
+window.initAddress = function(_w) {return service.initAddress(_w);};
 
-window.addListener = addListener
+window.addListener = addListener;
 window.sendInternalMessage = sendInternalMessage;
 });

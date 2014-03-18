@@ -48,7 +48,7 @@ controllers.controller('PasswordCtrl' ['$scope', function($scope) {
     $scope.resultShow = true;
 
     // Check that passwords match.
-    if ($scope.passwd != $scope.passwd2) {
+    if ($scope.passwd !== $scope.passwd2) {
       $scope.message = 'Passwords are not the same';
       $scope.pubKey = '';
       $scope.privKey = '';

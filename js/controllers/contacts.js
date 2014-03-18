@@ -4,12 +4,12 @@
 
 define(['./module'], function (controllers) {
   'use strict';
-  controllers.controller('ContactsCtrl', ['$scope', function($scope, $modal) {
+  controllers.controller('ContactsCtrl', ['$scope', function($scope) {
   $scope.newContact = {};
   $scope.contactFormShown = false;
 
   $scope.createContact = function() {
-    $scope.identity.contacts.addContact($scope.newContact)
+    $scope.identity.contacts.addContact($scope.newContact);
     $scope.newContact = {};
     $scope.contactFormShown = false;
   };

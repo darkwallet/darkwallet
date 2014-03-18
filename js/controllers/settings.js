@@ -4,6 +4,6 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.clearStorage = function() {
       var keyRing = DarkWallet.getKeyRing();
       keyRing.clear();
-  }
+  };
 }]);
 });

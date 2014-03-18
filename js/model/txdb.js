@@ -30,12 +30,12 @@ TransactionDatabase.prototype.fetchTransaction = function(txHash, callback, user
             if(!err) {
                 callback(tx, userData);
             }
-        }
+        };
         client.fetch_transaction(txHash, gotTransaction);
     } else {
         callback(this.transactions[txHash], userData);
     }
-}
+};
 
 return TransactionDatabase;
 });

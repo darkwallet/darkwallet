@@ -34,21 +34,21 @@ function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic) {
         var channelHash = SHA256(SHA256(channel)+channel);
         channelHash = Bitcoin.convert.wordArrayToBytes(channelHash);
         return Bitcoin.convert.bytesToHex(channelHash);
-    }
+    };
 
     // Subscribe to given channel
     var channelSubscribe = function(channel, callback, update_cb) {
         var client = DarkWallet.getClient();
         var channelHash = hashChannelName(channel);
         client.chan_subscribe("b", channelHash, callback, update_cb);
-    }
+    };
 
     // Post to given channel
     var channelPost = function(channel, data, callback) {
         var client = DarkWallet.getClient();
         var channelHash = hashChannelName(channel);
         client.chan_post("b", channelHash, data, callback);
-    }
+    };
 
     // Get a simple mnemonic name
     var getMnemoname = function(dataBytes) {
@@ -58,8 +58,7 @@ function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic) {
         mnemonic.random[1] = Bitcoin.convert.bytesToNum(dataBytes.slice(8,16));
         var mnemoName = mnemonic.toWords().slice(0,4).join(" ");
         return mnemoName;
-
-    }
+    };
 
     // Initialize peer structure
     var initializePeer = function(pubKeyBytes, iconSize) {
@@ -67,15 +66,14 @@ function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic) {
         var mnemoname = getMnemoname(pubKeyBytes);
         var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname};
         return newPeer;
-
-    }
+    };
 
     // Initialize and add peer to scope
     var addPeer = function(pubKeyBytes) {
         var newPeer = initializePeer(pubKeyBytes, 24);
         $scope.peerIds.push(newPeer.pubKeyHex);
         $scope.peers.push(newPeer);
-    }
+    };
 
     // Initialize some own data
     $scope.comms = initializePeer(sessionKey.getPub().toBytes(true), 32);
@@ -90,8 +88,8 @@ function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic) {
         if (decoded.cipher) {
             decrypted = sjcl.decrypt(pairCodeHash, message.data);
             var decryptedBytes = Bitcoin.convert.hexToBytes(decrypted);
-            if (decrypted != $scope.comms.pubKeyHex) {
-                if ($scope.peerIds.indexOf(decrypted) == -1) {
+            if (decrypted !== $scope.comms.pubKeyHex) {
+                if ($scope.peerIds.indexOf(decrypted) === -1) {
                     addPeer(decryptedBytes);
                 }
                 startPairing($scope.pairCode, decryptedBytes);
@@ -108,8 +106,7 @@ function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic) {
         if(!$scope.$$phase) {
             $scope.$apply();
         }
-  
-    }
+    };
 
     // Start pairing with another identity
     var startPairing = function(channel, pubKey) {
@@ -117,9 +114,9 @@ function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic) {
         var msg = 'hello';
         var encrypted = Stealth.encrypt(pubKey, msg);
         channelPost(channel, JSON.stringify(encrypted), function(err, data){
-            console.log("channel post2", err, data)
+            console.log("channel post2", err, data);
         });
-    }
+    };
 
     // Action to start announcements and reception
     $scope.announceSelf = function() {
@@ -128,7 +125,7 @@ function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic) {
         var pubKeyHash = sessionKey.getPub().toHex(true);
         var encrypted = sjcl.encrypt(pairCodeHash, pubKeyHash, {ks: 256, ts: 128});
         // chan tests
-        if ($scope.subscribed != pairCodeHash) {
+        if ($scope.subscribed !== pairCodeHash) {
             var _onChannelData = function(_data) {onChannelData(pairCodeHash, _data);};
             if (client.handler_map["chan.update." + pairCodeHash]) {
                 // update callback
@@ -139,18 +136,18 @@ function (controllers, DarkWallet, Stealth, Bitcoin, Mnemonic) {
                     if (!err) {
                         $scope.subscribed = pairCodeHash;
                     }
-                    console.log("channel subscribed", err, data)
+                    console.log("channel subscribed", err, data);
                 }, _onChannelData);
             }
         }
         channelPost($scope.pairCode, encrypted, function(err, data){
-            console.log("channel post", err, data)
+            console.log("channel post", err, data);
         });
         /*
         client.chan_get("b", "announcements", function(err, data){console.log("channel get", err, data)})
         client.chan_list("b", function(err, data){console.log("channel list", err, data)})*/
  
-    }
+    };
   });
 }]);
 });

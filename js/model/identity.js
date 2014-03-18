@@ -36,7 +36,7 @@ Identity.encrypt = function(data, password) {
     var passwordDigest = Bitcoin.convert.wordArrayToBytes(Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password))));
     passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
     return sjcl.encrypt(passwordDigest, JSON.stringify(data), {ks: 256, ts: 128});
-}
+};
 
 
 /**
@@ -66,7 +66,7 @@ Identity.prototype.generate = function(seed, password) {
     this.store.set('contacts', {});
     this.store.set('transactions', {});
     this.store.save();
-}
+};
 
 return Identity;
 });

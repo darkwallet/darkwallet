@@ -38,7 +38,7 @@ Stealth.stealthDH = function(e, decKey) {
     //console.log('S1', Bitcoin.convert.bytesToHex(S1));
     var c = Bitcoin.Crypto.SHA256(S1, {asBytes: true});
     return c;
-}
+};
 
 
 /*
@@ -48,7 +48,7 @@ Stealth.stealthDH = function(e, decKey) {
 Stealth.getStealthAddress = function(mpPubKey) {
     var stealth = [6].concat(mpPubKey.concat([0,0,0,0,0]));
     return stealth;
-}
+};
 
 /*
  * Generate a key and related address to send to for a stealth address
@@ -60,7 +60,7 @@ Stealth.initiateStealth = function(pubKey) {
     var ephemKey = encKey.getPubPoint().getEncoded(true);
 
     var decKey = Stealth.importPublic(pubKey);
-    var c = Stealth.stealthDH(encKey.priv, decKey)
+    var c = Stealth.stealthDH(encKey.priv, decKey);
 
     // Now generate address
     var bytes = decKey.getPubPoint()
@@ -69,8 +69,8 @@ Stealth.initiateStealth = function(pubKey) {
     // Turn to address
     var mpKeyHash = Bitcoin.Util.sha256ripe160(bytes);
     var address = new Bitcoin.Address(mpKeyHash);
-    return [address, ephemKey]
-}
+    return [address, ephemKey];
+};
 
 /*
  * Generate key for receiving for a stealth address with a given ephemkey
@@ -81,12 +81,12 @@ Stealth.uncoverStealth = function(masterSecret, ephemKey) {
     var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
 
     var decKey = Stealth.importPublic(ephemKey);
-    var c = Stealth.stealthDH(priv, decKey)
+    var c = Stealth.stealthDH(priv, decKey);
 
     // Generate the specific secret for this keypair from our master
     var secretInt = priv
                         .add(Bitcoin.BigInteger.fromByteArrayUnsigned(c))
-                        .mod(Stealth.ecN)
+                        .mod(Stealth.ecN);
 
     console.log('secretInt', secretInt.toString());
 
@@ -95,7 +95,7 @@ Stealth.uncoverStealth = function(masterSecret, ephemKey) {
     finalKey.compressed = true;
     console.log(finalKey.getBitcoinAddress().toString());
     return finalKey;
-}
+};
 
 /*
  * Build the stealth nonce output so it can be addred to a transaction.
@@ -110,7 +110,7 @@ Stealth.buildNonceOutput = function(ephemKey, nonce) {
     ephemScript.writeBytes([6].concat(nonceBytes.concat(ephemKey)));
     var stealthOut = new Bitcoin.TransactionOut({script: ephemScript, value: 0});
     return stealthOut;
-}
+};
 
 /*
  * Generate bit mask for a given prefix
@@ -120,7 +120,7 @@ Stealth.buildNonceOutput = function(ephemKey, nonce) {
  */
 Stealth.prefixBitMask = function(prefixN) {
     var mask = 0;
-    var remainder = 32 - prefixN
+    var remainder = 32 - prefixN;
     while(prefixN) {
         mask = (mask<<1) + 1;
         prefixN--;
@@ -130,7 +130,7 @@ Stealth.prefixBitMask = function(prefixN) {
         remainder--;
     }
     return mask;
-}
+};
 
 /*
  * Check prefix against the given array
@@ -145,14 +145,14 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
         var mask = Stealth.prefixBitMask(prefixN);
         var prefixNum = Bitcoin.Util.bytesToNum(prefix);
         var hashNum = Bitcoin.Util.bytesToNum(outHash.slice(0,4));
-        if ((mask & prefixNum) == hashNum) {
+        if ((mask & prefixNum) === hashNum) {
             return true;
         } else {
             return false;
         }
     }
     return true;
-}
+};
 
 /*
  * Add stealth output to the given transaction and return destination address.
@@ -174,7 +174,7 @@ Stealth.addStealth = function(recipient, newTx) {
         nonce = 0;
         // iterate through nonces to find a match for given prefix
         do {
-	    var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4)
+	    var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4);
             outHash = Bitcoin.Util.sha256ripe160(nonceBytes.concat(ephemKey));
             nonce += 1;
         } while(nonce < 4294967296 && !Stealth.checkPrefix(outHash, stealthPrefix));
@@ -185,7 +185,7 @@ Stealth.addStealth = function(recipient, newTx) {
     var stealthOut = Stealth.buildNonceOutput(ephemKey, nonce);
     newTx.addOutput(stealthOut);
     return recipient;
-}
+};
 
 /*************************************
  * Test encrypt / decrypt using similar derivation as stealth
@@ -199,12 +199,11 @@ Stealth.addStealth = function(recipient, newTx) {
  * @param {String} password Password for the user private keys
  * @param {Object} callback Callback receiving the decrypted data
  */
-
 Stealth.decryptForIdentity = function(message, identity, seq, password, callback) {
     identity.wallet.getPrivateKey(seq, password, function(privKey) {
         callback(Stealth.decrypt(privKey, message));
     });
-}
+};
 
 /*
  * Encrypt the given message
@@ -219,8 +218,8 @@ Stealth.encrypt = function(pubKey, message) {
     var c = Stealth.stealthDH(encKey.priv, decKey);
     var _pass = Bitcoin.convert.bytesToString(c);
     var encrypted = sjcl.encrypt(_pass, message, {ks: 256, ts: 128});
-    return {pub: ephemKey, data: sjcl.json.decode(encrypted)}
-}
+    return {pub: ephemKey, data: sjcl.json.decode(encrypted)};
+};
 
 /*
  * Decrypt the given message
@@ -228,36 +227,36 @@ Stealth.encrypt = function(pubKey, message) {
  * @param {String} message Message to decrypt, should have pub and data components
  */
 Stealth.decrypt = function(privKey, message) {
-    var masterSecret = privKey.export('bytes')
+    var masterSecret = privKey.export('bytes');
     var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
 
     var decKey = Stealth.importPublic(message.pub);
-    var c = Stealth.stealthDH(priv, decKey)
+    var c = Stealth.stealthDH(priv, decKey);
     var _pass = Bitcoin.convert.bytesToString(c);
     var decrypted = sjcl.decrypt(_pass, sjcl.json.encode(message.data));
 
     return decrypted;
-}
+};
 
 
 /*************************************
  * Some tests...
  */
 Stealth.testFinishStealth = function(secret, ephemKey) {
-    ephemKey = Bitcoin.convert.hexToBytes(ephemKey)
-    secret = Bitcoin.convert.hexToBytes(secret)
+    ephemKey = Bitcoin.convert.hexToBytes(ephemKey);
+    secret = Bitcoin.convert.hexToBytes(secret);
     console.log(Stealth.uncoverStealth(secret, ephemKey));
-}
+};
 
 Stealth.testStealth = function(identity, password, address) {
     var bytes = Bitcoin.base58.checkDecode(address);
     var res1 = Stealth.initiateStealth(bytes.slice(0,33));
     var address = res1[0];
-    console.log(address.toString(), bytes, bytes.slice(0,33))
+    console.log(address.toString(), bytes, bytes.slice(0,33));
     var ephemkey = res1[1];
     DarkWallet.getKeyRing().identities[identity].wallet.getPrivateKey([0], password, function(privKey) {
         Stealth.uncoverStealth(privKey.key.export('bytes').slice(0,32), ephemkey);
     });
-}
+};
 return Stealth;
 });
