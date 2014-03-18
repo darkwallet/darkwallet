@@ -2253,7 +2253,7 @@ Decoder.decode=function(bits)
 */
 
 
-qrcode = {};
+qrcode = window.qrcode || {};
 qrcode.imagedata = null;
 qrcode.width = 0;
 qrcode.height = 0;
