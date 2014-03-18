@@ -1,29 +1,56 @@
-<section class="createwallet">
-  <h1>Create new wallet</h1>
-  <form ng-show="activeForm=='password'" ng-submit="passwordSubmit()">
-    <div>Register an identity</div>
-    <div><input type="text" ng-model="name" placeholder="Identity Name" autofocus ng-required="true" /></div>
-    <div><input type="password" ng-model="passwd" placeholder="Password" ng-required="true" /></div>
-    <div><input type="password" ng-model="passwd2" placeholder="Repeat password" ng-required="true" /></div>
-    <div>Do you want a new wallet or want to restore a previous one from a seed?</div>
-    <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="create" value="create" /><label for="create">Create</label><br>
-    <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="restore" value="restore" /><label for="restore">Restore</label><br>
-    <div>
-      <input type="submit" value="Create" class="item-footer">
+<div class="row">
+  <div class="small-12 columns">
+   <h3>Create a new wallet</h3>
+  </div>
+</div>
+<form ng-show="activeForm=='password'" ng-submit="passwordSubmit()">
+<div class="row">
+  <div class="large-6 columns">
+    
+      <h5>Register an identity</h5>
+      <div><input type="text" ng-model="name" placeholder="Identity Name" autofocus ng-required="true" /></div>
+      <div><input type="password" ng-model="passwd" placeholder="Password" ng-required="true" /></div>
+      <div><input type="password" ng-model="passwd2" placeholder="Repeat password" ng-required="true" /></div>
+  </div>
+  <div class="large-6 columns">
+      <h5>Do you want a new wallet or want to restore a previous one from a seed?</h5>
+      <div class="panel">
+        <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="create" value="create" /><label for="create">Create</label>
+        <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="restore" value="restore" /><label for="restore">Restore</label>
+      </div>
+      <div class="text-right">
+        <input type="submit" value="Continue" class="button" />
+      </div>
+       
+  </div>
+</div>
+</form> 
+
+<form ng-show="activeForm=='mnemonic'" ng-submit="mnemonicSubmit()">
+  <div class="row">
+    <div class="large-6 columns">
+      <div class="panel">
+        This is your seed. It will help you recover your wallet in case of computer failure, theft or loss. You need to write it down in a piece of paper. These 12 words will unlock complete access to your bitcoins even if you can't access your computer anymore. NEVER TYPE YOUR SEED IN A COMPUTER unless you are recovering your wallet or you will risk losing your bitcoins.
+      </div>
     </div>
-  </form>
-  <form ng-show="activeForm=='mnemonic'" ng-submit="mnemonicSubmit()">
-    <div>Write this seed in a paper and save it.</div>
-    <div><textarea type="text" readonly ng-model="mnemonicWords"></textarea></div>
-    <div>
-      <input type="submit" value="Accept" class="item-footer">
+    <div class="large-6 columns">
+      <textarea type="text" readonly ng-model="mnemonicWords" class="seed"></textarea>
+      <div class="text-right">
+        <input type="submit" value="I've written my seed in a piece of paper, continue!" class="button">
+      </div>
     </div>
-  </form>
-  <form ng-show="activeForm=='mnemonic2'" ng-submit="mnemonic2Submit()">
-    <div>Write the seed again</div>
-    <div><textarea type="text" placeholder="price bleed trail suspend..." ng-model="mnemonic2Words"></textarea></div>
-    <div>
-      <input type="submit" value="Accept" class="item-footer">
+  </div>
+</form>
+
+<form ng-show="activeForm=='mnemonic2'" ng-submit="mnemonic2Submit()">
+  <div class="row">
+    <div class="small-12 columns">
+      <h4>To confirm you've written down your seed correctly, please type it here:</h4>
+      <textarea type="text" class="seed" placeholder="price bleed trail suspend..." ng-model="mnemonic2Words"></textarea>
+      <h5>After typing your seed, please store the piece of paper in the safest place you can think of!</h5>
+      <div class="text-right">
+        <input type="submit" value="Finish" class="button">
+      </div>
     </div>
-  </form>
-</section>
+  </div>
+</form>

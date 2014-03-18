@@ -5535,6 +5535,9 @@ li.colorhead h6 {
 span.meter {
   padding: 5px 0 0 5px; }
 
+.seed {
+  font-size: 120%; }
+
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover {
   background: #27ae60;
   cursor: pointer; }
