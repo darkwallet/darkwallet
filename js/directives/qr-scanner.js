@@ -14,7 +14,6 @@ define(['./module', 'jsqrcode'], function (directives) {
 
         var height = attrs.height || 300;
         var width = attrs.width || 250;
-        var localMediaStream;
 
         var video = document.createElement('video');
         video.setAttribute('width', width);
@@ -30,7 +29,7 @@ define(['./module', 'jsqrcode'], function (directives) {
         var context = canvas.getContext('2d'); 
 
         var scan = function() {
-          if (localMediaStream) {
+          if (window.localMediaStream) {
             context.drawImage(video, 0, 0, 307,250);
             try {
               qrcode.decode();
@@ -43,8 +42,9 @@ define(['./module', 'jsqrcode'], function (directives) {
 
         var successCallback = function(stream) {
           video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
-          localMediaStream = stream;
+          window.localMediaStream = stream;
 
+          scope.video = video;
           video.play();
           $timeout(scan, 1000);
         };
@@ -59,6 +59,7 @@ define(['./module', 'jsqrcode'], function (directives) {
         }
 
         qrcode.callback = function(data) {
+          localMediaStream.stop();
           scope.ngSuccess({data: data});
         };
       }
