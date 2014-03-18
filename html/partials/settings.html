@@ -22,13 +22,21 @@
           <button class="small">Show seed</button>
         </div>
       </div>
-      <div class="large-4 columns panel">
+      <div class="large-4 columns">
+        <div class="panel">
           <h5>Change your password</h5>
           <label>Enter your current password</label>
           <input type="password" class="password" value="">
           <label>Enter your new password</label>
           <input type="password" class="password" value="">
           <button class="small">Change password</button>
+        </div>
+        <div class="panel">
+          <h5>Notifications</h5>
+          <input id="checkbox1" type="checkbox"><label for="checkbox1">For outgoing transactions</label><br>
+          <input id="checkbox2" type="checkbox"><label for="checkbox2">For incoming transactions</label><br>
+          <input id="checkbox1" type="checkbox"><label for="checkbox1">For multisig spend requests</label>
+        </div>
       </div>
       <div class="large-4 columns panel">
         <a href="" class="button button-and-icon" ng-click="clearStorage();">
