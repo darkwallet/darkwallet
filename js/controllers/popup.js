@@ -32,44 +32,4 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     }
   });
 }]);
-/**
- * Password class constructor.
- * @param {Object} $scope Angular scope.
- * @constructor
- */
-controllers.controller('PasswordCtrl' ['$scope', function($scope) {
-
-  $scope.submit = function() {
-    var keyRing = DarkWallet.keyRing;
-    var random = new Uint8Array(16);
-    var seed = [];
-    var passwd = $scope.passwd;
-
-    $scope.resultShow = true;
-
-    // Check that passwords match.
-    if ($scope.passwd !== $scope.passwd2) {
-      $scope.message = 'Passwords are not the same';
-      $scope.pubKey = '';
-      $scope.privKey = '';
-      return;
-    }
-
-    // Fill 'random' array with cryptographically random numbers.
-    // Should be done using api from bitcoin-js.
-    window.crypto.getRandomValues(random);
-
-    // Copy the random numbers to our seed array.
-    // Why is this needed?
-    for (var i in random) {
-      seed[i] = random[i];
-    }
-
-    // Initializing the key from seed.
-    // We save the keys so we don't need access to the seed any more.
-    seed = Bitcoin.convert.bytesToString(seed);
-
-    keyRing.createIdentity($scope.name, seed, $scope.passwd);
-  };
-}]);
 });
