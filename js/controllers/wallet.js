@@ -161,8 +161,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   // Test modals
   var TestModalCtrl = function ($scope, $modalInstance) {
-    $scope.ok = function () {
-      $modalInstance.close();
+    $scope.ok = function (value) {
+      $modalInstance.close(value);
     };
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
@@ -175,6 +175,24 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
       controller: TestModalCtrl
     });
   }
+
+  // TODO: Do it more generic
+  $scope.openQrModal = function(field) {
+    $modal.open({
+      templateUrl: 'scan-qr',
+      controller: function ($scope, $modalInstance) {
+        $scope.ok = function (value) {
+          $modalInstance.close(value);
+        };
+        $scope.cancel = function () {
+          localMediaStream.stop();
+          $modalInstance.dismiss('cancel');
+        };
+      }
+    }).result.then(function(data) {
+      field.address = data;
+    });
+  };
 
   $scope.copyClipboard = function(text) {
     var copyDiv = document.createElement('div');
