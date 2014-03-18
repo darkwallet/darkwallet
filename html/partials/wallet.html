@@ -86,16 +86,16 @@
           </thead>
           <tbody>
           <tr ng-repeat="address in pocket.addresses track by $index" ng-show="address.nOutputs == 0">
-            <td class="icon"><a class="button square fa fa-pencil-square"></a>{{address.label}}</td>
+            <td class="icon"><a href="" class="button square fa fa-pencil-square"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>0</td>
-            <td class="icon text-right"><a class="button square fa fa-qrcode"></a><a class="button square fa fa-clipboard"></a></td>
+            <td class="icon text-right"><a href="" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
           </tr>
           <tr ng-repeat="address in pocket.addresses track by $index" ng-show="address.nOutputs != 0">
             <td class="icon"><a class="button square fa fa-edit"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>{{address.balance | currencyFilter}}</td>
-            <td class="icon text-right"><a class="button square fa fa-qrcode"></a><a class="button square fa fa-clipboard"></a></td>
+            <td class="icon text-right"><a href="" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
           </tr>
         </tbody>
         </table>

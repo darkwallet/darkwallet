@@ -40,10 +40,10 @@
         <div class="row collapse panel radius">
           <h5>Quick receive (unused address)</h5>
           <div class="small-9 columns">
-            <input type="text" value="1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8" />
+            <input type="text" ng-model="address" ng-init="address = '1PrAR846AsCbsMfo5V1Vx28QBbKaZ98gi8'" />
           </div>
           <div class="small-3 columns">
-            <a href="" class="button postfix radius">Copy</a></span>
+            <a href="" ng-click="copyClipboard(address)" class="button postfix radius">Copy</a></span>
           </div>
           <a href="">Go to wallets...</a>
         </div>
