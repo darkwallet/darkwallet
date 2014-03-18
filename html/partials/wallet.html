@@ -66,7 +66,7 @@
             <button ng-click="copyClipboard(pocket.stealth)" class="button postfix fa fa-clipboard">Copy</button>
           </div>
           <div class="medium-2 columns">
-            <button class="button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="openModal('show-qr', {address: pocket.stealth})" class="button postfix radius fa fa-qrcode">QR</button>
           </div>
         </div>
         <div class="row collapse">
@@ -80,7 +80,7 @@
             <button ng-click="copyClipboard(pocket.mpk)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
           </div>
           <div class="medium-2 columns">
-            <button class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="openModal('show-qr', {address: pocket.mpk, version: 7})" class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
           </div>
         </div>
         </div>
@@ -96,18 +96,17 @@
             <td class="icon"><a href="" class="button square fa fa-pencil-square"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>0</td>
-            <td class="icon text-right"><a href="" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
+            <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
           </tr>
           <tr ng-repeat="address in pocket.addresses track by $index" ng-show="address.nOutputs != 0">
             <td class="icon"><a class="button square fa fa-edit"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>{{address.balance | currencyFilter}}</td>
-            <td class="icon text-right"><a href="" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
+            <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
           </tr>
         </tbody>
         </table>
-        <button class="small">Show used addresses</button><br>
-        <button class="small" ng-click="generateAddress(pocket.index)">Generate a new address</a>        
+        <a class="button small" ng-click="generateAddress(pocket.index)">New address</a>
       </tab>
       <tab heading="Actions" ng-hide="isAll">
         <div class="row">
@@ -152,5 +151,10 @@
         </div>
     </div>
     <input type="submit" class="button glow radius" value="Start multisig" />
+    <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
+</script>
+<script type="text/ng-template" id="show-qr">
+    <h3>Scan this QR</h3>
+    <qrcode data="{{vars.address}}" version={{vars.version}} size=200></qrcode>
     <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
 </script>
