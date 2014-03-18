@@ -37,8 +37,8 @@
       <section class="top-bar-section">
         <!-- Right Nav Section -->
         <ul class="right">
-          <li id="settings"><a href="#settings"><i class="fa fa-cog"></i> Settings</a></li>
-          <li><a href=""><i class="fa fa-user"></i> MyName</a></li>
+          <li id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="fa fa-cog"></i> Settings</a></li>
+          <li ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="fa fa-user"></i> MyName</a></li>
         </ul>
         <!-- Left Nav Section -->
         <ul class="left">
