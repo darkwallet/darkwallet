@@ -1,5 +1,6 @@
 /** attach directives to this module 
  **/
 define([
-    './identicon'
+    './identicon',
+    './qr-scanner'
 ], function () {});

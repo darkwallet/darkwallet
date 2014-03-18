@@ -13,6 +13,7 @@ require.config({
     'ngProgress': "../vendors/ngprogress/build/ngProgress",
     'toaster': "../vendors/AngularJS-Toaster/toaster",
     'identicon': "../vendors/identicon/identicon",
+    'jsqrcode': "../vendors/jsqrcode/jsqrcode",
     
     'bitcoinjs-lib': "../vendors/bitcoinjs-lib/bitcoinjs",
     'sjcl': "../vendors/sjcl/sjcl",
@@ -42,6 +43,9 @@ require.config({
     },
     'toaster': {
       deps: ['angular']
+    },
+    'jsqrcode': {
+      exports: 'qrcode'
     },
     'darkwallet': {
       exports: 'DarkWallet'
