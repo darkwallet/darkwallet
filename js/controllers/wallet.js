@@ -203,7 +203,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     };
 
     $modal.open({
-      templateUrl: tplName,
+      templateUrl: 'modals/' + tplName + '.html',
       controller: ModalCtrl,
       resolve: {
         vars: function() {
