@@ -237,3 +237,4 @@ window.initAddress = function(_w) {return service.initAddress(_w)};
 window.addListener = addListener
 window.sendInternalMessage = sendInternalMessage;
 });
+

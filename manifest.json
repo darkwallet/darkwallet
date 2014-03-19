@@ -15,5 +15,11 @@
   },
   "permissions": [
     "tabs", "storage", "clipboardRead", "clipboardWrite", "contextMenus"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/inject.js"]
+    }
   ]
 }
