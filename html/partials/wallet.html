@@ -29,6 +29,13 @@
     <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | currencyFilter}} BTC</small></h4>
     <tabset>
       <tab heading="History">
+        <dl class="sub-nav">
+          <dt>Filter:</dt>
+          <dd class="active"><a href="#">Last 10</a></dd>
+          <dd><a href="#">Last week</a></dd>
+          <dd><a href="#">Last month</a></dd>
+          <dd><a href="#">All</a></dd>
+        </dl>
         <table class="expand">
           <thead>
             <tr>
@@ -76,7 +83,7 @@
             <button class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
           </div>
         </div>
-        </div>         
+        </div>
         <table class="expand">
           <thead>
           <th>Name</th>
@@ -99,7 +106,8 @@
           </tr>
         </tbody>
         </table>
-        <a class="button small" ng-click="generateAddress(pocket.index)">New address</a>
+        <button class="small">Show used addresses</button><br>
+        <button class="small" ng-click="generateAddress(pocket.index)">Generate a new address</a>        
       </tab>
       <tab heading="Actions" ng-hide="isAll">
         <div class="row">

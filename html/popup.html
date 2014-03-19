@@ -11,8 +11,22 @@
   <body ng-controller="PopupCtrl">
     <div class="popupcontainer">
  <div class="popupcontainer">
-      <div class="panel text-center">
-        <a ng-cloak href="" id="pop-identities"><i class="fa fa-user"></i> {{identity.id}}</a>
+      <div class="row">
+        <div class="small-6 columns text-center">
+          <a ng-cloak href="" id="pop-identities"><h3><i class="fa fa-user"></i> {{identity.id}}</h3></a>
+        </div>
+        <div class="small-6 columns">
+          <a href="index.html#new_wallet" target="_blank" class="button tiny expand">
+            Change identity
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-12 columns">
+          <a href="index.html#history" target="_blank" class="button expand" ng-show="identities.length">
+            Open wallet
+          </a>
+        </div>
       </div>
       <div class="panel">
         Receiving transaction (+0.36 BTC)<br>
@@ -31,18 +45,6 @@
       <div class="panel">
         You have been invited to the "dark wallet" multisig fund<br>
         <small>Click for more info</small>
-      </div>
-      <div class="row">
-        <div class="small-6 columns">
-          <a href="index.html#history" target="_blank" class="button tiny expand" ng-show="identities.length">
-            Go to history...
-          </a>
-        </div>
-        <div class="small-6 columns">
-          <a href="index.html#new_wallet" target="_blank" class="button tiny expand">
-            Create new wallet...
-          </a>
-        </div>
       </div>
     </div>
     </div>
