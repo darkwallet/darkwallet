@@ -1,4 +1,4 @@
-define(['./module', 'darkwallet', 'util/transport', 'util/channels/catchan', 'util/encryption'],
+define(['./module', 'darkwallet', 'util/transport', 'util/channels/catchan'],
 function (controllers, DarkWallet, Transport, BtcChannel) {
   'use strict';
 
