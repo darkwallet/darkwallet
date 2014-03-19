@@ -11,7 +11,6 @@ function (Bitcoin, Mnemonic) {
   function Transport(identity, client) {
     this.client = client;
     this.channels = {};
-    console.log("25519", comms25519);
 
     this.requests = [];
     this.peers = [];
@@ -40,8 +39,8 @@ function (Bitcoin, Mnemonic) {
     this.getSessionKey = function() { return sessionKey; }
 
     // Initialize some own data
-    this.comms = this.initializePeer(sessionKey.getPub().toBytes(true), 32);
-    this.myself = this.initializePeer(selfKey.getPub().toBytes(true), 32);
+    this.comms = this.initializePeer(sessionKey.getPub().toBytes(true));
+    this.myself = this.initializePeer(selfKey.getPub().toBytes(true));
   }
 
   Transport.prototype.update = function() {
@@ -68,7 +67,7 @@ function (Bitcoin, Mnemonic) {
   }
 
   // Initialize peer structure
-  Transport.prototype.initializePeer = function(pubKeyBytes, iconSize) {
+  Transport.prototype.initializePeer = function(pubKeyBytes) {
       var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
       var mnemoname = this.getMnemoname(pubKeyBytes);
       var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname};
@@ -77,8 +76,9 @@ function (Bitcoin, Mnemonic) {
   }
 
   // Initialize and add peer to scope
-  Transport.prototype.addPeer = function(pubKeyBytes) {
-      var newPeer = this.initializePeer(pubKeyBytes, 24);
+  Transport.prototype.addPeer = function(pubKeyBytes, pubKey) {
+      var newPeer = this.initializePeer(pubKeyBytes);
+      newPeer.pubKey = pubKey;
       this.peerIds.push(newPeer.pubKeyHex);
       this.peers.push(newPeer);
   }
