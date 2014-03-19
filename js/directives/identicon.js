@@ -24,6 +24,6 @@ define(['./module', 'darkwallet', 'identicon', 'bitcoinjs-lib'], function (direc
           createFromBytes(pubKeyBytes.slice(8,16));
         }
       }
-    }
+    };
   });
 });

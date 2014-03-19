@@ -45,7 +45,7 @@
             <a href="" ng-click="field.address = pasteClipboard(); autoAddField()" class="fa button postfix fa-clipboard">Paste</a>
           </div>
           <div class="large-2 small-6 columns">
-            <a href="" class="fa button postfix fa-qrcode">Scan code</a>
+            <a href="" ng-click="openModal('scan-qr', {field: field}, onQrModalOk, onQrModalCancel)" class="fa button postfix fa-qrcode">Scan code</a>
           </div>
           <div class="large-2 small-6 columns">
             <a href="" ng-click="openModal('pick-contact')" class="fa button postfix fa-users">Contacts</a>
@@ -71,16 +71,3 @@
           <li><a href="">Yet another</a></li>
         </ul>
   </form>
-
-<script type="text/ng-template" id="pick-contact">
-  <div class="contact-mosaic">
-    <h6>Select a contact</h6>
-    <div class="large-3 columns panel">BLA</div>
-    <div class="large-3 columns panel">BLA</div>
-    <div class="large-3 columns panel">BLA</div>
-    <div class="large-3 columns panel">BLA</div>
-    <div class="large-3 columns panel">BLA</div>
-    <div class="large-3 columns panel">BLA</div>
-    <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
-  </div>
-</script>

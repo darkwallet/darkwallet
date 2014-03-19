@@ -38,7 +38,7 @@ Wallet.prototype.getBalance = function(pocket) {
        var pocketIndex = this.pockets.indexOf(pocket);
         for(var idx=0; idx<keys.length; idx++) {
             var walletAddress = this.pubKeys[keys[idx]];
-            if (walletAddress.index[0] == pocketIndex) {
+            if (walletAddress.index[0] === pocketIndex) {
                 allAddresses.push(walletAddress);
            }
         }
@@ -47,18 +47,18 @@ Wallet.prototype.getBalance = function(pocket) {
         balance += walletAddress.balance;
     });
     return balance;
-}
+};
 
 /**
  * Create pocket with the given name
  * @param {String} name Name for the new pocket
  */
 Wallet.prototype.createPocket = function(name) {
-    if (this.pockets.indexOf(name) == -1) {
+    if (this.pockets.indexOf(name) === -1) {
         this.pockets.push(name);
         this.store.save();
     }
-}
+};
 
 /**
  * Load wallet addresses into internal Bitcoin.Wallet
@@ -71,11 +71,12 @@ Wallet.prototype.loadPubKeys = function() {
         if (self.pubKeys[index].history)
             self.processHistory(self.pubKeys[index].address, self.pubKeys[index].history);
     });
-}
+};
 
 /**
  * Get the private key for the given address index
  * @param {Array} seq Array for the bip32 sequence to retrieve address for
+ * @param {String} password Password to decrypt the private key
  * @param {Function} callback A callback where the private key will be provided.
  */
 Wallet.prototype.getPrivateKey = function(seq, password, callback) {
@@ -94,7 +95,7 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     this.storePrivateKey(seq, password, key.priv);
    
     callback(key.priv);
-}
+};
 
 /**
  * Get the decrypted private user data.
@@ -109,7 +110,7 @@ Wallet.prototype.getPrivateData = function(password) {
         data.privKeys = {};
     }
     return data;
-}
+};
 
 /**
  * Store the given private key
@@ -122,7 +123,7 @@ Wallet.prototype.storePrivateKey = function(seq, password, key) {
     data.privKeys[seq] = key.export('bytes');
     var privData = Identity.encrypt(data, password);
     this.store.set('private', privData);
-}
+};
 
 /**
  * Store the given public address
@@ -146,9 +147,9 @@ Wallet.prototype.storeAddress = function(seq, key) {
     var stealth = Stealth.getStealthAddress(mpPubKey);
 
     var label = 'unused';
-    if (seq.length == 1) {
+    if (seq.length === 1) {
         label = 'pocket';
-    } else if (seq.length > 1 && seq[0]%2 == 1) {
+    } else if (seq.length > 1 && seq[0]%2 === 1) {
         label = 'change';
     } else {
         label = 'unused';
@@ -167,7 +168,7 @@ Wallet.prototype.storeAddress = function(seq, key) {
     // add to internal bitcoinjs-lib wallet
     this.wallet.addresses.push(address.toString());
     return this.pubKeys[seq];
-}
+};
 
 /**
  * Get an address from this wallet.
@@ -188,7 +189,7 @@ Wallet.prototype.getAddress = function(seq) {
         }
         return this.storeAddress(seq, childKey.pub);
     }
-}
+};
 
 /**
  * Get the wallet address structure for an address.
@@ -203,11 +204,11 @@ Wallet.prototype.getWalletAddress = function(address) {
     var keys = Object.keys(this.pubKeys);
     for (var idx=0; idx<keys.length; idx++) {
          var walletAddress = this.pubKeys[keys[idx]];
-         if (walletAddress.address == address) {
+         if (walletAddress.address === address) {
              return walletAddress;
          }
     }
-}
+};
 
 /**
  * Send bitcoins from this wallet.
@@ -232,7 +233,7 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
     var change = outAmount - (amount + fee);
 
     // test for stealth
-    if (recipient[0] == 'S') {
+    if (recipient[0] === 'S') {
         isStealth = true;
         recipient = Stealth.addStealth(recipient, newTx);
     }
@@ -266,14 +267,14 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
                 return;
             }
             console.log("tx radar: " + count);
-        }
+        };
         if (isStealth) {
             console.log("not broadcasting stealth tx yet...");
         } else {
-            DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
+            DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx);
         }
     });
-}
+};
 
 /**
  * Process an output from an external source
@@ -281,7 +282,7 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
  */
 Wallet.prototype.processOutput = function(output) {
     this.wallet.processOutput(output);
-}
+};
 
 /**
  * Process history report from obelisk
@@ -301,10 +302,10 @@ Wallet.prototype.processHistory = function(address, history) {
     // process history
     history.forEach(function(tx) {
         // sum unspent outputs for the address
-        var outTxHash = tx[0];
+        var outTxHash = tx[0]; // TODO unused variable
         var inTxHash = tx[4];
         walletAddress.nOutputs += 1;
-        if (inTxHash == null) {
+        if (inTxHash === null) {
             walletAddress.balance += tx[3];
             walletAddress.height = Math.max(tx[2], walletAddress.height);
         }
@@ -312,7 +313,7 @@ Wallet.prototype.processHistory = function(address, history) {
         self.processOutput({ output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
     });
     this.store.save();
-}
+};
 
 
 /**
@@ -322,15 +323,15 @@ Wallet.prototype.processHistory = function(address, history) {
 Wallet.prototype.processStealth = function(stealthArray, password) {
     var self = this;
     stealthArray.forEach(function(stealthData) {
-        var nonceArray = Bitcoin.convert.hexToBytes(stealthData[0]);
+        var nonceArray = Bitcoin.convert.hexToBytes(stealthData[0]); // TODO unused variable
         var ephemkey = Bitcoin.convert.hexToBytes(stealthData[0]);
         var address = stealthData[1];
-        var txId = stealthData[2];
+        var txId = stealthData[2]; // TODO unused variable
 
         // for now checking just the first stealth address derived from pocket 0 "default"
         self.getPrivateKey([0], password, function(privKey) {
             var stAddr = Stealth.uncoverStealth(privKey.export('bytes'), ephemkey);
-            if (address == stAddr.getBitcoinAddress().toString()) {
+            if (address === stAddr.getBitcoinAddress().toString()) {
                 console.log("STEALTH MATCH!!");
                 var seq = [0, 's'].concat(ephemkey);
                 var walletAddress = self.storeAddress(seq, stAddr);
@@ -340,7 +341,7 @@ Wallet.prototype.processStealth = function(stealthArray, password) {
             }
         });
     });
-}
+};
 
 return Wallet;
 });

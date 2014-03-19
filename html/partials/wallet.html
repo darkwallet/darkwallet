@@ -66,7 +66,7 @@
             <button ng-click="copyClipboard(pocket.stealth)" class="button postfix fa fa-clipboard">Copy</button>
           </div>
           <div class="medium-2 columns">
-            <button class="button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="openModal('show-qr', {address: pocket.stealth})" class="button postfix radius fa fa-qrcode">QR</button>
           </div>
         </div>
         <div class="row collapse">
@@ -80,7 +80,7 @@
             <button ng-click="copyClipboard(pocket.mpk)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
           </div>
           <div class="medium-2 columns">
-            <button class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="openModal('show-qr', {address: pocket.mpk, version: 7})" class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
           </div>
         </div>
         </div>
@@ -96,13 +96,13 @@
             <td class="icon"><a href="" class="button square fa fa-pencil-square"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>0</td>
-            <td class="icon text-right"><a href="" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
+            <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
           </tr>
           <tr ng-repeat="address in pocket.addresses track by $index" ng-show="address.nOutputs != 0">
             <td class="icon"><a class="button square fa fa-edit"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>{{address.balance | currencyFilter}}</td>
-            <td class="icon text-right"><a href="" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
+            <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
           </tr>
         </tbody>
         </table>
@@ -131,26 +131,3 @@
     </tabset>
   </div>
 </div>
-
-
-<script type="text/ng-template" id="newmultisig">
-    <h3>Start a Multisig fund</h3>
-    <span>Multisig funds are wallets that require multiple passwords in order to spend the funds. Useful when you need to manage a wallet between multiple people or devices.</span>
-    <h4>Name</h4>
-    <input type="text" placeholder="Name your multisig fund..." />
-    <h4>Other than you, who will manage this fund?</h4>
-    <button class="button small radius">Select from contacts</button>
-    <button class="button small radius">Scan a QR code</button>
-    <button class="button small radius">Paste a Master/Stealth address</button>
-    <h4>How many signatures will be needed in order to spend?</h4>
-    <div class="row collapse">
-        <div class="small-6 columns">
-          <input type="number" />
-        </div>
-        <div class="small-6 columns">
-          <span class="postfix radius">Out of N signatures</span>
-        </div>
-    </div>
-    <input type="submit" class="button glow radius" value="Start multisig" />
-    <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
-</script>

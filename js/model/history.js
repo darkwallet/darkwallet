@@ -23,7 +23,7 @@ function History(store, identity) {
 History.prototype.findIndexForRow = function(newRow) {
     var insertInto = 0;
     for(var idx=this.history.length-1; idx>=0; idx--) {
-        if (this.history[idx].hash == newRow.hash) {
+        if (this.history[idx].hash === newRow.hash) {
             return -1;
         }
         if (this.history[idx].height < newRow.height) {
@@ -31,7 +31,7 @@ History.prototype.findIndexForRow = function(newRow) {
         }
     }
     return 0;
-}
+};
 
 /*
  * Add a row into the history.
@@ -40,7 +40,7 @@ History.prototype.findIndexForRow = function(newRow) {
  */
 History.prototype.addHistoryRow = function(newRow) {
     var insertInto = this.findIndexForRow(newRow);
-    if (insertInto == -1) {
+    if (insertInto === -1) {
         return;
     }
     this.history.splice(insertInto, 0, newRow);
@@ -50,7 +50,7 @@ History.prototype.addHistoryRow = function(newRow) {
         balance += (row.myOutValue - row.myInValue);
         row.balance = balance;
     }
-}
+};
 
 /*
  * Build a history row from a transaction.
@@ -74,7 +74,7 @@ History.prototype.buildHistoryRow = function(transaction, height) {
             inMine += 1;
             myInValue += btcWallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index].value;
         }
-    })
+    });
     if (!inMine) {
         txAddr = 'unknown';
     }
@@ -88,14 +88,14 @@ History.prototype.buildHistoryRow = function(transaction, height) {
                 txAddr = anOut.address.toString();
             }
         }
-    })
+    });
     if (!txAddr) {
         txAddr = 'internal';
     }
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
     var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr};
     return newRow;
-}
+};
 
 
 /*
@@ -108,7 +108,7 @@ History.prototype.fillInput = function(transaction, data) {
         txObj = new Bitcoin.Transaction(transaction);
     newRow.address = txObj.outs[index].address.toString();
     this.update();
-}
+};
 
 /*
  * Callback for fetching a transaction
@@ -118,14 +118,14 @@ History.prototype.txFetched = function(transaction, height) {
     var self = this,
         newRow = this.buildHistoryRow(transaction, height);
     // unknown for now means we need to fill in some extra inputs for now get 1st one
-    if (newRow.address == 'unknown') {
+    if (newRow.address === 'unknown') {
         this.identity.txdb.fetchTransaction(newRow.tx.ins[0].outpoint.hash,
-                                            function(_a, _b) {self.fillInput(_a, _b)},
+                                            function(_a, _b) {self.fillInput(_a, _b);},
                                             [newRow.tx.ins[0].outpoint.index, newRow]);
      }
     this.addHistoryRow(newRow);
     this.update();
-}
+};
 
 /*
  * Look for transactions from given history records
@@ -138,18 +138,18 @@ History.prototype.fillHistory = function(history) {
         var outTxHash = tx[0],
             inTxHash = tx[4];
         if (inTxHash) {
-            txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(_a, _b)}, tx[6]);
+            txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(_a, _b);}, tx[6]);
         }
-        txdb.fetchTransaction(outTxHash, function(_a, _b) {self.txFetched(_a, _b)}, tx[2]);
+        txdb.fetchTransaction(outTxHash, function(_a, _b) {self.txFetched(_a, _b);}, tx[2]);
     });
-}
+};
 
 /*
  * Update callback, needs to be filled in by the application to register.
  */
 History.prototype.update = function() {
     console.log("Program needs to register an update callback!");
-}
+};
 
 return History;
 });

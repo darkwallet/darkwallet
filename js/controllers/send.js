@@ -23,7 +23,7 @@ define(['./module'], function (controllers) {
       // we can also use something to show radar progress
       toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + amount) + ' satoshis');
       
-  }
+  };
 
   $scope.repeatedFields = {
     fields: [
