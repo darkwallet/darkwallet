@@ -79,14 +79,16 @@ function (Bitcoin, Mnemonic) {
   Transport.prototype.addPeer = function(pubKeyBytes, pubKey) {
       var newPeer = this.initializePeer(pubKeyBytes);
       newPeer.pubKey = pubKey;
-      this.peerIds.push(newPeer.pubKeyHex);
-      this.peers.push(newPeer);
+      if (this.peerIds.indexOf(newPeer.pubKeyHex) == -1) {
+          this.peerIds.push(newPeer.pubKeyHex);
+          this.peers.push(newPeer);
+      }
   }
 
   // Action to start announcements and reception
   Transport.prototype.initChannel = function(name, chanClass) {
       var channel;
-      if (this.channels[name]) {
+      if (this.channels.hasOwnProperty(name)) {
           channel = this.channels[name];
       } else {
           channel = new chanClass(this, name);
