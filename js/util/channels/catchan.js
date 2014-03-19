@@ -30,7 +30,7 @@ function (Stealth, Bitcoin, multiParty, Curve25519) {
       this.callbacks = {};
 
       // Set transport session key
-      var priv = multiParty.setPrivateKey(transport.getSesionKey().priv);
+      var priv = multiParty.setPrivateKey(transport.getSessionKey().priv);
       var pub = multiParty.genPublicKey();
 
       this.priv = priv;
