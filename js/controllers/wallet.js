@@ -24,13 +24,23 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   var bg = DarkWallet.service();
 
+  var report = function(msg) {
+      if (console) {
+        console.log(msg);
+      }
+      toaster.pop('note', "wallet", msg)
+  }
+
   // Listen for messages from the background service
   bg.addListener(function(message, send) {
     if (message.name == 'guiUpdate' || message.name == 'balanceUpdate') {
         if (message.name == 'balanceUpdate') {
-            console.log("balance update message", message);
+            report("balance update message " + message);
             //$scope.totalBalance = $scope.identity.wallet.getBalance();
         }
+    }
+    if (message.name == 'note') {
+        report("note " + message.text);
     }
     if (message.name == 'height') {
         $scope.currentHeight = message.value;
