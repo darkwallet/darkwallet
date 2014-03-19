@@ -5530,7 +5530,8 @@ li.colorhead h6 {
     color: white; }
 
 .popupcontainer {
-  min-width: 350px; }
+  min-width: 350px;
+  padding-top: 0.6em; }
 
 span.meter {
   padding: 5px 0 0 5px; }
