@@ -85,16 +85,19 @@ function (Stealth, Bitcoin, Mnemonic, multiParty) {
       this.peers.push(newPeer);
   }
 
-
-  // Start pairing with another identity
-  Transport.prototype.startPairing = function(channel, pubKey) {
-      // pair to a specific user session public key
-      var msg = 'hello';
-      var encrypted = Stealth.encrypt(pubKey, msg);
-      this.channelPost(JSON.stringify(encrypted), function(err, data){
-          console.log("channel post2", err, data)
-      });
+  // Action to start announcements and reception
+  Transport.prototype.initChannel = function(pairCode) {
+      var channel;
+      if (this.channels[pairCode]) {
+          channel = this.channels[pairCode];
+      } else {
+          channel = new Channel(this, pairCode);
+          this.channels[pairCode] = channel;
+      }
+      channel.sendOpening();
+      return channel;
   }
+
 
 
   /************************************
@@ -124,27 +127,16 @@ function (Stealth, Bitcoin, Mnemonic, multiParty) {
       }
   }
 
-  // Action to start announcements and reception
-  Transport.prototype.initChannel = function(pairCode) {
-      var channel;
-      if (this.channels[pairCode]) {
-          channel = this.channels[pairCode];
-      } else {
-          channel = new Channel(this, pairCode);
-          this.channels[pairCode] = channel;
-      }
-
+  Channel.prototype.sendOpening = function() {
       // Send announcement
-      var sessionKey = this.getSessionKey();
+      var sessionKey = this.transport.getSessionKey();
       var pubKeyHash = sessionKey.getPub().toHex(true);
 
       // Send encrypted
-      channel.channelPostEncrypted(pubKeyHash, function(err, data){
-          console.log("channel post", err, data)
+      this.channelPostEncrypted(pubKeyHash, function(err, data){
+          console.log("announcement posted", err, data)
       });
-      return channel;
   }
-
 
   // Subscribe to given channel
   Channel.prototype.channelSubscribe = function(callback, update_cb) {
@@ -179,7 +171,7 @@ function (Stealth, Bitcoin, Mnemonic, multiParty) {
               if (transport.peerIds.indexOf(decrypted) == -1) {
                   transport.addPeer(decryptedBytes);
               }
-              transport.startPairing(this.pairCode, decryptedBytes);
+              this.startPairing(decryptedBytes);
           }
       // Stealth message to us (maybe)
       } else if (decoded.pub) {
@@ -192,6 +184,16 @@ function (Stealth, Bitcoin, Mnemonic, multiParty) {
       }
       console.log("data for channel2", message, message.data);
       transport.update();
+  }
+
+  // Start pairing with another identity
+  Channel.prototype.startPairing = function(pubKey) {
+      // pair to a specific user session public key
+      var msg = 'hello';
+      var encrypted = Stealth.encrypt(pubKey, msg);
+      this.channelPost(JSON.stringify(encrypted), function(err, data){
+          console.log("channel post2", err, data)
+      });
   }
 
 
