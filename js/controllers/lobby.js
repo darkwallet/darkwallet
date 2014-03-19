@@ -3,7 +3,7 @@ function (controllers, DarkWallet, Channels) {
   'use strict';
 
   // Convert to UTF8
-  console.log('decrypted', Encryption.test());
+  // console.log('decrypted', Encryption.test());
 
   // --
 
@@ -34,7 +34,7 @@ function (controllers, DarkWallet, Channels) {
 
         // chan tests
         if ($scope.subscribed != pairCodeHash) {
-            transport.announceSelf($scope.pairCode);
+            var channel = transport.initChannel($scope.pairCode);
             $scope.subscribed = pairCodeHash;
         }
         /*

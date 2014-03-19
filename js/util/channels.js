@@ -5,8 +5,12 @@ function (Stealth, Bitcoin, Mnemonic, multiParty) {
   var CryptoJS = Bitcoin.Crypto;
   var SHA256 = Bitcoin.Crypto.SHA256;
 
+  /************************************
+   * Transport
+   */
   function Transport(identity, client) {
     this.client = client;
+    this.channels = {};
     var comms25519 = multiParty.genPrivateKey();
     console.log("25519", comms25519);
 
@@ -43,129 +47,154 @@ function (Stealth, Bitcoin, Mnemonic, multiParty) {
   }
 
   Transport.prototype.update = function() {
-        /*if(!$scope.$$phase) {
-            $scope.$apply();
-        }*/
+      /*if(!$scope.$$phase) {
+          $scope.$apply();
+      }*/
   }
 
   Transport.prototype.hashChannelName = function(channel) {
-        var channelHash = SHA256(SHA256(channel)+channel);
-        channelHash = Bitcoin.convert.wordArrayToBytes(channelHash);
-        return Bitcoin.convert.bytesToHex(channelHash);
-  }
-
-  // Subscribe to given channel
-  Transport.prototype.channelSubscribe = function(channel, callback, update_cb) {
-        var client = this.client;
-        var channelHash = this.hashChannelName(channel);
-        client.chan_subscribe("b", channelHash, callback, update_cb);
-  }
-
-  // Post to given channel
-  Transport.prototype.channelPost = function(channel, data, callback) {
-        var client = this.client;
-        var channelHash = this.hashChannelName(channel);
-        client.chan_post("b", channelHash, data, callback);
+      var channelHash = SHA256(SHA256(channel)+channel);
+      channelHash = Bitcoin.convert.wordArrayToBytes(channelHash);
+      return Bitcoin.convert.bytesToHex(channelHash);
   }
 
   // Get a simple mnemonic name
   Transport.prototype.getMnemoname = function(dataBytes) {
-        var mnemonic = new Mnemonic(64);
-        mnemonic.random = [];
-        mnemonic.random[0] = Bitcoin.convert.bytesToNum(dataBytes.slice(0,4));
-        mnemonic.random[1] = Bitcoin.convert.bytesToNum(dataBytes.slice(8,16));
-        var mnemoName = mnemonic.toWords().slice(0,4).join(" ");
-        return mnemoName;
+      var mnemonic = new Mnemonic(64);
+      mnemonic.random = [];
+      mnemonic.random[0] = Bitcoin.convert.bytesToNum(dataBytes.slice(0,4));
+      mnemonic.random[1] = Bitcoin.convert.bytesToNum(dataBytes.slice(8,16));
+      var mnemoName = mnemonic.toWords().slice(0,4).join(" ");
+      return mnemoName;
 
   }
 
   // Initialize peer structure
   Transport.prototype.initializePeer = function(pubKeyBytes, iconSize) {
-        var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
-        var mnemoname = this.getMnemoname(pubKeyBytes);
-        var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname};
-        return newPeer;
+      var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
+      var mnemoname = this.getMnemoname(pubKeyBytes);
+      var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname};
+      return newPeer;
 
   }
 
   // Initialize and add peer to scope
   Transport.prototype.addPeer = function(pubKeyBytes) {
-        var newPeer = this.initializePeer(pubKeyBytes, 24);
-        this.peerIds.push(newPeer.pubKeyHex);
-        this.peers.push(newPeer);
+      var newPeer = this.initializePeer(pubKeyBytes, 24);
+      this.peerIds.push(newPeer.pubKeyHex);
+      this.peers.push(newPeer);
   }
 
-
-  // Callback for data received on channel
-  Transport.prototype.onChannelData = function(pairCodeHash, message) {
-        var sessionKey = this.getSessionKey();
-        console.log("data for channel", message);
-        var decrypted;
-        var decoded = JSON.parse(message.data);
-        // Just an encrypted message
-        if (decoded.cipher) {
-            decrypted = sjcl.decrypt(pairCodeHash, message.data);
-            var decryptedBytes = Bitcoin.convert.hexToBytes(decrypted);
-            if (decrypted != this.comms.pubKeyHex) {
-                if (this.peerIds.indexOf(decrypted) == -1) {
-                    this.addPeer(decryptedBytes);
-                }
-                this.startPairing(this.pairCode, decryptedBytes);
-            }
-        // Stealth message to us (maybe)
-        } else if (decoded.pub) {
-            console.log("stealth", sessionKey, decoded);
-            decrypted = Stealth.decrypt(sessionKey, decoded);
-        }
-        if (decrypted) {
-            this.requests.push({data: decrypted});
-            console.log("data for channel", decrypted);
-        }
-        this.update();
-  }
 
   // Start pairing with another identity
   Transport.prototype.startPairing = function(channel, pubKey) {
-        // pair to a specific user session public key
-        var msg = 'hello';
-        var encrypted = Stealth.encrypt(pubKey, msg);
-        this.channelPost(channel, JSON.stringify(encrypted), function(err, data){
-            console.log("channel post2", err, data)
-        });
+      // pair to a specific user session public key
+      var msg = 'hello';
+      var encrypted = Stealth.encrypt(pubKey, msg);
+      this.channelPost(JSON.stringify(encrypted), function(err, data){
+          console.log("channel post2", err, data)
+      });
+  }
+
+
+  /************************************
+   * Channel
+   */
+  function Channel(transport, pairCode) {
+      var self = this;
+      var client = transport.client;
+      var pairCodeHash = transport.hashChannelName(pairCode);
+      this.transport = transport;
+      this.pairCode = pairCode;
+      this.channelHash = pairCodeHash;
+      // chan tests
+      if (this.subscribed != pairCodeHash) {
+        var _onChannelData = function(_data) {self.onChannelData(_data);};
+        if (client.handler_map["chan.update." + pairCodeHash]) {
+            // update callback
+            client.handler_map["chan.update." + pairCodeHash] = _onChannelData;
+        } else {
+            this.channelSubscribe(function(err, data){
+                if (!err) {
+                    self.subscribed = pairCodeHash;
+                }
+                console.log("channel subscribed", err, data)
+            }, _onChannelData);
+        }
+      }
   }
 
   // Action to start announcements and reception
-  Transport.prototype.announceSelf = function(pairCode) {
-        var self = this;
-        this.pairCode = pairCode;
-        var sessionKey = this.getSessionKey();
-        var client = this.client;
-        var pairCodeHash = this.hashChannelName(pairCode);
-        var pubKeyHash = sessionKey.getPub().toHex(true);
-        var encrypted = sjcl.encrypt(pairCodeHash, pubKeyHash, {ks: 256, ts: 128});
-        // chan tests
-        if (this.subscribed != pairCodeHash) {
-            var _onChannelData = function(_data) {self.onChannelData(pairCodeHash, _data);};
-            if (client.handler_map["chan.update." + pairCodeHash]) {
-                // update callback
-                client.handler_map["chan.update." + pairCodeHash] = _onChannelData;
-            } else {
-                console.log("announcing", pairCodeHash, pubKeyHash, encrypted);
-                this.channelSubscribe(pairCode, function(err, data){
-                    if (!err) {
-                        self.subscribed = pairCodeHash;
-                    }
-                    console.log("channel subscribed", err, data)
-                }, _onChannelData);
-            }
-        }
-        this.channelPost(pairCode, encrypted, function(err, data){
-            console.log("channel post", err, data)
-        });
-        /*
-        client.chan_get("b", "announcements", function(err, data){console.log("channel get", err, data)})
-        client.chan_list("b", function(err, data){console.log("channel list", err, data)})*/
+  Transport.prototype.initChannel = function(pairCode) {
+      var channel;
+      if (this.channels[pairCode]) {
+          channel = this.channels[pairCode];
+      } else {
+          channel = new Channel(this, pairCode);
+          this.channels[pairCode] = channel;
+      }
+
+      // Send announcement
+      var sessionKey = this.getSessionKey();
+      var pubKeyHash = sessionKey.getPub().toHex(true);
+
+      // Send encrypted
+      channel.channelPostEncrypted(pubKeyHash, function(err, data){
+          console.log("channel post", err, data)
+      });
+      return channel;
   }
+
+
+  // Subscribe to given channel
+  Channel.prototype.channelSubscribe = function(callback, update_cb) {
+      var client = this.transport.client;
+      client.chan_subscribe("b", this.channelHash, callback, update_cb);
+  }
+
+  // Post to given channel
+  Channel.prototype.channelPost = function(data, callback) {
+      var client = this.transport.client;
+      client.chan_post("b", this.channelHash, data, callback);
+  }
+
+  Channel.prototype.channelPostEncrypted = function(data, callback) {
+      var encrypted = sjcl.encrypt(this.channelHash, data, {ks: 256, ts: 128});
+      console.log("encrypted", encrypted);
+      this.channelPost(encrypted, callback);
+  }
+
+  // Callback for data received on channel
+  Channel.prototype.onChannelData = function(message) {
+      var transport = this.transport;
+      var sessionKey = transport.getSessionKey();
+
+      var decrypted;
+      var decoded = JSON.parse(message.data);
+      // Just an encrypted message
+      if (decoded.cipher) {
+          decrypted = sjcl.decrypt(this.channelHash, message.data);
+          var decryptedBytes = Bitcoin.convert.hexToBytes(decrypted);
+          if (decrypted != transport.comms.pubKeyHex) {
+              if (transport.peerIds.indexOf(decrypted) == -1) {
+                  transport.addPeer(decryptedBytes);
+              }
+              transport.startPairing(this.pairCode, decryptedBytes);
+          }
+      // Stealth message to us (maybe)
+      } else if (decoded.pub) {
+          console.log("stealth", sessionKey, decoded);
+          decrypted = Stealth.decrypt(sessionKey, decoded);
+      }
+      if (decrypted) {
+          transport.requests.push({data: decrypted});
+          console.log("data for channel", decrypted);
+      }
+      console.log("data for channel2", message, message.data);
+      transport.update();
+  }
+
+
   return {
     Transport: Transport
   }
