@@ -18,7 +18,9 @@
       </thead>
       <tbody>
         <tr ng-repeat="contact in identity.contacts.contacts" ng-class="{editrow: contactFormShown === $index}">
-          <td ng-hide="contactFormShown === $index">{{contact.name}}</td>
+          <td ng-hide="contactFormShown === $index">
+            <identicon icon-size="20" hash="contact.hash" title="{{contact.hash}}"></identicon> {{contact.name}}
+          </td>
           <td ng-hide="contactFormShown === $index">{{contact.address}}</td>
           <td class="text-right" ng-hide="contactFormShown === $index">
             <button ng-click="copyClipboard(contact.address)" class="button square fa fa-clipboard"></button>

@@ -48,7 +48,7 @@
             <a href="" ng-click="openModal('scan-qr', {field: field}, onQrModalOk, onQrModalCancel)" class="fa button postfix fa-qrcode">Scan code</a>
           </div>
           <div class="large-2 small-6 columns">
-            <a href="" ng-click="openModal('pick-contact')" class="fa button postfix fa-users">Contacts</a>
+            <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts})" class="fa button postfix fa-users">Contacts</a>
           </div>
         </div>
       </div>

@@ -1,10 +1,7 @@
 <div class="contact-mosaic">
   <h6>Select a contact</h6>
-  <div class="large-3 columns panel">BLA</div>
-  <div class="large-3 columns panel">BLA</div>
-  <div class="large-3 columns panel">BLA</div>
-  <div class="large-3 columns panel">BLA</div>
-  <div class="large-3 columns panel">BLA</div>
-  <div class="large-3 columns panel">BLA</div>
+  <div ng-repeat="contact in vars.contacts" class="large-3 columns panel">{{contact.name}}
+            <identicon icon-size="48" hash="contact.hash" title="{{contact.hash}}"></identicon>
+  </div>
   <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
 </div>
