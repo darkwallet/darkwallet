@@ -1,4 +1,4 @@
-define(['stealth', 'bitcoinjs-lib'],
+define(['util/stealth', 'bitcoinjs-lib'],
 function (Stealth, Bitcoin) {
   'use strict';
 

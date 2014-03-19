@@ -1,5 +1,5 @@
-define(['stealth', 'bitcoinjs-lib', 'util/multiParty', 'util/djbec'],
-function (Stealth, Bitcoin, multiParty, Curve25519) {
+define(['bitcoinjs-lib', 'util/multiParty', 'util/djbec'],
+function (Bitcoin, multiParty, Curve25519) {
   'use strict';
 
   var CryptoJS = Bitcoin.Crypto;

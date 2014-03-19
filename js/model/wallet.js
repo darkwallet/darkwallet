@@ -2,7 +2,7 @@
  * @fileOverview Access to the identity bitcoin keys
  */
 
-define(['darkwallet', 'stealth', 'bitcoinjs-lib', 'sjcl'], function(DarkWallet, Stealth, Bitcoin) {
+define(['darkwallet', 'util/stealth', 'bitcoinjs-lib', 'sjcl'], function(DarkWallet, Stealth, Bitcoin) {
 /**
  * Wallet class.
  * @param {Object} store Store for the object.
