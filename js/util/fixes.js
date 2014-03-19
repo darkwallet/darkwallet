@@ -2,7 +2,7 @@
  * @fileOverview Fixes for frightening things in other libraries
  */
 
-define(['/vendors/sjcl/sjcl'], function() {
+define(['sjcl'], function() {
 /*
  * Uncached version of apparently very frightening sjcl function
  * (gets called by sjcl.encrypt and sjcl.decrypt)

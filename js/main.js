@@ -15,10 +15,11 @@ require.config({
     'identicon': "../vendors/identicon/identicon",
     
     'bitcoinjs-lib': "../vendors/bitcoinjs-lib/bitcoinjs",
-    'sjcl': "../vendors/sjcl/sjcl",
+    'sjcl-real': "../vendors/sjcl/sjcl",
     'darkwallet_gateway': "/vendors/darkwallet_gateway/client/gateway",
     
-    'domReady': '../vendors/requirejs-domready/domReady'
+    'domReady': '../vendors/requirejs-domready/domReady',
+    'sjcl': 'util/fixes'
   },
   
   /**
@@ -49,11 +50,14 @@ require.config({
     'identicon': {
       exports: 'Identicon'
     },
-    'sjcl': {
+    'sjcl-real': {
       exports: 'sjcl'
     },
     'bitcoinjs-lib': {
       exports: 'Bitcoin'
+    },
+    'sjcl': {
+      deps: ['sjcl-real']
     }
   },
   deps: ['bootstrap']
