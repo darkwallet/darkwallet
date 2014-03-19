@@ -119,13 +119,10 @@ multiParty.genSharedSecret = function(user) {
 	//I need to convert the BigInt to WordArray here. I do it using the Base64 representation.
 	var sharedSecret = CryptoJS.SHA512(
 		convert.bytesToWordArray(
-			convert.numToBytes(
 				Curve25519.ecDH(
 					myPrivateKey,
 					publicKeys[user]
-				),
-				32
-                        )
+				).toByteArrayUnsigned()
 		)
 	)
 	sharedSecrets[user] = {
@@ -146,7 +143,7 @@ multiParty.genFingerprint = function(user) {
 	}
 	fingerprints[user] = CryptoJS.SHA512(
 		convert.bytesToWordArray(
-			convert.numToBytes(key, 32)
+			key.toByteArrayUnsigned()
 		)
 	)
 		.toString()
@@ -170,7 +167,7 @@ multiParty.sendPublicKey = function(user) {
 	answer['type'] = 'publicKey'
 	answer['text'] = {}
 	answer['text'][user] = {}
-	answer['text'][user]['message'] = convert.bytesToBase64(convert.numToBytes(myPublicKey, 32))
+	answer['text'][user]['message'] = convert.bytesToBase64(myPublicKey.toByteArrayUnsigned())
 	return JSON.stringify(answer)
 }
 
