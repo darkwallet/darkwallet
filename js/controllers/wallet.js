@@ -84,6 +84,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   function loadIdentity(identity) {
       // set some links
       $scope.identity = identity;
+      $scope.availableIdentities = bg.getKeyRing().availableIdentities;
       $scope.history = identity.history.history;
       // set history update callback
       $scope.totalBalance = identity.wallet.getBalance();
