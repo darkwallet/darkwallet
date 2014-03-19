@@ -38,6 +38,7 @@ function (controllers, DarkWallet, Transport, BtcChannel) {
         // chan tests
         if ($scope.subscribed != pairCodeHash) {
             channel = transport.initChannel($scope.pairCode, BtcChannel);
+            channel.addCallback('subscribed', function() {toaster.pop('success', 'channel', 'subscribed successfully')})
             channel.addCallback('shout', function(data) {
                 $scope.shoutboxLog.push(data)
                 if (data.sender == channel.fingerprint) {
