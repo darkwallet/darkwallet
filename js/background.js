@@ -1,7 +1,7 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['model/keyring', 'obelisk', 'util/transport'], function(IdentityKeyRing, ObeliskClient, Transport) {
+require(['model/keyring', 'util/obelisk', 'util/transport'], function(IdentityKeyRing, ObeliskClient, Transport) {
 function DarkWalletService() {
     var lobbyTransport;
     var keyRing = new IdentityKeyRing();
