@@ -7,7 +7,7 @@ function (controllers, DarkWallet, Transport, BtcChannel) {
   // --
 
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
-  DarkWallet.service().ready(function() {
+  DarkWallet.service().connect(function() {
     var identity = DarkWallet.getIdentity();
     var transport = DarkWallet.getLobbyTransport();
 

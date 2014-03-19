@@ -1,14 +1,28 @@
-define(['stealth', 'bitcoinjs-lib', 'util/multiParty'],
-function (Stealth, Bitcoin, multiParty) {
+define(['stealth', 'bitcoinjs-lib', 'util/multiParty', 'util/djbec'],
+function (Stealth, Bitcoin, multiParty, Curve25519) {
   'use strict';
 
   var CryptoJS = Bitcoin.Crypto;
   var SHA256 = Bitcoin.Crypto.SHA256;
   var convert = Bitcoin.convert;
+  var BigInteger = Bitcoin.BigInteger;
 
   // Generate a pair of keys for the whole session
   var priv = multiParty.genPrivateKey();
   var pub = multiParty.genPublicKey();
+
+  // Utility function to generate fingerprints like cryptocat
+  var genFingerprint = function(key) {
+	return CryptoJS.SHA512(
+		convert.bytesToWordArray(
+			Curve25519.bi2bytes(key, 32)
+		)
+	)
+		.toString()
+		.substring(0, 40)
+		.toUpperCase()
+  }
+
 
   /************************************
    * Channel
@@ -110,22 +124,34 @@ function (Stealth, Bitcoin, multiParty) {
           decrypted = JSON.parse(rawDecrypted);
 
           // cryptocat protocol layer
+          var first;
           if (decrypted.type == 'publicKey') {
-              var first = Object.keys(decrypted.text)[0];
-              var pubkey = decrypted.text[first]['message'];
-              var newPeer = transport.addPeer(convert.base64ToBytes(pubkey), pubkey);
+              first = Object.keys(decrypted.text)[0];
+              var pubKeyB64 = decrypted.text[first]['message'];
+              var pubKey = convert.base64ToBytes(pubKeyB64);
+              var pubKeyBi = BigInteger.fromByteArrayUnsigned(pubKey);
+              var newPeer = transport.addPeer(pubKey, pubKey);
+              newPeer.fingerprint = genFingerprint(pubKeyBi)
+              this.startPairing(newPeer.fingerprint, pubKey)
+              // set key owner to 'myName' so cryptocat will import the key
+              if (decrypted.sender == first) {
+                multiParty.receiveMessage(decrypted.sender, first, rawDecrypted);
+              } else {
+                console.log('sender and pubkey owner dont match!')
+              }
           }
-          if (decrypted.type == 'shout') {
+          else if (decrypted.type == 'shout') {
               //console.log(decrypted.text)
+          } else {
+              multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
           }
           this.triggerCallbacks(decrypted.type, decrypted);
-
-          // avoid running non cryptocat messages through cryptocat
-          if (decrypted.type != 'shout') {
-            multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
-          }
       }
       transport.update();
+  }
+
+  Channel.prototype.startPairing = function(fingerprint, pubKey) {
+    console.log('startpairing', fingerprint, pubKey)
   }
 
   return Channel;
