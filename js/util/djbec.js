@@ -338,6 +338,8 @@ return {
   'checksig': checksig,
   'sig_test': sig_test,
   'inthash': inthash,
+  'bi2bytes': bi2bytes,
+  'bytes2bi': bytes2bi,
   'ecDH': curve25519
 };
 
