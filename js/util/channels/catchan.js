@@ -60,6 +60,7 @@ function (Stealth, Bitcoin, multiParty, Curve25519) {
                     self.subscribed = channelHash;
                 }
                 console.log("channel subscribed", err, data)
+                self.triggerCallbacks('subscribed', {})
             }, _onChannelData);
         }
       }
