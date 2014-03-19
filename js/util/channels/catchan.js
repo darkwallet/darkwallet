@@ -16,6 +16,7 @@ function (Stealth, Bitcoin, multiParty) {
   function Channel(transport, name) {
       var self = this;
       var client = transport.client;
+      this.callbacks = {};
       this.priv = priv;
       this.pub = pub;
       this.transport = transport;
@@ -58,7 +59,7 @@ function (Stealth, Bitcoin, multiParty) {
       data = JSON.stringify(data);
  
       // Send encrypted
-      this.channelPostEncrypted(data, function(err, data){
+      this.postEncrypted(data, function(err, data){
           console.log("announcement posted", err, data)
       });
   }
@@ -70,18 +71,31 @@ function (Stealth, Bitcoin, multiParty) {
   }
 
   // Post to given channel
-  Channel.prototype.channelPost = function(data, callback) {
+  Channel.prototype.post = function(data, callback) {
       var client = this.transport.client;
       data.sender = this.fingerprint;
       client.chan_post("b", this.channelHash, data, callback);
   }
 
-  Channel.prototype.channelPostEncrypted = function(data, callback) {
+  Channel.prototype.postEncrypted = function(data, callback) {
       var encrypted = sjcl.encrypt(this.channelHash, data, {ks: 256, ts: 128});
-      this.channelPost(encrypted, callback);
+      this.post(encrypted, callback);
   }
 
   // Callback for data received on channel
+  Channel.prototype.addCallback = function(type, callback) {
+      if (!this.callbacks.hasOwnProperty(type)) {
+          this.callbacks[type] = [callback]
+      } else {
+          this.callbacks[type].push(callback)
+      }
+  }
+  Channel.prototype.triggerCallbacks = function(type, data) {
+      if (this.callbacks.hasOwnProperty(type)) {
+          this.callbacks[type].forEach(function(cb) {cb(data)})
+      }
+  }
+
   Channel.prototype.onChannelData = function(message) {
       var transport = this.transport;
       var sessionKey = transport.getSessionKey();
@@ -99,14 +113,18 @@ function (Stealth, Bitcoin, multiParty) {
           if (decrypted.type == 'publicKey') {
               var first = Object.keys(decrypted.text)[0];
               var pubkey = decrypted.text[first]['message'];
-              transport.addPeer(convert.base64ToBytes(pubkey), pubkey)
+              var newPeer = transport.addPeer(convert.base64ToBytes(pubkey), pubkey);
           }
-          multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
+          if (decrypted.type == 'shout') {
+              console.log(decrypted.text)
+          }
+          this.triggerCallbacks(decrypted.type, decrypted);
+
+          // avoid running non cryptocat messages through cryptocat
+          if (decrypted.type != 'shout') {
+            multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
+          }
       }
-      /*if (decrypted) {
-          transport.requests.push({data: decrypted});
-          console.log("data for channel", decrypted);
-      }*/
       transport.update();
   }
 

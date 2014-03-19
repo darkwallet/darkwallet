@@ -11,13 +11,28 @@
               <div><i class="icon-large icon-qrcode"></i></div>Announce
             </button>
           </form>
+        </td><td ng-show="selectedPeer.name">
+          <b>selected: {{selectedPeer.name}}</b>
+          <form>
+            <label>
+              <input ng-model="shoutbox" type="text" value="" />
+            </label>
+            <button class="button button-and-icon" ng-click="sendText();">
+              <div><i class="icon-large icon-qrcode"></i></div>Shout!
+            </button>
+          </form>
+          <div>
+            <div ng-repeat="shoutLog in shoutboxLog">
+             {{shoutLog.text}} {{shoutLog.sender.slice(0,4)}}
+            </div>
+          </div>
         </td><td>
           <h2>Self</h2>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
           <h3>Channel</h3>
           <div class="wrapper"><identicon title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></identicon> {{comms.name}}</div>
           <h2>Peers</h2>
-          <div ng-repeat="peer in peers">
+          <div ng-click="selectPeer(peer)" ng-repeat="peer in peers">
             <identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}
           </div>
         </td></tr>

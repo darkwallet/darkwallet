@@ -1,7 +1,9 @@
-define(['./module', 'darkwallet', 'util/transport', 'util/channels/catchan'],
-function (controllers, DarkWallet, Transport, BtcChannel) {
+define(['./module', 'darkwallet', 'util/transport', 'util/channels/catchan', 'util/encryption'],
+function (controllers, DarkWallet, Transport, BtcChannel, enc) {
   'use strict';
 
+
+  enc.test();
   // Convert to UTF8
   // console.log('decrypted', Encryption.test());
 
@@ -14,6 +16,9 @@ function (controllers, DarkWallet, Transport, BtcChannel) {
 
     $scope.pairCode = '';
     $scope.subscribed = false;
+    $scope.shoutbox = '';
+    $scope.shoutboxLog = [];
+    $scope.shoutboxLogAll = {};
 
     transport.update = function() {
         if(!$scope.$$phase) {
@@ -28,18 +33,41 @@ function (controllers, DarkWallet, Transport, BtcChannel) {
     $scope.peerIds = transport.peerIds;
     $scope.requests = transport.requests;
 
+    var channel;
     // Action to start announcements and reception
     $scope.announceSelf = function() {
         var pairCodeHash = transport.hashChannelName($scope.pairCode);
 
         // chan tests
         if ($scope.subscribed != pairCodeHash) {
-            var channel = transport.initChannel($scope.pairCode, BtcChannel);
+            channel = transport.initChannel($scope.pairCode, BtcChannel);
+            channel.addCallback('shout', function(data) {
+                $scope.shoutboxLog.push(data)
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+            })
             $scope.subscribed = pairCodeHash;
         }
         /*
         client.chan_get("b", "announcements", function(err, data){console.log("channel get", err, data)})
         client.chan_list("b", function(err, data){console.log("channel list", err, data)})*/
+    }
+    $scope.selectPeer = function(peer) {
+        $scope.selectedPeer = peer;
+        if (!$scope.shoutboxLogAll.hasOwnProperty(peer.name)) {
+            $scope.shoutboxLogAll[name] = [];
+        }
+        $scope.shoutboxLog = $scope.shoutboxLogAll[name];
+    }
+    $scope.sendText = function() {
+        var toSend = $scope.shoutbox;
+        $scope.shoutbox = '';
+        channel.postEncrypted(JSON.stringify({text: toSend, type: 'shout', sender: channel.fingerprint}), function(err, data) {
+          if (err) {
+              console.log("error sending", err)
+          }
+        });
     }
   });
 }]);

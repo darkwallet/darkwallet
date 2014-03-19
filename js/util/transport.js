@@ -83,6 +83,7 @@ function (Bitcoin, Mnemonic) {
           this.peerIds.push(newPeer.pubKeyHex);
           this.peers.push(newPeer);
       }
+      return newPeer;
   }
 
   // Action to start announcements and reception
