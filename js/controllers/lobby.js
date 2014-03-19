@@ -1,5 +1,5 @@
-define(['./module', 'darkwallet', 'util/channels'],
-function (controllers, DarkWallet, Channels) {
+define(['./module', 'darkwallet', 'util/transport', 'util/channels/btcchan'],
+function (controllers, DarkWallet, Transport, BtcChannel) {
   'use strict';
 
   // Convert to UTF8
@@ -10,7 +10,7 @@ function (controllers, DarkWallet, Channels) {
   controllers.controller('LobbyCtrl', ['$scope', function($scope) {
   DarkWallet.service().ready(function() {
     var identity = DarkWallet.getIdentity();
-    var transport = new Channels.Transport(identity, DarkWallet.getClient());
+    var transport = new Transport(identity, DarkWallet.getClient());
 
     $scope.pairCode = '';
     $scope.subscribed = false;
@@ -34,7 +34,7 @@ function (controllers, DarkWallet, Channels) {
 
         // chan tests
         if ($scope.subscribed != pairCodeHash) {
-            var channel = transport.initChannel($scope.pairCode);
+            var channel = transport.initChannel($scope.pairCode, BtcChannel);
             $scope.subscribed = pairCodeHash;
         }
         /*
