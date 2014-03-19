@@ -8,9 +8,6 @@ function (Stealth, Bitcoin, multiParty, Curve25519) {
   var BigInteger = Bitcoin.BigInteger;
 
   // Generate a pair of keys for the whole session
-  var priv = multiParty.genPrivateKey();
-  var pub = multiParty.genPublicKey();
-
   // Utility function to generate fingerprints like cryptocat
   var genFingerprint = function(key) {
 	return CryptoJS.SHA512(
@@ -31,6 +28,11 @@ function (Stealth, Bitcoin, multiParty, Curve25519) {
       var self = this;
       var client = transport.client;
       this.callbacks = {};
+
+      // Set transport session key
+      var priv = multiParty.setPrivateKey(transport.getSesionKey().priv);
+      var pub = multiParty.genPublicKey();
+
       this.priv = priv;
       this.pub = pub;
       this.transport = transport;
