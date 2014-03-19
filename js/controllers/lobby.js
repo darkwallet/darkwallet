@@ -4,16 +4,12 @@ function (controllers, DarkWallet, Transport, BtcChannel) {
 
 
   // enc.test();
-  // Convert to UTF8
-  // console.log('decrypted', Encryption.test());
-
   // --
 
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
   DarkWallet.service().ready(function() {
     var identity = DarkWallet.getIdentity();
     var transport = DarkWallet.getLobbyTransport();
-    //var transport = new Transport(identity, DarkWallet.getClient());
 
     $scope.pairCode = '';
     $scope.subscribed = false;
@@ -44,7 +40,11 @@ function (controllers, DarkWallet, Transport, BtcChannel) {
             channel = transport.initChannel($scope.pairCode, BtcChannel);
             channel.addCallback('shout', function(data) {
                 $scope.shoutboxLog.push(data)
-                toaster.pop('note', data.sender.slice(0,12), data.text)
+                if (data.sender == channel.fingerprint) {
+                    toaster.pop('success', 'me', data.text)
+                } else {
+                    toaster.pop('note', data.sender.slice(0,12), data.text)
+                }
                 if (!$scope.$$phase) {
                     $scope.$apply();
                 }
@@ -67,7 +67,7 @@ function (controllers, DarkWallet, Transport, BtcChannel) {
         $scope.shoutbox = '';
         channel.postEncrypted(JSON.stringify({text: toSend, type: 'shout', sender: channel.fingerprint}), function(err, data) {
           if (err) {
-              console.log("error sending", err)
+              toaster.pop('error', "error sending " + err)
           }
         });
     }

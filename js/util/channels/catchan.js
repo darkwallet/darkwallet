@@ -60,7 +60,7 @@ function (Stealth, Bitcoin, multiParty) {
  
       // Send encrypted
       this.postEncrypted(data, function(err, data){
-          console.log("announcement posted", err, data)
+          //console.log("announcement posted", err, data)
       });
   }
 
@@ -116,7 +116,7 @@ function (Stealth, Bitcoin, multiParty) {
               var newPeer = transport.addPeer(convert.base64ToBytes(pubkey), pubkey);
           }
           if (decrypted.type == 'shout') {
-              console.log(decrypted.text)
+              //console.log(decrypted.text)
           }
           this.triggerCallbacks(decrypted.type, decrypted);
 
