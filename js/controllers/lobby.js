@@ -1,18 +1,19 @@
 define(['./module', 'darkwallet', 'util/transport', 'util/channels/catchan', 'util/encryption'],
-function (controllers, DarkWallet, Transport, BtcChannel, enc) {
+function (controllers, DarkWallet, Transport, BtcChannel) {
   'use strict';
 
 
-  enc.test();
+  // enc.test();
   // Convert to UTF8
   // console.log('decrypted', Encryption.test());
 
   // --
 
-  controllers.controller('LobbyCtrl', ['$scope', function($scope) {
+  controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
   DarkWallet.service().ready(function() {
     var identity = DarkWallet.getIdentity();
-    var transport = new Transport(identity, DarkWallet.getClient());
+    var transport = DarkWallet.getLobbyTransport();
+    //var transport = new Transport(identity, DarkWallet.getClient());
 
     $scope.pairCode = '';
     $scope.subscribed = false;
@@ -43,6 +44,7 @@ function (controllers, DarkWallet, Transport, BtcChannel, enc) {
             channel = transport.initChannel($scope.pairCode, BtcChannel);
             channel.addCallback('shout', function(data) {
                 $scope.shoutboxLog.push(data)
+                toaster.pop('note', data.sender.slice(0,12), data.text)
                 if (!$scope.$$phase) {
                     $scope.$apply();
                 }

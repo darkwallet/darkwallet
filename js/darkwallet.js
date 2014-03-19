@@ -16,7 +16,10 @@ var DarkWallet = {
     getClient: function() {return DarkWallet.service().getClient()},
 
     // Get identity
-    getIdentity: function(idx) {return DarkWallet.service().getIdentity(idx)}
+    getIdentity: function(idx) {return DarkWallet.service().getIdentity(idx)},
+
+    // Lobby transport
+    getLobbyTransport: function() {return DarkWallet.service().getLobbyTransport()}
 };
 return DarkWallet;
 });

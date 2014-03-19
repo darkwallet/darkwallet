@@ -1,8 +1,9 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['model/keyring', 'obelisk'], function(IdentityKeyRing, ObeliskClient) {
+require(['model/keyring', 'obelisk', 'util/transport'], function(IdentityKeyRing, ObeliskClient, Transport) {
 function DarkWalletService() {
+    var lobbyTransport;
     var keyRing = new IdentityKeyRing();
     var obeliskClient = new ObeliskClient();
 
@@ -11,6 +12,7 @@ function DarkWalletService() {
     var identityNames = [];
 
     var connected = false;
+    var connecting = false;
 
     var currentHeight = 0;
 
@@ -65,6 +67,9 @@ function DarkWalletService() {
     this.getCurrentIdentity = function() {
         return keyRing.identities[currentIdentity];
     }
+    this.getLobbyTransport = function() {
+        return lobbyTransport;
+    }
     /***************************************
     /* History and address subscription
      */
@@ -118,6 +123,7 @@ function DarkWalletService() {
 
         // get balance for addresses
         var identity = this.getCurrentIdentity();
+        lobbyTransport = new Transport(identity, client);
         Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
             var walletAddress = identity.wallet.pubKeys[pubKeyIndex];
             if (walletAddress.index.length > 1) {
@@ -131,18 +137,19 @@ function DarkWalletService() {
      */
 
     this.connect = function(userCallback) {
-        if (connected) {
+        if (connected || connecting) {
             if (userCallback) {
                 userCallback();
             }
         } else {
             obeliskClient.connect('ws://85.25.198.97:8888', function() {
                 handleInitialConnect();
+                connected = true;
                 if (userCallback) {
                     userCallback();
                 }
             });
-            connected = true;
+            connecting = true;
         }
     }
     this.getKeyRing = function() {
@@ -228,6 +235,7 @@ window.getIdentity = function(idx) { return service.getIdentity(idx); };
 window.getCurrentIdentity = service.getCurrentIdentity;
 
 window.getKeyRing = service.getKeyRing;
+window.getLobbyTransport = service.getLobbyTransport
 
 window.getClient = service.getClient;
 window.ready = function(_cb) {service.ready(_cb)};
