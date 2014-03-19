@@ -19,10 +19,11 @@ define(['./module', 'darkwallet', 'identicon', 'bitcoinjs-lib'], function (direc
         function createFromBytes(dataBytes) {
           return new Identicon(canvas, Bitcoin.convert.bytesToNum(dataBytes), iconSize);
         }
-        if (scope.hash) {
+        // Watch for hash changes
+        scope.$watch('hash', function() {
           var pubKeyBytes = Bitcoin.convert.hexToBytes(scope.hash);
           createFromBytes(pubKeyBytes.slice(8,16));
-        }
+        })
       }
     }
   });
