@@ -1,5 +1,5 @@
-define(['bitcoinjs-lib', 'mnemonicjs', 'util/multiParty'],
-function (Bitcoin, Mnemonic, multiParty) {
+define(['bitcoinjs-lib', 'mnemonicjs'],
+function (Bitcoin, Mnemonic) {
   'use strict';
 
   var CryptoJS = Bitcoin.Crypto;
@@ -11,10 +11,8 @@ function (Bitcoin, Mnemonic, multiParty) {
   function Transport(identity, client) {
     this.client = client;
     this.channels = {};
-    var comms25519 = multiParty.genPrivateKey();
     console.log("25519", comms25519);
 
-    this.pairCode = '';
     this.requests = [];
     this.peers = [];
     this.peerIds = [];
@@ -86,13 +84,13 @@ function (Bitcoin, Mnemonic, multiParty) {
   }
 
   // Action to start announcements and reception
-  Transport.prototype.initChannel = function(pairCode, chanClass) {
+  Transport.prototype.initChannel = function(name, chanClass) {
       var channel;
-      if (this.channels[pairCode]) {
-          channel = this.channels[pairCode];
+      if (this.channels[name]) {
+          channel = this.channels[name];
       } else {
-          channel = new chanClass(this, pairCode);
-          this.channels[pairCode] = channel;
+          channel = new chanClass(this, name);
+          this.channels[name] = channel;
       }
       channel.sendOpening();
       return channel;

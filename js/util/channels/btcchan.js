@@ -8,23 +8,23 @@ function (Stealth, Bitcoin) {
   /************************************
    * Channel
    */
-  function Channel(transport, pairCode) {
+  function Channel(transport, name) {
       var self = this;
       var client = transport.client;
-      var pairCodeHash = transport.hashChannelName(pairCode);
+      var channelHash = transport.hashChannelName(name);
       this.transport = transport;
-      this.pairCode = pairCode;
-      this.channelHash = pairCodeHash;
+      this.name = name;
+      this.channelHash = channelHash;
       // chan tests
-      if (this.subscribed != pairCodeHash) {
+      if (this.subscribed != channelHash) {
         var _onChannelData = function(_data) {self.onChannelData(_data);};
-        if (client.handler_map["chan.update." + pairCodeHash]) {
+        if (client.handler_map["chan.update." + channelHash]) {
             // update callback
-            client.handler_map["chan.update." + pairCodeHash] = _onChannelData;
+            client.handler_map["chan.update." + channelHash] = _onChannelData;
         } else {
             this.channelSubscribe(function(err, data){
                 if (!err) {
-                    self.subscribed = pairCodeHash;
+                    self.subscribed = channelHash;
                 }
                 console.log("channel subscribed", err, data)
             }, _onChannelData);
