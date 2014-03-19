@@ -93,7 +93,7 @@ function (Stealth, Bitcoin, multiParty, Curve25519) {
   }
 
   Channel.prototype.postEncrypted = function(data, callback) {
-      var encrypted = sjcl.encrypt(this.channelHash, data, {ks: 256, ts: 128});
+      var encrypted = sjcl.encrypt(this.name, data, {ks: 256, ts: 128});
       this.post(encrypted, callback);
   }
 
@@ -121,7 +121,7 @@ function (Stealth, Bitcoin, multiParty, Curve25519) {
       // An encrypted message coming on the channel
       if (decoded.cipher) {
           // channel layer
-          rawDecrypted = sjcl.decrypt(this.channelHash, message.data);
+          rawDecrypted = sjcl.decrypt(this.name, message.data);
           decrypted = JSON.parse(rawDecrypted);
 
           // cryptocat protocol layer
@@ -135,10 +135,12 @@ function (Stealth, Bitcoin, multiParty, Curve25519) {
               newPeer.fingerprint = genFingerprint(pubKeyBi)
               this.startPairing(newPeer.fingerprint, pubKey)
               // set key owner to 'myName' so cryptocat will import the key
-              if (decrypted.sender == first) {
+              if (first == 'all') {
                 multiParty.receiveMessage(decrypted.sender, first, rawDecrypted);
               } else {
-                console.log('sender and pubkey owner dont match!')
+                // normal cryptocat protocol
+                multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
+                
               }
           }
           else if (decrypted.type == 'shout') {
