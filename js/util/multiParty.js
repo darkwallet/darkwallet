@@ -95,7 +95,7 @@ function HMAC(msg, key) {
 multiParty.genPrivateKey = function() {
         var bytes = new Uint8Array(32);
         window.crypto.getRandomValues(bytes);
-        myPrivateKey = BigInteger.fromByteArrayUnsigned(bytes);
+        myPrivateKey = Curve25519.bytes2bi(bytes);
 	return myPrivateKey
 }
 
@@ -119,10 +119,12 @@ multiParty.genSharedSecret = function(user) {
 	//I need to convert the BigInt to WordArray here. I do it using the Base64 representation.
 	var sharedSecret = CryptoJS.SHA512(
 		convert.bytesToWordArray(
+                        Curve25519.bi2bytes(
 				Curve25519.ecDH(
 					myPrivateKey,
 					publicKeys[user]
-				).toByteArrayUnsigned()
+				), 32
+                        )
 		)
 	)
 	sharedSecrets[user] = {
@@ -143,7 +145,7 @@ multiParty.genFingerprint = function(user) {
 	}
 	fingerprints[user] = CryptoJS.SHA512(
 		convert.bytesToWordArray(
-			key.toByteArrayUnsigned()
+			Curve25519.bi2bytes(key, 32)
 		)
 	)
 		.toString()
@@ -382,6 +384,7 @@ multiParty.reset = function() {
 multiParty.correctIvLength = correctIvLength;
 multiParty.encryptAES = encryptAES;
 multiParty.decryptAES = decryptAES;
+multiParty.setNickName = function (nickName) {Cryptocat.myNickName = nickName};
 
 })()//:3
 
