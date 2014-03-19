@@ -382,6 +382,10 @@ multiParty.reset = function() {
 	usedIVs = []
 }
 
+multiParty.correctIvLength = correctIvLength;
+multiParty.encryptAES = encryptAES;
+multiParty.decryptAES = decryptAES;
+
 })()//:3
 
 return multiParty;
