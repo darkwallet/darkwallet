@@ -7,7 +7,7 @@ define(['./module', 'darkwallet', 'identicon', 'bitcoinjs-lib'], function (direc
         iconSize: '='
       },
       link: function(scope, element, attrs) {
-        var iconSize = scope.iconSize | 32;
+        var iconSize = scope.iconSize || 32;
 
         // Create canvas element
         var canvas = document.createElement('canvas');
