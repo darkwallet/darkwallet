@@ -15,5 +15,6 @@ define([
     './popup',
     './send',
     './settings',
-    './wallet'
+    './wallet',
+    './rcv_stealth'
 ], function () {});

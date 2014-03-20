@@ -46,10 +46,12 @@
         <a href="" class="button button-and-icon" ng-click="clearStorage();">
           <div><i class="icon-large icon-qrcode"></i></div>Clear storage (DANGEROUS!!)
         </a>
-                  <button ng-click="receiveStealth()">Receive stealth</button>
-                        <label>
-        Password
-        <input ng-model="stealth.password" type="password" class="password" value="">
-      </label>
+        <div ng-controller="ReceiveStealthCtrl">
+          <button ng-click="receiveStealth()">Receive stealth</button>
+          <label>
+          Password
+          <input ng-model="stealth.password" type="password" class="password" value=""></input>
+          </label>
+        </div>
       </div>
 </div>
