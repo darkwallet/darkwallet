@@ -7,9 +7,25 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
+define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkWallet, Services) {
   'use strict';
   controllers.controller('PopupCtrl', ['$scope', function($scope) {
+
+  $scope.currentIdentity = false;
+  // Wallet service, connect to get notified about identity getting loaded.
+  Services.connect('wallet', function(data) {
+    console.log("wallet bus message", data);
+    if (data.type == 'ready') {
+        // identity is ready here
+        console.log('loaded', data.identity)
+        $scope.currentIdentity = data.identity;
+        if(!$scope.$$phase) {
+            $scope.$apply();
+        }
+    }
+  })
+
+
   // we don't have the same background page here, so we initialize our
   // own keyring just for choosing identities, just for now...
   var keyRing = DarkWallet.getKeyRing();
@@ -25,8 +41,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     });
     $scope.identities = identities;
     $scope.identityNames = identityNames;
-    $scope.identity = $scope.identities[0];
-    $scope.identityChange();
+    if (!$scope.currentIdentity) {
+        $scope.currentIdentity = identityNames[0];
+    }
     if(!$scope.$$phase) {
       $scope.$apply();
     }
