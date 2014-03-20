@@ -1,12 +1,11 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['model/keyring', 'util/obelisk', 'backend/services', 'backend/lobby'],
-function(IdentityKeyRing, ObeliskClient, Services, LobbyService) {
+require(['model/keyring', 'backend/services', 'backend/lobby', 'backend/obelisk'],
+function(IdentityKeyRing, Services, LobbyService, ObeliskService) {
 
 function DarkWalletService() {
     var keyRing = new IdentityKeyRing();
-    var obeliskClient = new ObeliskClient();
     var self = this;
 
     // Some scope variables
@@ -20,18 +19,7 @@ function DarkWalletService() {
     var currentHeight = 0;
 
     var lobbyService = new LobbyService(this);
-
-
-    // Background service for communication with the frontend
-    Services.start('obelisk', function() {
-      }, function(port) {
-          // Connected
-          console.log('bus: obelisk client connected');
-          var client = obeliskClient.getClient();
-          if (client && client.connected) {
-              Services.post('obelisk', {'type': 'connected'});
-          }
-    });
+    var obeliskService = new ObeliskService(this);
 
     // Gui service
     Services.start('gui', function() {
@@ -110,7 +98,7 @@ function DarkWalletService() {
             console.log("Error fetching history for", walletAddress.address);
             return;
         }
-        var client = obeliskClient.client;
+        var client = obeliskService.getClient();
         var identity = this.getCurrentIdentity();
 
         // pass to the wallet to process outputs
@@ -129,7 +117,7 @@ function DarkWalletService() {
     }
     // Start up history for an address
     this.initAddress = function(walletAddress) {
-        var client = obeliskClient.client;
+        var client = obeliskService.getClient();
         if (!client) {
             // TODO manage this case better
             console.log("trying to init address but not connected yet!... skipping :P");
@@ -150,7 +138,7 @@ function DarkWalletService() {
     }
 
     function handleInitialConnect() {
-        var client = obeliskClient.getClient();
+        var client = obeliskService.getClient();
         client.fetch_last_height(handleHeight);
 
         // get balance for addresses
@@ -173,8 +161,8 @@ function DarkWalletService() {
             // wait for connection
         } else {
             console.log("Connecting backend");
-            obeliskClient.connect('ws://85.25.198.97:8888', function() {
-                obeliskClient.getClient().connected = true;
+            obeliskService.connect('ws://85.25.198.97:8888', function() {
+                obeliskService.getClient().connected = true;
                 handleInitialConnect();
                 connected = true;
                 Services.post('obelisk', {'type': 'connected'});
@@ -188,10 +176,10 @@ function DarkWalletService() {
     }
 
     this.getClient = function() {
-        return obeliskClient.client;
+        return obeliskService.client;
     }
     this.getObeliskClient = function() {
-        return obeliskClient;
+        return obeliskService;
     }
     this.getServices = function() {
         return Services;
