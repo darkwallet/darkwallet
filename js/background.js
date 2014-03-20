@@ -1,11 +1,10 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['model/keyring', 'util/obelisk', 'util/transport', 'backend/services', 'util/channels/catchan'],
-function(IdentityKeyRing, ObeliskClient, Transport, Services, Channel) {
+require(['model/keyring', 'util/obelisk', 'backend/services', 'backend/lobby'],
+function(IdentityKeyRing, ObeliskClient, Services, LobbyService) {
 
 function DarkWalletService() {
-    var lobbyTransport;
     var keyRing = new IdentityKeyRing();
     var obeliskClient = new ObeliskClient();
     var self = this;
@@ -19,6 +18,8 @@ function DarkWalletService() {
     var connecting = false;
 
     var currentHeight = 0;
+
+    var lobbyService = new LobbyService(this);
 
 
     // Background service for communication with the frontend
@@ -56,26 +57,6 @@ function DarkWalletService() {
           console.log('bus: wallet client disconnected');
     });
 
-
-    // Transport service managing background lobby transport
-    Services.start('lobby',
-      function(data) {
-         // onMessage
-         switch(data.type) {
-             case 'initChannel':
-               lobbyTransport.initChannel(data.name, chanClass);
-               break;
-       }
-      }, function(port) {
-         // Connected
-         console.log('bus: lobby client connected');
-         if (!lobbyTransport) {
-             console.log('init lobby transport');
-             var identity = self.getCurrentIdentity();
-             lobbyTransport = new Transport(identity, obeliskClient);
-             lobbyTransport.update = function() { Services.post('gui', {'type': 'update'}) };
-       }
-    });
 
     /***************************************
     /* Identities
@@ -118,7 +99,7 @@ function DarkWalletService() {
         return keyRing.identities[currentIdentity];
     }
     this.getLobbyTransport = function() {
-        return lobbyTransport;
+        return lobbyService.getLobbyTransport();
     }
     /***************************************
     /* History and address subscription
