@@ -12,7 +12,6 @@ define([
     './lobby',
     './multisig',
     './new_wallet',
-    './popup',
     './send',
     './settings',
     './wallet',
