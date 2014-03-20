@@ -23,7 +23,10 @@ function Wallet(store) {
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
     this.wallet = new Bitcoin.Wallet(this.mpk);
     this.store = store;
+
+    // store balance
     this.loadPubKeys();
+    this.balance = this.getBalance();
 }
 
 /**
@@ -49,6 +52,9 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     allAddresses.forEach(function(walletAddress) {
         balance += walletAddress.balance;
     });
+    if (pocketIndex === undefined) {
+        this.balance = balance;
+    }
     return balance;
 }
 
