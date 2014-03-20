@@ -1,6 +1,13 @@
 define(function () {
     var allPorts = {};
     var Services = {
+        /*
+         * Start the given service
+         * @param {String} name Service name
+         * @param {Function} onMessage Message callback
+         * @param {Function} onConnect Connect callback
+         * @param {Function} onDisconnect Disconnect callback
+         */
         start: function(name, onMessage, onConnect, onDisconnect) {
             if (!allPorts.hasOwnProperty(name)) {
                 allPorts[name] = [];
@@ -21,6 +28,19 @@ define(function () {
                 });
               }
             });
+        },
+
+        /*
+         * Post data to all listeners on given Port
+         * @param {String} name Service name
+         * @param {Object} data Object to send to listeners
+         */
+        post: function(name, data) {
+            if (allPorts.hasOwnProperty(name)) {
+                allPorts[name].forEach(function(port) {
+                    port.postMessage(data);
+                });
+            }
         }
     };
     return Services;
