@@ -40,6 +40,8 @@ Desktop.ini
 /vendors/jquery.cookie/*
 /vendors/requirejs*/*
 !/vendors/requirejs*/*.js
+/vendors/qrcodejs/*
+!/vendors/qrcodejs/qrcode.js
 /vendors/jsqrcode/*
 !/vendors/jsqrcode/jsqrcode.js
 /vendors/qrcode-generator/*
