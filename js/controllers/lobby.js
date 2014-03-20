@@ -9,8 +9,7 @@ function (controllers, DarkWallet, Transport, BtcChannel, Services) {
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
   var transport, identity;
-  Services.connectNg('lobby', $scope, function(data) {
-  if (data.type == 'portConnected')
+  Services.connectNg('lobby', $scope, null, function(data) {
     identity = DarkWallet.getIdentity();
     transport = DarkWallet.getLobbyTransport();
 

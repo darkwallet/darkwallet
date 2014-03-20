@@ -10,7 +10,14 @@ define(function () {
          */
         connect: function(name, onMessage, onConnect, onDisconnect) {
             var port = chrome.runtime.connect({name: name});
-            onMessage ? port.onMessage.addListener(onMessage) : null;
+            port.onMessage.addListener(function(data) {
+                if (data.type == 'portConnected') {
+                    onConnect ? onConnect(data) : null;
+                } else {
+                    onMessage ? onMessage(data) : null;
+                }
+            })
+ 
             //onConnect ? port.onConnect.addListener(onConnect) : null;
             onDisconnect ? port.onDisconnect.addListener(onDisconnect) : null;
             return port;
