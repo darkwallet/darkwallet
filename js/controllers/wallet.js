@@ -7,11 +7,19 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkWallet, Services) {
+define(['./module', 'darkwallet', 'util/services', 'util/ng-clipboard', 'util/ng-modals'],
+function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   'use strict';
   controllers.controller('WalletCtrl',
   ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', function($scope, $location, ngProgress, toaster, $modal) {
   var pubKey, mpKey, addressIndex;
+
+  // Pointer to service
+  var bg = DarkWallet.service();
+
+  // Global scope utils
+  ModalUtils.registerScope($scope, $modal);
+  ClipboardUtils.registerScope($scope);
 
   // Gui services
   var report = function(msg) {
@@ -65,10 +73,6 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   $scope.isActive = function(route) {
     return route === $location.path();
   }
-
-  // generated addresses
-
-  var bg = DarkWallet.service();
 
   // Initialize if empty wallet
   function initializeEmpty() {
@@ -176,87 +180,6 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
         }
     }
     return $scope.generateAddress(1);
-  }
-
-  /**
-   * Opens a modal
-   * 
-   * @param {string} tplName Name of the template to be loaded
-   * @param {object} vars Key-value pairs object that passes parameters from main
-   * scope to the modal one. You can get the variables in the modal accessing to
-   * `$scope.vars` variable.
-   * @param {function} okCallback Function called when clicked on Ok button. The
-   * first parameter is the data returned by the modal and the second one the vars
-   * parameter passed to this function.
-   * @param {function} cancelCallback Function called when modal is cancelled. The
-   * first parameter is the reason because the modal has been cancelled and the
-   * second one the vars parameter passed to this function.
-   */
-  $scope.openModal = function(tplName, vars, okCallback, cancelCallback) {
-
-    var ModalCtrl = function ($scope, $modalInstance, vars) {
-      $scope.vars = vars;
-      $scope.ok = function (value) {
-        $modalInstance.close(value);
-      };
-      $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-      };
-    };
-
-    var ok = function(data) {
-      okCallback ? (vars ? okCallback(data, vars) : okCallback(data)) : null;
-    };
-    var cancel = function(reason) {
-      cancelCallback ? (vars ? cancelCallback(reason, vars) : cancelCallback(reason)) : null;
-    };
-
-    $modal.open({
-      templateUrl: 'modals/' + tplName + '.html',
-      controller: ModalCtrl,
-      resolve: {
-        vars: function() {
-          return vars;
-        }
-      }
-    }).result.then(ok, cancel);
-  };
-  
-  $scope.onQrModalOk = function(data, vars) {
-    if (Array.isArray(vars.field)) {
-      vars.field.push({address: data});
-    } else {
-      vars.field.address = data;
-    }
-  };
-  
-  $scope.onQrModalCancel = function(data, vars) {
-  };
-
-  $scope.copyClipboard = function(text) {
-    var copyDiv = document.createElement('div');
-    copyDiv.contentEditable = true;
-    copyDiv.style="position: fixed;";
-    document.getElementById('fixed').appendChild(copyDiv);
-    copyDiv.innerHTML = text;
-    copyDiv.unselectable = "off";
-    copyDiv.focus();
-    document.execCommand('SelectAll');
-    document.execCommand("Copy", false, null);
-    document.getElementById('fixed').removeChild(copyDiv);
-  }
-  
-  $scope.pasteClipboard = function() {
-    var pasteDiv = document.createElement('div');
-    pasteDiv.contentEditable = true;
-    document.getElementById('fixed').appendChild(pasteDiv);
-    pasteDiv.innerHTML = '';
-    pasteDiv.unselectable = "off";
-    pasteDiv.focus();
-    document.execCommand("paste");
-    var text = pasteDiv.innerText;
-    document.getElementById('fixed').removeChild(pasteDiv);
-    return text;
   }
 
   // Load identity
