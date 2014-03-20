@@ -40,7 +40,6 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
       identities.push({id: item});
     });
     $scope.identities = identities;
-    $scope.identityNames = identityNames;
     if (!$scope.currentIdentity) {
         $scope.currentIdentity = identityNames[0];
     }
