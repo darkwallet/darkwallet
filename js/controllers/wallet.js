@@ -28,6 +28,8 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
       }
       toaster.pop('note', "wallet", msg)
   }
+
+  // Gui service, connect to report events on page.
   Services.connect('gui', function(data) {
     console.log('gui message arriving');
     if (data.type == 'balance') {
@@ -51,6 +53,8 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
         }
     }
   })
+
+  // Obelisk service, connect to get notified on events and connection.
   Services.connect('obelisk', function(data) {
     console.log("obelisk bus message", data);
     if (data.type == 'connected') {
@@ -59,6 +63,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
     }
   })
 
+  // Wallet service, connect to get notified about identity getting loaded.
   Services.connect('wallet', function(data) {
     console.log("wallet bus message", data);
     if (data.type == 'ready') {
@@ -69,7 +74,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   })
 
 
-  // Tabs
+  // Check if a route is active
   $scope.isActive = function(route) {
     return route === $location.path();
   }
@@ -82,17 +87,6 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
               $scope.generateAddress(0);
               $scope.generateAddress(1);
           }
-      }
-  }
-
-  // Initialize pocket structures.
-  $scope.initPocket = function(rowIndex) {
-      var pocketIndex = rowIndex*2;
-      if (!$scope.addresses[pocketIndex]) {
-          $scope.addresses[pocketIndex] = [];
-      }
-      if (!$scope.addresses[pocketIndex+1]) {
-          $scope.addresses[pocketIndex+1] = [];
       }
   }
 
@@ -146,6 +140,17 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
           $scope.$apply();
       }
   };
+
+  // Initialize pocket structures.
+  $scope.initPocket = function(rowIndex) {
+      var pocketIndex = rowIndex*2;
+      if (!$scope.addresses[pocketIndex]) {
+          $scope.addresses[pocketIndex] = [];
+      }
+      if (!$scope.addresses[pocketIndex+1]) {
+          $scope.addresses[pocketIndex+1] = [];
+      }
+  }
 
   // scope function to generate (or load from cache) a new address
   $scope.generateAddress = function(isChange, n) {
