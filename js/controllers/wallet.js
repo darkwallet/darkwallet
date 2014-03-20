@@ -13,8 +13,42 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', function($scope, $location, ngProgress, toaster, $modal) {
   var pubKey, mpKey, addressIndex;
 
+  // Gui services
+  var report = function(msg) {
+      if (console) {
+        console.log(msg);
+      }
+      toaster.pop('note', "wallet", msg)
+  }
+  Services.connect('gui', function(data) {
+    console.log('gui message arriving');
+    if (data.type == 'balance') {
+      toaster.pop('note', "wallet", 'balance update')
+    }
+    if (data.type == 'height') {
+        $scope.currentHeight = data.value;
+    }
+    if (data.type == 'text' || data.type == 'note') {
+        toaster.pop('note', 'gui', data.text);
+    }
+    if (data.type == 'error') {
+        toaster.pop('error', 'gui', data.text);
+    }
+    if (data.type == 'warning') {
+        toaster.pop('warning', 'gui', data.text);
+    }
+    if (['height', 'update', 'balance'].indexOf(data.type) > -1) {
+        if (!$scope.$$phase) {
+            $scope.$apply();
+        }
+    }
+  })
   Services.connect('obelisk', function(data) {
-    console.log("obelisk bus message", data)
+    console.log("obelisk bus message", data);
+    if (data.type == 'connected') {
+        ngProgress.color('green');
+        ngProgress.complete();
+    }
   })
 
   // Tabs
@@ -27,33 +61,6 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   $scope.allAddresses = [];
 
   var bg = DarkWallet.service();
-
-  var report = function(msg) {
-      if (console) {
-        console.log(msg);
-      }
-      toaster.pop('note', "wallet", msg)
-  }
-
-  // Listen for messages from the background service
-  bg.addListener(function(message, send) {
-    if (message.name == 'guiUpdate' || message.name == 'balanceUpdate') {
-        if (message.name == 'balanceUpdate') {
-            report("balance update message " + message);
-            //$scope.totalBalance = $scope.identity.wallet.getBalance();
-        }
-    }
-    if (message.name == 'note') {
-        report("note " + message.text);
-    }
-    if (message.name == 'height') {
-        $scope.currentHeight = message.value;
-    }
-    // apply interface changes
-    if(['height', 'guiUpdate', 'balanceUpdate'].indexOf(message.name) > -1 && !$scope.$$phase) {
-        $scope.$apply();
-    }
-  });
 
   // Initialize if empty wallet
   function initializeEmpty() {
@@ -103,10 +110,7 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
       ngProgress.color('firebrick');
       ngProgress.start();
       console.log("connect");
-      bg.connect(function() {
-          ngProgress.color('green');
-          ngProgress.complete();
-      });
+      bg.connect();
       // apply scope changes
       if(!$scope.$$phase) {
           $scope.$apply();

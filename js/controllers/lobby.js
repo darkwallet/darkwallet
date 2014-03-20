@@ -1,5 +1,5 @@
-define(['./module', 'darkwallet', 'util/transport', 'util/channels/catchan'],
-function (controllers, DarkWallet, Transport, BtcChannel) {
+define(['./module', 'darkwallet', 'util/transport', 'util/channels/catchan', 'util/services'],
+function (controllers, DarkWallet, Transport, BtcChannel, Services) {
   'use strict';
 
 
@@ -7,21 +7,18 @@ function (controllers, DarkWallet, Transport, BtcChannel) {
   // --
 
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
-  DarkWallet.service().connect(function() {
-    var identity = DarkWallet.getIdentity();
-    var transport = DarkWallet.getLobbyTransport();
+
+  var transport, identity;
+  Services.connectNg('lobby', $scope, function(data) {
+  if (data.type == 'portConnected')
+    identity = DarkWallet.getIdentity();
+    transport = DarkWallet.getLobbyTransport();
 
     $scope.pairCode = '';
     $scope.subscribed = false;
     $scope.shoutbox = '';
     $scope.shoutboxLog = [];
     $scope.shoutboxLogAll = {};
-
-    transport.update = function() {
-        if(!$scope.$$phase) {
-            $scope.$apply();
-        }
-    }
 
     // Initialize some own data
     $scope.comms = transport.comms;
@@ -71,6 +68,9 @@ function (controllers, DarkWallet, Transport, BtcChannel) {
               toaster.pop('error', "error sending " + err)
           }
         });
+    }
+    if(!$scope.$$phase) {
+        $scope.$apply();
     }
   });
 }]);

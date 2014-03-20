@@ -11,7 +11,7 @@ define(function () {
         connect: function(name, onMessage, onConnect, onDisconnect) {
             var port = chrome.runtime.connect({name: name});
             onMessage ? port.onMessage.addListener(onMessage) : null;
-            onConnect ? port.onConnect.addListener(onConnect) : null;
+            //onConnect ? port.onConnect.addListener(onConnect) : null;
             onDisconnect ? port.onDisconnect.addListener(onDisconnect) : null;
             return port;
         },

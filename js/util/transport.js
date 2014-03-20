@@ -1,5 +1,5 @@
-define(['bitcoinjs-lib', 'mnemonicjs'],
-function (Bitcoin, Mnemonic) {
+define(['bitcoinjs-lib', 'mnemonicjs', 'backend/services'],
+function (Bitcoin, Mnemonic, Services) {
   'use strict';
 
   var CryptoJS = Bitcoin.Crypto;

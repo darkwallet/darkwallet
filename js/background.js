@@ -1,16 +1,53 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['model/keyring', 'util/obelisk', 'util/transport', 'backend/services'], function(IdentityKeyRing, ObeliskClient, Transport, Services) {
+require(['model/keyring', 'util/obelisk', 'util/transport', 'backend/services', 'util/channels/catchan'], function(IdentityKeyRing, ObeliskClient, Transport, Services, Channel) {
 function DarkWalletService() {
     var lobbyTransport;
     var keyRing = new IdentityKeyRing();
     var obeliskClient = new ObeliskClient();
+    var self = this;
 
     // Background service for communication with the frontend
     Services.start('obelisk', function() {
-    }, function(port) {
-        port.postMessage({text: 'hello'})
+      }, function(port) {
+          // Connected
+          console.log('bus: obelisk client connected');
+          var client = obeliskClient.getClient();
+          if (client && client.connected) {
+              Services.post('obelisk', {'type': 'connected'});
+          }
+    });
+
+    // Gui service
+    Services.start('gui', function() {
+      }, function(port) {
+          // onMessage
+          console.log('bus: gui client connected');
+          port.postMessage({type: 'note', text: 'gui client connected'})
+      }, function(port) {
+          // Connected
+          console.log('bus: gui client disconnected');
+    });
+
+    // Transport service managing background lobby transport
+    Services.start('lobby',
+      function(data) {
+         // onMessage
+         switch(data.type) {
+             case 'initChannel':
+               lobbyTransport.initChannel(data.name, chanClass);
+               break;
+       }
+      }, function(port) {
+         // Connected
+         console.log('bus: lobby client connected');
+         if (!lobbyTransport) {
+             console.log('init lobby transport');
+             var identity = self.getCurrentIdentity();
+             lobbyTransport = new Transport(identity, obeliskClient);
+             lobbyTransport.update = function() { Services.post('gui', {'type': 'update'}) };
+       }
     });
 
     var currentIdentity = 0;
@@ -52,7 +89,7 @@ function DarkWalletService() {
         currentIdentity = name;
         console.log("load", name);
         keyRing.get(name, function(identity) {
-            identity.history.update = function() { sendInternalMessage({name: 'guiUpdate'}); };
+            identity.history.update = function() { Services.post('gui', {name: 'update'}); };
             userCallback(identity);
             isReady = true;
             readyCallbacks.forEach(function(cb) {cb();})
@@ -99,7 +136,7 @@ function DarkWalletService() {
         }, function(addressUpdate) {
             console.log("update", addressUpdate)
         });
-        sendInternalMessage({name: "balanceUpdate"});
+        Services.post('gui', {type: "balance"});
     }
     // Start up history for an address
     this.initAddress = function(walletAddress) {
@@ -119,7 +156,7 @@ function DarkWalletService() {
     // Handle initial connection to obelisk
     function handleHeight(err, height) {
         currentHeight = height;
-        //sendInternalMessage({name: "height", value: height});
+        Services.post('gui', {type: 'height', value: height})
         console.log("height fetched", height);
     }
 
@@ -130,10 +167,6 @@ function DarkWalletService() {
         // get balance for addresses
         var identity = this.getCurrentIdentity();
 
-        // Init lobby here since we might not have an identity before
-        if (!lobbyTransport) {
-            lobbyTransport = new Transport(identity, obeliskClient);
-        }
         Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
             var walletAddress = identity.wallet.pubKeys[pubKeyIndex];
             if (walletAddress.index.length > 1) {
@@ -152,12 +185,15 @@ function DarkWalletService() {
                 userCallback();
             }
         } else {
+            console.log("connecting backend");
             obeliskClient.connect('ws://85.25.198.97:8888', function() {
+                console.log("backend connected");
                 handleInitialConnect();
                 connected = true;
                 if (userCallback) {
                     userCallback();
                 }
+                Services.post('obelisk', {'type': 'connected'});
             });
             connecting = true;
         }

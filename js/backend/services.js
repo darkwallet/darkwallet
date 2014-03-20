@@ -26,6 +26,7 @@ define(function () {
                     onDisconnect ? onDisconnect(port) : null;
                   }
                 });
+                port.postMessage({type: 'portConnected'})
               }
             });
         },
