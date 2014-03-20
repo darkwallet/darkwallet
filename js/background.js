@@ -5,7 +5,6 @@ require(['backend/services', 'backend/lobby', 'backend/obelisk', 'backend/wallet
 function(Services, LobbyService, ObeliskService, WalletService, GuiService, CtxMenusService) {
 
 function DarkWalletService() {
-    var self = this;
 
     // Backend services
     var lobbyService = new LobbyService(this);
@@ -39,8 +38,9 @@ function DarkWalletService() {
     /* Global communications
      */
 
-    this.connect = function() {
-        obeliskService.connect('ws://85.25.198.97:8888', function() {
+    this.connect = function(connectUri) {
+        connectUri = connectUri || 'ws://85.25.198.97:8888';
+        obeliskService.connect(connectUri, function() {
             walletService.handleInitialConnect();
         });
     }
@@ -81,7 +81,7 @@ var service = new DarkWalletService();
 /* Bindings for the page window so we can have easy access
  */
 
-window.connect = service.connect;
+window.connect = function(_server) { return service.connect(_server) };
 
 window.loadIdentity = service.loadIdentity;
 window.getIdentity = function(idx) { return service.getIdentity(idx); };
