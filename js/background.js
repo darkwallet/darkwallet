@@ -10,6 +10,17 @@ function DarkWalletService() {
     var obeliskClient = new ObeliskClient();
     var self = this;
 
+    // Some scope variables
+    var currentIdentity = 0;
+
+    var identityNames = [];
+
+    var connected = false;
+    var connecting = false;
+
+    var currentHeight = 0;
+
+
     // Background service for communication with the frontend
     Services.start('obelisk', function() {
       }, function(port) {
@@ -37,7 +48,9 @@ function DarkWalletService() {
       }, function(port) {
           // onMessage
           console.log('bus: wallet client connected');
-          port.postMessage({type: 'note', text: 'gui client connected'})
+          if (currentIdentity && keyRing.identities.hasOwnProperty(currentIdentity)) {
+              Services.post('wallet', {'type': 'ready', 'identity': currentIdentity})
+          }
       }, function(port) {
           // Connected
           console.log('bus: wallet client disconnected');
@@ -64,20 +77,11 @@ function DarkWalletService() {
        }
     });
 
-    var currentIdentity = 0;
-
-    var identityNames = [];
-
-    var connected = false;
-    var connecting = false;
-
-    var currentHeight = 0;
-
     /***************************************
     /* Identities
      */
 
-    // Load identity names
+    // Preload identity names
     keyRing.loadIdentities(function(names) {
         if (!names) {
            console.log("bad loading");
@@ -87,14 +91,17 @@ function DarkWalletService() {
         //keyRing.get(names[0], loadIdentity);
     });
 
-    this.loadIdentity = function(idx, userCallback) {
+    this.loadIdentity = function(idx) {
         var name = keyRing.availableIdentities[idx];
-        currentIdentity = name;
-        console.log("load", name);
-        keyRing.get(name, function(identity) {
-            identity.history.update = function() { Services.post('gui', {name: 'update'}); };
-            userCallback(identity);
-        });
+        if (currentIdentity != name) {
+            console.log("load identity", name)
+            currentIdentity = name;
+            keyRing.get(name, function(identity) {
+                identity.history.update = function() { Services.post('gui', {name: 'update'}); };
+                Services.post('wallet', {'type': 'ready', 'identity': name})
+                Services.post('wallet', {'type': 'loaded', 'identity': name})
+            });
+        }
     }
 
     // Get an identity from the keyring
@@ -179,22 +186,17 @@ function DarkWalletService() {
     /* Global communications
      */
 
-    this.connect = function(userCallback) {
+    this.connect = function() {
         if (connected || connecting) {
-            if (userCallback) {
-                userCallback();
-            }
+            // wait for connection
         } else {
-            console.log("connecting backend");
+            console.log("Connecting backend");
             obeliskClient.connect('ws://85.25.198.97:8888', function() {
                 obeliskClient.getClient().connected = true;
-                console.log("backend connected");
                 handleInitialConnect();
                 connected = true;
-                if (userCallback) {
-                    userCallback();
-                }
                 Services.post('obelisk', {'type': 'connected'});
+                console.log("backend connected");
             });
             connecting = true;
         }

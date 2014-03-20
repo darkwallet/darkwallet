@@ -51,6 +51,16 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
     }
   })
 
+  Services.connect('wallet', function(data) {
+    console.log("wallet bus message", data);
+    if (data.type == 'ready') {
+        // identity is ready here
+        console.log('loaded', data.identity)
+        loadIdentity(DarkWallet.getIdentity())
+    }
+  })
+
+
   // Tabs
   $scope.isActive = function(route) {
     return route === $location.path();
@@ -261,7 +271,7 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
 
   // Load identity
   if (bg.getKeyRing().availableIdentities.length) {
-    bg.loadIdentity(0, loadIdentity);
+    bg.loadIdentity(0);
   }
 }]);
 });
