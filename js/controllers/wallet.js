@@ -82,10 +82,26 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
           }
       }
   }
+
+  // Initialize pocket structures.
+  $scope.initPocket = function(rowIndex) {
+      var pocketIndex = rowIndex*2;
+      if (!$scope.addresses[pocketIndex]) {
+          $scope.addresses[pocketIndex] = [];
+      }
+      if (!$scope.addresses[pocketIndex+1]) {
+          $scope.addresses[pocketIndex+1] = [];
+      }
+  }
+
   function loadAddresses(identity) {
       /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var walletAddress = identity.wallet.getAddress(pubKeyIndex);
+          // Init pockets
+          for(var idx=0; idx<identity.wallet.pockets.length; idx++) {
+              $scope.initPocket(idx);
+          };
           // Regular addresses
           if (walletAddress.index.length > 1) {
               // add to scope
@@ -154,9 +170,9 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
 
   // get a free change address or a new one
   $scope.getChangeAddress = function() {
-    for(var idx=0; $scope.changeAddresses.length; idx++) {
-        if ($scope.changeAddresses[idx].balance == 0) {
-            return $scope.changeAddresses[idx];
+    for(var idx=0; $scope.allAddresses.length; idx++) {
+        if ($scope.allAddresses[idx].nOutputs == 0 && $scope.allAddresses[idx].index[0]%2 == 1) {
+            return $scope.allAddresses[idx];
         }
     }
     return $scope.generateAddress(1);
