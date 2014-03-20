@@ -1,5 +1,5 @@
 define(['./module', 'jsqrcode'], function (directives) {
-  directives.directive('qrScanner', ['$timeout', function($timeout) {
+  directives.directive('qrScanner', ['$interval', function($interval) {
     return {
       restrict: 'E',
       scope: {
@@ -27,9 +27,11 @@ define(['./module', 'jsqrcode'], function (directives) {
         angular.element(element).append(video);
         angular.element(element).append(canvas);
         var context = canvas.getContext('2d'); 
+        var stopScan;
+        var localMediaStream;
 
         var scan = function() {
-          if (window.localMediaStream) {
+          if (localMediaStream) {
             context.drawImage(video, 0, 0, 307,250);
             try {
               qrcode.decode();
@@ -37,16 +39,15 @@ define(['./module', 'jsqrcode'], function (directives) {
               scope.ngError({error: e});
             }
           }
-          $timeout(scan, 500);
         };
 
         var successCallback = function(stream) {
           video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
-          window.localMediaStream = stream;
+          localMediaStream = stream;
 
           scope.video = video;
           video.play();
-          $timeout(scan, 1000);
+          stopScan = $interval(scan, 500);
         };
 
         // Call the getUserMedia method with our callback functions
@@ -58,8 +59,12 @@ define(['./module', 'jsqrcode'], function (directives) {
           scope.ngVideoError({error: 'Native web camera streaming (getUserMedia) not supported in this browser.'});
         }
 
-        qrcode.callback = function(data) {
+        element.bind('$destroy', function() {
           localMediaStream.stop();
+          $interval.cancel(stopScan);
+        });
+
+        qrcode.callback = function(data) {
           scope.ngSuccess({data: data});
         };
       }

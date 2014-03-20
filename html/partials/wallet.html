@@ -36,7 +36,7 @@
       <li ng-repeat="participant in multisig.participants">{{participant.address}}</li>
     </ul>
     <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, participants: multisig.participants}, addParticipant)" class="button small radius">Select from contacts</a>
-    <a href="" ng-click="openModal('scan-qr', {fieuld: multisig.participants}, onQrModalOk, onQrModalCancel)" class="button small radius">Scan a QR code</a>
+    <a href="" ng-click="openModal('scan-qr', {field: multisig.participants}, onQrModalOk, onQrModalCancel)" class="button small radius">Scan a QR code</a>
     <a href="" ng-click="addParticipant(pasteClipboard(), multisig)" class="button small radius">Paste a Master/Stealth address</a>
     <h4>How many signatures will be needed in order to spend?</h4>
     <div class="row collapse">

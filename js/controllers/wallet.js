@@ -223,7 +223,6 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   };
   
   $scope.onQrModalOk = function(data, vars) {
-    localMediaStream.stop();
     if (Array.isArray(vars.field)) {
       vars.field.push({address: data});
     } else {
@@ -232,7 +231,6 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   };
   
   $scope.onQrModalCancel = function(data, vars) {
-    localMediaStream.stop();
   };
 
   $scope.copyClipboard = function(text) {
