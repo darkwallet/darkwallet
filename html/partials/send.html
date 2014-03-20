@@ -17,14 +17,14 @@
           </div>
           <div class="large-2 columns">
             <h6>Sending from</h6>
-            <a href="" dropdown-toggle="#wallets" class="fa button postfix fa-chevron-circle-down">Main wallet</a>
+            <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">Main wallet</a>
           </div>
         </div>
       </div>
       
       <div class="large-2 medium-6 columns">
         <h6>Fee</h6>
-        <input type="text" value="0.000001" />
+        <input type="text" class="radius" value="0.000001" />
       </div>
     </div>
     <div class="row">
@@ -39,7 +39,7 @@
       <div class="medium-10 columns">
         <div class="row collapse">
           <div class="large-6 columns">
-            <input type="text" ng-model="field.address" ng-change="autoAddField()" placeholder="Paste a bitcoin address here or use the buttons on the right." />
+            <input type="text" ng-model="field.address" ng-change="autoAddField()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
           </div>
           <div class="large-2 columns">
             <a href="" ng-click="addAddress(pasteClipboard(), {field: field})" class="fa button postfix fa-clipboard">Paste</a>
@@ -48,12 +48,12 @@
             <a href="" ng-click="openModal('scan-qr', {field: field}, onQrModalOkSend, onQrModalCancel)" class="fa button postfix fa-qrcode">Scan code</a>
           </div>
           <div class="large-2 small-6 columns">
-            <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button postfix fa-users">Contacts</a>
+            <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button postfix radius fa-users">Contacts</a>
           </div>
         </div>
       </div>
       <div class="medium-2 columns">
-        <input type="text" ng-model="field.amount" ng-change="autoAddField()" placeholder="Enter amount" />
+        <input type="text" class="radius" ng-model="field.amount" ng-change="autoAddField()" placeholder="Enter amount" />
       </div>
     </div>
     <div class="row">
