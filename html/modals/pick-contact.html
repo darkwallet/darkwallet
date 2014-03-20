@@ -1,6 +1,6 @@
 <div class="contact-mosaic">
   <h6>Select a contact</h6>
-  <div ng-repeat="contact in vars.contacts" class="large-3 columns panel">{{contact.name}}
+  <div ng-repeat="contact in vars.contacts" ng-click="ok(contact.address)" class="large-3 columns panel">{{contact.name}}
             <identicon icon-size="48" hash="contact.hash" title="{{contact.hash}}"></identicon>
   </div>
   <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
