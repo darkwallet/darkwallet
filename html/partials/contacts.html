@@ -8,9 +8,10 @@
 </div>
 <div class="row">
   <div class="small-12 columns">
-    <table class="expand">
+    <table class="expand contacts">
       <thead>
         <tr>
+          <th>Icon</th>
           <th>Name</th>
           <th>Address</th>
           <th class="text-right">Copy/QR/Edit/Delete</th>
@@ -19,7 +20,10 @@
       <tbody>
         <tr ng-repeat="contact in identity.contacts.contacts" ng-class="{editrow: contactFormShown === $index}">
           <td ng-hide="contactFormShown === $index">
-            <identicon icon-size="20" hash="contact.hash" title="{{contact.hash}}"></identicon> {{contact.name}}
+            <identicon icon-size="38" hash="contact.hash" title="{{contact.hash}}"></identicon>
+          </td>
+          <td class="name" ng-hide="contactFormShown === $index">
+            {{contact.name}}
           </td>
           <td ng-hide="contactFormShown === $index">{{contact.address}}</td>
           <td class="text-right" ng-hide="contactFormShown === $index">
