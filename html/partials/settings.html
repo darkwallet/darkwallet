@@ -9,6 +9,18 @@
             <input type="radio" name="baseunit" value="mBTC" id="mbtc-radio"><label for="mbtc-radio">mBTC</label>
         </div>
         <div class="panel">
+          <h5>Security</h5>
+          <button class="small">Show seed</button>
+        </div>
+        <div class="panel">
+          <h5>Notifications</h5>
+          <input id="checkbox1" type="checkbox"><label for="checkbox1">For outgoing transactions</label><br>
+          <input id="checkbox2" type="checkbox"><label for="checkbox2">For incoming transactions</label><br>
+          <input id="checkbox1" type="checkbox"><label for="checkbox1">For multisig spend requests</label>
+        </div>
+      </div>
+      <div class="large-4 columns">
+        <div class="panel">
           <h5>Local currency</h5>
           <select>
             <option value="eur">Euros</option>
@@ -18,16 +30,6 @@
           </select>
         </div>
         <div class="panel">
-          <h5>Security</h5>
-          <button class="small">Show seed</button>
-        </div>
-        <div class="panel">
-          <h5>Default fee</h5>
-          <input type="text" />
-        </div>
-      </div>
-      <div class="large-4 columns">
-        <div class="panel">
           <h5>Change your password</h5>
           <label>Enter your current password</label>
           <input type="password" class="password" value="">
@@ -35,15 +37,37 @@
           <input type="password" class="password" value="">
           <button class="small">Change password</button>
         </div>
-        <div class="panel">
-          <h5>Notifications</h5>
-          <input id="checkbox1" type="checkbox"><label for="checkbox1">For outgoing transactions</label><br>
-          <input id="checkbox2" type="checkbox"><label for="checkbox2">For incoming transactions</label><br>
-          <input id="checkbox1" type="checkbox"><label for="checkbox1">For multisig spend requests</label>
-        </div>
       </div>
-      <div class="large-4 columns panel">
-        <a href="" class="button button-and-icon" ng-click="clearStorage();">
+      <div class="large-4 columns">
+        <div class="panel">
+          <h5>Default fee</h5>
+          <input type="text" />
+        </div>
+        <div class="panel">
+          <h5>Servers</h5>
+          <div class="row collapse">
+            <div class="small-8 columns">
+              <input type="text" placeholder="Enter IP address (e.g: 80.34.132.23:2534)" />
+            </div>
+            <div class="small-4 columns">
+              <a href="" class="fa button postfix radius fa-plus">Add</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="small-12 columns">
+              <select class="select-list" size="50">
+                <option>Uno</option>
+                <option>Dos</option>
+                <option>Dos</option>
+              </select>
+              <a class="button small radius expand">Connect to selected server</a>
+              <h6>Connected to Unsystem @ 234.223.245.32:4323</h6>
+              <textarea>Welcome to the Unsystem server!!</textarea>
+              <a class="button tiny radius expand">Donate to this server</a>
+            </div>
+          </div>
+        </div>
+        <a href="" class="button" ng-click="clearStorage();">
           <div><i class="icon-large icon-qrcode"></i></div>Clear storage (DANGEROUS!!)
         </a>
         <div ng-controller="ReceiveStealthCtrl">

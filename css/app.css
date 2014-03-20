@@ -5548,3 +5548,7 @@ span.meter {
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover {
   background: #27ae60;
   cursor: pointer; }
+
+.select-list {
+  min-height: 100px;
+  background-image: none; }
