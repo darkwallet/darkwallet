@@ -46,7 +46,8 @@ a.glow.button, button.glow, input[type="submit"].glow {
 }
 
 /* TABLES ----------- */
-
+table.contacts td { padding: 0.3em 0.8em; }
+td.name { font-size: 110%; }
 td.icon {
 	padding: 0;
 	a.button { margin-right: 0.6em; } 
