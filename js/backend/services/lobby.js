@@ -1,4 +1,4 @@
-define(['backend/services', 'backend/transport', 'backend/channels/catchan'],
+define(['backend/services', 'backend/channels/transport', 'backend/channels/catchan'],
 function(Services, Transport, Channel) {
   'use strict';
 
