@@ -50,7 +50,7 @@ function DarkWalletService() {
           // onMessage
           console.log('bus: wallet client connected');
           if (currentIdentity && keyRing.identities.hasOwnProperty(currentIdentity)) {
-              Services.post('wallet', {'type': 'ready', 'identity': currentIdentity})
+              port.postMessage({'type': 'ready', 'identity': currentIdentity})
           }
       }, function(port) {
           // Connected
