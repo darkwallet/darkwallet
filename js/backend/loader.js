@@ -8,13 +8,11 @@ require.config({
     'angular': '../vendors/angular/angular.min',
     'angular-animate': '../vendors/angular-animate/angular-animate.min',
     'angular-route': '../vendors/angular-route/angular-route.min',
-    'angular-qrcode': '../vendors/angular-qrcode/qrcode',
     'mm.foundation': '../vendors/angular-foundation/mm-foundation-tpls.min',
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
     'ngProgress': "../vendors/ngprogress/build/ngProgress",
     'toaster': "../vendors/AngularJS-Toaster/toaster",
     'identicon': "../vendors/identicon/identicon",
-    'qrcode': "../vendors/qrcode-generator/js/qrcode",
     'qrcodejs': "../vendors/qrcodejs/qrcode",
     'jsqrcode': "../vendors/jsqrcode/jsqrcode",
     
@@ -39,9 +37,6 @@ require.config({
     'angular-route': {
       deps: ['angular']
     },
-    'angular-qrcode': {
-      deps: ['angular', 'qrcode']
-    },
     'mm.foundation': {
       deps: ['angular']
     },
@@ -51,14 +46,10 @@ require.config({
     'toaster': {
       deps: ['angular']
     },
-    'qrcode': {
-      exports: 'qrcode'
-    },
     'qrcodejs': {
       exports: 'QRCode'
     },
     'jsqrcode': {
-      deps: ['qrcode'],
       exports: 'qrcode'
     },
     'darkwallet': {

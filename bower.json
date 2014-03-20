@@ -36,7 +36,6 @@
     "angular-foundation": "~0.1.0",
     "requirejs": "~2.1.11",
     "requirejs-domready": "~2.0.1",
-    "angular-qrcode": "monospaced/angular-qrcode#~3.1.0",
     "jsqrcode": "https://github.com/LazarSoft/jsqrcode.git#master",
     "qrcodejs": "https://github.com/davidshimjs/qrcodejs.git"
   }

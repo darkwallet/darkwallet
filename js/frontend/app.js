@@ -7,7 +7,6 @@ define([
     'angular',
     'angular-route',
     'angular-animate',
-    'angular-qrcode',
     'mm.foundation',
     'ngProgress',
     'toaster',
@@ -19,7 +18,6 @@ define([
     var app = angular.module('DarkWallet', [
       'ngRoute', 'mm.foundation',
       'ngProgress', 'ngAnimate', 'toaster',
-      'monospaced.qrcode',
       'DarkWallet.controllers',
       'DarkWallet.directives',
       'DarkWallet.filters'
