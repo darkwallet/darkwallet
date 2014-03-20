@@ -8,9 +8,8 @@ require.config({
 
 require([
     'backend/loader',
-    'require',
     'frontend/popup/app',
-], function(loader, require, app) {
+], function(loader, app) {
     app.initialize();
 });
 
