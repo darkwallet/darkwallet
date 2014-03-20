@@ -7,10 +7,10 @@ require.config({
 });
 
 require([
-    'backend-loader',
+    'backend/loader',
     'require',
-    'app',
-    'routes'
+    'frontend/app',
+    'frontend/routes'
 ], function(loader, require, app, routes) {
     app.initialize();
 });
