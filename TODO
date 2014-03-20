@@ -27,6 +27,9 @@ Immediate:
    - Scan and show QRs OK
    * Implement svg library instead of canvas based
  - Allow switching identities OK
+ * SETTINGS
+   * Change password
+   * Select server
 
 Other:
  * Cache address history and resume
