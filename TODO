@@ -10,19 +10,23 @@ Immediate:
    * Review sending
    * Several destinations support
    * Implement send from pocket
-   * Implement choose from contacts
+   - Implement choose from contacts OK
    * Better radar feedback
- * Implement multiParty from cryptocat (ed25519 curves)
+ * Lobby system
+   - Implement multiParty from cryptocat (ed25519 curves) OK
    * link contacts using lobby (sync stealth, mpk...)
    * then finish CoinJoin
  * Pocket actions:
+   - Pocket have 2 branches (public and change) OK
    * Move funds to another pocket
    * Move funds to another identity
    * Set as mixing
    * Rename
    * Delete
  * QR show and scan support
- * Allow switching identities
+   - Scan and show QRs OK
+   * Implement svg library instead of canvas based
+ - Allow switching identities OK
 
 Other:
  * Cache address history and resume
@@ -33,3 +37,4 @@ Other:
   * radar when sending
  * Watch only pockets
  * Blockchain.info compatible coinjoin
+
