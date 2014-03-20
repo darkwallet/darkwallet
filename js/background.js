@@ -1,11 +1,17 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['model/keyring', 'util/obelisk', 'util/transport'], function(IdentityKeyRing, ObeliskClient, Transport) {
+require(['model/keyring', 'util/obelisk', 'util/transport', 'backend/services'], function(IdentityKeyRing, ObeliskClient, Transport, Services) {
 function DarkWalletService() {
     var lobbyTransport;
     var keyRing = new IdentityKeyRing();
     var obeliskClient = new ObeliskClient();
+
+    // Background service for communication with the frontend
+    Services.start('obelisk', function() {
+    }, function(port) {
+        port.postMessage({text: 'hello'})
+    });
 
     var currentIdentity = 0;
 
@@ -123,7 +129,11 @@ function DarkWalletService() {
 
         // get balance for addresses
         var identity = this.getCurrentIdentity();
-        lobbyTransport = new Transport(identity, client);
+
+        // Init lobby here since we might not have an identity before
+        if (!lobbyTransport) {
+            lobbyTransport = new Transport(identity, obeliskClient);
+        }
         Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
             var walletAddress = identity.wallet.pubKeys[pubKeyIndex];
             if (walletAddress.index.length > 1) {
@@ -158,6 +168,9 @@ function DarkWalletService() {
 
     this.getClient = function() {
         return obeliskClient.client;
+    }
+    this.getServices = function() {
+        return Services;
     }
 }
 
@@ -238,6 +251,7 @@ window.getKeyRing = service.getKeyRing;
 window.getLobbyTransport = service.getLobbyTransport
 
 window.getClient = service.getClient;
+window.getServices = service.getServices;
 window.ready = function(_cb) {service.ready(_cb)};
 
 window.initAddress = function(_w) {return service.initAddress(_w)};

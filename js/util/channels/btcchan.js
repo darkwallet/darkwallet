@@ -10,7 +10,7 @@ function (Stealth, Bitcoin) {
    */
   function Channel(transport, name) {
       var self = this;
-      var client = transport.client;
+      var client = transport.getClient();
       var channelHash = transport.hashChannelName(name);
       this.transport = transport;
       this.name = name;
@@ -45,13 +45,13 @@ function (Stealth, Bitcoin) {
 
   // Subscribe to given channel
   Channel.prototype.channelSubscribe = function(callback, update_cb) {
-      var client = this.transport.client;
+      var client = this.transport.getClient();
       client.chan_subscribe("b", this.channelHash, callback, update_cb);
   }
 
   // Post to given channel
   Channel.prototype.channelPost = function(data, callback) {
-      var client = this.transport.client;
+      var client = this.transport.getClient();
       client.chan_post("b", this.channelHash, data, callback);
   }
 

@@ -8,8 +8,8 @@ function (Bitcoin, Mnemonic) {
   /************************************
    * Transport
    */
-  function Transport(identity, client) {
-    this.client = client;
+  function Transport(identity, obeliskClient) {
+    this.client = obeliskClient;
     this.channels = {};
 
     this.requests = [];
@@ -41,6 +41,10 @@ function (Bitcoin, Mnemonic) {
     // Initialize some own data
     this.comms = this.initializePeer(sessionKey.getPub().toBytes(true));
     this.myself = this.initializePeer(selfKey.getPub().toBytes(true));
+  }
+
+  Transport.prototype.getClient = function() {
+    return this.client.getClient();
   }
 
   Transport.prototype.update = function() {

@@ -7,11 +7,15 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
+define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkWallet, Services) {
   'use strict';
   controllers.controller('WalletCtrl',
   ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', function($scope, $location, ngProgress, toaster, $modal) {
   var pubKey, mpKey, addressIndex;
+
+  Services.connect('obelisk', function(data) {
+    console.log("obelisk bus message", data)
+  })
 
   // Tabs
   $scope.isActive = function(route) {

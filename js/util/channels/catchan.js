@@ -26,7 +26,7 @@ function (Bitcoin, multiParty, Curve25519) {
    */
   function Channel(transport, name) {
       var self = this;
-      var client = transport.client;
+      var client = transport.getClient();
       this.callbacks = {};
 
       // Set transport session key
@@ -83,13 +83,13 @@ function (Bitcoin, multiParty, Curve25519) {
 
   // Subscribe to given channel
   Channel.prototype.channelSubscribe = function(callback, update_cb) {
-      var client = this.transport.client;
+      var client = this.transport.getClient();
       client.chan_subscribe("b", this.channelHash, callback, update_cb);
   }
 
   // Post to given channel
   Channel.prototype.post = function(data, callback) {
-      var client = this.transport.client;
+      var client = this.transport.getClient();
       data.sender = this.fingerprint;
       client.chan_post("b", this.channelHash, data, callback);
   }
