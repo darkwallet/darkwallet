@@ -10,11 +10,11 @@
 <div class="row">
   <div class="small-12 columns">
     <ul class="large-block-grid-5 medium-block-grid-4 small-block-grid-2">
-      <li ng-repeat="identity in identities">
+      <li ng-repeat="identityName in availableIdentities">
         <div class="panel radius">
-          <h4>{{identity.name}}</h4>
-          <h6 ng-show="identity.wallet">Balance: {{identity.wallet.balance | currencyFilter}} BTC</h6>
-          <button class="radius tiny expand">Use this identity</button>
+          <h4>{{identityName}}</h4>
+          <h6 ng-show="identities.hasOwnProperty(identityName)">Balance: {{identities[identityName].wallet.balance | currencyFilter}} BTC</h6>
+          <button ng-click="selectIdentity(identityName)" ng-hide="identityName == currentIdentity" class="radius tiny expand">Use this identity</button>
           <button class="radius tiny expand">Backup</button>
         </div>
       </li>

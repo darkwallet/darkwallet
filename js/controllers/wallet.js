@@ -286,7 +286,7 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   }
 
   // Load identity
-  if (bg.getKeyRing().availableIdentities.length) {
+  if (bg.getKeyRing().availableIdentities.length && !bg.getIdentity()) {
     bg.loadIdentity(0);
   }
 }]);
