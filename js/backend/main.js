@@ -1,7 +1,12 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['backend/services', 'backend/lobby', 'backend/obelisk', 'backend/wallet', 'backend/gui', 'backend/ctxmenus'],
+require(['backend/services',
+         'backend/services/lobby',
+         'backend/services/obelisk',
+         'backend/services/wallet',
+         'backend/services/gui',
+         'backend/services/ctxmenus'],
 function(Services, LobbyService, ObeliskService, WalletService, GuiService, CtxMenusService) {
 
 function DarkWalletService() {

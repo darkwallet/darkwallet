@@ -11,9 +11,9 @@ define([
     'mm.foundation',
     'ngProgress',
     'toaster',
-    'controllers/index',
-    'directives/index',
-    'filters/index'
+    'frontend/controllers/index',
+    'frontend/directives/index',
+    'frontend/filters/index'
 ], function (require, angular) {
     'use strict';
     var app = angular.module('DarkWallet', [
