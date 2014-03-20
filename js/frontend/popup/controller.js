@@ -7,7 +7,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['frontend/controllers/module', 'darkwallet', 'util/services'], function (controllers, DarkWallet, Services) {
+define(['frontend/controllers/module', 'darkwallet', 'frontend/services'], function (controllers, DarkWallet, Services) {
   'use strict';
   controllers.controller('PopupCtrl', ['$scope', function($scope) {
 

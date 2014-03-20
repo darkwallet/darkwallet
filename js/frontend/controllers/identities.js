@@ -1,4 +1,4 @@
-define(['./module', 'util/services', 'darkwallet'], function (controllers, Services, DarkWallet) {
+define(['./module', 'frontend/services', 'darkwallet'], function (controllers, Services, DarkWallet) {
   'use strict';
   controllers.controller('IdentitiesCtrl', ['$scope', function($scope) {
     Services.connectNg('wallet', $scope, function(data) {

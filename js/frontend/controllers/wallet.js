@@ -7,7 +7,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet', 'util/services', 'util/ng/clipboard', 'util/ng/modals'],
+define(['./module', 'darkwallet', 'frontend/services', 'util/ng/clipboard', 'util/ng/modals'],
 function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   'use strict';
   controllers.controller('WalletCtrl',

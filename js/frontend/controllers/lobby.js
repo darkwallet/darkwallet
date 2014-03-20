@@ -1,4 +1,4 @@
-define(['./module', 'darkwallet', 'util/services'],
+define(['./module', 'darkwallet', 'frontend/services'],
 function (controllers, DarkWallet, Services) {
   'use strict';
 
@@ -10,22 +10,22 @@ function (controllers, DarkWallet, Services) {
 
   var transport, identity, channel;
   var startChannel = function(name) {
-        transport = DarkWallet.getLobbyTransport();
-        channel = transport.getChannel(name)
-        console.log("channel", channel);
-        channel.addCallback('subscribed', function() {toaster.pop('success', 'channel', 'subscribed successfully')})
-        channel.addCallback('shout', function(data) {
-            $scope.shoutboxLog.push(data)
-            if (data.sender == channel.fingerprint) {
-                toaster.pop('success', 'me', data.text)
-            } else {
-                toaster.pop('note', data.sender.slice(0,12), data.text)
-            }
-            if (!$scope.$$phase) {
-                $scope.$apply();
-            }
-        })
-        $scope.subscribed = channel.channelHash;
+      transport = DarkWallet.getLobbyTransport();
+      channel = transport.getChannel(name)
+      console.log("channel", channel);
+      channel.addCallback('subscribed', function() {toaster.pop('success', 'channel', 'subscribed successfully')})
+      channel.addCallback('shout', function(data) {
+          $scope.shoutboxLog.push(data)
+          if (data.sender == channel.fingerprint) {
+              toaster.pop('success', 'me', data.text)
+          } else {
+              toaster.pop('note', data.sender.slice(0,12), data.text)
+          }
+          if (!$scope.$$phase) {
+              $scope.$apply();
+          }
+      })
+      $scope.subscribed = channel.channelHash;
   }
 
   Services.connectNg('lobby', $scope, function(data) {
