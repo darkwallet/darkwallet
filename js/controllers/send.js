@@ -32,6 +32,16 @@ define(['./module'], function (controllers) {
     field_proto: { address: '', amount: '' }
   };
 
+  $scope.addAddress = function(data, vars) {
+    vars.field.address = data;
+    $scope.autoAddField();
+  };
+  
+  $scope.onQrModalOkSend = function(data, vars) {
+    $scope.onQrModalOk(data, vars);
+    $scope.autoAddField();
+  }
+
   $scope.addField = function() {
     // add the new option to the model
     $scope.repeatedFields.fields.push($scope.repeatedFields.field_proto);

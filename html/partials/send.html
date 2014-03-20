@@ -42,13 +42,13 @@
             <input type="text" ng-model="field.address" ng-change="autoAddField()" placeholder="Paste a bitcoin address here or use the buttons on the right." />
           </div>
           <div class="large-2 columns">
-            <a href="" ng-click="field.address = pasteClipboard(); autoAddField()" class="fa button postfix fa-clipboard">Paste</a>
+            <a href="" ng-click="addAddress(pasteClipboard(), {field: field})" class="fa button postfix fa-clipboard">Paste</a>
           </div>
           <div class="large-2 small-6 columns">
-            <a href="" ng-click="openModal('scan-qr', {field: field}, onQrModalOk, onQrModalCancel)" class="fa button postfix fa-qrcode">Scan code</a>
+            <a href="" ng-click="openModal('scan-qr', {field: field}, onQrModalOkSend, onQrModalCancel)" class="fa button postfix fa-qrcode">Scan code</a>
           </div>
           <div class="large-2 small-6 columns">
-            <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts})" class="fa button postfix fa-users">Contacts</a>
+            <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button postfix fa-users">Contacts</a>
           </div>
         </div>
       </div>
