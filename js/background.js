@@ -1,7 +1,9 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['model/keyring', 'util/obelisk', 'util/transport', 'backend/services', 'util/channels/catchan'], function(IdentityKeyRing, ObeliskClient, Transport, Services, Channel) {
+require(['model/keyring', 'util/obelisk', 'util/transport', 'backend/services', 'util/channels/catchan'],
+function(IdentityKeyRing, ObeliskClient, Transport, Services, Channel) {
+
 function DarkWalletService() {
     var lobbyTransport;
     var keyRing = new IdentityKeyRing();
@@ -29,6 +31,18 @@ function DarkWalletService() {
           // Connected
           console.log('bus: gui client disconnected');
     });
+
+    // Wallet service
+    Services.start('wallet', function() {
+      }, function(port) {
+          // onMessage
+          console.log('bus: wallet client connected');
+          port.postMessage({type: 'note', text: 'gui client connected'})
+      }, function(port) {
+          // Connected
+          console.log('bus: wallet client disconnected');
+    });
+
 
     // Transport service managing background lobby transport
     Services.start('lobby',
@@ -59,20 +73,9 @@ function DarkWalletService() {
 
     var currentHeight = 0;
 
-    var isReady = 0;
-    var readyCallbacks = [];
-
     /***************************************
     /* Identities
      */
-
-    this.ready = function(callback) {
-        if (isReady) {
-            callback();
-        } else {
-            readyCallbacks.push(callback);
-        }
-    }
 
     // Load identity names
     keyRing.loadIdentities(function(names) {
@@ -91,9 +94,6 @@ function DarkWalletService() {
         keyRing.get(name, function(identity) {
             identity.history.update = function() { Services.post('gui', {name: 'update'}); };
             userCallback(identity);
-            isReady = true;
-            readyCallbacks.forEach(function(cb) {cb();})
-            readyCallbacks = [];
         });
     }
 
@@ -289,7 +289,6 @@ window.getLobbyTransport = service.getLobbyTransport
 
 window.getClient = service.getClient;
 window.getServices = service.getServices;
-window.ready = function(_cb) {service.ready(_cb)};
 
 window.initAddress = function(_w) {return service.initAddress(_w)};
 
