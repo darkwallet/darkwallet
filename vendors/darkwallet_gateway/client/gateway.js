@@ -7,11 +7,14 @@
 function GatewayClient(connect_uri, handle_connect) {
     var self = this;
     this.handler_map = {};
+    this.connected = false;
     this.websocket = new WebSocket(connect_uri);
     this.websocket.onopen = function(evt) {
+        self.connected = true;
         handle_connect();
     };
     this.websocket.onclose = function(evt) {
+        self.connected = false;
         self.on_close(evt);
     };
     this.websocket.onerror = function(evt) {
