@@ -101,6 +101,7 @@ function DarkWalletService() {
     this.getLobbyTransport = function() {
         return lobbyService.getLobbyTransport();
     }
+
     /***************************************
     /* History and address subscription
      */
@@ -188,6 +189,9 @@ function DarkWalletService() {
 
     this.getClient = function() {
         return obeliskClient.client;
+    }
+    this.getObeliskClient = function() {
+        return obeliskClient;
     }
     this.getServices = function() {
         return Services;

@@ -20,7 +20,7 @@ function(Services, Transport, Channel) {
          if (!lobbyTransport) {
              console.log('init lobby transport');
              var identity = core.getCurrentIdentity();
-             lobbyTransport = new Transport(identity, obeliskClient);
+             lobbyTransport = new Transport(identity, core.getObeliskClient());
              lobbyTransport.update = function() { Services.post('gui', {'type': 'update'}) };
        }
     });
