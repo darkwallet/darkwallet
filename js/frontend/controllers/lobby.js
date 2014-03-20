@@ -1,5 +1,5 @@
-define(['./module', 'darkwallet', 'util/transport', 'util/channels/catchan', 'util/services'],
-function (controllers, DarkWallet, Transport, BtcChannel, Services) {
+define(['./module', 'darkwallet', 'util/services', 'backend/channels/catchan'],
+function (controllers, DarkWallet, Services, Channel) {
   'use strict';
 
 
@@ -8,8 +8,28 @@ function (controllers, DarkWallet, Transport, BtcChannel, Services) {
 
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
-  var transport, identity;
-  Services.connectNg('lobby', $scope, null, function(data) {
+  var transport, identity, channel;
+  Services.connectNg('lobby', $scope, function(data) {
+    console.log("Lobby message", data);
+    if (data.type == 'initChannel') {
+        transport = DarkWallet.getLobbyTransport();
+        channel = transport.getChannel(data.name)
+        console.log("channel", channel);
+        channel.addCallback('subscribed', function() {toaster.pop('success', 'channel', 'subscribed successfully')})
+        channel.addCallback('shout', function(data) {
+            $scope.shoutboxLog.push(data)
+            if (data.sender == channel.fingerprint) {
+                toaster.pop('success', 'me', data.text)
+            } else {
+                toaster.pop('note', data.sender.slice(0,12), data.text)
+            }
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+        })
+        $scope.subscribed = channel.channelHash;
+    }
+  }, function(port) {
     identity = DarkWallet.getIdentity();
     transport = DarkWallet.getLobbyTransport();
 
@@ -26,26 +46,14 @@ function (controllers, DarkWallet, Transport, BtcChannel, Services) {
     $scope.peerIds = transport.peerIds;
     $scope.requests = transport.requests;
 
-    var channel;
     // Action to start announcements and reception
     $scope.announceSelf = function() {
         var pairCodeHash = transport.hashChannelName($scope.pairCode);
 
         // chan tests
         if ($scope.subscribed != pairCodeHash) {
-            channel = transport.initChannel($scope.pairCode, BtcChannel);
-            channel.addCallback('subscribed', function() {toaster.pop('success', 'channel', 'subscribed successfully')})
-            channel.addCallback('shout', function(data) {
-                $scope.shoutboxLog.push(data)
-                if (data.sender == channel.fingerprint) {
-                    toaster.pop('success', 'me', data.text)
-                } else {
-                    toaster.pop('note', data.sender.slice(0,12), data.text)
-                }
-                if (!$scope.$$phase) {
-                    $scope.$apply();
-                }
-            })
+            //transport.initChannel($scope.pairCode, Channel);
+            port.postMessage({'type': 'initChannel', name: $scope.pairCode});
             $scope.subscribed = pairCodeHash;
         }
         /*

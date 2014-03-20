@@ -1,5 +1,5 @@
-define(['backend/services', 'util/transport', 'util/channels/catchan', 'darkwallet_gateway'],
-function(Services, Transport, Channel) {
+define(['backend/services', 'darkwallet_gateway'],
+function(Services) {
   'use strict';
   function ObeliskService(core) {
       var self = this;

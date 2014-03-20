@@ -103,5 +103,8 @@ function (Bitcoin, Mnemonic, Services) {
       return channel;
   }
 
+  Transport.prototype.getChannel = function(name) {
+      return this.channels[name];
+  }
   return Transport;
 });
