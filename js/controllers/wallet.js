@@ -216,7 +216,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   
   $scope.onQrModalOk = function(data, vars) {
     localMediaStream.stop();
-    vars.field.address = data;
+    if (Array.isArray(vars.field)) {
+      vars.field.push({address: data});
+    } else {
+      vars.field.address = data;
+    }
   };
   
   $scope.onQrModalCancel = function(data, vars) {
