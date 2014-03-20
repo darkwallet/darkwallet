@@ -1,4 +1,4 @@
-define(['bitcoinjs-lib', 'util/multiParty', 'util/djbec'],
+define(['bitcoinjs-lib', 'util/multiParty', 'util/djbec', 'sjcl'],
 function (Bitcoin, multiParty, Curve25519) {
   'use strict';
 
