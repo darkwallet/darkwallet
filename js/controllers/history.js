@@ -9,11 +9,11 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
   // History
   
   $scope.pocketName = "All Pockets";
-  $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $scope.allAddresses};
+  $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $scope.allAddresses, changeAddresses: []};
   $scope.isAll = true;
-  $scope.selectPocket = function(pocket, rowIndex) {
+  $scope.selectPocket = function(pocketName, rowIndex) {
       var pocketIndex;
-      if (pocket === undefined) {
+      if (pocketName === undefined) {
           $scope.pocket.name = "All Pockets";
           $scope.pocket.index = undefined;
           $scope.pocket.mpk = undefined;
@@ -25,7 +25,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
       } else {
           pocketIndex = rowIndex*2;
           $scope.pocket.index = pocketIndex;
-          $scope.pocket.name = pocket;
+          $scope.pocket.name = pocketName;
           var walletAddress = $scope.identity.wallet.getAddress([$scope.pocket.index]);
           if (!walletAddress.mpk) {
               // derive mpk here for now so we can show as master address
