@@ -67,8 +67,6 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   }
 
   // generated addresses
-  $scope.addresses = {};
-  $scope.allAddresses = [];
 
   var bg = DarkWallet.service();
 
@@ -119,6 +117,8 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   }
 
   function loadIdentity(identity) {
+      $scope.addresses = {};
+      $scope.allAddresses = [];
       // set some links
       $scope.identity = identity;
       $scope.availableIdentities = bg.getKeyRing().availableIdentities;

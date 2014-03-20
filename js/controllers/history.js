@@ -19,6 +19,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
           $scope.pocket.mpk = undefined;
           $scope.pocket.stealth = undefined;
           $scope.pocket.addresses = $scope.allAddresses;
+          $scope.pocket.changeAddresses = [];
           $scope.isAll = true;
           $scope.balance = $scope.identity.wallet.getBalance()
       } else {
