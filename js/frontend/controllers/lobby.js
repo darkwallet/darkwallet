@@ -1,5 +1,5 @@
-define(['./module', 'darkwallet', 'util/services', 'backend/channels/catchan'],
-function (controllers, DarkWallet, Services, Channel) {
+define(['./module', 'darkwallet', 'util/services'],
+function (controllers, DarkWallet, Services) {
   'use strict';
 
 
@@ -9,11 +9,9 @@ function (controllers, DarkWallet, Services, Channel) {
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
   var transport, identity, channel;
-  Services.connectNg('lobby', $scope, function(data) {
-    console.log("Lobby message", data);
-    if (data.type == 'initChannel') {
+  var startChannel = function(name) {
         transport = DarkWallet.getLobbyTransport();
-        channel = transport.getChannel(data.name)
+        channel = transport.getChannel(name)
         console.log("channel", channel);
         channel.addCallback('subscribed', function() {toaster.pop('success', 'channel', 'subscribed successfully')})
         channel.addCallback('shout', function(data) {
@@ -28,6 +26,12 @@ function (controllers, DarkWallet, Services, Channel) {
             }
         })
         $scope.subscribed = channel.channelHash;
+  }
+
+  Services.connectNg('lobby', $scope, function(data) {
+    console.log("Lobby message", data);
+    if (data.type == 'initChannel') {
+        startChannel(data.name);
     }
   }, function(port) {
     identity = DarkWallet.getIdentity();
@@ -51,8 +55,10 @@ function (controllers, DarkWallet, Services, Channel) {
         var pairCodeHash = transport.hashChannelName($scope.pairCode);
 
         // chan tests
+        if (transport.getChannel($scope.pairCode)) {
+            startChannel($scope.pairCode);
+        } else
         if ($scope.subscribed != pairCodeHash) {
-            //transport.initChannel($scope.pairCode, Channel);
             port.postMessage({'type': 'initChannel', name: $scope.pairCode});
             $scope.subscribed = pairCodeHash;
         }
