@@ -1,14 +1,16 @@
-define(['./module', 'qrjs'], function (directives, QRCode) {
+define(['./module', 'qrcodejs'], function (directives, QRCode) {
   directives.directive('qr', function() {
     return {
       restrict: 'E',
-      scope: {
-        width: '=width'
-      },
-      template: '<img src="{{url}}" width={{width}}>',
+      template: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>',
       link: function(scope, element, attrs) {
-        var options = {ecclevel: attrs.level};
-        scope.url = QRCode.generatePNG(attrs.data, options);
+        var qrcode = new QRCode(element[0].firstChild, {
+          width : attrs.width,
+          height : attrs.height,
+          correctLevel : QRCode.CorrectLevel.H,
+          useSVG: true,
+        });
+        qrcode.makeCode(attrs.data);
       }
     };
   });
