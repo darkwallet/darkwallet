@@ -2,5 +2,6 @@
  **/
 define([
     './identicon',
+    './qr',
     './qr-scanner'
 ], function () {});

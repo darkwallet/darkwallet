@@ -15,6 +15,7 @@ require.config({
     'toaster': "../vendors/AngularJS-Toaster/toaster",
     'identicon': "../vendors/identicon/identicon",
     'qrcode': "../vendors/qrcode-generator/js/qrcode",
+    'qrjs': "../vendors/qr/index",
     'jsqrcode': "../vendors/jsqrcode/jsqrcode",
     
     'bitcoinjs-lib': "../vendors/bitcoinjs-lib/bitcoinjs",
@@ -52,6 +53,9 @@ require.config({
     },
     'qrcode': {
       exports: 'qrcode'
+    },
+    'qrjs': {
+      exports: 'QRCode'
     },
     'jsqrcode': {
       deps: ['qrcode'],
