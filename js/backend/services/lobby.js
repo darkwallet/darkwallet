@@ -1,4 +1,4 @@
-define(['backend/services', 'util/transport', 'util/channels/catchan'],
+define(['backend/services', 'backend/channels/transport', 'backend/channels/catchan'],
 function(Services, Transport, Channel) {
   'use strict';
 
@@ -12,6 +12,7 @@ function(Services, Transport, Channel) {
          switch(data.type) {
              case 'initChannel':
                lobbyTransport.initChannel(data.name, Channel);
+               Services.post('lobby', data)
                break;
        }
       }, function(port) {

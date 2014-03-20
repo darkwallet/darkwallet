@@ -13,7 +13,7 @@
  <div class="popupcontainer">
       <div ng-show="identities.length" ng-cloak class="row">
         <div class="small-6 columns text-center">
-          <a href="" id="pop-identities"><h3><i class="fa fa-user"></i> {{identity.id}}</h3></a>
+          <a href="" id="pop-identities"><h3><i class="fa fa-user"></i> {{currentIdentity}}</h3></a>
         </div>
         <div class="small-6 columns">
           <a href="index.html#identities" target="_blank" class="button tiny expand">
@@ -55,6 +55,6 @@
       </div>
     </div>
     </div>
-    <script src="../vendors/requirejs/require.js" data-main="../js/main.js"></script>
+    <script src="../vendors/requirejs/require.js" data-main="../js/frontend/popup/loader.js"></script>
   </body>
 </html>

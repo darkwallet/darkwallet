@@ -7,11 +7,19 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkWallet, Services) {
+define(['./module', 'darkwallet', 'frontend/services', 'util/ng/clipboard', 'util/ng/modals'],
+function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   'use strict';
   controllers.controller('WalletCtrl',
   ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', function($scope, $location, ngProgress, toaster, $modal) {
   var pubKey, mpKey, addressIndex;
+
+  // Pointer to service
+  var bg = DarkWallet.service();
+
+  // Global scope utils
+  ModalUtils.registerScope($scope, $modal);
+  ClipboardUtils.registerScope($scope);
 
   // Gui services
   var report = function(msg) {
@@ -20,6 +28,8 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
       }
       toaster.pop('note', "wallet", msg)
   }
+
+  // Gui service, connect to report events on page.
   Services.connect('gui', function(data) {
     console.log('gui message arriving');
     if (data.type == 'balance') {
@@ -43,6 +53,8 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
         }
     }
   })
+
+  // Obelisk service, connect to get notified on events and connection.
   Services.connect('obelisk', function(data) {
     console.log("obelisk bus message", data);
     if (data.type == 'connected') {
@@ -51,6 +63,7 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
     }
   })
 
+  // Wallet service, connect to get notified about identity getting loaded.
   Services.connect('wallet', function(data) {
     console.log("wallet bus message", data);
     if (data.type == 'ready') {
@@ -61,16 +74,10 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   })
 
 
-  // Tabs
+  // Check if a route is active
   $scope.isActive = function(route) {
     return route === $location.path();
   }
-
-  // generated addresses
-  $scope.addresses = {};
-  $scope.allAddresses = [];
-
-  var bg = DarkWallet.service();
 
   // Initialize if empty wallet
   function initializeEmpty() {
@@ -82,10 +89,15 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
           }
       }
   }
+
   function loadAddresses(identity) {
       /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var walletAddress = identity.wallet.getAddress(pubKeyIndex);
+          // Init pockets
+          for(var idx=0; idx<identity.wallet.pockets.length; idx++) {
+              $scope.initPocket(idx);
+          };
           // Regular addresses
           if (walletAddress.index.length > 1) {
               // add to scope
@@ -103,6 +115,8 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
   }
 
   function loadIdentity(identity) {
+      $scope.addresses = {};
+      $scope.allAddresses = [];
       // set some links
       $scope.identity = identity;
       $scope.availableIdentities = bg.getKeyRing().availableIdentities;
@@ -126,6 +140,17 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
           $scope.$apply();
       }
   };
+
+  // Initialize pocket structures.
+  $scope.initPocket = function(rowIndex) {
+      var pocketIndex = rowIndex*2;
+      if (!$scope.addresses[pocketIndex]) {
+          $scope.addresses[pocketIndex] = [];
+      }
+      if (!$scope.addresses[pocketIndex+1]) {
+          $scope.addresses[pocketIndex+1] = [];
+      }
+  }
 
   // scope function to generate (or load from cache) a new address
   $scope.generateAddress = function(isChange, n) {
@@ -154,123 +179,16 @@ define(['./module', 'darkwallet', 'util/services'], function (controllers, DarkW
 
   // get a free change address or a new one
   $scope.getChangeAddress = function() {
-    for(var idx=0; $scope.changeAddresses.length; idx++) {
-        if ($scope.changeAddresses[idx].balance == 0) {
-            return $scope.changeAddresses[idx];
+    for(var idx=0; $scope.allAddresses.length; idx++) {
+        if ($scope.allAddresses[idx].nOutputs == 0 && $scope.allAddresses[idx].index[0]%2 == 1) {
+            return $scope.allAddresses[idx];
         }
     }
     return $scope.generateAddress(1);
   }
 
-  // function to receive stealth information
-  $scope.stealth = {'password': ''};
-  $scope.receiveStealth = function() {
-      toaster.pop('note', "stealth", "initializing")
-      ngProgress.start();
-      
-      var client = DarkWallet.getClient();
-      var stealth_fetched = function(error, results) {
-          if (error) {
-              console.log("error on stealth");
-              toaster.pop('error', "stealth", error)
-              //write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
-              return;
-          }
-          console.log("STEALTH", results);
-          try {
-              $scope.identity.wallet.processStealth(results, $scope.stealth.password);
-              toaster.pop('success', "stealth", "ok")
-          } catch (e) {
-              toaster.pop('error', "stealth", e.message)
-          }
-          ngProgress.complete();
-      }
-      client.fetch_stealth([0,0], stealth_fetched, 0);
-  }
-
-  /**
-   * Opens a modal
-   * 
-   * @param {string} tplName Name of the template to be loaded
-   * @param {object} vars Key-value pairs object that passes parameters from main
-   * scope to the modal one. You can get the variables in the modal accessing to
-   * `$scope.vars` variable.
-   * @param {function} okCallback Function called when clicked on Ok button. The
-   * first parameter is the data returned by the modal and the second one the vars
-   * parameter passed to this function.
-   * @param {function} cancelCallback Function called when modal is cancelled. The
-   * first parameter is the reason because the modal has been cancelled and the
-   * second one the vars parameter passed to this function.
-   */
-  $scope.openModal = function(tplName, vars, okCallback, cancelCallback) {
-
-    var ModalCtrl = function ($scope, $modalInstance, vars) {
-      $scope.vars = vars;
-      $scope.ok = function (value) {
-        $modalInstance.close(value);
-      };
-      $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-      };
-    };
-
-    var ok = function(data) {
-      okCallback ? (vars ? okCallback(data, vars) : okCallback(data)) : null;
-    };
-    var cancel = function(reason) {
-      cancelCallback ? (vars ? cancelCallback(reason, vars) : cancelCallback(reason)) : null;
-    };
-
-    $modal.open({
-      templateUrl: 'modals/' + tplName + '.html',
-      controller: ModalCtrl,
-      resolve: {
-        vars: function() {
-          return vars;
-        }
-      }
-    }).result.then(ok, cancel);
-  };
-  
-  $scope.onQrModalOk = function(data, vars) {
-    if (Array.isArray(vars.field)) {
-      vars.field.push({address: data});
-    } else {
-      vars.field.address = data;
-    }
-  };
-  
-  $scope.onQrModalCancel = function(data, vars) {
-  };
-
-  $scope.copyClipboard = function(text) {
-    var copyDiv = document.createElement('div');
-    copyDiv.contentEditable = true;
-    copyDiv.style="position: fixed;";
-    document.getElementById('fixed').appendChild(copyDiv);
-    copyDiv.innerHTML = text;
-    copyDiv.unselectable = "off";
-    copyDiv.focus();
-    document.execCommand('SelectAll');
-    document.execCommand("Copy", false, null);
-    document.getElementById('fixed').removeChild(copyDiv);
-  }
-  
-  $scope.pasteClipboard = function() {
-    var pasteDiv = document.createElement('div');
-    pasteDiv.contentEditable = true;
-    document.getElementById('fixed').appendChild(pasteDiv);
-    pasteDiv.innerHTML = '';
-    pasteDiv.unselectable = "off";
-    pasteDiv.focus();
-    document.execCommand("paste");
-    var text = pasteDiv.innerText;
-    document.getElementById('fixed').removeChild(pasteDiv);
-    return text;
-  }
-
   // Load identity
-  if (bg.getKeyRing().availableIdentities.length) {
+  if (bg.getKeyRing().availableIdentities.length && !bg.getIdentity()) {
     bg.loadIdentity(0);
   }
 }]);

@@ -11,7 +11,11 @@ define(['darkwallet', 'util/stealth', 'bitcoinjs-lib', 'sjcl'], function(DarkWal
 function Wallet(store) {
     this.is_cold = store.get('is_cold');
     this.pubKeys = store.init('pubkeys', {});
-    this.pockets = store.init('pockets', ['default', 'change']);
+    this.pockets = store.init('pockets', ['default']);
+    // clean up change pocket
+    if (this.pockets.indexOf('change') != -1) {
+        this.pockets.splice(this.pockets.indexOf('change'), 1);
+    }
     this.mpk = store.get('mpk');
     if (!this.mpk) {
          console.log("Wallet without mpk!", this.mpk);
@@ -19,23 +23,25 @@ function Wallet(store) {
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
     this.wallet = new Bitcoin.Wallet(this.mpk);
     this.store = store;
+
+    // store balance
     this.loadPubKeys();
+    this.balance = this.getBalance();
 }
 
 /**
  * Get balance for a specific pocket or all pockets
  * @param {String or undefined} pocket Pocket number or all pockets if undefined
  */
-Wallet.prototype.getBalance = function(pocket) {
+Wallet.prototype.getBalance = function(pocketIndex) {
     var balance = 0;
     var allAddresses = [];
     var keys = Object.keys(this.pubKeys);
-    if (pocket === undefined) {
+    if (pocketIndex === undefined) {
         for(var idx=0; idx<keys.length; idx++) {
             allAddresses.push(this.pubKeys[keys[idx]]);
         }
     } else {
-       var pocketIndex = this.pockets.indexOf(pocket);
         for(var idx=0; idx<keys.length; idx++) {
             var walletAddress = this.pubKeys[keys[idx]];
             if (walletAddress.index[0] == pocketIndex) {
@@ -46,6 +52,9 @@ Wallet.prototype.getBalance = function(pocket) {
     allAddresses.forEach(function(walletAddress) {
         balance += walletAddress.balance;
     });
+    if (pocketIndex === undefined) {
+        this.balance = balance;
+    }
     return balance;
 }
 

@@ -117,13 +117,13 @@
           <th class="text-right">QR Code / Copy</th>
           </thead>
           <tbody>
-          <tr ng-repeat="address in pocket.addresses track by $index" ng-show="address.nOutputs == 0">
+          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) track by $index" ng-show="address.nOutputs == 0">
             <td class="icon"><a href="" class="button square fa fa-pencil-square"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>0</td>
             <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
           </tr>
-          <tr ng-repeat="address in pocket.addresses track by $index" ng-show="address.nOutputs != 0">
+          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) track by $index" ng-show="address.nOutputs != 0">
             <td class="icon"><a class="button square fa fa-edit"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>{{address.balance | currencyFilter}}</td>
@@ -132,6 +132,7 @@
         </tbody>
         </table>
         <a class="button small" ng-click="generateAddress(pocket.index)">New address</a>
+        <a class="button small" ng-click="generateAddress(pocket.index+1)">New change address</a>
       </tab>
       <tab heading="Actions" ng-hide="isAll">
         <div class="row">

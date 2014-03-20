@@ -12,8 +12,8 @@ define([
     './lobby',
     './multisig',
     './new_wallet',
-    './popup',
     './send',
     './settings',
-    './wallet'
+    './wallet',
+    './rcv_stealth'
 ], function () {});
