@@ -187,6 +187,7 @@ function DarkWalletService() {
         } else {
             console.log("connecting backend");
             obeliskClient.connect('ws://85.25.198.97:8888', function() {
+                obeliskClient.getClient().connected = true;
                 console.log("backend connected");
                 handleInitialConnect();
                 connected = true;
