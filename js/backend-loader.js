@@ -72,6 +72,5 @@ require.config({
     'sjcl': {
       deps: ['sjcl-real']
     }
-  },
-  deps: ['bootstrap']
+  }
 });
