@@ -21,8 +21,10 @@ define(['./module', 'darkwallet', 'identicon', 'bitcoinjs-lib'], function (direc
         }
         // Watch for hash changes
         scope.$watch('hash', function() {
-          var pubKeyBytes = Bitcoin.convert.hexToBytes(scope.hash);
-          createFromBytes(pubKeyBytes.slice(8,16));
+          if (scope.hash) {
+            var pubKeyBytes = Bitcoin.convert.hexToBytes(scope.hash);
+            createFromBytes(pubKeyBytes.slice(8,16));
+          }
         })
       }
     }
