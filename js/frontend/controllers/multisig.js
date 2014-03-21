@@ -27,6 +27,7 @@ function (controllers, DarkWallet, BtcUtils) {
         if (multisig.name) {
             var identity = DarkWallet.getIdentity();
             identity.wallet.multisig.addFund(multisig);
+            $scope.selectFund(multisig, identity.wallet.multisig.funds.length-1);
         }
     };
   }]);

@@ -2,8 +2,8 @@
   <div class="large-2 columns panel">
     <ul class="side-nav">
       <li>Pockets on my wallet</li>
-      <li ng-class="{true:'active', false:''}[selectedPocket===undefined]" class="active" ng-click="selectPocket()"><a>All</a></li>
-      <li ng-class="{true:'active', false:''}[$index==selectedPocket]" ng-repeat="pocketName in identity.wallet.pockets" ng-click="selectPocket(pocketName, $index)" ><a>{{pocketName}}</a></li>
+      <li ng-class="{active: 'pocket:all'===selectedPocket}" class="active" ng-click="selectPocket()"><a>All</a></li>
+      <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat="pocketName in identity.wallet.pockets" ng-click="selectPocket(pocketName, $index)" ><a>{{pocketName}}</a></li>
       <li ng-show="creatingPocket">
         <form ng-submit="createPocket()">
           <input type="text" id="pocketNameInput" ng-model="newPocketName" placeholder="Name your pocket..." />
@@ -15,7 +15,7 @@
       </li>
       <li class="divider"></li>
       <li>My multisig funds</li>
-      <li ng-click="selectFund(fund, $index)" ng-repeat="fund in identity.wallet.multisig.funds"><a href="">{{fund.name}}</a></li>
+      <li ng-class="{active: 'fund:'+$index===selectedPocket}" ng-click="selectFund(fund, $index)" ng-repeat="fund in identity.wallet.multisig.funds track by $index"><a href="">{{fund.name}}</a></li>
       <li><a class="button small expand radius" ng-click="selectedPocket = 'newMultisig'">New Multisig fund</a></li>
       <li class="divider"></li>
       <li>Watch-only pockets</li>

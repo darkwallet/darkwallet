@@ -9,6 +9,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
   // History
   
   $scope.pocketName = "All Pockets";
+  $scope.selectedPocket = 'pocket:all';
   $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $scope.allAddresses, changeAddresses: []};
   $scope.isAll = true;
   $scope.isFund = false;
@@ -22,6 +23,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
       $scope.pocket.mpk = undefined;
       $scope.pocket.stealth = undefined;
       $scope.balance = 0;
+      $scope.selectedPocket = 'fund:' + rowIndex;
   }
   $scope.selectPocket = function(pocketName, rowIndex) {
       var pocketIndex;
@@ -35,6 +37,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
           $scope.isAll = true;
           $scope.isFund = false;
           $scope.balance = $scope.identity.wallet.getBalance()
+          rowIndex = 'all';
       } else {
           pocketIndex = rowIndex*2;
           $scope.pocket.index = pocketIndex;
@@ -56,7 +59,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
           // balance is sum of public and change branches
           $scope.balance = $scope.identity.wallet.getBalance(pocketIndex)+$scope.identity.wallet.getBalance(pocketIndex+1);
       }
-      $scope.selectedPocket = rowIndex;
+      $scope.selectedPocket = 'pocket:' + rowIndex;
   }
 
   // Pockets
