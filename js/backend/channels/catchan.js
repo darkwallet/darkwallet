@@ -98,19 +98,21 @@ function (Bitcoin, multiParty, Curve25519) {
   Channel.prototype.receiveDH = function(data) {
       // should be changed by version using multiParty functions
       var otherKey = data.pubKey;
-      var pk2 = Curve25519.bytes2bi(otherKey)
+      var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey)
       var shared = Curve25519.ecDH(this.priv, pk2);
 
-      shared = Curve25519.bi2bytes(shared, 32);
+      shared = shared.toByteArrayUnsigned()
       shared = Curve25519.bytes2string(shared)
       var decrypted;
       try {
           decrypted = sjcl.decrypt(shared, data.data);
       } catch(err) {
           // message is not for us.. ignore     
+          console.log("[catchan] Encrypted message not for us!")
       }
       if (decrypted) { 
           var decoded = JSON.parse(decrypted);
+          console.log("[catchan] Decrypted", decoded);
           this.triggerCallbacks(decoded.type, decoded);
       }
  
@@ -118,11 +120,11 @@ function (Bitcoin, multiParty, Curve25519) {
   Channel.prototype.postDH = function(otherKey, data, callback) {
       // should be changed by version using multiParty functions
       data.sender = this.fingerprint;
-      var pk2 = Curve25519.bytes2bi(otherKey)
+      var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey)
       var shared = Curve25519.ecDH(this.priv, pk2);
-      var myPub = Curve25519.bi2bytes(this.pub, 32).reverse();
+      var myPub = this.pub.toByteArrayUnsigned();
 
-      shared = Curve25519.bi2bytes(shared, 32);
+      shared = shared.toByteArrayUnsigned();
       shared = Curve25519.bytes2string(shared)
       var encrypted = sjcl.encrypt(shared, JSON.stringify(data), {ks: 256, ts: 128});
       this.postEncrypted(JSON.stringify({'type': 'personal', 'data': encrypted, 'pubKey': myPub}), callback);
@@ -191,6 +193,7 @@ function (Bitcoin, multiParty, Curve25519) {
           else if (decrypted.type == 'shout') {
               //console.log(decrypted.text)
           } else if (decrypted.type == 'personal') {
+              console.log("[catchan] Decoding DH message");
               this.receiveDH(decrypted);
           } else {
               multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
@@ -201,7 +204,7 @@ function (Bitcoin, multiParty, Curve25519) {
   }
 
   Channel.prototype.startPairing = function(fingerprint, pubKey) {
-    console.log('startpairing', fingerprint, pubKey)
+    console.log('[catchan] startpairing', fingerprint, pubKey)
   }
 
   return Channel;

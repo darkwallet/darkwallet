@@ -74,6 +74,8 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin) {
                 ChannelLink.start($scope.pairCode, port)
             }
             $scope.subscribed = pairCodeHash;
+        } else {
+            currentChannel.sendOpening();
         }
         /*
         client.chan_get("b", "announcements", function(err, data){console.log("channel get", err, data)})
