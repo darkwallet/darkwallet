@@ -5389,3 +5389,10 @@ span.meter {
 
 .select-list option {
   padding: 1em; }
+
+.showqr {
+  max-height: 500px;
+  margin-bottom: 4em; }
+
+.showqr svg {
+  height: auto; }

@@ -1,4 +1,7 @@
-<h3>Scan this QR</h3>
-<qr data="{{vars.address}}" level="L" width="200" height="200"></qr>
-<p>{{vars.address}}</p>
+<div class="text-center showqr">
+	<h3>Scan this QR</h3>
+	<qr data="{{vars.address}}" level="L"></qr>
+	<p>{{vars.address}}</p>
+</div>
+
 <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
