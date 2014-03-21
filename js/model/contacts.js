@@ -14,12 +14,6 @@ var Crypto = Bitcoin.Crypto;
 function Contacts(store) {
   this.store = store;
   this.contacts = this.store.init('contacts', []);
-  // TODO Remove when Darkwallet 1.0 release
-  if (!Array.isArray(this.contacts)) {
-    this.contacts = [];
-    this.store.set('contacts', this.contacts);
-    this.store.save();
-  }
   this.updateContacts();
 }
 
@@ -29,8 +23,13 @@ function Contacts(store) {
  */
 Contacts.prototype.updateContacts = function() {
   var self = this;
-  Object.keys(this.contacts).forEach(function(contactId) {
-      var contact = self.contacts[contactId];
+  // TODO Remove when Darkwallet 1.0 release
+  if (!Array.isArray(this.contacts)) {
+    this.contacts = [];
+    this.store.set('contacts', this.contacts);
+    this.store.save();
+  }
+  this.contacts.forEach(function(contact) {
       if (!contact.hash) {
           self.updateContactHash(contact);
       }
