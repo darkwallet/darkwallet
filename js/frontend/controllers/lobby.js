@@ -1,48 +1,51 @@
-define(['./module', 'darkwallet', 'frontend/services'],
-function (controllers, DarkWallet, Services) {
+define(['./module', 'darkwallet', 'frontend/services', 'frontend/channel_link'],
+function (controllers, DarkWallet, Services, ChannelLink) {
   'use strict';
-
-
-  // enc.test();
-  // --
 
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
-  var transport, identity, channel;
-  var startChannel = function(name) {
-      transport = DarkWallet.getLobbyTransport();
-      var newChannel = transport.getChannel(name)
-      channel = newChannel;
-      console.log("[LobbyCtrl] Link channel", newChannel);
-      var subId = newChannel.addCallback('subscribed', function() {
-          toaster.pop('success', 'channel', 'subscribed successfully')
-      })
-      var shoutId = newChannel.addCallback('shout', function(data) {
-          $scope.shoutboxLog.push(data)
-          if (data.sender == newChannel.fingerprint) {
-              toaster.pop('success', 'me', data.text)
-          } else {
-              toaster.pop('note', data.sender.slice(0,12), data.text)
-          }
-          if (!$scope.$$phase) {
-              $scope.$apply();
-          }
-      })
-      $scope.$on('$destroy', function () {
-          console.log("[LobbyCtrl] Unlink channels");
-          newChannel.removeCallback('subscribed', subId);
-          newChannel.removeCallback('shout', shoutId);
-      });
-      $scope.subscribed = newChannel.channelHash;
+  var transport, currentChannel;
+
+  // Link a channel with this scope by name
+  var channelLinks = {};
+  var linkChannel = function(name) {
+      var channelLink;
+      if (channelLinks.hasOwnProperty(name)) {
+          // Channel is already linked
+          channelLink = channelLinks[name];
+      } else {
+          // Totally new channel, subscribe
+          channelLink = new ChannelLink(name, $scope);
+          channelLinks[name] = channelLink;
+          channelLink.addCallback('subscribed', function() {
+              toaster.pop('success', 'channel', 'subscribed successfully')
+          })
+          channelLink.addCallback('shout', function(data) {
+              $scope.shoutboxLog.push(data)
+              if (data.sender == channelLink.channel.fingerprint) {
+                  toaster.pop('success', 'me', data.text)
+              } else {
+                  toaster.pop('note', data.sender.slice(0,12), data.text)
+              }
+              if (!$scope.$$phase) {
+                  $scope.$apply();
+              }
+          })
+      }
+      $scope.subscribed = channelLink.channel.channelHash;
+      currentChannel = channelLink.channel;
+      return channelLink;
   }
 
+  // Lobby service port
   Services.connectNg('lobby', $scope, function(data) {
+    // onMesssage callback
     console.log("[LobbyCtrl] Message", data);
     if (data.type == 'initChannel') {
-        startChannel(data.name);
+        linkChannel(data.name);
     }
   }, function(port) {
-    identity = DarkWallet.getIdentity();
+    // onCreate callback
     transport = DarkWallet.getLobbyTransport();
 
     $scope.pairCode = '';
@@ -62,13 +65,14 @@ function (controllers, DarkWallet, Services) {
     $scope.announceSelf = function() {
         var pairCodeHash = transport.hashChannelName($scope.pairCode);
 
-        // chan tests
-        if (transport.getChannel($scope.pairCode)) {
-            startChannel($scope.pairCode);
-        } else
         if ($scope.subscribed != pairCodeHash) {
-            console.log("[LobbyCtrl] Create channel", $scope.pairCode);
-            port.postMessage({'type': 'initChannel', name: $scope.pairCode});
+            if (transport.getChannel($scope.pairCode)) {
+                // Channel exists, relink
+                linkChannel($scope.pairCode);
+            } else {
+                // Create if it doesn't exist
+                ChannelLink.start($scope.pairCode, port)
+            }
             $scope.subscribed = pairCodeHash;
         }
         /*
@@ -85,7 +89,7 @@ function (controllers, DarkWallet, Services) {
     $scope.sendText = function() {
         var toSend = $scope.shoutbox;
         $scope.shoutbox = '';
-        channel.postEncrypted(JSON.stringify({text: toSend, type: 'shout', sender: channel.fingerprint}), function(err, data) {
+        currentChannel.postEncrypted(JSON.stringify({text: toSend, type: 'shout', sender: currentChannel.fingerprint}), function(err, data) {
           if (err) {
               toaster.pop('error', "error sending " + err)
           }
