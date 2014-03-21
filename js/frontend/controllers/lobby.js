@@ -2,30 +2,36 @@ define(['./module', 'darkwallet', 'frontend/services', 'frontend/channel_link'],
 function (controllers, DarkWallet, Services, ChannelLink) {
   'use strict';
 
-  // enc.test();
-  // --
-
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
-  var transport, identity, currentChannel;
+  var transport, currentChannel;
 
   // Link a channel with this scope by name
-  var bootstrapChannel = function(name) {
-      var channelLink = new ChannelLink(name, $scope);
-      channelLink.addCallback('subscribed', function() {
-          toaster.pop('success', 'channel', 'subscribed successfully')
-      })
-      channelLink.addCallback('shout', function(data) {
-          $scope.shoutboxLog.push(data)
-          if (data.sender == channelLink.channel.fingerprint) {
-              toaster.pop('success', 'me', data.text)
-          } else {
-              toaster.pop('note', data.sender.slice(0,12), data.text)
-          }
-          if (!$scope.$$phase) {
-              $scope.$apply();
-          }
-      })
+  var channelLinks = {};
+  var linkChannel = function(name) {
+      var channelLink;
+      if (channelLinks.hasOwnProperty(name)) {
+          // Channel is already linked
+          channelLink = channelLinks[name];
+      } else {
+          // Totally new channel, subscribe
+          channelLink = new ChannelLink(name, $scope);
+          channelLinks[name] = channelLink;
+          channelLink.addCallback('subscribed', function() {
+              toaster.pop('success', 'channel', 'subscribed successfully')
+          })
+          channelLink.addCallback('shout', function(data) {
+              $scope.shoutboxLog.push(data)
+              if (data.sender == channelLink.channel.fingerprint) {
+                  toaster.pop('success', 'me', data.text)
+              } else {
+                  toaster.pop('note', data.sender.slice(0,12), data.text)
+              }
+              if (!$scope.$$phase) {
+                  $scope.$apply();
+              }
+          })
+      }
       $scope.subscribed = channelLink.channel.channelHash;
       currentChannel = channelLink.channel;
       return channelLink;
@@ -36,11 +42,10 @@ function (controllers, DarkWallet, Services, ChannelLink) {
     // onMesssage callback
     console.log("[LobbyCtrl] Message", data);
     if (data.type == 'initChannel') {
-        bootstrapChannel(data.name);
+        linkChannel(data.name);
     }
   }, function(port) {
     // onCreate callback
-    identity = DarkWallet.getIdentity();
     transport = DarkWallet.getLobbyTransport();
 
     $scope.pairCode = '';
@@ -60,12 +65,14 @@ function (controllers, DarkWallet, Services, ChannelLink) {
     $scope.announceSelf = function() {
         var pairCodeHash = transport.hashChannelName($scope.pairCode);
 
-        // chan tests
-        if (transport.getChannel($scope.pairCode)) {
-            bootstrapChannel($scope.pairCode);
-        } else
         if ($scope.subscribed != pairCodeHash) {
-            ChannelLink.start($scope.pairCode, port)
+            if (transport.getChannel($scope.pairCode)) {
+                // Channel exists, relink
+                linkChannel($scope.pairCode);
+            } else {
+                // Create if it doesn't exist
+                ChannelLink.start($scope.pairCode, port)
+            }
             $scope.subscribed = pairCodeHash;
         }
         /*
