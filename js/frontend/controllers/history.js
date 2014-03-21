@@ -11,6 +11,18 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
   $scope.pocketName = "All Pockets";
   $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $scope.allAddresses, changeAddresses: []};
   $scope.isAll = true;
+  $scope.isFund = false;
+  $scope.selectFund = function(fund, rowIndex) {
+      $scope.pocket.name = fund.name;
+      $scope.pocket.index = 'fund'
+      $scope.pocket.addresses = [{label: 'fund', address: fund.address, balance: 0}]
+      $scope.pocket.changeAddresses = []
+      $scope.pocket.isAll = true;
+      $scope.isFund = true;
+      $scope.pocket.mpk = undefined;
+      $scope.pocket.stealth = undefined;
+      $scope.balance = 0;
+  }
   $scope.selectPocket = function(pocketName, rowIndex) {
       var pocketIndex;
       if (pocketName === undefined) {
@@ -21,6 +33,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
           $scope.pocket.addresses = $scope.allAddresses;
           $scope.pocket.changeAddresses = [];
           $scope.isAll = true;
+          $scope.isFund = false;
           $scope.balance = $scope.identity.wallet.getBalance()
       } else {
           pocketIndex = rowIndex*2;
@@ -39,6 +52,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
           $scope.pocket.addresses = $scope.addresses[$scope.pocket.index];
           $scope.pocket.changeAddresses = $scope.addresses[$scope.pocket.index+1];
           $scope.isAll = false;
+          $scope.isFund = false;
           // balance is sum of public and change branches
           $scope.balance = $scope.identity.wallet.getBalance(pocketIndex)+$scope.identity.wallet.getBalance(pocketIndex+1);
       }

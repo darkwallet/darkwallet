@@ -2,13 +2,14 @@
  * @fileOverview Access to the identity bitcoin keys
  */
 
-define(['darkwallet', 'util/stealth', 'bitcoinjs-lib', 'sjcl'], function(DarkWallet, Stealth, Bitcoin) {
+define(['darkwallet', 'util/stealth', 'bitcoinjs-lib', 'model/multisig', 'sjcl'],
+function(DarkWallet, Stealth, Bitcoin, MultisigFunds) {
 /**
  * Wallet class.
  * @param {Object} store Store for the object.
  * @constructor
  */
-function Wallet(store) {
+function Wallet(store, identity) {
     this.is_cold = store.get('is_cold');
     this.pubKeys = store.init('pubkeys', {});
     this.pockets = store.init('pockets', ['default']);
@@ -22,6 +23,7 @@ function Wallet(store) {
     }
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
     this.wallet = new Bitcoin.Wallet(this.mpk);
+    this.multisig = new MultisigFunds(store, identity);
     this.store = store;
 
     // store balance

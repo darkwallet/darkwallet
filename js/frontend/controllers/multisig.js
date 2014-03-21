@@ -1,5 +1,5 @@
-define(['./module', 'util/btc'],
-function (controllers, BtcUtils) {
+define(['./module', 'darkwallet', 'util/btc'],
+function (controllers, DarkWallet, BtcUtils) {
   'use strict';
   controllers.controller('MultisigCtrl', ['$scope', function($scope) {
     $scope.multisig = {};
@@ -24,6 +24,10 @@ function (controllers, BtcUtils) {
 
         // Show fund address
         $scope.multiSigAddress = multisig.address;
+        if (multisig.name) {
+            var identity = DarkWallet.getIdentity();
+            identity.wallet.multisig.addFund(multisig);
+        }
     };
   }]);
 });
