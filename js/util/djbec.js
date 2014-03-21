@@ -340,6 +340,7 @@ return {
   'inthash': inthash,
   'bi2bytes': bi2bytes,
   'bytes2bi': bytes2bi,
+  'bytes2string': bytes2string,
   'ecDH': curve25519
 };
 
