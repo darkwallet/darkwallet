@@ -46,8 +46,8 @@ Store.prototype.init = function(key, value) {
  * Save the store to database.
  * This function must be called or changes to the store won't be saved.
  */
-Store.prototype.save = function() {
-    this.keyring.save(this.store.name, this.store);
+Store.prototype.save = function(callback) {
+    this.keyring.save(this.store.name, this.store, callback);
 }
 
 return Store;

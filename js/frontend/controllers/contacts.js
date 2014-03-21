@@ -14,13 +14,13 @@ define(['./module'], function (controllers) {
     $scope.contactFormShown = false;
   };
 
-  $scope.editContact = function(contact) {
-    $scope.identity.contacts.editContact(contact);
+  $scope.editContact = function(i, contact) {
+    $scope.identity.contacts.editContact(contact, i);
     $scope.contactFormShown = false;
   };
 
-  $scope.deleteContact = function(contact) {
-    $scope.identity.contacts.deleteContact(contact);
+  $scope.deleteContact = function(i) {
+    $scope.identity.contacts.deleteContact(i);
   };
 }]);
 });
