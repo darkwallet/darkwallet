@@ -38,6 +38,7 @@ var ModalUtils = {
     $modal.open({
       templateUrl: 'modals/' + tplName + '.html',
       controller: ModalCtrl,
+      windowClass: 'modal-' + tplName,
       resolve: {
         vars: function() {
           return vars;
