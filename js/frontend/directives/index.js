@@ -3,5 +3,6 @@
 define([
     './identicon',
     './qr',
+    './qr-save-button',
     './qr-scanner'
 ], function () {});
