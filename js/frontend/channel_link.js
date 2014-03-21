@@ -20,8 +20,9 @@ define(['darkwallet'], function (DarkWallet) {
       return this.channel.addCallback(name, callback);
   }
   ChannelLink.prototype.disconnect = function() {
+      var self = this;
       this.callbacks.forEach(function(cbArgs) {
-          this.channel.removeCallback(cbArgs[0], cbArgs[1])
+          self.channel.removeCallback(cbArgs[0], cbArgs[1])
       })
       this.callbacks = []
   }
