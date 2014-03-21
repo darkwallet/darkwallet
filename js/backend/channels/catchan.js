@@ -30,7 +30,8 @@ function (Bitcoin, multiParty, Curve25519) {
       this.callbacks = {};
 
       // Set transport session key
-      var priv = multiParty.setPrivateKey(transport.getSessionKey().priv);
+      var priv = transport.getSessionKey().priv;
+      multiParty.setPrivateKey(priv);
       var pub = multiParty.genPublicKey();
 
       this.priv = priv;
