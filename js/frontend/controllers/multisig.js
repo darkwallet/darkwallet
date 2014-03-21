@@ -7,5 +7,13 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
     $scope.addParticipant = function(data, vars) {
       vars.participants.push({address: data});
     };
+
+    $scope.createMultisig = function() {
+      var participants = [];
+      $scope.multisig.participants.forEach(function(participant) {
+        participants = participant.address;
+      });
+      var script = Bitcoin.Script.createMultiSigOutputScript($scope.numsig, participants);
+    };
   }]);
 });
