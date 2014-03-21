@@ -32,8 +32,8 @@
           <h3>Channel</h3>
           <div class="wrapper"><identicon title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></identicon> {{comms.name}}</div>
           <h2>Peers</h2>
-          <div ng-click="selectPeer(peer)" ng-repeat="peer in peers">
-            <identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}
+          <div ng-repeat="peer in peers">
+            <span ng-click="selectPeer(peer)"><identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}</span> <a ng-click="pairPeer(peer)">pair</a></div>
           </div>
         </td></tr>
     </table>

@@ -1,5 +1,5 @@
-define(['./module', 'darkwallet', 'frontend/services', 'frontend/channel_link'],
-function (controllers, DarkWallet, Services, ChannelLink) {
+define(['./module', 'darkwallet', 'frontend/services', 'frontend/channel_link', 'bitcoinjs-lib'],
+function (controllers, DarkWallet, Services, ChannelLink, Bitcoin) {
   'use strict';
 
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
@@ -85,6 +85,17 @@ function (controllers, DarkWallet, Services, ChannelLink) {
             $scope.shoutboxLogAll[name] = [];
         }
         $scope.shoutboxLog = $scope.shoutboxLogAll[name];
+    }
+    $scope.pairPeer = function(peer) {
+        $scope.selectedPeer = peer;
+        var identity = DarkWallet.getIdentity();
+        var wallet = identity.wallet;
+        var address = wallet.getAddress([wallet.pockets.length-1]);
+        var mpk = address.mpk;
+        var msg = {'type': 'shout', "text": 'pairme!', sender: currentChannel.fingerprint, pubKey: currentChannel.pub, name: identity.name, mpk: mpk};
+        currentChannel.postDH(peer.pubKey, msg, function() {
+            toaster.pop("success", "lobby", "pairing sent");
+        });
     }
     $scope.sendText = function() {
         var toSend = $scope.shoutbox;
