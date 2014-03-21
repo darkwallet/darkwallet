@@ -94,6 +94,39 @@ function (Bitcoin, multiParty, Curve25519) {
       client.chan_post("b", this.channelHash, data, callback);
   }
 
+  Channel.prototype.receiveDH = function(data) {
+      // should be changed by version using multiParty functions
+      var otherKey = data.pubKey;
+      var pk2 = Curve25519.bytes2bi(otherKey)
+      var shared = Curve25519.ecDH(this.priv, pk2);
+
+      shared = Curve25519.bi2bytes(shared, 32);
+      shared = Curve25519.bytes2string(shared)
+      var decrypted;
+      try {
+          decrypted = sjcl.decrypt(shared, data.data);
+      } catch(err) {
+          // message is not for us.. ignore     
+      }
+      if (decrypted) { 
+          var decoded = JSON.parse(decrypted);
+          this.triggerCallbacks(decoded.type, decoded);
+      }
+ 
+  }
+  Channel.prototype.postDH = function(otherKey, data, callback) {
+      // should be changed by version using multiParty functions
+      data.sender = this.fingerprint;
+      var pk2 = Curve25519.bytes2bi(otherKey)
+      var shared = Curve25519.ecDH(this.priv, pk2);
+      var myPub = Curve25519.bi2bytes(this.pub, 32).reverse();
+
+      shared = Curve25519.bi2bytes(shared, 32);
+      shared = Curve25519.bytes2string(shared)
+      var encrypted = sjcl.encrypt(shared, JSON.stringify(data), {ks: 256, ts: 128});
+      this.postEncrypted(JSON.stringify({'type': 'personal', 'data': encrypted, 'pubKey': myPub}), callback);
+  }
+
   Channel.prototype.postEncrypted = function(data, callback) {
       var encrypted = sjcl.encrypt(this.name, data, {ks: 256, ts: 128});
       this.post(encrypted, callback);
@@ -156,6 +189,8 @@ function (Bitcoin, multiParty, Curve25519) {
           }
           else if (decrypted.type == 'shout') {
               //console.log(decrypted.text)
+          } else if (decrypted.type == 'personal') {
+              this.receiveDH(decrypted);
           } else {
               multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
           }
