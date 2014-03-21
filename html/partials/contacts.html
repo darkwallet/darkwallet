@@ -53,7 +53,7 @@
       <div class="large-3 columns"><input ng-model="newContact.name" type="text" placeholder="Write a new contact name" /></div>  
       <div class="large-5 columns"><input ng-model="newContact.address" type="text" placeholder="Enter a bitcoin address here or use the buttons on the right." /></div>
       <div class="large-2 columns"><a href="" ng-click="newContact.address = pasteClipboard()" class="button postfix fa fa-clipboard">Paste</a></div>
-      <div class="large-2 columns"><a href="" ng-click="openModal('scan-qr', {field: field}, onQrModalOk, onQrModalCancel)" class="button postfix fa fa-qrcode">Scan</a></div>
+      <div class="large-2 columns"><a href="" ng-click="openModal('scan-qr', {field: newContact}, onQrModalOk, onQrModalCancel)" class="button postfix fa fa-qrcode">Scan</a></div>
     </div>
     <div class="row text-right">
        <div class="small-12 columns">
