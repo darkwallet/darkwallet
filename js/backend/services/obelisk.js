@@ -14,7 +14,7 @@ function(Services) {
             console.log('[bus] obelisk client connected');
             var client = self.client;
             if (client && client.connected) {
-                Services.post('obelisk', {'type': 'connected'});
+                port.postMessage({'type': 'connected'});
             }
       }, function() {
           console.log('[bus] obelisk client disconnected');

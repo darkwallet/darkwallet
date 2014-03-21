@@ -11,7 +11,8 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/ng/clipboard', 'uti
 function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   'use strict';
   controllers.controller('WalletCtrl',
-  ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', function($scope, $location, ngProgress, toaster, $modal) {
+  ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', '$timeout',
+   function($scope, $location, ngProgress, toaster, $modal, $timeout) {
   var pubKey, mpKey, addressIndex;
 
   // Pointer to service
@@ -132,8 +133,18 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
       // this will connect to obelisk if we're not yet connected
       ngProgress.color('firebrick');
       ngProgress.start();
+      if (bg.getClient() && bg.getClient().connected) {
+          // If already connected set the progress bar to finish
+          // we wait a moment to provide better visual feedback
+          $timeout(function() {
+              ngProgress.color('green');
+              ngProgress.complete();
+          }, 500);
+      } else {
+          // Request connecting to blockchain
+          bg.connect();
+      }
       console.log("[WalletCtrl] loadIdentity", identity.name);
-      bg.connect();
       // apply scope changes
       if(!$scope.$$phase) {
           $scope.$apply();
