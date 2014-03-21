@@ -122,5 +122,8 @@ span.meter { padding: 5px 0 0 5px; }
 
 .select-list { min-height: 100px; background-image: none; }
 
-.showqr { max-height: 500px; margin-bottom: 4em; }
+.showqr { max-height: 500px; }
 .showqr svg { height: auto; }
+
+.qr-container { padding: 1em; background: white; }
+.qr-container h6 { color: black; }

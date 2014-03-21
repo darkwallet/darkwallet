@@ -35,7 +35,10 @@
           </td>
         </tr>
         <tr ng-repeat-end ng-show="contactFormShown === $index" class="editrow">
-          <td  colspan="4">
+          <td>
+            <identicon icon-size="38" hash="contact.hash" title="{{contact.hash}}"></identicon>
+          </td>
+          <td  colspan="3">
             <form ng-submit="contactFormShown = false; editContact($index, contact)">
               <input class="contact-name columns large-5" ng-model="contactToEdit.name" type="text" placeholder="Write a new contact name" />
               <input class="contact-name columns large-5" ng-model="contactToEdit.address" type="text" placeholder="Write the address" />

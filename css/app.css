@@ -5388,8 +5388,14 @@ span.meter {
   background-image: none; }
 
 .showqr {
-  max-height: 500px;
-  margin-bottom: 4em; }
+  max-height: 500px; }
 
 .showqr svg {
   height: auto; }
+
+.qr-container {
+  padding: 1em;
+  background: white; }
+
+.qr-container h6 {
+  color: black; }
