@@ -6,11 +6,11 @@ function(Services) {
     Services.start('gui', function() {
       }, function(port) {
           // onMessage
-          console.log('bus: gui client connected');
+          console.log('[bus] gui client connected');
           port.postMessage({type: 'note', text: 'gui client connected'})
       }, function(port) {
           // Connected
-          console.log('bus: gui client disconnected');
+          console.log('[bus] gui client disconnected');
     });
   }
 

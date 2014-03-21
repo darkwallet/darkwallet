@@ -20,33 +20,23 @@ function(IdentityKeyRing, Services) {
     Services.start('wallet', function() {
       }, function(port) {
           // onMessage
-          console.log('bus: wallet client connected');
+          console.log('[bus] wallet client connected');
           if (currentIdentity && keyRing.identities.hasOwnProperty(currentIdentity)) {
               port.postMessage({'type': 'ready', 'identity': currentIdentity})
           }
       }, function(port) {
           // Connected
-          console.log('bus: wallet client disconnected');
+          console.log('[bus] wallet client disconnected');
     });
 
     /***************************************
     /* Identities
      */
 
-    // Preload identity names
-    keyRing.loadIdentities(function(names) {
-        if (!names) {
-           console.log("bad loading");
-           return;
-        }
-        // get the first identity
-        //keyRing.get(names[0], loadIdentity);
-    });
-
     this.loadIdentity = function(idx) {
         var name = keyRing.availableIdentities[idx];
         if (currentIdentity != name) {
-            console.log("load identity", name)
+            console.log("[wallet] Load identity", name)
             currentIdentity = name;
             keyRing.get(name, function(identity) {
                 identity.history.update = function() { Services.post('gui', {name: 'update'}); };
@@ -75,7 +65,7 @@ function(IdentityKeyRing, Services) {
      */
     function historyFetched(err, walletAddress, history) {
         if (err) {
-            console.log("Error fetching history for", walletAddress.address);
+            console.log("[wallet] Error fetching history for", walletAddress.address);
             return;
         }
         var client = core.getClient();
@@ -86,12 +76,12 @@ function(IdentityKeyRing, Services) {
 
         // now subscribe the address for notifications
         client.subscribe(walletAddress.address, function(err, res) {
-            console.log("subscribed", walletAddress.address, err, res);
+            console.log("[wallet] subscribed", walletAddress.address, err, res);
 
             // fill history after subscribing to ensure we got all histories already (for now).
             identity.history.fillHistory(history);
         }, function(addressUpdate) {
-            console.log("update", addressUpdate)
+            console.log("[wallet] update", addressUpdate)
         });
         Services.post('gui', {type: "balance"});
     }
@@ -115,7 +105,7 @@ function(IdentityKeyRing, Services) {
     function handleHeight(err, height) {
         currentHeight = height;
         Services.post('gui', {type: 'height', value: height})
-        console.log("height fetched", height);
+        console.log("[wallet] height fetched", height);
     }
 
     this.handleInitialConnect = function() {

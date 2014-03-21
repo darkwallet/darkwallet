@@ -78,7 +78,9 @@ IdentityKeyRing.prototype.loadIdentities = function(callback) {
        return;
     }
     // Load from local storage
+    console.log('[Keyring] Load from local storage');
     chrome.storage.local.get(null, function(obj) {
+        console.log('[Keyring] Loaded');
         var keys = Object.keys(obj);
         for(var idx=0; idx<keys.length; idx++) {
             if (keys[idx].substring(0, DW_NS.length) == DW_NS) {

@@ -11,11 +11,13 @@ function(Services) {
       Services.start('obelisk', function() {
         }, function(port) {
             // Connected
-            console.log('bus: obelisk client connected');
+            console.log('[bus] obelisk client connected');
             var client = self.client;
             if (client && client.connected) {
                 Services.post('obelisk', {'type': 'connected'});
             }
+      }, function() {
+          console.log('[bus] obelisk client disconnected');
       });
   }
 
@@ -23,8 +25,9 @@ function(Services) {
       if (this.connected || this.connecting) {
           // wait for connection
       } else {
-          console.log("Connecting backend");
+          console.log("[obelisk] Connecting");
           this.connectClient(connectUri, function() {
+              console.log("[obelisk] Connected");
               handleConnect ? handleConnect : null;
               Services.post('obelisk', {'type': 'connected'});
           });
