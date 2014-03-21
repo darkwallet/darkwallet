@@ -4,8 +4,9 @@
 
 define(['./module'], function (controllers) {
   'use strict';
-  controllers.controller('ContactsCtrl', ['$scope', function($scope, $modal) {
+  controllers.controller('ContactsCtrl', ['$scope', function($scope) {
   $scope.newContact = {};
+  $scope.contactToEdit = {};
   $scope.contactFormShown = false;
 
   $scope.createContact = function() {
@@ -14,9 +15,17 @@ define(['./module'], function (controllers) {
     $scope.contactFormShown = false;
   };
 
+  $scope.openEditForm = function(i, contact) {
+    $scope.contactFormShown = i;
+    $scope.contactToEdit = {name: contact.name, address: contact.address};
+  };
+
   $scope.editContact = function(i, contact) {
+    contact.name = $scope.contactToEdit.name;
+    contact.address = $scope.contactToEdit.address;
     $scope.identity.contacts.editContact(contact, i);
     $scope.contactFormShown = false;
+    $scope.contactToEdit = {};
   };
 
   $scope.deleteContact = function(i) {

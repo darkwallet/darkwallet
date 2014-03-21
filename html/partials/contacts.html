@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat-start="contact in identity.contacts.contacts track by $index" ng-hide="contactFormShown === $index">
+        <tr ng-repeat-start="contact in identity.contacts.contacts | orderBy:'name' track by $index" ng-hide="contactFormShown === $index">
           <td>
             <identicon icon-size="38" hash="contact.hash" title="{{contact.hash}}"></identicon>
           </td>
@@ -29,7 +29,7 @@
           <td class="text-right" ng-hide="contactFormShown === $index">
             <button ng-click="copyClipboard(contact.address)" class="button square fa fa-clipboard"></button>
             <button ng-click="openModal('show-qr', {address: contact.address})" class="button square fa fa-qrcode"></button>
-            <button ng-click="contactFormShown = $index" class="button square fa fa-edit"></button>
+            <button ng-click="contactFormShown = $index; openEditForm($index, contact)" class="button square fa fa-edit"></button>
             <button ng-click="openModal('confirm-delete-contact', {index: $index, contact: contact}, deleteContact)" class="button square alert fa fa-trash-o"></button>
             <!--<button ng-click="deleteContact(contact)" class="button square alert fa fa-trash-o"></button>-->
           </td>
@@ -37,9 +37,9 @@
         <tr ng-repeat-end ng-show="contactFormShown === $index" class="editrow">
           <td  colspan="4">
             <form ng-submit="contactFormShown = false; editContact($index, contact)">
-              <input class="contact-name columns large-5" ng-model="contact.name" type="text" placeholder="Write a new contact name" />
-              <input class="contact-name columns large-5" ng-model="contact.address" type="text" placeholder="Write the address" />
-              <button ng-click="contactFormShown = false; editContact($index, contact)" class="button small text-right">Save</button>
+              <input class="contact-name columns large-5" ng-model="contactToEdit.name" type="text" placeholder="Write a new contact name" />
+              <input class="contact-name columns large-5" ng-model="contactToEdit.address" type="text" placeholder="Write the address" />
+              <button class="button small text-right">Save</button>
             </form>
           </td>
         </tr>
