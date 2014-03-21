@@ -24,14 +24,14 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   // Gui services
   var report = function(msg) {
       if (console) {
-        console.log(msg);
+        console.log("[WalletCtrl] " + msg);
       }
       toaster.pop('note', "wallet", msg)
   }
 
   // Gui service, connect to report events on page.
   Services.connect('gui', function(data) {
-    console.log('gui message arriving');
+    console.log('[WalletCtrl] gui bus:', data.type);
     if (data.type == 'balance') {
       toaster.pop('note', "wallet", 'balance update')
     }
@@ -56,7 +56,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
 
   // Obelisk service, connect to get notified on events and connection.
   Services.connect('obelisk', function(data) {
-    console.log("obelisk bus message", data);
+    console.log("[WalletCtrl] obelisk bus:", data.type);
     if (data.type == 'connected') {
         ngProgress.color('green');
         ngProgress.complete();
@@ -65,10 +65,9 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
 
   // Wallet service, connect to get notified about identity getting loaded.
   Services.connect('wallet', function(data) {
-    console.log("wallet bus message", data);
+    console.log("[WalletCtrl] wallet bus:", data.type);
     if (data.type == 'ready') {
         // identity is ready here
-        console.log('loaded', data.identity)
         loadIdentity(DarkWallet.getIdentity())
     }
   })
@@ -133,7 +132,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
       // this will connect to obelisk if we're not yet connected
       ngProgress.color('firebrick');
       ngProgress.start();
-      console.log("connect");
+      console.log("[WalletCtrl] loadIdentity", identity.name);
       bg.connect();
       // apply scope changes
       if(!$scope.$$phase) {

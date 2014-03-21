@@ -11,12 +11,15 @@ function (controllers, DarkWallet, Services) {
   var transport, identity, channel;
   var startChannel = function(name) {
       transport = DarkWallet.getLobbyTransport();
-      channel = transport.getChannel(name)
-      console.log("channel", channel);
-      channel.addCallback('subscribed', function() {toaster.pop('success', 'channel', 'subscribed successfully')})
-      channel.addCallback('shout', function(data) {
+      var newChannel = transport.getChannel(name)
+      channel = newChannel;
+      console.log("[LobbyCtrl] Link channel", newChannel);
+      var subId = newChannel.addCallback('subscribed', function() {
+          toaster.pop('success', 'channel', 'subscribed successfully')
+      })
+      var shoutId = newChannel.addCallback('shout', function(data) {
           $scope.shoutboxLog.push(data)
-          if (data.sender == channel.fingerprint) {
+          if (data.sender == newChannel.fingerprint) {
               toaster.pop('success', 'me', data.text)
           } else {
               toaster.pop('note', data.sender.slice(0,12), data.text)
@@ -25,11 +28,16 @@ function (controllers, DarkWallet, Services) {
               $scope.$apply();
           }
       })
-      $scope.subscribed = channel.channelHash;
+      $scope.$on('$destroy', function () {
+          console.log("[LobbyCtrl] Unlink channels");
+          newChannel.removeCallback('subscribed', subId);
+          newChannel.removeCallback('shout', shoutId);
+      });
+      $scope.subscribed = newChannel.channelHash;
   }
 
   Services.connectNg('lobby', $scope, function(data) {
-    console.log("Lobby message", data);
+    console.log("[LobbyCtrl] Message", data);
     if (data.type == 'initChannel') {
         startChannel(data.name);
     }
@@ -59,6 +67,7 @@ function (controllers, DarkWallet, Services) {
             startChannel($scope.pairCode);
         } else
         if ($scope.subscribed != pairCodeHash) {
+            console.log("[LobbyCtrl] Create channel", $scope.pairCode);
             port.postMessage({'type': 'initChannel', name: $scope.pairCode});
             $scope.subscribed = pairCodeHash;
         }

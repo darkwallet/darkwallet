@@ -106,6 +106,15 @@ function (Bitcoin, multiParty, Curve25519) {
       } else {
           this.callbacks[type].push(callback)
       }
+      return callback;
+  }
+  Channel.prototype.removeCallback = function(type, callback) {
+      if (this.callbacks.hasOwnProperty(type)) {
+          var cbArr = this.callbacks[type];
+          if (cbArr.indexOf(callback) != -1) {
+              cbArr.splice(cbArr.indexOf(callback), 1);
+          }
+      }
   }
   Channel.prototype.triggerCallbacks = function(type, data) {
       if (this.callbacks.hasOwnProperty(type)) {
