@@ -30,7 +30,7 @@
     <h3>Start a Multisig fund</h3>
     <span>Multisig funds are wallets that require multiple passwords in order to spend the funds. Useful when you need to manage a wallet between multiple people or devices.</span>
     <h4>Name</h4>
-    <input type="text" placeholder="Name your multisig fund..." />
+    <input ng-model="multiSigName" type="text" placeholder="Name your multisig fund..." />
     <h4>Other than you, who will manage this fund?</h4>
     <ul>
       <li ng-repeat="participant in multisig.participants">{{participant.address}}</li>
@@ -41,12 +41,13 @@
     <h4>How many signatures will be needed in order to spend?</h4>
     <div class="row collapse">
         <div class="small-6 columns">
-          <input ng-model="numsig" type="number" />
+          <input ng-model="nSignatures" type="number" />
         </div>
         <div class="small-6 columns">
-          <span class="postfix radius">Out of N signatures</span>
+          <span class="postfix radius">Out of N signatures ({{nSignatures}} of {{multisig.participants.length}})</span>
         </div>
     </div>
+    <p><div ng-show="multiSigAddress">Fund address: {{multiSigAddress}}</div></p>
     <input type="submit" class="button glow radius" value="Start multisig" />
     </form>
   </div>
