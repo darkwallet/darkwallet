@@ -1,35 +1,31 @@
 Immediate:
- * Review and stabilize gateway
- * Currency support
-   * Select BTC/mBTC
-   * Show as EUR/USD/CNY... (get prices from https://bitcoinaverage.com/api.htm)
- * Multisig support
-   * Create funds
-   * Share / Import funds
- * Send:
-   * Review sending
-   * Several destinations support
-   * Implement send from pocket
-   - Implement choose from contacts OK
-   * Better radar feedback
- * Lobby system
-   - Implement multiParty from cryptocat (ed25519 curves) OK
-   * link contacts using lobby (sync stealth, mpk...)
-   * then finish CoinJoin
- * Pocket actions:
-   - Pocket have 2 branches (public and change) OK
-   * Move funds to another pocket
-   * Move funds to another identity
-   * Set as mixing
-   * Rename
-   * Delete
- * QR show and scan support
-   - Scan and show QRs OK
-   * Implement svg library instead of canvas based
- - Allow switching identities OK
- * SETTINGS
-   * Change password
-   * Select server
+ - Review and stabilize gateway
+ - Currency support
+   - Select BTC/mBTC
+   - Show as EUR/USD/CNY... (get prices from https://bitcoinaverage.com/api.htm)
+ - Multisig support
+   * Create funds DONE
+   - Share / Import funds
+ - Send:
+   - Review sending
+   - Several destinations support
+   - Implement send from pocket
+   * Implement choose from contacts DONE
+   - Better radar feedback
+ - Lobby system
+   * Implement multiParty from cryptocat (ed25519 curves) DONE
+   - link contacts using lobby (sync stealth, mpk...)
+   - then finish CoinJoin
+ - Pocket actions:
+   * Pocket have 2 branches (public and change) DONE
+   - Move funds to another pocket
+   - Move funds to another identity
+   - Set as mixing
+   - Rename
+   - Delete
+ - Settings
+   - Change password
+   - Select server
 
 Other:
  * Cache address history and resume
@@ -41,3 +37,8 @@ Other:
  * Watch only pockets
  * Blockchain.info compatible coinjoin
 
+Done:
+ * Allow switching identities Ok
+ * QR show and scan support OK
+   * Scan and show QRs OK
+   * Implement svg library instead of canvas based OK
