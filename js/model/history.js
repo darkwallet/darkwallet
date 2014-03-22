@@ -70,9 +70,10 @@ History.prototype.buildHistoryRow = function(transaction, height) {
 
     // Check inputs
     txObj.ins.forEach(function(anIn) {
-        if (btcWallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
+        var idx = anIn.outpoint.hash+":"+anIn.outpoint.index;
+        if (btcWallet.outputs[idx]) {
             inMine += 1;
-            myInValue += btcWallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index].value;
+            myInValue += btcWallet.outputs[idx].value;
         }
     })
     if (!inMine) {
@@ -114,7 +115,7 @@ History.prototype.fillInput = function(transaction, data) {
  * Callback for fetching a transaction
  * @private
  */
-History.prototype.txFetched = function(transaction, height) {
+History.prototype.txFetched = function(walletAddress, transaction, height) {
     var self = this,
         newRow = this.buildHistoryRow(transaction, height);
     // unknown for now means we need to fill in some extra inputs for now get 1st one
@@ -123,6 +124,8 @@ History.prototype.txFetched = function(transaction, height) {
                                             function(_a, _b) {self.fillInput(_a, _b)},
                                             [newRow.tx.ins[0].outpoint.index, newRow]);
      }
+    newRow.addressIndex = walletAddress.index.slice(0);
+    newRow.pocket = walletAddress.index[0];
     this.addHistoryRow(newRow);
     this.update();
 }
@@ -131,16 +134,16 @@ History.prototype.txFetched = function(transaction, height) {
  * Look for transactions from given history records
  * @param {Object} history History array as returned by obelisk
  */
-History.prototype.fillHistory = function(history) {
+History.prototype.fillHistory = function(walletAddress, history) {
     var self = this,
         txdb = this.identity.txdb;
     history.forEach(function(tx) {
         var outTxHash = tx[0],
             inTxHash = tx[4];
         if (inTxHash) {
-            txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(_a, _b)}, tx[6]);
+            txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b)}, tx[6]);
         }
-        txdb.fetchTransaction(outTxHash, function(_a, _b) {self.txFetched(_a, _b)}, tx[2]);
+        txdb.fetchTransaction(outTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b)}, tx[2]);
     });
 }
 

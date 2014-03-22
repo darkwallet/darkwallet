@@ -70,7 +70,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="row in history">
+            <tr ng-show="isAll || pocket.index == row.pocket" ng-repeat="row in history">
               <td class="icon"><a class="button square fa fa-info"></a>{{row.address}}</td>
               <td>{{(row.myOutValue-row.myInValue) | currencyFilter}}</td>
               <td class="text-right">{{row.balance | currencyFilter}}</td>

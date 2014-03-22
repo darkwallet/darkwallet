@@ -10,6 +10,7 @@ function(DarkWallet, Stealth, Bitcoin, MultisigFunds) {
  * @constructor
  */
 function Wallet(store, identity) {
+    this.store = store;
     this.is_cold = store.get('is_cold');
     this.pubKeys = store.init('pubkeys', {});
     this.pockets = store.init('pockets', ['default']);
@@ -23,8 +24,7 @@ function Wallet(store, identity) {
     }
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
     this.wallet = new Bitcoin.Wallet(this.mpk);
-    this.multisig = new MultisigFunds(store, identity);
-    this.store = store;
+    this.multisig = new MultisigFunds(store, identity, this);
 
     // store balance
     this.loadPubKeys();
@@ -77,11 +77,20 @@ Wallet.prototype.createPocket = function(name) {
  */
 Wallet.prototype.loadPubKeys = function() {
     var self = this;
+    var toRemove = [];
     Object.keys(this.pubKeys).forEach(function(index) {
+        if (self.pubKeys[index].index == null) {
+            toRemove.push(index)
+        }
         self.wallet.addresses.push(self.pubKeys[index].address);
         if (self.pubKeys[index].history)
             self.processHistory(self.pubKeys[index].address, self.pubKeys[index].history);
     });
+    // Cleanup malformed addresses
+    toRemove.forEach(function(index) {
+        console.log("[model] Deleting", self.pubKeys[index])
+        delete self.pubKeys[index];
+    })
 }
 
 /**
@@ -261,6 +270,10 @@ Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, 
         seq = outAddress.index;
     } else {
         console.log("This address is not managed by the wallet!");
+        return;
+    }
+    if (outAddress.type == 'multisig') {
+        console.log("Can't spend from multisig yet!");
         return;
     }
     // XXX should catch exception on bad password:

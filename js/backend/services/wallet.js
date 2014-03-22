@@ -79,7 +79,7 @@ function(IdentityKeyRing, Services) {
             console.log("[wallet] subscribed", walletAddress.address, err, res);
 
             // fill history after subscribing to ensure we got all histories already (for now).
-            identity.history.fillHistory(history);
+            identity.history.fillHistory(walletAddress, history);
         }, function(addressUpdate) {
             console.log("[wallet] update", addressUpdate)
         });
@@ -97,7 +97,7 @@ function(IdentityKeyRing, Services) {
         var identity = self.getCurrentIdentity();
         client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
         if (walletAddress.history) {
-            identity.history.fillHistory(walletAddress.history)
+            identity.history.fillHistory(walletAddress, walletAddress.history)
         }
     }
 
