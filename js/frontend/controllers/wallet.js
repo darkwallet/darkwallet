@@ -34,7 +34,6 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   Services.connect('gui', function(data) {
     console.log('[WalletCtrl] gui bus:', data.type);
     if (data.type == 'balance') {
-      toaster.pop('note', "wallet", 'balance update')
     }
     if (data.type == 'height') {
         $scope.currentHeight = data.value;
