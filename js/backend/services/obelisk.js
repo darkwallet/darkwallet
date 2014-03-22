@@ -28,7 +28,7 @@ function(Services) {
           console.log("[obelisk] Connecting");
           this.connectClient(connectUri, function() {
               console.log("[obelisk] Connected");
-              handleConnect ? handleConnect : null;
+              handleConnect ? handleConnect() : null;
               Services.post('obelisk', {'type': 'connected'});
           });
       }
