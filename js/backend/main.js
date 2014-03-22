@@ -44,7 +44,7 @@ function DarkWalletService() {
      */
 
     this.connect = function(connectUri) {
-        connectUri = connectUri || 'ws://85.25.198.97:8888';
+        connectUri = connectUri || 'ws://gateway.unsystem.net:8888';
         obeliskService.connect(connectUri, function() {
             walletService.handleInitialConnect();
         });
