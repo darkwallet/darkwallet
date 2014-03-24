@@ -44,14 +44,13 @@ Identity.encrypt = function(data, password) {
 /**
  * Generate master keys for this identity.
  * TODO: Consider naming private methods with trailing underscore_.
- * @param {String} seed Seed in string form.
+ * @param {String} seed Seed in hex form.
  * @param {String} password Password for the identity crypt.
  * @private
  */
 Identity.prototype.generate = function(seed, password) {
     // Don't use constructor directly since it doesn't manage hex seed properly.
-    var rawSeed = Bitcoin.convert.hexToBytes(seed);
-    var key = Bitcoin.HDWallet.fromMasterHex(seed);
+    var key = Bitcoin.HDWallet.fromSeedHex(seed);
     var identityKey = key.derive(0x80000000);
 
     var pubKey = identityKey.toBase58(false);
