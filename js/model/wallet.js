@@ -358,6 +358,7 @@ Wallet.prototype.processStealth = function(stealthArray, password) {
                 console.log("STEALTH MATCH!!");
                 var seq = [0, 's'].concat(ephemkey);
                 var walletAddress = self.storeAddress(seq, stAddr);
+                walletAddress.type = 'stealth';
                 walletAddress.ephemkey = ephemkey;
                 self.store.save();
                 self.storePrivateKey(seq, password, stAddr);
