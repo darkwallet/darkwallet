@@ -15,6 +15,8 @@ function(Services) {
             var client = self.client;
             if (client && client.connected) {
                 port.postMessage({'type': 'connected'});
+            } else if (client && client.connecting) {
+                port.postMessage({'type': 'connecting'});
             }
       }, function() {
           console.log('[bus] obelisk client disconnected');
@@ -26,6 +28,7 @@ function(Services) {
           // wait for connection
       } else {
           console.log("[obelisk] Connecting");
+          Services.post('obelisk', {'type': 'connecting'});
           this.connectClient(connectUri, function() {
               console.log("[obelisk] Connected");
               handleConnect ? handleConnect() : null;
