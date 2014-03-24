@@ -1,4 +1,4 @@
-define(['./module', 'darkwallet', 'identicon', 'bitcoinjs-lib'], function (directives, DarkWallet, Identicon, Bitcoin) {
+define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identicon, Bitcoin) {
   directives.directive('identicon', function () {
     return {
       restrict: 'E', // element
@@ -9,15 +9,10 @@ define(['./module', 'darkwallet', 'identicon', 'bitcoinjs-lib'], function (direc
       link: function(scope, element, attrs) {
         var iconSize = scope.iconSize || 32;
 
-        // Create canvas element
-        var canvas = document.createElement('canvas');
-        canvas.setAttribute("width", iconSize);
-        canvas.setAttribute("height", iconSize);
-        element[0].appendChild(canvas);
-
         // Create the identicon
         function createFromBytes(dataBytes) {
-          return new Identicon(canvas, Bitcoin.convert.bytesToNum(dataBytes), iconSize);
+          var data = new Identicon(Bitcoin.convert.bytesToHex(dataBytes), iconSize).toString();
+          element.html('<img width='+iconSize+' height='+iconSize+' src="data:image/png;base64,' + data + '">');
         }
         // Watch for hash changes
         scope.$watch('hash', function() {

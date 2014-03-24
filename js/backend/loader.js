@@ -12,7 +12,8 @@ require.config({
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
     'ngProgress': "../vendors/ngprogress/build/ngProgress",
     'toaster': "../vendors/AngularJS-Toaster/toaster",
-    'identicon': "../vendors/identicon/identicon",
+    'identicon': "../vendors/identicon",
+    'pnglib': "../vendors/pnglib",
     'qrcodejs': "../vendors/qrcodejs/qrcode",
     'jsqrcode': "../vendors/jsqrcode/jsqrcode",
     
@@ -56,7 +57,11 @@ require.config({
       exports: 'DarkWallet'
     },
     'identicon': {
+      deps: ['pnglib'],
       exports: 'Identicon'
+    },
+    'pnglib': {
+      exports: 'PNGlib'
     },
     'sjcl-real': {
       exports: 'sjcl'
