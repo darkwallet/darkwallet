@@ -17,7 +17,8 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
       $scope.pocket.name = fund.name;
       $scope.pocket.index = 'fund'
       $scope.pocket.addresses = [{label: 'fund', address: fund.address, balance: 0}]
-      $scope.pocket.changeAddresses = []
+      $scope.pocket.fund = fund;
+      $scope.pocket.addresses = [{label: 'fund', address: fund.address, balance: 0}]
       $scope.isAll = false;
       $scope.isFund = true;
       $scope.pocket.mpk = undefined;
@@ -33,6 +34,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
           $scope.pocket.index = undefined;
           $scope.pocket.mpk = undefined;
           $scope.pocket.stealth = undefined;
+          $scope.pocket.fund = null;
           $scope.pocket.addresses = $scope.allAddresses;
           $scope.pocket.changeAddresses = [];
           $scope.isAll = true;
@@ -43,6 +45,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
           pocketIndex = rowIndex*2;
           $scope.pocket.index = pocketIndex;
           $scope.pocket.name = pocketName;
+          $scope.pocket.fund = null;
           var walletAddress = $scope.identity.wallet.getAddress([$scope.pocket.index]);
           if (!walletAddress.mpk) {
               // derive mpk here for now so we can show as master address
