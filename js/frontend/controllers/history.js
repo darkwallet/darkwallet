@@ -15,7 +15,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
   $scope.isFund = false;
   $scope.selectFund = function(fund, rowIndex) {
       $scope.pocket.name = fund.name;
-      $scope.pocket.index = 'fund'
+      $scope.pocket.index = fund.seq[0];
       $scope.pocket.addresses = [$scope.identity.wallet.getAddress(fund.seq)]
       $scope.pocket.changeAddresses = [];
       $scope.pocket.fund = fund;
