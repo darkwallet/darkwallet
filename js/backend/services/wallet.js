@@ -11,7 +11,6 @@ function(IdentityKeyRing, Services) {
 
     // Some scope variables
     this.rates = {};
-    this.currency = 'EUR';
     var currentIdentity = 0;
 
     var identityNames = [];
@@ -103,11 +102,29 @@ function(IdentityKeyRing, Services) {
         }
     }
 
-    // Handle initial connection to obelisk
-    function handleTicker(err, lastRates) {
-        self.rates[self.currency] = lastRates['24h_avg'];
-        Services.post('wallet', {type: 'ticker', currency: self.currency, rates: lastRates});
+    // Handle getting ticker information
+    function handleTicker(err, currency, lastRates) {
+        if (err) {
+          console.log("[wallet] can't get ticker info")
+          Services.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info"});
+          return;
+        }
+        if (!lastRates || !lastRates.hasOwnProperty('24h_avg')) {
+          Services.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info"});
+          console.log("[wallet] can't get ticker info", lastRates)
+          return;
+        }
+        self.rates[currency] = lastRates['24h_avg'];
+        Services.post('wallet', {type: 'ticker', currency: currency, rates: lastRates});
         console.log("[wallet] ticker fetched", lastRates);
+    }
+
+    this.setFiatCurrency = function(currency) {
+        var client = core.getClient();
+        if (!self.rates.hasOwnProperty(currency)) {
+            console.log("[wallet] fetching ticker for", currency);
+            client.fetch_ticker(currency.toUpperCase(), function(err, lastRates) {handleTicker(err, currency, lastRates)});
+        }
     }
 
     // Handle initial connection to obelisk
@@ -118,13 +135,14 @@ function(IdentityKeyRing, Services) {
     }
 
     this.handleInitialConnect = function() {
+        var identity = self.getCurrentIdentity();
+        var currency = identity.settings.fiatCurrency;
+
         var client = core.getClient();
-        client.fetch_ticker(self.currency, handleTicker);
+        self.setFiatCurrency(currency)
         client.fetch_last_height(handleHeight);
 
         // get balance for addresses
-        var identity = self.getCurrentIdentity();
-
         Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
             var walletAddress = identity.wallet.pubKeys[pubKeyIndex];
             if (walletAddress.index.length > 1) {

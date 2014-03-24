@@ -21,7 +21,9 @@ define(['./module', 'darkwallet', 'util/fiat'], function (controllers, DarkWalle
   }
   $scope.fiatCurrencyChanged = function() {
       var identity = DarkWallet.getIdentity();
+      var walletService = DarkWallet.service().getWalletService();
       identity.settings.fiatCurrency = $scope.selectedFiat;
+      walletService.setFiatCurrency($scope.selectedFiat);
       identity.store.save();
   }
 }]);

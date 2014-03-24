@@ -43,7 +43,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
         toaster.pop('note', 'gui', data.text);
     }
     if (data.type == 'error') {
-        toaster.pop('error', 'gui', data.text);
+        toaster.pop('error', data.title || 'gui', data.text);
     }
     if (data.type == 'warning') {
         toaster.pop('warning', 'gui', data.text);

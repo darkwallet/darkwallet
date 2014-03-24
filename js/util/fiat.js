@@ -1,12 +1,19 @@
 define(function() {
+  var symbols = {
+    'eur': '€',
+    'usd': '$'
+  }
+
   // Available fiat currencies
   var fiatCurrencies = {}
   var fiatCurrency = function(code, name) {
-      fiatCurrencies[code] = {name: name, code: code}
+      var symbol = symbols[code] || code;
+      fiatCurrencies[code] = {name: name, code: code, symbol: symbol}
   }
   fiatCurrency('usd', 'US Dollars')
   fiatCurrency('eur', 'Euros')
-  fiatCurrency('ukp', 'UK Pounds')
-  fiatCurrency('jpy', 'Japanese Yen')
+
+  //fiatCurrency('gbp', 'UK Pounds')
+  //fiatCurrency('jpy', 'Japanese Yen')
   return fiatCurrencies;
 });
