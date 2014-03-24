@@ -2,7 +2,7 @@
  * @fileOverview CalculatorCtrl angular controller
  */
 
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
+define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (controllers, DarkWallet, Services, FiatCurrencies) {
   'use strict';
   controllers.controller('CalculatorCtrl', ['$scope', function($scope) {
   var firstTime = true;
@@ -14,17 +14,32 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
      convertedFocused: false
   };
 
+  // Set the currency icon
+  var initCurrencyIcon = function() {
+    var identity = DarkWallet.getIdentity();
+    var fiat = FiatCurrencies[identity.settings.fiatCurrency];
+    $scope.currencyClass = fiat.css;
+  }
+
+  // Wallet service, connect to get notified about identity getting loaded.
+  Services.connect('wallet', function(data) {
+    if (data.type == 'ready') {
+      initCurrencyIcon();
+    }
+  });
+
   // Convert CRYPTO to FIAT
   $scope.$watch('calculator.amount', function() {
+    var identity = DarkWallet.getIdentity();
     if (!firstTime && !$scope.calculator.amountFocused) {
         return;
     }
     firstTime = false;
-    if (!walletService.rates.hasOwnProperty(walletService.currency)) {
+    if (!walletService.rates.hasOwnProperty(identity.settings.fiatCurrency)) {
         $scope.calculator.converted = 'no rates';
         return;
     }
-    var result = $scope.calculator.amount*walletService.rates[walletService.currency];
+    var result = $scope.calculator.amount*walletService.rates[identity.settings.fiatCurrency];
     if (isNaN(result)) {
         $scope.calculator.converted = '';
     } else {
@@ -34,13 +49,14 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   // Convert FIAT to CRYPTO
   $scope.$watch('calculator.converted', function() {
+    var identity = DarkWallet.getIdentity();
     if (!$scope.calculator.convertedFocused) {
         return;
     }
-    if (!walletService.rates.hasOwnProperty(walletService.currency)) {
+    if (!walletService.rates.hasOwnProperty(identity.settings.fiatCurrency)) {
         return;
     }
-    var result = $scope.calculator.converted/walletService.rates[walletService.currency];
+    var result = $scope.calculator.converted/walletService.rates[identity.settings.fiatCurrency];
     if (isNaN(result)) {
         $scope.calculator.amount = '';
     } else {

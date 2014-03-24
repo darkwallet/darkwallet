@@ -18,7 +18,7 @@
             <input ng-focus="calculator.convertedFocused = true" ng-blur="calculator.convertedFocused = false" ng-model="calculator.converted" type="text" />
           </div>
           <div class="small-1 columns">
-            <span class="postfix radius fa fa-euro"></span>
+            <span id="currency-icon" class="postfix radius fa" ng-class="currencyClass"></span>
           </div>
           <a href="">Settings...</a>
         </div>
