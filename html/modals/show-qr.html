@@ -1,9 +1,8 @@
-<h3>Scan this QR Code</h3>
-<div class="qr-container text-center">
-	<div class="showqr">
-		<qr data="{{vars.address}}" level="L"></qr>
-	</div>
-	<h6>{{vars.address}}</h6>
-	<a qr-save-button data-data="{{vars.address}}" data-level="L">Download</a>
+<div class="text-center showqr">
+	<qr data="{{vars.address}}" level="L"></qr>
 </div>
-<a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
+
+<div class="qractions">
+	<a class="fa fa-times button" ng-click="cancel()"></a>
+	<a class="fa fa-save button" qr-save-button data-data="{{vars.address}}" data-level="L"></a>
+</div>

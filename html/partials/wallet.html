@@ -1,13 +1,13 @@
 <div class="row">
   <div class="large-2 columns panel">
-    <ul class="side-nav">
+    <ul class="side-nav ">
       <li>Pockets on my wallet</li>
       <li ng-class="{active: 'pocket:all'===selectedPocket}" class="active" ng-click="selectPocket()"><a>All</a></li>
       <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat="pocketName in identity.wallet.pockets" ng-click="selectPocket(pocketName, $index)" ><a>{{pocketName}}</a></li>
       <li ng-show="creatingPocket">
         <form ng-submit="createPocket()">
           <input type="text" id="pocketNameInput" ng-model="newPocketName" placeholder="Name your pocket..." />
-          <input type="submit" class="button small expand" value="Ok"/>
+          <input type="submit" class="button small expand radius" value="OK"/>
         </form>
       </li>
       <li ng-hide="creatingPocket">
@@ -48,6 +48,7 @@
     </div>
     <p><div ng-show="multiSigAddress">Fund address: {{multiSigAddress}}</div></p>
     <input type="submit" class="button glow radius" value="Start multisig" />
+    <a class="button">Import a multisig</a>
     </form>
   </div>
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns">
