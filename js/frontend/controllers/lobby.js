@@ -21,7 +21,11 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
               toaster.pop('success', 'channel', 'subscribed successfully')
           })
           channelLink.addCallback('Contact', function(data) {
-              toaster.pop('success', 'contact', JSON.stringify(data))
+              toaster.pop('success', 'contact', data.body.name)
+              var peer = channelLink.channel.getPeer(data.sender)
+              $scope.newContact = data.body;
+              $scope.newContact.pubKeyHex = peer.pubKeyHex;
+              $scope.newContact.fingerprint = peer.fingerprint;
           })
           channelLink.addCallback('Shout', function(data) {
               $scope.shoutboxLog.push(data)
@@ -94,9 +98,6 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
     $scope.pairPeer = function(peer) {
         $scope.selectedPeer = peer;
         var identity = DarkWallet.getIdentity();
-        var wallet = identity.wallet;
-        var address = wallet.getAddress([wallet.pockets.length-1]);
-        var mpk = address.mpk;
         var msg = Protocol.ContactMsg(identity);
         currentChannel.postDH(peer.pubKey, msg, function() {
             toaster.pop("success", "lobby", "pairing sent");
@@ -110,6 +111,13 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
               toaster.pop('error', "error sending " + err)
           }
         });
+    }
+    $scope.addNewContact = function(contact) {
+        var identity = DarkWallet.getIdentity();
+        var newContact = {name: contact.name, address: contact.stealth, fingerprint: contact.fingerprint};
+        identity.contacts.addContact(newContact)
+        $scope.newContact = null;
+        toaster.pop('success', 'Contact added')
     }
     if(!$scope.$$phase) {
         $scope.$apply();

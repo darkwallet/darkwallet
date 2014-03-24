@@ -17,10 +17,10 @@ var Protocol = {
   ContactMsg: function(identity) {
     var data = {};
     var wallet = identity.wallet;
-    var address = wallet.getAddress([wallet.pockets.length-1]);
+    var address = wallet.getAddress([0]);
     var mpk = address.mpk;
     data['name'] = identity.name;
-    data['mpk'] = identity.mpk;
+    data['stealth'] = address.stealth;
     return Protocol.packMessage('Contact', data)
   },
   ShoutMsg: function(text) {

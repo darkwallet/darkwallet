@@ -35,7 +35,15 @@
           <div ng-repeat="peer in peers">
             <span ng-click="selectPeer(peer)"><identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}</span> <a ng-click="pairPeer(peer)">pair</a></div>
           </div>
+        </td><td>
+          <div ng-show="newContact">
+             <div>{{newContact.name}}</div>
+             <div>{{newContact.stealth}}</div>
+             <div class="wrapper"><identicon title="{{newContact.pubKeyHex}}" hash="newContact.pubKeyHex" icon-size="64"></identicon></div>
+             <button ng-click="addNewContact(newContact)">Add contact</div>
+          </div>
         </td></tr>
+          <h2>Self</h2>
     </table>
     <h2>Requests</h2>
     <div ng-repeat="request in requests">

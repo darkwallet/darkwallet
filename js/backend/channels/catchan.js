@@ -69,6 +69,15 @@ function (Bitcoin, multiParty, Curve25519) {
       }
   }
 
+  Channel.prototype.getPeer = function(fingerprint) {
+      for(var idx=0; idx<this.transport.peers.length; idx++) {
+          var peer = this.transport.peers[idx];
+          if (peer.fingerprint == fingerprint) {
+              return peer;
+          }
+      }
+  }
+
   // Send opening messages when joining a channel
   Channel.prototype.sendOpening = function() {
       // Send announcement
