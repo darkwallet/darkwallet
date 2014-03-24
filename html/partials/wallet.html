@@ -48,7 +48,7 @@
     </div>
     <p><div ng-show="multiSigAddress">Fund address: {{multiSigAddress}}</div></p>
     <input type="submit" class="button glow radius" value="Start multisig" />
-    <a class="button">Import a multisig</a>
+    <a class="button" ng-click="importMultisig()"> Import a multisig</a>
     </form>
   </div>
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns">

@@ -16,6 +16,15 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         return {address: address, script: scriptHex, m: m, pubKeys: participants};
     },
 
+    importMultiSig: function(data){
+        var script = new Bitcoin.Script(convert.hexToBytes(data))
+        var hashed = Bitcoin.Util.sha256ripe160(script.buffer);
+        var address = Bitcoin.base58.checkEncode(hashed, 0x05);
+        var pubKeys = script.extractPubkeys()
+        var m = script.chunks[0] - Bitcoin.Opcode.map.OP_1 + 1;
+        return {address: address, script: data, m: m, pubKeys: pubKeys};
+    },
+
     /*
      * Decode an address from string to bytes
      * Supports the following formats:
