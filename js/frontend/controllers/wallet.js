@@ -126,6 +126,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
       $scope.history = identity.history.history;
       // set history update callback
       $scope.totalBalance = identity.wallet.getBalance();
+      $scope.selectedCurrency = identity.settings.currency;
 
       // load addresses into angular
       loadAddresses(identity);
