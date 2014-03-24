@@ -10,7 +10,7 @@ define(['./module', 'frontend/services'], function (controllers, Services) {
         // Set the default fee
         $scope.send.fee = $scope.defaultFee;
         if (!$scope.$$phase) {
-            $scope.apply();
+            $scope.$apply();
         }
     }
   })
