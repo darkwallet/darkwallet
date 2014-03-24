@@ -23,14 +23,6 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   ModalUtils.registerScope($scope, $modal);
   ClipboardUtils.registerScope($scope);
 
-  // Gui services
-  var report = function(msg) {
-      if (console) {
-        console.log("[WalletCtrl] " + msg);
-      }
-      toaster.pop('note', "wallet", msg)
-  }
-
   // Gui service, connect to report events on page.
   Services.connect('gui', function(data) {
     console.log('[WalletCtrl] gui bus:', data.type);
