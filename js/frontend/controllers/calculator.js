@@ -22,7 +22,7 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
   }
 
   // Wallet service, connect to get notified about identity getting loaded.
-  Services.connect('wallet', function(data) {
+  Services.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
       initCurrencyIcon();
     }

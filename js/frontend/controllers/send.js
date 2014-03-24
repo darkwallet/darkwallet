@@ -5,7 +5,7 @@ define(['./module', 'frontend/services'], function (controllers, Services) {
   $scope.autoAddEnabled = false;
 
   // Identity ready
-  Services.connect('wallet', function(data) {
+  Services.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
         // Set the default fee
         $scope.send.fee = $scope.defaultFee;
