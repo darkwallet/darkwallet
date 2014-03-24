@@ -124,7 +124,7 @@ function(IdentityKeyRing, Services) {
         var client = core.getClient();
         if (!self.rates.hasOwnProperty(currency)) {
             console.log("[wallet] fetching ticker for", currency);
-            client.fetch_ticker(currency.toUpperCase(), function(err, lastRates) {handleTicker(err, currency, lastRates)});
+            client.fetch_ticker(currency, function(err, lastRates) {handleTicker(err, currency, lastRates)});
         }
     }
 
