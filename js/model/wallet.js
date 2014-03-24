@@ -42,12 +42,15 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     var keys = Object.keys(this.pubKeys);
     if (pocketIndex === undefined) {
         for(var idx=0; idx<keys.length; idx++) {
-            allAddresses.push(this.pubKeys[keys[idx]]);
+            // don't add fund addresses to total funds
+            if (this.pubKeys[keys[idx]].type != 'multisig') {
+                allAddresses.push(this.pubKeys[keys[idx]]);
+            }
         }
     } else {
         for(var idx=0; idx<keys.length; idx++) {
             var walletAddress = this.pubKeys[keys[idx]];
-            if (walletAddress.index[0] == pocketIndex && !walletAddress.hasOwnProperty('seq')) {
+            if (walletAddress.index[0] == pocketIndex) {
                 allAddresses.push(walletAddress);
            }
         }
