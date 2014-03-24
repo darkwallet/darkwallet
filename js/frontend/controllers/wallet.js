@@ -17,7 +17,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
 
   // Pointer to service
   var bg = DarkWallet.service();
-  $scope.rates = [];
+  $scope.rates = {};
 
   // Global scope utils
   ModalUtils.registerScope($scope, $modal);
@@ -127,6 +127,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
       // set history update callback
       $scope.totalBalance = identity.wallet.getBalance();
       $scope.selectedCurrency = identity.settings.currency;
+      $scope.selectedFiat = identity.settings.fiatCurrency;
 
       // load addresses into angular
       loadAddresses(identity);

@@ -1,6 +1,11 @@
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
+define(['./module', 'darkwallet', 'util/fiat'], function (controllers, DarkWallet, FiatCurrencies) {
   'use strict';
+
+  // Controller
   controllers.controller('WalletSettingsCtrl', ['$scope', function($scope) {
+
+  // Available fiat currencies
+  $scope.fiatCurrencies = FiatCurrencies;
 
   // Clear the local storage
   $scope.clearStorage = function() {
@@ -12,6 +17,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.currencyChanged = function() {
       var identity = DarkWallet.getIdentity();
       identity.settings.currency = $scope.selectedCurrency;
+      identity.store.save();
+  }
+  $scope.fiatCurrencyChanged = function() {
+      var identity = DarkWallet.getIdentity();
+      identity.settings.fiatCurrency = $scope.selectedFiat;
       identity.store.save();
   }
 }]);

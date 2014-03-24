@@ -51,16 +51,12 @@
       <div class="large-3 columns">
         <div class="panel">
           <h5>Base unit</h5>
-            <input type="radio" name="baseunit" value="BTC" id="btc-radio" ng-change="currencyChanged()" ng-model="selectedCurrency"><label for="btc-radior">BTC</label>
-            <input type="radio" name="baseunit" value="mBTC" id="mbtc-radio" ng-change="currencyChanged()" ng-model="selectedCurrency"><label for="mbtc-radio">mBTC</label>
+            <input type="radio" name="baseunit" value="btc" id="btc-radio" ng-change="currencyChanged()" ng-model="selectedCurrency"><label for="btc-radior">BTC</label>
+            <input type="radio" name="baseunit" value="mbtc" id="mbtc-radio" ng-change="currencyChanged()" ng-model="selectedCurrency"><label for="mbtc-radio">mBTC</label>
         </div>
         <div class="panel">
           <h5>Local currency</h5>
-          <select>
-            <option value="eur">Euros</option>
-            <option value="usd">US Dollars</option>
-            <option value="gbp">UK Pounds</option>
-            <option value="jpy">Japanese Yen</option>
+          <select ng-model="selectedFiat" ng-options="key as value.name for (key , value) in fiatCurrencies" ng-change="fiatCurrencyChanged()">
           </select>
         </div>
         <div class="panel">
