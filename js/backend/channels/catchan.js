@@ -74,7 +74,6 @@ function (Bitcoin, multiParty, Curve25519) {
       // Send announcement
       var data = JSON.parse(multiParty.sendPublicKey('all'));
       data.sender = this.fingerprint;
-      data = JSON.stringify(data);
  
       // Send encrypted
       this.postEncrypted(data, function(err, data){
@@ -123,15 +122,17 @@ function (Bitcoin, multiParty, Curve25519) {
       var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey)
       var shared = Curve25519.ecDH(this.priv, pk2);
       var myPub = this.pub.toByteArrayUnsigned();
+      data.pubKey = myPub;
 
       shared = shared.toByteArrayUnsigned();
       shared = Curve25519.bytes2string(shared)
       var encrypted = sjcl.encrypt(shared, JSON.stringify(data), {ks: 256, ts: 128});
-      this.postEncrypted(JSON.stringify({'type': 'personal', 'data': encrypted, 'pubKey': myPub}), callback);
+      this.postEncrypted({'type': 'personal', 'data': encrypted, 'pubKey': myPub}, callback);
   }
 
   Channel.prototype.postEncrypted = function(data, callback) {
-      var encrypted = sjcl.encrypt(this.name, data, {ks: 256, ts: 128});
+      data.sender = this.fingerprint;
+      var encrypted = sjcl.encrypt(this.name, JSON.stringify(data), {ks: 256, ts: 128});
       this.post(encrypted, callback);
   }
 
@@ -190,7 +191,7 @@ function (Bitcoin, multiParty, Curve25519) {
                 
               }
           }
-          else if (decrypted.type == 'shout') {
+          else if (decrypted.type == 'Shout') {
               //console.log(decrypted.text)
           } else if (decrypted.type == 'personal') {
               console.log("[catchan] Decoding DH message");

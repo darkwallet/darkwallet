@@ -1,5 +1,5 @@
-define(['./module', 'darkwallet', 'frontend/services', 'frontend/channel_link', 'bitcoinjs-lib'],
-function (controllers, DarkWallet, Services, ChannelLink, Bitcoin) {
+define(['./module', 'darkwallet', 'frontend/services', 'frontend/channel_link', 'bitcoinjs-lib', 'util/protocol'],
+function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
   'use strict';
 
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
@@ -20,10 +20,13 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin) {
           channelLink.addCallback('subscribed', function() {
               toaster.pop('success', 'channel', 'subscribed successfully')
           })
-          channelLink.addCallback('shout', function(data) {
+          channelLink.addCallback('Contact', function(data) {
+              toaster.pop('success', 'contact', JSON.stringify(data))
+          })
+          channelLink.addCallback('Shout', function(data) {
               $scope.shoutboxLog.push(data)
               if (data.sender == channelLink.channel.fingerprint) {
-                  toaster.pop('success', 'me', data.text)
+                  toaster.pop('success', 'me', data.body.text)
               } else {
                   toaster.pop('note', data.sender.slice(0,12), data.text)
               }
@@ -94,7 +97,7 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin) {
         var wallet = identity.wallet;
         var address = wallet.getAddress([wallet.pockets.length-1]);
         var mpk = address.mpk;
-        var msg = {'type': 'shout', "text": 'pairme!', sender: currentChannel.fingerprint, pubKey: currentChannel.pub, name: identity.name, mpk: mpk};
+        var msg = Protocol.ContactMsg(identity);
         currentChannel.postDH(peer.pubKey, msg, function() {
             toaster.pop("success", "lobby", "pairing sent");
         });
@@ -102,7 +105,7 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin) {
     $scope.sendText = function() {
         var toSend = $scope.shoutbox;
         $scope.shoutbox = '';
-        currentChannel.postEncrypted(JSON.stringify({text: toSend, type: 'shout', sender: currentChannel.fingerprint}), function(err, data) {
+        currentChannel.postEncrypted(Protocol.ShoutMsg(toSend), function(err, data) {
           if (err) {
               toaster.pop('error', "error sending " + err)
           }
