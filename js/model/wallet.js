@@ -47,7 +47,7 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     } else {
         for(var idx=0; idx<keys.length; idx++) {
             var walletAddress = this.pubKeys[keys[idx]];
-            if (walletAddress.index[0] == pocketIndex) {
+            if (walletAddress.index[0] == pocketIndex && !walletAddress.hasOwnProperty('seq')) {
                 allAddresses.push(walletAddress);
            }
         }
