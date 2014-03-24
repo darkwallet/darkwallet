@@ -1,5 +1,6 @@
 /** attach filters to this module 
  **/
 define([
-    './currency'
+    './currency',
+    './formats'
 ], function () {});
