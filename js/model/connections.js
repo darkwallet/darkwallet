@@ -11,9 +11,10 @@ define(function() {
  */
 function Connections(store, identity) {
     this.store = store;
-    this.connections = store.init('connections', {servers: [{name: 'unsystem', type: 'gateway', address: 'ws://gateway.unsystem.net:8888'}],
+    this.connections = store.init('connections', {servers: [{name: 'unsystem', type: 'gateway', address: 'wss://gateway.unsystem.net'}],
                                               selectedServer: 0,
                                               alwaysConnect: 0});
+    
     this.servers = this.connections.servers;
     this.selectedServer = this.connections.selectedServer;
     this.alwaysConnect = this.connections.alwaysConnect;
@@ -39,6 +40,7 @@ Connections.prototype.addServer = function(name, address, type) {
 Connections.prototype.setSelectedServer = function(idx) {
     this.selectedServer = idx;
     this.connections.selectedServer = idx;
+    console.log("[model] selectedServer", idx)
     this.store.save();
 }
 

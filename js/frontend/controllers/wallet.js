@@ -24,7 +24,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   ClipboardUtils.registerScope($scope);
 
   // Gui service, connect to report events on page.
-  Services.connect('gui', function(data) {
+  Services.connectNg('gui', $scope, function(data) {
     console.log('[WalletCtrl] gui bus:', data.type);
     if (data.type == 'balance') {
     }
@@ -48,16 +48,22 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   })
 
   // Obelisk service, connect to get notified on events and connection.
-  Services.connect('obelisk', function(data) {
+  Services.connectNg('obelisk', $scope, function(data) {
     console.log("[WalletCtrl] obelisk bus:", data.type);
     if (data.type == 'connected') {
+        toaster.pop('success', 'connected', $scope.identity.connections.servers[$scope.identity.connections.selectedServer].name);
         ngProgress.color('green');
+        ngProgress.complete();
+    }
+    if (data.type == 'connectionError') {
+        toaster.pop("error", "Error connecting", data.error)
+        ngProgress.color('red');
         ngProgress.complete();
     }
   })
 
   // Wallet service, connect to get notified about identity getting loaded.
-  Services.connect('wallet', function(data) {
+  Services.connectNg('wallet', $scope, function(data) {
     console.log("[WalletCtrl] wallet bus:", data.type);
     if (data.type == 'ready') {
         // identity is ready here

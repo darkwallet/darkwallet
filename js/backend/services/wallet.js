@@ -76,6 +76,7 @@ function(IdentityKeyRing, Services) {
         identity.wallet.processHistory(walletAddress.address, history);
 
         // now subscribe the address for notifications
+        console.log("[wallet] subscribing", walletAddress.address);
         client.subscribe(walletAddress.address, function(err, res) {
             console.log("[wallet] subscribed", walletAddress.address, err, res);
 

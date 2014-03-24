@@ -29,10 +29,17 @@ function(Services) {
       } else {
           console.log("[obelisk] Connecting");
           Services.post('obelisk', {'type': 'connecting'});
-          this.connectClient(connectUri, function() {
-              console.log("[obelisk] Connected");
-              handleConnect ? handleConnect() : null;
-              Services.post('obelisk', {'type': 'connected'});
+          this.connectClient(connectUri, function(err) {
+              if (!err) {
+                  console.log("[obelisk] Connected");
+              }
+              handleConnect ? handleConnect(err) : null;
+              if (err) {
+                  console.log("[obelisk] Error connecting");
+                  Services.post('obelisk', {'type': 'connectionError', 'error': 'Error connecting'});
+              } else {
+                  Services.post('obelisk', {'type': 'connected'});
+              }
           });
       }
   }
@@ -40,11 +47,13 @@ function(Services) {
   ObeliskService.prototype.connectClient = function(connectUri, handleConnect) {
       var self = this;
       this.connecting = true;
-      this.client = new GatewayClient(connectUri, function() {
-          self.client.connected = true;
-          self.connected = true;
+      this.client = new GatewayClient(connectUri, function(err) {
+          if (!err) {
+              self.client.connected = true;
+              self.connected = true;
+          }
           self.connecting = false;
-          handleConnect ? handleConnect() : null;
+          handleConnect ? handleConnect(err) : null;
       });
   }
 

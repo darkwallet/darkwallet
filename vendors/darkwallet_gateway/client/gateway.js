@@ -18,7 +18,8 @@ function GatewayClient(connect_uri, handle_connect) {
         self.on_close(evt);
     };
     this.websocket.onerror = function(evt) {
-        self.on_error(evt);
+        // TODO: should probably disconnect
+        handle_connect(evt);
     };
     this.websocket.onmessage = function(evt) {
         self._on_message(evt);

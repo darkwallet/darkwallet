@@ -48,9 +48,12 @@ function DarkWalletService() {
      */
 
     this.connect = function(connectUri) {
-        connectUri = connectUri || 'ws://gateway.unsystem.net:8888';
-        obeliskService.connect(connectUri, function() {
-            walletService.handleInitialConnect();
+        var identity = walletService.getCurrentIdentity();
+        connectUri = connectUri || identity.connections.servers[identity.connections.selectedServer].address || 'wss://gateway.unsystem.net';
+        obeliskService.connect(connectUri, function(err) {
+            if (!err) {
+                walletService.handleInitialConnect();
+            }
         });
     }
     this.getKeyRing = function() {

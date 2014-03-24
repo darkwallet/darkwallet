@@ -10,7 +10,6 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
   $scope.newServer = {address: '', name: ''};
   $scope.addServerError = '';
   $scope.connectionStatus = 'Disconnected';
-  $scope.selectedServerIdx = 0;
 
   // Apply scope
   var applyScope = function() {
@@ -24,7 +23,8 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
     if (data.type == 'ready') {
       var identity = DarkWallet.getIdentity();
       $scope.servers = identity.connections.servers;
-      $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx]
+      $scope.selectedServerIdx = identity.connections.selectedServer;
+      $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
       applyScope();
     }
   });
@@ -66,8 +66,10 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
   // Connect the given server, triggered by select changing $scope.selectedServerIdx
   $scope.connectServer = function() {
       var identity = DarkWallet.getIdentity();
-      $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx]
-      identity.connections.setSelectedServer(idx);
+      $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
+      identity.connections.setSelectedServer($scope.selectedServerIdx);
+      // Trigger connection
+      DarkWallet.service().connect();
   }
 
 }]);
