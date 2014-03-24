@@ -106,7 +106,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .tabs dd.active > a { background: lighten($primary-color, 10%); color: black; }
 
-.top-bar a { @include single-transition(); }
+.top-bar a, .tabs dd > a { @include single-transition(); }
 
 .popupcontainer .panel { 
 	background: #333; 
@@ -122,8 +122,12 @@ span.meter { padding: 5px 0 0 5px; }
 
 .select-list { min-height: 100px; background-image: none; }
 
-.showqr { max-height: 500px; }
-.showqr svg { height: auto; }
+.showqr > svg { margin: 1em 0; }
+.showqr { margin-bottom: 1em; }
 
-.qr-container { padding: 1em; background: white; }
-.qr-container h6 { color: black; }
+.qractions { position: absolute; top: 0; right: 0; }
+.qractions a.button { position: absolute; top: 0; right: 0; width: 36px; padding: 8px 0; }
+.qractions a:last-child { top: 40px; }
+
+.modal-show-qr { background: white; top: 0; overflow: hidden; padding: 0; }
+.modal-show-qr h3, .modal-show-qr h6 { color: black; }
