@@ -1,8 +1,20 @@
-define(['./module'], function (controllers) {
+define(['./module', 'frontend/services'], function (controllers, Services) {
   'use strict';
   controllers.controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
-  $scope.send = {recipient: '', amount: 0.2, fee: 0.00002};
+  $scope.send = {recipient: '', amount: 0.2};
   $scope.autoAddEnabled = false;
+
+  // Identity ready
+  Services.connect('wallet', function(data) {
+    if (data.type == 'ready') {
+        // Set the default fee
+        $scope.send.fee = $scope.defaultFee;
+        if (!$scope.$$phase) {
+            $scope.apply();
+        }
+    }
+  })
+
 
   $scope.sendBitcoins = function() {
       // get a free change address

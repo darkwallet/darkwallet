@@ -26,5 +26,11 @@ define(['./module', 'darkwallet', 'util/fiat'], function (controllers, DarkWalle
       walletService.setFiatCurrency($scope.selectedFiat);
       identity.store.save();
   }
+  $scope.defaultFeeChanged = function() {
+      var identity = DarkWallet.getIdentity();
+      if (!isNaN($scope.defaultFee)) {
+          identity.wallet.setDefaultFee($scope.defaultFee*100000000);
+      }
+  }
 }]);
 });

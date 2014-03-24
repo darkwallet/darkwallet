@@ -128,6 +128,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
       $scope.totalBalance = identity.wallet.getBalance();
       $scope.selectedCurrency = identity.settings.currency;
       $scope.selectedFiat = identity.settings.fiatCurrency;
+      $scope.defaultFee = identity.wallet.fee / 100000000;
 
       // load addresses into angular
       loadAddresses(identity);

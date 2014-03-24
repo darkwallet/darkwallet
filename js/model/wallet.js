@@ -12,6 +12,7 @@ function(DarkWallet, Stealth, Bitcoin, MultisigFunds) {
 function Wallet(store, identity) {
     this.store = store;
     this.is_cold = store.get('is_cold');
+    this.fee = store.init('fee', 10000); // 0.1 mBTC
     this.pubKeys = store.init('pubkeys', {});
     this.pockets = store.init('pockets', ['default']);
     // clean up change pocket
@@ -229,6 +230,16 @@ Wallet.prototype.getWalletAddress = function(address) {
     }
 }
 
+/**
+ * Set the default fee
+ * @param {String} The new fee in satoshis
+ */
+Wallet.prototype.setDefaultFee = function(newFee) {
+    this.fee = newFee;
+    this.store.set('fee', newFee);
+    this.store.save();
+    console.log("[wallet] saved new fees", newFee);
+}
 /**
  * Send bitcoins from this wallet.
  * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
