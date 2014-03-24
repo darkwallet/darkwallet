@@ -16,14 +16,12 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
   $scope.selectFund = function(fund, rowIndex) {
       $scope.pocket.name = fund.name;
       $scope.pocket.index = 'fund'
-      $scope.pocket.addresses = [{label: 'fund', address: fund.address, balance: 0}]
+      $scope.pocket.addresses = [$scope.identity.wallet.getAddress(fund.seq)]
       $scope.pocket.fund = fund;
-      $scope.pocket.addresses = [{label: 'fund', address: fund.address, balance: 0}]
       $scope.isAll = false;
       $scope.isFund = true;
       $scope.pocket.mpk = undefined;
       $scope.pocket.stealth = undefined;
-      $scope.balance = 0;
       $scope.selectedPocket = 'fund:' + rowIndex;
       $scope.balance = $scope.identity.wallet.getAddress(fund.seq).balance;
   }
