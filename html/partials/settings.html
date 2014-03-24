@@ -23,27 +23,32 @@
           <input id="checkbox2" type="checkbox"><label for="checkbox2">For incoming transactions</label><br>
           <input id="checkbox1" type="checkbox"><label for="checkbox1">For multisig spend requests</label>
         </div>
-        <div class="panel">
+        <div ng-controller="ServersCtrl" class="panel">
           <h5>Servers</h5>
+          <div ng-show="addServerError" class="row collapse">
+            <div class="small-8 columns">
+                {{addServerError}}
+            </div>
+          </div>
           <div class="row collapse">
             <div class="small-8 columns">
-              <input type="text" placeholder="Enter IP address (e.g: 80.34.132.23:2534)" />
+              <input ng-model="newServer.address" type="text" placeholder="Enter IP address (e.g: 80.34.132.23:2534)" />
+              <input ng-show="newServer.address" ng-model="newServer.name" type="text" placeholder="Enter name" />
             </div>
             <div class="small-4 columns">
-              <a href="" class="fa button postfix radius fa-plus">Add</a>
+              <a ng-click="addServer()" class="fa button postfix radius fa-plus">Add</a>
             </div>
           </div>
           <div class="row">
             <div class="small-12 columns">
-              <select class="select-list" size="50">
-                <option>Uno</option>
-                <option>Dos</option>
-                <option>Unsystem @ 234.223.245.32:4323</option>
+              <select class="select-list" size="50" ng-model="selectedServerIdx" ng-options="key as value.name for (key, value) in servers ">
               </select>
-              <a class="button small radius expand">Connect to selected server</a>
-              <h6>Connected to Unsystem @ 234.223.245.32:4323</h6>
-              <textarea>Welcome to the Unsystem server!!</textarea>
-              <a class="button tiny radius expand">Donate to this server</a>
+              <a ng-click="connectServer()" class="button small radius expand">Connect to selected server</a>
+              <h6>{{connectionStatus}} to {{selectedServer.name}} @ {{selectedServer.address}}</h6>
+              <div ng-show="connectionStatus == 'Connected'">
+                <textarea>Welcome to the Unsystem server!!</textarea>
+                <a class="button tiny radius expand">Donate to this server</a>
+              </div>
             </div>
           </div>
         </div>
