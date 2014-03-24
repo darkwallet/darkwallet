@@ -17,15 +17,6 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     },
 
     /*
-     *  Uncompress a public address
-     */
-    uncompressAddress: function(bytes) {
-        // XXX Untested!
-        var key = Bitcoin.ECPubKey(bytes, true);
-        return key.toBytes(false);
-    },
-
-    /*
      * Decode an address from string to bytes
      * Supports the following formats:
      *  - uncompressed hex
