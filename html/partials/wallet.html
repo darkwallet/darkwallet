@@ -52,7 +52,7 @@
     </form>
   </div>
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns">
-    <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | currencyFilter}} BTC</small></h4>
+    <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | currencyPresenter}}</small></h4>
     <tabset>
       <tab heading="History">
         <dl class="sub-nav">

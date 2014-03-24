@@ -17,6 +17,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
 
   // Pointer to service
   var bg = DarkWallet.service();
+  $scope.rates = [];
 
   // Global scope utils
   ModalUtils.registerScope($scope, $modal);
@@ -69,6 +70,9 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
     if (data.type == 'ready') {
         // identity is ready here
         loadIdentity(DarkWallet.getIdentity())
+    }
+    if (data.type == 'ticker') {
+        $scope.rates[data.currency] = data['24h_avg'];
     }
   })
 

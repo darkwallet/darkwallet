@@ -10,6 +10,8 @@ function(IdentityKeyRing, Services) {
     var self = this;
 
     // Some scope variables
+    this.rates = {};
+    this.currency = 'EUR';
     var currentIdentity = 0;
 
     var identityNames = [];
@@ -102,6 +104,13 @@ function(IdentityKeyRing, Services) {
     }
 
     // Handle initial connection to obelisk
+    function handleTicker(err, lastRates) {
+        self.rates[self.currency] = lastRates['24h_avg'];
+        Services.post('wallet', {type: 'ticker', currency: self.currency, rates: lastRates});
+        console.log("[wallet] ticker fetched", lastRates);
+    }
+
+    // Handle initial connection to obelisk
     function handleHeight(err, height) {
         currentHeight = height;
         Services.post('gui', {type: 'height', value: height})
@@ -110,6 +119,7 @@ function(IdentityKeyRing, Services) {
 
     this.handleInitialConnect = function() {
         var client = core.getClient();
+        client.fetch_ticker(self.currency, handleTicker);
         client.fetch_last_height(handleHeight);
 
         // get balance for addresses

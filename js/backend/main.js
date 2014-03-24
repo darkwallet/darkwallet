@@ -21,6 +21,10 @@ function DarkWalletService() {
     /***************************************
     /* Hook up some utility functions
      */
+    this.getWalletService = function() {
+        return walletService;
+    }
+
     this.loadIdentity = function(idx) {
         return walletService.loadIdentity(idx);
     }
@@ -97,6 +101,7 @@ window.getLobbyTransport = service.getLobbyTransport
 
 window.getClient = service.getClient;
 window.getServices = service.getServices;
+window.getWalletService = service.getWalletService
 
 window.initAddress = function(_w) {return service.initAddress(_w)};
 
