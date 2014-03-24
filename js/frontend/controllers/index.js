@@ -15,5 +15,6 @@ define([
     './send',
     './settings',
     './wallet',
+    './calculator',
     './rcv_stealth'
 ], function () {});

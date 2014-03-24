@@ -3,22 +3,22 @@
     <h3>Dashboard</h3>
     <div class="row">
       <div class="large-4 columns">
-        <div class="row collapse panel radius">
+        <div ng-controller="CalculatorCtrl" class="row collapse panel radius">
           <h5>Calculator</h5>
           <div class="small-1 columns">
             <span class="prefix radius fa fa-btc"></span>
           </div>
           <div class="small-4 columns">
-            <input type="text" value="1" />
+            <input ng-focus="calculator.amountFocused = true" ng-blur="calculator.amountFocused = false" ng-model="calculator.amount" type="text" />
           </div>
           <div class="small-2 columns">
             <span class="prefix">=</span>
           </div>
           <div class="small-4 columns">
-            <input type="text" value="800" />
+            <input ng-focus="calculator.convertedFocused = true" ng-blur="calculator.convertedFocused = false" ng-model="calculator.converted" type="text" />
           </div>
           <div class="small-1 columns">
-            <span class="postfix radius fa fa-dollar"></span>
+            <span class="postfix radius fa fa-euro"></span>
           </div>
           <a href="">Settings...</a>
         </div>
