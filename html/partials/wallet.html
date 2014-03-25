@@ -36,12 +36,20 @@
     <h4>Name</h4>
     <input ng-model="multiSigName" type="text" placeholder="Name your multisig fund..." />
     <h4>Other than you, who will manage this fund?</h4>
-    <ul>
-      <li ng-repeat="participant in multisig.participants">{{participant.address}}</li>
-    </ul>
+    <div class="row collapse">
+      <div class="large-10 columns">
+        <input type="text" ng-model="newAddress">
+      </div>
+      <div class="large-2 columns">
+        <a href="" ng-click="addParticipant(newAddress); newAddress = ''" class="button small radius postfix">Add</a>
+      </div>
+    </div>
     <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, participants: multisig.participants}, addParticipant)" class="button small radius">Select from contacts</a>
     <a href="" ng-click="openModal('scan-qr', {field: multisig.participants}, onQrModalOk, onQrModalCancel)" class="button small radius">Scan a QR code</a>
     <a href="" ng-click="addParticipant(pasteClipboard(), multisig)" class="button small radius">Paste a Master/Stealth address</a>
+    <ul>
+      <li ng-repeat="participant in multisig.participants">{{participant.address}}</li>
+    </ul>
     <h4>How many signatures will be needed in order to spend?</h4>
     <div class="row collapse">
         <div class="small-6 columns">
