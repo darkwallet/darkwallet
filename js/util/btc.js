@@ -1,5 +1,10 @@
 define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
   var convert = Bitcoin.convert;
+
+  var genesisTime = 1231006505;
+  var block292399 = 1395744824;
+  var blockDiff = ((block292399-genesisTime) / 292399);
+
   var BtcUtils = {
     /*
      * Start a multisig structure out of participant public keys and m
@@ -57,6 +62,16 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
             bytes = BtcUtils.uncompressAddress(bytes);
         }
         return bytes;
+    },
+    // Convert height to js timestamp
+    heightToTimestamp: function(height) {
+        return (genesisTime+(height*blockDiff))*1000;
+    },
+    // Convert height to date string
+    heightToDateString: function(height) {
+        var ts = BtcUtils.heightToTimestamp(height);
+        var date = new Date(ts);
+        return date.toLocaleDateString();
     }
   }
 

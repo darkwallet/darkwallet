@@ -9,6 +9,28 @@ var getAsBtc = function(currency, input) {
   }
 }
 
+
+// Calculating partial balance for history listings
+var partialBalance;
+
+// Filter that should be triggered somewhere before the history table
+filters.filter('balanceStart', function() {
+  return function(input) {
+      partialBalance = input;
+      return input;
+  }
+});
+
+// Filter that calculates current row balance
+filters.filter('balanceFilter', function() {
+  return function(input) {
+      var prevBalance = partialBalance;
+      partialBalance -= input;
+      return prevBalance;
+  }
+});
+
+
 // Filter for presenting a satoshi amount into selected btc unit
 filters.filter('currencyFilter', function() {
   return function(input) {
@@ -20,6 +42,9 @@ filters.filter('currencyFilter', function() {
 // Filter for presenting a satoshi amount into selected btc unit with unit label
 filters.filter('currencyPresenter', function() {
   return function(input) {
+    /*if (input) {
+        console.log('currencyPresenter');
+    }*/
     var identity = DarkWallet.getIdentity();
     var walletService = DarkWallet.service().getWalletService();
     var rate = walletService.rates[identity.settings.fiatCurrency];

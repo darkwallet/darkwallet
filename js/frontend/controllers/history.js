@@ -2,15 +2,73 @@
  * @fileOverview HistoryCtrl angular controller
  */
 
-define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
+define(['./module', 'bitcoinjs-lib', 'util/btc'], function (controllers, Bitcoin, BtcUtils) {
   'use strict';
   controllers.controller('HistoryCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
-  // History
-  
+  // History Filter
+  var shownRows = [];
+
+  $scope.txFilter = 'last10';
+
+  var pocketFilter = function(row) {
+      if ($scope.isAll) {
+          // only add pocket transactions for now
+          return typeof row.pocket === 'number';
+      }
+      else {
+          return row.pocket == $scope.pocket.index;
+      }
+  }
+
+  // Get date 30 days ago
+  var prevmonth = new Date();
+  prevmonth.setDate(prevmonth.getDate()-30)
+  // Get date 7 days ago
+  var prevweek = new Date();
+  prevweek.setDate(prevweek.getDate()-7)
+
+  // Set the history filter
+  $scope.setHistoryFilter = function(name) {
+      $scope.txFilter = name;
+  }
+
+  // History filter, run for every row to see if we should show it
+  $scope.historyFilter = function(row, idx) {
+      if (pocketFilter(row)) {
+          switch($scope.txFilter) {
+              case 'all':
+                  return true;
+              case 'lastWeek':
+                  var ts = BtcUtils.heightToTimestamp(row.height);
+                  if (ts > prevweek.getTime()) {
+                      return true;
+                  }
+                  break;
+              case 'lastMonth':
+                  var ts = BtcUtils.heightToTimestamp(row.height);
+                  if (ts > prevmonth.getTime()) {
+                      return true;
+                  }
+                  break;
+              case 'last10':
+              default:
+                  if (shownRows.indexOf(row.hash) != -1) {
+                      return true;
+                  } else if (shownRows.length < 10) {
+                      shownRows.push(row.hash)
+                      return true;
+                  }
+          }
+      }
+      return false;
+  }
+
+  // History Listing
   $scope.pocketName = "All Pockets";
   $scope.selectedPocket = 'pocket:all';
   $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $scope.allAddresses, changeAddresses: []};
+
   $scope.isAll = true;
   $scope.isFund = false;
   $scope.selectFund = function(fund, rowIndex) {
@@ -25,6 +83,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
       $scope.pocket.stealth = undefined;
       $scope.selectedPocket = 'fund:' + rowIndex;
       $scope.balance = $scope.identity.wallet.getAddress(fund.seq).balance;
+      //balanceStart($scope.balance);
   }
   $scope.selectPocket = function(pocketName, rowIndex) {
       var pocketIndex;
@@ -39,6 +98,7 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
           $scope.isAll = true;
           $scope.isFund = false;
           $scope.balance = $scope.identity.wallet.getBalance()
+          //balanceStart($scope.balance);
           rowIndex = 'all';
       } else {
           pocketIndex = rowIndex*2;
