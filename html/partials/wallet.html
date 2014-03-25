@@ -84,7 +84,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-show="isAll || pocket.index == row.pocket" ng-repeat="row in history">
+            <tr ng-repeat="row in history | filter:{ pocket: pocket.index }:!isAll  | orderBy:'height':true">
               <td class="icon"><a class="button square fa fa-info"></a>{{row.address}}</td>
               <td>{{(row.myOutValue-row.myInValue) | currencyFilter}}</td>
               <td class="text-right">{{row.balance | currencyFilter}}</td>
@@ -131,13 +131,13 @@
           <th class="text-right">QR Code / Copy</th>
           </thead>
           <tbody>
-          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) track by $index" ng-show="address.nOutputs == 0">
+          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:{nOutputs: 0}:true track by $index">
             <td class="icon"><a href="" class="button square fa fa-pencil-square"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>0</td>
             <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
           </tr>
-          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) track by $index" ng-show="address.nOutputs != 0">
+          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:{nOutputs: 0}:false track by $index">
             <td class="icon"><a class="button square fa fa-edit"></a>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>{{address.balance | currencyFilter}}</td>
