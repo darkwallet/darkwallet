@@ -22,8 +22,6 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
       var address = $scope.identity.wallet.getAddress(fund.seq)
       $scope.pocket.changeAddresses = [];
       $scope.pocket.addresses = [address];
-      console.log($scope.identity.wallet)
-      console.log("select fund", $scope.pocket.addresses, fund.seq, address);
       $scope.pocket.fund = fund;
       $scope.isAll = false;
       $scope.isFund = true;
