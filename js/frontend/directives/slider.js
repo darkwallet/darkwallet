@@ -8,10 +8,18 @@ define(['./module'], function (directives) {
         step: '=',
         value: '='
       },
-      template: '<input type="range" min="{{min}}" max="{{max}}" step="{{step}}" ng-model="value" style="width:100%" ng-change="change()"/>',
-      link: function($scope) {
-        $scope.change = function() {
-          $scope.value = this.value;
+      template: '<input type="range" min="{{min}}" max="{{max}}" step="{{step}}" style="width:100%"/>',
+      link: function(scope, element, attrs) {
+        var slider = element.children()[0];
+
+        // Set initial value
+        slider.value = scope.value;
+
+        // Register onchange event
+        slider.onchange = function() {
+            scope.$apply(function(){
+                scope.value = slider.value;
+            });
         };
       }
     };
