@@ -2,6 +2,21 @@ define(['./module', 'bitcoinjs-lib', 'util/btc'], function (filters, Bitcoin, Bt
 
 var convert = Bitcoin.convert;
 
+var genesisTime = 1231006505;
+var block292399 = 1395744824;
+
+var blockDiff = ((block292399-genesisTime) / 292399);
+
+// Filter for presenting a block height as date
+filters.filter('heightToDate', function() {
+  return function(input) {
+    var ts = (genesisTime+(input*blockDiff))*1000;
+    var date = new Date(ts);
+    return date.toLocaleDateString();
+  };
+});
+
+
 // Filter for presenting a byte array as hex
 filters.filter('bytesToHex', function() {
   return function(input) {

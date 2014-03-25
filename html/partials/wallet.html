@@ -79,6 +79,7 @@
           <thead>
             <tr>
               <th>Name</th>
+              <th>Date</th>
               <th>Amount</th>
               <th class="text-right">Balance</th>
             </tr>
@@ -86,6 +87,7 @@
           <tbody>
             <tr ng-repeat="row in history | filter:{ pocket: pocket.index }:!isAll  | orderBy:'height':true">
               <td class="icon"><a class="button square fa fa-info"></a>{{row.address}}</td>
+              <td>{{row.height | heightToDate}}</td>
               <td>{{(row.myOutValue-row.myInValue) | currencyFilter}}</td>
               <td class="text-right">{{row.balance | currencyFilter}}</td>
             </tr>
