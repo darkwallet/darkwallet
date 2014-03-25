@@ -1,8 +1,8 @@
 define(['./module', 'darkwallet', 'util/fiat'], function (filters, DarkWallet, FiatCurrencies) {
 
-// Convert input to btc units
+// Convert input to BTC units
 var getAsBtc = function(currency, input) {
-  if (currency == 'mbtc') {
+  if (currency === 'mBTC') {
     return input / 100000;
   } else {
     return input / 100000000;
@@ -24,11 +24,7 @@ filters.filter('currencyPresenter', function() {
     var walletService = DarkWallet.service().getWalletService();
     var rate = walletService.rates[identity.settings.fiatCurrency];
     var formatted = getAsBtc(identity.settings.currency, input);
-    if (identity.settings.currency == 'mbtc') {
-      formatted += ' mBTC';
-    } else {
-      formatted += ' BTC';
-    }
+    formatted += " " + identity.settings.currency;
 
     if (rate) {
       var converted = (input * rate / 100000000).toFixed(2);

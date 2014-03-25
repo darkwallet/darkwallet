@@ -13,7 +13,7 @@
       <li ng-repeat="identityName in availableIdentities">
         <div class="panel radius">
           <h4>{{identityName}}</h4>
-          <h6 ng-show="identities.hasOwnProperty(identityName)">Balance: {{identities[identityName].wallet.balance | currencyFilter}} BTC</h6>
+          <h6 ng-show="identities.hasOwnProperty(identityName)">Balance: {{identities[identityName].wallet.balance | currencyPresenter}}</h6>
           <button ng-click="selectIdentity(identityName)" ng-hide="identityName == currentIdentity" class="radius tiny expand">Use this identity</button>
           <button class="radius tiny expand">Backup</button>
         </div>

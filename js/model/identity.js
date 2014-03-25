@@ -14,7 +14,7 @@ function(Wallet, TransactionDatabase, History, Contacts, Connections, Bitcoin) {
  */
 function Identity(store, seed, password) {
     this.name = store.get('name');
-    this.settings = store.init('settings', {currency: 'btc', fiatCurrency: 'eur'});
+    this.settings = store.init('settings', {currency: 'BTC', fiatCurrency: 'EUR'});
     this.store = store;
     if (seed && password) {
         this.generate(seed, password);

@@ -1,8 +1,10 @@
-define(['./module', 'frontend/services'], function (controllers, Services) {
+define(['./module', 'frontend/services', 'darkwallet'], function (controllers, Services, DarkWallet) {
   'use strict';
   controllers.controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
   $scope.send = {recipient: '', amount: 0.2};
   $scope.autoAddEnabled = false;
+  var identity = DarkWallet.getIdentity();
+  $scope.selectedCurrency = identity.settings.currency;
 
   // Identity ready
   Services.connectNg('wallet', $scope, function(data) {
