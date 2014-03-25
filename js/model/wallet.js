@@ -25,6 +25,7 @@ function Wallet(store, identity) {
     }
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
     this.wallet = new Bitcoin.Wallet(this.mpk);
+    // this.pocketWallets = {}
     this.multisig = new MultisigFunds(store, identity, this);
 
     // store balance
@@ -50,7 +51,7 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     } else {
         for(var idx=0; idx<keys.length; idx++) {
             var walletAddress = this.pubKeys[keys[idx]];
-            if (walletAddress.index[0] == pocketIndex) {
+            if (walletAddress.index && walletAddress.index[0] == pocketIndex) {
                 allAddresses.push(walletAddress);
            }
         }
@@ -96,12 +97,23 @@ Wallet.prototype.loadPubKeys = function() {
     var self = this;
     var toRemove = [];
     Object.keys(this.pubKeys).forEach(function(index) {
-        if (self.pubKeys[index].index == null) {
+        var walletAddress = self.pubKeys[index];
+        if (walletAddress == null || walletAddress.index == null) {
             toRemove.push(index)
+            return;
         }
-        self.wallet.addresses.push(self.pubKeys[index].address);
-        if (self.pubKeys[index].history)
-            self.processHistory(self.pubKeys[index].address, self.pubKeys[index].history);
+        // Add all addresses
+        self.wallet.addresses.push(walletAddress.address);
+        if (walletAddress.index.length > 1) {
+            var pocket = walletAddress.index[0].toString();
+            /*if (!self.pocketWallets[pocket]) {
+                // would be better to set the pockets mpk, but doesnt really matter since we dont use it there
+                self.pocketWallets[pocket] = new Bitcoin.Wallet(self.mpk);
+            }
+            self.pocketWallets[pocket].addresses.push(walletAddress.address);*/
+            if (walletAddress.history)
+                self.processHistory(walletAddress, walletAddress.history);
+        }
     });
     // Cleanup malformed addresses
     toRemove.forEach(function(index) {
@@ -155,6 +167,7 @@ Wallet.prototype.getPrivateData = function(password) {
  * @param {Bitcoin.Key} key Private key to store
  */
 Wallet.prototype.storePrivateKey = function(seq, password, key) {
+    seq = seq.slice(0);
     var data = this.getPrivateData(password);
     data.privKeys[seq] = key.export('bytes');
     var privData = Identity.encrypt(data, password);
@@ -256,94 +269,129 @@ Wallet.prototype.setDefaultFee = function(newFee) {
     this.store.save();
     console.log("[wallet] saved new fees", newFee);
 }
+
+Wallet.prototype.broadcastTx = function(newTx, callback) {
+    // Broadcasting
+    console.log("send tx", newTx);
+    console.log("send tx", newTx.serializeHex());
+    var notifyTx = function(error, count) {
+        if (error) {
+            console.log("Error sending tx: " + error);
+            callback({data: error, text: "Error sending tx"})
+            return;
+        }
+        console.log("tx radar: " + count);
+    }
+    if (isStealth) {
+        console.log("not broadcasting stealth tx yet...");
+    } else {
+        // DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
+    }
+    callback(null)
+}
+
+
+
 /**
  * Send bitcoins from this wallet.
  * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
  */
-Wallet.prototype.sendBitcoins = function(recipient, changeAddress, amount, fee, password) {
+Wallet.prototype.sendBitcoins = function(recipients, changeAddress, fee, password, callback) {
+    var self = this;
+    var totalAmount = 0;
+    recipients.forEach(function(recipient) {
+        totalAmount = recipient.amount;
+    })
     var isStealth = false;
     // find an output with enough funds
-    var utxo = this.wallet.getUtxoToPay(amount+fee);
-    if (utxo.length > 1) {
-        console.log("several inputs not supported yet!");
+    var txUtxo;
+    try {
+        txUtxo = this.wallets.getUtxoToPay(totalAmount+fee);
+    } catch(e) {
+        callback({text: 'Not enough funds', data: e})
         return;
     }
-    // prepare some parameters
-    var utxo1 = utxo[0];
-    var outAmount = utxo1.value;
 
-    // now prepare transaction
+    // Create an empty transaction
     var newTx = new Bitcoin.Transaction();
-    // add inputs
-    newTx.addInput(utxo1.output);
-    var change = outAmount - (amount + fee);
 
-    // test for stealth
-    if (recipient[0] == 'S') {
-        isStealth = true;
-        recipient = Stealth.addStealth(recipient, newTx);
-    }
-    newTx.addOutput(recipient, amount);
+    // Compute total utxo value for this tx
+    // Also add inputs
+    var outAmount = 0;
+    txUtxo.forEach(function(utxo) {
+        outAmount += utxo.value;
+        newTx.addInput(utxo.output);
+    });
+
+    // Calculate change
+    var change = outAmount - (totalAmount + fee);
+
+    // Add inputs
+    recipients.forEach(function(recipient) {
+        var address = recipient.address;
+        // test for stealth
+        if (address[0] == 'S') {
+            isStealth = true;
+            address = Stealth.addStealth(address, newTx);
+        }
+        newTx.addOutput(address, recipient.amount);
+    })
+
     if (change) {
         newTx.addOutput(changeAddress.address, change);
     }
 
-    console.log("sending:", recipient ,"change", change, "sending", amount+fee, "utxo", outAmount);
 
-    // XXX Might need to sign several inputs
-    var seq;
-    var outAddress = this.getWalletAddress(utxo1.address);
-    if (outAddress) {
-        seq = outAddress.index;
-    } else {
-        console.log("This address is not managed by the wallet!");
-        return;
-    }
-    if (outAddress.type == 'multisig') {
-        console.log("Can't spend from multisig yet!");
-        return;
-    }
-    // XXX should catch exception on bad password:
-    //   sjcl.exception.corrupt {toString: function, message: "ccm: tag doesn't match"}
-    this.getPrivateKey(seq, password, function(outKey) {
-        newTx.sign(0, outKey);
-
-        // XXX send transaction
-        console.log("send tx", newTx);
-        console.log("send tx", newTx.serializeHex());
-        var notifyTx = function(error, count) {
-            if (error) {
-                console.log("Error sending tx: " + error);
-                return;
-            }
-            console.log("tx radar: " + count);
-        }
-        if (isStealth) {
-            console.log("not broadcasting stealth tx yet...");
+    // Signing
+    var errors = false;
+    txUtxo.forEach(function(utxo) {
+        var seq;
+        var outAddress = self.getWalletAddress(utxo.address);
+        if (outAddress) {
+            seq = outAddress.index;
         } else {
-            DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
+            errors = true;
+            callback({data: utxo.address, text: "This address is not managed by the wallet!"})
+            return;
+        }
+        if (outAddress.type == 'multisig') {
+            errors = true;
+            callback({text: "Can't spend from multisig yet!", data: utxo.address})
+            return;
+        }
+        // Get private keys and sign
+        try {
+            self.getPrivateKey(seq, password, function(outKey) {
+                newTx.sign(0, outKey);
+            });
+        } catch (e) {
+            callback({data: e, text: "Password incorrect!"})
+            errors = true;
+            return;
         }
     });
+    if (!errors) {
+        this.broadcastTx(newTx, callback);
+    }
 }
 
 /**
  * Process an output from an external source
  * @see Bitcoin.Wallet.processOutput
  */
-Wallet.prototype.processOutput = function(output) {
+Wallet.prototype.processOutput = function(walletAddress, output) {
+    // Wallet wide
     this.wallet.processOutput(output);
+
+    // Pocket specific wallet
+    // this.pocketWallets[walletAddress.index[0]].processOutput(output);
 }
 
 /**
  * Process history report from obelisk
  */
-Wallet.prototype.processHistory = function(address, history) {
+Wallet.prototype.processHistory = function(walletAddress, history) {
     var self = this;
-    var walletAddress = this.getWalletAddress(address);
-    if (!walletAddress) {
-        console.log("no wallet record for", address);
-        return;
-    }
     // reset some numbers for the address
     walletAddress.balance = 0;
     walletAddress.height = 0;
@@ -360,7 +408,7 @@ Wallet.prototype.processHistory = function(address, history) {
             walletAddress.height = Math.max(tx[2], walletAddress.height);
         }
         // pass on to internal Bitcoin.Wallet
-        self.processOutput({ output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
+        self.processOutput(walletAddress, { output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
     });
     this.store.save();
 }

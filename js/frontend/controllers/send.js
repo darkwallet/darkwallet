@@ -1,45 +1,81 @@
-define(['./module', 'frontend/services', 'darkwallet'], function (controllers, Services, DarkWallet) {
+define(['./module', 'frontend/services', 'darkwallet', 'bitcoinjs-lib'],
+function (controllers, Services, DarkWallet, Bitcoin) {
   'use strict';
+  var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
   $scope.send = {recipient: '', amount: 0.2};
   $scope.autoAddEnabled = false;
-  var identity = DarkWallet.getIdentity();
-  $scope.selectedCurrency = identity.settings.currency;
+
+  var initIdentity = function(identity) {
+      // init scope variables
+      $scope.selectedCurrency = identity.settings.currency;
+      if ($scope.selectedCurrency == 'mBTC') {
+          $scope.send.fee = $scope.defaultFee*1000;
+      } else {
+          $scope.send.fee = $scope.defaultFee;
+      }
+      if (!$scope.$$phase) {
+          $scope.$apply();
+      }
+  }
 
   // Identity ready
   Services.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
         // Set the default fee
-        $scope.send.fee = $scope.defaultFee;
-        if (!$scope.$$phase) {
-            $scope.$apply();
-        }
+        var identity = DarkWallet.getIdentity();
+        initIdentity(identity);
     }
   })
 
 
   $scope.sendBitcoins = function() {
       // get a free change address
+      var identity = DarkWallet.getIdentity();
       var changeAddress = $scope.getChangeAddress();
 
       // prepare amounts
-      var satoshis = 100000000;
-      var amount = $scope.send.amount * satoshis;
-      var fee = $scope.send.fee * satoshis;
+      var satoshis;
+      var currency = identity.settings.currency;
+      if (currency == 'mBTC') {
+          satoshis = 100000;
+      } else {
+          satoshis = 100000000;
+      }
+      // Prepare recipients
+      var recipients = [];
+      var totalAmount = 0;
+      $scope.recipients.fields.forEach(function(recipient) {
+          if (!recipient.amount || !recipient.address) {
+              return;
+          }
+          var amount = parseInt(BigInteger.valueOf(recipient.amount * satoshis).toString());
+          totalAmount += amount;
+          recipients.push({address: recipient.address, amount: amount})
+      });
+
+      var fee = parseInt(BigInteger.valueOf($scope.send.fee * satoshis).toString());
+
+      var onSent = function(error) {
+          // this should actually be a starting note, but we don't have a finishing callback yet.
+          // we can also use something to show radar progress
+          if (!error) {
+              toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + totalAmount) + ' satoshis');
+          } else {
+              toaster.pop('error', "Can't send", error.text);
+              console.log("error", error);
+          }
+      }
 
       // prepare the transaction
-      $scope.identity.wallet.sendBitcoins($scope.send.recipient,
+      identity.wallet.sendBitcoins(recipients,
                                           changeAddress,
-                                          amount,
                                           fee,
-                                          $scope.send.password);
-      // this should actually be a starting note, but we don't have a finishing callback yet.
-      // we can also use something to show radar progress
-      toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + amount) + ' satoshis');
-      
+                                          $scope.send.password,
+                                          onSent);
   }
 
-  $scope.repeatedFields = {
+  $scope.recipients = {
     fields: [
       { address: '', amount: '' }
     ],
@@ -58,18 +94,18 @@ define(['./module', 'frontend/services', 'darkwallet'], function (controllers, S
 
   $scope.addField = function() {
     // add the new option to the model
-    $scope.repeatedFields.fields.push($scope.repeatedFields.field_proto);
+    $scope.recipients.fields.push($scope.recipients.field_proto);
     // clear the option.
-    $scope.repeatedFields.field_proto = { address: '', amount: '' };
+    $scope.recipients.field_proto = { address: '', amount: '' };
   };
   
   $scope.autoAddField = function() {
     if (!$scope.autoAddEnabled) {
       return;
     }
-    var fields = $scope.repeatedFields.fields;
+    var fields = $scope.recipients.fields;
     var lastFields = fields[fields.length - 1];
-    var field_keys = Object.keys($scope.repeatedFields.field_proto);
+    var field_keys = Object.keys($scope.recipients.field_proto);
     var empty;
     field_keys.forEach(function(key) {
       empty = empty || lastFields[key];

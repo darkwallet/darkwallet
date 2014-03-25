@@ -1,4 +1,4 @@
-  <form>
+  <form ng-submit="sendBitcoins()">
     <div class="row">
       <div class="small-12 columns">
         <h3>Send</h3>
@@ -35,7 +35,7 @@
         <h6>Amount</h6>
       </div>
     </div>
-    <div class="row" ng-repeat="field in repeatedFields.fields">
+    <div class="row" ng-repeat="field in recipients.fields">
       <div class="medium-10 columns">
         <div class="row collapse">
           <div class="large-6 columns">

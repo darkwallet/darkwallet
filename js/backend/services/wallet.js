@@ -75,7 +75,7 @@ function(IdentityKeyRing, Services) {
         var identity = self.getCurrentIdentity();
 
         // pass to the wallet to process outputs
-        identity.wallet.processHistory(walletAddress.address, history);
+        identity.wallet.processHistory(walletAddress, history);
 
         // now subscribe the address for notifications
         console.log("[wallet] subscribing", walletAddress.address);
