@@ -2,7 +2,7 @@ Immediate:
  - Review and stabilize gateway
  - Send:
    - Review sending
-   - Several destinations support
+   * Several destinations support DONE
    - Implement send from pocket
    * Implement choose from contacts DONE
    - Better radar feedback
@@ -29,6 +29,7 @@ Other:
   * new multisig
   * multisig spend
   * radar when sending
+ * Validate input fields, specially addresses (on contacts and send)
  * Watch only pockets
  * Blockchain.info compatible coinjoin
 
