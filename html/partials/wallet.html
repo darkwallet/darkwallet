@@ -40,7 +40,7 @@
     <h4>How many signatures will be needed in order to spend?</h4>
     <div class="row collapse">
         <div class="small-6 columns">
-          <input ng-model="nSignatures" type="number" />
+          <slider min="1" value="nSignatures" max="multisig.participants.length || 1" ></slider>
         </div>
         <div class="small-6 columns">
           <span class="postfix radius">Out of N signatures ({{nSignatures}} of {{multisig.participants.length}})</span>
