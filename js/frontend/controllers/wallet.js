@@ -53,13 +53,13 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
     if (data.type == 'connected') {
         var identity = DarkWallet.getIdentity();
         toaster.pop('success', 'connected', identity.connections.servers[identity.connections.selectedServer].name);
-        ngProgress.color('green');
-        ngProgress.complete();
+        //ngProgress.color('green');
+        //ngProgress.complete();
     }
     if (data.type == 'connectionError') {
         toaster.pop("error", "Error connecting", data.error)
-        ngProgress.color('red');
-        ngProgress.complete();
+        //ngProgress.color('red');
+        //ngProgress.complete();
     }
   })
 
@@ -136,15 +136,15 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
       initializeEmpty();
 
       // this will connect to obelisk if we're not yet connected
-      ngProgress.color('firebrick');
-      ngProgress.start();
+      //ngProgress.color('firebrick');
+      //ngProgress.start();
       if (bg.getClient() && bg.getClient().connected) {
           // If already connected set the progress bar to finish
           // we wait a moment to provide better visual feedback
-          $timeout(function() {
+          /*$timeout(function() {
               ngProgress.color('green');
               ngProgress.complete();
-          }, 500);
+          }, 500);*/
       } else {
           // Request connecting to blockchain
           bg.connect();

@@ -4,7 +4,7 @@
 
 define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
   'use strict';
-  controllers.controller('HistoryCtrl', ['$scope', '$timeout', 'toaster', function($scope, $timeout, toaster) {
+  controllers.controller('HistoryCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
   // History
   
