@@ -18,13 +18,13 @@ function Multisig(store, identity, wallet) {
     this.store = store;
 }
 
-Multisig.prototype.addWalletAddress = function(fund) {
+Multisig.prototype.initWalletAddress = function(fund) {
     if (!fund.address || !fund.name) {
         console.log('[multisig] Fund is not correctly defined!');
         return;
     }
     var seq = [fund.address, 'm']
-    this.wallet.pubKeys[seq] = {
+    var walletAddress = {
        'type': 'multisig',
        'index': seq.slice(0),
        'label': fund.name,
@@ -32,11 +32,11 @@ Multisig.prototype.addWalletAddress = function(fund) {
        'nOutputs': 0,
        'address': fund.address
     };
-    this.wallet.store.save();
+    this.identity.wallet.addToWallet(walletAddress);
     // better clone the seq here since otherwise references can be nulled
     // in the backend store
     fund.seq = seq.slice(0);
-    return this.wallet.pubKeys[seq];
+    return walletAddress;
 }
 
 /**
@@ -49,7 +49,7 @@ Multisig.prototype.addFund = function(fund) {
     }
 
     // Add a walletAddres to the wallet so we can keep track of the fund address
-    var walletAddress = this.addWalletAddress(fund)
+    var walletAddress = this.initWalletAddress(fund)
 
     // Set the seq for the address on the fund and store
     this.funds.push(fund);

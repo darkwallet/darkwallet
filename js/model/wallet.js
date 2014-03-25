@@ -15,6 +15,10 @@ function Wallet(store, identity) {
     this.fee = store.init('fee', 10000); // 0.1 mBTC
     this.pubKeys = store.init('pubkeys', {});
     this.pockets = store.init('pockets', ['default']);
+    this.pocketWallets = {}
+    for(var idx=0; idx< this.pockets.length; idx++) {
+        this.initPocket({addresses: [], balance: 0})
+    };
     // clean up change pocket
     if (this.pockets.indexOf('change') != -1) {
         this.pockets.splice(this.pockets.indexOf('change'), 1);
@@ -25,7 +29,6 @@ function Wallet(store, identity) {
     }
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
     this.wallet = new Bitcoin.Wallet(this.mpk);
-    // this.pocketWallets = {}
     this.multisig = new MultisigFunds(store, identity, this);
 
     // store balance
@@ -73,7 +76,15 @@ Wallet.prototype.createPocket = function(name) {
     if (this.pockets.indexOf(name) == -1) {
         this.pockets.push(name);
         this.store.save();
+        this.initPocket(this.pockets.length-1);
     }
+}
+
+/**
+ * Initialize a pocket
+ */
+Wallet.prototype.initPocket = function(idx) {
+    this.pocketWallets[idx] = {addresses: [], balance: 0};
 }
 
 /**
@@ -90,6 +101,40 @@ Wallet.prototype.renamePocket = function(oldName, newName) {
 }
 
 /**
+ * Get the pocket index for a wallet address
+ */
+Wallet.prototype.getAddressPocketIdx = function(walletAddress) {
+    if (walletAddress.type == 'multisig') {
+        return walletAddress.index[0];
+    } else {
+        return Math.floor(walletAddress.index[0]/2);
+    }
+}
+
+/**
+ * Add an address to its pocket
+ */
+Wallet.prototype.addToPocket = function(walletAddress) {
+    var pocketIdx = this.getAddressPocketIdx(walletAddress);
+
+    // add to the list of pocket addresses
+    if (!this.pocketWallets[pocketIdx]) {
+        this.initPocket(pocketIdx)
+    }
+    this.pocketWallets[pocketIdx].addresses.push(walletAddress.address);
+}
+
+/**
+ * Add an address to the wallet
+ */
+Wallet.prototype.addToWallet = function(walletAddress) {
+    this.wallet.addresses.push(walletaddress.address);
+    this.pubKeys[walletAddress.index.slice()] = walletAddress;
+    this.addToPocket(walletAddress);
+    this.store.save();
+}
+
+/**
  * Load wallet addresses into internal Bitcoin.Wallet
  * @private
  */
@@ -102,15 +147,11 @@ Wallet.prototype.loadPubKeys = function() {
             toRemove.push(index)
             return;
         }
-        // Add all addresses
+        // Add all to the wallet
         self.wallet.addresses.push(walletAddress.address);
         if (walletAddress.index.length > 1) {
-            var pocket = walletAddress.index[0].toString();
-            /*if (!self.pocketWallets[pocket]) {
-                // would be better to set the pockets mpk, but doesnt really matter since we dont use it there
-                self.pocketWallets[pocket] = new Bitcoin.Wallet(self.mpk);
-            }
-            self.pocketWallets[pocket].addresses.push(walletAddress.address);*/
+            self.addToPocket(walletAddress);
+
             if (walletAddress.history)
                 self.processHistory(walletAddress, walletAddress.history);
         }
@@ -204,8 +245,8 @@ Wallet.prototype.storeAddress = function(seq, key) {
         label = 'unused';
     }
 
-    this.pubKeys[seq] = {
-       'index': seq,
+    var walletAddress = {
+       'index': seq.slice(0),
        'label': label,
        'balance': 0,
        'nOutputs': 0,
@@ -213,10 +254,10 @@ Wallet.prototype.storeAddress = function(seq, key) {
        'stealth': Bitcoin.base58.checkEncode(stealth.slice(1), 6),
        'address': address.toString()
     };
-    this.store.save();
+
     // add to internal bitcoinjs-lib wallet
-    this.wallet.addresses.push(address.toString());
-    return this.pubKeys[seq];
+    this.addToWallet(walletAddress);
+    return walletAddress;
 }
 
 /**
@@ -270,6 +311,9 @@ Wallet.prototype.setDefaultFee = function(newFee) {
     console.log("[wallet] saved new fees", newFee);
 }
 
+/**
+ * Broadcast transaction
+ */
 Wallet.prototype.broadcastTx = function(newTx, callback) {
     // Broadcasting
     console.log("send tx", newTx);
@@ -290,7 +334,33 @@ Wallet.prototype.broadcastTx = function(newTx, callback) {
     callback(null)
 }
 
+Wallet.prototype.getPocketWallet = function(idx) {
+    // Generate on the fly
+    var outputs = this.wallet.outputs;
+    var addresses = this.pocketWallets[idx].addresses;
+    var pocketOutputs = [];
+    Object.keys(outputs).forEach(function(outputKey) {
+        var output = outputs[outputKey];
+        if (addresses.indexOf(output.address.toString()) != -1) {
+            pocketOutputs[outputKey] = output;
+        }
+    })
+    var tmpWallet = new Bitcoin.Wallet(this.mpk)
+    tmpWallet.outputs = pocketOutputs;
+    tmpWallet.addresses = addresses;
+    return tmpWallet;
+}
 
+Wallet.prototype.getUtxoToPay = function(value, pocketIdx) {
+    var outputs = this.wallet.outputs;
+    var tmpWallet;
+    if (pocketIdx == 'all') {
+        tmpWallet = this.wallet;
+    } else {
+        tmpWallet = this.getPocketWallet(pocketIdx);
+    }
+    return tmpWallet.getUtxoToPay(value);
+}
 
 /**
  * Send bitcoins from this wallet.
@@ -306,7 +376,7 @@ Wallet.prototype.sendBitcoins = function(recipients, changeAddress, fee, passwor
     // find an output with enough funds
     var txUtxo;
     try {
-        txUtxo = this.wallets.getUtxoToPay(totalAmount+fee);
+        txUtxo = this.getUtxoToPay(totalAmount+fee, 0);
     } catch(e) {
         callback({text: 'Not enough funds', data: e})
         return;
