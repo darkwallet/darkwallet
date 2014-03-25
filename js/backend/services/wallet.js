@@ -15,7 +15,7 @@ function(IdentityKeyRing, Services) {
 
     var identityNames = [];
 
-    var currentHeight = 0;
+    this.currentHeight = 0;
 
     // Wallet port
     Services.start('wallet', function() {
@@ -66,9 +66,11 @@ function(IdentityKeyRing, Services) {
      */
     function historyFetched(err, walletAddress, history) {
         if (err) {
+            core.servicesStatus.obelisk = 'error';
             console.log("[wallet] Error fetching history for", walletAddress.address);
             return;
         }
+        core.servicesStatus.obelisk = 'ok';
         var client = core.getClient();
         var identity = self.getCurrentIdentity();
 
@@ -136,12 +138,13 @@ function(IdentityKeyRing, Services) {
 
     // Handle initial connection to obelisk
     function handleHeight(err, height) {
-        currentHeight = height;
-        Services.post('gui', {type: 'height', value: height})
+        self.currentHeight = height;
         console.log("[wallet] height fetched", height);
+        Services.post('gui', {type: 'height', value: height})
     }
 
     this.handleInitialConnect = function() {
+        console.log("[wallet] initial connect")
         var identity = self.getCurrentIdentity();
         var currency = identity.settings.fiatCurrency;
 

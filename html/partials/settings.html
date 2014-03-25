@@ -46,6 +46,8 @@
               <a ng-click="connectServer()" class="button small radius expand">Connect to selected server</a>
               <h6>{{connectionStatus}} to {{selectedServer.name}} @ {{selectedServer.address}}</h6>
               <div ng-show="connectionStatus == 'Connected'">
+                <div>gateway: {{servicesStatus.gateway}}</div>
+                <div>obelisk: {{servicesStatus.obelisk}}</div>
                 <textarea>Welcome to the Unsystem server!!</textarea>
                 <a class="button tiny radius expand">Donate to this server</a>
               </div>

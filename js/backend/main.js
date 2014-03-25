@@ -18,6 +18,9 @@ function DarkWalletService() {
     var ctxMenusService = new CtxMenusService(this);
     var guiService = new GuiService(this);
 
+    var servicesStatus = { gateway: 'offline', obelisk: 'offline' };
+    this.servicesStatus = servicesStatus;
+
     /***************************************
     /* Hook up some utility functions
      */
@@ -50,8 +53,12 @@ function DarkWalletService() {
     this.connect = function(connectUri) {
         var identity = walletService.getCurrentIdentity();
         connectUri = connectUri || identity.connections.servers[identity.connections.selectedServer].address || 'wss://gateway.unsystem.net';
+        servicesStatus.gateway = 'connecting';
         obeliskService.connect(connectUri, function(err) {
-            if (!err) {
+            if (err) {
+                servicesStatus.gateway = 'error';
+            } else {
+                servicesStatus.gateway = 'ok';
                 walletService.handleInitialConnect();
             }
         });
@@ -100,6 +107,7 @@ window.getIdentity = function(idx) { return service.getIdentity(idx); };
 window.getCurrentIdentity = service.getCurrentIdentity;
 
 window.getKeyRing = service.getKeyRing;
+window.servicesStatus = service.servicesStatus;
 window.getLobbyTransport = service.getLobbyTransport
 
 window.getClient = service.getClient;

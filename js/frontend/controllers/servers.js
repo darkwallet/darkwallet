@@ -10,6 +10,7 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
   $scope.newServer = {address: '', name: ''};
   $scope.addServerError = '';
   $scope.connectionStatus = 'Disconnected';
+  $scope.servicesStatus = {gateway: 'unknown', obelisk: 'unknown'};
 
   // Apply scope
   var applyScope = function() {
@@ -23,6 +24,7 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
     if (data.type == 'ready') {
       var identity = DarkWallet.getIdentity();
       $scope.servers = identity.connections.servers;
+      $scope.servicesStatus = DarkWallet.service().servicesStatus;
       $scope.selectedServerIdx = identity.connections.selectedServer;
       $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
       applyScope();
