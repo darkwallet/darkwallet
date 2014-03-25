@@ -3,10 +3,15 @@
     <ul class="side-nav ">
       <li>Pockets on my wallet</li>
       <li ng-class="{active: 'pocket:all'===selectedPocket}" class="active" ng-click="selectPocket()"><a>All</a></li>
-      <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat="pocketName in identity.wallet.pockets" ng-click="selectPocket(pocketName, $index)" ><a>{{pocketName}}</a></li>
+      <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat-start="pocketName in identity.wallet.pockets track by $index" ng-click="selectPocket(pocketName, $index)" ng-hide="renamingPocket===pocketName"><a>{{pocketName}}</a></li>
+      <li ng-show="renamingPocket===pocketName" ng-repeat-end>
+        <form ng-submit="renamePocket(pocketName, pocketNewName)">
+          <input ng-model="pocketNewName" type="text" autofocus>
+        </form>
+      </li>
       <li ng-show="creatingPocket">
         <form ng-submit="createPocket()">
-          <input type="text" id="pocketNameInput" ng-model="newPocketName" placeholder="Name your pocket..." />
+          <input type="text" autofocus ng-model="newPocketName" placeholder="Name your pocket..." />
           <input type="submit" class="button small expand radius" value="OK"/>
         </form>
       </li>
@@ -155,7 +160,7 @@
             <a href="#" class="fa button postfix fa-reply-all">Move funds to another identity</a>
             <div class="row">
               <div class="small-6 columns">
-                <a href="" class="fa button postfix fa-terminal">Rename pocket</a>
+                <a href="" ng-click="renamePocket(pocket.name)" class="fa button postfix fa-terminal">Rename pocket</a>
               </div>
               <div class="small-6 columns">
                 <a href="" class="fa button alert postfix fa-trash-o">Delete pocket</a>

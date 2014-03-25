@@ -64,6 +64,21 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
       }
       $scope.selectedPocket = 'pocket:' + rowIndex;
   }
+  
+  $scope.pocketNewName = '';
+  $scope.renamingPocket = false;
+  $scope.renamePocket = function(oldName, newName) {
+    if ($scope.renamingPocket) {
+      if (newName) {
+        $scope.identity.wallet.renamePocket(oldName, newName);
+        $scope.pocket.name = newName;
+      }
+      $scope.renamingPocket = null;
+    } else {
+      $scope.renamingPocket = oldName;
+      $scope.pocketNewName = oldName;
+    }
+  }
 
   // Pockets
   $scope.newPocketName = '';
@@ -82,11 +97,6 @@ define(['./module', 'bitcoinjs-lib'], function (controllers, Bitcoin) {
           // reset pocket form
           $scope.newPocketName = '';
       }
-    } else {
-      // wait a bit since we can't focus till the element is shown
-      $timeout(function() {
-        document.getElementById('pocketNameInput').focus()
-      });
     }
     $scope.creatingPocket = !$scope.creatingPocket;
   }

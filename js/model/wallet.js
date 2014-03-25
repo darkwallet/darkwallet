@@ -76,6 +76,19 @@ Wallet.prototype.createPocket = function(name) {
 }
 
 /**
+ * Rename a pocket
+ * @param {String} oldName Old name of the pocket
+ * @param {String} newName New name for the pocket
+ */
+Wallet.prototype.renamePocket = function(oldName, newName) {
+    var i = this.pockets.indexOf(oldName);  
+    if (i >= 0) {
+        this.pockets[i] = newName;
+        this.store.save();
+    }
+}
+
+/**
  * Load wallet addresses into internal Bitcoin.Wallet
  * @private
  */
