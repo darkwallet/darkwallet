@@ -51,7 +51,8 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   Services.connectNg('obelisk', $scope, function(data) {
     console.log("[WalletCtrl] obelisk bus:", data.type);
     if (data.type == 'connected') {
-        toaster.pop('success', 'connected', $scope.identity.connections.servers[$scope.identity.connections.selectedServer].name);
+        var identity = DarkWallet.getIdentity();
+        toaster.pop('success', 'connected', identity.connections.servers[identity.connections.selectedServer].name);
         ngProgress.color('green');
         ngProgress.complete();
     }
@@ -70,7 +71,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
         loadIdentity(DarkWallet.getIdentity())
     }
     if (data.type == 'ticker') {
-        $scope.rates[data.currency] = data['24h_avg'];
+        $scope.rates[data.currency] = data.rate;
     }
   })
 

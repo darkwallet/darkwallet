@@ -105,19 +105,25 @@ function(IdentityKeyRing, Services) {
 
     // Handle getting ticker information
     function handleTicker(err, currency, lastRates) {
-        if (err) {
-          console.log("[wallet] can't get ticker info")
-          Services.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info"});
+        if (err || !lastRates) {
+          Services.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info", error: err});
           return;
         }
-        if (!lastRates || !lastRates.hasOwnProperty('24h_avg')) {
+        if (lastRates.hasOwnProperty('24h_avg')) {
+          // Take the 24 hour average
+          self.rates[currency] = lastRates['24h_avg'];
+        }
+        else if (lastRates.hasOwnProperty('last')) {
+          // No 24 hour average means no volume, take last known value
+          self.rates[currency] = lastRates['last'];
+        } else {
+          // No values we can use
           Services.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info"});
           console.log("[wallet] can't get ticker info", lastRates)
           return;
         }
-        self.rates[currency] = lastRates['24h_avg'];
-        Services.post('wallet', {type: 'ticker', currency: currency, rates: lastRates});
-        console.log("[wallet] ticker fetched", lastRates);
+        Services.post('wallet', {type: 'ticker', currency: currency, rates: lastRates, rate: self.rates[currency]});
+        console.log("[wallet] ticker fetched");
     }
 
     this.setFiatCurrency = function(currency) {
