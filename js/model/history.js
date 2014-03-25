@@ -74,6 +74,8 @@ History.prototype.buildHistoryRow = function(transaction, height) {
         if (btcWallet.outputs[idx]) {
             inMine += 1;
             myInValue += btcWallet.outputs[idx].value;
+            // mark output as spent
+            btcWallet.outputs[idx].spend = true;
         }
     })
     if (!inMine) {
