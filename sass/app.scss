@@ -5,6 +5,21 @@
 *:focus { outline: 0; } /* Remove webkit's default outline */
 .nomarginbottom { margin-bottom: 0 !important; }
 
+input[type=range] {
+    -webkit-appearance: none;
+    background-color: silver;
+    width: 200px;
+    height:5px;
+    border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    border-radius: 10px;
+    -webkit-appearance: none;
+    background-color: $primary-color;
+    width: 16px;
+    height: 16px;
+}
 
 /* BUTTONS ----------- */
 a.glow.button, button.glow, input[type="submit"].glow {
