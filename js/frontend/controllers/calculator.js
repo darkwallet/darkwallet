@@ -40,7 +40,11 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
         $scope.calculator.converted = 'no rates';
         return;
     }
-    var result = $scope.calculator.amount*walletService.rates[identity.settings.fiatCurrency];
+    var amount = $scope.calculator.amount;
+    if (identity.settings.currency === 'mBTC') {
+      amount = $scope.calculator.amount / 1000;
+    }
+    var result = amount * walletService.rates[identity.settings.fiatCurrency];
     if (isNaN(result)) {
         $scope.calculator.converted = '';
     } else {
@@ -58,6 +62,9 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
         return;
     }
     var result = $scope.calculator.converted/walletService.rates[identity.settings.fiatCurrency];
+    if (identity.settings.currency === 'mBTC') {
+      result = result * 1000;
+    }
     if (isNaN(result)) {
         $scope.calculator.amount = '';
     } else {
