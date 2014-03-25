@@ -17,10 +17,9 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
   // Set the currency icon
   var initCurrencyIcon = function() {
     var identity = DarkWallet.getIdentity();
+    $scope.selectedCurrency = identity.settings.currency;
     var fiat = identity.settings.fiatCurrency;
-    var supportedFiat = ['EUR', 'JPY', 'TRY', 'KRW', 'RUB', 'GBP', 'USD', 'INR'];
-    var isSupported = supportedFiat.join(' ').indexOf(fiat) >= 0;
-    $scope.currencyClass = isSupported ? 'fa-' + fiat.toLowerCase() : 'fa-money';
+    $scope.fiatSymbol = FiatCurrencies[fiat].symbol_native;
   }
 
   // Wallet service, connect to get notified about identity getting loaded.
