@@ -18,6 +18,8 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   // Pointer to service
   var bg = DarkWallet.service();
   $scope.rates = {};
+  $scope.allAddresses = [];
+  $scope.totalBalance = 0;
 
   // Global scope utils
   ModalUtils.registerScope($scope, $modal);
@@ -118,7 +120,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
 
   function loadIdentity(identity) {
       $scope.addresses = {};
-      $scope.allAddresses = [];
+      $scope.allAddresses.splice(0,$scope.allAddresses.length);
       // set some links
       $scope.identity = identity;
       $scope.availableIdentities = bg.getKeyRing().availableIdentities;
@@ -147,13 +149,15 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
           }, 500);*/
       } else {
           // Request connecting to blockchain
-          bg.connect();
+          setTimeout(function() {
+            bg.connect();
+          })
       }
       console.log("[WalletCtrl] loadIdentity", identity.name);
       // apply scope changes
-      if(!$scope.$$phase) {
+      /*if(!$scope.$$phase) {
           $scope.$apply();
-      }
+      }*/
   };
 
   // Initialize pocket structures.
