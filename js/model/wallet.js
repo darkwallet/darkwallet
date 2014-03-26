@@ -208,11 +208,14 @@ Wallet.prototype.getPrivateData = function(password) {
  * @param {Bitcoin.Key} key Private key to store
  */
 Wallet.prototype.storePrivateKey = function(seq, password, key) {
+    var self = this;
     seq = seq.slice(0);
     var data = this.getPrivateData(password);
     data.privKeys[seq] = key.export('bytes');
-    var privData = Identity.encrypt(data, password);
-    this.store.set('private', privData);
+    require(['model/identity'], function(Identity) {
+        var privData = Identity.encrypt(data, password);
+        self.store.set('private', privData);
+    })
 }
 
 /**
@@ -314,7 +317,7 @@ Wallet.prototype.setDefaultFee = function(newFee) {
 /**
  * Broadcast transaction
  */
-Wallet.prototype.broadcastTx = function(newTx, callback) {
+Wallet.prototype.broadcastTx = function(newTx, isStealth, callback) {
     // Broadcasting
     console.log("send tx", newTx);
     console.log("send tx", newTx.serializeHex());
@@ -441,7 +444,7 @@ Wallet.prototype.sendBitcoins = function(recipients, changeAddress, fee, passwor
         }
     });
     if (!errors) {
-        this.broadcastTx(newTx, callback);
+        this.broadcastTx(newTx, isStealth, callback);
     }
 }
 

@@ -30,6 +30,10 @@ function (controllers, Services, DarkWallet, Bitcoin) {
 
 
   $scope.sendBitcoins = function() {
+    
+      $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, $scope.finishSend)
+  }
+  $scope.finishSend = function(password) {
       // get a free change address
       var identity = DarkWallet.getIdentity();
       var changeAddress = $scope.getChangeAddress();
@@ -71,7 +75,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
       identity.wallet.sendBitcoins(recipients,
                                           changeAddress,
                                           fee,
-                                          $scope.send.password,
+                                          password,
                                           onSent);
   }
 
