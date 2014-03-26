@@ -11,7 +11,13 @@ define(['darkwallet'], function(DarkWallet) {
 function TransactionDatabase(store) {
     this.transactions = store.init('transactions', {});
     this.store = store;
-
+    // Clean up incorrect transactions
+    var keys = Object.keys(this.transactions);
+    for(var idx=0; idx<keys.length; idx++) {
+        if (this.transactions[keys[idx]].length <= 20) {
+            delete this.transactions[keys[idx]];
+        }
+    };
 }
 
 /*
@@ -25,9 +31,9 @@ TransactionDatabase.prototype.fetchTransaction = function(txHash, callback, user
     if (!this.transactions[txHash]) {
         var client = DarkWallet.getClient();
         var gotTransaction = function(err, tx) {
-            self.transactions[txHash] = tx;
-            self.store.save();
             if(!err) {
+                self.transactions[txHash] = tx;
+                self.store.save();
                 callback(tx, userData);
             }
         }
