@@ -122,9 +122,12 @@ History.prototype.txFetched = function(walletAddress, transaction, height) {
         newRow = this.buildHistoryRow(transaction, height);
     // unknown for now means we need to fill in some extra inputs for now get 1st one
     if (newRow.address == 'unknown') {
+        if (newRow.tx.ins[0])
         this.identity.txdb.fetchTransaction(newRow.tx.ins[0].outpoint.hash,
                                             function(_a, _b) {self.fillInput(_a, _b)},
                                             [newRow.tx.ins[0].outpoint.index, newRow]);
+        else
+        console.log("No input!", newRow.tx);
      }
     newRow.addressIndex = walletAddress.index.slice(0);
     newRow.pocket = walletAddress.index[0];
