@@ -5,6 +5,24 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   controllers.controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
   $scope.send = {recipient: '', amount: 0.2};
   $scope.autoAddEnabled = false;
+  $scope.sendPocket = 'all';
+
+  $scope.setPocket = function(pocket) {
+      console.log("sendPocketChanged", pocket);
+      if (pocket == 'all') {
+          $scope.sendPocketName = 'Main pocket';
+          $scope.pocketIndex = 0;
+      } else if (typeof pocket == 'number') {
+          $scope.sendPocketName = $scope.identity.wallet.pockets[pocket];
+          $scope.pocketIndex = pocket;
+      } else {
+          var idx = parseInt(pocket.split(':')[1])
+          var fund = $scope.identity.wallet.multisig.funds[idx];
+          $scope.sendPocketName = fund.name;
+          $scope.pocketIndex = fund.address;
+      }
+  };
+  $scope.setPocket($scope.sendPocket);
 
   var initIdentity = function(identity) {
       // init scope variables
@@ -72,7 +90,8 @@ function (controllers, Services, DarkWallet, Bitcoin) {
       }
 
       // prepare the transaction
-      identity.wallet.sendBitcoins(recipients,
+      identity.wallet.sendBitcoins($scope.pocketIndex,
+                                          recipients,
                                           changeAddress,
                                           fee,
                                           password,

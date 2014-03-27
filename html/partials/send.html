@@ -17,7 +17,7 @@
           </div>
           <div class="large-2 columns">
             <h6>Sending from</h6>
-            <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">Main wallet</a>
+            <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{sendPocketName}}</a>
           </div>
         </div>
       </div>
@@ -68,11 +68,14 @@
       <div class="medium-2 columns aright"><input type="submit" class="button glow radius expand" value="Send" /></div>
     </div>
         <ul id="wallets" class="f-dropdown">
-          <li class="colorhead"><h6>My wallets</h6></li>
-          <li><a href="">This is a wallet</a></li>
-          <li><a href="">Yet another</a></li>
+          <li class="colorhead"><h6>My pockets</h6></li>
+          <li><a ng-click="setPocket('all')">Any</a></li>
+          <li ng-repeat="pocket in identity.wallet.pockets track by $index">
+            <a ng-click="setPocket($index)">{{pocket}}</a>
+          </li>
           <li class="colorhead"><h6>Multisig funds</h6></li>
-          <li><a href="">This is a multisig wallet</a></li>
-          <li><a href="">Yet another</a></li>
+          <li ng-repeat="fund in identity.wallet.multisig.funds track by $index">
+            <a ng-click="setPocket('multisig:'+$index)">{{fund.name}}</a>
+          </li>
         </ul>
   </form>

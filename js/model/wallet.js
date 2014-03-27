@@ -369,7 +369,7 @@ Wallet.prototype.getUtxoToPay = function(value, pocketIdx) {
  * Send bitcoins from this wallet.
  * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
  */
-Wallet.prototype.sendBitcoins = function(recipients, changeAddress, fee, password, callback) {
+Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, fee, password, callback) {
     var self = this;
     var totalAmount = 0;
     recipients.forEach(function(recipient) {
@@ -379,7 +379,7 @@ Wallet.prototype.sendBitcoins = function(recipients, changeAddress, fee, passwor
     // find an output with enough funds
     var txUtxo;
     try {
-        txUtxo = this.getUtxoToPay(totalAmount+fee, 0);
+        txUtxo = this.getUtxoToPay(totalAmount+fee, pocketIdx);
     } catch(e) {
         callback({text: 'Not enough funds', data: e})
         return;
