@@ -101,6 +101,9 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
     }
   }
 
+  $scope.newMultiSig = function() {
+    $scope.selectedPocket = 'newMultisig';
+  }
 
   // Pockets
   $scope.newPocketName = '';
