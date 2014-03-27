@@ -136,7 +136,7 @@ Wallet.prototype.addToPocket = function(walletAddress) {
  * Add an address to the wallet
  */
 Wallet.prototype.addToWallet = function(walletAddress) {
-    this.wallet.addresses.push(walletaddress.address);
+    this.wallet.addresses.push(walletAddress.address);
     this.pubKeys[walletAddress.index.slice()] = walletAddress;
     this.addToPocket(walletAddress);
     this.store.save();
