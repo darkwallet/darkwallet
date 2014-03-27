@@ -12,7 +12,7 @@ define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identic
         // Create the identicon
         function createFromBytes(dataBytes) {
           var data = new Identicon(Bitcoin.convert.bytesToHex(dataBytes), iconSize).toString();
-          element.html('<img width='+iconSize+' height='+iconSize+' src="data:image/png;base64,' + data + '">');
+          element.html('<img class="identicon" src="data:image/png;base64,' + data + '">');
         }
         // Watch for hash changes
         scope.$watch('hash', function() {
