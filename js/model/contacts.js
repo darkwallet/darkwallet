@@ -14,14 +14,14 @@ var Crypto = Bitcoin.Crypto;
 function Contacts(store) {
   this.store = store;
   this.contacts = this.store.init('contacts', []);
-  this.updateContacts();
+  this.initContacts();
 }
 
 /**
  * Update contacts after loading them.
  * @private
  */
-Contacts.prototype.updateContacts = function() {
+Contacts.prototype.initContacts = function() {
   var self = this;
   // TODO Remove when Darkwallet 1.0 release
   if (!Array.isArray(this.contacts)) {
@@ -30,7 +30,7 @@ Contacts.prototype.updateContacts = function() {
     this.store.save();
   }
   this.contacts.forEach(function(contact) {
-      if (!contact.hash) {
+      if (contact && !contact.hash) {
           self.updateContactHash(contact);
       }
   });
@@ -55,11 +55,12 @@ Contacts.prototype.addContact = function (data) {
 
 /**
  * Edit a contact in the address book
- * @param {Object} data Contact information.
  */
-Contacts.prototype.editContact = function (i, data) {
-  this.updateContactHash(data);
-  this.contacts[i] = data;
+Contacts.prototype.updateContact = function (contact) {
+  if (this.contacts.indexOf(contact) == -1) {
+    throw Error("This is not an already existing contact!");
+  }
+  this.updateContactHash(contact);
   this.store.save();
 };
 
@@ -68,7 +69,11 @@ Contacts.prototype.editContact = function (i, data) {
  * Delete a contact from the address book
  * @param {String} data Contact information.
  */
-Contacts.prototype.deleteContact = function (i) {
+Contacts.prototype.deleteContact = function (contact) {
+  var i = this.contacts.indexOf(contact);
+  if (i == -1) {
+    throw Error("Contact does not exist!");
+  }
   this.contacts.splice(i, 1);
   this.store.save();
 };

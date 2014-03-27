@@ -20,16 +20,16 @@ define(['./module'], function (controllers) {
     $scope.contactToEdit = {name: contact.name, address: contact.address};
   };
 
-  $scope.editContact = function(i, contact) {
+  $scope.editContact = function(contact) {
     contact.name = $scope.contactToEdit.name;
     contact.address = $scope.contactToEdit.address;
-    $scope.identity.contacts.editContact(i, contact);
+    $scope.identity.contacts.updateContact(contact);
     $scope.contactFormShown = false;
     $scope.contactToEdit = {};
   };
 
-  $scope.deleteContact = function(i) {
-    $scope.identity.contacts.deleteContact(i);
+  $scope.deleteContact = function(contact) {
+    $scope.identity.contacts.deleteContact(contact);
   };
 }]);
 });

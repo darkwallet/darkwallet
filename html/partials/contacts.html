@@ -23,7 +23,7 @@
             <identicon icon-size="38" hash="contact.hash" title="{{contact.hash}}"></identicon>
           </td>
           <td  colspan="3" ng-show="contactFormShown === $index">
-            <form ng-submit="editContact($index, contact)">
+            <form ng-submit="editContact(contact)">
               <input class="contact-name columns large-5" required ng-model="contactToEdit.name" type="text" placeholder="Write a new contact name" />
               <input class="contact-name columns large-5" required ng-model="contactToEdit.address" type="text" placeholder="Write the address" />
               <button type="submit" class="button small text-right">Save</button>
