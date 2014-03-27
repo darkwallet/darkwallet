@@ -86,7 +86,7 @@
           </thead>
           <tbody>
             <tr ng-repeat="row in history | filter:historyFilter  | orderBy:'height':true">
-              <td class="icon"><a class="button square fa fa-info"></a>{{row.address}}</td>
+              <td class="icon"><button class="button square fa fa-info"></button>{{row.address}}</td>
               <td>{{row.height | heightToDate}}</td>
               <td>{{(row.myOutValue-row.myInValue) | currencyFilter}}</td>
               <td class="text-right">{{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}</td>
@@ -127,6 +127,7 @@
         </div>
         <table class="expand">
           <thead>
+          <th>Edit</th>
           <th>Name</th>
           <th>Address</th>
           <th>Balance</th>
@@ -134,13 +135,15 @@
           </thead>
           <tbody>
           <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:unusedAddressFilter track by $index">
-            <td class="icon"><a href="" class="button square fa fa-pencil-square"></a>{{address.label}}</td>
+            <td class="icon"><button class="button square fa fa-pencil-square"></button></td>
+            <td>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>0</td>
-            <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
+            <td class="icon text-right"><button ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></button><button href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></button></td>
           </tr>
           <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:usedAddressFilter track by $index">
-            <td class="icon"><a class="button square fa fa-edit"></a>{{address.label}}</td>
+            <td class="icon"><button class="button square fa fa-edit"></button></td>
+            <td>{{address.label}}</td>
             <td>{{address.address}}</td>
             <td>{{address.balance | currencyFilter}}</td>
             <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>

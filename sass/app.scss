@@ -29,18 +29,20 @@ a.glow.button, button.glow, input[type="submit"].glow {
   &:hover { -webkit-animation: none; }
 }
 
-.button:active, table tr:nth-child(odd) a.button:active { 
+button:active .button:active, table tr:nth-child(odd) a.button:active { 
 	background: darken($primary-color, 20%); 
 	-webkit-transition: none;
 	-moz-transition: none;
 	transition: none;
  }
 
-.button.fa:before {
+.button.fa:before, button.fa:before {
 	font-family: FontAwesome;
 }
 
-.button.square, button.square { width: 36px; height: 36px; padding: 0; }
+.button.square, button.square { width: 36px; height: 36px; padding: 0; margin: 0; }
+
+
 .button.postfix.fa:before, button.postfix.fa:before { 
 
 	background: darken($primary-color, 10%); 
@@ -68,7 +70,7 @@ td.icon {
 	a.button { margin-right: 0.6em; } 
 }
 
-table tr:nth-child(odd) a.button { 
+table tr:nth-child(odd) button { 
 	background: darken($primary-color, 5%);
 	}
 
