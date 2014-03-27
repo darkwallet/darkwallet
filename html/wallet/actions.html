@@ -11,7 +11,7 @@
                 <a href="" ng-click="renamePocket(pocket.name)" class="fa button postfix fa-terminal">Rename pocket</a>
               </div>
               <div class="small-6 columns">
-                <a class="fa button alert postfix fa-trash-o" ng-click="deletePocket(pocket)">Delete pocket</a>
+                <a class="fa button alert postfix fa-trash-o" ng-click="deletePocket(pocket)" ng-show="pocket.index !== 0">Delete pocket</a>
               </div>
             </div>
           </div>
