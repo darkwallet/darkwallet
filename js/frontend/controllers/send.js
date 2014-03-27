@@ -6,6 +6,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   $scope.send = {recipient: '', amount: 0.2};
   $scope.autoAddEnabled = false;
   $scope.sendPocket = 'all';
+  $scope.advanced = false;
 
   $scope.setPocket = function(pocket) {
       console.log("sendPocketChanged", pocket);

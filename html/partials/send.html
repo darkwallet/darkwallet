@@ -38,12 +38,12 @@
     </div>
     <div class="row">
       <div class="medium-10 columns">
-        <a href="" class="button small radius" ng-click="enableAutoAddFields()" ng-hide="autoAddEnabled">Add another recipient</a>
-        <a href="" class="button small radius">Advanced</a>
+        <a ng-show="advanced" class="button small radius" ng-click="enableAutoAddFields()">Add another recipient</a>
+        <a ng-click="advanced=!advanced" class="button small radius">Advanced</a>
       </div>
       <div class="medium-2 columns aright"><input type="submit" class="button glow radius expand" value="Send" /></div>
     </div>
-    <div class="row">
+    <div class="row" ng-show="advanced">
         <div class="small-6 columns">
           <h6>Fee</h6>
           <input ng-model="send.fee" type="text" class="radius" />
