@@ -5280,7 +5280,7 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
   position: absolute;
   top: 50%;
   left: 50%;
-  margin: -7px 0 0 -7px; }
+  margin: -8px 0 0 -7px; }
 
 .button.postfix.fa:before, button.postfix.fa:before {
   background: #1e8448;
