@@ -18,32 +18,27 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat-start="contact in identity.contacts.contacts | orderBy:'name' track by $index" ng-hide="contactFormShown === $index">
+        <tr ng-repeat="contact in identity.contacts.contacts | orderBy:'name' track by $index">
           <td>
             <identicon icon-size="38" hash="contact.hash" title="{{contact.hash}}"></identicon>
           </td>
-          <td class="name" ng-hide="contactFormShown === $index">
-            {{contact.name}}
-          </td>
-          <td >{{contact.address}}</td>
-          <td class="text-right" ng-hide="contactFormShown === $index">
-            <button ng-click="copyClipboard(contact.address)" class="button square fa fa-clipboard"></button>
-            <button ng-click="openModal('show-qr', {address: contact.address})" class="button square fa fa-qrcode"></button>
-            <button ng-click="contactFormShown = $index; openEditForm($index, contact)" class="button square fa fa-edit"></button>
-            <button ng-click="openModal('confirm-delete-contact', {index: $index, contact: contact}, deleteContact)" class="button square alert fa fa-trash-o"></button>
-            <!--<button ng-click="deleteContact(contact)" class="button square alert fa fa-trash-o"></button>-->
-          </td>
-        </tr>
-        <tr ng-repeat-end ng-show="contactFormShown === $index" class="editrow">
-          <td>
-            <identicon icon-size="38" hash="contact.hash" title="{{contact.hash}}"></identicon>
-          </td>
-          <td  colspan="3">
-            <form ng-submit="contactFormShown = false; editContact($index, contact)">
+          <td  colspan="3" ng-show="contactFormShown === $index">
+            <form ng-submit="editContact($index, contact)">
               <input class="contact-name columns large-5" required ng-model="contactToEdit.name" type="text" placeholder="Write a new contact name" />
               <input class="contact-name columns large-5" required ng-model="contactToEdit.address" type="text" placeholder="Write the address" />
               <button type="submit" class="button small text-right">Save</button>
             </form>
+          </td>
+          <td class="name" ng-show="contactFormShown !== $index">
+            {{contact.name}}
+          </td>
+          <td ng-show="contactFormShown !== $index">{{contact.address}}</td>
+          <td class="text-right" ng-show="contactFormShown !== $index">
+            <button ng-click="copyClipboard(contact.address)" class="button square fa fa-clipboard"></button>
+            <button ng-click="openModal('show-qr', {address: contact.address})" class="button square fa fa-qrcode"></button>
+            <button ng-click="openEditForm($index, contact)" class="button square fa fa-edit"></button>
+            <button ng-click="openModal('confirm-delete-contact', {index: $index, contact: contact}, deleteContact)" class="button square alert fa fa-trash-o"></button>
+            <!--<button ng-click="deleteContact(contact)" class="button square alert fa fa-trash-o"></button>-->
           </td>
         </tr>
       </tbody>
