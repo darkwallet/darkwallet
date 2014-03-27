@@ -51,7 +51,7 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 	&:last-of-type { border-radius: 0 $global-radius $global-radius 0; }
 }
 
-.button.square:before { position: absolute; top: 50%; left: 50%; margin: -7px 0 0 -7px; }
+.button.square:before { position: absolute; top: 50%; left: 50%; margin: -8px 0 0 -7px; }
 
 .button.postfix.fa:before, button.postfix.fa:before { 
 
