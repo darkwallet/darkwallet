@@ -122,6 +122,8 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
           // row pocket here is just 1st element in index, pocket can be pocket/2
           if (typeof row.pocket === 'number') {
               return Math.floor(row.pocket/2) == $scope.pocket.index;
+          } else {
+              return row.pocket == $scope.pocket.index;
           }
       }
   }
