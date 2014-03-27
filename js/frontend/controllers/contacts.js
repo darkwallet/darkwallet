@@ -23,7 +23,7 @@ define(['./module'], function (controllers) {
   $scope.editContact = function(i, contact) {
     contact.name = $scope.contactToEdit.name;
     contact.address = $scope.contactToEdit.address;
-    $scope.identity.contacts.editContact(contact, i);
+    $scope.identity.contacts.editContact(i, contact);
     $scope.contactFormShown = false;
     $scope.contactToEdit = {};
   };
