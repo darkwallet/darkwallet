@@ -163,6 +163,19 @@
         <h3>Participants:</h3>
         <div ng-repeat="participant in pocket.fund.pubKeys track by $index" title="{{participant | bytesToHex}}">{{participant | bytesToAddressHash}}</div>
       </tab>
+      <tab heading="Tasks" ng-show="isFund && pocket.tasks.length">
+        <div ng-repeat="task in pocket.tasks">
+            <h2>Collect signatures</h2>
+            <div><b>Signatures:</b> {{task.signatures.length}} of {{pocket.fund.m}}</div>
+            <div><b>Index:</b> {{task.task.pending[0].index}}</div>
+            <div><b>Output:</b> {{task.task.pending[0].output}}</div>
+            <div><b>Tx:</b> {{task.task.tx}}</div>
+            <h3>Destinations</h3>
+            <div ng-repeat="out in task.tx.outs">
+               <li>{{out.address.toString()}} <b>{{out.value | currencyPresenter}}</b></li>
+            </div>
+        </div>
+      </tab>
       <tab heading="Actions" ng-hide="isAll || isFund">
         <div class="row">
           <div class="large-6 columns">

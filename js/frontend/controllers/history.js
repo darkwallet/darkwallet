@@ -23,12 +23,25 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
       $scope.pocket.changeAddresses = [];
       $scope.pocket.addresses = [address];
       $scope.pocket.fund = fund;
+      $scope.pocket.tasks = [];
       $scope.isAll = false;
       $scope.isFund = true;
       $scope.pocket.mpk = undefined;
       $scope.pocket.stealth = undefined;
       $scope.selectedPocket = 'fund:' + rowIndex;
       $scope.balance = $scope.identity.wallet.getAddress(fund.seq).balance;
+
+      // Check pending tasks for fund
+      var tasks = $scope.identity.tasks.tasks.multisig;
+      if (tasks && tasks.length) {
+          for(var idx=0; idx<tasks.length; idx++) {
+              var task = tasks[idx];
+              if (task.pending[0].address == fund.address) {
+                  var tx = new Bitcoin.Transaction(task.tx);
+                  $scope.pocket.tasks.push({tx: tx, task: task, signatures: []});
+              }
+          }
+      }
       //balanceStart($scope.balance);
   }
   $scope.selectPocket = function(pocketName, rowIndex) {
@@ -44,6 +57,7 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
           $scope.isAll = true;
           $scope.isFund = false;
           $scope.balance = $scope.identity.wallet.getBalance()
+          $scope.pocket.tasks = [];
           //balanceStart($scope.balance);
           rowIndex = 'all';
       } else {
@@ -63,6 +77,7 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
           $scope.pocket.stealth = walletAddress.stealth;
           $scope.pocket.addresses = $scope.addresses[$scope.pocket.index];
           $scope.pocket.changeAddresses = $scope.addresses[$scope.pocket.index+1];
+          $scope.pocket.tasks = [];
           $scope.isAll = false;
           $scope.isFund = false;
           // balance is sum of public and change branches
