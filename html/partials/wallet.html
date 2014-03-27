@@ -10,9 +10,9 @@
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns">
     <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | balanceStart | currencyPresenter}}</small></h4>
     <tabset>
-      <ng-include src="'wallet/addresses.html'">
-      </ng-include>
       <ng-include src="'wallet/history.html'">
+      </ng-include>
+      <ng-include src="'wallet/addresses.html'">
       </ng-include>
       <ng-include src="'wallet/fund.html'">
       </ng-include>
