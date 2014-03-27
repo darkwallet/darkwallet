@@ -5261,8 +5261,9 @@ a.glow.button, button.glow, input[type="submit"].glow {
   font-family: FontAwesome; }
 
 .button.square, button.square {
-  padding: 0.6em;
-  margin: 0 0.1em; }
+  width: 36px;
+  height: 36px;
+  padding: 0; }
 
 .button.postfix.fa:before, button.postfix.fa:before {
   background: #1e8448;
