@@ -20,10 +20,6 @@ function Wallet(store, identity) {
     for(var idx=0; idx< this.pockets.length; idx++) {
         this.initPocket({addresses: [], balance: 0})
     };
-    // clean up change pocket
-    if (this.pockets.indexOf('change') != -1) {
-        this.pockets.splice(this.pockets.indexOf('change'), 1);
-    }
     this.mpk = store.get('mpk');
     if (!this.mpk) {
          console.log("Wallet without mpk!", this.mpk);
@@ -87,6 +83,17 @@ Wallet.prototype.createPocket = function(name) {
 Wallet.prototype.initPocket = function(idx) {
     this.pocketWallets[idx] = {addresses: [], balance: 0};
 }
+
+/**
+ * Delete a pocket
+ */
+Wallet.prototype.deletePocket = function(name) {
+    var idx = this.pockets.indexOf(name);
+    this.pockets[idx] = null;
+    this.store.save();
+    // TODO: Cleanup pocket addresses?
+}
+
 
 /**
  * Rename a pocket

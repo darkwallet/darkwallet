@@ -79,7 +79,7 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
         $scope.identity.wallet.renamePocket(oldName, newName);
         $scope.pocket.name = newName;
       }
-      $scope.renamingPocket = null;
+      $scope.renamingPocket = false;
     } else {
       $scope.renamingPocket = oldName;
       $scope.pocketNewName = oldName;
@@ -90,6 +90,13 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
   // Pockets
   $scope.newPocketName = '';
   $scope.creatingPocket = false;
+  $scope.deletePocket = function(pocket) {
+      $scope.openModal('confirm-delete', {name: pocket.name, object: pocket}, $scope.deletePocketFinish)
+  }
+  $scope.deletePocketFinish = function(pocket) {
+      $scope.identity.wallet.deletePocket(pocket.name);
+      $scope.selectPocket();
+  }
   $scope.createPocket = function() {
     if ($scope.creatingPocket) {
       if ($scope.newPocketName) {
