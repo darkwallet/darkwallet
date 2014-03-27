@@ -1,200 +1,25 @@
 <div class="row">
   <div class="large-2 columns panel">
-    <ul class="side-nav ">
-      <li>Pockets on my wallet</li>
-      <li ng-class="{active: 'pocket:all'===selectedPocket}" class="active" ng-click="selectPocket()"><a>All</a></li>
-      <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat-start="pocketName in identity.wallet.pockets track by $index" ng-click="selectPocket(pocketName, $index)" ng-hide="renamingPocket===pocketName"><a>{{pocketName}}</a></li>
-      <li ng-show="renamingPocket===pocketName" ng-repeat-end>
-        <form ng-submit="renamePocket(pocketName, pocketNewName)">
-          <input ng-model="pocketNewName" type="text" autofocus>
-        </form>
-      </li>
-      <li ng-show="creatingPocket">
-        <form ng-submit="createPocket()">
-          <input type="text" autofocus ng-model="newPocketName" placeholder="Name your pocket..." />
-          <input type="submit" class="button small expand radius" value="OK"/>
-        </form>
-      </li>
-      <li ng-hide="creatingPocket">
-        <a class="button small expand radius" ng-click="createPocket()">New Pocket</a>
-      </li>
-      <li class="divider"></li>
-      <li>My multisig funds</li>
-      <li ng-class="{active: 'fund:'+$index===selectedPocket}" ng-click="selectFund(fund, $index)" ng-repeat="fund in identity.wallet.multisig.funds track by $index"><a href="">{{fund.name}}</a></li>
-      <li><a class="button small expand radius" ng-click="selectedPocket = 'newMultisig'">New Multisig fund</a></li>
-      <li class="divider"></li>
-      <li>Watch-only pockets</li>
-      <li><a href="">My smartphone</a></li>
-      <li><a href="">My cold wallet</a></li>
-      <li><a class="button small expand radius">Add watch-only pocket</a></li>
-    </ul>
+      <ng-include src="'wallet/pockets.html'">
+      </ng-include>
   </div>
   <div ng-show="selectedPocket==='newMultisig'" ng-controller="MultisigCtrl" class="large-10 columns">
-    <form ng-submit="createMultisig()">
-    <h3>Start a Multisig fund</h3>
-    <span>Multisig funds are wallets that require multiple passwords in order to spend the funds. Useful when you need to manage a wallet between multiple people or devices.</span>
-    <h4>Name</h4>
-    <input ng-model="multiSigName" type="text" placeholder="Name your multisig fund..." />
-    <h4>Other than you, who will manage this fund?</h4>
-    <div class="row collapse">
-      <div class="large-10 columns">
-        <input type="text" ng-model="newAddress">
-      </div>
-      <div class="large-2 columns">
-        <a href="" ng-click="addParticipant(newAddress); newAddress = ''" class="button small radius postfix">Add</a>
-      </div>
-    </div>
-    <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, participants: multisig.participants}, addParticipant)" class="button small radius">Select from contacts</a>
-    <a href="" ng-click="openModal('scan-qr', {field: multisig.participants}, onQrModalOk, onQrModalCancel)" class="button small radius">Scan a QR code</a>
-    <a href="" ng-click="addParticipant(pasteClipboard(), multisig)" class="button small radius">Paste a Master/Stealth address</a>
-    <ul>
-      <li ng-repeat="participant in multisig.participants">{{participant.address}}</li>
-    </ul>
-    <h4>How many signatures will be needed in order to spend?</h4>
-    <div class="row collapse">
-        <div class="small-6 columns">
-          <slider min="1" value="nSignatures" max="multisig.participants.length || 1" ></slider>
-        </div>
-        <div class="small-6 columns">
-          <span class="postfix radius">Out of N signatures ({{nSignatures}} of {{multisig.participants.length}})</span>
-        </div>
-    </div>
-    <p><div ng-show="multiSigAddress">Fund address: {{multiSigAddress}}</div></p>
-    <input type="submit" class="button glow radius" value="Start multisig" />
-    <a class="button" ng-click="importMultisig()"> Import a multisig</a>
-    </form>
+      <ng-include src="'wallet/new_multisig.html'">
+      </ng-include>
   </div>
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns">
     <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | balanceStart | currencyPresenter}}</small></h4>
     <tabset>
-      <tab heading="History">
-        <dl class="sub-nav">
-          <dt>Filter:</dt>
-          <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
-          <dd ng-class="{active: 'lastWeek'===txFilter}"><a ng-click="setHistoryFilter('lastWeek')">Last week</a></dd>
-          <dd ng-class="{active: 'lastMonth'===txFilter}"><a ng-click="setHistoryFilter('lastMonth')">Last month</a></dd>
-          <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
-        </dl>
-        <table class="expand">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Date</th>
-              <th>Amount</th>
-              <th class="text-right">Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="row in history | filter:historyFilter  | orderBy:'height':true">
-              <td class="icon"><button class="button square fa fa-info"></button>{{row.address}}</td>
-              <td>{{row.height | heightToDate}}</td>
-              <td>{{(row.myOutValue-row.myInValue) | currencyFilter}}</td>
-              <td class="text-right">{{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </tab>
-      <tab heading="Addresses">
-        <div class="panel" ng-hide="isAll || isFund">
-        <div class="row collapse">
-          <div class="medium-2 columns">
-            <span class="prefix radius">Stealth Address</span>
-          </div>
-          <div class="medium-6 columns">
-            <input type="text" disabled="true" value="{{pocket.stealth}}" />
-          </div>
-          <div class="medium-2 columns">
-            <button ng-click="copyClipboard(pocket.stealth)" class="button postfix fa fa-clipboard">Copy</button>
-          </div>
-          <div class="medium-2 columns">
-            <button ng-click="openModal('show-qr', {address: pocket.stealth})" class="button postfix radius fa fa-qrcode">QR</button>
-          </div>
-        </div>
-        <div class="row collapse">
-          <div class="medium-2 columns">
-            <span class="prefix radius">Master Address</span>
-          </div>
-          <div class="medium-6 columns">
-            <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.mpk}}" />
-          </div>
-          <div class="medium-2 columns">
-            <button ng-click="copyClipboard(pocket.mpk)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
-          </div>
-          <div class="medium-2 columns">
-            <button ng-click="openModal('show-qr', {address: pocket.mpk, version: 7})" class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
-          </div>
-        </div>
-        </div>
-        <table class="expand">
-          <thead>
-          <th>Edit</th>
-          <th>Name</th>
-          <th>Address</th>
-          <th>Balance</th>
-          <th class="text-right">QR Code / Copy</th>
-          </thead>
-          <tbody>
-          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:unusedAddressFilter track by $index">
-            <td class="icon"><button class="button square fa fa-pencil-square"></button></td>
-            <td>{{address.label}}</td>
-            <td>{{address.address}}</td>
-            <td>0</td>
-            <td class="icon text-right"><button ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></button><button href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></button></td>
-          </tr>
-          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:usedAddressFilter track by $index">
-            <td class="icon"><button class="button square fa fa-edit"></button></td>
-            <td>{{address.label}}</td>
-            <td>{{address.address}}</td>
-            <td>{{address.balance | currencyFilter}}</td>
-            <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
-          </tr>
-        </tbody>
-        </table>
-        <div ng-hide="isFund">
-          <a class="button small" ng-click="generateAddress(pocket.index)">New address</a>
-          <a class="button small" ng-click="generateAddress(pocket.index+1)">New change address</a>
-        </div>
-      </tab>
-      <tab heading="Fund" ng-show="isFund">
-        <div>{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</div>
-        <div><h3>Fund address:</h3> {{pocket.fund.address}}</div>
-        <h3>Script:</h3>
-        <div>{{pocket.fund.script}}</div>
-        <h3>Participants:</h3>
-        <div ng-repeat="participant in pocket.fund.pubKeys track by $index" title="{{participant | bytesToHex}}">{{participant | bytesToAddressHash}}</div>
-      </tab>
-      <tab heading="Tasks" ng-show="isFund && pocket.tasks.length">
-        <div ng-repeat="task in pocket.tasks">
-            <h2>Collect signatures</h2>
-            <div><b>Signatures:</b> {{task.signatures.length}} of {{pocket.fund.m}}</div>
-            <div><b>Index:</b> {{task.task.pending[0].index}}</div>
-            <div><b>Output:</b> {{task.task.pending[0].output}}</div>
-            <div><b>Tx:</b> {{task.task.tx}}</div>
-            <h3>Destinations</h3>
-            <div ng-repeat="out in task.tx.outs">
-               <li>{{out.address.toString()}} <b>{{out.value | currencyPresenter}}</b></li>
-            </div>
-        </div>
-      </tab>
-      <tab heading="Actions" ng-hide="isAll || isFund">
-        <div class="row">
-          <div class="large-6 columns">
-            <a href="" class="fa button postfix fa-share">Move funds to another pocket</a>
-            <a href="" class="fa button postfix fa-check-square-o">Automatically mix funds on this pocket with CoinJoin</a>
-          </div>
-          <div class="large-6 columns">
-            <a href="#" class="fa button postfix fa-reply-all">Move funds to another identity</a>
-            <div class="row">
-              <div class="small-6 columns">
-                <a href="" ng-click="renamePocket(pocket.name)" class="fa button postfix fa-terminal">Rename pocket</a>
-              </div>
-              <div class="small-6 columns">
-                <a class="fa button alert postfix fa-trash-o" ng-click="deletePocket(pocket)">Delete pocket</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </tab>
+      <ng-include src="'wallet/addresses.html'">
+      </ng-include>
+      <ng-include src="'wallet/history.html'">
+      </ng-include>
+      <ng-include src="'wallet/fund.html'">
+      </ng-include>
+      <ng-include src="'wallet/tasks.html'">
+      </ng-include>
+      <ng-include src="'wallet/actions.html'">
+      </ng-include>
     </tabset>
   </div>
 </div>

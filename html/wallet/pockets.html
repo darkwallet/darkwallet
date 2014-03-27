@@ -1,0 +1,28 @@
+    <ul class="side-nav ">
+      <li>Pockets on my wallet</li>
+      <li ng-class="{active: 'pocket:all'===selectedPocket}" class="active" ng-click="selectPocket()"><a>All</a></li>
+      <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat-start="pocketName in identity.wallet.pockets track by $index" ng-click="selectPocket(pocketName, $index)" ng-hide="renamingPocket===pocketName"><a>{{pocketName}}</a></li>
+      <li ng-show="renamingPocket===pocketName" ng-repeat-end>
+        <form ng-submit="renamePocket(pocketName, pocketNewName)">
+          <input ng-model="pocketNewName" type="text" autofocus>
+        </form>
+      </li>
+      <li ng-show="creatingPocket">
+        <form ng-submit="createPocket()">
+          <input type="text" autofocus ng-model="newPocketName" placeholder="Name your pocket..." />
+          <input type="submit" class="button small expand radius" value="OK"/>
+        </form>
+      </li>
+      <li ng-hide="creatingPocket">
+        <a class="button small expand radius" ng-click="createPocket()">New Pocket</a>
+      </li>
+      <li class="divider"></li>
+      <li>My multisig funds</li>
+      <li ng-class="{active: 'fund:'+$index===selectedPocket}" ng-click="selectFund(fund, $index)" ng-repeat="fund in identity.wallet.multisig.funds track by $index"><a href="">{{fund.name}}</a></li>
+      <li><a class="button small expand radius" ng-click="selectedPocket = 'newMultisig'">New Multisig fund</a></li>
+      <li class="divider"></li>
+      <li>Watch-only pockets</li>
+      <li><a href="">My smartphone</a></li>
+      <li><a href="">My cold wallet</a></li>
+      <li><a class="button small expand radius">Add watch-only pocket</a></li>
+    </ul>

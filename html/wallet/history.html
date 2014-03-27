@@ -1,0 +1,27 @@
+      <tab heading="History">
+        <dl class="sub-nav">
+          <dt>Filter:</dt>
+          <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
+          <dd ng-class="{active: 'lastWeek'===txFilter}"><a ng-click="setHistoryFilter('lastWeek')">Last week</a></dd>
+          <dd ng-class="{active: 'lastMonth'===txFilter}"><a ng-click="setHistoryFilter('lastMonth')">Last month</a></dd>
+          <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
+        </dl>
+        <table class="expand">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th class="text-right">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="row in history | filter:historyFilter  | orderBy:'height':true">
+              <td class="icon"><button class="button square fa fa-info"></button>{{row.address}}</td>
+              <td>{{row.height | heightToDate}}</td>
+              <td>{{(row.myOutValue-row.myInValue) | currencyFilter}}</td>
+              <td class="text-right">{{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </tab>

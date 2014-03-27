@@ -1,0 +1,61 @@
+      <tab heading="Addresses">
+        <div class="panel" ng-hide="isAll || isFund">
+        <div class="row collapse">
+          <div class="medium-2 columns">
+            <span class="prefix radius">Stealth Address</span>
+          </div>
+          <div class="medium-6 columns">
+            <input type="text" disabled="true" value="{{pocket.stealth}}" />
+          </div>
+          <div class="medium-2 columns">
+            <button ng-click="copyClipboard(pocket.stealth)" class="button postfix fa fa-clipboard">Copy</button>
+          </div>
+          <div class="medium-2 columns">
+            <button ng-click="openModal('show-qr', {address: pocket.stealth})" class="button postfix radius fa fa-qrcode">QR</button>
+          </div>
+        </div>
+        <div class="row collapse">
+          <div class="medium-2 columns">
+            <span class="prefix radius">Master Address</span>
+          </div>
+          <div class="medium-6 columns">
+            <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.mpk}}" />
+          </div>
+          <div class="medium-2 columns">
+            <button ng-click="copyClipboard(pocket.mpk)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
+          </div>
+          <div class="medium-2 columns">
+            <button ng-click="openModal('show-qr', {address: pocket.mpk, version: 7})" class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
+          </div>
+        </div>
+        </div>
+        <table class="expand">
+          <thead>
+          <th>Edit</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Balance</th>
+          <th class="text-right">QR Code / Copy</th>
+          </thead>
+          <tbody>
+          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:unusedAddressFilter track by $index">
+            <td class="icon"><button class="button square fa fa-pencil-square"></button></td>
+            <td>{{address.label}}</td>
+            <td>{{address.address}}</td>
+            <td>0</td>
+            <td class="icon text-right"><button ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></button><button href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></button></td>
+          </tr>
+          <tr ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:usedAddressFilter track by $index">
+            <td class="icon"><button class="button square fa fa-edit"></button></td>
+            <td>{{address.label}}</td>
+            <td>{{address.address}}</td>
+            <td>{{address.balance | currencyFilter}}</td>
+            <td class="icon text-right"><a href="" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></a><a href="" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></a></td>
+          </tr>
+        </tbody>
+        </table>
+        <div ng-hide="isFund">
+          <a class="button small" ng-click="generateAddress(pocket.index)">New address</a>
+          <a class="button small" ng-click="generateAddress(pocket.index+1)">New change address</a>
+        </div>
+      </tab>

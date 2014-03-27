@@ -1,0 +1,9 @@
+<tab heading="Fund" ng-show="isFund">
+        <div>{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</div>
+        <div><h3>Fund address:</h3> {{pocket.fund.address}}</div>
+        <h3>Script:</h3>
+        <div>{{pocket.fund.script}}</div>
+        <h3>Participants:</h3>
+        <div ng-repeat="participant in pocket.fund.pubKeys track by $index" title="{{participant | bytesToHex}}">{{participant | bytesToAddressHash}}</div>
+</tab>
+
