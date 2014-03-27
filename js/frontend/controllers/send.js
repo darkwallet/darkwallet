@@ -78,14 +78,17 @@ function (controllers, Services, DarkWallet, Bitcoin) {
 
       var fee = parseInt(BigInteger.valueOf($scope.send.fee * satoshis).toString());
 
-      var onSent = function(error) {
+      var onSent = function(error, task) {
           // this should actually be a starting note, but we don't have a finishing callback yet.
           // we can also use something to show radar progress
-          if (!error) {
-              toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + totalAmount) + ' satoshis');
-          } else {
+          if (error) {
               toaster.pop('error', "Can't send", error.text);
               console.log("error", error);
+          } else if (task) {
+              toaster.pop('note', 'Signatures pending', 'Sending ' + (fee + totalAmount) + ' satoshis')
+              console.log("pending", task)
+          } else {
+              toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + totalAmount) + ' satoshis');
           }
       }
 

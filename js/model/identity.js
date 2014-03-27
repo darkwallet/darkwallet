@@ -3,8 +3,8 @@
  */
 
 
-define(['./wallet', './txdb', './history', './contacts', './connections', 'bitcoinjs-lib', 'sjcl'],
-function(Wallet, TransactionDatabase, History, Contacts, Connections, Bitcoin) {
+define(['./wallet', './txdb', './history', './tasks', './contacts', './connections', 'bitcoinjs-lib', 'sjcl'],
+function(Wallet, TransactionDatabase, History, Tasks, Contacts, Connections, Bitcoin) {
 /**
  * Identity class.
  * @param {Store} store Object store.
@@ -24,6 +24,7 @@ function Identity(store, seed, password) {
     this.history = new History(store, this);
     this.contacts = new Contacts(store);
     this.connections = new Connections(store, this);
+    this.tasks = new Tasks(store, this);
 }
 
 

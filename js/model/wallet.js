@@ -10,6 +10,7 @@ function(DarkWallet, Stealth, Bitcoin, MultisigFunds) {
  * @constructor
  */
 function Wallet(store, identity) {
+    this.identity = identity;
     this.store = store;
     this.is_cold = store.get('is_cold');
     this.fee = store.init('fee', 10000); // 0.1 mBTC
@@ -414,11 +415,13 @@ Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, f
         newTx.addOutput(changeAddress.address, change);
     }
 
+    var pending = [];
 
     // Signing
     var errors = false;
-    txUtxo.forEach(function(utxo) {
+    for(var idx=0; idx<txUtxo.length; idx++) {
         var seq;
+        var utxo = txUtxo[idx];
         var outAddress = self.getWalletAddress(utxo.address);
         if (outAddress) {
             seq = outAddress.index;
@@ -428,22 +431,26 @@ Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, f
             return;
         }
         if (outAddress.type == 'multisig') {
-            errors = true;
-            callback({text: "Can't spend from multisig yet!", data: utxo.address})
-            return;
-        }
-        // Get private keys and sign
-        try {
+            pending.push({output: utxo.output, address: utxo.address, index: idx})
+        } else {
+          // Get private keys and sign
+          try {
             self.getPrivateKey(seq, password, function(outKey) {
-                newTx.sign(0, outKey);
+                newTx.sign(idx, outKey);
             });
-        } catch (e) {
+          } catch (e) {
             callback({data: e, text: "Password incorrect!"})
-            errors = true;
             return;
+          }
         }
-    });
-    if (!errors) {
+    };
+    if (pending) {
+        // If pending signatures add task and callback with 2nd parameter
+        var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: isStealth};
+        this.identity.tasks.addTask('multisig', task)
+        callback(null, task)
+    } else if (!errors) {
+        // Else, just broadcast
         this.broadcastTx(newTx, isStealth, callback);
     }
 }
