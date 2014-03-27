@@ -26,8 +26,11 @@ var ClipboardUtils = {
     document.getElementById('fixed').removeChild(pasteDiv);
     return text;
   },
-  registerScope: function(scope) {
-    scope.copyClipboard = ClipboardUtils.copyClipboard;
+  registerScope: function(scope, toaster) {
+    scope.copyClipboard = function (text) {
+        ClipboardUtils.copyClipboard(text);
+        toaster.pop('note', 'Copied to clipboard');
+    };
     scope.pasteClipboard = ClipboardUtils.pasteClipboard;
   }
 

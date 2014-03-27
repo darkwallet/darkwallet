@@ -23,7 +23,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
 
   // Global scope utils
   ModalUtils.registerScope($scope, $modal);
-  ClipboardUtils.registerScope($scope);
+  ClipboardUtils.registerScope($scope, toaster);
 
   // Gui service, connect to report events on page.
   Services.connectNg('gui', $scope, function(data) {
