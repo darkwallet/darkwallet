@@ -48,7 +48,7 @@
         </tr>
       </tbody>
     </table>
-    <form ng-submit="createContact()" ng-show="contactFormShown === true">
+    <form name="createContactForm" ng-submit="createContact()" ng-show="contactFormShown === true" novalidate>
     <div class="row collapse">
       <div class="large-3 columns"><input ng-model="newContact.name" type="text" placeholder="Write a new contact name" required /></div>  
       <div class="large-5 columns"><input ng-model="newContact.address" type="text" placeholder="Enter a bitcoin address here or use the buttons on the right." required btc-address /></div>
@@ -58,7 +58,7 @@
     <div class="row text-right">
        <div class="small-12 columns">
 		<a href="" ng-click="contactFormShown = false" class="button alert small">Cancel</a>
-		<input type="submit" class="button small" value="Save" />
+		<input ng-disabled="createContactForm.$invalid" type="submit" class="button small" value="Save" />
 	   </div>
 	</div>
     </form>
