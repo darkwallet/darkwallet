@@ -30,7 +30,7 @@ a.glow.button, button.glow, input[type="submit"].glow {
 }
 
 button:active .button:active, table tr:nth-child(odd) a.button:active { 
-	background: darken($primary-color, 20%); 
+	background: darken($primary-color, 20%);
 	-webkit-transition: none;
 	-moz-transition: none;
 	transition: none;
@@ -40,8 +40,18 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 	font-family: FontAwesome;
 }
 
-.button.square, button.square { width: 36px; height: 36px; padding: 0; margin: 0; }
+.button.square, button.square { width: 37px; height: 37px; padding: 0; margin: 0; }
 
+.button.square.righted {
+	z-index: 3; 
+	position: absolute;
+	right: 0;
+	top: 0;
+	&:first-of-type { right: 37px; }
+	&:last-of-type { border-radius: 0 $global-radius $global-radius 0; }
+}
+
+.button.square:before { position: absolute; top: 50%; left: 50%; margin: -7px 0 0 -7px; }
 
 .button.postfix.fa:before, button.postfix.fa:before { 
 

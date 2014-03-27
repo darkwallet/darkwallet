@@ -2113,7 +2113,7 @@ select::-ms-expand {
 
 /* Separate prefix and postfix styles when on span or label so buttons keep their own */
 span.prefix, label.prefix {
-  background: #000;
+  background: #282828;
   border-right: none;
   color: #fff;
   border-color: #888; }
@@ -2128,7 +2128,7 @@ span.prefix, label.prefix {
     border-top-left-radius: 3px; }
 
 span.postfix, label.postfix {
-  background: #000;
+  background: #282828;
   border-left: none;
   color: #fff;
   border-color: #888; }
@@ -5261,10 +5261,26 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
   font-family: FontAwesome; }
 
 .button.square, button.square {
-  width: 36px;
-  height: 36px;
+  width: 37px;
+  height: 37px;
   padding: 0;
   margin: 0; }
+
+.button.square.righted {
+  z-index: 3;
+  position: absolute;
+  right: 0;
+  top: 0; }
+  .button.square.righted:first-of-type {
+    right: 37px; }
+  .button.square.righted:last-of-type {
+    border-radius: 0 3px 3px 0; }
+
+.button.square:before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -7px 0 0 -7px; }
 
 .button.postfix.fa:before, button.postfix.fa:before {
   background: #1e8448;

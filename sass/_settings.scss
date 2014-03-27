@@ -688,7 +688,7 @@ $input-focus-bg-color: darken($input-bg-color, 8%);
 // $legend-padding: rem-calc(0 3);
 
 // We use these to style the prefix and postfix input elements
-$input-prefix-bg: $body-bg;
+$input-prefix-bg: $input-focus-bg-color;
 $input-prefix-border-color: $input-disabled-bg;
 // $input-prefix-border-size: 1px;
 $input-prefix-border-type: none;

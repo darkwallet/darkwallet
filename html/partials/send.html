@@ -5,68 +5,55 @@
       </div>
     </div>
     <div class="row">
-      <div class="large-10 columns">
+      <div class="small-12 columns">
         <div class="row collapse">
-          <div class="large-8 columns">
-            <h6>Description</h6>
-            <input type="text" placeholder="Enter a short description for this transaction here." />
-          </div>
-          <div class="large-2 columns">
-            <h6>Coin mixing</h6>
-            <a href="" class="fa button postfix fa-check-square-o">Enabled</a>
-          </div>
-          <div class="large-2 columns">
-            <h6>Sending from</h6>
-            <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{sendPocketName}}</a>
-          </div>
+              <div class="large-10 columns">
+                <h6>Description</h6>
+                <input type="text" class="prefix radius" placeholder="Enter a short description for this transaction here." />
+              </div>
+              <div class="large-2 columns">
+                <h6>Sending from</h6>
+                <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{sendPocketName}}</a>
+              </div>
         </div>
       </div>
-      
-      <div class="large-2 medium-6 columns">
-        <h6>Fee</h6>
-        <input ng-model="send.fee" type="text" class="radius" />
-      </div>
     </div>
-    <div class="row">
-      <div class="medium-10 columns">
-    <h6>Bitcoin address:</h6>
-      </div>
-      <div class="medium-2 columns">
-        <h6>Amount</h6>
-      </div>
-    </div>
+
     <div class="row" ng-repeat="field in recipients.fields">
-      <div class="medium-10 columns">
-        <div class="row collapse">
-          <div class="large-6 columns">
-            <input type="text" ng-model="field.address" ng-change="autoAddField()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
-          </div>
-          <div class="large-2 columns">
-            <a href="" ng-click="addAddress(pasteClipboard(), {field: field})" class="fa button postfix fa-clipboard">Paste</a>
-          </div>
-          <div class="large-2 small-6 columns">
-            <a href="" ng-click="openModal('scan-qr', {field: field}, onQrModalOkSend, onQrModalCancel)" class="fa button postfix fa-qrcode">Scan code</a>
-          </div>
-          <div class="large-2 small-6 columns">
-            <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button postfix radius fa-users">Contacts</a>
-          </div>
-        </div>
+      <div class="medium-8 columns">
+
+            <input type="text" class="prefix radius" ng-model="field.address" ng-change="autoAddField()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
+            <a href="" tooltip="Scan QR code" ng-click="openModal('scan-qr', {field: field}, onQrModalOkSend, onQrModalCancel)" class="fa button square righted fa-qrcode"></a>
+            <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button square righted fa-users"></a>
+
       </div>
-      <div class="medium-2 columns">
+      <div class="medium-4 columns">
         <div class="row collapse">
           <div class="small-8 columns">
           <input type="text" class="prefix radius" ng-model="field.amount" ng-change="autoAddField()" placeholder="Enter amount" />
           </div>
-          <div class="small-4 columns"><a class="button postfix radius">{{selectedCurrency}}</a></div>
+          <div class="small-4 columns"><span class="postfix radius">{{selectedCurrency}}</span></div>
         </div>
       </div>
     </div>
     <div class="row">
       <div class="medium-10 columns">
-        <a href="" ng-click="enableAutoAddFields()" ng-hide="autoAddEnabled">Send to more than one recipient...</a>
+        <a href="" class="button small radius" ng-click="enableAutoAddFields()" ng-hide="autoAddEnabled">Add another recipient</a>
+        <a href="" class="button small radius">Advanced</a>
       </div>
       <div class="medium-2 columns aright"><input type="submit" class="button glow radius expand" value="Send" /></div>
     </div>
+    <div class="row">
+        <div class="small-6 columns">
+          <h6>Fee</h6>
+          <input ng-model="send.fee" type="text" class="radius" />
+        </div>
+        <div class="small-6 columns">
+          <h6>Coin mixing</h6>
+          <a href="" class="fa button postfix fa-check-square-o">Enabled</a>
+        </div>
+    </div>
+
         <ul id="wallets" class="f-dropdown">
           <li class="colorhead"><h6>My pockets</h6></li>
           <li><a ng-click="setPocket('all')">Any</a></li>
