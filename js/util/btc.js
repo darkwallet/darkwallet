@@ -29,6 +29,14 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         var m = script.chunks[0] - Bitcoin.Opcode.map.OP_1 + 1;
         return {address: address, script: data, m: m, pubKeys: pubKeys};
     },
+    /*
+     *  Uncompress a public address
+     */
+    uncompressAddress: function(bytes) {
+        // XXX Untested!
+        var key = Bitcoin.ECPubKey(bytes, true);
+        return key.toBytes(false);
+    },
 
     /*
      * Decode an address from string to bytes
