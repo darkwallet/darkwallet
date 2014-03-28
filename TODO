@@ -3,10 +3,11 @@ Immediate:
  - Send:
    - Review sending
    * Several destinations support DONE
-   - Implement send from pocket
+   * Implement send from pocket DONE
    * Implement choose from contacts DONE
    - Better radar feedback
    - Specify amount in FIAT
+   - multisig spending
  - Lobby system
    * Implement multiParty from cryptocat (ed25519 curves) DONE
    * link contacts using lobby (sync stealth, mpk...) DONE
@@ -16,11 +17,11 @@ Immediate:
    - Move funds to another pocket
    - Move funds to another identity
    - Set as mixing
-   - Rename
-   - Delete
+   * Rename DONE
+   + Delete STARTED
  - Settings
    - Change password
-   - Select server
+   + Select server STARTED
 
 Other:
  * Cache address history and resume
