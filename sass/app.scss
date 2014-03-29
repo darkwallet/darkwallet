@@ -42,6 +42,8 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 
 .button.square, button.square { width: 37px; height: 37px; padding: 0; margin: 0; }
 
+table button.button.square, table a.button.square { height: 40px; }
+
 .button.square.righted {
 	z-index: 3; 
 	position: absolute;
