@@ -7,14 +7,16 @@
           <h5>Security</h5>
           <button class="small">Show seed</button>
         </div>
-        <div class="panel">
+        <form class="panel" ng-submit="passwordChanged()">
           <h5>Change your password</h5>
           <label>Enter your current password</label>
-          <input type="password" class="password" value="">
+          <input type="password" class="password" ng-model="oldPassword">
           <label>Enter your new password</label>
-          <input type="password" class="password" value="">
+          <input type="password" class="password" ng-model="newPassword">
+          <label>Repeat new password</label>
+          <input type="password" class="password" ng-model="newPasswordRepeat">
           <button class="small radius expand">Change password</button>
-        </div>
+        </form>
       </div>
       <div class="large-5 columns">
         <div class="panel">

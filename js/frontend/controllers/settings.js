@@ -2,7 +2,7 @@ define(['./module', 'darkwallet', 'util/fiat'], function (controllers, DarkWalle
   'use strict';
 
   // Controller
-  controllers.controller('WalletSettingsCtrl', ['$scope', function($scope) {
+  controllers.controller('WalletSettingsCtrl', ['$scope', 'toaster', function($scope, toaster) {
   var identity = DarkWallet.getIdentity();
 
   // Available fiat currencies
@@ -14,6 +14,22 @@ define(['./module', 'darkwallet', 'util/fiat'], function (controllers, DarkWalle
   $scope.clearStorage = function() {
       var keyRing = DarkWallet.getKeyRing();
       keyRing.clear();
+  }
+  
+  $scope.passwordChanged = function() {
+      if ($scope.newPassword === $scope.newPasswordRepeat) {
+          var identity = DarkWallet.getIdentity();
+          var success = identity.changePassword($scope.oldPassword, $scope.newPassword);
+          if (success) {
+              identity.store.save();
+              toaster.pop('note', 'Password changed');
+              $scope.oldPassword = $scope.newPassword = $scope.newPasswordRepeat = '';
+          } else {
+              toaster.pop('error', 'Incorrect passoword');
+          }
+      } else {
+          toaster.pop('error', 'Password doesn\'t match');
+      }
   }
 
   // Callback for saving the selected currency

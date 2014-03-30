@@ -42,6 +42,17 @@ Identity.encrypt = function(data, password) {
 }
 
 
+Identity.prototype.changePassword = function(oldPassword, newPassword) {
+    try {
+        var privData = this.wallet.getPrivateData(oldPassword);
+        privData = Identity.encrypt(privData, newPassword);
+        this.store.set('private', privData);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 /**
  * Generate master keys for this identity.
  * TODO: Consider naming private methods with trailing underscore_.
