@@ -35,7 +35,7 @@ var ModalUtils = {
       cancelCallback ? (vars ? cancelCallback(reason, vars) : cancelCallback(reason)) : null;
     };
 
-    $modal.open({
+    var modal = $modal.open({
       templateUrl: 'modals/' + tplName + '.html',
       controller: ModalCtrl,
       windowClass: 'modal-' + tplName,
@@ -44,7 +44,19 @@ var ModalUtils = {
           return vars;
         }
       }
-    }).result.then(ok, cancel);
+    });
+
+    // Fix autofocus in modals (broken because they have tabindex attribute set to -1)
+    modal.opened.then(function() {
+      setTimeout(function() {
+        var element = document.querySelectorAll(".modal-" + tplName + " [autofocus]")[0];
+        if (element) {
+          element.focus();
+        }
+      }, 10);
+    });
+
+    modal.result.then(ok, cancel);
   },
   
   onQrModalOk: function(data, vars) {
