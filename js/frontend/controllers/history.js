@@ -106,7 +106,7 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
   }
 
   // Pockets
-  $scope.newPocketName = '';
+  $scope.newPocket = {};
   $scope.creatingPocket = false;
   $scope.deletePocket = function(pocket) {
       $scope.openModal('confirm-delete', {name: pocket.name, object: pocket}, $scope.deletePocketFinish)
@@ -117,17 +117,17 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
   }
   $scope.createPocket = function() {
     if ($scope.creatingPocket) {
-      if ($scope.newPocketName) {
+      if ($scope.newPocket.name) {
           // create pocket
-          $scope.identity.wallet.createPocket($scope.newPocketName);
+          $scope.identity.wallet.createPocket($scope.newPocket.name);
           // initialize pocket on angular
           $scope.initPocket($scope.identity.wallet.pockets.length-1);
           // generate an address
           $scope.generateAddress($scope.identity.wallet.pockets.length-1, 0);
           // select the pocket
-          $scope.selectPocket($scope.newPocketName, $scope.identity.wallet.pockets.length-1);
+          $scope.selectPocket($scope.newPocket.name, $scope.identity.wallet.pockets.length-1);
           // reset pocket form
-          $scope.newPocketName = '';
+          $scope.newPocket = {};
       }
     }
     $scope.creatingPocket = !$scope.creatingPocket;

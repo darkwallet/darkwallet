@@ -3,10 +3,11 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
   'use strict';
   controllers.controller('MultisigCtrl', ['$scope', function($scope) {
     $scope.initMultisigForm = function() {
-        $scope.multisig = {};
-        $scope.multisig.participants = [];
-        $scope.nSignatures = 2;
-        $scope.multiSigName = '';
+        $scope.multisig = {
+          name: '',
+          participants: [],
+          m: 1
+        };
     }
     $scope.initMultisigForm();
 	
@@ -22,7 +23,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
             $scope.addParticipant(Bitcoin.convert.bytesToHex(participant))
         });
         $scope.multisig.script = multiSig;
-        $scope.nSignatures = multiSig.m;
+        $scope.multisig.m = multiSig.m;
     };
     $scope.createMultisig = function() {
         var participants = [];
@@ -34,13 +35,11 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
             $scope.multisig.participants.forEach(function(participant) {
                 participants.push(BtcUtils.decodeAddress(participant.address));
             });
-            multisig = BtcUtils.multiSig($scope.nSignatures, participants);
+            multisig = BtcUtils.multiSig($scope.multisig.m, participants);
         }
-        multisig.name = $scope.multiSigName;
+        multisig.name = $scope.multisig.name;
         multisig.participants = $scope.multisig.participants.slice(0);
 
-        // Show fund address
-        $scope.multiSigAddress = multisig.address;
         if (multisig.name) {
             var identity = DarkWallet.getIdentity();
             var walletAddress = identity.wallet.multisig.addFund(multisig);
