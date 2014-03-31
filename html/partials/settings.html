@@ -11,10 +11,12 @@
           <h5>Change your password</h5>
           <label>Enter your current password</label>
           <input type="password" class="password" ng-model="oldPassword">
+          <div ng-show="incorrectPassword">Incorrect password</div>
           <label>Enter your new password</label>
           <input type="password" class="password" ng-model="newPassword">
           <label>Repeat new password</label>
           <input type="password" class="password" ng-model="newPasswordRepeat">
+          <div ng-show="newPassword !== newPasswordRepeat">Password doesn't match</div>
           <button class="small radius expand">Change password</button>
         </form>
       </div>

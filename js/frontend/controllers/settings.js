@@ -24,11 +24,10 @@ define(['./module', 'darkwallet', 'util/fiat'], function (controllers, DarkWalle
               identity.store.save();
               toaster.pop('note', 'Password changed');
               $scope.oldPassword = $scope.newPassword = $scope.newPasswordRepeat = '';
+              $scope.incorrectPassword = false;
           } else {
-              toaster.pop('error', 'Incorrect passoword');
+              $scope.incorrectPassword = true;
           }
-      } else {
-          toaster.pop('error', 'Password doesn\'t match');
       }
   }
 
