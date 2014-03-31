@@ -49,6 +49,9 @@ Identity.prototype.changePassword = function(oldPassword, newPassword) {
         this.store.set('private', privData);
         return true;
     } catch (e) {
+        if (e.message !== "ccm: tag doesn't match") {
+            throw e;
+        }
         return false;
     }
 }
