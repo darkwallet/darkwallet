@@ -27,26 +27,10 @@ function Identity(store, seed, password) {
     this.tasks = new Tasks(store, this);
 }
 
-
-/**
- * Encrypts identity private information.
- * @param {Object} data Information to be encrypted.
- * @param {String} password Password for the identity crypt.
- * @return {String} The ciphertext serialized data.
- */
-Identity.encrypt = function(data, password) {
-    var Crypto = Bitcoin.Crypto;
-    var passwordDigest = Bitcoin.convert.wordArrayToBytes(Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password))));
-    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
-    return sjcl.encrypt(passwordDigest, JSON.stringify(data), {ks: 256, ts: 128});
-}
-
-
 Identity.prototype.changePassword = function(oldPassword, newPassword) {
     try {
-        var privData = this.wallet.getPrivateData(oldPassword);
-        privData = Identity.encrypt(privData, newPassword);
-        this.store.set('private', privData);
+        var data = this.store.getPrivateData(oldPassword);
+        this.store.setPrivateData(data, newPassword)
         return true;
     } catch (e) {
         if (e.message !== "ccm: tag doesn't match") {
@@ -73,12 +57,11 @@ Identity.prototype.generate = function(seed, password) {
 
     // TODO we probably don't want to save the seed later here, but let's do it
     // for now to make development easier.
-    var privData = Identity.encrypt({privKey: privKey, seed: seed}, password);
+    this.store.setPrivateData({privKey: privKey, seed: seed}, password);
 
     this.store.set('mpk', pubKey);
     this.store.set('version', 1);
     this.store.set('pubkeys', {});
-    this.store.set('private', privData);
     this.store.set('contacts', {});
     this.store.set('transactions', {});
     this.store.save();

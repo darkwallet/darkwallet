@@ -179,7 +179,7 @@ Wallet.prototype.loadPubKeys = function() {
 Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     // clone seq since we're mangling it
     var workSeq = seq.slice(0);
-    var data = this.getPrivateData(password);
+    var data = this.store.getPrivateData(password);
     if (data.privKeys[seq]) {
         var key = Bitcoin.Key(data.privKeys[seq]);
         callback(key);
@@ -195,21 +195,6 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
 }
 
 /**
- * Get the decrypted private user data.
- * @param {String} password Password to decrypt the private data
- */
-Wallet.prototype.getPrivateData = function(password) {
-    var SHA256 = Bitcoin.Crypto.SHA256;
-    var passwordDigest = Bitcoin.convert.wordArrayToBytes(SHA256(SHA256(SHA256(password))));
-    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
-    var data = JSON.parse(sjcl.decrypt(passwordDigest, this.store.get('private')));
-    if (!data.privKeys) {
-        data.privKeys = {};
-    }
-    return data;
-}
-
-/**
  * Store the given private key
  * @param {Array} seq Address sequence (bip32 or stealth id)
  * @param {String} password Password to decrypt the private data
@@ -218,12 +203,9 @@ Wallet.prototype.getPrivateData = function(password) {
 Wallet.prototype.storePrivateKey = function(seq, password, key) {
     var self = this;
     seq = seq.slice(0);
-    var data = this.getPrivateData(password);
+    var data = this.store.getPrivateData(password);
     data.privKeys[seq] = key.export('bytes');
-    require(['model/identity'], function(Identity) {
-        var privData = Identity.encrypt(data, password);
-        self.store.set('private', privData);
-    })
+    this.store.setPrivateData(data, password);
 }
 
 /**

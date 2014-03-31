@@ -2,7 +2,7 @@
  * @fileOverview Mapping coordinating with the app's database.
  */
 
-define(function() {
+define(['bitcoinjs-lib', 'sjcl'], function(Bitcoin) {
 /**
  * Store class.
  * @constructor
@@ -49,6 +49,35 @@ Store.prototype.init = function(key, value) {
 Store.prototype.save = function(callback) {
     this.keyring.save(this.store.name, this.store, callback);
 }
+
+/**
+ * Get the decrypted private user data.
+ * @param {String} password Password to decrypt the private data
+ */
+Store.prototype.getPrivateData = function(password) {
+    var SHA256 = Bitcoin.Crypto.SHA256;
+    var passwordDigest = Bitcoin.convert.wordArrayToBytes(SHA256(SHA256(SHA256(password))));
+    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
+    var data = JSON.parse(sjcl.decrypt(passwordDigest, this.get('private')));
+    if (!data.privKeys) {
+        data.privKeys = {};
+    }
+    return data;
+}
+
+/**
+ * Encrypts identity private information and saves it.
+ * @param {Object} data Information to be encrypted.
+ * @param {String} password Password for the identity crypt.
+ * 
+ */
+Store.prototype.setPrivateData = function(data, password) {
+    var Crypto = Bitcoin.Crypto;
+    var passwordDigest = Bitcoin.convert.wordArrayToBytes(Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password))));
+    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
+    var privData = sjcl.encrypt(passwordDigest, JSON.stringify(data), {ks: 256, ts: 128});
+    this.set('private', privData);
+};
 
 return Store;
 });
