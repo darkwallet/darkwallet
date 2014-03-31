@@ -5451,3 +5451,6 @@ span.meter {
 
 .modal-show-qr h3, .modal-show-qr h6 {
   color: black; }
+
+#logo {
+  margin: -2px 5px 0 -5px; }
