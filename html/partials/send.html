@@ -30,9 +30,10 @@
       <div class="medium-4 columns">
         <div class="row collapse">
           <div class="small-8 columns">
-          <input type="text" class="prefix radius" ng-model="field.amount" ng-change="autoAddField()" placeholder="Enter amount" />
+            <input ng-hide="field.isFiatShown" type="text" class="prefix radius" ng-model="field.amount" ng-change="updateBtcFiat(field); autoAddField()" placeholder="Enter amount" />
+            <input ng-show="field.isFiatShown" type="text" class="prefix radius" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); autoAddField()" placeholder="Enter amount" />
           </div>
-          <div class="small-4 columns"><span class="postfix radius">{{selectedCurrency}}</span></div>
+          <div class="small-4 columns"><span class="postfix radius" btn-checkbox ng-model="field.isFiatShown">{{field.isFiatShown? selectedFiat : selectedCurrency}}</span></div>
         </div>
       </div>
     </div>

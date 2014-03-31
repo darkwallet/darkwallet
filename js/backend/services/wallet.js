@@ -135,6 +135,28 @@ function(IdentityKeyRing, Services) {
             client.fetch_ticker(currency, function(err, lastRates) {handleTicker(err, currency, lastRates)});
         }
     }
+    
+    this.btcToFiat = function(amount, currency, fiatCurrency) {
+      if (currency === 'mBTC') {
+        amount /= 1000;
+      }
+      var result = amount * this.rates[fiatCurrency]
+      if (!isNaN(result)) {
+        return result.toFixed(2); 
+      }
+    }
+    
+    this.fiatToBtc = function(amount, currency, fiatCurrency) {
+      var result = amount / this.rates[fiatCurrency];
+      var decimals = 8;
+      if (currency === 'mBTC') {
+        result *= 1000;
+        decimals = 5;
+      }
+      if (!isNaN(result)) {
+          return result.toFixed(decimals);
+      }
+    }
 
     // Handle initial connection to obelisk
     function handleHeight(err, height) {

@@ -7,6 +7,18 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   $scope.autoAddEnabled = false;
   $scope.sendPocket = 'all';
   $scope.advanced = false;
+  
+  $scope.updateBtcFiat = function(field) {
+    var walletService = DarkWallet.service().getWalletService();
+    var identity = DarkWallet.getIdentity();
+    var currency = identity.settings.currency;
+    var fiatCurrency = identity.settings.fiatCurrency;
+    if (field.isFiatShown) {
+      field.amount = walletService.fiatToBtc(field.fiatAmount, currency, fiatCurrency);
+    } else {
+      field.fiatAmount = walletService.btcToFiat(field.amount, currency, fiatCurrency);
+    }
+  }
 
   $scope.setPocket = function(pocket) {
       console.log("sendPocketChanged", pocket);
