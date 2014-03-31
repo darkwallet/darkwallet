@@ -50,14 +50,30 @@ Identity.prototype.changePassword = function(oldPassword, newPassword) {
 Identity.prototype.generate = function(seed, password) {
     // Don't use constructor directly since it doesn't manage hex seed properly.
     var key = Bitcoin.HDWallet.fromSeedHex(seed);
-    var identityKey = key.derive(0x80000000);
+    var identityKey = key.derivePrivate(0);
 
     var pubKey = identityKey.toBase58(false);
     var privKey = identityKey.toBase58(true);
 
+    // Initialize the scan public key here for now...
+    var scanKey = identityKey.derivePrivate(0);
+    var scanPubKey = scanKey.toBase58(false);
+    var scanPrivKey = scanKey.toBase58(true);
+
+    // Initialize the id key here for now...
+    var idKey = identityKey.derivePrivate(1);
+    var idPubKey = idKey.toBase58(false);
+    var idPrivKey = idKey.toBase58(true);
+
     // TODO we probably don't want to save the seed later here, but let's do it
     // for now to make development easier.
     this.store.setPrivateData({privKey: privKey, seed: seed}, password);
+
+    // The scan and id keys need to be unprotected so they can be accessed
+    // without prompting for send password, they are private derivations so
+    // they won't compromise the rest of the wallet.
+    this.store.set('scankeys', [{pub: scanPubKey, priv: scanPrivKey}]);
+    this.store.set('idkeys', [{pub: idPubKey, priv: idPrivKey}]);
 
     this.store.set('mpk', pubKey);
     this.store.set('version', 1);

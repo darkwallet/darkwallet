@@ -15,6 +15,10 @@ function Wallet(store, identity) {
     this.is_cold = store.get('is_cold');
     this.fee = store.init('fee', 10000); // 0.1 mBTC
     this.pubKeys = store.init('pubkeys', {});
+    this.scanKeys = store.init('scankeys', []);
+    if (this.scanKeys.length == 0) {
+        console.log('You need to reseed the wallet to generate stealth scanning keys!');
+    }
     this.pockets = store.init('pockets', ['default']);
     this.pocketWallets = {}
     for(var idx=0; idx< this.pockets.length; idx++) {
