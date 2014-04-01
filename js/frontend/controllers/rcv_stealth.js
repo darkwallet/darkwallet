@@ -17,7 +17,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
           }
           console.log("STEALTH", results);
           try {
-              $scope.identity.wallet.processStealth(results, $scope.stealth.password);
+              $scope.identity.wallet.processStealth(results);
               toaster.pop('success', "stealth", "ok")
           } catch (e) {
               toaster.pop('error', "stealth", e.message)

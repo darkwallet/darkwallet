@@ -217,7 +217,7 @@ Wallet.prototype.storePrivateKey = function(seq, password, key) {
  * @param {Array} seq Address sequence (bip32 or stealth id)
  * @param {Bitcoin.Key} key Bitcoin.Key or public key bytes
  */
-Wallet.prototype.storeAddress = function(seq, key) {
+Wallet.prototype.storeAddress = function(seq, key, properties) {
     // BIP32 js support is still missing some part and we can't get addresses
     // from pubkey yet, unless we do it custom like here...:
     // (mpKey.key.getBitcoinAddress doesn't work since 'key' is not a key
@@ -230,8 +230,6 @@ Wallet.prototype.storeAddress = function(seq, key) {
     }
     var mpKeyHash = Bitcoin.Util.sha256ripe160(mpPubKey);
     var address = new Bitcoin.Address(mpKeyHash);
-
-    var stealth = Stealth.formatAddress(mpPubKey);
 
     var label = 'unused';
     if (seq.length == 1) {
@@ -248,9 +246,22 @@ Wallet.prototype.storeAddress = function(seq, key) {
        'balance': 0,
        'nOutputs': 0,
        'pubKey': mpPubKey,
-       'stealth': Bitcoin.base58.checkEncode(stealth.slice(1), 6),
        'address': address.toString()
     };
+
+    // Merge properties
+    if (properties) {
+        for (var attrname in properties) {
+            walletAddress[attrname] = properties[attrname];
+        }
+    }
+
+    // Precalculate stealth address for pockets (even branches)
+    if ((seq.length == 1) && (seq[0]%2 == 0)) {
+        var scanKey = this.getScanKey();
+        var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [mpPubKey]);
+        walletAddress['stealth'] = stealthAddress;
+    }
 
     // add to internal bitcoinjs-lib wallet
     this.addToWallet(walletAddress);
@@ -486,32 +497,40 @@ Wallet.prototype.processHistory = function(walletAddress, history) {
     this.store.save();
 }
 
+/**
+ * Get the stealth scanning ECKey
+ */
+Wallet.prototype.getScanKey = function() {
+    var scanMaster = this.scanKeys[0];
+    var scanMasterKey = Bitcoin.HDWallet.fromBase58(scanMaster.priv);
+    return scanMasterKey.priv;
+}
 
 /**
  * Process stealth array from obelisk.
  * The array comes 
  */
-Wallet.prototype.processStealth = function(stealthArray, password) {
+Wallet.prototype.processStealth = function(stealthArray) {
     var self = this;
     stealthArray.forEach(function(stealthData) {
         var nonceArray = Bitcoin.convert.hexToBytes(stealthData[0]);
-        var ephemkey = Bitcoin.convert.hexToBytes(stealthData[0]);
+        var ephemKey = Bitcoin.convert.hexToBytes(stealthData[0]);
         var address = stealthData[1];
         var txId = stealthData[2];
+        var scanKey = self.getScanKey();
 
         // for now checking just the first stealth address derived from pocket 0 "default"
-        self.getPrivateKey([0], password, function(privKey) {
-            var stAddr = Stealth.uncoverStealth(privKey.export('bytes'), ephemkey);
-            if (address == stAddr.getBitcoinAddress().toString()) {
-                console.log("STEALTH MATCH!!");
-                var seq = [0, 's'].concat(ephemkey);
-                var walletAddress = self.storeAddress(seq, stAddr);
-                walletAddress.type = 'stealth';
-                walletAddress.ephemkey = ephemkey;
-                self.store.save();
-                self.storePrivateKey(seq, password, stAddr);
-            }
-        });
+        var spendKey = self.getAddress([0]).pubKey;
+        var myKeyBytes = Stealth.uncoverStealth(scanKey.toBytes(), ephemKey, spendKey);
+        // Turn to address
+        var myKeyHash = Bitcoin.Util.sha256ripe160(myKeyBytes);
+        var myAddress = new Bitcoin.Address(myKeyHash);
+
+        if (address == myAddress.toString()) {
+            console.log("STEALTH MATCH!!");
+            var seq = [0, 's'].concat(ephemKey);
+            var walletAddress = self.storeAddress(seq, myKeyBytes, {'type': 'stealth', 'ephemkey': ephemKey});
+        }
     });
 }
 

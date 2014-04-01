@@ -151,9 +151,23 @@ Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
     var c = Stealth.stealthDH(priv, decKey)
 
     // Now generate address
-    var address = Stealth.deriveAddress(spendKey, c);
-    return address;
+    return Stealth.deriveKey(spendKey, c);
 }
+
+/*
+ * Generate key for receiving for a stealth address with a given ephemkey
+ * @param {Bitcoin.ECPubKey} spendKey Spend Key
+ * @param {BigInteger} c Derivation value
+ */
+Stealth.deriveKey = function(spendKey, c) {
+    // Now generate address
+    var bytes = spendKey.getPubPoint()
+                          .add(new Bitcoin.Key(c).getPubPoint())
+                          .getEncoded(true);
+
+    return bytes;
+}
+
 
 /*
  * Generate key for receiving for a stealth address with a given ephemkey
@@ -162,9 +176,7 @@ Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
  */
 Stealth.deriveAddress = function(spendKey, c) {
     // Now generate address
-    var bytes = spendKey.getPubPoint()
-                          .add(new Bitcoin.Key(c).getPubPoint())
-                          .getEncoded(true);
+    var bytes = this.deriveKey(spendKey, c);
 
     // Turn to address
     var mpKeyHash = Bitcoin.Util.sha256ripe160(bytes);
