@@ -45,15 +45,16 @@ Stealth.stealthDH = function(e, decKey) {
 
 
 /*
- * Get the stealth address for a public key
- * @param {Object} mpPubKey Public key as byte array
+ * Format a stealth address in base58
+ * @param {Object} scanPubKeyBytes Public key as byte array
+ * @param {Object} spendPubKeys Spend public keys as array of byte arrays
  *
  * [version:1] [options:1] [scan_pubkey:33] [N:1] [spend_pubkey_1:33] ...
 [spend_pubkey_N:33] [number_sigs:1] [prefix_length:1] [prefix:prefix_length/8, round up]
  * version = 255
  * options bitfield = 0 or 1 (reuse scan_pubkey for spends)
  */
-Stealth.formatAddress = function(scanPubKey, spendPubKeys) {
+Stealth.formatAddress = function(scanPubKeyBytes, spendPubKeys) {
     if (!spendPubKeys) {
         spendPubKeys = [];
     }
@@ -63,7 +64,7 @@ Stealth.formatAddress = function(scanPubKey, spendPubKeys) {
     var stealth = [reuseScan];
 
     // Add scan public key
-    stealth = stealth.concat(scanPubKey);
+    stealth = stealth.concat(scanPubKeyBytes);
 
     // Add spend public keys
     stealth = stealth.concat([spendPubKeys.length]);
@@ -82,6 +83,10 @@ Stealth.formatAddress = function(scanPubKey, spendPubKeys) {
     return Bitcoin.base58.checkEncode(stealth, Stealth.version);
 }
 
+/*
+ * Parse a stealth address into its forming parts
+ * @param {String} recipient Address in base58 format
+ */
 Stealth.parseAddress = function(recipient) {
     // TODO perform consistency checks here
     var stealthBytes = Bitcoin.base58.checkDecode(recipient);
@@ -129,9 +134,10 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes) {
 }
 
 /*
- * Generate key for receiving for a stealth address with a given ephemkey
- * @param {Object} masterSecret Secret as byte array
- * @param {Object} ephemKey Ephemeral key data as byte array
+ * Generate address for receiving for a spend key with the given ephemkey
+ * @param {Object} scanSecretBytes Secret as byte array
+ * @param {Object} ephemKeyBytes Ephemeral key data as byte array
+ * @param {Object} spendKeyBytes Spend key as bytes
  */
 Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
     // Parse public keys into api objects
@@ -149,6 +155,11 @@ Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
     return address;
 }
 
+/*
+ * Generate key for receiving for a stealth address with a given ephemkey
+ * @param {Bitcoin.ECPubKey} spendKey Spend Key
+ * @param {BigInteger} c Derivation value
+ */
 Stealth.deriveAddress = function(spendKey, c) {
     // Now generate address
     var bytes = spendKey.getPubPoint()
@@ -164,14 +175,14 @@ Stealth.deriveAddress = function(spendKey, c) {
 /*
  * Build the stealth nonce output so it can be added to a transaction.
  * returns a Bitcoin.TransactionOut object.
- * @param {Object} ephemKey Ephemeral key data as byte array
+ * @param {Object} ephemKeyBytes Ephemeral key data as byte array
  * @param {Number} nonce Nonce for the output
  */
-Stealth.buildNonceOutput = function(ephemKey, nonce) {
+Stealth.buildNonceOutput = function(ephemKeyBytes, nonce) {
     var ephemScript = new Bitcoin.Script();
     ephemScript.writeOp(Bitcoin.Opcode.map.OP_RETURN);
     var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4);
-    ephemScript.writeBytes([Stealth.nonceVersion].concat(nonceBytes.concat(ephemKey)));
+    ephemScript.writeBytes([Stealth.nonceVersion].concat(nonceBytes.concat(ephemKeyBytes)));
     var stealthOut = new Bitcoin.TransactionOut({script: ephemScript, value: 0});
     return stealthOut;
 }
@@ -207,8 +218,8 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
     var prefix = stealthPrefix.slice(1);
     if (prefixN) {
         var mask = Stealth.prefixBitMask(prefixN);
-        var prefixNum = Bitcoin.Util.bytesToNum(prefix);
-        var hashNum = Bitcoin.Util.bytesToNum(outHash.slice(0,4));
+        var prefixNum = convert.bytesToNum(prefix);
+        var hashNum = convert.bytesToNum(outHash.slice(0,4));
         if ((mask & prefixNum) == hashNum) {
             return true;
         } else {
@@ -232,6 +243,8 @@ Stealth.addStealth = function(recipient, newTx) {
     // iterate since we might not find a nonce for our required prefix then
     // we need to create a new ephemkey
     var scanKeyBytes = stealthAddress.scanKey;
+
+    // TODO: Correctly manage spend keys here
     var spendKeyBytes = stealthAddress.spendKeys[0];
     do {
         stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes);
