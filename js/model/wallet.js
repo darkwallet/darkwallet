@@ -231,7 +231,7 @@ Wallet.prototype.storeAddress = function(seq, key) {
     var mpKeyHash = Bitcoin.Util.sha256ripe160(mpPubKey);
     var address = new Bitcoin.Address(mpKeyHash);
 
-    var stealth = Stealth.getStealthAddress(mpPubKey);
+    var stealth = Stealth.formatAddress(mpPubKey);
 
     var label = 'unused';
     if (seq.length == 1) {
@@ -424,7 +424,7 @@ Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, f
             return;
         }
         if (outAddress.type == 'multisig') {
-            pending.push({output: utxo.output, address: utxo.address, index: idx})
+            pending.push({output: utxo.output, address: utxo.address, index: idx, signatures: []})
         } else {
           // Get private keys and sign
           try {
