@@ -1,7 +1,10 @@
-define(['darkwallet','bitcoinjs-lib', 'sjcl'], function(DarkWallet, Bitcoin, sjcl) {
 /*
  * @fileOverview Stealth support.
  */
+
+define(['darkwallet','bitcoinjs-lib', 'sjcl'], function(DarkWallet, Bitcoin, sjcl) {
+
+var convert = Bitcoin.convert;
 
 var Stealth = {};
  
