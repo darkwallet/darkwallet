@@ -1,4 +1,6 @@
-define(['./module', 'util/btc'], function (directives, BtcUtils) {
+define(['./module', 'util/btc', 'bitcoinjs-lib', 'util/stealth'], function (directives, BtcUtils, Bitcoin, Stealth) {
+
+var allowedVersions = [Bitcoin.network.mainnet.addressVersion, Bitcoin.network.mainnet.p2shVersion, Stealth.version];
 
 directives.directive('btcAddress', function() {
   return {
@@ -6,6 +8,12 @@ directives.directive('btcAddress', function() {
     link: function(scope, elm, attrs, ctrl) {
       ctrl.$parsers.unshift(function(viewValue) {
         if (viewValue) {
+          // Check for base58 encoded addresses
+          if (Bitcoin.Address.validate(viewValue) && allowedVersions.indexOf(Bitcoin.Address.getVersion(viewValue)) != -1) {
+            ctrl.$setValidity('address', true);
+            return viewValue;
+          }
+          // Check for public keys in different formats
           try {
             BtcUtils.decodeAddress(viewValue)
             ctrl.$setValidity('address', true);

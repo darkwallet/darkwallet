@@ -18,22 +18,29 @@ You are welcome to participate in the development by contributing or forking the
 
 https://github.com/darkwallet/darkwallet
 
-### Adding/Upgrading dependencies with bower
-If you want to add/upgrade a dependency, use bower.
+More info about how to develop on the HACKING.md document.
 
-```bash
-$ bower install angular --save # --save option modify bower.json file
-```
+Contact:
+-----------
 
-Read [bower documentation](http://bower.io) for more info.
+Use the following resources for communication with "the team"
 
-### Grunt tasks
+* Mailing list: https://lists.unsystem.net/cgi-bin/mailman/listinfo/darkwallet
+* Irc: freenode #darkwallet
+* Wiki: wiki.unsystem.net
 
-* `grunt` - watching (Sass, Server on 127.0.0.1:9000 with LiveReload)
-* `grunt build` - Sass
-* `grunt validate-js` - JSHint
-* `grunt publish` - dist directory
-* `grunt server-dist` - server on 127.0.0.1:9001 - dist directory (preview only)
+Support Us!
+------------
+
+Support our development efforts by donating to the darkwallet multisig:
+
+ 32wRDBezxnazSBxMrMqLWqD1ajwEqnDnMc
+
+--
+
+I went to the store the other day to buy a bolt for our front door, for as I told the storekeeper, the governor was coming here. "Aye," said he, "and the Legislature too." "Then I will take two bolts," said I. He said that there had been a steady demand for bolts and locks of late, for our protectors were coming.
+
+ - Henry David Thoreau
 
 - - -
 
