@@ -5229,6 +5229,9 @@ th.hide-for-touch {
 .nomarginbottom {
   margin-bottom: 0 !important; }
 
+input[type="text"].ng-invalid:not(.ng-pristine) {
+  background: red; }
+
 input[type=range] {
   -webkit-appearance: none;
   background-color: silver;
