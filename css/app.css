@@ -5266,9 +5266,6 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
   padding: 0;
   margin: 0; }
 
-table button.button.square, table a.button.square {
-  height: 40px; }
-
 .button.square.righted {
   z-index: 3;
   position: absolute;
@@ -5278,12 +5275,11 @@ table button.button.square, table a.button.square {
     right: 37px; }
   .button.square.righted:last-of-type {
     border-radius: 0 3px 3px 0; }
-
-.button.square:before {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -8px 0 0 -7px; }
+  .button.square.righted:before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -7px; }
 
 .button.postfix.fa:before, button.postfix.fa:before {
   background: #1e8448;
@@ -5320,7 +5316,7 @@ td.name {
 
 td.icon {
   padding: 0; }
-  td.icon a.button {
+  td.icon a.button, td.icon button.button {
     margin-right: 0.6em; }
 
 table tr:nth-child(odd) button {
@@ -5329,20 +5325,6 @@ table tr:nth-child(odd) button {
 table.expand {
   width: 100%;
   text-overflow: ellipsis; }
-
-.editrow td input.contact-name {
-  max-width: 300px; }
-
-.editrow td.edit-balance {
-  padding-right: 0.7em;
-  text-align: right; }
-
-.editrow .button {
-  margin: 0;
-  padding-bottom: 0.6875rem; }
-
-.editrow td input[type="text"] {
-  margin: 0; }
 
 /* Wallets dropdown ---------------------  */
 li.colorhead, li.colorhead:hover {

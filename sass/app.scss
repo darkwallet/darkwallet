@@ -42,8 +42,6 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 
 .button.square, button.square { width: 37px; height: 37px; padding: 0; margin: 0; }
 
-table button.button.square, table a.button.square { height: 40px; }
-
 .button.square.righted {
 	z-index: 3; 
 	position: absolute;
@@ -51,9 +49,8 @@ table button.button.square, table a.button.square { height: 40px; }
 	top: 0;
 	&:first-of-type { right: 37px; }
 	&:last-of-type { border-radius: 0 $global-radius $global-radius 0; }
+	&:before { position: absolute; top: 50%; left: 50%; margin: -8px 0 0 -7px; }
 }
-
-.button.square:before { position: absolute; top: 50%; left: 50%; margin: -8px 0 0 -7px; }
 
 .button.postfix.fa:before, button.postfix.fa:before { 
 
@@ -79,7 +76,7 @@ table.contacts td { padding: 0.3em 0.8em; }
 td.name { font-size: 110%; }
 td.icon {
 	padding: 0;
-	a.button { margin-right: 0.6em; } 
+	a.button, button.button { margin-right: 0.6em; } 
 }
 
 table tr:nth-child(odd) button { 
@@ -87,11 +84,6 @@ table tr:nth-child(odd) button {
 	}
 
 table.expand { width: 100%; text-overflow: ellipsis; }
-.editrow td input.contact-name { max-width: 300px; }
-.editrow td.edit-balance { padding-right: 0.7em; text-align: right; }
-.editrow .button { margin: 0; padding-bottom: rem-calc(11); }
-.editrow td input[type="text"] { margin: 0; }
-
 
 /* Wallets dropdown ---------------------  */
 
