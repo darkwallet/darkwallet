@@ -32,6 +32,10 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
   // Convert CRYPTO to FIAT
   $scope.$watch('calculator.amount', function() {
     var identity = DarkWallet.getIdentity();
+    var walletService = DarkWallet.service().getWalletService();
+    var currency = identity.settings.currency;
+    var fiatCurrency = identity.settings.fiatCurrency;
+
     if (!firstTime && !$scope.calculator.amountFocused) {
         return;
     }
@@ -40,36 +44,23 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
         $scope.calculator.converted = 'no rates';
         return;
     }
-    var amount = $scope.calculator.amount;
-    if (identity.settings.currency === 'mBTC') {
-      amount = $scope.calculator.amount / 1000;
-    }
-    var result = amount * walletService.rates[identity.settings.fiatCurrency];
-    if (isNaN(result)) {
-        $scope.calculator.converted = '';
-    } else {
-        $scope.calculator.converted = result.toFixed(2);
-    }
+    $scope.calculator.converted = walletService.btcToFiat($scope.calculator.amount, currency, fiatCurrency);
   });
 
   // Convert FIAT to CRYPTO
   $scope.$watch('calculator.converted', function() {
     var identity = DarkWallet.getIdentity();
+    var walletService = DarkWallet.service().getWalletService();
+    var currency = identity.settings.currency;
+    var fiatCurrency = identity.settings.fiatCurrency;
+
     if (!$scope.calculator.convertedFocused) {
         return;
     }
     if (!walletService.rates.hasOwnProperty(identity.settings.fiatCurrency)) {
         return;
     }
-    var result = $scope.calculator.converted/walletService.rates[identity.settings.fiatCurrency];
-    if (identity.settings.currency === 'mBTC') {
-      result = result * 1000;
-    }
-    if (isNaN(result)) {
-        $scope.calculator.amount = '';
-    } else {
-        $scope.calculator.amount = result.toFixed(8);
-    }
+    $scope.calculator.amount = walletService.fiatToBtc($scope.calculator.converted, currency, fiatCurrency);
   });
 
 }]);
