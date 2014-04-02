@@ -3,7 +3,7 @@
  */
 
 
-define(['./wallet', './txdb', './history', './tasks', './contacts', './connections', 'bitcoinjs-lib', 'sjcl'],
+define(['./wallet', './txdb', './history', './tasks', './contacts', './connections', 'bitcoinjs-lib'],
 function(Wallet, TransactionDatabase, History, Tasks, Contacts, Connections, Bitcoin) {
 /**
  * Identity class.

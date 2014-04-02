@@ -2,7 +2,7 @@
  * @fileOverview Access to the identity bitcoin keys
  */
 
-define(['darkwallet', 'util/stealth', 'bitcoinjs-lib', 'model/multisig', 'sjcl'],
+define(['darkwallet', 'util/stealth', 'bitcoinjs-lib', 'model/multisig'],
 function(DarkWallet, Stealth, Bitcoin, MultisigFunds) {
 /**
  * Wallet class.
