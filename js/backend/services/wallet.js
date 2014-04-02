@@ -20,13 +20,13 @@ function(IdentityKeyRing, Services) {
     // Wallet port
     Services.start('wallet', function() {
       }, function(port) {
-          // onMessage
+          // Connected
           console.log('[bus] wallet client connected');
           if (currentIdentity && keyRing.identities.hasOwnProperty(currentIdentity)) {
               port.postMessage({'type': 'ready', 'identity': currentIdentity})
           }
       }, function(port) {
-          // Connected
+          // Disconnected
           console.log('[bus] wallet client disconnected');
     });
 
