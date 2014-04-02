@@ -5320,7 +5320,13 @@ td.name {
 td.icon {
   padding: 0; }
   td.icon a.button, td.icon button.button {
-    margin-right: 0.6em; }
+    margin-right: 0.6em;
+    opacity: 0; }
+  td.icon a.button:last-child, td.icon button.button:last-child {
+    margin-right: 0; }
+
+tr:hover td.icon button.button {
+  opacity: 1; }
 
 table tr:nth-child(odd) button {
   background: #229954; }
@@ -5379,7 +5385,7 @@ li.colorhead h6 {
   background: #36d277;
   color: black; }
 
-.top-bar a, .tabs dd > a {
+.top-bar a, .tabs dd > a, button.button, a.button, button.square {
   -webkit-transition: all 300ms ease-out;
   -moz-transition: all 300ms ease-out;
   transition: all 300ms ease-out; }

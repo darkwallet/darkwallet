@@ -33,7 +33,7 @@
             {{contact.name}}
           </td>
           <td ng-show="contactFormShown !== $index">{{contact.address}}</td>
-          <td class="text-right" ng-show="contactFormShown !== $index">
+          <td class="text-right icon" ng-show="contactFormShown !== $index">
             <button ng-click="copyClipboard(contact.address)" class="button square fa fa-clipboard"></button>
             <button ng-click="openModal('show-qr', {address: contact.address})" class="button square fa fa-qrcode"></button>
             <button ng-click="openEditForm($index, contact)" class="button square fa fa-edit"></button>

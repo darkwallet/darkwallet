@@ -78,8 +78,11 @@ table.contacts td { padding: 0.3em 0.8em; }
 td.name { font-size: 110%; }
 td.icon {
 	padding: 0;
-	a.button, button.button { margin-right: 0.6em; } 
+	a.button, button.button { margin-right: 0.6em; opacity: 0; }
+	a.button:last-child, button.button:last-child { margin-right: 0; }
 }
+
+tr:hover td.icon button.button { opacity: 1; }
 
 table tr:nth-child(odd) button { 
 	background: darken($primary-color, 5%);
@@ -129,7 +132,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .tabs dd.active > a { background: lighten($primary-color, 10%); color: black; }
 
-.top-bar a, .tabs dd > a { @include single-transition(); }
+.top-bar a, .tabs dd > a, button.button, a.button, button.square { @include single-transition(); }
 
 .popupcontainer .panel { 
 	background: #333; 
