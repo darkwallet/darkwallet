@@ -1,4 +1,4 @@
-define(['./module', 'darkwallet', 'util/fiat'], function (controllers, DarkWallet, FiatCurrencies) {
+define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic) {
   'use strict';
 
   // Controller
@@ -49,6 +49,12 @@ define(['./module', 'darkwallet', 'util/fiat'], function (controllers, DarkWalle
       if (!isNaN($scope.defaultFee)) {
           identity.wallet.setDefaultFee($scope.defaultFee*100000000);
       }
+  }
+  $scope.showSeed = function(){
+      var current_password = $scope.seedPassword; 
+      var identity = DarkWallet.getIdentity();
+      var private_data = identity.store.getPrivateData(current_password);
+      $scope.yourSeed = private_data.seed;
   }
 }]);
 });
