@@ -76,6 +76,13 @@ the tasks below to generate the css the app needs.
 * `grunt publish` - dist directory
 * `grunt server-dist` - server on 127.0.0.1:9001 - dist directory (preview only)
 
+Icon set:
+-----------
+
+You can use the following cheatsheet to look for icon codes: 
+
+ - http://fortawesome.github.io/Font-Awesome/cheatsheet/
+
 --
 
  - unsystem dev
