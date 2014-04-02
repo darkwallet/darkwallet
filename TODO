@@ -6,7 +6,7 @@ Immediate:
    * Implement send from pocket DONE
    * Implement choose from contacts DONE
    - Better radar feedback
-   - Specify amount in FIAT
+   * Specify amount in FIAT DONE
    - multisig spending
  - Lobby system
    * Implement multiParty from cryptocat (ed25519 curves) DONE
@@ -20,7 +20,7 @@ Immediate:
    * Rename DONE
    + Delete STARTED
  - Settings
-   - Change password
+   * Change password DONE
    + Select server STARTED
 
 Other:
