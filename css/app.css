@@ -5385,7 +5385,7 @@ li.colorhead h6 {
   background: #36d277;
   color: black; }
 
-.top-bar a, .tabs dd > a, button.button, a.button, button.square {
+.top-bar a, .tabs dd > a, button.button, a.button, button.square, .ng-hide-add, .ng-hide-remove {
   -webkit-transition: all 300ms ease-out;
   -moz-transition: all 300ms ease-out;
   transition: all 300ms ease-out; }
@@ -5445,3 +5445,26 @@ span.meter {
 
 #logo {
   margin: -2px 5px 0 -5px; }
+
+.ng-hide-add.ng-hide-add-active, .ng-hide-remove {
+  opacity: 0; }
+
+.ng-hide-add, .ng-hide-remove.ng-hide-remove-active {
+  opacity: 1; }
+
+.ng-enter {
+  -webkit-transition: 1s linear all;
+  /* Safari/Chrome */
+  transition: 1s linear all;
+  /* All other modern browsers and IE10+ */
+  /* The animation preparation code */
+  opacity: 0; }
+
+/*
+ Keep in mind that you want to combine both CSS
+ classes together to avoid any CSS-specificity
+ conflicts
+*/
+.ng-enter.ng-enter-active {
+  /* The animation code itself */
+  opacity: 1; }
