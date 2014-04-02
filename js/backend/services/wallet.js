@@ -40,6 +40,11 @@ function(IdentityKeyRing, Services) {
             console.log("[wallet] Load identity", name)
             currentIdentity = name;
             keyRing.get(name, function(identity) {
+                //Load up tasks
+                var openTasks = identity.tasks.getOpenTasks();
+                chrome.browserAction.setBadgeText({text: ""+openTasks});
+
+                // Inform gui
                 identity.history.update = function() { Services.post('gui', {name: 'update'}); };
                 Services.post('wallet', {'type': 'ready', 'identity': name})
                 Services.post('wallet', {'type': 'loaded', 'identity': name})

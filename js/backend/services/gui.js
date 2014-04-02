@@ -6,8 +6,6 @@ function(Services, DarkWallet) {
     Services.start('gui', function() {
       }, function(port) {
           // Connected
-          var tasks = DarkWallet.getIdentity().tasks;
-          chrome.browserAction.setBadgeText({text: tasks.length});
           //console.log('[bus] gui client connected');
       }, function(port) {
           // Disconnected

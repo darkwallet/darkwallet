@@ -31,5 +31,14 @@ Tasks.prototype.removeTask = function(section, task) {
     this.store.save();
 }
 
+Tasks.prototype.getOpenTasks = function() {
+    var self = this;
+    var nOpen = 0;
+    Object.keys(this.tasks).forEach(function(section) {
+        nOpen += self.tasks[section].length;
+    });
+    return nOpen;
+}
+
 return Tasks;
 });
