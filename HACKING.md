@@ -10,15 +10,27 @@ For normal wallet development you can just modify the .js files, no need for fan
 Note the wallet has a long running background process, so after modifying files (specially for 
 backend/ and model/ files) you may need to restart the background page.
 
+The background process ties up the wallet behaviour for any number of open tabs.
+
+Code organization:
+-----------
+
 The code is structured as follows:
 
-js/              Code Root
-js/backend       Background page specific code (runs on the background)
-js/frontend      User facing code (runs on the tabs, tied to html, uses angular)
-js/model         Storage related core, and generic model functionality.
-js/util          Generic utils
+js/			Code Root
+├── backend		Background page specific code (runs on the background)
+│   ├── channels	Communication channels and transport
+│   └── services	Backend services
+├── frontend		User facing code (runs on the tabs, tied to html, uses angular)
+│   ├── controllers	Angular controllers
+│   ├── directives	Angular directives
+│   ├── filters		Angular filters
+│   ├── popup		Code for the popup area on the topbar
+│   └── scripts		Content scripts
+├── model		Storage related core, and generic model functionality.
+└── util		Generic utils
+    └── ng		Angular utils
 
-The background process ties up the wallet behaviour for any number of open tabs.
 
 Frontend development:
 -----------
@@ -82,6 +94,10 @@ Icon set:
 You can use the following cheatsheet to look for icon codes: 
 
  - http://fortawesome.github.io/Font-Awesome/cheatsheet/
+
+Search other icon sets for useful icons:
+
+ - http://iconmoon.io
 
 --
 
