@@ -3,7 +3,7 @@
  * prefer named modules to long paths
  */
 require.config({
-  baseUrl: '/js',
+  baseUrl: '../js',
   paths: {
     'angular': '../vendors/angular/angular.min',
     'angular-animate': '../vendors/angular-animate/angular-animate.min',

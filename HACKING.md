@@ -58,6 +58,21 @@ ports.
 To command the backend, the frontend can access directly in most situations, so just start on DarkWallet
 and move down.
 
+Testing
+-------
+
+Unit tests can be run using `karma`.
+
+```sh
+$ cd tests/
+$ karma start
+```
+
+To install karma use:
+```sh
+sudo npm -g install karma-cli
+```
+
 Javascript tasks:
 -----------
 
