@@ -35,7 +35,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
             $scope.multisig.participants.forEach(function(participant) {
                 participants.push(BtcUtils.decodeAddress(participant.address));
             });
-            multisig = BtcUtils.multiSig($scope.multisig.m, participants);
+            multisig = BtcUtils.multiSig(parseInt($scope.multisig.m), participants);
         }
         multisig.name = $scope.multisig.name;
         multisig.participants = $scope.multisig.participants.slice(0);
