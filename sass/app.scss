@@ -132,7 +132,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .tabs dd.active > a { background: lighten($primary-color, 10%); color: black; }
 
-.top-bar a, .tabs dd > a, button.button, a.button, button.square, .ng-hide-add, .ng-hide-remove { @include single-transition(); }
+.top-bar a, .tabs dd > a, button.button, a.button, button.square, .ng-enter, .ng-leave, .ng-animate.ng-hide-remove, .ng-animate.ng-hide-add { @include single-transition(); }
 
 .popupcontainer .panel { 
 	background: #333; 
@@ -161,29 +161,41 @@ span.meter { padding: 5px 0 0 5px; }
 #logo { margin: -2px 5px 0 -5px; }
 
 .ng-hide-add.ng-hide-add-active,
-.ng-hide-remove {
+.ng-animate.ng-hide-remove {
   opacity:0;
 }
  
 .ng-hide-add,
-.ng-hide-remove.ng-hide-remove-active {
+.ng-animate.ng-hide-remove.ng-hide-remove-active {
   opacity:1;
 }
 
 .ng-enter {
- -webkit-transition: 1s linear all; /* Safari/Chrome */
- transition: 1s linear all; /* All other modern browsers and IE10+ */
- 
+
  /* The animation preparation code */
- opacity: 0;
+ opacity: 0.3;
+ position: absolute;
+ width: 100%;
+ -webkit-transform: translate3d(-100%, 0px, 0px);
 }
  
-/*
- Keep in mind that you want to combine both CSS
- classes together to avoid any CSS-specificity
- conflicts
-*/
 .ng-enter.ng-enter-active {
  /* The animation code itself */
  opacity: 1;
+ -webkit-transform: translate3d(0, 0px, 0px);
+}
+
+.ng-leave {
+
+ /* The animation preparation code */
+ opacity: 0.8;
+ position: absolute;
+    -webkit-transform: translate3d(0, 0px, 0px);
+    width: 100%;
+}
+
+.ng-leave.ng-leave-active {
+ /* The animation code itself */
+ 	opacity: 0;
+    -webkit-transform: translate3d(100%, 0px, 0px);
 }
