@@ -54,7 +54,20 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
       var current_password = $scope.seedPassword; 
       var identity = DarkWallet.getIdentity();
       var private_data = identity.store.getPrivateData(current_password);
-      $scope.yourSeed = private_data.seed;
+      var seed = private_data.seed;
+      var random = [];
+      for(var i=0;i<seed.length;i++){
+        var integer = parseInt(seed.slice(8*i,i*8+8),16);
+        if (!isNaN(integer) ){
+          random.push(integer);
+        }
+      }
+      var m  = new Mnemonic();
+      m.random = random;
+
+      $scope.yourSeed = true;
+      $scope.yourSeedHex = seed;
+      $scope.yourSeedWords = m.toWords().join(' ');
   }
 }]);
 });

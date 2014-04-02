@@ -8,7 +8,8 @@
           <div ng-hide="false">
             <label>Enter your current password</label>
             <input type="password" class="password" ng-model="seedPassword">
-            <input type="text" ng-model="yourSeed" ng-show="yourSeed">
+            <input type="text" ng-model="yourSeedHex" ng-show="yourSeed">
+            <input type="text" ng-model="yourSeedWords" ng-show="yourSeed">
           </div>
           <button class="small" ng-click="showSeed();">Show seed</button>
         </div>
