@@ -33,7 +33,6 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
      *  Uncompress a public address
      */
     uncompressAddress: function(bytes) {
-        // XXX Untested!
         var key = Bitcoin.ECPubKey(bytes, true);
         return key.toBytes(false);
     },
@@ -43,7 +42,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
      * Supports the following formats:
      *  - uncompressed hex
      *  - compressed hex
-     *  - stealth (S...)
+     *  - stealth (6...)
      *  - mpk (xpub...)
      */
     decodeAddress: function(address) {
@@ -53,10 +52,10 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         } else if (address.length == 66) {
             // Hex compressed address
             bytes = convert.hexToBytes(address);
-        } else if (address.length == 58 && address[0] == 'S') {
+        } else if (address.length == 103 && address[0] == '6') {
             // Stealth address
             bytes = Bitcoin.base58.checkDecode(address);
-            bytes = bytes.slice(1,bytes.length-5);
+            bytes = bytes.slice(1,bytes.length-5); // FIXME: Adapt to the new stealth
         } else if (address.length == 111 && address.slice(0,4) == 'xpub') {
             // Master public key
             var mpKey = Bitcoin.HDWallet.fromBase58(address);

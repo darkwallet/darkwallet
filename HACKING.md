@@ -64,13 +64,8 @@ Testing
 Unit tests can be run using `karma`.
 
 ```sh
-$ cd tests/
+$ npm -d install
 $ karma start
-```
-
-To install karma use:
-```sh
-sudo npm -g install karma-cli
 ```
 
 Javascript tasks:

@@ -20,6 +20,15 @@ define(['util/btc'], function(BtcUtils) {
             '3521b19491e139cce64d0950cdc52a120bd9cca3e7d1fffa19ba5dc07668710cf680a78cb7a620f7d7410462bf92dc23d100c6c9f77f335201513ce29b2a6ea319dbdef96e55139d7313487' +
             'ea715d308eea01f50f68d7234294e5bfe39c4f81d12d3533481dc61797ecf5755ae';
 
+    // Hex uncompressed address
+    var address1 = '0478d430274f8c5ec1321338151e9f27f4c676a008bdf8638d07c0b6be9ab35c71a1518063243acd4dfe96b66e3f2ec8013c8e072cd09b3834a19f81f659cc3455';
+    // Hex compressed address
+    var address2 = '0378d430274f8c5ec1321338151e9f27f4c676a008bdf8638d07c0b6be9ab35c71';
+    // Stealth address
+    var address3 = '6aeUMoVHfr47sXWvzVGhhuMHg3qpMZFE115smoBZe4Wi1KbqjmAaK6iatRUpTsgddQH9oTpEbwvtSvonvvx33kVLtJa3VLEG8yXgXwz';
+    // Master public key
+    var address4 = 'xpub6BckLqjjDDbTBLH22dh73dJYDPV1HCyfTJL3TstPkPKLSK44Y7Ah49CjZ1rkRo5YU3zci6xVjd4pg187LUpL9SjUw6Pnk897B24LEwKStsQ';
+
     it('create multisig', function() {
       var multisig = BtcUtils.multiSig(3, pubkeys);
       expect(multisig.address).toEqual('3CQdsxAmuaC2kHvHwKxKJ4kXn1qELrc6iM');
@@ -39,38 +48,48 @@ define(['util/btc'], function(BtcUtils) {
     });
     
     it('Uncompress a public address', function() {
-      // Hex uncompressed address
-      var address1 = '0478d430274f8c5ec1321338151e9f27f4c676a008bdf8638d07c0b6be9ab35c71a1518063243acd4dfe96b66e3f2ec8013c8e072cd09b3834a19f81f659cc3455';
-      // Hex compressed address
-      var address2 = '0378d430274f8c5ec1321338151e9f27f4c676a008bdf8638d07c0b6be9ab35c71';
-      // Stealth address
-      var address3 = '6aeUMoVHfr47sXWvzVGhhuMHg3qpMZFE115smoBZe4Wi1KbqjmAaK6iatRUpTsgddQH9oTpEbwvtSvonvvx33kVLtJa3VLEG8yXgXwz';
-      // Master public key
-      var address4 = 'xpub6BckLqjjDDbTBLH22dh73dJYDPV1HCyfTJL3TstPkPKLSK44Y7Ah49CjZ1rkRo5YU3zci6xVjd4pg187LUpL9SjUw6Pnk897B24LEwKStsQ';
+
+      var _address1 = BtcUtils.uncompressAddress(address1);
+      var _address2 = BtcUtils.uncompressAddress(address2);
+      var _address3 = BtcUtils.uncompressAddress(address3);
+      var _address4 = BtcUtils.uncompressAddress(address4);
       
-      address1 = BtcUtils.uncompressAddress(address1);
-      address2 = BtcUtils.uncompressAddress(address2);
-      address3 = BtcUtils.uncompressAddress(address3);
-      address4 = BtcUtils.uncompressAddress(address4);
-      
-      expect(address1).toEqual([ 4, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
+      expect(_address1).toEqual([ 4, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
         192, 182, 190, 154, 179, 92, 113, 161, 81, 128, 99, 36, 58, 205, 77, 254, 150, 182, 110, 63, 46, 200, 1, 60, 142, 7, 44, 208, 155, 56, 52,
         161, 159, 129, 246, 89, 204, 52, 85 ]);
-      expect(address2).toEqual([ 4, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
+      expect(_address2).toEqual([ 4, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
         192, 182, 190, 154, 179, 92, 113, 161, 81, 128, 99, 36, 58, 205, 77, 254, 150, 182, 110, 63, 46, 200, 1, 60, 142, 7, 44, 208, 155, 56, 52,
         161, 159, 129, 246, 89, 204, 52, 85 ]);
-      expect(address3).toEqual([ 4, 11, 228, 0, 1, 11, 0, 170, 0, 0, 0, 14, 0, 0, 81, 181, 0, 58, 88, 247, 0, 0, 0, 0, 3, 254, 17, 171, 201, 172,
+      expect(_address3).toEqual([ 4, 11, 228, 0, 1, 11, 0, 170, 0, 0, 0, 14, 0, 0, 81, 181, 0, 58, 88, 247, 0, 0, 0, 0, 3, 254, 17, 171, 201, 172,
         252, 21, 0, 24, 116, 126, 14, 56, 184, 191, 252, 43, 186, 86, 207, 16, 227, 250, 77, 247, 8, 151, 131, 107, 36, 209, 175, 112, 194, 229,
         110, 220, 88, 118, 152 ]);
-      expect(address4).toEqual([ 4, 0, 0, 68, 0, 10, 73, 12, 107, 12, 1, 158, 101, 215, 14, 75, 196, 41, 57, 50, 202, 232, 214, 49, 157, 0, 0, 151,
+      expect(_address4).toEqual([ 4, 0, 0, 68, 0, 10, 73, 12, 107, 12, 1, 158, 101, 215, 14, 75, 196, 41, 57, 50, 202, 232, 214, 49, 157, 0, 0, 151,
         178, 4, 14, 0, 0, 89, 160, 140, 100, 68, 223, 84, 253, 235, 46, 42, 74, 57, 77, 43, 39, 103, 5, 86, 40, 146, 61, 74, 157, 79, 165, 78, 170,
         85, 82, 28, 134 ]);
     });
     
-    it('Decode an address from string to bytes');
+    it('Decode an address from string to bytes', function() {
+      
+      var _address1 = BtcUtils.decodeAddress(address1);
+      var _address2 = BtcUtils.decodeAddress(address2);
+      var _address3 = BtcUtils.decodeAddress(address3);
+      var _address4 = BtcUtils.decodeAddress(address4);
+      
+      expect(_address1).toEqual([ 4, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
+        192, 182, 190, 154, 179, 92, 113, 161, 81, 128, 99, 36, 58, 205, 77, 254, 150, 182, 110, 63, 46, 200, 1, 60, 142, 7, 44, 208, 155, 56, 52,
+        161, 159, 129, 246, 89, 204, 52, 85 ]);
+      expect(_address2).toEqual([ 3, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
+        192, 182, 190, 154, 179, 92, 113 ]);
+      //expect(_address3).toEqual([]); // TODO
+      expect(_address4).toEqual([ 4, 159, 232, 217, 203, 3, 194, 39, 63, 147, 143, 84, 79, 107, 13, 189, 71, 126, 12, 131, 188, 2, 154, 242, 76, 126,
+        37, 119, 160, 45, 224, 171, 125, 93, 199, 93, 143, 248, 39, 96, 186, 238, 67, 124, 166, 116, 147, 39, 103, 104, 85, 43, 245, 241, 228, 37, 123,
+        122, 10, 83, 83, 241, 179, 214, 230 ]);
+    });
+
     it('Convert height to js timestamp', function() {
       expect(BtcUtils.heightToTimestamp(5000)).toEqual(1233823517352.9834);
     });
+
     it('Convert height to date string', function() {
       var date = new Date(1233823517352.9834);
       expect(BtcUtils.heightToDateString(5000)).toEqual(date.toLocaleDateString());
