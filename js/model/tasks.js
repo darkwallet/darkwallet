@@ -27,7 +27,7 @@ Tasks.prototype.removeTask = function(section, task) {
         return;
     }
     var idx = this.tasks[section].indexOf(task);
-    this.tasks.splice(idx, 1);
+    this.tasks[section].splice(idx, 1);
     this.store.save();
 }
 
