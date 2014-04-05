@@ -19,7 +19,9 @@
       <li class="divider"></li>
       <li>My multisig funds</li>
       <li ng-class="{active: 'fund:'+$index===selectedPocket}" ng-click="selectFund(fund, $index)" ng-repeat="fund in identity.wallet.multisig.funds track by $index"><a href="">{{fund.name}}</a></li>
-      <li><a class="button small expand radius" ng-click="newMultiSig()">New Multisig fund</a></li>
+      <li>
+      <a class="button small expand radius" ng-click="newMultiSig()">New Multisig fund</a>
+      </li>
       <li class="divider"></li>
       <li>Watch-only pockets</li>
       <li><a href="">My smartphone</a></li>
