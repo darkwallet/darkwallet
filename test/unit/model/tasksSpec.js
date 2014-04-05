@@ -4,25 +4,24 @@
 
 define(['model/tasks', 'model/store', 'model/keyring', 'util/mock/chrome_mock'],
 function(Tasks, Store, IdentityKeyRing, chrome) {
-
-  var keyring, store, tasks;
-  
-  beforeEach(function() {
-    chrome.storage.local.clear();
-    keyring = new IdentityKeyRing();
-    store = new Store({}, keyring);
-    tasks = new Tasks(store);
-  });
-  
-  var tasksSample =  {
-    multisig : [
-      { tx : 'mocktx' },
-      { tx : 'mocktx' }
-    ],
-    foo : [ 'bar' ]
-  };
-  
   describe('Tasks model', function() {
+    var keyring, store, tasks;
+  
+    beforeEach(function() {
+      chrome.storage.local.clear();
+      keyring = new IdentityKeyRing();
+      store = new Store({}, keyring);
+      tasks = new Tasks(store);
+    });
+
+    var tasksSample =  {
+      multisig : [
+        { tx : 'mocktx' },
+        { tx : 'mocktx' }
+      ],
+      foo : [ 'bar' ]
+    };
+
     it('is created properly', function() {
       expect(tasks.store).toBe(store);
       expect(tasks.tasks).toEqual({});
