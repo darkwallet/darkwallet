@@ -107,7 +107,7 @@ You can use the following cheatsheet to look for icon codes:
 
 Search other icon sets for useful icons:
 
- - http://iconmoon.io
+ - http://icomoon.io
 
 --
 
