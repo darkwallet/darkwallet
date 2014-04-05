@@ -74,7 +74,7 @@ Store.prototype.getPrivateData = function(password) {
 Store.prototype.setPrivateData = function(data, password) {
     var Crypto = Bitcoin.Crypto;
     var passwordDigest = Bitcoin.convert.wordArrayToBytes(Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password))));
-    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
+    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);console.log(passwordDigest)
     var privData = sjcl.encrypt(passwordDigest, JSON.stringify(data), {ks: 256, ts: 128});
     this.set('private', privData);
 };
