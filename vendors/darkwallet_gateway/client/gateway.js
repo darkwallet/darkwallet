@@ -3,8 +3,12 @@
  *
  * @param {String}   connect_uri Gateway websocket URI
  * @param {Function} handle_connect Callback to run when connected
+ * @param {Function} handle_disconnect Callback to run when disconnected
+ * @param {Function} handle_error Callback to run on errors (except connection errors go to handle_connect first parameter).
+ *
+ * handle_* callbacks take parameters as (error, data)
  */
-function GatewayClient(connect_uri, handle_connect) {
+function GatewayClient(connect_uri, handle_connect, handle_disconnect, handle_error) {
     var self = this;
     this.handler_map = {};
     this.connected = false;
@@ -16,10 +20,17 @@ function GatewayClient(connect_uri, handle_connect) {
     this.websocket.onclose = function(evt) {
         self.connected = false;
         self.on_close(evt);
+        if (handle_disconnect) {
+            handle_disconnect(null, evt)
+        }
     };
     this.websocket.onerror = function(evt) {
         // TODO: should probably disconnect
-        handle_connect(evt);
+        if (!self.connected) {
+            handle_connect(evt);
+        } else if (handle_error) {
+            handle_error(evt);
+        }
     };
     this.websocket.onmessage = function(evt) {
         self._on_message(evt);
