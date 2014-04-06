@@ -29,7 +29,8 @@ module.exports = function(config) {
         'js/frontend/app.js',
         'js/frontend/popup/loader.js',
         'js/frontend/popup/app.js',
-        'js/backend/main.js'
+        'js/backend/main.js',
+        'js/darkwallet.js'
     ],
 
 

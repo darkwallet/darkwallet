@@ -46,7 +46,7 @@ TransactionDatabase.prototype.fetchTransaction = function(txHash, callback, user
  * Store a transaction in the database.
  */
 TransactionDatabase.prototype.storeTransaction = function(txHash, tx) {
-    if (this.transactions.hasOwnProperty(txHash)) {
+    if (!this.transactions.hasOwnProperty(txHash)) {
         this.transactions[txHash] = tx;
         this.store.save();
     }

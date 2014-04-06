@@ -8,6 +8,10 @@ for (var file in window.__karma__.files) {
 requirejs.config({
     // Karma serves files from '/base'
     baseUrl: '/base/js',
+    
+    paths: {
+      'darkwallet': 'util/mock/darkwallet_mock'
+    },
 
     // ask Require.js to load these files (all our tests)
     deps: tests,
