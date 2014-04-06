@@ -137,11 +137,13 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
   }
 
   // Filters
-  var shownRows = [];
 
+  var shownRows = [];
   $scope.txFilter = 'last10';
 
   var pocketFilter = function(row) {
+      // Making sure shownRows is reset before historyFilter stage is reached.
+      shownRows = [];
       if ($scope.isAll) {
           // only add pocket transactions for now
           return typeof row.pocket === 'number';
@@ -166,6 +168,7 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
   // Set the history filter
   $scope.setHistoryFilter = function(name) {
       $scope.txFilter = name;
+      shownRows = [];
   }
 
   // History filter, run for every row to see if we should show it
@@ -179,32 +182,30 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
       return pocketFilter(row);
   }
   $scope.historyFilter = function(row) {
-      //if (pocketFilter(row)) {
-          switch($scope.txFilter) {
-              case 'all':
+      switch($scope.txFilter) {
+          case 'all':
+              return true;
+          case 'lastWeek':
+              var ts = BtcUtils.heightToTimestamp(row.height);
+              if (ts > prevweek.getTime()) {
                   return true;
-              case 'lastWeek':
-                  var ts = BtcUtils.heightToTimestamp(row.height);
-                  if (ts > prevweek.getTime()) {
-                      return true;
-                  }
-                  break;
-              case 'lastMonth':
-                  var ts = BtcUtils.heightToTimestamp(row.height);
-                  if (ts > prevmonth.getTime()) {
-                      return true;
-                  }
-                  break;
-              case 'last10':
-              default:
-                  if (shownRows.indexOf(row.hash) != -1) {
-                      return true;
-                  } else if (shownRows.length < 10) {
-                      shownRows.push(row.hash)
-                      return true;
-                  }
-          }
-      //}
+              }
+              break;
+          case 'lastMonth':
+              var ts = BtcUtils.heightToTimestamp(row.height);
+              if (ts > prevmonth.getTime()) {
+                  return true;
+              }
+              break;
+          case 'last10':
+          default:
+              if (shownRows.indexOf(row.hash) != -1) {
+                  return true;
+              } else if (shownRows.length < 10) {
+                  shownRows.push(row.hash)
+                  return true;
+              }
+      }
       return false;
   }
 
