@@ -66,6 +66,17 @@ function(IdentityKeyRing, Services) {
         return keyRing.identities[currentIdentity];
     }
 
+    // Notify frontend of history row updates
+    var notifyRow = function(newRow, height) {
+        if (newRow && (newRow.myOutValue - newRow.myInValue) > 0) {
+            if (height) {
+                Services.post('gui', {type: "note", text: 'Received: ' + newRow.myOutValue - newRow.myInValue});
+            } else {
+                Services.post('gui', {type: "note", text: 'Unconfirmed: ' + newRow.myOutValue - newRow.myInValue});
+            }
+        }
+    }
+
     /***************************************
     /* History and address subscription
      */
@@ -102,13 +113,8 @@ function(IdentityKeyRing, Services) {
             var walletAddress = identity.wallet.getWalletAddress(address);
             if (walletAddress) {
                 var newRow = identity.wallet.processTx(walletAddress, tx, height);
-                if (newRow && newRow.myOutValue) {
-                    if (height) {
-                        Services.post('gui', {type: "note", text: 'Received: ' + newRow.myOutValue});
-                    } else {
-                        Services.post('gui', {type: "note", text: 'Unconfirmed: ' + newRow.myOutValue});
-                    }
-                }
+                // Show a notification for incoming transactions
+                notifyRow(newRow, height);
             }
         });
         Services.post('gui', {type: "balance"});
