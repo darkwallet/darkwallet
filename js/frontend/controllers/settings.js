@@ -14,6 +14,13 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
   $scope.clearStorage = function() {
       var keyRing = DarkWallet.getKeyRing();
       keyRing.clear();
+      toaster.pop('note', 'Storage cleared, please restart your browser.');
+  }
+  
+  $scope.clearTasks = function() {
+      var identity = DarkWallet.getIdentity();
+      identity.tasks.clear();
+      toaster.pop('note', 'Tasks cleared.');
   }
   
   $scope.passwordChanged = function() {

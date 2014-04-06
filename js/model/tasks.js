@@ -40,5 +40,13 @@ Tasks.prototype.getOpenTasks = function() {
     return nOpen;
 }
 
+Tasks.prototype.clear = function() {
+    var self = this;
+    Object.keys(this.tasks).forEach(function(section) {
+        delete self.tasks[section];
+    });
+    this.store.save();
+}
+
 return Tasks;
 });
