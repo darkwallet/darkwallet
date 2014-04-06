@@ -42,7 +42,9 @@ function(IdentityKeyRing, Services) {
             keyRing.get(name, function(identity) {
                 //Load up tasks
                 var openTasks = identity.tasks.getOpenTasks();
-                chrome.browserAction.setBadgeText({text: ""+openTasks});
+                if (openTasks) {
+                    chrome.browserAction.setBadgeText({text: ""+openTasks});
+                }
 
                 // Inform gui
                 identity.history.update = function() { Services.post('gui', {name: 'update'}); };
