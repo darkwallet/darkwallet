@@ -97,6 +97,8 @@ function (controllers, Services, DarkWallet, Bitcoin) {
           if (error) {
               toaster.pop('error', "Can't send", error.text);
               console.log("error", error);
+          } else if (task && task.radar) {
+              console.log("radar", task.radar)
           } else if (task) {
               toaster.pop('note', 'Signatures pending', 'Sending ' + (fee + totalAmount) + ' satoshis')
               console.log("pending", task)

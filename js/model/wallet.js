@@ -185,7 +185,7 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     var workSeq = seq.slice(0);
     var data = this.store.getPrivateData(password);
     if (data.privKeys[seq]) {
-        var key = Bitcoin.Key(data.privKeys[seq]);
+        var key = new Bitcoin.Key(data.privKeys[seq], true);
         callback(key);
         return;
     }
@@ -330,16 +330,18 @@ Wallet.prototype.broadcastTx = function(newTx, isStealth, callback) {
         if (error) {
             console.log("Error sending tx: " + error);
             callback({data: error, text: "Error sending tx"})
-            return;
+        } else {
+            // TODO: radar can be added as a task to maintain progress
+            callback(null, {radar: count});
+            console.log("tx radar: " + count);
         }
-        console.log("tx radar: " + count);
     }
     if (isStealth) {
         console.log("not broadcasting stealth tx yet...");
     } else {
-        // DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
+        DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
     }
-    callback(null)
+    callback(null);
 }
 
 Wallet.prototype.getPocketWallet = function(idx) {
@@ -448,7 +450,7 @@ Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, f
           }
         }
     };
-    if (pending) {
+    if (pending.length) {
         // If pending signatures add task and callback with 2nd parameter
         var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: isStealth};
         this.identity.tasks.addTask('multisig', task)
