@@ -69,6 +69,22 @@ $ npm -d install
 $ karma start
 ```
 
+Releasing
+---------
+
+We use [semver](http://semver.org) to version our releases, you can read
+the specification in their web.
+
+We also use [git flow](http://nvie.com/posts/a-successful-git-branching-model/)
+branching model, so you can assume that the code in the master branch is stable
+and the bleeding edge is in the develop branch.
+
+We use git flow util in order to realize it. It can be downloaded using apt:
+
+```sh
+$ sudo apt-get install git-flow
+```
+
 Javascript tasks:
 -----------
 
