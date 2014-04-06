@@ -2,11 +2,17 @@ define(function() {
   var chrome_storage = {};
   chrome = {storage: {local: {
     get: function(key, callback) {
-      // callback? callback(chrome_storage[key]) : null;
+      if (key === null) {
+        value = chrome_storage;
+      } else {
+        // FIXME value = chrome_storage[key];
+      }
+      callback? callback(value) : null;
     },
     set: function(pairs, callback) {
-      var key = Object.keys(pairs)[0];
-      chrome_storage[key] = pairs[key];
+      for(key in pairs) {
+        chrome_storage[key] = pairs[key];
+      }
       callback? callback() : null;
     },
     clear: function() {

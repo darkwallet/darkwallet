@@ -5,12 +5,43 @@
 define(['model/connections'], function(Connections) {
   describe('Connections model', function() {
 
-    it('is created properly');
+    var connections;
+    var identity = {
+      store: {
+        init: function(key, value) {
+          return value;
+        },
+        save: function() {}
+      }
+    };
+    
+    beforeEach(function() {
+      connections = new Connections(identity.store, identity);
+    });
 
-    it('adds a server');
+    it('is created properly', function() {
+      expect(connections.store).toBe(identity.store);
+      expect(connections.connections.servers).toBeDefined();
+      expect(connections.connections.selectedServer).toBe(0);
+      expect(connections.connections.alwaysConnect).toBe(0);
+      expect(connections.servers).toBe(connections.connections.servers);
+      expect(connections.selectedServer).toBe(0);
+      expect(connections.alwaysConnect).toBe(0);
+    });
 
-    it('sets selected server');
+    it('adds a server', function() {
+      connections.addServer('foo', 'bar', 'baz');
+      expect(connections.servers[1]).toEqual({ name : 'foo', type : 'baz', address : 'bar' });
+    });
 
-    it('sets always connect setting');
+    it('sets selected server', function() {
+      connections.setSelectedServer(1);
+      expect(connections.selectedServer).toBe(1);
+    });
+
+    it('sets always connect setting', function() {
+      connections.setAlwaysConnect(1);
+      expect(connections.alwaysConnect).toBe(1);
+    });
   });
 });

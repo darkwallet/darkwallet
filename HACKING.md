@@ -17,6 +17,7 @@ Code organization:
 
 The code is structured as follows:
 
+<pre>
 js/			Code Root
 ├── backend		Background page specific code (runs on the background)
 │   ├── channels	Communication channels and transport
@@ -30,7 +31,7 @@ js/			Code Root
 ├── model		Storage related core, and generic model functionality.
 └── util		Generic utils
     └── ng		Angular utils
-
+</pre>
 
 Frontend development:
 -----------
