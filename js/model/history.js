@@ -24,7 +24,12 @@ History.prototype.findIndexForRow = function(newRow) {
     var insertInto = 0;
     for(var idx=this.history.length-1; idx>=0; idx--) {
         if (this.history[idx].hash == newRow.hash) {
-            return -1;
+            // replace by new row
+            if (this.history[idx].height == 0) {
+                this.history[idx] = newRow;
+                return -1; // confirmed
+            }
+            return -2; // already confirmed
         }
         if (this.history[idx].height < newRow.height) {
             return idx+1;
@@ -40,16 +45,11 @@ History.prototype.findIndexForRow = function(newRow) {
  */
 History.prototype.addHistoryRow = function(newRow) {
     var insertInto = this.findIndexForRow(newRow);
-    if (insertInto == -1) {
-        return;
+    if (insertInto > -1) {
+        // Add if it wasn't replaced
+        this.history.splice(insertInto, 0, newRow);
     }
-    this.history.splice(insertInto, 0, newRow);
-    var balance = 0;
-    for(var idx=0; idx<this.history.length; idx++) {
-        var row = this.history[idx];
-        balance += (row.myOutValue - row.myInValue);
-        row.balance = balance;
-    }
+    return insertInto;
 }
 
 /*
@@ -58,7 +58,7 @@ History.prototype.addHistoryRow = function(newRow) {
  * @param {String} transaction Transaction in serialized form
  * @param {Number} height Height for the transaction
  */
-History.prototype.buildHistoryRow = function(transaction, height) {
+History.prototype.buildHistoryRow = function(walletAddress, transaction, height) {
     var identity = this.identity;
         btcWallet = identity.wallet.wallet,
         inMine = 0,
@@ -67,34 +67,66 @@ History.prototype.buildHistoryRow = function(transaction, height) {
         myOutValue = 0,
         txAddr = "",
         txObj = new Bitcoin.Transaction(transaction);
+    var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
 
     // Check inputs
-    txObj.ins.forEach(function(anIn) {
-        var idx = anIn.outpoint.hash+":"+anIn.outpoint.index;
-        if (btcWallet.outputs[idx]) {
+    for(var idx=0; idx<txObj.ins.length; idx++) {
+        var anIn = txObj.ins[idx];
+        var outIdx = anIn.outpoint.hash+":"+anIn.outpoint.index;
+        if (btcWallet.outputs[outIdx]) {
             inMine += 1;
-            myInValue += btcWallet.outputs[idx].value;
+            myInValue += btcWallet.outputs[outIdx].value;
             // mark output as spent
-            btcWallet.outputs[idx].spend = true;
+            var output = btcWallet.outputs[outIdx];
+            if (!output.spend) {
+                output.spend = txHash + ":" + idx;
+            } else if (output.spend != txHash + ":" + idx) {
+                console.log("spend doesn't match!", output.spend, txHash + ":" + idx)
+            }
+            if (height) {
+                if (output.spendpending) {
+                    output.spendpending = false;
+                    if (walletAddress.address == output.address) {
+                        walletAddress.balance -= output.value
+                    }
+                }
+            } else {
+                output.spendpending = true;
+            }
         }
-    })
+    }
     if (!inMine) {
         txAddr = 'unknown';
     }
     // Check outputs
-    txObj.outs.forEach(function(anOut) {
+    for(var idx=0; idx<txObj.outs.length; idx++) {
+        var anOut = txObj.outs[idx];
         if (btcWallet.addresses.indexOf(anOut.address.toString())>-1) {
             outMine += 1;
             myOutValue += anOut.value;
+            var outIdx = txHash+":"+idx;
+            var output = btcWallet.outputs[outIdx];
+            if (height) {
+                if (output.pending) {
+                    output.pending = false;
+                    if (walletAddress.address == output.address) {
+                        walletAddress.balance += output.value;
+                    }
+                }
+            } else {
+                output.pending = true;
+            }
         } else {
             if (inMine) {
                 txAddr = anOut.address.toString();
             }
         }
-    })
+    }
     if (!txAddr) {
         txAddr = 'internal';
     }
+    // Create a row representing this change (if already referenced will
+    // be replaced)
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
     var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr};
     return newRow;
@@ -119,7 +151,7 @@ History.prototype.fillInput = function(transaction, data) {
  */
 History.prototype.txFetched = function(walletAddress, transaction, height) {
     var self = this,
-        newRow = this.buildHistoryRow(transaction, height);
+        newRow = this.buildHistoryRow(walletAddress, transaction, height);
     // unknown for now means we need to fill in some extra inputs for now get 1st one
     if (newRow.address == 'unknown') {
         if (newRow.tx.ins[0])
@@ -131,8 +163,10 @@ History.prototype.txFetched = function(walletAddress, transaction, height) {
      }
     newRow.addressIndex = walletAddress.index.slice(0);
     newRow.pocket = walletAddress.index[0];
-    this.addHistoryRow(newRow);
-    this.update();
+    if (this.addHistoryRow(newRow) > -2) {
+        this.update();
+        return newRow;
+    }
 }
 
 /*

@@ -32,14 +32,23 @@ TransactionDatabase.prototype.fetchTransaction = function(txHash, callback, user
         var client = DarkWallet.getClient();
         var gotTransaction = function(err, tx) {
             if(!err) {
-                self.transactions[txHash] = tx;
-                self.store.save();
+                self.storeTransaction(txHash, tx);
                 callback(tx, userData);
             }
         }
         client.fetch_transaction(txHash, gotTransaction);
     } else {
         callback(this.transactions[txHash], userData);
+    }
+}
+
+/*
+ * Store a transaction in the database.
+ */
+TransactionDatabase.prototype.storeTransaction = function(txHash, tx) {
+    if (this.transactions.hasOwnProperty(txHash)) {
+        this.transactions[txHash] = tx;
+        this.store.save();
     }
 }
 

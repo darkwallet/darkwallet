@@ -91,6 +91,25 @@ function(IdentityKeyRing, Services) {
             identity.history.fillHistory(walletAddress, history);
         }, function(addressUpdate) {
             console.log("[wallet] update", addressUpdate)
+
+            // Get variables from the update
+            var height = addressUpdate.height;
+            var tx = addressUpdate.tx;
+            var block_hash = addressUpdate.block_hash;
+            var address = addressUpdate.address;
+
+            // Process
+            var walletAddress = identity.wallet.getWalletAddress(address);
+            if (walletAddress) {
+                var newRow = identity.wallet.processTx(walletAddress, tx, height);
+                if (newRow && newRow.myOutValue) {
+                    if (height) {
+                        Services.post('gui', {type: "note", text: 'Received: ' + newRow.myOutValue});
+                    } else {
+                        Services.post('gui', {type: "note", text: 'Unconfirmed: ' + newRow.myOutValue});
+                    }
+                }
+            }
         });
         Services.post('gui', {type: "balance"});
     }

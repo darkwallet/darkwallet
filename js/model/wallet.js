@@ -463,12 +463,40 @@ Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, f
  * Process an output from an external source
  * @see Bitcoin.Wallet.processOutput
  */
-Wallet.prototype.processOutput = function(walletAddress, output) {
+Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, height, spend) {
+    var output = { output: txHash+":"+index, value: value, address: walletAddress.address};
+    if (!height) {
+        output.pending = true;
+    }
+    if (spend) {
+        output.spend = spend;
+    }
     // Wallet wide
     this.wallet.processOutput(output);
 
     // Pocket specific wallet
     // this.pocketWallets[walletAddress.index[0]].processOutput(output);
+}
+/**
+ * Process incoming transaction
+ */
+Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
+    var self = this;
+    var tx = new Bitcoin.Transaction(serializedTx);
+    var txHash = Bitcoin.convert.bytesToHex(tx.getHash());
+
+    // Allow the bitcoinjs wallet to process the tx
+    if (!this.identity.txdb.transactions.hasOwnProperty(txHash)) {
+        // don't run if we already processed the transaction since
+        // otherwise bitcoinjs-lib will reset 'pending' attribute.
+        this.wallet.processTx(tx, height)
+
+        // store in our tx db
+        this.identity.txdb.storeTransaction(txHash, serializedTx)
+    }
+
+    // process in history (updates walletAddress balance and confirms outputs pending status)
+    return this.identity.history.txFetched(walletAddress, serializedTx, height)
 }
 
 /**
@@ -486,13 +514,19 @@ Wallet.prototype.processHistory = function(walletAddress, history) {
         // sum unspent outputs for the address
         var outTxHash = tx[0];
         var inTxHash = tx[4];
+        var outHeight = tx[2];
+        var spend;
         walletAddress.nOutputs += 1;
         if (inTxHash == null) {
-            walletAddress.balance += tx[3];
-            walletAddress.height = Math.max(tx[2], walletAddress.height);
+            if (outHeight) {
+                walletAddress.balance += tx[3];
+                walletAddress.height = Math.max(outHeight, walletAddress.height);
+            }
+        } else {
+            spend = inTxHash + ":" + tx[5];
         }
         // pass on to internal Bitcoin.Wallet
-        self.processOutput(walletAddress, { output: tx[0]+":"+tx[1], value: tx[3], address: walletAddress.address });
+        self.processOutput(walletAddress, tx[0], tx[1], tx[3], outHeight, spend);
     });
     this.store.save();
 }
