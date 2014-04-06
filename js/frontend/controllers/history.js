@@ -175,8 +175,11 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
   $scope.usedAddressFilter = function(address) {
       return address.nOutputs;
   }
+  $scope.pocketFilter = function(row) {
+      return pocketFilter(row);
+  }
   $scope.historyFilter = function(row) {
-      if (pocketFilter(row)) {
+      //if (pocketFilter(row)) {
           switch($scope.txFilter) {
               case 'all':
                   return true;
@@ -201,7 +204,7 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
                       return true;
                   }
           }
-      }
+      //}
       return false;
   }
 
