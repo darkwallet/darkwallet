@@ -2,17 +2,26 @@
   <div class="container">
     <table>
       <tr><td>
+          <!-- Channel list -->
+          <h2>Channels</h2>
+          <div ng-show="subscribed">
+              <select class="select-list" size="10">
+              <option selected="selected">{{subscribed.slice(0, 8)}}</option>
+              <option>Trollbox</option>
+              <option>Coinjoin</option>
+              </select>
+          </div>
           <form>
             <label>
-              <h2>Code</h2>
-              <input ng-model="pairCode" type="password" class="password" value="" />
+              <input ng-model="pairCode" type="password" class="password" value="" placeholder="Enter channel name" />
             </label>
             <button class="button button-and-icon" ng-click="announceSelf();">
-              <div><i class="icon-large icon-qrcode"></i></div>Announce
+              <div><i class="icon-large icon-qrcode"></i></div>Join
             </button>
           </form>
-        </td><td ng-show="selectedPeer.name">
-          <b>selected: {{selectedPeer.name}}</b>
+      </td><td ng-show="subscribed">
+          <!-- Channel window -->
+          <b>Channel: {{subscribed.slice(0, 8)}}...</b>
           <form>
             <label>
               <input ng-model="shoutbox" type="text" value="" />
@@ -22,11 +31,10 @@
             </button>
           </form>
           <div>
-            <div ng-repeat="shoutLog in shoutboxLog">
-             {{shoutLog.text}} {{shoutLog.sender.slice(0,4)}}
-            </div>
+             <div ng-repeat="shoutLog in shoutboxLog" class="wrapper"><identicon title="{{shoutLog.sender}}" hash="shoutLog.pubKeyHex" icon-size="32"></identicon> {{shoutLog.body.text}}</div>
           </div>
-        </td><td>
+      </td><td>
+          <!-- Peers area -->
           <h2>Self</h2>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
           <h3>Channel</h3>
@@ -35,17 +43,19 @@
           <div ng-repeat="peer in peers">
             <span ng-click="selectPeer(peer)"><identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}</span> <a ng-click="pairPeer(peer)">pair</a></div>
           </div>
-        </td><td>
+      </td><td>
+          <!-- Requests area -->
           <div ng-show="newContact">
              <div>{{newContact.name}}</div>
              <div>{{newContact.stealth}}</div>
              <div class="wrapper"><identicon title="{{newContact.pubKeyHex}}" hash="newContact.pubKeyHex" icon-size="64"></identicon></div>
              <button ng-click="addNewContact(newContact)">Add contact</div>
           </div>
-        </td></tr>
-          <h2>Self</h2>
+      </td></tr>
     </table>
-    <h2>Requests</h2>
+
+    <!-- Raw requests -->
+    <h3>Requests</h3>
     <div ng-repeat="request in requests">
       {{request.data}}
     </div>

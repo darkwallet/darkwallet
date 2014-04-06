@@ -28,6 +28,9 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
               $scope.newContact.fingerprint = peer.fingerprint;
           })
           channelLink.addCallback('Shout', function(data) {
+              var peer = channelLink.channel.getPeer(data.sender)
+              console.log("shout", data, peer)
+              data.pubKeyHex = peer.pubKeyHex;
               $scope.shoutboxLog.push(data)
               if (data.sender == channelLink.channel.fingerprint) {
                   toaster.pop('success', 'me', data.body.text)
