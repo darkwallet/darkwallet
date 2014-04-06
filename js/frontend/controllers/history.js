@@ -115,6 +115,9 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
       $scope.identity.wallet.deletePocket(pocket.name);
       $scope.selectPocket();
   }
+  $scope.setMixing = function(pocket) {
+      pocket.mixing = !pocket.mixing;
+  }
   $scope.createPocket = function() {
     if ($scope.creatingPocket) {
       if ($scope.newPocket.name) {
