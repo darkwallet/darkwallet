@@ -5,12 +5,20 @@
 define(['model/tasks', 'model/store', 'model/keyring', 'util/mock/chrome_mock'],
 function(Tasks, Store, IdentityKeyRing, chrome) {
   describe('Tasks model', function() {
-    var keyring, store, tasks;
+    var _store, store, tasks;
   
     beforeEach(function() {
-      chrome.storage.local.clear();
-      keyring = new IdentityKeyRing();
-      store = new Store({}, keyring);
+        store = {
+        init: function(key, value) {
+          return value;
+        },
+        save: function() {
+          _store = {};
+          for(var i in tasks.tasks) {
+            _store[i] = tasks.tasks[i];
+          }
+        }
+      }
       tasks = new Tasks(store);
     });
 
@@ -32,20 +40,17 @@ function(Tasks, Store, IdentityKeyRing, chrome) {
       tasks.addTask('multisig', {tx: 'mocktx'});
       tasks.addTask('foo', 'bar');
       expect(tasks.tasks).toEqual(tasksSample);
-      expect(chrome.storage.local._()).toEqual({
-        'dw:identity:undefined' : { tasks: tasksSample }
-      });
+      expect(_store).toEqual(tasksSample);
     });
 
     it('removes task', function() {
       var task = {epic: 'fail'};
-      tasks.tasks.lol = [];
-      tasks.tasks.lol.push(task);
+      tasks.tasks.lol = [task];
       tasks.store.save();
-      expect(tasks.tasks.lol.indexOf(task)).toEqual(0);
+      
       tasks.removeTask('lol', task);
       expect(tasks.tasks.lol).toEqual([]);
-      expect(chrome.storage.local._()).toEqual({ 'dw:identity:undefined' : { tasks : { lol : [  ] } } });
+      expect(_store).toEqual({lol: []});
     });
 
     it('gets open tasks', function() {
