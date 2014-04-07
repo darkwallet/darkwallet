@@ -58,9 +58,18 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
       }
   }
   $scope.showSeed = function(){
+      /* show mnemonic pass and hex seed*/
       var current_password = $scope.seedPassword; 
       var identity = DarkWallet.getIdentity();
-      var private_data = identity.store.getPrivateData(current_password);
+      $scope.seedError = false;
+      try {
+        var private_data = identity.store.getPrivateData(current_password);
+      } catch (e){
+        if (e.message == "ccm: tag doesn't match") {
+          $scope.seedError = true;
+        }
+        return false;
+      }
       var seed = private_data.seed;
       var random = [];
       for(var i=0;i<seed.length/8;i++){
@@ -69,7 +78,6 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
       }
       var m  = new Mnemonic();
       m.random = random;
-
       $scope.yourSeed = true;
       $scope.yourSeedHex = seed;
       $scope.yourSeedWords = m.toWords().join(' ');
