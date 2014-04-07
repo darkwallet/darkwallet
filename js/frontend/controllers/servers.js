@@ -2,7 +2,7 @@
  * @fileOverview ServersCtrl angular controller
  */
 
-define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (controllers, DarkWallet, Services, FiatCurrencies) {
+define(['./module', 'darkwallet', 'frontend/services'], function (controllers, DarkWallet, Services) {
   'use strict';
   controllers.controller('ServersCtrl', ['$scope', function($scope) {
 
