@@ -22,6 +22,7 @@ function History(store, identity) {
  */
 History.prototype.findIndexForRow = function(newRow) {
     var insertInto = 0;
+    // Look for repeated element
     for(var idx=this.history.length-1; idx>=0; idx--) {
         if (this.history[idx].hash == newRow.hash) {
             // replace by new row
@@ -31,6 +32,13 @@ History.prototype.findIndexForRow = function(newRow) {
             }
             return -2; // already confirmed
         }
+    }
+    // If height is 0 put at the end
+    if (newRow.height == 0) {
+        return this.history.length;
+    }
+    // Find index for insertion
+    for(var idx=this.history.length-1; idx>=0; idx--) {
         if (this.history[idx].height < newRow.height) {
             return idx+1;
         }
