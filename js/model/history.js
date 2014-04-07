@@ -39,7 +39,7 @@ History.prototype.findIndexForRow = function(newRow) {
     }
     // Find index for insertion
     for(var idx=this.history.length-1; idx>=0; idx--) {
-        if (this.history[idx].height < newRow.height) {
+        if (this.history[idx].height > 0 && this.history[idx].height < newRow.height) {
             return idx+1;
         }
     }
