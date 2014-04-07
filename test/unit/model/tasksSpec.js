@@ -58,5 +58,14 @@ function(Tasks, Store, IdentityKeyRing, chrome) {
       tasks.tasks = tasksSample;
       expect(tasks.getOpenTasks()).toEqual(3);
     });
+    
+    it('clears all tasks', function() {
+      var task = {epic: 'fail'};
+      tasks.tasks.lol = [task];
+      tasks.store.save();
+      tasks.clear();
+      expect(tasks.tasks).toEqual({});
+      expect(_store).toEqual({});
+    });
   });
 });
