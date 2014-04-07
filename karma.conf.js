@@ -22,6 +22,9 @@ module.exports = function(config) {
         'test/test-main.js',
     ],
 
+    preprocessors: {
+      'js/**/*.js': 'coverage'
+    },
 
     // list of files to exclude
     exclude: [
@@ -36,7 +39,12 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
+    
+    coverageReporter: {
+	  type : 'html',
+	  dir : 'test/coverage/'
+	},
 
 
     // web server port

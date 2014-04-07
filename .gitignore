@@ -47,3 +47,6 @@ Desktop.ini
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*
+
+# Ignore test coverage folder
+/test/coverage/*
