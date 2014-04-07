@@ -279,60 +279,6 @@ Stealth.addStealth = function(recipient, newTx) {
 }
 
 /*************************************
- * EXPERIMENTAL... don't read below! :-D
- * Test encrypt / decrypt using similar derivation as stealth
- */
-
-/*
- * Decrypt the given message for some identity bip32 key
- * @param {String} message Message to decrypt
- * @param {DarkWallet.Identity} identity Identity to use
- * @param {Array} seq Key seq to use for decryption
- * @param {String} password Password for the user private keys
- * @param {Object} callback Callback receiving the decrypted data
- */
-
-Stealth.decryptForIdentity = function(message, identity, seq, password, callback) {
-    identity.wallet.getPrivateKey(seq, password, function(privKey) {
-        callback(Stealth.decrypt(privKey, message));
-    });
-}
-
-/*
- * Encrypt the given message
- * @param {Object} pubKey Public key as byte array
- * @param {String} Message to encrypt
- */
-Stealth.encrypt = function(pubKey, message) {
-    var encKey = new Bitcoin.Key();
-    var ephemKey = encKey.getPubPoint().getEncoded(true);
-
-    var decKey = Stealth.importPublic(pubKey);
-    var c = Stealth.stealthDH(encKey.priv, decKey);
-    var _pass = Bitcoin.convert.bytesToString(c);
-    var encrypted = sjcl.encrypt(_pass, message, {ks: 256, ts: 128});
-    return {pub: ephemKey, data: sjcl.json.decode(encrypted)}
-}
-
-/*
- * Decrypt the given message
- * @param {Bitcoin.Key} pubKey Private key
- * @param {String} message Message to decrypt, should have pub and data components
- */
-Stealth.decrypt = function(privKey, message) {
-    var masterSecret = privKey.export('bytes')
-    var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
-
-    var decKey = Stealth.importPublic(message.pub);
-    var c = Stealth.stealthDH(priv, decKey)
-    var _pass = Bitcoin.convert.bytesToString(c);
-    var decrypted = sjcl.decrypt(_pass, sjcl.json.encode(message.data));
-
-    return decrypted;
-}
-
-
-/*************************************
  * Some tests...
  */
 Stealth.testFinishStealth = function(secret, ephemKey) {

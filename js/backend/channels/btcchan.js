@@ -1,5 +1,5 @@
-define(['util/stealth', 'bitcoinjs-lib'],
-function (Stealth, Bitcoin) {
+define(['util/encryption', 'bitcoinjs-lib'],
+function (Encryption, Bitcoin) {
   'use strict';
 
   var CryptoJS = Bitcoin.Crypto;
@@ -81,7 +81,7 @@ function (Stealth, Bitcoin) {
       // Stealth message to us (maybe)
       } else if (decoded.pub) {
           console.log("stealth", sessionKey, decoded);
-          decrypted = Stealth.decrypt(sessionKey, decoded);
+          decrypted = Encryption.stealth.decrypt(sessionKey, decoded);
       }
       if (decrypted) {
           transport.requests.push({data: decrypted});
@@ -95,7 +95,7 @@ function (Stealth, Bitcoin) {
   Channel.prototype.startPairing = function(pubKey) {
       // pair to a specific user session public key
       var msg = 'hello';
-      var encrypted = Stealth.encrypt(pubKey, msg);
+      var encrypted = Encryption.stealth.encrypt(pubKey, msg);
       this.channelPost(JSON.stringify(encrypted), function(err, data){
           console.log("channel post2", err, data)
       });
