@@ -8,6 +8,7 @@ var DarkWallet = {
 
     // Get the wallet service.
     service: function() {
+      var _radar = 0;
       return {
         getKeyRing: function() {
           
@@ -25,6 +26,13 @@ var DarkWallet = {
 f2aeea554b7fb7d145061efad4398879b9be88ac00000000"
               };
               callback(0, tx[hash]);
+            },
+            broadcast_transaction: function(tx, callback) {
+              if (tx == 'newTxError') {
+                callback(true);
+              } else {
+                callback(null, _radar++);
+              }
             }
           };
         },

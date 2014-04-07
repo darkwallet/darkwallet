@@ -20,9 +20,9 @@ function Wallet(store, identity) {
         console.log('You need to reseed the wallet to generate stealth scanning keys!');
     }
     this.pockets = store.init('pockets', ['default']);
-    this.pocketWallets = {}
+    this.pocketWallets = [];
     for(var idx=0; idx< this.pockets.length; idx++) {
-        this.initPocket({addresses: [], balance: 0})
+        this.initPocket(idx);
     };
     this.mpk = store.get('mpk');
     if (!this.mpk) {
@@ -341,7 +341,6 @@ Wallet.prototype.broadcastTx = function(newTx, isStealth, callback) {
     } else {
         DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
     }
-    callback(null);
 }
 
 Wallet.prototype.getPocketWallet = function(idx) {
