@@ -14,7 +14,7 @@ function(Services, Channel) {
     Services.connect('obelisk', function(data) {
       // WakeUp when connected to obelisk
       if (data.type == 'connected') {
-        self.onConnect(data);
+        self.checkMixing(data);
       }
 
     });
@@ -23,7 +23,7 @@ function(Services, Channel) {
   /*
    * React to a new obelisk connection
    */
-  MixerService.prototype.onConnect = function() {
+  MixerService.prototype.checkMixing = function() {
     var client = this.core.getClient();
     var identity = this.core.getCurrentIdentity();
 
@@ -38,6 +38,8 @@ function(Services, Channel) {
     // If any is mixing make sure we are connected
     if (anyMixing) {
       this.ensureMixing();
+    } else {
+      this.stopMixing();
     }
   }
 
@@ -47,8 +49,22 @@ function(Services, Channel) {
   MixerService.prototype.ensureMixing = function() {
     console.log("[mixer] Connect...");
     var lobbyTransport = this.core.getLobbyTransport();
-    var channel = lobbyTransport.initChannel('CoinJoin', Channel);
-    channel.addCallback('lobby', function(data) { self.onLobbyMessage(data); })
+    if (!this.channel) {
+      this.channel = lobbyTransport.initChannel('CoinJoin', Channel);
+      this.channel.addCallback('lobby', self.onLobbyMessage);
+    }
+  }
+
+  /*
+   * Stop mixing
+   */
+  MixerService.prototype.stopMixing = function() {
+    console.log("[mixer] Connect...");
+    if (this.channel) {
+      var lobbyTransport = this.core.getLobbyTransport();
+      lobbyTransport.closeChannel(this.channel.name);
+      this.channel = null;
+    }
   }
 
   /*

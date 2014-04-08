@@ -36,6 +36,10 @@ function DarkWalletService() {
         return tickerService;
     }
 
+    this.getMixerService = function() {
+        return mixerService;
+    }
+
     this.loadIdentity = function(idx) {
         return walletService.loadIdentity(idx);
     }
@@ -122,6 +126,7 @@ window.getClient = service.getClient;
 window.getServices = service.getServices;
 window.getWalletService = service.getWalletService
 window.getTickerService = service.getTickerService
+window.getMixerService = service.getMixerService
 
 window.initAddress = function(_w) {return service.initAddress(_w)};
 

@@ -2,7 +2,8 @@
  * @fileOverview HistoryCtrl angular controller
  */
 
-define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function (controllers, Bitcoin, BtcUtils, Services) {
+define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services', 'darkwallet'],
+function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
   'use strict';
   controllers.controller('HistoryCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
@@ -123,6 +124,8 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
       walletPocket.mixing = !walletPocket.mixing;
       pocket.mixing = walletPocket.mixing;
       identity.wallet.store.save();
+      var mixerService = DarkWallet.service().getMixerService();
+      mixerService.checkMixing();
   }
   $scope.createPocket = function() {
     if ($scope.creatingPocket) {
