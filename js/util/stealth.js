@@ -114,14 +114,16 @@ Stealth.parseAddress = function(recipient) {
  * Generate a key and related address to send to for a stealth address
  * @param {Object} scanKeyBytes Scanning key as byte array
  * @param {Object} spendKeyBytes Spending key as byte array
+ * @param {Object} ephemKeyBytes (optional) Ephemeral private key as byte array,
+ *                                if null will be generated.
  */
-Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes) {
+Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, ephemKeyBytes) {
     // Parse public keys into api objects
     var scanKey = Stealth.importPublic(scanKeyBytes);
     var spendKey = Stealth.importPublic(spendKeyBytes);
 
     // new ephemeral key
-    var encKey = new Bitcoin.Key();
+    var encKey = new Bitcoin.Key(ephemKeyBytes);
     var ephemKey = encKey.getPub().pub.getEncoded(true);
 
     // Generate shared secret
@@ -232,9 +234,11 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
  * returns the new recipient (standard bitcoin address)
  * @param {String} recipient Stealth address in base58 format.
  * @param {Bitcoin.Transaction} newTx Transaction where we want to add stealth outputs.
+ * @param {Object} ephemKeyBytes (optional) Ephemeral private key as byte array,
+ *                                if null will be generated.
  */
 
-Stealth.addStealth = function(recipient, newTx) {
+Stealth.addStealth = function(recipient, newTx, ephemKeyBytes) {
     var stealthData, outHash, ephemKey, nonce;
     var stealthAddress = Stealth.parseAddress(recipient);
     var stealthPrefix = stealthAddress.prefix;
@@ -245,7 +249,7 @@ Stealth.addStealth = function(recipient, newTx) {
     // TODO: Correctly manage spend keys here
     var spendKeyBytes = stealthAddress.spendKeys[0];
     do {
-        stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes);
+        stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, ephemKeyBytes);
         recipient = stealthData[0].toString();
         ephemKey = stealthData[1];
         nonce = 0;
