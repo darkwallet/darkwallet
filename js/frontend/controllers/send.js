@@ -26,7 +26,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
           $scope.sendPocketName = 'Main pocket';
           $scope.pocketIndex = 0;
       } else if (typeof pocket == 'number') {
-          $scope.sendPocketName = $scope.identity.wallet.pockets[pocket];
+          $scope.sendPocketName = $scope.identity.wallet.pockets[pocket].name;
           $scope.pocketIndex = pocket;
       } else {
           var idx = parseInt(pocket.split(':')[1])

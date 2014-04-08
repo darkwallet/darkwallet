@@ -19,11 +19,7 @@ function Wallet(store, identity) {
     if (this.scanKeys.length == 0) {
         console.log('You need to reseed the wallet to generate stealth scanning keys!');
     }
-    this.pockets = store.init('pockets', ['default']);
-    this.pocketWallets = [];
-    for(var idx=0; idx< this.pockets.length; idx++) {
-        this.initPocket(idx);
-    };
+    this.pockets = this.initPockets(store)
     this.mpk = store.get('mpk');
     if (!this.mpk) {
          console.log("Wallet without mpk!", this.mpk);
@@ -35,6 +31,23 @@ function Wallet(store, identity) {
     // store balance
     this.loadPubKeys();
     this.balance = this.getBalance();
+}
+
+Wallet.prototype.initPockets = function(store) {
+    var pockets = store.init('pockets', [{name:'default'}, {name: 'savings'}]);
+
+    // Upgrade pocket store to new format
+    if (typeof pockets[0] == 'string') {
+        for(var i=0; i< pockets.length; i++) {
+            pockets[i] = {'name': pockets[i]};
+        };
+    }
+    // Init pocket wallets (temporary cache for pockets)
+    this.pocketWallets = [];
+    for(var idx=0; idx< pockets.length; idx++) {
+        this.initPocket(idx);
+    };
+    return pockets;
 }
 
 /**
@@ -74,11 +87,13 @@ Wallet.prototype.getBalance = function(pocketIndex) {
  * @param {String} name Name for the new pocket
  */
 Wallet.prototype.createPocket = function(name) {
-    if (this.pockets.indexOf(name) == -1) {
-        this.pockets.push(name);
-        this.store.save();
-        this.initPocket(this.pockets.length-1);
+    // Raise exception if name exists
+    if (this.getPocket(name)) {
+        throw Error("Pocket with that name already exists!");
     }
+    this.pockets.push({name: name});
+    this.store.save();
+    this.initPocket(this.pockets.length-1);
 }
 
 /**
@@ -89,13 +104,29 @@ Wallet.prototype.initPocket = function(idx) {
 }
 
 /**
+ * Get a pocket by name
+ */
+Wallet.prototype.getPocket = function(name) {
+    for(var i=0; i<this.pockets.length; i++) {
+        if (this.pockets[i].name == name) {
+            return this.pockets[i];
+        }
+    }
+}
+
+/**
  * Delete a pocket
  */
 Wallet.prototype.deletePocket = function(name) {
-    var idx = this.pockets.indexOf(name);
-    this.pockets[idx] = null;
-    this.store.save();
-    // TODO: Cleanup pocket addresses?
+    for(var i=0; i<this.pockets.length; i++) {
+        if (this.pockets[i].name == name) {
+             this.pockets[i] = null;
+             this.store.save();
+             // TODO: Cleanup pocket addresses?
+             return;
+        }
+    }
+    throw Error("Pocket with that name does not exist!");
 }
 
 
@@ -105,10 +136,12 @@ Wallet.prototype.deletePocket = function(name) {
  * @param {String} newName New name for the pocket
  */
 Wallet.prototype.renamePocket = function(oldName, newName) {
-    var i = this.pockets.indexOf(oldName);  
-    if (i >= 0) {
-        this.pockets[i] = newName;
+    var pocket = this.getPocket(oldName);
+    if (pocket) {
+        pocket.name = newName;
         this.store.save();
+    } else {
+        throw Error("Pocket with that name does not exist!");
     }
 }
 

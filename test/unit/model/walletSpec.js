@@ -47,8 +47,8 @@ define(['model/wallet'], function(Wallet) {
       expect(wallet.fee).toBe(10000); // 0.1 mBTC
       expect(wallet.pubKeys).toEqual({});
       expect(wallet.scanKeys).toEqual([]);
-      expect(wallet.pockets).toEqual(['default']);
-      expect(wallet.pocketWallets).toEqual([{addresses: [], balance: 0}]);
+      expect(wallet.pockets).toEqual([{name: 'default'}, {name: 'savings'}]);
+      expect(wallet.pocketWallets).toEqual([{addresses: [], balance: 0}, {addresses: [], balance: 0}]);
       expect(wallet.mpk).toBeFalsy();
       expect(wallet.wallet).toBeDefined();
       expect(wallet.multisig).toBeDefined();
@@ -57,40 +57,62 @@ define(['model/wallet'], function(Wallet) {
     it('gets balance');
     
     it('creates a pocket', function() {
+      var pockets = [{name: 'default'}, {name: 'savings'}, {name: 'Spendings'}];
       wallet.createPocket('Spendings');
-      expect(wallet.pockets).toEqual(['default', 'Spendings']);
-      expect(_store.pockets).toEqual(['default', 'Spendings']);
-      expect(wallet.pocketWallets.length).toBe(2);
+      expect(wallet.pockets).toEqual(pockets);
+      expect(_store.pockets).toEqual(pockets);
+      expect(wallet.pocketWallets.length).toBe(3);
 
       // Do not allow duplicates
-      wallet.createPocket('Spendings');
-      expect(wallet.pockets).toEqual(['default', 'Spendings']);
-      expect(_store.pockets).toEqual(['default', 'Spendings']);
-      expect(wallet.pocketWallets.length).toBe(2);
+      var error = false;
+      try {
+        wallet.createPocket('Spendings');
+      } catch (e) {
+        error = true;
+      }
+      expect(error).toBe(true);
+      expect(wallet.pockets).toEqual(pockets);
+      expect(_store.pockets).toEqual(pockets);
+      expect(wallet.pocketWallets.length).toBe(3);
     });
     
     it('deletes a pocket', function() {
-      wallet.deletePocket('incorrect');
-      expect(wallet.pockets).toEqual(['default']);
-      expect(_store.pockets).toEqual(['default']);
-      expect(wallet.pocketWallets.length).toBe(1);
+      var pockets = [{name: 'default'}, {name: 'savings'}];
+      var pockets2 = [{name: 'default'}, {name: 'savings'}, {name: 'Spendings'}];
+      var error = false;
+      try {
+        wallet.deletePocket('incorrect');
+      } catch (e) {
+        error = true;
+      }
+      expect(error).toBe(true);
+      expect(wallet.pockets).toEqual(pockets);
+      expect(_store.pockets).toEqual(pockets2);
+      expect(wallet.pocketWallets.length).toBe(2);
       
       wallet.deletePocket('default');
-      expect(wallet.pockets).toEqual([null]);
-      expect(_store.pockets).toEqual([null]);
-      expect(wallet.pocketWallets.length).toBe(1);
+      expect(wallet.pockets).toEqual([null, {name: 'savings'}]);
+      expect(_store.pockets).toEqual([null, {name: 'savings'}]);
+      expect(wallet.pocketWallets.length).toBe(2);
     });
     
     it('renames a pocket', function() {
+      var pockets = [{name: 'Main pocket'}, {name: 'savings'}];
       wallet.renamePocket('default', 'Main pocket');
-      expect(wallet.pockets).toEqual(['Main pocket']);
-      expect(_store.pockets).toEqual(['Main pocket']);
-      expect(wallet.pocketWallets.length).toBe(1);
+      expect(wallet.pockets).toEqual(pockets);
+      expect(_store.pockets).toEqual(pockets);
+      expect(wallet.pocketWallets.length).toBe(2);
       
-      wallet.renamePocket('incorrect', '404');
-      expect(wallet.pockets).toEqual(['Main pocket']);
-      expect(_store.pockets).toEqual(['Main pocket']);
-      expect(wallet.pocketWallets.length).toBe(1);
+      var error = false;
+      try {
+        wallet.renamePocket('incorrect', '404');
+      } catch (e) {
+        error = true;
+      }
+      expect(error).toBe(true);
+      expect(wallet.pockets).toEqual(pockets);
+      expect(_store.pockets).toEqual(pockets);
+      expect(wallet.pocketWallets.length).toBe(2);
       
     });
     
