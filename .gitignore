@@ -22,10 +22,25 @@ Desktop.ini
 /vendors/jquery/
 /vendors/bitcoinjs-lib/*
 !/vendors/bitcoinjs-lib/bitcoinjs.js
+/vendors/angular/*
+!/vendors/angular/*.min.js
+!/vendors/angular/*.css
+/vendors/angular-animate/*
+!/vendors/angular-animate/*.min.js
 /vendors/angular-route/*
 !/vendors/angular-route/*.min.js
 /vendors/angular-foundation/*
 !/vendors/angular-foundation/mm-foundation-tpls.min.js
+/vendors/mnemonic.js/*
+!/vendors/mnemonic.js/mnemonic.js
+/vendors/ngprogress/*
+!/vendors/ngprogress/*.css
+!/vendors/ngprogress/build
+/vendors/ngprogress/build/*
+!/vendors/ngprogress/build/ngProgress.js
+/vendors/AngularJS-Toaster/*
+!/vendors/AngularJS-Toaster/*.css
+!/vendors/AngularJS-Toaster/toaster.js
 /vendors/font-awesome/*
 !/vendors/font-awesome/fonts
 /vendors/font-awesome/fonts/*
@@ -44,6 +59,11 @@ Desktop.ini
 !/vendors/qrcodejs/qrcode.js
 /vendors/jsqrcode/*
 !/vendors/jsqrcode/jsqrcode.js
+/vendors/darkwallet_gateway/*
+!/vendors/darkwallet_gateway/client
+/vendors/darkwallet_gateway/client/*
+!/vendors/darkwallet_gateway/client/gateway.js
+
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*
