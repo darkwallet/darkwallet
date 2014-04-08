@@ -34,17 +34,17 @@ function(Services) {
         } else {
           // No values we can use
           Services.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info"});
-          console.log("[wallet] can't get ticker info", lastRates)
+          console.log("[ticker] can't get ticker info", lastRates)
           return;
         }
         Services.post('wallet', {type: 'ticker', currency: currency, rates: lastRates, rate: self.rates[currency]});
-        console.log("[wallet] ticker fetched");
+        console.log("[ticker] ticker fetched");
     }
 
     this.setFiatCurrency = function(currency) {
         var client = core.getClient();
         if (!self.rates.hasOwnProperty(currency)) {
-            console.log("[wallet] fetching ticker for", currency);
+            console.log("[ticker] fetching ticker for", currency);
             client.fetch_ticker(currency, function(err, lastRates) {handleTicker(err, currency, lastRates)});
         }
     }
