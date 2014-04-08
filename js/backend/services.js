@@ -50,6 +50,11 @@ define(function () {
             }
         },
 
+        /*
+         * Connect a backend module to a port
+         * @param {String} name Service name
+         * @param {Object} onMessage Callback for messages on the given port
+         */
         connect: function(name, onMessage) {
             if (!allPorts.hasOwnProperty(name)) {
                 allPorts[name] = [];
