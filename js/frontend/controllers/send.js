@@ -9,14 +9,14 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   $scope.advanced = false;
   
   $scope.updateBtcFiat = function(field) {
-    var walletService = DarkWallet.service().getWalletService();
+    var tickerService = DarkWallet.service().getTickerService();
     var identity = DarkWallet.getIdentity();
     var currency = identity.settings.currency;
     var fiatCurrency = identity.settings.fiatCurrency;
     if (field.isFiatShown) {
-      field.amount = walletService.fiatToBtc(field.fiatAmount, currency, fiatCurrency);
+      field.amount = tickerService.fiatToBtc(field.fiatAmount, currency, fiatCurrency);
     } else {
-      field.fiatAmount = walletService.btcToFiat(field.amount, currency, fiatCurrency);
+      field.fiatAmount = tickerService.btcToFiat(field.amount, currency, fiatCurrency);
     }
   }
 

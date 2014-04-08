@@ -6,8 +6,9 @@ require(['backend/services',
          'backend/services/obelisk',
          'backend/services/wallet',
          'backend/services/gui',
+         'backend/services/ticker',
          'backend/services/ctxmenus'],
-function(Services, LobbyService, ObeliskService, WalletService, GuiService, CtxMenusService) {
+function(Services, LobbyService, ObeliskService, WalletService, GuiService, TickerService, CtxMenusService) {
 
 function DarkWalletService() {
 
@@ -17,6 +18,7 @@ function DarkWalletService() {
     var walletService = new WalletService(this);
     var ctxMenusService = new CtxMenusService(this);
     var guiService = new GuiService(this);
+    var tickerService = new TickerService(this);
 
     var servicesStatus = { gateway: 'offline', obelisk: 'offline' };
     this.servicesStatus = servicesStatus;
@@ -26,6 +28,10 @@ function DarkWalletService() {
      */
     this.getWalletService = function() {
         return walletService;
+    }
+
+    this.getTickerService = function() {
+        return tickerService;
     }
 
     this.loadIdentity = function(idx) {
@@ -113,6 +119,7 @@ window.getLobbyTransport = service.getLobbyTransport
 window.getClient = service.getClient;
 window.getServices = service.getServices;
 window.getWalletService = service.getWalletService
+window.getTickerService = service.getTickerService
 
 window.initAddress = function(_w) {return service.initAddress(_w)};
 

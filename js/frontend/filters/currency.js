@@ -46,8 +46,8 @@ filters.filter('currencyPresenter', function() {
         console.log('currencyPresenter');
     }*/
     var identity = DarkWallet.getIdentity();
-    var walletService = DarkWallet.service().getWalletService();
-    var rate = walletService.rates[identity.settings.fiatCurrency];
+    var tickerService = DarkWallet.service().getTickerService();
+    var rate = tickerService.rates[identity.settings.fiatCurrency];
     var formatted = getAsBtc(identity.settings.currency, input);
     formatted += " " + identity.settings.currency;
 

@@ -6,7 +6,6 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
   'use strict';
   controllers.controller('CalculatorCtrl', ['$scope', function($scope) {
   var firstTime = true;
-  var walletService = DarkWallet.service().getWalletService();
   $scope.calculator = {
      amount: 1,
      converted: 0,
@@ -32,7 +31,7 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
   // Convert CRYPTO to FIAT
   $scope.$watch('calculator.amount', function() {
     var identity = DarkWallet.getIdentity();
-    var walletService = DarkWallet.service().getWalletService();
+    var tickerService = DarkWallet.service().getTickerService();
     var currency = identity.settings.currency;
     var fiatCurrency = identity.settings.fiatCurrency;
 
@@ -40,27 +39,27 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
         return;
     }
     firstTime = false;
-    if (!walletService.rates.hasOwnProperty(identity.settings.fiatCurrency)) {
+    if (!tickerService.rates.hasOwnProperty(identity.settings.fiatCurrency)) {
         $scope.calculator.converted = 'no rates';
         return;
     }
-    $scope.calculator.converted = walletService.btcToFiat($scope.calculator.amount, currency, fiatCurrency);
+    $scope.calculator.converted = tickerService.btcToFiat($scope.calculator.amount, currency, fiatCurrency);
   });
 
   // Convert FIAT to CRYPTO
   $scope.$watch('calculator.converted', function() {
     var identity = DarkWallet.getIdentity();
-    var walletService = DarkWallet.service().getWalletService();
+    var tickerService = DarkWallet.service().getTickerService();
     var currency = identity.settings.currency;
     var fiatCurrency = identity.settings.fiatCurrency;
 
     if (!$scope.calculator.convertedFocused) {
         return;
     }
-    if (!walletService.rates.hasOwnProperty(identity.settings.fiatCurrency)) {
+    if (!tickerService.rates.hasOwnProperty(identity.settings.fiatCurrency)) {
         return;
     }
-    $scope.calculator.amount = walletService.fiatToBtc($scope.calculator.converted, currency, fiatCurrency);
+    $scope.calculator.amount = tickerService.fiatToBtc($scope.calculator.converted, currency, fiatCurrency);
   });
 
 }]);
