@@ -7,8 +7,9 @@ require(['backend/services',
          'backend/services/wallet',
          'backend/services/gui',
          'backend/services/ticker',
+         'backend/services/mixer',
          'backend/services/ctxmenus'],
-function(Services, LobbyService, ObeliskService, WalletService, GuiService, TickerService, CtxMenusService) {
+function(Services, LobbyService, ObeliskService, WalletService, GuiService, TickerService, MixerService, CtxMenusService) {
 
 function DarkWalletService() {
 
@@ -19,6 +20,7 @@ function DarkWalletService() {
     var ctxMenusService = new CtxMenusService(this);
     var guiService = new GuiService(this);
     var tickerService = new TickerService(this);
+    var mixerService = new MixerService(this);
 
     var servicesStatus = { gateway: 'offline', obelisk: 'offline' };
     this.servicesStatus = servicesStatus;
