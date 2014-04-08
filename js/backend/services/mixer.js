@@ -47,7 +47,7 @@ function(Services, Channel) {
    * Initialize the mixer connection
    */
   MixerService.prototype.ensureMixing = function() {
-    console.log("[mixer] Connect...");
+    console.log("[mixer] Check mixing...");
     var lobbyTransport = this.core.getLobbyTransport();
     if (!this.channel) {
       this.channel = lobbyTransport.initChannel('CoinJoin', Channel);
@@ -59,7 +59,7 @@ function(Services, Channel) {
    * Stop mixing
    */
   MixerService.prototype.stopMixing = function() {
-    console.log("[mixer] Connect...");
+    console.log("[mixer] Stop mixing...");
     if (this.channel) {
       var lobbyTransport = this.core.getLobbyTransport();
       lobbyTransport.closeChannel(this.channel.name);
