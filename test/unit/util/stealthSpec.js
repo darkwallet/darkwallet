@@ -80,8 +80,10 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
 
       expect(address.toString()).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
     });
+    
+    it('derives a private key from spend key and shared secret');
 
-    it('derives public key bytes', function() {
+    it('derives public key from spend key and shared secret', function() {
       var spendKey = new Bitcoin.ECPubKey(spendKeyPubBytes);
       var c = new Bitcoin.BigInteger("10000");
       var keyBytes = Stealth.deriveKey(spendKey, c);
@@ -89,7 +91,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       expect(keyBytes).toEqual([3, 173, 36, 66, 71, 110, 69, 203, 135, 107, 57, 44, 117, 28, 232, 195, 123, 20, 36, 239, 18, 50, 107, 196, 154, 84, 37, 176, 43, 123, 246, 179, 204]);
     });
     
-    it('derives addresses', function() {
+    it('derives a bitcoin address from spendkey and shared secret', function() {
       var spendKey = new Bitcoin.ECPubKey(spendKeyPubBytes);
       var c = new Bitcoin.BigInteger("1000");
       var address = Stealth.deriveAddress(spendKey, c);
