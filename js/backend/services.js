@@ -14,7 +14,12 @@ define(function () {
                 allPorts[name] = [];
             }
             if (!instances.hasOwnProperty(name)) {
-                instances[name] = {onConnect: onConnect, onDisconnect: onDisconnect};
+                // Save callbacks for interaction with child services
+                // TODO: child services cannot send messages directly for now
+                instances[name] = {onConnect: function(port) {
+                  onConnect ? onConnect(port) : null;
+                  port.postMessage({type: 'portConnected'});
+                }, onDisconnect: onDisconnect};
             } else {
                 throw Error("Service with duplicate name!");
             }
@@ -25,11 +30,11 @@ define(function () {
                 onConnect ? onConnect(port) : null;
                 // Register onMessage callback
                 onMessage ? port.onMessage.addListener(onMessage) : null;
-                port.onDisconnect.addListener(function(port) {
-                  if (port.name == name) {
-                    allPorts[name].splice(allPorts[name].indexOf(port), 1)
+                port.onDisconnect.addListener(function(_port) {
+                  if (_port.name == name) {
+                    allPorts[name].splice(allPorts[name].indexOf(_port), 1)
                     // Call the onDisconnect callback
-                    onDisconnect ? onDisconnect(port) : null;
+                    onDisconnect ? onDisconnect(_port) : null;
                   }
                 });
                 port.postMessage({type: 'portConnected'})
