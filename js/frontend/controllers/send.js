@@ -5,7 +5,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   controllers.controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
   $scope.send = {recipient: '', amount: 0.2};
   $scope.autoAddEnabled = false;
-  $scope.sendPocket = 'all';
+  $scope.sendPocket = 0;
   $scope.advanced = false;
   
   $scope.updateBtcFiat = function(field) {
@@ -22,8 +22,9 @@ function (controllers, Services, DarkWallet, Bitcoin) {
 
   $scope.setPocket = function(pocket) {
       console.log("sendPocketChanged", pocket);
-      if (pocket == 'all') {
-          $scope.sendPocketName = 'Main pocket';
+      if (pocket == 'any') {
+          $scope.sendPocketName = 'Any';
+          // TODO: Any is only using default pocket right now.
           $scope.pocketIndex = 0;
       } else if (typeof pocket == 'number') {
           $scope.sendPocketName = $scope.identity.wallet.pockets[pocket].name;
@@ -35,10 +36,10 @@ function (controllers, Services, DarkWallet, Bitcoin) {
           $scope.pocketIndex = fund.address;
       }
   };
-  $scope.setPocket($scope.sendPocket);
 
   var initIdentity = function(identity) {
       // init scope variables
+      $scope.setPocket($scope.sendPocket);  
       $scope.selectedCurrency = identity.settings.currency;
       if ($scope.selectedCurrency == 'mBTC') {
           $scope.send.fee = $scope.defaultFee*1000;
