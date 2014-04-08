@@ -3,7 +3,7 @@
 </div>
 <div class="row">
       <div class="large-4 columns">
-        <div class="panel">
+        <div class="panel setback seed">
           <h5>Security</h5>
           <div>
             <label>Enter your current password</label>
@@ -15,8 +15,7 @@
            Incorrect password
           </div>
           <button class="small" ng-click="showSeed();">Show seed</button>
-        </div>
-        <form class="panel setback seed" ng-submit="passwordChanged()">
+        <form ng-submit="passwordChanged()">
           <h5>Change your password</h5>
           <label>Enter your current password</label>
           <input type="password" class="password" ng-model="oldPassword">
@@ -28,6 +27,7 @@
           <div ng-show="newPassword !== newPasswordRepeat">Password doesn't match</div>
           <button class="small radius expand">Change password</button>
         </form>
+        </div>
       </div>
       <div class="large-5 columns">
         <div class="panel setback notifications">

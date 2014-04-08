@@ -1,4 +1,4 @@
-      <tab heading="History">
+      <tab heading="Transactions">
         <dl class="sub-nav">
           <dt>Filter:</dt>
           <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
@@ -24,4 +24,15 @@
             </tr>
           </tbody>
         </table>
+        <div class="pagination-centered">
+          <ul class="pagination">
+            <li class="arrow unavailable"><a href="">&laquo;</a></li>
+            <li class="current"><a href="">1</a></li>
+            <li><a href="">2</a></li>
+            <li class="unavailable"><a href="">&hellip;</a></li>
+            <li><a href="">12</a></li>
+            <li><a href="">13</a></li>
+            <li class="arrow"><a href="">&raquo;</a></li>
+          </ul>
+        </div>
       </tab>
