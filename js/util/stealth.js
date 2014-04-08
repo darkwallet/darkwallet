@@ -2,7 +2,7 @@
  * @fileOverview Stealth support.
  */
 
-define(['darkwallet','bitcoinjs-lib'], function(DarkWallet, Bitcoin) {
+define(['bitcoinjs-lib'], function(Bitcoin) {
 
 var convert = Bitcoin.convert;
 
