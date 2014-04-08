@@ -63,7 +63,9 @@ Desktop.ini
 !/vendors/darkwallet_gateway/client
 /vendors/darkwallet_gateway/client/*
 !/vendors/darkwallet_gateway/client/gateway.js
-
+/vendors/identicon/*
+!/vendors/identicon/pnglib.js
+!/vendors/identicon/identicon.js
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*

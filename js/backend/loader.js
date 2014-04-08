@@ -12,8 +12,8 @@ require.config({
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
     'ngProgress': "../vendors/ngprogress/build/ngProgress",
     'toaster': "../vendors/AngularJS-Toaster/toaster",
-    'identicon': "../vendors/identicon",
-    'pnglib': "../vendors/pnglib",
+    'identicon': "../vendors/identicon/identicon",
+    'pnglib': "../vendors/identicon/pnglib",
     'qrcodejs': "../vendors/qrcodejs/qrcode",
     'jsqrcode': "../vendors/jsqrcode/jsqrcode",
     
