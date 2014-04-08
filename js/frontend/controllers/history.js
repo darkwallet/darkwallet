@@ -77,6 +77,8 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
           $scope.pocket.stealth = walletAddress.stealth;
           $scope.pocket.addresses = $scope.addresses[$scope.pocket.index];
           $scope.pocket.changeAddresses = $scope.addresses[$scope.pocket.index+1];
+          var walletPocket = $scope.identity.wallet.getPocket(pocketName);
+          $scope.pocket.mixing = walletPocket.mixing;
           $scope.pocket.tasks = [];
           $scope.isAll = false;
           $scope.isFund = false;
@@ -116,7 +118,11 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services'], function 
       $scope.selectPocket();
   }
   $scope.setMixing = function(pocket) {
-      pocket.mixing = !pocket.mixing;
+      var identity = $scope.identity;
+      var walletPocket = identity.wallet.getPocket(pocket.name);
+      walletPocket.mixing = !walletPocket.mixing;
+      pocket.mixing = walletPocket.mixing;
+      identity.wallet.store.save();
   }
   $scope.createPocket = function() {
     if ($scope.creatingPocket) {
