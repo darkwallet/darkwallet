@@ -18,6 +18,18 @@ Immediate:
  - Settings
    + Select server STARTED
 
+Style:
+ - 'Dashboard' for all pockets
+ - 'Dashboard' for pockets/funds
+ - Contacts
+   - Web of trust controls
+   - Review contact edit form (needs to be able to add more fields)
+   - Contact view with more fields
+ - Add sections for settings (or something)
+ - Multisig spends
+   - Import partial transaction
+   - Sign with own keys
+
 Other:
  * Cache address history and resume
  * Notifications
