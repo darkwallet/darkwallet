@@ -2,25 +2,20 @@ Immediate:
  - Review and stabilize gateway
  - Send:
    - Review sending
-   * Several destinations support DONE
-   * Implement send from pocket DONE
-   * Implement choose from contacts DONE
    - Better radar feedback
-   * Specify amount in FIAT DONE
-   - multisig spending
+   + multisig spending STARTED
+     - import spend from someone else
+     - sign spend with own keys
  - Lobby system
    * Implement multiParty from cryptocat (ed25519 curves) DONE
    * link contacts using lobby (sync stealth, mpk...) DONE
    - then finish CoinJoin
+   - then automatize Multisig
  - Pocket actions:
-   * Pocket have 2 branches (public and change) DONE
    - Move funds to another pocket
    - Move funds to another identity
-   - Set as mixing
-   * Rename DONE
    + Delete STARTED
  - Settings
-   * Change password DONE
    + Select server STARTED
 
 Other:
@@ -41,7 +36,19 @@ Done:
    * Implement svg library instead of canvas based OK
  * Currency support
    * Select BTC/mBTC DONE
-   * Show as EUR/USD/CNY... (get prices from https://bitcoinaverage.com/api.htm) DONE
+   * Show as EUR/USD/CNY... (prices from bitcoinaverage) DONE
+ - Send:
+   * Several destinations support DONE
+   * Implement send from pocket DONE
+   * Implement choose from contacts DONE
+   * Specify amount in FIAT DONE
  - Multisig support
    * Create funds DONE
    * Share / Import funds
+   * Create spends for the multisig DONE
+ - Pocket actions
+   * Pocket have 2 branches (public and change) DONE
+   * Set as mixing DONE
+   * Rename DONE
+ - Settings
+   * Change password DONE
