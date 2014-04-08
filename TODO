@@ -30,6 +30,8 @@ Style:
  - Multisig spends
    - Import partial transaction
    - Sign with own keys
+ - Utils
+   - Controls for sign message / check signed
 
 Other:
  - Cache address history and resume
