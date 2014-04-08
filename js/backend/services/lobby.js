@@ -4,6 +4,7 @@ function(Services, Transport, Channel) {
 
   function LobbyService(core) {
     var lobbyTransport;
+    var self = this;
 
      // Transport service managing background lobby transport
     Services.start('lobby',
@@ -18,14 +19,20 @@ function(Services, Transport, Channel) {
       }, function(port) {
          // Connected
          console.log('bus: lobby client connected');
-         if (!lobbyTransport) {
-             console.log('init lobby transport');
-             var identity = core.getCurrentIdentity();
-             lobbyTransport = new Transport(identity, core.getObeliskClient());
-             lobbyTransport.update = function() { Services.post('gui', {'type': 'update'}) };
-       }
+
+         // Ensure the lobby transport is created
+         self.getLobbyTransport();
     });
-    this.getLobbyTransport = function() { return lobbyTransport; }
+
+    this.getLobbyTransport = function() {
+      if (!lobbyTransport) {
+        console.log('[lobby] init lobby transport');
+        var identity = core.getCurrentIdentity();
+        lobbyTransport = new Transport(identity, core.getObeliskClient());
+        lobbyTransport.update = function() { Services.post('gui', {'type': 'update'}) };
+      }
+      return lobbyTransport;
+    }
   }
 
   return LobbyService;
