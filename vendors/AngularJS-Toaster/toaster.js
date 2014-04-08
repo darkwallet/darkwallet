@@ -2,7 +2,7 @@
 
 /*
  * AngularJS Toaster
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * Copyright 2013 Jiri Kavulak.  
  * All Rights Reserved.  
@@ -58,13 +58,14 @@ function ($compile, $timeout, $sce, toasterConfig, toaster) {
     return {
         replace: true,
         restrict: 'EA',
+        scope: true, // creates an internal scope for this directive
         link: function (scope, elm, attrs) {
 
-            var id = 0;
+            var id = 0,
+                mergedConfig;
 
-            var mergedConfig = toasterConfig;
             if (attrs.toasterOptions) {
-                angular.extend(mergedConfig, scope.$eval(attrs.toasterOptions));
+                mergedConfig = angular.extend({}, toasterConfig, scope.$eval(attrs.toasterOptions));
             }
 
             scope.config = {
@@ -72,6 +73,12 @@ function ($compile, $timeout, $sce, toasterConfig, toaster) {
                 title: mergedConfig['title-class'],
                 message: mergedConfig['message-class'],
                 tap: mergedConfig['tap-to-dismiss']
+            };
+
+            scope.configureTimer = function configureTimer(toast) {
+                var timeout = typeof (toast.timeout) == "number" ? toast.timeout : mergedConfig['time-out'];
+                if (timeout > 0)
+                    setTimeout(toast, timeout);
             };
 
             function addToast(toast) {
@@ -89,13 +96,11 @@ function ($compile, $timeout, $sce, toasterConfig, toaster) {
                         toast.html = $sce.trustAsHtml(toast.body);
                         break;
                     case 'template':
-                        toast.bodyTemplate = mergedConfig['body-template'];
+                        toast.bodyTemplate = toast.body || mergedConfig['body-template'];
                         break;
                 }
 
-                var timeout = typeof (toast.timeout) == "number" ? toast.timeout : mergedConfig['time-out'];
-                if (timeout > 0)
-                    setTimeout(toast, timeout);
+                scope.configureTimer(toast);
 
                 if (mergedConfig['newest-on-top'] === true) {
                     scope.toasters.unshift(toast);
@@ -128,8 +133,15 @@ function ($compile, $timeout, $sce, toasterConfig, toaster) {
         controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 
             $scope.stopTimer = function (toast) {
-                if (toast.timeout)
+                if (toast.timeout) {
                     $timeout.cancel(toast.timeout);
+                    toast.timeout = null;
+                }
+            };
+
+            $scope.restartTimer = function (toast) {
+                if (!toast.timeout)
+                    $scope.configureTimer(toast);
             };
 
             $scope.removeToast = function (id) {
@@ -149,7 +161,7 @@ function ($compile, $timeout, $sce, toasterConfig, toaster) {
         }],
         template:
         '<div  id="toast-container" ng-class="config.position">' +
-            '<div ng-repeat="toaster in toasters" class="toast" ng-class="toaster.type" ng-click="remove(toaster.id)" ng-mouseover="stopTimer(toaster)">' +
+            '<div ng-repeat="toaster in toasters" class="toast" ng-class="toaster.type" ng-click="remove(toaster.id)" ng-mouseover="stopTimer(toaster)"  ng-mouseout="restartTimer(toaster)">' +
               '<div ng-class="config.title">{{toaster.title}}</div>' +
               '<div ng-class="config.message" ng-switch on="toaster.bodyOutputType">' +
                 '<div ng-switch-when="trustedHtml" ng-bind-html="toaster.html"></div>' +
