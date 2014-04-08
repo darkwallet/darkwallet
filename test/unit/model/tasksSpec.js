@@ -2,8 +2,7 @@
  * @fileOverview Pending tasks
  */
 
-define(['model/tasks', 'model/store', 'model/keyring', 'util/mock/chrome_mock'],
-function(Tasks, Store, IdentityKeyRing, chrome) {
+define(['model/tasks'], function(Tasks) {
   describe('Tasks model', function() {
     var _store, store, tasks;
   

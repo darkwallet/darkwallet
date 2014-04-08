@@ -155,7 +155,7 @@ Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
 }
 
 /*
- * Generate key for receiving for a stealth address with a given ephemkey
+ * Generate key for receiving for a stealth key with a given ephemkey
  * @param {Bitcoin.ECPubKey} spendKey Spend Key
  * @param {BigInteger} c Derivation value
  */

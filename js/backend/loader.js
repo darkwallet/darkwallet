@@ -19,7 +19,7 @@ require.config({
     
     'bitcoinjs-lib': "../vendors/bitcoinjs-lib/bitcoinjs",
     'sjcl-real': "../vendors/sjcl/sjcl",
-    'darkwallet_gateway': "/vendors/darkwallet_gateway/client/gateway",
+    'darkwallet_gateway': "../vendors/darkwallet_gateway/client/gateway",
     
     'domReady': '../vendors/requirejs-domready/domReady',
     'sjcl': 'util/fixes'

@@ -2,7 +2,7 @@
  * @fileOverview Manage and serialize identities.
  */
 
-define(['model/keyring', 'util/mock/chrome_mock'], function(IdentityKeyRing, chrome) {
+define(['model/keyring', 'chrome'], function(IdentityKeyRing, chrome) {
   // DarkWallet namespace for the local storage.
   var DW_NS = 'dw:identity:';
 
