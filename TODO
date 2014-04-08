@@ -25,21 +25,22 @@ Style:
    - Web of trust controls
    - Review contact edit form (needs to be able to add more fields)
    - Contact view with more fields
- - Add sections for settings (or something)
+ - Settings
+   - Add sections (or something)
  - Multisig spends
    - Import partial transaction
    - Sign with own keys
 
 Other:
- * Cache address history and resume
- * Notifications
-  * when receiving funds
-  * new multisig
-  * multisig spend
-  * radar when sending
- * Validate input fields, specially addresses (on contacts and send)
- * Watch only pockets
- * Blockchain.info compatible coinjoin
+ - Cache address history and resume
+ - Notifications
+  - when receiving funds
+  - new multisig
+  - multisig spend
+  - radar when sending
+ - Validate input fields, specially addresses (on contacts and send)
+ - Watch only pockets
+ - Blockchain.info compatible coinjoin
 
 Done:
  * Allow switching identities Ok
