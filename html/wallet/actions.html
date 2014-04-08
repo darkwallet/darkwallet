@@ -1,11 +1,27 @@
       <tab heading="Actions" ng-hide="isAll || isFund">
         <div class="row">
           <div class="large-6 columns">
-            <a href="" class="fa button postfix fa-share">Move funds to another pocket</a>
+            <a href="" dropdown-toggle="#pockets" class="fa button postfix fa-share">Move funds to another pocket</a>
+            <ul id="pockets" class="f-dropdown">
+              <li class="colorhead"><h6>My pockets</h6></li>
+              <li ng-repeat="pocket in identity.wallet.pockets track by $index">
+                <a ng-click="moveFunds('pocket', $index)">{{pocket.name}}</a>
+              </li>
+              <li class="colorhead"><h6>Multisig funds</h6></li>
+              <li ng-repeat="fund in identity.wallet.multisig.funds track by $index">
+                <a ng-click="moveFunds('multisig', $index)">{{fund.name}}</a>
+              </li>
+            </ul>
             <a ng-click="setMixing(pocket)" ng-class="{'fa-square-o':!pocket.mixing, 'fa-check-square-o': pocket.mixing}" class="fa button postfix">Automatically mix funds on this pocket with CoinJoin</a>
           </div>
           <div class="large-6 columns">
-            <a href="#" class="fa button postfix fa-reply-all">Move funds to another identity</a>
+            <a href="" dropdown-toggle="#identities" class="fa button postfix fa-reply-all">Move funds to another identity</a>
+            <ul id="identities" class="f-dropdown">
+              <li class="colorhead"><h6>Identities</h6></li>
+              <li ng-repeat="identity in availableIdentities track by $index">
+                <a ng-click="moveFunds('identity', $index)">{{identity}}</a>
+              </li>
+            </ul>
             <div class="row">
               <div class="small-6 columns">
                 <a href="" ng-click="renamePocket(pocket.name)" class="fa button postfix fa-terminal">Rename pocket</a>

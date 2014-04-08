@@ -218,6 +218,20 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
       return false;
   }
 
+  $scope.moveFunds = function(type, index) {
+    var to;
+    if (type === 'pocket') {
+      to = $scope.identity.wallet.pockets[index].name;
+    } else if (type === 'multisig') {
+      to = $scope.identity.wallet.multisig.funds[index].name;
+    } else {
+      to = $scope.availableIdentities[index];
+    }
+    $scope.openModal('confirm', {message: "Are you sure you want to move all " + $scope.pocket.name +
+    " funds to " + to + "?"}, function() {
+      console.log('Move funds not implemented yet');
+    })
+  };
 
 }]);
 });
