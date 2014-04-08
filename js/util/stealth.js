@@ -8,9 +8,6 @@ var convert = Bitcoin.convert;
 
 var Stealth = {};
  
-// Elliptic curve N (couldn't find a way to get it from bitcoin api, so just hardcoded it here...)
-Stealth.ecN = new Bitcoin.BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
-
 // Version for address format
 Stealth.version = 255;
 
