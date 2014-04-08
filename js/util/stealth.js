@@ -155,7 +155,7 @@ Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
 }
 
 /*
- * Generate key for receiving for a stealth key with a given ephemkey
+ * Derive public key from spendKey and shared secret
  * @param {Bitcoin.ECPubKey} spendKey Spend Key
  * @param {BigInteger} c Derivation value
  */
@@ -170,7 +170,7 @@ Stealth.deriveKey = function(spendKey, c) {
 
 
 /*
- * Generate key for receiving for a stealth address with a given ephemkey
+ * Derive a Bitcoin Address from spendKey and shared secret
  * @param {Bitcoin.ECPubKey} spendKey Spend Key
  * @param {BigInteger} c Derivation value
  */
@@ -278,24 +278,5 @@ Stealth.addStealth = function(recipient, newTx) {
     return recipient;
 }
 
-/*************************************
- * Some tests...
- */
-Stealth.testFinishStealth = function(secret, ephemKey) {
-    ephemKey = Bitcoin.convert.hexToBytes(ephemKey)
-    secret = Bitcoin.convert.hexToBytes(secret)
-    console.log(Stealth.uncoverStealth(secret, ephemKey));
-}
-
-Stealth.testStealth = function(identity, password, address) {
-    var bytes = Bitcoin.base58.checkDecode(address);
-    var res1 = Stealth.initiateStealth(bytes.slice(0,33));
-    var address = res1[0];
-    console.log(address.toString(), bytes, bytes.slice(0,33))
-    var ephemkey = res1[1];
-    DarkWallet.getKeyRing().identities[identity].wallet.getPrivateKey([0], password, function(privKey) {
-        Stealth.uncoverStealth(privKey.key.export('bytes').slice(0,32), ephemkey);
-    });
-}
 return Stealth;
 });
