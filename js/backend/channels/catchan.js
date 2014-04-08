@@ -53,22 +53,34 @@ function (Bitcoin, multiParty, Curve25519) {
 
       // Subscribe to channel updates
       if (this.subscribed != channelHash) {
-        var _onChannelData = function(_data) {self.onChannelData(_data);};
+        this._onChannelData = function(_data) {self.onChannelData(_data);};
         if (client.handler_map["chan.update." + channelHash]) {
             // update callback
-            client.handler_map["chan.update." + channelHash] = _onChannelData;
+            client.handler_map["chan.update." + channelHash] = this._onChannelData;
         } else {
             this.channelSubscribe(function(err, data){
                 if (!err) {
                     self.subscribed = channelHash;
+                    self.triggerCallbacks('subscribed', {})
                 }
-                console.log("channel subscribed", err, data)
-                self.triggerCallbacks('subscribed', {})
-            }, _onChannelData);
+                console.log("[catchan] channel subscribed", err)
+            }, this._onChannelData);
         }
       }
   }
 
+  /*
+   * Disconnect the channel
+   * Will be unusable afterwards and *must* be discarded.
+   */
+  Channel.prototype.disconnect = function() {
+      this.removeAllCallbacks();
+      this.channelUnsubscribe(function(){});
+  }
+
+  /*
+   * Get peer from the fingerprint
+   */
   Channel.prototype.getPeer = function(fingerprint) {
       for(var idx=0; idx<this.transport.peers.length; idx++) {
           var peer = this.transport.peers[idx];
@@ -90,10 +102,16 @@ function (Bitcoin, multiParty, Curve25519) {
       });
   }
 
-  // Subscribe to given channel
+  // Subscribe to the channel
   Channel.prototype.channelSubscribe = function(callback, update_cb) {
       var client = this.transport.getClient();
       client.chan_subscribe("b", this.channelHash, callback, update_cb);
+  }
+
+  // Unsubscribe from the channel
+  Channel.prototype.channelUnsubscribe = function(callback, update_cb) {
+      var client = this.transport.getClient();
+      client.chan_unsubscribe("b", this.channelHash, callback, update_cb);
   }
 
   // Post to given channel
@@ -154,6 +172,11 @@ function (Bitcoin, multiParty, Curve25519) {
       }
       return callback;
   }
+  Channel.prototype.triggerCallbacks = function(type, data) {
+      if (this.callbacks.hasOwnProperty(type)) {
+          this.callbacks[type].forEach(function(cb) {cb(data)})
+      }
+  }
   Channel.prototype.removeCallback = function(type, callback) {
       if (this.callbacks.hasOwnProperty(type)) {
           var cbArr = this.callbacks[type];
@@ -162,10 +185,8 @@ function (Bitcoin, multiParty, Curve25519) {
           }
       }
   }
-  Channel.prototype.triggerCallbacks = function(type, data) {
-      if (this.callbacks.hasOwnProperty(type)) {
-          this.callbacks[type].forEach(function(cb) {cb(data)})
-      }
+  Channel.prototype.removeAllCallbacks = function() {
+      this.callbacks = {};
   }
 
   Channel.prototype.onChannelData = function(message) {

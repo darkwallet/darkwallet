@@ -93,14 +93,24 @@ function (Bitcoin, Mnemonic, Services) {
   // Action to start announcements and reception
   Transport.prototype.initChannel = function(name, chanClass) {
       var channel;
+      console.log("[transport] init channel");
       if (this.channels.hasOwnProperty(name)) {
           channel = this.channels[name];
       } else {
+          console.log("[transport] create channel");
           channel = new chanClass(this, name);
           this.channels[name] = channel;
       }
       channel.sendOpening();
       return channel;
+  }
+  Transport.prototype.closeChannel = function(name) {
+      if (!this.channels.hasOwnProperty(name)) {
+          throw Error("Channel does not exist");
+      }
+      console.log("[transport] close channel");
+      this.channels[name].disconnect();
+      delete this.channels[name];
   }
 
   Transport.prototype.getChannel = function(name) {
