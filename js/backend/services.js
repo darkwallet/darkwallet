@@ -42,6 +42,13 @@ define(function () {
                     port.postMessage(data);
                 });
             }
+        },
+
+        connect: function(name, onMessage) {
+            if (!allPorts.hasOwnProperty(name)) {
+                allPorts[name] = [];
+            }
+            allPorts[name].push({postMessage: onMessage});
         }
     };
     return Services;
