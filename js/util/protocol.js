@@ -8,12 +8,24 @@ var Protocol = {
     return request;
   },
 
-  CoinJoinMsg: function(amount) {
+  // CoinJoin Messages
+  CoinJoinOpenMsg: function(amount) {
     var data = {};
     data['amount'] = amount;
+    return Protocol.packMessage('CoinJoinOpen', data)
+  },
+
+  CoinJoinMsg: function(tx) {
+    var data = {};
+    data['tx'] = tx;
     return Protocol.packMessage('CoinJoin', data)
   },
 
+  CoinJoinFinishMsg: function() {
+    return Protocol.packMessage('CoinJoinFinish', {})
+  },
+
+  // Contact Pairing
   ContactMsg: function(identity) {
     var data = {};
     var wallet = identity.wallet;
@@ -23,9 +35,11 @@ var Protocol = {
     data['stealth'] = address.stealth;
     return Protocol.packMessage('Contact', data)
   },
+  // Chatting
   ShoutMsg: function(text) {
     return Protocol.packMessage('Shout', {"text": text});
   },
+  // Multisig specific
   MultisigAnnounceMsg: function(multisig) {
     var data = {};
     data['multisig'] = multisig;
