@@ -156,6 +156,16 @@ Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
 }
 
 /*
+ * Derive a private key from spend key and shared secret
+ * @param {Bitcoin.ECKey} spendKey Spend Key
+ * @param {BigInteger} c Derivation value
+ */
+Stealth.derivePrivateKey = function(spendKey, c) {
+    // Generate the key with the bitcoin api
+    return spendKey.add(c);
+}
+
+/*
  * Derive public key from spendKey and shared secret
  * @param {Bitcoin.ECPubKey} spendKey Spend Key
  * @param {BigInteger} c Derivation value
