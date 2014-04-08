@@ -1,5 +1,6 @@
 define(function () {
     var allPorts = {};
+    var instances = {};
     var Services = {
         /*
          * Start the given service
@@ -11,6 +12,11 @@ define(function () {
         start: function(name, onMessage, onConnect, onDisconnect) {
             if (!allPorts.hasOwnProperty(name)) {
                 allPorts[name] = [];
+            }
+            if (!instances.hasOwnProperty(name)) {
+                instances[name] = {onConnect: onConnect, onDisconnect: onDisconnect};
+            } else {
+                throw Error("Service with duplicate name!");
             }
             chrome.runtime.onConnect.addListener(function(port) {
               if (port.name == name) {
@@ -48,7 +54,11 @@ define(function () {
             if (!allPorts.hasOwnProperty(name)) {
                 allPorts[name] = [];
             }
-            allPorts[name].push({postMessage: onMessage});
+            var port = {postMessage: onMessage};
+            allPorts[name].push(port);
+            console.log("["+name+"] connect child service");
+            instances[name].onConnect ? instances[name].onConnect(port) : null;
+            return port;
         }
     };
     return Services;
