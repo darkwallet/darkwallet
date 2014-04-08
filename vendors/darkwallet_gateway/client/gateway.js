@@ -232,6 +232,18 @@ GatewayClient.prototype.chan_subscribe = function(section_name, thread_id, handl
 
     });
 };
+GatewayClient.prototype.chan_unsubscribe = function(section_name, thread_id, handle_fetch, handle_update) {
+    GatewayClient._check_function(handle_fetch);
+    var self = this;
+    this.make_request("chan_unsubscribe", [section_name, thread_id], function(response) {
+        if (handle_fetch)
+            handle_fetch(response["error"], response["result"]);
+        if (self.handler_map["chan.update." + thread_id]) {
+            delete self.handler_map["chan.update." + thread_id]
+        }
+    });
+};
+
 
 /**
  * Ticker functionality
