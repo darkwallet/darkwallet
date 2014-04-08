@@ -23,7 +23,7 @@ Stealth.nonceVersion = Stealth.version;
  * @private
  */
 Stealth.importPublic = function(Q) {
-    var key = new Bitcoin.ECPubKey(Q);
+    var key = new Bitcoin.ECPubKey(Q, true);
     return key;
 }
 
@@ -35,7 +35,7 @@ Stealth.importPublic = function(Q) {
  */
 Stealth.stealthDH = function(e, decKey) {
     // diffie hellman stage
-    var point = decKey.getPubPoint().multiply(e);
+    var point = decKey.pub.multiply(e);
 
     // start the second stage
     var S1 = [3].concat(point.getX().toBigInteger().toByteArrayUnsigned());
@@ -78,7 +78,6 @@ Stealth.formatAddress = function(scanPubKeyBytes, spendPubKeys) {
 
     // TODO: Add prefix
     stealth = stealth.concat([0]);
-
     // Encode in base58 and add version
     return Bitcoin.base58.checkEncode(stealth, Stealth.version);
 }
@@ -90,14 +89,14 @@ Stealth.formatAddress = function(scanPubKeyBytes, spendPubKeys) {
 Stealth.parseAddress = function(recipient) {
     // TODO perform consistency checks here
     var stealthBytes = Bitcoin.base58.checkDecode(recipient);
-    var options = stealthBytes.splice(0, 1);
+    var options = stealthBytes.splice(0, 1)[0];
     var scanKeyBytes = stealthBytes.splice(0, 33);
-    var nSpendKeys = stealthBytes.splice(0, 1);
+    var nSpendKeys = stealthBytes.splice(0, 1)[0];
     var spendKeys = [];
-    for(var idx; idx<nSpendKeys; idx++) {
+    for(var idx=0; idx<nSpendKeys; idx++) {
         spendKeys.push(stealthBytes.splice(0, 33));
     }
-    var nSigs = stealthBytes.splice(0, 1);
+    var nSigs = stealthBytes.splice(0, 1)[0];
 
     // Prefix should be the remaining bytes
     var prefix = stealthBytes.slice(0);
@@ -123,7 +122,7 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes) {
 
     // new ephemeral key
     var encKey = new Bitcoin.Key();
-    var ephemKey = encKey.getPubPoint().getEncoded(true);
+    var ephemKey = encKey.getPub().pub.getEncoded(true);
 
     // Generate shared secret
     var c = Stealth.stealthDH(encKey.priv, scanKey)
@@ -161,8 +160,8 @@ Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
  */
 Stealth.deriveKey = function(spendKey, c) {
     // Now generate address
-    var bytes = spendKey.getPubPoint()
-                          .add(new Bitcoin.Key(c).getPubPoint())
+    var bytes = spendKey.pub
+                          .add(new Bitcoin.Key(c).getPub().pub)
                           .getEncoded(true);
 
     return bytes;
@@ -193,30 +192,10 @@ Stealth.deriveAddress = function(spendKey, c) {
 Stealth.buildNonceOutput = function(ephemKeyBytes, nonce) {
     var ephemScript = new Bitcoin.Script();
     ephemScript.writeOp(Bitcoin.Opcode.map.OP_RETURN);
-    var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4);
+    var nonceBytes = convert.numToBytes(nonce, 4);
     ephemScript.writeBytes([Stealth.nonceVersion].concat(nonceBytes.concat(ephemKeyBytes)));
     var stealthOut = new Bitcoin.TransactionOut({script: ephemScript, value: 0});
     return stealthOut;
-}
-
-/*
- * Generate bit mask for a given prefix
- * returns true or false
- * @param {Object} outHash byte array to compare to
- * @param {Number} prefix prefix array including first byte defining maskq
- */
-Stealth.prefixBitMask = function(prefixN) {
-    var mask = 0;
-    var remainder = 32 - prefixN
-    while(prefixN) {
-        mask = (mask<<1) + 1;
-        prefixN--;
-    }
-    while (remainder) {
-        mask = (mask<<1);
-        remainder--;
-    }
-    return mask;
 }
 
 /*
@@ -228,15 +207,22 @@ Stealth.prefixBitMask = function(prefixN) {
 Stealth.checkPrefix = function(outHash, stealthPrefix) {
     var prefixN = stealthPrefix[0];
     var prefix = stealthPrefix.slice(1);
-    if (prefixN) {
-        var mask = Stealth.prefixBitMask(prefixN);
-        var prefixNum = convert.bytesToNum(prefix);
-        var hashNum = convert.bytesToNum(outHash.slice(0,4));
-        if ((mask & prefixNum) == hashNum) {
-            return true;
-        } else {
+    var mask = 1<<7;
+    var nbyte = 0;
+    while(prefixN) {
+        // check current bit
+        if ((outHash[nbyte] & mask) != (prefix[nbyte] & mask)) {
             return false;
         }
+        if (mask == 1) {
+            // restart mask and advance byte
+            mask = 1<<7;
+            nbyte += 1;
+        } else {
+            // advance mask one bit to the right
+            mask = (mask >> 1);
+        }
+        prefixN -= 1;
     }
     return true;
 }
@@ -250,7 +236,7 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
 
 Stealth.addStealth = function(recipient, newTx) {
     var stealthData, outHash, ephemKey, nonce;
-    var stealthAddress = Stealth.parseStealthAddress(recipient);
+    var stealthAddress = Stealth.parseAddress(recipient);
     var stealthPrefix = stealthAddress.prefix;
     // iterate since we might not find a nonce for our required prefix then
     // we need to create a new ephemkey
@@ -265,7 +251,7 @@ Stealth.addStealth = function(recipient, newTx) {
         nonce = 0;
         // iterate through nonces to find a match for given prefix
         do {
-	    var nonceBytes = Bitcoin.Util.numToBytes(nonce, 4)
+	    var nonceBytes = convert.numToBytes(nonce, 4)
             outHash = Bitcoin.Util.sha256ripe160(nonceBytes.concat(ephemKey));
             nonce += 1;
         } while(nonce < 4294967296 && !Stealth.checkPrefix(outHash, stealthPrefix));
