@@ -37,6 +37,7 @@
     "requirejs": "~2.1.11",
     "requirejs-domready": "~2.0.1",
     "jsqrcode": "https://github.com/LazarSoft/jsqrcode.git#master",
-    "qrcodejs": "https://github.com/davidshimjs/qrcodejs.git"
+    "qrcodejs": "https://github.com/davidshimjs/qrcodejs.git",
+    "identicon": "https://github.com/stewartlord/identicon.js.git"
   }
 }
