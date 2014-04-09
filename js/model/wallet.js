@@ -60,8 +60,8 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     var keys = Object.keys(this.pubKeys);
     if (pocketIndex === undefined) {
         for(var idx=0; idx<keys.length; idx++) {
-            // don't add fund addresses to total funds
-            if (this.pubKeys[keys[idx]].type != 'multisig') {
+            // don't add fund or readonly addresses to total funds
+            if (['multisig', 'readonly'].indexOf(this.pubKeys[keys[idx]].type) == -1) {
                 allAddresses.push(this.pubKeys[keys[idx]]);
             }
         }
@@ -352,30 +352,6 @@ Wallet.prototype.setDefaultFee = function(newFee) {
     console.log("[wallet] saved new fees", newFee);
 }
 
-/**
- * Broadcast transaction
- */
-Wallet.prototype.broadcastTx = function(newTx, isStealth, callback) {
-    // Broadcasting
-    console.log("send tx", newTx);
-    console.log("send tx", newTx.serializeHex());
-    var notifyTx = function(error, count) {
-        if (error) {
-            console.log("Error sending tx: " + error);
-            callback({data: error, text: "Error sending tx"})
-        } else {
-            // TODO: radar can be added as a task to maintain progress
-            callback(null, {radar: count});
-            console.log("tx radar: " + count);
-        }
-    }
-    if (isStealth) {
-        console.log("not broadcasting stealth tx yet...");
-    } else {
-        DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
-    }
-}
-
 Wallet.prototype.getPocketWallet = function(idx) {
     // Generate on the fly
     var outputs = this.wallet.outputs;
@@ -408,90 +384,139 @@ Wallet.prototype.getUtxoToPay = function(value, pocketIdx) {
  * Send bitcoins from this wallet.
  * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
  */
-Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, fee, password, callback) {
+Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, fee, mixing, password, callback) {
     var self = this;
     var totalAmount = 0;
     recipients.forEach(function(recipient) {
         totalAmount = recipient.amount;
     })
     var isStealth = false;
-    // find an output with enough funds
+
+    // find outputs with enough funds
     var txUtxo;
     try {
         txUtxo = this.getUtxoToPay(totalAmount+fee, pocketIdx);
     } catch(e) {
-        callback({text: 'Not enough funds', data: e})
+        if (typeof e == 'string') {
+            // Errors from libbitcoin come as strings
+            callback({message: e})
+        } else {
+            // Otherwise it must be a javascript error
+            callback({message: 'Error sending: ' + e})
+        }
         return;
     }
 
     // Create an empty transaction
     var newTx = new Bitcoin.Transaction();
 
-    // Compute total utxo value for this tx
-    // Also add inputs
+    // Add Inputs
+    // and compute total utxo value for this tx
     var outAmount = 0;
     txUtxo.forEach(function(utxo) {
         outAmount += utxo.value;
         newTx.addInput(utxo.output);
     });
 
-    // Calculate change
-    var change = outAmount - (totalAmount + fee);
-
-    // Add inputs
+    // Add Outputs
     recipients.forEach(function(recipient) {
         var address = recipient.address;
         // test for stealth
-        if (address[0] == 'S') {
+        if (address[0] == '6') {
             isStealth = true;
             address = Stealth.addStealth(address, newTx);
         }
         newTx.addOutput(address, recipient.amount);
     })
 
+    // Calculate change
+    var change = outAmount - (totalAmount + fee);
     if (change) {
         newTx.addOutput(changeAddress.address, change);
     }
 
+    // If mixing, save mixing task
+    if (mixing) {
+        var task = {tx: newTx.serializeHex(), state: 'announce'};
+        self.identity.tasks.addTask('coinjoin', task)
+        callback(null, {task: task, tx: newTx, type: 'mixing'})
+        // Return, we will sign and broadcast later
+        return;
+    }
+
+    // Sign the transaction
+    this.signTransaction(newTx, txUtxo, password, function(err, pending) {
+        if (err) {
+            // There was some error signing the transaction
+            callback(err);
+        } else if (pending.length) {
+            // If pending signatures add task and callback with 2nd parameter
+            var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: isStealth};
+            self.identity.tasks.addTask('multisig', task)
+            callback(null, {task: task, tx: newTx, type: 'signatures'})
+        } else {
+            // Else, just broadcast
+            self.broadcastTx(newTx, isStealth, callback);
+        }
+    });
+}
+
+/**
+ * Sign given transaction outputs
+ */
+Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
     var pending = [];
 
     // Signing
-    var errors = false;
     for(var idx=0; idx<txUtxo.length; idx++) {
         var seq;
         var utxo = txUtxo[idx];
-        var outAddress = self.getWalletAddress(utxo.address);
+        var outAddress = this.getWalletAddress(utxo.address);
         if (outAddress) {
             seq = outAddress.index;
-        } else {
-            errors = true;
-            callback({data: utxo.address, text: "This address is not managed by the wallet!"})
-            return;
         }
-        if (outAddress.type == 'multisig') {
-            pending.push({output: utxo.output, address: utxo.address, index: idx, signatures: []})
+        if (!outAddress || outAddress.type == 'multisig' || outAddress.type == 'readonly') {
+            pending.push({output: utxo.output, address: utxo.address, index: idx, signatures: [], type: outAddress?outAddress.type:'signature'});
         } else {
           // Get private keys and sign
           try {
-            self.getPrivateKey(seq, password, function(outKey) {
+            this.getPrivateKey(seq, password, function(outKey) {
                 newTx.sign(idx, outKey);
             });
           } catch (e) {
-            callback({data: e, text: "Password incorrect!"})
+            callback({data: e, message: "Password incorrect!"})
             return;
           }
         }
     };
-    if (pending.length) {
-        // If pending signatures add task and callback with 2nd parameter
-        var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: isStealth};
-        this.identity.tasks.addTask('multisig', task)
-        callback(null, task)
-    } else if (!errors) {
-        // Else, just broadcast
-        this.broadcastTx(newTx, isStealth, callback);
+    // No error so callback with success
+    callback(null, pending);
+}
+
+/**
+ * Broadcast transaction
+ */
+Wallet.prototype.broadcastTx = function(newTx, isStealth, callback) {
+    // Broadcasting
+    console.log("send tx", newTx);
+    console.log("send tx", newTx.serializeHex());
+    var notifyTx = function(error, count) {
+        if (error) {
+            console.log("Error sending tx: " + error);
+            callback({data: error, text: "Error sending tx"})
+        } else {
+            // TODO: radar can be added as a task to maintain progress
+            callback(null, {radar: count, type: 'radar'});
+            console.log("tx radar: " + count);
+        }
+    }
+    if (isStealth) {
+        console.log("not broadcasting stealth tx yet...");
+    } else {
+        DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
     }
 }
+
 
 /**
  * Process an output from an external source

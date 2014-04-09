@@ -96,10 +96,13 @@ function (controllers, Services, DarkWallet, Bitcoin) {
           // this should actually be a starting note, but we don't have a finishing callback yet.
           // we can also use something to show radar progress
           if (error) {
-              toaster.pop('error', "Can't send", error.text);
+              toaster.pop('error', "Can't send", ""+error.message);
               console.log("error", error);
           } else if (task && task.radar) {
               console.log("radar", task.radar)
+          } else if (task && task.type == 'mixing') {
+              toaster.pop('note', 'Sent to mixer ('+task.task.state+')', (fee + totalAmount) + ' satoshis')
+              console.log("mixer", task)
           } else if (task) {
               toaster.pop('note', 'Signatures pending', 'Sending ' + (fee + totalAmount) + ' satoshis')
               console.log("pending", task)
@@ -113,6 +116,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
                                           recipients,
                                           changeAddress,
                                           fee,
+                                          $scope.send.mixing,
                                           password,
                                           onSent);
   }
