@@ -71,23 +71,27 @@ function (Bitcoin, Mnemonic, Services) {
   }
 
   // Initialize peer structure
-  Transport.prototype.initializePeer = function(pubKeyBytes) {
+  Transport.prototype.initializePeer = function(pubKeyBytes, fingerprint) {
       var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
       var mnemoname = this.getMnemoname(pubKeyBytes);
-      var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname};
+      var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname, pubKey: pubKeyBytes, fingerprint: fingerprint};
       return newPeer;
 
   }
 
   // Initialize and add peer to scope
-  Transport.prototype.addPeer = function(pubKeyBytes, pubKey) {
-      var newPeer = this.initializePeer(pubKeyBytes);
-      newPeer.pubKey = pubKey;
-      if (this.peerIds.indexOf(newPeer.pubKeyHex) == -1) {
-          this.peerIds.push(newPeer.pubKeyHex);
-          this.peers.push(newPeer);
+  Transport.prototype.addPeer = function(pubKeyBytes, fingerprint) {
+      var peer;
+      var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
+      var peerIndex = this.peerIds.indexOf(pubKeyHex)
+      if (peerIndex == -1) {
+          peer = this.initializePeer(pubKeyBytes, fingerprint);
+          this.peerIds.push(peer.pubKeyHex);
+          this.peers.push(peer);
+      } else {
+          peer = this.peers[this.peerIds.indexOf(pubKeyHex)];
       }
-      return newPeer;
+      return peer;
   }
 
   // Action to start announcements and reception

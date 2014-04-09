@@ -43,7 +43,7 @@ function (Bitcoin, multiParty, Curve25519) {
       this.fingerprint = multiParty.genFingerprint();
       multiParty.setNickName = this.fingerprint;
 
-      var newMe = transport.initializePeer(pub.toByteArrayUnsigned());
+      var newMe = transport.initializePeer(pub.toByteArrayUnsigned(), this.fingerprint);
       this.transport.comms.pubKeyHex = newMe.pubKeyHex;
       this.transport.comms.name = newMe.name;
 
@@ -124,7 +124,7 @@ function (Bitcoin, multiParty, Curve25519) {
   Channel.prototype.receiveDH = function(data) {
       // should be changed by version using multiParty functions
       var otherKey = data.pubKey;
-      var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey)
+      var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey);
       var shared = Curve25519.ecDH(this.priv, pk2);
 
       shared = shared.toByteArrayUnsigned()
@@ -152,6 +152,9 @@ function (Bitcoin, multiParty, Curve25519) {
          whisper: true,
          pubKey: otherKey 
       }
+      // add the peer
+      var otherKeyBi = BigInteger.fromByteArrayUnsigned(otherKey);
+      this.transport.addPeer(otherKey, genFingerprint(otherKeyBi));
       // Notify listeners
       this.triggerCallbacks(decoded.type, decoded);
   }
@@ -232,8 +235,7 @@ function (Bitcoin, multiParty, Curve25519) {
               var pubKeyB64 = decoded.text[first]['message'];
               var pubKey = convert.base64ToBytes(pubKeyB64);
               var pubKeyBi = BigInteger.fromByteArrayUnsigned(pubKey);
-              var newPeer = transport.addPeer(pubKey, pubKey);
-              newPeer.fingerprint = genFingerprint(pubKeyBi)
+              var newPeer = transport.addPeer(pubKey, genFingerprint(pubKeyBi));
               this.startPairing(newPeer.fingerprint, pubKey)
               // set key owner to 'myName' so cryptocat will import the key
               if (first == 'all') {

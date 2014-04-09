@@ -106,6 +106,9 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
     $scope.selectChannel = function(channel) {
         // Relink
         connectChannel(channel.name);
+        if (currentChannel) {
+            currentChannel.sendOpening();
+        }
     }
 
     // Action to start announcements and reception
