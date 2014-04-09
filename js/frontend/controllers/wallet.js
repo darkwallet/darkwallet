@@ -27,7 +27,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
 
   // Gui service, connect to report events on page.
   Services.connectNg('gui', $scope, function(data) {
-    console.log('[WalletCtrl] gui bus:', data.type, data.text);
+    // console.log('[WalletCtrl] gui bus:', data.type, data.text);
     if (data.type == 'balance') {
     }
     if (data.type == 'height') {
