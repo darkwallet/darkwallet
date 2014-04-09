@@ -70,8 +70,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
             throw Error("Can't decode address for multisig with length " + address.length);
         }
         // Decompress if needed
-        // TODO: should we set first byte before decompressing?
-        if (bytes.length == 33 || bytes.length == 32) {
+        if (bytes.length == 33) {
             bytes = BtcUtils.uncompressAddress(bytes);
         }
         return bytes;
