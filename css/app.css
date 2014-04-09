@@ -5480,6 +5480,9 @@ div.scroller.ng-leave {
 .setback.notifications {
   background: url(../images/notifications.svg) right/contain no-repeat; }
 
+.lobbyback {
+  background: url(../images/virtual.svg) top/cover no-repeat; }
+
 .setback > * {
   opacity: 0.8; }
 
