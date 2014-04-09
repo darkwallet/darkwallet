@@ -56,9 +56,6 @@ function(Services, Channel) {
     if (!this.channel) {
       this.channel = lobbyTransport.initChannel('CoinJoin', Channel);
       this.channel.addCallback('lobby', this.onLobbyMessage);
-
-      // TODO: mmm, where should this go
-      // Continue with pending tasks
     }
   }
 
