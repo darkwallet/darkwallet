@@ -227,7 +227,8 @@ function (Bitcoin, multiParty, Curve25519) {
               console.log("[catchan] Decoding DH message");
               this.receiveDH(decrypted);
           } else {
-              multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
+              // Not forwarding to cryptocat layer for 'normal' messages
+              // multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
           }
           this.triggerCallbacks(decrypted.type, decrypted);
       }
