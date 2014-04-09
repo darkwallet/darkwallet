@@ -1,17 +1,48 @@
 <tab heading="Fund" ng-show="isFund">
-        <div>{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</div>
-        <div><h3>Fund address:</h3> {{pocket.fund.address}}</div>
-        <h3>Script:</h3>
-        <div>{{pocket.fund.script}}</div>
-        <h3>Participants:</h3>
-        <div ng-repeat="participant in pocket.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
-            <identicon icon-size="38" hash="participant.hash" title="{{contact.hash}}"></identicon> {{participant.name}} <span ng-show="participant.type=='me'">(me)</span>
+    <div class="panel">
+      <div class="row collapse">
+        <div class="medium-2 columns">
+            <span class="prefix radius">Fund Address</span>
         </div>
-        <button ng-click="importingFundTransaction = !importingFundTransaction">Import Spend</button>
-        <form name="fundTxForm" novalidate ng-submit="importTx(fundTxForm)" ng-show="importingFundTransaction">
-            <input required ng-model="fundTxForm.fundTx" type="text" placeholder="Paste the transaction hex here"></input>
-            <button type="submit">Import</button>
-            <button class="alert" ng-click="importingFundTransaction=false">Cancel</button>
-        </form>
+        <div class="medium-6 columns">
+            <input type="text" disabled="true" value="{{pocket.fund.address}}" />
+        </div>
+        <div class="medium-2 columns">
+            <button ng-click="copyClipboard(pocket.fund.address)" class="button postfix fa fa-clipboard">Copy</button>
+        </div>
+        <div class="medium-2 columns">
+            <button ng-click="openModal('show-qr', {address: pocket.fund.address})" class="button postfix radius fa fa-qrcode">QR</button>
+        </div>
+      </div>
+      <div>{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}} signatures are needed for spends</div>
+    </div>
+  <div class="row">
+  <div class="columns large-4">
+    <h3>Participants:</h3>
+    <div ng-repeat="participant in pocket.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
+        <identicon icon-size="38" hash="participant.hash" title="{{contact.hash}}"></identicon> {{participant.name}} <span ng-show="participant.type=='me'">(me)</span>
+    </div>
+  </div>
+  <div class="columns large-8">
+    <h3>Script:</h3>
+    <div class="row">
+      <div class="large-6 columns">
+        <button ng-click="copyClipboard(pocket.fund.script)" class="button postfix fa fa-clipboard">Copy</button>
+      </div>
+      <div class="large-6 columns">
+        <button ng-click="showFundScript=!showFundScript" class="button postfix fa fa-eye">Show</button>
+      </div>
+    </div>
+    <div ng-show="showFundScript"><code>{{pocket.fund.script}}</code></div>
+
+    <h3>Tools:</h3>
+    <button class="button postfix fa large-6 fa-download" ng-click="importingFundTransaction = !importingFundTransaction">Import Spend</button>
+    <form name="fundTxForm" novalidate ng-submit="importTx(fundTxForm)" ng-show="importingFundTransaction">
+        <input required ng-model="fundTxForm.fundTx" type="text" placeholder="Paste the transaction hex here"></input>
+        <button class="button postfix fa large-6 fa-check" type="submit">Import</button>
+        <button class="alert button postfix large-6 fa fa-times" ng-click="importingFundTransaction=false">Cancel</button>
+    </form>
+  </div> <!-- columns -->
+  </div> <!-- row -->
 </tab>
 
