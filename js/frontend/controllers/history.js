@@ -232,6 +232,53 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
       console.log('Move funds not implemented yet');
     })
   };
+  // Fund functions
+  $scope.importTx = function(form) {
+    if (form.$valid) {
+      // import transaction here
+      var identity = $scope.identity;
+      var walletAddress = identity.wallet.getWalletAddress($scope.pocket.fund.address);
+
+      if (walletAddress) {
+          // TODO: should we check the transaction is relevant for the address?
+          // we import the tx
+          
+          var tx, row;
+          try {
+              tx = new Bitcoin.Transaction(form.fundTx);
+          } catch(e) {
+              toaster.pop('error', 'Error importing', 'Malformed transaction');
+              console.log(e)
+              return;
+          }
+          var isMine = identity.wallet.txForAddress(walletAddress, tx);
+
+          if (!isMine) {
+              toaster.pop('error', 'Error importing', 'Transaction is not for this multisig');
+              return;
+          }
+          try {
+              // TODO: need to do this till we update bitcoinjs-lib...
+              identity.wallet.wallet.processTx(tx, 0);
+
+              // now import the transaction as usual
+              row = identity.wallet.processTx(walletAddress, form.fundTx, 0);
+          } catch(e) {
+              // error probably malformed tx
+              console.log("error importing!", e);
+              toaster.pop('error', 'Error importing', 'Malformed transaction');
+              return;
+          }
+          if (row) {
+              console.log('added transaction', row);
+              toaster.pop('success', 'Imported transaction');
+          } else {
+              console.log("couldn't add transaction");
+              toaster.pop('warning', 'Already existing?');
+          }
+      }
+    }
+  }
 
 }]);
 });

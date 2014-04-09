@@ -487,6 +487,29 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
     // Pocket specific wallet
     // this.pocketWallets[walletAddress.index[0]].processOutput(output);
 }
+
+/*
+ * Check if transaction involves given address.
+ */
+Wallet.prototype.txForAddress = function(walletAddress, tx) {
+    var isMine = false;
+    var identity = this.identity;
+    // Maybe we could just check if we have the outpoints here instead of
+    // looking for the address (but we don't have per address outpoint lists yet...).
+    for(var i=0; i<tx.ins.length; i++) {
+        var outpoint = tx.ins[i].outpoint;
+        var txHash = outpoint.hash;
+         if (identity.txdb.transactions.hasOwnProperty(txHash)) {
+            var prevTx = new Bitcoin.Transaction(identity.txdb.transactions[txHash]);
+            if (prevTx.outs[outpoint.index].address == walletAddress.address) {
+                return true;
+            }
+        }
+    };
+    return isMine;
+}
+
+
 /**
  * Process incoming transaction
  */
