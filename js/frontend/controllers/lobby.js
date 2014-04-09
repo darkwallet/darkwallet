@@ -33,7 +33,12 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
               var channel = channelLink.channel;
 
               // add user pubKeyHex to use as identicon
-              data.pubKeyHex = peer.pubKeyHex;
+              if (peer) {
+                  data.pubKeyHex = peer.pubKeyHex;
+              } else {
+                  // lets set a dummy hex code for now
+                  data.pubKeyHex = "deadbeefdeadbeefdeadbeef";
+              }
 
               // add to channel shoutbox
               if (!$scope.shoutboxLogAll.hasOwnProperty(channel.channelHash)) {
