@@ -1,27 +1,32 @@
 <section>
   <div class="container">
-    <table>
-      <tr><td>
-          <!-- Channel list -->
+    <div class="row">
+      <!-- Channel list -->
+      <div class="large-2 columns panel">
           <h2>Channels</h2>
-          <div ng-show="subscribed">
+          <div ng-show="lobbyChannels">
               <select class="select-list" size="10">
-              <option selected="selected">{{subscribed.slice(0, 8)}}</option>
-              <option>Trollbox</option>
-              <option>Coinjoin</option>
+              <option ng-click="selectChannel(channel)" ng-selected="channel.channelHash == subscribed" ng-repeat="channel in lobbyChannels">{{channel.name}} {{channel.channelHash.slice(0,8)}}...</option>
               </select>
           </div>
           <form>
             <label>
               <input ng-model="pairCode" type="password" class="password" value="" placeholder="Enter channel name" />
             </label>
-            <button class="button button-and-icon" ng-click="announceSelf();">
+            <button class="button button-and-icon" ng-click="joinChannel();">
               <div><i class="icon-large icon-qrcode"></i></div>Join
             </button>
           </form>
-      </td><td ng-show="subscribed">
-          <!-- Channel window -->
-          <b>Channel: {{subscribed.slice(0, 8)}}...</b>
+      </div>
+
+      <!-- Channel window -->
+      <div class="large-6 columns">
+        <div ng-show="!subscribed">
+          <h2>Channel</h2>
+          No channel subscribed.
+        </div>
+        <div ng-show="subscribed">
+          <h2>Channel: {{subscribed.slice(0, 8)}}...</h2>
           <form>
             <label>
               <input ng-model="shoutbox" type="text" value="" />
@@ -33,31 +38,29 @@
           <div>
              <div ng-repeat="shoutLog in shoutboxLog" class="wrapper"><identicon title="{{shoutLog.sender}}" hash="shoutLog.pubKeyHex" icon-size="32"></identicon> {{shoutLog.body.text}}</div>
           </div>
-      </td><td>
-          <!-- Peers area -->
+        </div>
+      </div>
+
+      <!-- Peers area -->
+      <div class="large-2 columns" ng-show="!newContact">
           <h2>Self</h2>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
           <h3>Channel</h3>
           <div class="wrapper"><identicon title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></identicon> {{comms.name}}</div>
           <h2>Peers</h2>
           <div ng-repeat="peer in peers">
-            <span ng-click="selectPeer(peer)"><identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}</span> <a ng-click="pairPeer(peer)">pair</a></div>
+            <span ng-click="selectPeer(peer)"><identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}</span> <a ng-click="pairPeer(peer)">pair</a>
           </div>
-      </td><td>
-          <!-- Requests area -->
-          <div ng-show="newContact">
-             <div>{{newContact.name}}</div>
-             <div>{{newContact.stealth}}</div>
-             <div class="wrapper"><identicon title="{{newContact.pubKeyHex}}" hash="newContact.pubKeyHex" icon-size="64"></identicon></div>
-             <button ng-click="addNewContact(newContact)">Add contact</div>
-          </div>
-      </td></tr>
-    </table>
+      </div>
 
-    <!-- Raw requests -->
-    <h3>Requests</h3>
-    <div ng-repeat="request in requests">
-      {{request.data}}
-    </div>
-  </div>
+      <!-- Requests area -->
+      <div class="large-2 columns" ng-show="newContact">
+          <h2>{{newContact.name}}</h2>
+          <div title="{{newContact.stealth}}">{{newContact.stealth.slice(0,8)}}...</div>
+          <div class="wrapper"><identicon title="{{newContact.pubKeyHex}}" hash="newContact.pubKeyHex" icon-size="64"></identicon></div>
+          <button ng-click="addNewContact(newContact)">Add contact</button>
+          <button class="cancel" ng-click="newContact=false">Cancel</button>
+      </div>
+    </div> <!-- row -->
+  </div> <!-- container -->
 </section>

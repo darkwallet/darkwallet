@@ -17,9 +17,6 @@ function(Services, Transport, Channel) {
                break;
        }
       }, function(port) {
-         // Connected
-         console.log('bus: lobby client connected');
-
          // Ensure the lobby transport is created
          self.getLobbyTransport();
     });
