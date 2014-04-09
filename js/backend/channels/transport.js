@@ -54,7 +54,7 @@ function (Bitcoin, Mnemonic, Services) {
   }
 
   Transport.prototype.hashChannelName = function(channel) {
-      var channelHash = SHA256(SHA256(channel)+channel);
+      var channelHash = SHA256(SHA256(SHA256('Lobby channel: ' + channel)));
       channelHash = Bitcoin.convert.wordArrayToBytes(channelHash);
       return Bitcoin.convert.bytesToHex(channelHash);
   }
