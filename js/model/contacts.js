@@ -2,7 +2,7 @@
  * @fileOverview Contacts (Address book).
  */
 
-define(['bitcoinjs-lib'], function(Bitcoin) {
+define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
 var Crypto = Bitcoin.Crypto;
 
@@ -42,6 +42,29 @@ Contacts.prototype.initContacts = function() {
 Contacts.prototype.updateContactHash = function(contact) {
     contact.hash = Crypto.SHA256(contact.address).toString();
 }
+
+/**
+ * Find Contact
+ * @param {Object} data Contact information.
+ */
+Contacts.prototype.findByPubKey = function (pubKey) {
+  // TODO: We will probably need some kind of index
+  var toCheck = pubKey.slice(0, 65).toString();
+  for(var i=0; i<this.contacts.length; i++) {
+    var address = this.contacts[i].address;
+    var cPubKey;
+    try {
+        cPubKey = BtcUtils.decodeAddress(address);
+    } catch(e) {
+        // not a good address
+        continue;
+    }
+    if (cPubKey.toString() == toCheck) {
+      return this.contacts[i];
+    }
+  }
+};
+
 
 /**
  * Add a contact to the address book

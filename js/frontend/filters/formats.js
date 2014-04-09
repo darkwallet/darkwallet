@@ -20,7 +20,7 @@ filters.filter('bytesToHex', function() {
 // Filter for presenting an uncompressed key as compressed address hash
 filters.filter('bytesToAddressHash', function() {
   return function(input) {
-    if (input.length == 65) {
+    if (input.length == 65 || input.length == 33) {
         var hashed = Bitcoin.Util.sha256ripe160(input);
         var address = Bitcoin.Address(hashed);
         return address.toString();

@@ -54,8 +54,13 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
             bytes = convert.hexToBytes(address);
         } else if (address.length == 103 && address[0] == '6') {
             // Stealth address
-            bytes = Bitcoin.base58.checkDecode(address);
-            bytes = bytes.slice(1,bytes.length-5); // FIXME: Adapt to the new stealth
+            var parsed = Stealth.parseAddress(address);
+            // Take the first spendKey otherwise the scanKey
+            if (parsed.spendKeys.length) {
+                bytes = parsed.spendKeys[0];
+            } else {
+                bytes = parsed.scanKey;
+            }
         } else if (address.length == 111 && address.slice(0,4) == 'xpub') {
             // Master public key
             var mpKey = Bitcoin.HDWallet.fromBase58(address);
@@ -65,7 +70,8 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
             throw Error("Can't decode address for multisig with length " + address.length);
         }
         // Decompress if needed
-        if (bytes.length == 32) {
+        // TODO: should we set first byte before decompressing?
+        if (bytes.length == 33 || bytes.length == 32) {
             bytes = BtcUtils.uncompressAddress(bytes);
         }
         return bytes;

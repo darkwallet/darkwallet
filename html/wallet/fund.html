@@ -4,7 +4,9 @@
         <h3>Script:</h3>
         <div>{{pocket.fund.script}}</div>
         <h3>Participants:</h3>
-        <div ng-repeat="participant in pocket.fund.pubKeys track by $index" title="{{participant | bytesToHex}}">{{participant | bytesToAddressHash}}</div>
+        <div ng-repeat="participant in pocket.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
+            <identicon icon-size="38" hash="participant.hash" title="{{contact.hash}}"></identicon> {{participant.name}} <span ng-show="participant.type=='me'">(me)</span>
+        </div>
         <button ng-click="importingFundTransaction = !importingFundTransaction">Import Spend</button>
         <form name="fundTxForm" novalidate ng-submit="importTx(fundTxForm)" ng-show="importingFundTransaction">
             <input required ng-model="fundTxForm.fundTx" type="text" placeholder="Paste the transaction hex here"></input>

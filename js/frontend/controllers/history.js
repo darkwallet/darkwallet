@@ -15,35 +15,88 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
   $scope.isAll = true;
   $scope.isFund = false;
 
+  // Create a profile out of a public key by looking in contacts and wallet.
+  var detectParticipant = function(pubKeyBytes) {
+      var identity = $scope.identity;
+
+      // Ensure we check the compressed version
+      var pubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
+      var address = pubKey.toString();
+
+      var uncompressedAddress = new Bitcoin.ECPubKey(pubKeyBytes, false).toString();
+      var participant = { name: uncompressedAddress,
+                          pubKey: pubKey.toBytes(false),
+                          hash: pubKey.toHex() };
+
+      var walletAddress = identity.wallet.getWalletAddress(address);
+      if (walletAddress) {
+          // Current identity
+          participant.type = 'me';
+          participant.name = identity.name;
+          // In some cases would not be the stealth identifier.
+          // Also, doing it like this so it would show the same as in contacts..
+          participant.hash = Bitcoin.Crypto.SHA256(walletAddress.stealth).toString();
+      } else {
+          // Check if it's a contact
+          var contact = identity.contacts.findByPubKey(pubKey.toBytes(false));
+          if (contact) {
+              participant.name = contact.name;
+              participant.hash = contact.hash;
+              participant.type = 'contact';
+          }
+      }
+      return participant;
+  }
+
+  // Detect participants for a fund from contacts and wallet.
+  var detectFundParticipants = function(fund) {
+      // TODO: Not very efficient, should keep track in some way
+      var participants = [];
+
+      fund.pubKeys.forEach(function(pubKey) {
+          participants.push(detectParticipant(pubKey));
+      });
+
+      return participants;
+  }
+
+  // Check tasks and put some info in the pocket
+  var checkFundTasks = function(fund) {
+      var identity = $scope.identity;
+      var res = [];
+      // Check pending tasks for fund
+      var tasks = identity.tasks.tasks.multisig;
+      if (tasks) {
+          tasks.forEach(function(task) {
+              if (task.pending[0].address == fund.address) {
+                  var tx = new Bitcoin.Transaction(task.tx);
+                  res.push({tx: tx, task: task, signatures: []});
+              }
+          });
+      }
+      return res;
+  }
 
   // History Listing
   $scope.selectFund = function(fund, rowIndex) {
       $scope.pocket.name = fund.name;
       $scope.pocket.index = fund.seq[0];
       var address = $scope.identity.wallet.getAddress(fund.seq)
+      $scope.pocket.participants = detectFundParticipants(fund);
       $scope.pocket.changeAddresses = [];
       $scope.pocket.addresses = [address];
       $scope.pocket.fund = fund;
-      $scope.pocket.tasks = [];
+      $scope.pocket.tasks = checkFundTasks(fund);
       $scope.isAll = false;
       $scope.isFund = true;
       $scope.pocket.mpk = undefined;
       $scope.pocket.stealth = undefined;
       $scope.selectedPocket = 'fund:' + rowIndex;
       $scope.balance = $scope.identity.wallet.getAddress(fund.seq).balance;
-
-      // Check pending tasks for fund
-      var tasks = $scope.identity.tasks.tasks.multisig;
-      if (tasks && tasks.length) {
-          for(var idx=0; idx<tasks.length; idx++) {
-              var task = tasks[idx];
-              if (task.pending[0].address == fund.address) {
-                  var tx = new Bitcoin.Transaction(task.tx);
-                  $scope.pocket.tasks.push({tx: tx, task: task, signatures: []});
-              }
-          }
-      }
       //balanceStart($scope.balance);
+
+      // Check tasks and put some info in the pocket
+      checkFundTasks(fund, $scope.pocket);
   }
   $scope.selectPocket = function(pocketName, rowIndex) {
       var pocketIndex;
