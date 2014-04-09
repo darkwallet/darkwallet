@@ -437,9 +437,16 @@ Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, f
 
     // If mixing, save mixing task
     if (mixing) {
-        var task = {tx: newTx.serializeHex(), state: 'announce'};
-        self.identity.tasks.addTask('coinjoin', task)
-        callback(null, {task: task, tx: newTx, type: 'mixing'})
+        var task = {tx: newTx.serializeHex(), state: 'announce', total: totalAmount, fee: fee, change: change, myamount: outAmount};
+        self.identity.tasks.addTask('mixer', task)
+
+        // TODO: this will be moved out
+        var mixerService = DarkWallet.service().getMixerService();
+        mixerService.startTask(task)
+
+        // Callback for calling process
+        callback(null, {task: task, tx: newTx, type: 'mixer'})
+
         // Return, we will sign and broadcast later
         return;
     }

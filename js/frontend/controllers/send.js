@@ -100,7 +100,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
               console.log("error", error);
           } else if (task && task.radar) {
               console.log("radar", task.radar)
-          } else if (task && task.type == 'mixing') {
+          } else if (task && task.type == 'mixer') {
               toaster.pop('note', 'Sent to mixer ('+task.task.state+')', (fee + totalAmount) + ' satoshis')
               console.log("mixer", task)
           } else if (task) {
