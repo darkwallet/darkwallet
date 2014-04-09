@@ -1,5 +1,5 @@
-define(['backend/services', 'backend/channels/catchan'],
-function(Services, Channel) {
+define(['backend/services', 'backend/channels/catchan', 'util/protocol'],
+function(Services, Channel, Protocol) {
   'use strict';
 
   /*
@@ -51,11 +51,14 @@ function(Services, Channel) {
    * Initialize the mixer connection
    */
   MixerService.prototype.ensureMixing = function() {
+    var self = this;
     console.log("[mixer] Check mixing...");
     var lobbyTransport = this.core.getLobbyTransport();
     if (!this.channel) {
       this.channel = lobbyTransport.initChannel('CoinJoin', Channel);
-      this.channel.addCallback('lobby', this.onLobbyMessage);
+      this.channel.addCallback('CoinJoinOpen', function(_d) {self.onCoinJoinOpen(_d)});
+      this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d)});
+      this.channel.addCallback('CoinJoinFinish', function(_d) {self.onCoinJoinFinish(_d)});
     }
   }
 
@@ -83,12 +86,22 @@ function(Services, Channel) {
     // Now do stuff with the task...
     switch(task.state) {
       case 'announce':
+        var msg = Protocol.CoinJoinOpenMsg(task.total);
+        console.log("[mixer] Announce join");
+        this.channel.postEncrypted(msg, function(err, data) {
+          if (err) {
+            console.log("[mixer] Error announcing join!");
+          } else {
+            console.log("[mixer] Join announced!");
+          }
+        });
+        break;
       case 'paired':
       case 'finish':
       default:
-          console.log('[mixer] start Task!', task.state, task);
-          console.log();
-          break;
+        console.log('[mixer] start Task!', task.state, task);
+        console.log();
+        break;
     }
   }
 
@@ -120,12 +133,65 @@ function(Services, Channel) {
     });
   }
 
+  /*
+   * Evaluate a coinjoin opening and respond if appropriate.
+   */
+  MixerService.prototype.evaluateOpening = function(peer, opening) {
+    var shouldPair = false;
+
+    // Evaluate mixing pockets to see if we can pair
+
+    // If we resulted in pairing, continue with protocol.
+    if (shouldPair) {
+      var msg = Protocol.CoinJoinMsg("deadbeef");
+
+      // Post using end to end channel capabilities
+      this.channel.postDH(peer.pubKey, msg, function(err, data) {
+        // Pairing message sent successfully
+      });
+    }
+  }
 
   /*
-   * Lobby message arrived
+   * Process a message for an ongoing CoinJoin
    */
-  MixerService.prototype.onLobbyMessage = function(data) {
-    console.log("[mixer] lobby message " + data);
+  MixerService.prototype.processCoinJoin = function(peer, opening) {
+  }
+
+  /*
+   * Process a message finishing a coinjoin conversation
+   */
+  MixerService.prototype.processFinish = function(peer, opening) {
+  }
+
+  /*
+   * Protocol messages arriving
+   */
+  MixerService.prototype.onCoinJoinOpen = function(msg) {
+    var peer = this.channel.getPeer(msg.sender);
+    if (!peer) {
+      console.log("[mixer] Peer not found " + msg.sender);
+      return;
+    }
+    if (msg.sender != this.channel.fingerprint) {
+      console.log("[mixer] CoinJoinOpen", msg, peer);
+      this.evaluateOpening(peer, msg);
+    } else {
+      console.log("[mixer] My CoinJoinOpen is back", msg);
+    }
+  }
+  MixerService.prototype.onCoinJoin = function(msg) {
+    var peer = this.channel.getPeer(msg.sender);
+    if (msg.sender != this.channel.fingerprint) {
+      console.log("[mixer] CoinJoin", msg);
+      this.processCoinJoin(peer, msg);
+    }
+  }
+  MixerService.prototype.onCoinJoinFinish = function(msg) {
+    if (msg.sender != this.channel.fingerprint) {
+      console.log("[mixer] CoinJoinFinish", msg);
+      this.processFinish(peer, msg);
+    }
   }
 
   return MixerService;
