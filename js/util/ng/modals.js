@@ -1,4 +1,4 @@
-define(function() {
+define(['util/ng/sound'], function(SoundUtils) {
 var $modal;
 var ModalUtils = {
 
@@ -60,6 +60,7 @@ var ModalUtils = {
   },
   
   onQrModalOk: function(data, vars) {
+    SoundUtils.play('keygenEnd');
     if (Array.isArray(vars.field)) {
       vars.field.push({address: data});
     } else {
