@@ -129,20 +129,33 @@ function (Bitcoin, multiParty, Curve25519) {
 
       shared = shared.toByteArrayUnsigned()
       shared = Curve25519.bytes2string(shared)
+
+      // First decrypt with given dh secret
       var decrypted;
       try {
           decrypted = sjcl.decrypt(shared, data.data);
       } catch(err) {
           // message is not for us.. ignore     
           console.log("[catchan] Encrypted message not for us!")
+          return;
       }
-      if (decrypted) { 
-          var decoded = JSON.parse(decrypted);
-          console.log("[catchan] Decrypted", decoded);
-          this.triggerCallbacks(decoded.type, decoded);
+      // Now decode json
+      var decoded;
+      try {
+          decoded = JSON.parse(decrypted);
+      } catch (e) {
+          console.log("[catchan] Invalid dh json! " + e.message);
+          return;
       }
- 
+      // Add some metadata
+      decoded.metadata = {
+         whisper: true,
+         pubKey: otherKey 
+      }
+      // Notify listeners
+      this.triggerCallbacks(decoded.type, decoded);
   }
+
   Channel.prototype.postDH = function(otherKey, data, callback) {
       // should be changed by version using multiParty functions
       data.sender = this.fingerprint;
@@ -199,14 +212,24 @@ function (Bitcoin, multiParty, Curve25519) {
       // An encrypted message coming on the channel
       if (decoded.cipher) {
           // channel layer
-          rawDecrypted = sjcl.decrypt(this.name, message.data);
-          decrypted = JSON.parse(rawDecrypted);
+          try {
+              decrypted = sjcl.decrypt(this.name, message.data);
+          } catch (e) {
+              console.log("[catchan] Invalid channel message: " + e.message);
+              return;
+          }
+          try {
+              decoded = JSON.parse(decrypted);
+          } catch (e) {
+              console.log("[catchan] Invalid channel json: " + e.message);
+              return;
+          }
 
           // cryptocat protocol layer
           var first;
-          if (decrypted.type == 'publicKey') {
-              first = Object.keys(decrypted.text)[0];
-              var pubKeyB64 = decrypted.text[first]['message'];
+          if (decoded.type == 'publicKey') {
+              first = Object.keys(decoded.text)[0];
+              var pubKeyB64 = decoded.text[first]['message'];
               var pubKey = convert.base64ToBytes(pubKeyB64);
               var pubKeyBi = BigInteger.fromByteArrayUnsigned(pubKey);
               var newPeer = transport.addPeer(pubKey, pubKey);
@@ -214,23 +237,23 @@ function (Bitcoin, multiParty, Curve25519) {
               this.startPairing(newPeer.fingerprint, pubKey)
               // set key owner to 'myName' so cryptocat will import the key
               if (first == 'all') {
-                multiParty.receiveMessage(decrypted.sender, first, rawDecrypted);
+                multiParty.receiveMessage(decoded.sender, first, decrypted);
               } else {
                 // normal cryptocat protocol
-                multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
+                multiParty.receiveMessage(decoded.sender, this.fingerprint, decrypted);
                 
               }
           }
-          else if (decrypted.type == 'Shout') {
-              //console.log(decrypted.text)
-          } else if (decrypted.type == 'personal') {
+          else if (decoded.type == 'Shout') {
+              //console.log(decoded.text)
+          } else if (decoded.type == 'personal') {
               console.log("[catchan] Decoding DH message");
-              this.receiveDH(decrypted);
+              this.receiveDH(decoded);
           } else {
               // Not forwarding to cryptocat layer for 'normal' messages
-              // multiParty.receiveMessage(decrypted.sender, this.fingerprint, rawDecrypted);
+              // multiParty.receiveMessage(decoded.sender, this.fingerprint, rawDecrypted);
           }
-          this.triggerCallbacks(decrypted.type, decrypted);
+          this.triggerCallbacks(decoded.type, decoded);
       }
       transport.update();
   }
