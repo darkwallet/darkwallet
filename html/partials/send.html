@@ -51,7 +51,7 @@
         </div>
         <div class="small-6 columns">
           <h6>Coin mixing</h6>
-          <a href="" class="fa button postfix fa-check-square-o">Enabled</a>
+          <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!send.mixing, 'fa-check-square-o': send.mixing}" class="fa button postfix">{{send.mixing?'Enabled':'Disabled'}}</a>
         </div>
         <div class="small-6 columns">
           <h6>Escrow address</h6>

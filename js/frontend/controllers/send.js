@@ -3,7 +3,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   'use strict';
   var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
-  $scope.send = {recipient: '', amount: 0.2};
+  $scope.send = {recipient: '', amount: 0.2, mixing: true};
   $scope.autoAddEnabled = false;
   $scope.sendPocket = 0;
   $scope.advanced = false;
@@ -157,6 +157,10 @@ function (controllers, Services, DarkWallet, Bitcoin) {
     }
   };
   
+  $scope.toggleCoinJoin = function() {
+    $scope.send.mixing = !$scope.send.mixing;
+  }
+
   $scope.enableAutoAddFields = function() {
     $scope.addField();
     $scope.autoAddEnabled = true;
