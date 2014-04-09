@@ -114,11 +114,6 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
     }
     $scope.selectPeer = function(peer) {
         $scope.selectedPeer = peer;
-        /*var peerNameHash = transport.hashChannelName(peer.name);
-        if (!$scope.shoutboxLogAll.hasOwnProperty(peer.name)) {
-            $scope.shoutboxLogAll[name] = [];
-        }
-        $scope.shoutboxLog = $scope.shoutboxLogAll[name];*/
     }
     $scope.pairPeer = function(peer) {
         $scope.selectedPeer = peer;
