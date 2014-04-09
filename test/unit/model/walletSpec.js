@@ -198,23 +198,7 @@ define(['model/wallet'], function(Wallet) {
       expect(wallet.fee).toBe(20000);
       expect(_store.fee).toBe(20000);
     });
-    
-    it('broadcasts transactions', function() {
-      var tx = {};
-      tx.serializeHex = function() { return "newTx"; };
-      
-      wallet.broadcastTx(tx, false, function(err, data) {
-        expect(err).toBeFalsy();
-        expect(data.radar).toBeDefined();
-      });
-      
-      tx.serializeHex = function() { return "newTxError"; };
-      
-      wallet.broadcastTx(tx, false, function(err, data) {
-        expect(err).toBeTruthy();
-      });
-    });
-    
+   
     it('get pockets wallet');
     
     it('gets utxo to pay');
