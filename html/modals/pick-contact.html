@@ -1,7 +1,7 @@
 <div class="contact-mosaic">
   <h6>Select a contact</h6>
   <ul class="large-block-grid-5 medium-block-grid-3 small-block-grid-2">
-	  <li ng-repeat="contact in vars.contacts" ng-click="ok(contact.address)">
+	  <li ng-repeat="contact in vars.contacts track by $index" ng-click="ok(contact.address)">
 	  	<div class="panel radius text-center">
 		    <identicon icon-size="64" hash="contact.hash" title="{{contact.hash}}"></identicon>
 		    <h5>{{contact.name}}</h5>
