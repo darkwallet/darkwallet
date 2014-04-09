@@ -4,7 +4,7 @@
 define(['backend/services/wallet'], function(WalletService) {
   'use strict';
     
-   xit('broadcasts transactions', function() {
+   /*xit('broadcasts transactions', function() {
       var tx = {};
       tx.serializeHex = function() { return "newTx"; };
       // TODO: initialize properly
@@ -19,7 +19,7 @@ define(['backend/services/wallet'], function(WalletService) {
       walletService.broadcastTx(tx, false, function(err, data) {
         expect(err).toBeTruthy();
       });
-   });
+   });*/
  
 });
 
