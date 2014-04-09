@@ -2,8 +2,8 @@
  * @fileOverview Access to the identity bitcoin keys
  */
 
-define(['darkwallet', 'util/stealth', 'bitcoinjs-lib', 'model/multisig'],
-function(DarkWallet, Stealth, Bitcoin, MultisigFunds) {
+define(['util/stealth', 'bitcoinjs-lib', 'model/multisig'],
+function(Stealth, Bitcoin, MultisigFunds) {
 /**
  * Wallet class.
  * @param {Object} store Store for the object.
@@ -381,10 +381,10 @@ Wallet.prototype.getUtxoToPay = function(value, pocketIdx) {
 }
 
 /**
- * Send bitcoins from this wallet.
+ * Prepare a transaction with the given constraints
  * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
  */
-Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, fee, mixing, password, callback) {
+Wallet.prototype.prepareTx = function(pocketIdx, recipients, changeAddress, fee) {
     var self = this;
     var totalAmount = 0;
     recipients.forEach(function(recipient) {
@@ -399,12 +399,11 @@ Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, f
     } catch(e) {
         if (typeof e == 'string') {
             // Errors from libbitcoin come as strings
-            callback({message: e})
+            throw Error(e)
         } else {
             // Otherwise it must be a javascript error
-            callback({message: 'Error sending: ' + e})
+            throw Error('Error sending: ' + e)
         }
-        return;
     }
 
     // Create an empty transaction
@@ -434,38 +433,8 @@ Wallet.prototype.sendBitcoins = function(pocketIdx, recipients, changeAddress, f
     if (change) {
         newTx.addOutput(changeAddress.address, change);
     }
-
-    // If mixing, save mixing task
-    if (mixing) {
-        var task = {tx: newTx.serializeHex(), state: 'announce', total: totalAmount, fee: fee, change: change, myamount: outAmount};
-        self.identity.tasks.addTask('mixer', task)
-
-        // TODO: this will be moved out
-        var mixerService = DarkWallet.service().getMixerService();
-        mixerService.startTask(task)
-
-        // Callback for calling process
-        callback(null, {task: task, tx: newTx, type: 'mixer'})
-
-        // Return, we will sign and broadcast later
-        return;
-    }
-
-    // Sign the transaction
-    this.signTransaction(newTx, txUtxo, password, function(err, pending) {
-        if (err) {
-            // There was some error signing the transaction
-            callback(err);
-        } else if (pending.length) {
-            // If pending signatures add task and callback with 2nd parameter
-            var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: isStealth};
-            self.identity.tasks.addTask('multisig', task)
-            callback(null, {task: task, tx: newTx, type: 'signatures'})
-        } else {
-            // Else, just broadcast
-            self.broadcastTx(newTx, isStealth, callback);
-        }
-    });
+    // Return the transaction and some metadata
+    return {tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth};
 }
 
 /**
@@ -499,31 +468,6 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
     // No error so callback with success
     callback(null, pending);
 }
-
-/**
- * Broadcast transaction
- */
-Wallet.prototype.broadcastTx = function(newTx, isStealth, callback) {
-    // Broadcasting
-    console.log("send tx", newTx);
-    console.log("send tx", newTx.serializeHex());
-    var notifyTx = function(error, count) {
-        if (error) {
-            console.log("Error sending tx: " + error);
-            callback({data: error, text: "Error sending tx"})
-        } else {
-            // TODO: radar can be added as a task to maintain progress
-            callback(null, {radar: count, type: 'radar'});
-            console.log("tx radar: " + count);
-        }
-    }
-    if (isStealth) {
-        console.log("not broadcasting stealth tx yet...");
-    } else {
-        DarkWallet.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
-    }
-}
-
 
 /**
  * Process an output from an external source

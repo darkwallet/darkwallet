@@ -162,6 +162,97 @@ function(IdentityKeyRing, Services) {
     this.getKeyRing = function() {
         return keyRing;
     }
+
+    /*
+     * Send a transaction into the mixer
+     */
+    var mixTransaction = function(newTx, metadata, callback) {
+        var identity = self.getCurrentIdentity();
+        var task = {tx: newTx.serializeHex(),
+                    state: 'announce',
+                    total: metadata.total,
+                    fee: metadata.fee,
+                    change: metadata.change,
+                    myamount: metadata.myamount};
+
+        // Add the task to model
+        identity.tasks.addTask('mixer', task);
+
+        // Now start the task in the mixer service
+        var mixerService = core.getMixerService();
+        mixerService.startTask(task)
+                
+        // Callback for calling process
+        callback(null, {task: task, tx: newTx, type: 'mixer'})
+    }
+
+    /*
+     * Sign a transaction, then broadcast or add task to gather sigs
+     */
+    var signTransaction = function(newTx, metadata, password, callback) {
+        var identity = self.getCurrentIdentity();
+        // Otherwise just sign and lets go
+        identity.wallet.signTransaction(newTx, metadata.utxo, password, function(err, pending) {
+            if (err) {
+                // There was some error signing the transaction
+                callback(err);
+            } else if (pending.length) {
+                // If pending signatures add task and callback with 2nd parameter
+                var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: metadata.stealth};
+                identity.tasks.addTask('multisig', task)
+                callback(null, {task: task, tx: newTx, type: 'signatures'})
+            } else {
+                // Else, just broadcast
+                self.broadcastTx(newTx, metadata.stealth, callback);
+            }
+        });
+    }
+
+    /*
+     * Send bitcoins
+     */
+    this.send = function(pocketIdx, recipients, changeAddress, fee, mixing, password, callback) {
+        var identity = self.getCurrentIdentity();
+
+        // Prepare the transaction
+        try {
+            var prepared = identity.wallet.prepareTx(pocketIdx, recipients, changeAddress, fee);
+        } catch (e) {
+            callback(e)
+            return;
+        }
+
+        // Now process the new transaction
+        if (mixing) {
+            mixTransaction(prepared.tx, prepared, callback);
+        } else {
+            signTransaction(prepared.tx, prepared, password, callback);
+        }
+    }
+
+    /*
+     * Broadcast the given transaction
+     */
+     this.broadcastTx = function(newTx, isStealth, callback) {
+         // Broadcasting
+         console.log("send tx", newTx);
+         console.log("send tx", newTx.serializeHex());
+         var notifyTx = function(error, count) {
+             if (error) {
+                 console.log("Error sending tx: " + error);
+                 callback({data: error, text: "Error sending tx"})
+             } else {
+                 // TODO: radar can be added as a task to maintain progress
+                 callback(null, {radar: count, type: 'radar'});
+                 console.log("tx radar: " + count);
+             }
+         }
+         if (isStealth) {
+             console.log("not broadcasting stealth tx yet...");
+         } else {
+             core.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
+         }
+     }
   }
   return WalletService;
 });

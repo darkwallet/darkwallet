@@ -112,13 +112,15 @@ function (controllers, Services, DarkWallet, Bitcoin) {
       }
 
       // prepare the transaction
-      identity.wallet.sendBitcoins($scope.pocketIndex,
-                                          recipients,
-                                          changeAddress,
-                                          fee,
-                                          $scope.send.mixing,
-                                          password,
-                                          onSent);
+      var walletService = DarkWallet.service().getWalletService();
+
+      walletService.send($scope.pocketIndex,
+                         recipients,
+                         changeAddress,
+                         fee,
+                         $scope.send.mixing,
+                         password,
+                         onSent);
   }
 
   $scope.recipients = {
