@@ -168,29 +168,27 @@ function(Services, Channel, Protocol) {
    * Protocol messages arriving
    */
   MixerService.prototype.onCoinJoinOpen = function(msg) {
-    var peer = this.channel.getPeer(msg.sender);
-    if (!peer) {
+    if (!msg.peer) {
       console.log("[mixer] Peer not found " + msg.sender);
       return;
     }
     if (msg.sender != this.channel.fingerprint) {
-      console.log("[mixer] CoinJoinOpen", msg, peer);
-      this.evaluateOpening(peer, msg);
+      console.log("[mixer] CoinJoinOpen", msg.peer, peer);
+      this.evaluateOpening(msg.peer, msg);
     } else {
       console.log("[mixer] My CoinJoinOpen is back", msg);
     }
   }
   MixerService.prototype.onCoinJoin = function(msg) {
-    var peer = this.channel.getPeer(msg.sender);
     if (msg.sender != this.channel.fingerprint) {
       console.log("[mixer] CoinJoin", msg);
-      this.processCoinJoin(peer, msg);
+      this.processCoinJoin(msg.peer, msg);
     }
   }
   MixerService.prototype.onCoinJoinFinish = function(msg) {
     if (msg.sender != this.channel.fingerprint) {
       console.log("[mixer] CoinJoinFinish", msg);
-      this.processFinish(peer, msg);
+      this.processFinish(msg.peer, msg);
     }
   }
 
