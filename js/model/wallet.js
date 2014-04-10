@@ -129,22 +129,6 @@ Wallet.prototype.deletePocket = function(name) {
     throw Error("Pocket with that name does not exist!");
 }
 
-
-/**
- * Rename a pocket
- * @param {String} oldName Old name of the pocket
- * @param {String} newName New name for the pocket
- */
-Wallet.prototype.renamePocket = function(oldName, newName) {
-    var pocket = this.getPocket(oldName);
-    if (pocket) {
-        pocket.name = newName;
-        this.store.save();
-    } else {
-        throw Error("Pocket with that name does not exist!");
-    }
-}
-
 /**
  * Get the pocket index for a wallet address
  */

@@ -1,11 +1,8 @@
     <ul class="side-nav ">
       <li>Pockets on my wallet</li>
       <li ng-class="{active: 'pocket:all'===selectedPocket}" class="active" ng-click="selectPocket()"><a>All</a></li>
-      <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat-start="pocket in identity.wallet.pockets track by $index" ng-click="selectPocket(pocket.name, $index)" ng-hide="renamingPocket===pocket.name"><a>{{pocket.name}}</a></li>
-      <li ng-show="renamingPocket===pocket.name" ng-repeat-end>
-        <form ng-submit="renamePocket(pocket.name, pocketNewName)">
-          <input ng-model="pocketNewName" type="text" autofocus>
-        </form>
+      <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat="pocket in identity.wallet.pockets track by $index">
+        <a href="" ng-click="selectPocket(pocket.name, $index, form)" editable-text="pocket.name" e-form="form" onaftersave="renamePocket(pocket)" buttons="no">{{pocket.name}}</a>
       </li>
       <li ng-show="creatingPocket">
         <form ng-submit="createPocket()">

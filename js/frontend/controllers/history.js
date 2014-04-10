@@ -98,7 +98,7 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
       // Check tasks and put some info in the pocket
       checkFundTasks(fund, $scope.pocket);
   }
-  $scope.selectPocket = function(pocketName, rowIndex) {
+  $scope.selectPocket = function(pocketName, rowIndex, form) {
       var pocketIndex;
       if (pocketName === undefined) {
           $scope.pocket.name = "All Pockets";
@@ -138,24 +138,18 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
           $scope.isFund = false;
           // balance is sum of public and change branches
           $scope.balance = $scope.identity.wallet.getBalance(pocketIndex)+$scope.identity.wallet.getBalance(pocketIndex+1);
+          $scope.forms.pocketLabelForm = form;
       }
       $scope.selectedPocket = 'pocket:' + rowIndex;
   }
-  
-  $scope.pocketNewName = '';
-  $scope.renamingPocket = false;
-  $scope.renamePocket = function(oldName, newName) {
-    if ($scope.renamingPocket) {
-      if (newName) {
-        $scope.identity.wallet.renamePocket(oldName, newName);
-        $scope.pocket.name = newName;
-      }
-      $scope.renamingPocket = false;
+
+  $scope.renamePocket = function(pocket) {
+    if (!pocket.name) {
+      $scope.forms.pocketLabelForm.$show();
     } else {
-      $scope.renamingPocket = oldName;
-      $scope.pocketNewName = oldName;
+      $scope.identity.store.save();
     }
-  }
+  };
 
   $scope.newMultiSig = function() {
     $scope.selectedPocket = 'newMultisig';

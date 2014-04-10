@@ -171,19 +171,6 @@ define(['model/wallet'], function(Wallet) {
       expect(wallet.pocketWallets.length).toBe(2);
     });
     
-    it('renames a pocket', function() {
-      var pockets = [{name: 'Main pocket'}, {name: 'savings'}];
-      wallet.renamePocket('default', 'Main pocket');
-      expect(wallet.pockets).toEqual(pockets);
-      expect(_store.pockets).toEqual(pockets);
-      expect(wallet.pocketWallets.length).toBe(2);
-      
-      expect(function() {
-        wallet.renamePocket('incorrect', '404');
-      }).toThrow();
-      
-    });
-    
     it('get pocket index for an address', function() {
       expect(wallet.getAddressPocketIdx({index: [0]})).toBe(0);
       expect(wallet.getAddressPocketIdx({index: [1]})).toBe(0);

@@ -20,6 +20,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   $scope.rates = {};
   $scope.allAddresses = [];
   $scope.totalBalance = 0;
+  $scope.forms = {};
 
   // Global scope utils
   ModalUtils.registerScope($scope, $modal);
