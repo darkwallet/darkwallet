@@ -9,6 +9,7 @@
         <table class="expand">
           <thead>
             <tr>
+              <th></th>
               <th>Name</th>
               <th>Date</th>
               <th>Amount</th>
@@ -17,7 +18,8 @@
           </thead>
           <tbody>
             <tr ng-repeat="row in history | filter:pocketFilter  | orderBy:'height':true | filter:historyFilter">
-              <td class="icon"><button class="button square fa fa-info"></button>{{row.address}}</td>
+              <td class="icon"><button class="button square fa fa-info"></button></td>
+              <td editable-text="row.address">{{row.address}}</td>
               <td>{{row.height | heightToDate}}</td>
               <td>{{(row.myOutValue-row.myInValue) | currencyFilter}}</td>
               <td class="text-right">{{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}</td>

@@ -9,6 +9,7 @@ require.config({
     'angular-animate': '../vendors/angular-animate/angular-animate.min',
     'angular-route': '../vendors/angular-route/angular-route.min',
     'mm.foundation': '../vendors/angular-foundation/mm-foundation-tpls.min',
+    'angular-xeditable': '../vendors/angular-xeditable/dist/js/xeditable.min',
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
     'ngProgress': "../vendors/ngprogress/build/ngProgress",
     'toaster': "../vendors/AngularJS-Toaster/toaster",
@@ -39,6 +40,9 @@ require.config({
       deps: ['angular']
     },
     'mm.foundation': {
+      deps: ['angular']
+    },
+    'angular-xeditable': {
       deps: ['angular']
     },
     'ngProgress': {

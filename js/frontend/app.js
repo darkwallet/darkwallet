@@ -8,6 +8,7 @@ define([
     'angular-route',
     'angular-animate',
     'mm.foundation',
+    'angular-xeditable',
     'ngProgress',
     'toaster',
     'frontend/controllers/index',
@@ -16,7 +17,7 @@ define([
 ], function (require, angular) {
     'use strict';
     var app = angular.module('DarkWallet', [
-      'ngRoute', 'mm.foundation',
+      'ngRoute', 'mm.foundation', 'xeditable',
       'ngProgress', 'ngAnimate', 'toaster',
       'DarkWallet.controllers',
       'DarkWallet.directives',
