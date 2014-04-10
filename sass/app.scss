@@ -197,12 +197,9 @@ div.scroller.ng-enter.ng-enter-active {
 div.scroller.ng-leave {
 	position: absolute;
  	width: 100%;
-	-webkit-transform-origin: 50% 100%;
-	-webkit-animation: rotatePushBottom .8s both ease;
-	-moz-transform-origin: 50% 100%;
-	-moz-animation: rotatePushBottom .8s both ease;
-	transform-origin: 50% 100%;
-	animation: rotatePushBottom .8s both ease;
+	-webkit-animation: scaleDown .7s ease both;
+	-moz-animation: scaleDown .7s ease both;
+	animation: scaleDown .7s ease both;
 }
 
 div.scroller.ng-leave.ng-leave-active {
@@ -256,4 +253,19 @@ div.scroller.ng-leave.ng-leave-active {
 }
 @keyframes rotatePushBottom {
 	to { opacity: 0; transform: rotateX(90deg); }
+}
+
+.pt-page-scaleDown {
+
+}
+
+
+@-webkit-keyframes scaleDown {
+	to { opacity: 0; -webkit-transform: scale(.8); }
+}
+@-moz-keyframes scaleDown {
+	to { opacity: 0; -moz-transform: scale(.8); }
+}
+@keyframes scaleDown {
+	to { opacity: 0; transform: scale(.8); }
 }

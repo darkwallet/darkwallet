@@ -5470,12 +5470,9 @@ div.scroller {
 div.scroller.ng-leave {
   position: absolute;
   width: 100%;
-  -webkit-transform-origin: 50% 100%;
-  -webkit-animation: rotatePushBottom 0.8s both ease;
-  -moz-transform-origin: 50% 100%;
-  -moz-animation: rotatePushBottom 0.8s both ease;
-  transform-origin: 50% 100%;
-  animation: rotatePushBottom 0.8s both ease; }
+  -webkit-animation: scaleDown 0.7s ease both;
+  -moz-animation: scaleDown 0.7s ease both;
+  animation: scaleDown 0.7s ease both; }
 
 
 .setback.net {
@@ -5544,3 +5541,19 @@ div.scroller.ng-leave {
   to {
     opacity: 0;
     transform: rotateX(90deg); } }
+
+
+@-webkit-keyframes scaleDown {
+  to {
+    opacity: 0;
+    -webkit-transform: scale(0.8); } }
+
+@-moz-keyframes scaleDown {
+  to {
+    opacity: 0;
+    -moz-transform: scale(0.8); } }
+
+@keyframes scaleDown {
+  to {
+    opacity: 0;
+    transform: scale(0.8); } }
