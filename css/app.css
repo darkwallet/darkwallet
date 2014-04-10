@@ -5214,6 +5214,9 @@ th.hide-for-touch {
 .touch th.show-for-touch {
   display: table-cell !important; }
 
+html, body, div.container {
+  height: 100%; }
+
 *:focus {
   outline: 0; }
 
@@ -5382,6 +5385,11 @@ li.colorhead h6 {
   -moz-transition: all 300ms ease-out;
   transition: all 300ms ease-out; }
 
+.top-bar {
+  z-index: 3;
+  position: absolute;
+  width: 100%; }
+
 .popupcontainer .panel {
   background: #333; }
   .popupcontainer .panel a {
@@ -5400,6 +5408,10 @@ span.meter {
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover {
   background: #27ae60;
   cursor: pointer; }
+
+.contact-mosaic {
+  max-height: 500px;
+  overflow: scroll; }
 
 .select-list {
   min-height: 100px;
@@ -5445,27 +5457,25 @@ span.meter {
   opacity: 1; }
 
 div.scroller.ng-enter {
-  -webkit-transform-origin: 100% 50%;
-  -webkit-animation: rotateCarouselRightIn 0.8s both ease;
-  -moz-transform-origin: 100% 50%;
-  -moz-animation: rotateCarouselRightIn 0.8s both ease;
-  transform-origin: 100% 50%;
-  animation: rotateCarouselRightIn 0.8s both ease; }
+  -webkit-animation: moveFromTopFade 0.7s ease both;
+  -moz-animation: moveFromTopFade 0.7s ease both;
+  animation: moveFromTopFade 0.7s ease both; }
 
 div.scroller {
-  background: rgba(40, 40, 40, 0.8); }
+  background: rgba(40, 40, 40, 0.8);
+  height: 100%;
+  padding-top: 3em; }
 
 
 div.scroller.ng-leave {
-  -webkit-transform-origin: 0% 50%;
-  -webkit-animation: rotateCarouselRightOut 0.8s both ease;
-  -moz-transform-origin: 0% 50%;
-  -moz-animation: rotateCarouselRightOut 0.8s both ease;
-  transform-origin: 0% 50%;
-  animation: rotateCarouselRightOut 0.8s both ease;
   position: absolute;
-  width: 100%; }
-
+  width: 100%;
+  -webkit-transform-origin: 50% 100%;
+  -webkit-animation: rotatePushBottom 0.8s both ease;
+  -moz-transform-origin: 50% 100%;
+  -moz-animation: rotatePushBottom 0.8s both ease;
+  transform-origin: 50% 100%;
+  animation: rotatePushBottom 0.8s both ease; }
 
 
 .setback.net {
@@ -5490,32 +5500,47 @@ div.scroller.ng-leave {
   background: url(../images/seed.svg) center/cover no-repeat; }
 
 
-@-webkit-keyframes rotateCarouselRightOut {
+@-webkit-keyframes rotateFoldBottom {
   to {
-    opacity: 0.3;
-    -webkit-transform: translateX(200%) scale(0.4) rotateY(65deg); } }
+    opacity: 0;
+    -webkit-transform: translateY(100%) rotateX(-90deg); } }
 
-@-moz-keyframes rotateCarouselRightOut {
+@-moz-keyframes rotateFoldBottom {
   to {
-    opacity: 0.3;
-    -moz-transform: translateX(200%) scale(0.4) rotateY(65deg); } }
+    opacity: 0;
+    -moz-transform: translateY(100%) rotateX(-90deg); } }
 
-@keyframes rotateCarouselRightOut {
+@keyframes rotateFoldBottom {
   to {
-    opacity: 0.3;
-    transform: translateX(200%) scale(0.4) rotateY(65deg); } }
+    opacity: 0;
+    transform: translateY(100%) rotateX(-90deg); } }
 
-@-webkit-keyframes rotateCarouselRightIn {
+@-webkit-keyframes moveFromTopFade {
   from {
     opacity: 0.3;
-    -webkit-transform: translateX(-200%) scale(0.4) rotateY(-65deg); } }
+    -webkit-transform: translateY(-100%); } }
 
-@-moz-keyframes rotateCarouselRightIn {
+@-moz-keyframes moveFromTopFade {
   from {
     opacity: 0.3;
-    -moz-transform: translateX(-200%) scale(0.4) rotateY(-65deg); } }
+    -moz-transform: translateY(-100%); } }
 
-@keyframes rotateCarouselRightIn {
+@keyframes moveFromTopFade {
   from {
     opacity: 0.3;
-    transform: translateX(-200%) scale(0.4) rotateY(-65deg); } }
+    transform: translateY(-100%); } }
+
+@-webkit-keyframes rotatePushBottom {
+  to {
+    opacity: 0;
+    -webkit-transform: rotateX(90deg); } }
+
+@-moz-keyframes rotatePushBottom {
+  to {
+    opacity: 0;
+    -moz-transform: rotateX(90deg); } }
+
+@keyframes rotatePushBottom {
+  to {
+    opacity: 0;
+    transform: rotateX(90deg); } }

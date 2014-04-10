@@ -2,6 +2,7 @@
 @import "settings";
 @import "foundation";
 
+html, body, div.container { height: 100%; }
 *:focus { outline: 0; } /* Remove webkit's default outline */
 .nomarginbottom { margin-bottom: 0 !important; }
 
@@ -134,6 +135,8 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave, div.scroller.ng-animate.ng-hide-remove, div.scroller.ng-animate.ng-hide-add { @include single-transition(); }
 
+.top-bar { z-index: 3; position: absolute; width: 100%; }
+
 .popupcontainer .panel { 
 	background: #333; 
 	a { color: white; }
@@ -145,6 +148,8 @@ span.meter { padding: 5px 0 0 5px; }
 .seed { font-size: 120%; }
 
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover { background: $primary-color; cursor: pointer; }
+
+.contact-mosaic { max-height: 500px; overflow: scroll; }
 
 .select-list { min-height: 100px; background-image: none; }
 
@@ -171,20 +176,17 @@ span.meter { padding: 5px 0 0 5px; }
 }
 
 div.scroller.ng-enter {
-
-	-webkit-transform-origin: 100% 50%;
-	-webkit-animation: rotateCarouselRightIn .8s both ease;
-	-moz-transform-origin: 100% 50%;
-	-moz-animation: rotateCarouselRightIn .8s both ease;
-	transform-origin: 100% 50%;
-	animation: rotateCarouselRightIn .8s both ease;
-
-
-
+	-webkit-animation: moveFromTopFade .7s ease both;
+	-moz-animation: moveFromTopFade .7s ease both;
+	animation: moveFromTopFade .7s ease both;
 }
+
+
 
 div.scroller { 
 	background: rgba(40,40,40,0.8);
+	height: 100%;
+	padding-top: 3em;
 }
  
 div.scroller.ng-enter.ng-enter-active {
@@ -193,24 +195,20 @@ div.scroller.ng-enter.ng-enter-active {
 }
 
 div.scroller.ng-leave {
-	-webkit-transform-origin: 0% 50%;
-	-webkit-animation: rotateCarouselRightOut .8s both ease;
-	-moz-transform-origin: 0% 50%;
-	-moz-animation: rotateCarouselRightOut .8s both ease;
-	transform-origin: 0% 50%;
-	animation: rotateCarouselRightOut .8s both ease;
- position: absolute;
- width: 100%;
+	position: absolute;
+ 	width: 100%;
+	-webkit-transform-origin: 50% 100%;
+	-webkit-animation: rotatePushBottom .8s both ease;
+	-moz-transform-origin: 50% 100%;
+	-moz-animation: rotatePushBottom .8s both ease;
+	transform-origin: 50% 100%;
+	animation: rotatePushBottom .8s both ease;
 }
-
 
 div.scroller.ng-leave.ng-leave-active {
 
 }
 
-.pt-page-rotateCarouselRightOut {
-
-}
 
 .setback.net { background: url(../images/net.svg) center/contain no-repeat; }
 
@@ -230,22 +228,32 @@ div.scroller.ng-leave.ng-leave-active {
 
 }
 
-@-webkit-keyframes rotateCarouselRightOut {
-	to { opacity: .3; -webkit-transform: translateX(200%) scale(.4) rotateY(65deg); }
+@-webkit-keyframes rotateFoldBottom {
+	to { opacity: 0; -webkit-transform: translateY(100%) rotateX(-90deg); }
 }
-@-moz-keyframes rotateCarouselRightOut {
-	to { opacity: .3; -moz-transform: translateX(200%) scale(.4) rotateY(65deg); }
+@-moz-keyframes rotateFoldBottom {
+	to { opacity: 0; -moz-transform: translateY(100%) rotateX(-90deg); }
 }
-@keyframes rotateCarouselRightOut {
-	to { opacity: .3; transform: translateX(200%) scale(.4) rotateY(65deg); }
+@keyframes rotateFoldBottom {
+	to { opacity: 0; transform: translateY(100%) rotateX(-90deg); }
 }
 
-@-webkit-keyframes rotateCarouselRightIn {
-	from { opacity: .3; -webkit-transform: translateX(-200%) scale(.4) rotateY(-65deg); }
+@-webkit-keyframes moveFromTopFade {
+	from { opacity: 0.3; -webkit-transform: translateY(-100%); }
 }
-@-moz-keyframes rotateCarouselRightIn {
-	from { opacity: .3; -moz-transform: translateX(-200%) scale(.4) rotateY(-65deg); }
+@-moz-keyframes moveFromTopFade {
+	from { opacity: 0.3; -moz-transform: translateY(-100%); }
 }
-@keyframes rotateCarouselRightIn {
-	from { opacity: .3; transform: translateX(-200%) scale(.4) rotateY(-65deg); }
+@keyframes moveFromTopFade {
+	from { opacity: 0.3; transform: translateY(-100%); }
+}
+
+@-webkit-keyframes rotatePushBottom {
+	to { opacity: 0; -webkit-transform: rotateX(90deg); }
+}
+@-moz-keyframes rotatePushBottom {
+	to { opacity: 0; -moz-transform: rotateX(90deg); }
+}
+@keyframes rotatePushBottom {
+	to { opacity: 0; transform: rotateX(90deg); }
 }
