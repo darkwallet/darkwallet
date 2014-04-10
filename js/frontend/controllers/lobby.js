@@ -2,6 +2,8 @@ define(['./module', 'darkwallet', 'frontend/services', 'frontend/channel_link', 
 function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
   'use strict';
 
+  var selectedChannel;
+
   controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
 
   var transport, currentChannel;
@@ -20,10 +22,13 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
           channelLink.addCallback('subscribed', function() {
               toaster.pop('success', 'channel', 'subscribed successfully')
               channelLink.channel.sendOpening();
+              if(!$scope.$$phase) {
+                  $scope.$apply();
+              }
           })
           channelLink.addCallback('Contact', function(data) {
               toaster.pop('success', 'contact', data.body.name)
-              var peer = channelLink.channel.getPeer(data.sender)
+              var peer = data.peer;
               $scope.newContact = data.body;
               $scope.newContact.pubKeyHex = peer.pubKeyHex;
               $scope.newContact.fingerprint = peer.fingerprint;
@@ -33,18 +38,10 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
               var channel = channelLink.channel;
 
               // add user pubKeyHex to use as identicon
-              if (peer) {
-                  data.pubKeyHex = peer.pubKeyHex;
-              } else {
+              if (!data.peer) {
                   // lets set a dummy hex code for now
-                  data.pubKeyHex = "deadbeefdeadbeefdeadbeef";
+                  data.peer = {pubKeyHex: "deadbeefdeadbeefdeadbeef"};
               }
-
-              // add to channel shoutbox
-              if (!$scope.shoutboxLogAll.hasOwnProperty(channel.channelHash)) {
-                  $scope.shoutboxLogAll[channel.channelHash] = [];
-              }
-              $scope.shoutboxLogAll[channel.channelHash].push(data)
 
               // show toaster note
               if (data.sender == channel.fingerprint) {
@@ -57,8 +54,15 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
               }
           })
       }
+      $scope.shoutboxLog = channelLink.channel.chatLog;
+
+      selectedChannel = name;
       $scope.subscribed = channelLink.channel.channelHash;
       currentChannel = channelLink.channel;
+
+      if (!$scope.$$phase) {
+          $scope.$apply();
+      }
       return channelLink;
   }
 
@@ -76,27 +80,10 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
     $scope.lobbyChannels = transport.channels;
 
     $scope.pairCode = '';
-    $scope.subscribed = false;
-    $scope.shoutbox = '';
-    $scope.shoutboxLog = [];
-    $scope.shoutboxLogAll = {};
-
-    // Initialize some own data
-    $scope.comms = transport.comms;
-    $scope.myself = transport.myself;
-    $scope.peers = transport.peers;
-    $scope.peerIds = transport.peerIds;
-    $scope.requests = transport.requests;
 
     // Initialize a channel
     var connectChannel = function(name) {
         var pairCodeHash = transport.hashChannelName(name);
-
-        // Prepare channel view
-        if (!$scope.shoutboxLogAll.hasOwnProperty(pairCodeHash)) {
-            $scope.shoutboxLogAll[pairCodeHash] = [];
-        }
-        $scope.shoutboxLog = $scope.shoutboxLogAll[pairCodeHash];
 
         if (transport.getChannel(name)) {
             // Channel exists, relink
@@ -106,7 +93,29 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
             ChannelLink.start(name, port);
         }
         $scope.subscribed = pairCodeHash;
-        }
+    }
+
+    if (!selectedChannel && transport.channels && transport.channels.length) {
+        // should remember the last connected channel but for
+        // now reconnect the first
+        selectedChannel = transport.channels[transport.channels.length-1].name;
+    }
+
+    $scope.subscribed = false;
+    $scope.shoutbox = '';
+    $scope.shoutboxLog = [];
+
+    // Initialize some own data
+    $scope.comms = transport.comms;
+    $scope.myself = transport.myself;
+    $scope.peers = transport.peers;
+    $scope.peerIds = transport.peerIds;
+    $scope.requests = transport.requests;
+
+    // Now reconnect or initialize
+    if (selectedChannel) {
+        connectChannel(selectedChannel);
+    }
 
     $scope.selectChannel = function(channel) {
         // Relink
@@ -146,9 +155,6 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
         identity.contacts.addContact(newContact)
         $scope.newContact = null;
         toaster.pop('success', 'Contact added')
-    }
-    if(!$scope.$$phase) {
-        $scope.$apply();
     }
   });
 }]);

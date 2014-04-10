@@ -36,7 +36,7 @@
             </button>
           </form>
           <div>
-             <div ng-repeat="shoutLog in shoutboxLog" class="wrapper"><identicon title="{{shoutLog.sender}}" hash="shoutLog.pubKeyHex" icon-size="32"></identicon> {{shoutLog.body.text}}</div>
+             <div ng-repeat="shoutLog in shoutboxLog" class="wrapper"><identicon title="{{shoutLog.sender}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></identicon> {{shoutLog.body.text}}</div>
           </div>
         </div>
       </div>

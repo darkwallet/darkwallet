@@ -28,6 +28,9 @@ function (Bitcoin, multiParty, Curve25519) {
       var self = this;
       var client = transport.getClient();
       this.callbacks = {};
+      this.chatLog = [];
+      // max messages in the log
+      this.maxChatLog = 200;
 
       // Set transport session key
       var priv = transport.getSessionKey().priv;
@@ -61,6 +64,10 @@ function (Bitcoin, multiParty, Curve25519) {
             this.channelSubscribe(function(err, data){
                 if (!err) {
                     self.subscribed = channelHash;
+                    // Internal log only for shout messages for now
+                    self.addCallback('Shout', function(_data) {self.onChatMessage(_data)})
+
+                    // now tell listeners we'resubscribed
                     self.triggerCallbacks('subscribed', {})
                 }
                 console.log("[catchan] channel subscribed", err)
@@ -94,7 +101,6 @@ function (Bitcoin, multiParty, Curve25519) {
   Channel.prototype.sendOpening = function() {
       // Send announcement
       var data = JSON.parse(multiParty.sendPublicKey('all'));
-      data.sender = this.fingerprint;
  
       // Send encrypted
       this.postEncrypted(data, function(err, data){
@@ -155,6 +161,7 @@ function (Bitcoin, multiParty, Curve25519) {
       // add the peer
       var otherKeyBi = BigInteger.fromByteArrayUnsigned(otherKey);
       this.transport.addPeer(otherKey, genFingerprint(otherKeyBi));
+
       // Notify listeners
       this.triggerCallbacks(decoded.type, decoded);
   }
@@ -189,6 +196,7 @@ function (Bitcoin, multiParty, Curve25519) {
       return callback;
   }
   Channel.prototype.triggerCallbacks = function(type, data) {
+      data.peer = this.getPeer(data.sender);
       if (this.callbacks.hasOwnProperty(type)) {
           this.callbacks[type].forEach(function(cb) {cb(data)})
       }
@@ -202,6 +210,13 @@ function (Bitcoin, multiParty, Curve25519) {
       }
   }
   Channel.prototype.removeAllCallbacks = function() {
+      // tell listeners we're being unsubscribed
+      if (this.callbacks['unsubscribed'] && this.callbacks['unsubscribed'].length) {
+          this.callbacks['unsubscribed'].forEach(function(callback) {
+              callback({});
+          });
+      }
+      // Now delete all callbacks
       this.callbacks = {};
   }
 
@@ -245,12 +260,11 @@ function (Bitcoin, multiParty, Curve25519) {
                 multiParty.receiveMessage(decoded.sender, this.fingerprint, decrypted);
                 
               }
-          }
-          else if (decoded.type == 'Shout') {
-              //console.log(decoded.text)
           } else if (decoded.type == 'personal') {
               console.log("[catchan] Decoding DH message");
               this.receiveDH(decoded);
+              // don't want to trigger normal callbacks here.
+              return;
           } else {
               // Not forwarding to cryptocat layer for 'normal' messages
               // multiParty.receiveMessage(decoded.sender, this.fingerprint, rawDecrypted);
@@ -258,6 +272,14 @@ function (Bitcoin, multiParty, Curve25519) {
           this.triggerCallbacks(decoded.type, decoded);
       }
       transport.update();
+  }
+
+  Channel.prototype.onChatMessage = function(data) {
+      // Insert new
+      if (this.chatLog.length > this.maxChatLog) {
+          this.chatLog.pop();
+      }
+      this.chatLog.splice(0,0,data);
   }
 
   Channel.prototype.startPairing = function(fingerprint, pubKey) {
