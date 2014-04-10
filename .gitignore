@@ -31,6 +31,9 @@ Desktop.ini
 !/vendors/angular-route/*.min.js
 /vendors/angular-foundation/*
 !/vendors/angular-foundation/mm-foundation-tpls.min.js
+/vendors/angular-xeditable/*
+!/vendors/angular-xeditable/dist
+/vendors/angular-xeditable/dist/js/xeditable.js
 /vendors/mnemonic.js/*
 !/vendors/mnemonic.js/mnemonic.js
 /vendors/ngprogress/*
