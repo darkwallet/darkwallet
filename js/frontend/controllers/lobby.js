@@ -47,7 +47,7 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
               if (data.sender == channel.fingerprint) {
                   notify.success('me', data.body.text)
               } else {
-                  notify.note(data.sender.slice(0,12), data.text)
+                  notify.note(data.sender.slice(0,12), data.body.text)
               }
               if (!$scope.$$phase) {
                   $scope.$apply();
