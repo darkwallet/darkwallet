@@ -1,5 +1,8 @@
 /** attach providers to this module 
  **/
 define([
-    './notify'
+    './clipboard',
+    './modals',
+    './notify',
+    './sounds'
 ], function () {});

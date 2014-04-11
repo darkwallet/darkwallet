@@ -1,6 +1,9 @@
-define(['util/ng/sound'], function(SoundUtils) {
-var $modal;
-var ModalUtils = {
+define(['./module'], function (providers) {
+'use strict';
+
+providers.factory('modals', ['$modal', 'sounds', function($modal, sounds) {
+
+var modals = {
 
   /**
    * Opens a modal
@@ -60,7 +63,7 @@ var ModalUtils = {
   },
   
   onQrModalOk: function(data, vars) {
-    SoundUtils.play('keygenEnd');
+    sounds.play('keygenEnd');
     if (Array.isArray(vars.field)) {
       vars.field.push({address: data});
     } else {
@@ -70,15 +73,13 @@ var ModalUtils = {
   
   onQrModalCancel: function(data, vars) {
   },
-
-  registerScope: function(scope, modal) {
-    $modal = modal;
-    scope.openModal = ModalUtils.openModal;
-    scope.onQrModalOk = ModalUtils.onQrModalOk;
-    scope.onQrModalCancel = ModalUtils.onQrModalCancel;
+  
+  registerScope: function(scope) {
+    scope.openModal = modals.openModal;
+    scope.onQrModalOk = modals.onQrModalOk;
+    scope.onQrModalCancel = modals.onQrModalCancel;
   }
-
-}
-return ModalUtils;
-
+};
+return modals;
+}]);
 });

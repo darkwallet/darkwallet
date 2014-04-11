@@ -1,5 +1,9 @@
-define(function() {
-var ClipboardUtils = {
+define(['./module'], function (providers) {
+'use strict';
+
+providers.factory('clipboard', ['notify', function(notify) {
+
+var clipboard = {
 
   copyClipboard: function(text) {
     var copyDiv = document.createElement('div');
@@ -26,15 +30,15 @@ var ClipboardUtils = {
     document.getElementById('fixed').removeChild(pasteDiv);
     return text;
   },
-  registerScope: function(scope, notify) {
+  registerScope: function(scope) {
     scope.copyClipboard = function (text) {
-        ClipboardUtils.copyClipboard(text);
+        clipboard.copyClipboard(text);
         notify.note('Copied to clipboard');
     };
-    scope.pasteClipboard = ClipboardUtils.pasteClipboard;
+    scope.pasteClipboard = clipboard.pasteClipboard;
   }
 
-}
-return ClipboardUtils;
-
+};
+return clipboard;
+}]);
 });

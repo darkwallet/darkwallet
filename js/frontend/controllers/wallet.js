@@ -7,12 +7,12 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet', 'frontend/services', 'util/ng/clipboard', 'util/ng/modals'],
-function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
+define(['./module', 'darkwallet', 'frontend/services'],
+function (controllers, DarkWallet, Services) {
   'use strict';
   controllers.controller('WalletCtrl',
-  ['$scope', '$location', 'notify', '$modal', '$timeout',
-   function($scope, $location, notify, $modal, $timeout) {
+  ['$scope', '$location', 'notify', 'clipboard', 'modals', '$timeout',
+   function($scope, $location, notify, clipboard, modals, $timeout) {
   var pubKey, mpKey, addressIndex;
 
   // Pointer to service
@@ -23,8 +23,9 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   $scope.forms = {};
 
   // Global scope utils
-  ModalUtils.registerScope($scope, $modal);
-  ClipboardUtils.registerScope($scope, notify);
+  // TODO: Remove functions in scope
+  modals.registerScope($scope);
+  clipboard.registerScope($scope);
 
   // Gui service, connect to report events on page.
   Services.connectNg('gui', $scope, function(data) {
