@@ -5,7 +5,7 @@
 define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services', 'darkwallet'],
 function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
   'use strict';
-  controllers.controller('HistoryCtrl', ['$scope', 'toaster', function($scope, toaster) {
+  controllers.controller('HistoryCtrl', ['$scope', 'notify', function($scope, notify) {
 
   // Start some structures
   $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $scope.allAddresses, changeAddresses: []};
@@ -294,14 +294,14 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
           try {
               tx = new Bitcoin.Transaction(form.fundTx);
           } catch(e) {
-              toaster.pop('error', 'Error importing', 'Malformed transaction');
+              notify.error('Error importing', 'Malformed transaction');
               console.log(e)
               return;
           }
           var isMine = identity.wallet.txForAddress(walletAddress, tx);
 
           if (!isMine) {
-              toaster.pop('error', 'Error importing', 'Transaction is not for this multisig');
+              notify.error('Error importing', 'Transaction is not for this multisig');
               return;
           }
           try {
@@ -313,15 +313,15 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
           } catch(e) {
               // error probably malformed tx
               console.log("error importing!", e);
-              toaster.pop('error', 'Error importing', 'Malformed transaction');
+              notify.error('Error importing', 'Malformed transaction');
               return;
           }
           if (row) {
               console.log('added transaction', row);
-              toaster.pop('success', 'Imported transaction');
+              notify.success('Imported transaction');
           } else {
               console.log("couldn't add transaction");
-              toaster.pop('warning', 'Already existing?');
+              notify.warning('Already existing?');
           }
       }
     }

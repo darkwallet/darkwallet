@@ -2,7 +2,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
   'use strict';
 
   // Controller
-  controllers.controller('WalletSettingsCtrl', ['$scope', 'toaster', function($scope, toaster) {
+  controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', function($scope, notify) {
   var identity = DarkWallet.getIdentity();
 
   // Available fiat currencies
@@ -14,13 +14,13 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
   $scope.clearStorage = function() {
       var keyRing = DarkWallet.getKeyRing();
       keyRing.clear();
-      toaster.pop('note', 'Storage cleared, please restart your browser.');
+      notify.note('Storage cleared, please restart your browser.');
   }
   
   $scope.clearTasks = function() {
       var identity = DarkWallet.getIdentity();
       identity.tasks.clear();
-      toaster.pop('note', 'Tasks cleared.');
+      notify.note('Tasks cleared.');
   }
   
   $scope.passwordChanged = function() {
@@ -29,7 +29,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
           var success = identity.changePassword($scope.oldPassword, $scope.newPassword);
           if (success) {
               identity.store.save();
-              toaster.pop('note', 'Password changed');
+              notify.note('Password changed');
               $scope.oldPassword = $scope.newPassword = $scope.newPasswordRepeat = '';
               $scope.incorrectPassword = false;
           } else {

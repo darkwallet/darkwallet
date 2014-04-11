@@ -11,8 +11,8 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/ng/clipboard', 'uti
 function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
   'use strict';
   controllers.controller('WalletCtrl',
-  ['$scope', '$location' ,'ngProgress', 'toaster', '$modal', '$timeout',
-   function($scope, $location, ngProgress, toaster, $modal, $timeout) {
+  ['$scope', '$location', 'notify', '$modal', '$timeout',
+   function($scope, $location, notify, $modal, $timeout) {
   var pubKey, mpKey, addressIndex;
 
   // Pointer to service
@@ -24,7 +24,7 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
 
   // Global scope utils
   ModalUtils.registerScope($scope, $modal);
-  ClipboardUtils.registerScope($scope, toaster);
+  ClipboardUtils.registerScope($scope, notify);
 
   // Gui service, connect to report events on page.
   Services.connectNg('gui', $scope, function(data) {
@@ -35,13 +35,13 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
         $scope.currentHeight = data.value;
     }
     if (data.type == 'text' || data.type == 'note') {
-        toaster.pop('note', 'gui', data.text);
+        notify.note('gui', data.text);
     }
     if (data.type == 'error') {
-        toaster.pop('error', data.title || 'gui', data.text);
+        notify.error(data.title || 'gui', data.text);
     }
     if (data.type == 'warning') {
-        toaster.pop('warning', 'gui', data.text);
+        notify.warning('gui', data.text);
     }
     if (['height', 'update', 'balance'].indexOf(data.type) > -1) {
         if (!$scope.$$phase) {
@@ -55,14 +55,14 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
     console.log("[WalletCtrl] obelisk bus:", data.type);
     if (data.type == 'connected') {
         var identity = DarkWallet.getIdentity();
-        toaster.pop('success', 'connected', identity.connections.servers[identity.connections.selectedServer].name);
-        //ngProgress.color('green');
-        //ngProgress.complete();
+        notify.success('connected', identity.connections.servers[identity.connections.selectedServer].name);
+        //notify.progress.color('green');
+        //notify.progress.complete();
     }
     if (data.type == 'connectionError') {
-        toaster.pop("error", "Error connecting", data.error)
-        //ngProgress.color('red');
-        //ngProgress.complete();
+        notify.error("Error connecting", data.error)
+        //notify.progress.color('red');
+        //notify.progress.complete();
     }
   })
 
@@ -139,14 +139,14 @@ function (controllers, DarkWallet, Services, ClipboardUtils, ModalUtils) {
       initializeEmpty();
 
       // this will connect to obelisk if we're not yet connected
-      //ngProgress.color('firebrick');
-      //ngProgress.start();
+      //notify.progress.color('firebrick');
+      //notify.progress.start();
       if (bg.getClient() && bg.getClient().connected) {
           // If already connected set the progress bar to finish
           // we wait a moment to provide better visual feedback
           /*$timeout(function() {
-              ngProgress.color('green');
-              ngProgress.complete();
+              notify.progress.color('green');
+              notify.progress.complete();
           }, 500);*/
       } else {
           // Request connecting to blockchain

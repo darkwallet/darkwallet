@@ -4,7 +4,7 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
 
   var selectedChannel;
 
-  controllers.controller('LobbyCtrl', ['$scope', 'toaster', function($scope, toaster) {
+  controllers.controller('LobbyCtrl', ['$scope', 'notify', function($scope, notify) {
 
   var transport, currentChannel;
 
@@ -20,14 +20,14 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
           channelLink = new ChannelLink(name, $scope);
           channelLinks[name] = channelLink;
           channelLink.addCallback('subscribed', function() {
-              toaster.pop('success', 'channel', 'subscribed successfully')
+              notify.success('channel', 'subscribed successfully')
               channelLink.channel.sendOpening();
               if(!$scope.$$phase) {
                   $scope.$apply();
               }
           })
           channelLink.addCallback('Contact', function(data) {
-              toaster.pop('success', 'contact', data.body.name)
+              notify.success('contact', data.body.name)
               var peer = data.peer;
               $scope.newContact = data.body;
               $scope.newContact.pubKeyHex = peer.pubKeyHex;
@@ -43,11 +43,11 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
                   data.peer = {pubKeyHex: "deadbeefdeadbeefdeadbeef"};
               }
 
-              // show toaster note
+              // show notification
               if (data.sender == channel.fingerprint) {
-                  toaster.pop('success', 'me', data.body.text)
+                  notify.success('me', data.body.text)
               } else {
-                  toaster.pop('note', data.sender.slice(0,12), data.text)
+                  notify.note(data.sender.slice(0,12), data.text)
               }
               if (!$scope.$$phase) {
                   $scope.$apply();
@@ -137,7 +137,7 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
         var identity = DarkWallet.getIdentity();
         var msg = Protocol.ContactMsg(identity);
         currentChannel.postDH(peer.pubKey, msg, function() {
-            toaster.pop("success", "lobby", "pairing sent");
+            notify.success("lobby", "pairing sent");
         });
     }
     $scope.sendText = function() {
@@ -145,7 +145,7 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
         $scope.shoutbox = '';
         currentChannel.postEncrypted(Protocol.ShoutMsg(toSend), function(err, data) {
           if (err) {
-              toaster.pop('error', "error sending " + err)
+              notify.error("error sending " + err)
           }
         });
     }
@@ -154,7 +154,7 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
         var newContact = {name: contact.name, address: contact.stealth, fingerprint: contact.fingerprint};
         identity.contacts.addContact(newContact)
         $scope.newContact = null;
-        toaster.pop('success', 'Contact added')
+        notify.success('Contact added')
     }
   });
 }]);

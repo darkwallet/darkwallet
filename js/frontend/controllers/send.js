@@ -2,7 +2,7 @@ define(['./module', 'frontend/services', 'darkwallet', 'bitcoinjs-lib'],
 function (controllers, Services, DarkWallet, Bitcoin) {
   'use strict';
   var BigInteger = Bitcoin.BigInteger;
-  controllers.controller('WalletSendCtrl', ['$scope', 'toaster', function($scope, toaster) {
+  controllers.controller('WalletSendCtrl', ['$scope', 'notify', function($scope, notify) {
   $scope.send = {recipient: '', amount: 0.2, mixing: true};
   $scope.autoAddEnabled = false;
   $scope.sendPocket = 0;
@@ -96,18 +96,18 @@ function (controllers, Services, DarkWallet, Bitcoin) {
           // this should actually be a starting note, but we don't have a finishing callback yet.
           // we can also use something to show radar progress
           if (error) {
-              toaster.pop('error', "Can't send", ""+error.message);
+              notify.error("Can't send", ""+error.message);
               console.log("error", error);
           } else if (task && task.radar) {
               console.log("radar", task.radar)
           } else if (task && task.type == 'mixer') {
-              toaster.pop('note', 'Sent to mixer ('+task.task.state+')', (fee + totalAmount) + ' satoshis')
+              notify.note('Sent to mixer ('+task.task.state+')', (fee + totalAmount) + ' satoshis')
               console.log("mixer", task)
           } else if (task) {
-              toaster.pop('note', 'Signatures pending', 'Sending ' + (fee + totalAmount) + ' satoshis')
+              notify.note('Signatures pending', 'Sending ' + (fee + totalAmount) + ' satoshis')
               console.log("pending", task)
           } else {
-              toaster.pop('success', 'Bitcoins sent', 'Sent ' + (fee + totalAmount) + ' satoshis');
+              notify.success('Bitcoins sent', 'Sent ' + (fee + totalAmount) + ' satoshis');
           }
       }
 

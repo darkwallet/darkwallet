@@ -13,7 +13,8 @@ define([
     'toaster',
     'frontend/controllers/index',
     'frontend/directives/index',
-    'frontend/filters/index'
+    'frontend/filters/index',
+    'frontend/providers/index'
 ], function (require, angular) {
     'use strict';
     var app = angular.module('DarkWallet', [
@@ -21,7 +22,8 @@ define([
       'ngProgress', 'ngAnimate', 'toaster',
       'DarkWallet.controllers',
       'DarkWallet.directives',
-      'DarkWallet.filters'
+      'DarkWallet.filters',
+      'DarkWallet.providers'
     ]);
     require(['domReady!'], function (document) {
         // * NOTE: the ng-app attribute should not be on the index.html when using ng.bootstrap
