@@ -340,7 +340,7 @@ Wallet.prototype.getPocketWallet = function(idx) {
     // Generate on the fly
     var outputs = this.wallet.outputs;
     var addresses = this.pocketWallets[idx].addresses;
-    var pocketOutputs = [];
+    var pocketOutputs = {};
     Object.keys(outputs).forEach(function(outputKey) {
         var output = outputs[outputKey];
         if (addresses.indexOf(output.address.toString()) != -1) {
@@ -358,8 +358,10 @@ Wallet.prototype.getUtxoToPay = function(value, pocketIdx) {
     var tmpWallet;
     if (pocketIdx == 'all') {
         tmpWallet = this.wallet;
-    } else {
+    } else if(typeof pocketIdx === 'number') {
         tmpWallet = this.getPocketWallet(pocketIdx);
+    } else {
+        throw new Error('invalid parameter');
     }
     return tmpWallet.getUtxoToPay(value);
 }
@@ -372,7 +374,7 @@ Wallet.prototype.prepareTx = function(pocketIdx, recipients, changeAddress, fee)
     var self = this;
     var totalAmount = 0;
     recipients.forEach(function(recipient) {
-        totalAmount = recipient.amount;
+        totalAmount += recipient.amount;
     })
     var isStealth = false;
 
