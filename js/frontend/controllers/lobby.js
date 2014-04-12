@@ -142,6 +142,9 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
     }
     $scope.sendText = function() {
         var toSend = $scope.shoutbox;
+        // don't send empty shouts
+        if (toSend == '')
+          return;
         $scope.shoutbox = '';
         currentChannel.postEncrypted(Protocol.ShoutMsg(toSend), function(err, data) {
           if (err) {
