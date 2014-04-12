@@ -173,7 +173,7 @@ function(Services, Channel, Protocol) {
       return;
     }
     if (msg.sender != this.channel.fingerprint) {
-      console.log("[mixer] CoinJoinOpen", msg.peer, peer);
+      console.log("[mixer] CoinJoinOpen", msg.peer);
       this.evaluateOpening(msg.peer, msg);
     } else {
       console.log("[mixer] My CoinJoinOpen is back", msg);
