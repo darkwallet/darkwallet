@@ -1,7 +1,8 @@
-define(['bitcoinjs-lib', 'util/multiParty', 'util/stealth', 'sjcl'],
-function (Bitcoin, multiParty, Stealth) {
+define(['bitcoinjs-lib', 'util/multiParty', 'util/stealth', 'util/djbec', 'sjcl'],
+function (Bitcoin, multiParty, Stealth, Curve25519) {
   'use strict';
   var CryptoJS = Bitcoin.Crypto;
+  var BigInteger = Bitcoin.BigInteger;
   var convert = Bitcoin.convert;
 
   /*************************************
@@ -31,7 +32,7 @@ function (Bitcoin, multiParty, Stealth) {
    */
   var stealthDecrypt = function(privKey, message) {
     var masterSecret = privKey.export('bytes')
-    var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
+    var priv = BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
 
     var decKey = Stealth.importPublic(message.pub);
     var c = Stealth.stealthDH(priv, decKey)
@@ -82,10 +83,48 @@ function (Bitcoin, multiParty, Stealth) {
   }
 
   /*
+   * Utility function to generate fingerprints like cryptocat
+   * @param {Array} key Public key in bytes from BigInteger.toByteArrayUnsigned
+   */
+  var genFingerprint = function(key) {
+        // Parse the key from bitcoin unsigned byte array api format
+        var keyBi = BigInteger.fromByteArrayUnsigned(key);
+        // now hash
+        return CryptoJS.SHA512(
+                convert.bytesToWordArray(
+                        // this bi2bytes is inverted to bitcoin one and will pad with 0's at the end
+                        Curve25519.bi2bytes(keyBi, 32)
+                )
+        )
+                .toString()
+                .substring(0, 40)
+                .toUpperCase()
+  }
+
+  /*
+   * Adapt a private key for use with curve25519
+   * Input a bitcoin priv here and out will come the protected curve25519 priv
+   * @param {BigInteger} priv A Bitcoin.ECKey private component
+   */
+  var adaptPrivateKey = function(priv) {
+      // User bi2bytes because bitcoin toByteArrayUnsigned doesn't ensure
+      // 32 bytes and also gives bytes reversed (they don't use the same
+      // format)
+      var mysecret = Curve25519.bi2bytes(priv, 32);
+
+      // Check http://cr.yp.to/ecdh.html to why we are doing this
+      mysecret[0] &= 248;
+      mysecret[31] &= 127;
+      mysecret[31] |= 64;
+      // Now back to a big integer
+      return Curve25519.bytes2bi(mysecret);
+  }
+
+  /*
    * Generate a shared secret
+   * @ careful this is curve25519 so don't just use a  bitcoin key!
    */
   var genSharedSecret = function(priv, pub) {
-    //I need to convert the BigInt to WordArray here. I do it using the Base64 representation.
     var sharedSecret = CryptoJS.SHA512(
       convert.bytesToWordArray(
         Curve25519.ecDH(priv,pub).toByteArrayUnsigned()
@@ -139,25 +178,17 @@ function (Bitcoin, multiParty, Stealth) {
     return plaintext.toString(CryptoJS.enc.Utf8);
   }
 
-  /*
-   * Test
-   */
-  var test = function() {
-    var cypher = encrypt('bla', 'foobar!');
-    var plaintext = decrypt('bla', cypher);
-    return plaintext;
-  }
-
   return {
     pbkdf2: pbkdf2,
     encrypt: encrypt,
     decrypt: decrypt,
+    adaptPrivateKey: adaptPrivateKey,
+    genFingerprint: genFingerprint,
     stealth: {
       encrypt: stealthEncrypt,
       decrypt: stealthDecrypt,
       decryptForIdentity: stealthDecryptForIdentity
-    },
-    test: test
+    }
   }
 
 });

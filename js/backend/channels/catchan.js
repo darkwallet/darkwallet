@@ -1,5 +1,5 @@
-define(['bitcoinjs-lib', 'util/multiParty', 'util/djbec', 'sjcl'],
-function (Bitcoin, multiParty, Curve25519) {
+define(['bitcoinjs-lib', 'util/multiParty', 'util/djbec', 'util/encryption', 'sjcl'],
+function (Bitcoin, multiParty, Curve25519, Encryption) {
   'use strict';
 
   var CryptoJS = Bitcoin.Crypto;
@@ -7,19 +7,9 @@ function (Bitcoin, multiParty, Curve25519) {
   var convert = Bitcoin.convert;
   var BigInteger = Bitcoin.BigInteger;
 
-  // Generate a pair of keys for the whole session
-  // Utility function to generate fingerprints like cryptocat
-  var genFingerprint = function(key) {
-	return CryptoJS.SHA512(
-		convert.bytesToWordArray(
-			Curve25519.bi2bytes(key, 32)
-		)
-	)
-		.toString()
-		.substring(0, 40)
-		.toUpperCase()
-  }
-
+  // Utility functions from our encryption module
+  var genFingerprint = Encryption.genFingerprint;
+  var adaptPrivateKey = Encryption.adaptPrivateKey;
 
   /************************************
    * Channel
@@ -34,10 +24,11 @@ function (Bitcoin, multiParty, Curve25519) {
 
       // Set transport session key
       var priv = transport.getSessionKey().priv;
-      multiParty.setPrivateKey(priv);
+      var ecPriv = Encryption.adaptPrivateKey(priv);
+      multiParty.setPrivateKey(ecPriv);
       var pub = multiParty.genPublicKey();
 
-      this.priv = priv;
+      this.priv = ecPriv;
       this.pub = pub;
       this.transport = transport;
       this.name = name;
@@ -159,8 +150,8 @@ function (Bitcoin, multiParty, Curve25519) {
          pubKey: otherKey 
       }
       // add the peer
-      var otherKeyBi = BigInteger.fromByteArrayUnsigned(otherKey);
-      this.transport.addPeer(otherKey, genFingerprint(otherKeyBi));
+      var fingerprint = Encryption.genFingerprint(otherKey);
+      this.transport.addPeer(otherKey, fingerprint);
 
       // Notify listeners
       this.triggerCallbacks(decoded.type, decoded);
@@ -176,6 +167,8 @@ function (Bitcoin, multiParty, Curve25519) {
 
       shared = shared.toByteArrayUnsigned();
       shared = Curve25519.bytes2string(shared)
+
+      // sjcl here will do pbkdf2 on the shared, so thats our real shared secret
       var encrypted = sjcl.encrypt(shared, JSON.stringify(data), {ks: 256, ts: 128});
       this.postEncrypted({'type': 'personal', 'data': encrypted, 'pubKey': myPub}, callback);
   }
@@ -249,9 +242,9 @@ function (Bitcoin, multiParty, Curve25519) {
               first = Object.keys(decoded.text)[0];
               var pubKeyB64 = decoded.text[first]['message'];
               var pubKey = convert.base64ToBytes(pubKeyB64);
-              var pubKeyBi = BigInteger.fromByteArrayUnsigned(pubKey);
-              var newPeer = transport.addPeer(pubKey, genFingerprint(pubKeyBi));
-              this.startPairing(newPeer.fingerprint, pubKey)
+              var fingerprint = Encryption.genFingerprint(pubKey);
+              var newPeer = transport.addPeer(pubKey, fingerprint);
+              this.startPairing(fingerprint, pubKey)
               // set key owner to 'myName' so cryptocat will import the key
               if (first == 'all') {
                 multiParty.receiveMessage(decoded.sender, first, decrypted);
