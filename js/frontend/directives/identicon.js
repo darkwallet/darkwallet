@@ -1,4 +1,5 @@
 define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identicon, Bitcoin) {
+  var iconCache = {};
   directives.directive('identicon', function () {
     return {
       restrict: 'E', // element
@@ -11,7 +12,13 @@ define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identic
 
         // Create the identicon
         function createFromHex(dataHex) {
-          var data = new Identicon(dataHex, iconSize).toString();
+          var data;
+          if (iconCache.hasOwnProperty(dataHex)) {
+              data = iconCache[dataHex];
+          } else {
+              data = new Identicon(dataHex, iconSize).toString();
+              iconCache[dataHex] = data;
+          }
           element.html('<img class="identicon" src="data:image/png;base64,' + data + '">');
         }
         // Watch for hash changes
