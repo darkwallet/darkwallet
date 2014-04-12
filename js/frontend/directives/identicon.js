@@ -18,7 +18,8 @@ define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identic
         scope.$watch('hash', function() {
           if (scope.hash) {
             var pubKeyBytes = Bitcoin.convert.hexToBytes(scope.hash);
-            createFromBytes(pubKeyBytes.slice(8,16));
+            // take 11 bytes: 22 hex - 60 bit shape, 28 bit color
+            createFromBytes(pubKeyBytes.slice(8,19));
           }
         })
       }
