@@ -13,11 +13,12 @@ define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identic
         // Create the identicon
         function createFromHex(dataHex) {
           var data;
-          if (iconCache.hasOwnProperty(dataHex)) {
-              data = iconCache[dataHex];
+          var iconId = [dataHex, iconSize];
+          if (iconCache.hasOwnProperty(iconId)) {
+              data = iconCache[iconId];
           } else {
               data = new Identicon(dataHex, iconSize).toString();
-              iconCache[dataHex] = data;
+              iconCache[iconId] = data;
           }
           element.html('<img class="identicon" src="data:image/png;base64,' + data + '">');
         }
