@@ -1,4 +1,4 @@
-define(['backend/services', 'backend/channels/catchan'], function(Services, Channel) {
+define(['backend/services', 'backend/channels/catchan', 'darkwallet'], function(Services, Channel, DarkWallet) {
   'use strict';
 
   /*
@@ -29,13 +29,16 @@ define(['backend/services', 'backend/channels/catchan'], function(Services, Chan
   }
   
   NotifierService.prototype.onChannelOpen = function(channel, msg) {
-    console.log("[notifier] Received message: " + msg.body.text);
-    var notification = new Notification(channel, {body: msg.body.text});
-    notification.onshow = function() {
-      setTimeout(function() {
-        notification.close();
-      }, 10000);
-    };
+    var identity = DarkWallet.getIdentity();
+    if (DarkWallet.getIdentity().store.get("popup-notifications") == true) {
+      console.log("[notifier] Received message: " + msg.body.text);
+      var notification = new Notification(channel, {body: msg.body.text});
+      notification.onshow = function() {
+        setTimeout(function() {
+          notification.close();
+        }, 10000);
+      };
+    }
   }
 
   return NotifierService;

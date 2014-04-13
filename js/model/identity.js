@@ -80,6 +80,7 @@ Identity.prototype.generate = function(seed, password) {
     this.store.set('pubkeys', {});
     this.store.set('contacts', {});
     this.store.set('transactions', {});
+    this.store.set("popup-notifications", true);
     this.store.save();
 }
 
