@@ -218,7 +218,7 @@ div.scroller.ng-leave.ng-leave-active {
 
 .setback.notifications { background: url(../images/notifications.svg) right/contain no-repeat; }
 
-.lobbyback { background: url(../images/virtual.svg) top/cover no-repeat; }
+.lobbyback { background: url(../images/virtual.svg) top/cover no-repeat; background-attachment: fixed; }
 
 .setback > * { opacity: 0.8; }
 
