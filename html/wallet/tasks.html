@@ -1,4 +1,4 @@
-      <tab heading="Tasks" ng-show="isFund && pocket.tasks.length">
+      <tab heading="Tasks" ng-show="isFund && pocket.tasks.length" ng-controller="FundCtrl">
         <div ng-repeat="task in pocket.tasks">
             <h2>Collect signatures</h2>
             <div><b>Signatures:</b> {{task.signatures.length}} of {{pocket.fund.m}}</div>
@@ -9,6 +9,21 @@
             <div ng-repeat="out in task.tx.outs">
                <li>{{out.address.toString()}} <b>{{out.value | currencyPresenter}}</b></li>
             </div>
+
+
+            <!-- Sign -->
+            <button ng-click="signFundTx(task)" class="button postfix fa large-6 fa-pencil" >Sign</button>
+
+            <!-- Import sig -->
+            <button class="button postfix fa large-6 fa-download" ng-click="importingFundSig = !importingFundSig">Import Sig</button>
+            <form name="fundImportSigForm" novalidate ng-submit="importFundSig(fundImportSigForm, task)" ng-show="importingFundSig">
+                <input required ng-model="fundImportSigForm.text" type="text" placeholder="Paste the signature here"></input>
+                <button class="button postfix fa large-6 fa-check" type="submit">Import</button>
+                <button class="alert button postfix large-6 fa fa-times" ng-click="importingFundSig=false">Cancel</button>
+            </form>
+
+
+
         </div>
       </tab>
 

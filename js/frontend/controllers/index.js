@@ -17,5 +17,6 @@ define([
     './wallet',
     './calculator',
     './servers',
+    './fund',
     './rcv_stealth'
 ], function () {});

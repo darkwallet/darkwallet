@@ -33,6 +33,7 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
           // Current identity
           participant.type = 'me';
           participant.name = identity.name;
+          participant.address = walletAddress;
           // In some cases would not be the stealth identifier.
           // Also, doing it like this so it would show the same as in contacts..
           participant.hash = Bitcoin.Crypto.SHA256(walletAddress.stealth).toString();
@@ -70,7 +71,7 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
           tasks.forEach(function(task) {
               if (task.pending[0].address == fund.address) {
                   var tx = new Bitcoin.Transaction(task.tx);
-                  res.push({tx: tx, task: task, signatures: []});
+                  res.push({tx: tx, task: task});
               }
           });
       }
@@ -279,53 +280,6 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
       console.log('Move funds not implemented yet');
     })
   };
-  // Fund functions
-  $scope.importTx = function(form) {
-    if (form.$valid) {
-      // import transaction here
-      var identity = $scope.identity;
-      var walletAddress = identity.wallet.getWalletAddress($scope.pocket.fund.address);
-
-      if (walletAddress) {
-          // TODO: should we check the transaction is relevant for the address?
-          // we import the tx
-          
-          var tx, row;
-          try {
-              tx = new Bitcoin.Transaction(form.fundTx);
-          } catch(e) {
-              notify.error('Error importing', 'Malformed transaction');
-              console.log(e)
-              return;
-          }
-          var isMine = identity.wallet.txForAddress(walletAddress, tx);
-
-          if (!isMine) {
-              notify.error('Error importing', 'Transaction is not for this multisig');
-              return;
-          }
-          try {
-              // TODO: need to do this till we update bitcoinjs-lib...
-              identity.wallet.wallet.processTx(tx, 0);
-
-              // now import the transaction as usual
-              row = identity.wallet.processTx(walletAddress, form.fundTx, 0);
-          } catch(e) {
-              // error probably malformed tx
-              console.log("error importing!", e);
-              notify.error('Error importing', 'Malformed transaction');
-              return;
-          }
-          if (row) {
-              console.log('added transaction', row);
-              notify.success('Imported transaction');
-          } else {
-              console.log("couldn't add transaction");
-              notify.warning('Already existing?');
-          }
-      }
-    }
-  }
 
 }]);
 });
