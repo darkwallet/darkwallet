@@ -4570,8 +4570,7 @@ div.scroller {
   height: 100%;
   width: 100%;
   padding-top: 3em;
-  position: absolute;
-  overflow-y: scroll; }
+  position: absolute; }
 
 
 div.scroller.ng-leave {
