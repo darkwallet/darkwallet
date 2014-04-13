@@ -45,6 +45,7 @@ define(['model/wallet'], function(Wallet) {
             "pubKey": [3, 50, 218, 12, 146, 113, 33, 187, 22, 13, 255, 253, 179, 214, 231, 44, 106, 101, 42, 32, 131, 221, 191, 197, 41, 239, 222, 46, 25, 98, 164, 161, 135]
           },
           "2,0": {
+            // this is not really the 2,0 address.... it's 1,0 :P
             "address": "1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs",
             "balance": 5000000,
             "height": 269614,
@@ -294,6 +295,22 @@ define(['model/wallet'], function(Wallet) {
       // Derive and store
       expect(wallet.getAddress([5,1]).address).toBe('1LMCt3RZ2fX3Tv4aSUdJxpjZ2AL72Fw7NK');
       expect(wallet.wallet.addresses).toContain('1LMCt3RZ2fX3Tv4aSUdJxpjZ2AL72Fw7NK');
+    });
+
+    it('gets a free address', function() {
+      // Already stored
+      expect(wallet.getFreeAddress(0).address).toBe('1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs');
+      // Derive and store
+      expect(wallet.getFreeAddress(1).address).toBe('1JcmPQq3375pgukzqefdqQdpR4M9ThuR7x');
+      expect(wallet.wallet.addresses).toContain('1JcmPQq3375pgukzqefdqQdpR4M9ThuR7x');
+    });
+
+    it('gets a change address', function() {
+      // Already stored
+      expect(wallet.getChangeAddress(0).address).toBe('1JcmPQq3375pgukzqefdqQdpR4M9ThuR7x');
+      // Derive and store
+      expect(wallet.getChangeAddress(1).address).toBe('1C5hWKG2yqFpUX7QdDqFsZymER1dbRNCh7');
+      expect(wallet.wallet.addresses).toContain('1C5hWKG2yqFpUX7QdDqFsZymER1dbRNCh7');
     });
     
     it('gets wallet address', function() {
