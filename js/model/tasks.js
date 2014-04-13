@@ -31,7 +31,19 @@ Tasks.prototype.removeTask = function(section, task) {
     this.store.save();
 }
 
-Tasks.prototype.getOpenTasks = function() {
+/**
+ * Get task objects for a section
+ * @param {string} section Section name
+ * returns a list with the tasks.
+ */
+Tasks.prototype.getTasks = function(section) {
+    if (this.tasks.hasOwnProperty(section)) {
+        return this.tasks[section];
+    }
+    return [];
+}
+
+Tasks.prototype.getOpenTasks = function(section) {
     var self = this;
     var nOpen = 0;
     Object.keys(this.tasks).forEach(function(section) {

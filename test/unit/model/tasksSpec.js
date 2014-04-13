@@ -57,6 +57,13 @@ define(['model/tasks'], function(Tasks) {
       tasks.tasks = tasksSample;
       expect(tasks.getOpenTasks()).toEqual(3);
     });
+
+    it('gets tasks for a section', function() {
+      tasks.tasks = tasksSample;
+      expect(tasks.getTasks('multisig').length).toEqual(2);
+      expect(tasks.getTasks('foo').length).toEqual(1);
+      expect(tasks.getTasks('blah').length).toEqual(0);
+    });
     
     it('clears all tasks', function() {
       var task = {epic: 'fail'};
