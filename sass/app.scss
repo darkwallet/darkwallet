@@ -186,7 +186,9 @@ div.scroller.ng-enter {
 div.scroller { 
 	background: rgba(40,40,40,0.8);
 	height: 100%;
+	width: 100%;
 	padding-top: 3em;
+	position: absolute;
 }
  
 div.scroller.ng-enter.ng-enter-active {
