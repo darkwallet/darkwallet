@@ -225,7 +225,7 @@ div.chat-text {
 .lobbyback { 
 	background: url(../images/virtual.svg) top/cover no-repeat;
 	background-attachment: fixed;
-	overflow-x: scroll;
+	overflow-y: scroll;
  }
 
 .setback > * { opacity: 0.8; }
