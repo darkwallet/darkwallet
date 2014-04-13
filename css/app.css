@@ -5464,7 +5464,9 @@ div.scroller.ng-enter {
 div.scroller {
   background: rgba(40, 40, 40, 0.8);
   height: 100%;
-  padding-top: 3em; }
+  width: 100%;
+  padding-top: 3em;
+  position: absolute; }
 
 
 div.scroller.ng-leave {
@@ -5488,7 +5490,7 @@ div.scroller.ng-leave {
   background: url(../images/notifications.svg) right/contain no-repeat; }
 
 .lobbyback {
-  background: url(../images/virtual.svg) top/cover no-repeat; }
+  background: url(../images/virtual.svg) top/cover no-repeat; background-attachment: fixed; }
 
 .setback > * {
   opacity: 0.8; }
