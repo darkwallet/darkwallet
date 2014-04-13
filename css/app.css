@@ -4570,7 +4570,8 @@ div.scroller {
   height: 100%;
   width: 100%;
   padding-top: 3em;
-  position: absolute; }
+  position: absolute;
+  overflow-y: scroll; }
 
 
 div.scroller.ng-leave {
@@ -4598,7 +4599,8 @@ div.chat-text {
 
 .lobbyback {
   background: url(../images/virtual.svg) top/cover no-repeat;
-  background-attachment: fixed; }
+  background-attachment: fixed;
+  overflow-x: scroll; }
 
 .setback > * {
   opacity: 0.8; }

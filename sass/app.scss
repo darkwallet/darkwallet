@@ -189,6 +189,7 @@ div.scroller {
 	width: 100%;
 	padding-top: 3em;
 	position: absolute;
+	overflow-y: scroll;
 }
  
 div.scroller.ng-enter.ng-enter-active {
@@ -222,7 +223,11 @@ div.chat-text {
 
 .setback.notifications { background: url(../images/notifications.svg) right/contain no-repeat; }
 
-.lobbyback { background: url(../images/virtual.svg) top/cover no-repeat; background-attachment: fixed; }
+.lobbyback { 
+	background: url(../images/virtual.svg) top/cover no-repeat;
+	background-attachment: fixed;
+	overflow-x: scroll;
+ }
 
 .setback > * { opacity: 0.8; }
 
