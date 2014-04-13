@@ -10,6 +10,13 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
   $scope.selectedCurrency = identity.settings.currency;
   $scope.selectedFiat = identity.settings.fiatCurrency;
 
+  // restore state of 'checkbox_notify' on startup
+  if (DarkWallet.getIdentity().store.get("popup-notifications") == true) {
+    $scope.checkbox_notify = true;
+  } else {
+    $scope.checkbox_notify = false;
+  }
+
   // Clear the local storage
   $scope.clearStorage = function() {
       var keyRing = DarkWallet.getKeyRing();
@@ -56,6 +63,16 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
       if (!isNaN($scope.defaultFee)) {
           identity.wallet.setDefaultFee($scope.defaultFee*100000000);
       }
+  }
+  $scope.togglePopupNotifications = function() {
+      var identity = DarkWallet.getIdentity();
+      if ($scope.checkbox_notify == true) {
+        identity.store.set("popup-notifications", false);
+      } else {
+        identity.store.set("popup-notifications", true);
+      }
+
+      identity.store.save();
   }
   $scope.showSeed = function(){
       /* show mnemonic pass and hex seed*/
