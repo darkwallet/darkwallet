@@ -2,7 +2,7 @@
     <div class="row">
       <!-- Channel list -->
       <div class="large-2 columns panel">
-          <h2>Channels</h2>
+          <h4>Channels</h4>
           <div ng-show="lobbyChannels">
               <select class="select-list" size="10">
               <option ng-click="selectChannel(channel)" ng-selected="channel.channelHash == subscribed" ng-repeat="channel in lobbyChannels">{{channel.name}} {{channel.channelHash.slice(0,8)}}...</option>
@@ -12,41 +12,45 @@
             <label>
               <input ng-model="pairCode" type="password" class="password" value="" placeholder="Enter channel name" />
             </label>
-            <button class="button button-and-icon" ng-click="joinChannel();">
+            <button class="button small radius expand" ng-click="joinChannel();">
               <div><i class="icon-large icon-qrcode"></i></div>Join
             </button>
           </form>
       </div>
 
       <!-- Channel window -->
-      <div class="large-6 columns">
-        <div ng-show="!subscribed">
-          <h2>Channel</h2>
-          No channel subscribed.
+      <div class="large-7 columns">
+        <div ng-show="!subscribed" class="panel">
+          Join a channel on the left to start!
         </div>
         <div ng-show="subscribed">
-          <h2>Channel: {{subscribed.slice(0, 8)}}...</h2>
           <form>
-            <label>
-              <input ng-model="shoutbox" type="text" value="" />
-            </label>
-            <button class="button button-and-icon" ng-click="sendText();">
-              <div><i class="icon-large icon-qrcode"></i></div>Shout!
-            </button>
+            <div class="row collapse panel radius">
+              <div class="large-9 columns">
+                <input ng-model="shoutbox" type="text" value="" />
+              </div>
+              <div class="large-3 columns">
+                <button class="button postfix radius fa fa-comments" ng-click="sendText();">Shout!</button>
+              </div>
+            </div>
           </form>
-          <div>
+          <div class="chat-text">
              <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><identicon title="{{shoutLog.sender}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></identicon> {{shoutLog.body.text}}</div>
           </div>
         </div>
       </div>
 
       <!-- Peers area -->
-      <div class="large-2 columns" ng-show="!newContact">
-          <h2>Self</h2>
+      <div class="large-3 columns" ng-show="!newContact">
+          <div ng-show="subscribed">
+            <h5>Channel</h5>
+            <span class="label">{{subscribed.slice(0, 8)}}</span>
+          </div>
+          <h5>Your permanent identity</h5>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
-          <h3>Cloak</h3>
+          <h5>Your temporary identity</h5>
           <div class="wrapper"><identicon title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></identicon> {{comms.name}}</div>
-          <h2>Peers</h2>
+          <h5>Peers</h5>
           <div ng-repeat="peer in peers">
             <span ng-click="selectPeer(peer)"><identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}</span> <a ng-click="pairPeer(peer)">pair</a>
           </div>
