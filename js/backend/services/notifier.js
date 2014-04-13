@@ -24,13 +24,13 @@ define(['backend/services', 'backend/channels/catchan', 'darkwallet'], function(
     var lobbyTransport = this.core.getLobbyTransport();
     if (!this.channel) {
       this.channel = lobbyTransport.initChannel(channel, Channel);
-      this.channel.addCallback('Shout', function(_d) {self.onChannelOpen(channel, _d)});
+      this.channel.addCallback('Shout', function(_d) {self.onShout(channel, _d)});
     }
   }
   
-  NotifierService.prototype.onChannelOpen = function(channel, msg) {
+  NotifierService.prototype.onShout = function(channel, msg) {
     var identity = DarkWallet.getIdentity();
-    if (DarkWallet.getIdentity().store.get("popup-notifications") == true) {
+    if (identity.settings.notifications.popup) {
       console.log("[notifier] Received message: " + msg.body.text);
       var notification = new Notification(channel, {body: msg.body.text});
       notification.onshow = function() {
