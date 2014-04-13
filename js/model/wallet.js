@@ -307,6 +307,51 @@ Wallet.prototype.getAddress = function(seq) {
 }
 
 /**
+ * Get a free address from a branch id (can be pocket or pocket+1 for change)
+ * @param {Array} seq Array for the bip32 sequence to retrieve address for
+ */
+Wallet.prototype.getFreeAddress = function(branchIndex) {
+    var walletAddress;
+    if (typeof pocketIndex == 'string') {
+        // multisig get the same address again
+        walletAddress = this.getWalletAddress(branchIndex);
+        if (walletAddress.type != 'multisig') {
+           throw Error("Generated an incorrect change address");
+        }
+    } else {
+        // normal address, get the address
+        var n = 0;
+        do {
+            walletAddress = this.getAddress([branchIndex, n]);
+            n += 1;
+        } while (walletAddress.nOutputs > 0);
+
+        // This should have no type
+        if (walletAddress.type) {
+           throw Error("Generated an incorrect change address");
+        }
+    }
+    return walletAddress;
+}
+
+/**
+ * Get a free change address for a pocket
+ * @param {Object} pocketIndex Index for the pocket, can be string for
+ *                 multisigs or int for a normal pocket (as usual).
+ */
+
+Wallet.prototype.getChangeAddress = function(pocketIndex) {
+    var branchIndex;
+    if (typeof pocketIndex == 'string') {
+        branchIndex = pocketIndex;
+    } else {
+        // Change branch
+        branchIndex = pocketIndex+1;
+    }
+    return this.getFreeAddress(branchIndex);
+}
+
+/**
  * Get the wallet address structure for an address.
  * The structure has the following fields:
  *   index: bip32 sequence
