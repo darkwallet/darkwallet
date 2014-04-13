@@ -108,7 +108,7 @@ define(['model/wallet'], function(Wallet) {
       expect(wallet.scanKeys[0].priv).toBeDefined();
       expect(wallet.scanKeys[0].pub).toBeDefined();
       expect(wallet.pockets).toEqual([{name: 'default'}, {name: 'savings'}]);
-      expect(wallet.pocketWallets).toEqual([{addresses: ['1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ'], balance: 0}, {addresses: ['1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs' ], balance: 0}]);
+      expect(wallet.pocketWallets).toEqual({0: {addresses: ['1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ'], balance: 0}, 1: {addresses: ['1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs' ], balance: 0}});
       expect(wallet.mpk).toBe('xpub693Ab9Kv7vQjSJ9fZLKAWjqPUEjSyM7LidCCZW8wGosvZKi3Pf2ijiGe1MDTBmQnpXU795HNb4ebuW95tbLNuAzXndALZpRkRaRCbXDhafA');
       expect(wallet.wallet).toBeDefined();
       expect(wallet.multisig).toBeDefined();
@@ -123,7 +123,7 @@ define(['model/wallet'], function(Wallet) {
       expect(wallet.pubKeys).toEqual({});
       expect(wallet.scanKeys).toEqual([]);
       expect(wallet.pockets).toEqual([{name: 'default'}, {name: 'savings'}]);
-      expect(wallet.pocketWallets).toEqual([{addresses: [], balance: 0}, {addresses: [], balance: 0}]);
+      expect(wallet.pocketWallets).toEqual({0: {addresses: [], balance: 0}, 1: {addresses: [], balance: 0}});
       expect(wallet.mpk).toBeFalsy();
       expect(wallet.wallet).toBeDefined();
       expect(wallet.multisig).toBeDefined();
@@ -142,7 +142,7 @@ define(['model/wallet'], function(Wallet) {
       wallet.createPocket('Spendings');
       expect(wallet.pockets).toEqual(pockets);
       expect(_store.pockets).toEqual(pockets);
-      expect(wallet.pocketWallets.length).toBe(3);
+      expect(Object.keys(wallet.pocketWallets).length).toBe(3);
 
       // Do not allow duplicates
       expect(function() {
@@ -169,7 +169,7 @@ define(['model/wallet'], function(Wallet) {
       wallet.deletePocket('default');
       expect(wallet.pockets).toEqual([null, {name: 'savings'}]);
       expect(_store.pockets).toEqual([null, {name: 'savings'}]);
-      expect(wallet.pocketWallets.length).toBe(2);
+      expect(Object.keys(wallet.pocketWallets).length).toBe(2);
     });
     
     it('get pocket index for an address', function() {
@@ -198,10 +198,10 @@ define(['model/wallet'], function(Wallet) {
       wallet.addToPocket({index: [0,2], address: '12...'});
       wallet.addToPocket({index: [1,1], address: '14...'});
       wallet.addToPocket({index: [2,1], address: '16...'});
-      expect(wallet.pocketWallets).toEqual([
-        {addresses: ['10...', '12...', '14...'], balance: 0},
-        {addresses: ['16...'], balance: 0}
-      ]);
+      expect(wallet.pocketWallets).toEqual({
+        0: {addresses: ['10...', '12...', '14...'], balance: 0},
+        1: {addresses: ['16...'], balance: 0}
+      });
     });
     
     it('adds an addres to itself', function() {
@@ -226,10 +226,10 @@ define(['model/wallet'], function(Wallet) {
         "1,1": walletAddress2,
         "2,1": walletAddress3
       });
-      expect(wallet.pocketWallets).toEqual([
-        {addresses: ['10...', '12...', '14...'], balance: 0},
-        {addresses: ['16...'], balance: 0}
-      ]);
+      expect(wallet.pocketWallets).toEqual({
+        0: {addresses: ['10...', '12...', '14...'], balance: 0},
+        1: {addresses: ['16...'], balance: 0}
+      });
       expect(_store.wallet.addresses).toEqual(['10...', '12...', '14...', '16...']);
     });
     
@@ -357,7 +357,7 @@ define(['model/wallet'], function(Wallet) {
         wallet.getUtxoToPay(999999999999, 'all');
       }).toThrow();
       
-      // Throws if value is invalid (not a numeric value)
+      // Throws if pocket is invalid
       expect(function() {
         wallet.getUtxoToPay(Number.NaN, 'all');
       }).toThrow();

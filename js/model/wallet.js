@@ -43,7 +43,7 @@ Wallet.prototype.initPockets = function(store) {
         };
     }
     // Init pocket wallets (temporary cache for pockets)
-    this.pocketWallets = [];
+    this.pocketWallets = {};
     for(var idx=0; idx< pockets.length; idx++) {
         this.initPocket(idx);
     };
@@ -147,7 +147,7 @@ Wallet.prototype.addToPocket = function(walletAddress) {
     var pocketIdx = this.getAddressPocketIdx(walletAddress);
 
     // add to the list of pocket addresses
-    if (!this.pocketWallets[pocketIdx]) {
+    if (!this.pocketWallets.hasOwnProperty(pocketIdx)) {
         this.initPocket(pocketIdx)
     }
     this.pocketWallets[pocketIdx].addresses.push(walletAddress.address);
@@ -337,6 +337,9 @@ Wallet.prototype.setDefaultFee = function(newFee) {
 }
 
 Wallet.prototype.getPocketWallet = function(idx) {
+    if (!this.pocketWallets.hasOwnProperty(idx)) {
+        throw Error("Pocket doesn't exist");
+    }
     // Generate on the fly
     var outputs = this.wallet.outputs;
     var addresses = this.pocketWallets[idx].addresses;
@@ -358,10 +361,8 @@ Wallet.prototype.getUtxoToPay = function(value, pocketIdx) {
     var tmpWallet;
     if (pocketIdx == 'all') {
         tmpWallet = this.wallet;
-    } else if(typeof pocketIdx === 'number') {
-        tmpWallet = this.getPocketWallet(pocketIdx);
     } else {
-        throw new Error('invalid parameter');
+        tmpWallet = this.getPocketWallet(pocketIdx);
     }
     return tmpWallet.getUtxoToPay(value);
 }
@@ -476,23 +477,24 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
 
 /*
  * Check if transaction involves given address.
+ * Returns an array with involved inputs
  */
 Wallet.prototype.txForAddress = function(walletAddress, tx) {
-    var isMine = false;
     var identity = this.identity;
     // Maybe we could just check if we have the outpoints here instead of
     // looking for the address (but we don't have per address outpoint lists yet...).
+    var inputs = [];
     for(var i=0; i<tx.ins.length; i++) {
         var outpoint = tx.ins[i].outpoint;
         var txHash = outpoint.hash;
          if (identity.txdb.transactions.hasOwnProperty(txHash)) {
             var prevTx = new Bitcoin.Transaction(identity.txdb.transactions[txHash]);
             if (prevTx.outs[outpoint.index].address == walletAddress.address) {
-                return true;
+                inputs.push({index: i, address: walletAddress.address, outpoint: outpoint})
             }
         }
     };
-    return isMine;
+    return inputs;
 }
 
 
