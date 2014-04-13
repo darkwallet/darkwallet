@@ -14,6 +14,11 @@ function Tasks(store) {
   this.tasks = this.store.init('tasks', {});
 }
 
+/**
+ * Add a task into the given section
+ * @param {string} section Section name
+ * @param {Object} task Task to add
+ */
 Tasks.prototype.addTask = function(section, task) {
     if (!this.tasks.hasOwnProperty(section)) {
         this.tasks[section] = [];
@@ -22,6 +27,11 @@ Tasks.prototype.addTask = function(section, task) {
     this.store.save();
 }
 
+/**
+ * Remove a task from the given section
+ * @param {string} section Section name
+ * @param {Object} task Task to remove
+ */
 Tasks.prototype.removeTask = function(section, task) {
     if (!this.tasks.hasOwnProperty(section)) {
         return;
@@ -43,6 +53,11 @@ Tasks.prototype.getTasks = function(section) {
     return [];
 }
 
+/**
+ * Get the number of tasks in the given section
+ * @param {string} section Section name
+ * returns the number of tasks.
+ */
 Tasks.prototype.getOpenTasks = function(section) {
     var self = this;
     var nOpen = 0;
@@ -52,6 +67,9 @@ Tasks.prototype.getOpenTasks = function(section) {
     return nOpen;
 }
 
+/**
+ * Clear all tasks
+ */
 Tasks.prototype.clear = function() {
     var self = this;
     Object.keys(this.tasks).forEach(function(section) {
