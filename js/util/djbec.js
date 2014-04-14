@@ -18,10 +18,6 @@ var convert = Bitcoin.convert;
 //  Running under v8 highly recommended.  Anything else is pretty slow.
 
 
-BigInteger.prototype.toSource = function(b) {
-  return bnToString.call(this, b) + "L";
-}
-
 function chr(n) { return String.fromCharCode(n); }
 function ord(c) { return c.charCodeAt(0); }
 
@@ -248,8 +244,6 @@ function isoncurve(p) {
   return y.times(y).minus(x.times(x)).minus(one).minus(v).mod(q).equals(zero);
 }
 
-function decodeint(v) { return bytes2bi(v,32); }
-
 function decodepoint(v) {
   var y = bytes2bi(v, 32).and(two.pow(xff).minus(one));
   x = xrecover(y);
@@ -337,6 +331,7 @@ return {
   'signature': signature,
   'checksig': checksig,
   'sig_test': sig_test,
+  'dh_test': dh_test,
   'inthash': inthash,
   'bi2bytes': bi2bytes,
   'bytes2bi': bytes2bi,
