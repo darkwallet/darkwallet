@@ -117,10 +117,7 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
     var identity = this.core.getCurrentIdentity();
     console.log('[mixer] check Tasks!', identity);
 
-    if (identity.tasks.tasks['mixer']) {
-      return identity.tasks.tasks['mixer'].length;
-    }
-    return false;
+    return identity.tasks.getTasks('mixer').length;
   }
 
   /*
@@ -130,10 +127,8 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
     var self = this;
     var identity = this.core.getCurrentIdentity();
 
-    if (!identity.tasks.tasks.hasOwnProperty('mixer')) {
-      return;
-    }
-    identity.tasks.tasks['mixer'].forEach(function(task) {
+    var tasks = identity.tasks.getTasks('mixer');
+    tasks.forEach(function(task) {
       self.startTask(task);
     });
   }
@@ -217,10 +212,10 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
   MixerService.prototype.getOngoing = function(msg) {
       var coinJoin = this.ongoing[msg.id];
       if (!coinJoin) {
-          console.log("CoinJoin not found!");
+          console.log("[mixer] CoinJoin not found!");
       }
       else if (coinJoin.state != 'announce' && msg.peer.fingerprint != coinJoin.peer.fingerprint) {
-          console.log("CoinJoin message from the wrong peer!", msg);
+          console.log("[mixer] CoinJoin message from the wrong peer!", msg);
           return;
       }
       return coinJoin;
