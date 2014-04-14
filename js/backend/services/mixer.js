@@ -91,7 +91,7 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
         var msg = Protocol.CoinJoinOpenMsg(id, task.myamount);
         console.log("[mixer] Announce join");
         var myTx = new Bitcoin.Transaction(task.tx);
-        this.ongoing[id] = new CoinJoin(core, 'initiator', 'announce', myTx.clone(), task.myamount, task.fee);
+        this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', myTx.clone(), task.myamount, task.fee);
         this.ongoing[id].task = task;
 
         this.channel.postEncrypted(msg, function(err, data) {
@@ -177,7 +177,7 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
 
       // Build the tx
       var tx = identity.wallet.prepareTx(pocketIndex, [recipient], changeAddress, fee);
-      this.ongoing[opening.id] = new CoinJoin(core, 'guest', 'accepted', tx.clone(), opening.amount, fee);
+      this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', tx.clone(), opening.amount, fee);
       // Post using end to end channel capabilities
       this.sendTo(peer, opening.id, tx.tx)
     }
