@@ -1,5 +1,5 @@
-define(['backend/services', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib'],
-function(Services, Channel, Protocol, Bitcoin) {
+define(['backend/services', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin'],
+function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
   'use strict';
 
   /*
@@ -91,7 +91,9 @@ function(Services, Channel, Protocol, Bitcoin) {
         var msg = Protocol.CoinJoinOpenMsg(id, task.myamount);
         console.log("[mixer] Announce join");
         var myTx = new Bitcoin.Transaction(task.tx);
-        this.ongoing[id] = {role: 'initiator', myTx: myTx.clone(), tx: myTx, state: 'announce', task: task};
+        this.ongoing[id] = new CoinJoin('initiator', 'announce', myTx.clone(), task.myamount, task.fee);
+        this.ongoing[id].task = task;
+
         this.channel.postEncrypted(msg, function(err, data) {
           if (err) {
             console.log("[mixer] Error announcing join!");
@@ -180,7 +182,7 @@ function(Services, Channel, Protocol, Bitcoin) {
 
       // Build the tx
       var tx = identity.wallet.prepareTx(pocketIndex, [recipient], changeAddress, fee);
-      this.ongoing[opening.id] = {state: 'accepted', role: 'guest', peer: peer, myTx: tx.clone()};
+      this.ongoing[opening.id] = new CoinJoin('guest', 'accepted', tx.clone(), opening.amount, fee);
       // Post using end to end channel capabilities
       this.sendTo(peer, opening.id, tx.tx)
     }
@@ -188,8 +190,8 @@ function(Services, Channel, Protocol, Bitcoin) {
 
   MixerService.prototype.sendTo = function(peer, id, tx, callback) {
       // Save the transaction with the ongoing task
-      var task = this.ongoing[id];
-      task[id].tx = tx;
+      var coinJoin = this.ongoing[id];
+      coinJoin[id].peer = peer;
 
       // Now create and send the message
       var msg = Protocol.CoinJoinMsg(id, tx.serializeHex());
@@ -198,233 +200,30 @@ function(Services, Channel, Protocol, Bitcoin) {
       });
   }
 
-  MixerService.prototype.signMyInputs = function(myTx, newTx) {
-      var identity = this.core.getCurrentIdentity();
-      for(var i=0; i<newTx.ins; i++) {
-          var anIn = newTx.ins[i];
-          if (identity.txdb.transactions.hasOwnProperty(anIn.outpoint.hash)) {
-              var prevTxHex = identity.txdb.transactions[anIn.outpoint.hash];
-              var prevTx = new Bitcoin.Transaction(prevTxHex);
-              var output = prevTx.out[anIn.outpoint.index];
-              var walletAddress = identity.wallet.getWalletAddress(output.address);
-
-              var found = myTx.ins.filter(function(myIn, i) {
-                  return (myIn.hash == newIn.hash) && (myIn.index == newIn.index);
-              });
-              if (found.length == 1) {
-                  identity.wallet.getPrivateKey(walletAddress.index, password, function(privKey) {
-                      newTx.sign(i, privKey);
-                  });
-              }
-          } else {
-              console.log("No wallet address for one of our addresses!");
-          }
-      }
-  }
-
-  MixerService.prototype.checkInputsOutputs = function(origTx, newTx) {
-      var isValid = true;
-      if (origTx.ins.length != newTx.ins.length) return false;
-      if (origTx.outs.length != newTx.outs.length) return false;
-
-      isValid = this.checkMyInputsOutputs(origTx, newTx);
-
-      return isValid;
-  }
-
-  MixerService.prototype.checkMyInputsOutputs = function(origTx, newTx) {
-      for(var i=0; i<origTx.ins.length; i++) {
-          // TODO: should check the scripts too
-          var origIn = origTx.ins[i];
-          var found = newTx.ins.filter(function(newIn) {
-              return (origIn.hash == newIn.hash) && (origIn.index == newIn.index);
-          });
-          if (found.length != 1) return false;
-      }
-      for(var i=0; i<origTx.outs.length; i++) {
-          var origOut = origTx.outs[i];
-          var found = newTx.outs.filter(function(newOut) {
-             return (origOut.address != newOut.address) && (origOut.value != newOut.value) ;
-          });
-          if (found.length != 1) return false;
-      }
-      return true;
-  }
-
   /*
-   * CoinJoin State machine once paired
-   * 1st message guest -> [initiator]
+   * Check join state to see if we need to delete, and do it
    */
-  MixerService.prototype.fullfillCoinJoin = function(peer, msg, task) {
-      task.peer = peer;
-      // Check there is one output like we want to join
-      var amount = task.task.myamount;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-      var isOk = false;
-      remoteTx.outs.forEach(function(anOut) {
-          if (anOut.value == amount) {
-              isOk = true;
-          }
-      })
-      if (!isOk) {
-          console.log("no output found with the right value");
-          return;
-      }
-      // Now check there are inputs with enough funds
-      isOk = false;
-
-      // Now add our inputs and outputs after the ones from guest
-      var myTx = task.tx;
-      myTx.ins.forEach(function(anIn) {
-          remoteTx.addInput(anIn.clone());
-      });
-      myTx.outs.forEach(function(anOut) {
-          remoteTx.addOutput(anOut.clone());
-      });
-
-      // Now send message to continue
-      this.sendTo(peer, msg.id, remoteTx);
-  }
-
-  /*
-   * 1st message initiator -> [guest]
-   */
-  MixerService.prototype.signCoinJoin = function(peer, msg, task) {
-      var myTx = task.tx;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-
-      // Check the original inputs and outputs are there
-      this.checkMyInputsOutputs(myTx, remoteTx);
-
-      // Now sign our input(s) against the outputs
-      this.signMyInputs(remoteTx, task.myTx);
-
-      // Now send message to continue
-      this.sendTo(peer, msg.id, remoteTx);
-  }
-
-  /*
-   * 2nd message guest -> [initiator]
-   */
-  MixerService.prototype.finishInitiatorCoinJoin = function(peer, msg, task) {
-      var myTx = task.tx;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-
-      // Check no new inputs or outputs where added
-      this.checkInputsOutputs(myTx, remoteTx);
-
-      // Check the guest signed
-
-      // Now sign our input(s) against the outputs
-      this.signMyInputs(remoteTx, task.myTx);
-
-      // Now send message to continue
-      this.sendTo(peer, msg.id, remoteTx);
-
-      delete this.ongoing[msg.id];
-  }
-
-  /*
-   * 2nd message initiator -> [guest]
-   */
-  MixerService.prototype.finishGuestCoinJoin = function(peer, msg, task) {
-      var myTx = task.tx;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-
-      // Check no new inputs or outputs where added
-      this.checkInputsOutputs(myTx, remoteTx);
-
-      // Check our signatures are there
-
-      // Check the inititator signed
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-
-      // We are done here...
-      delete this.ongoing[msg.id];
-  }
-
-  /*
-   * Process a message for an ongoing CoinJoin
-   */
-  MixerService.prototype.processCoinJoin = function(peer, msg) {
-      var txHex = msg.tx;
-      var task = this.ongoing[msg.id];
-
-      if (!task) {
-         console.log("We don't know this task!");
-         return;
-      }
-
-      switch (task.state) {
-          case 'announce':
-              // 1. If initiator, comes with new input and outputs from guest
-              if (this.fullfillCoinJoin()) {
-                  task.state = 'fullfilled';
-              }
-              break;
-          case 'accepted':
-              // 2. If guest, comes with full tx, check and sign
-              if (this.signCoinJoin()) {
-                  task.state = 'signed';
-              }
-              break;
-          case 'fullfilled':
-              // 3. Initiator finally signs his part
-              if (this.finishInitiatorCoinJoin()) {
-                  task.state = 'finished';
-              }
-              break;
-          case 'signed':
-              // 3. Initiator finally signs his part
-              if (this.finishGuestCoinJoin()) {
-                  task.state = 'finished';
-              }
-              break;
-      }
-      var tx = Transaction(txHex);
-
-
-  }
-
-  MixerService.prototype.cancelCoinJoin = function(id, task) {
-      if (task.role == 'initiator') {
-          // Back to announce state
-          task.state = 'announce';
-      }
-      else if (task.role == 'guest') {
-          // Remove the task
+  MixerService.prototype.checkDelete = function(id) {
+      var coinJoin = this.ongoing[id];
+      if (['finished', 'cancelled'].indexOf(coinJoin.state) != -1) {
+          console.log("[mixer] Deleting coinjoin because " + coinJoin.state);
           delete this.ongoing[id];
       }
   }
 
   /*
-   * Process a message finishing a coinjoin conversation
+   * Get a running coinjoin from a message doing some tests
    */
-  MixerService.prototype.processFinish = function(peer, msg) {
-     console.log("Finished CoinJoin", msg.id)
-     var task = this.ongoing[msg.id];
-
-     if (!task) {
-         console.log("We don't know this task!");
-         return;
-     }
-     if (peer.fingerprint != task.peer.fingerprint) {
-         console.log("Finish message from the wrong peer!");
-         return;
-     }
-     switch(task.state) {
-         case 'accepted':
-         case 'fullfilled':
-         case 'signed':
-             this.cancelCoinJoin(msg.id, task);
-             break;
-         case 'finished':
-         case 'announce':
-         default:
-             // do nothing
-             break;
-     }
-
+  MixerService.prototype.getOngoing = function(msg) {
+      var coinJoin = this.ongoing[msg.id];
+      if (!coinJoin) {
+          console.log("CoinJoin not found!");
+      }
+      else if (coinJoin.state != 'announce' && msg.peer.fingerprint != coinJoin.peer.fingerprint) {
+          console.log("CoinJoin message from the wrong peer!", msg);
+          return;
+      }
+      return coinJoin;
   }
 
   /*
@@ -444,14 +243,26 @@ function(Services, Channel, Protocol, Bitcoin) {
   }
   MixerService.prototype.onCoinJoin = function(msg) {
     if (msg.sender != this.channel.fingerprint) {
-      console.log("[mixer] CoinJoin", msg);
-      this.processCoinJoin(msg.peer, msg.body);
+      var coinJoin = this.getOngoing(msg);
+      if (coinJoin) {
+          console.log("[mixer] CoinJoin", msg);
+
+          var updatedTx = coinJoin.process(msg.peer, msg.body);
+          if (updatedTx) {
+              this.sendTo(msg.peer, msg.id, updatedTx);
+          }
+          this.checkDelete(msg.id);
+      }
     }
   }
   MixerService.prototype.onCoinJoinFinish = function(msg) {
     if (msg.sender != this.channel.fingerprint) {
       console.log("[mixer] CoinJoinFinish", msg);
-      this.processFinish(msg.peer, msg.body);
+      var coinJoin = this.getOngoing(msg);
+      if (coinJoin) {
+        coinJoin.kill(msg.body);
+        this.checkDelete(msg.id);
+      }
     }
   }
 
