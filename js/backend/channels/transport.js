@@ -11,18 +11,14 @@ function (Bitcoin, Mnemonic, Services) {
   function Transport(identity, obeliskClient) {
     this.client = obeliskClient;
     this.channels = {};
+    this.sessionKey = {};
 
     this.requests = [];
     this.peers = [];
     this.peerIds = [];
     this.subscribed = false;
 
-    // Session key
-    if (!identity.sessionKey) {
-        identity.sessionKey = new Bitcoin.Key();
-        identity.sessionKey.compressed = true;
-    }
-    var sessionKey = identity.sessionKey;
+    this.newSession();
 
     // Identity (communications) key
     var selfKey;
@@ -36,11 +32,19 @@ function (Bitcoin, Mnemonic, Services) {
         identity.store.save();
     }
     this.getSelfKey = function() { return selfKey; }
-    this.getSessionKey = function() { return sessionKey; }
+    this.getSessionKey = function() { return this.sessionKey; }
 
     // Initialize some own data
-    this.comms = this.initializePeer(sessionKey.getPub().toBytes(true));
+    this.comms = this.initializePeer(this.sessionKey.getPub().toBytes(true));
     this.myself = this.initializePeer(selfKey.getPub().toBytes(true));
+  }
+
+  /*
+   * Initialize a new discardable session key
+   */
+  Transport.prototype.newSession = function() {
+    this.sessionKey = new Bitcoin.Key();
+    this.sessionKey.compressed = true;
   }
 
   Transport.prototype.getClient = function() {
