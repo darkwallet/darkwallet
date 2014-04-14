@@ -23,23 +23,10 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       this.maxChatLog = 200;
 
       // Set transport session key
-      var priv = transport.getSessionKey().priv;
-      var ecPriv = Encryption.adaptPrivateKey(priv);
-      multiParty.setPrivateKey(ecPriv);
-      var pub = multiParty.genPublicKey();
-
-      this.priv = ecPriv;
-      this.pub = pub;
       this.transport = transport;
+      this.prepareSession();
+
       this.name = name;
-
-      // Set some identity variables
-      this.fingerprint = multiParty.genFingerprint();
-      multiParty.setNickName = this.fingerprint;
-
-      var newMe = transport.initializePeer(pub.toByteArrayUnsigned(), this.fingerprint);
-      this.transport.comms.pubKeyHex = newMe.pubKeyHex;
-      this.transport.comms.name = newMe.name;
 
       // hash channel name
       var channelHash = transport.hashChannelName(name);
@@ -65,6 +52,34 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
             }, this._onChannelData);
         }
       }
+  }
+
+  Channel.prototype.prepareSession = function() {
+    // Set keys
+    var priv = this.transport.getSessionKey().priv;
+    var ecPriv = Encryption.adaptPrivateKey(priv);
+
+    multiParty.setPrivateKey(ecPriv);
+    var pub = multiParty.genPublicKey();
+
+    this.pub = pub;
+    this.priv = ecPriv;
+
+    // Set some identity variables
+    this.fingerprint = multiParty.genFingerprint();
+    multiParty.setNickName = this.fingerprint;
+
+    var newMe = this.transport.initializePeer(this.pub.toByteArrayUnsigned(), this.fingerprint);
+    this.transport.comms.pubKeyHex = newMe.pubKeyHex;
+    this.transport.comms.name = newMe.name;
+  }
+
+  /*
+   * Initialize a new session with a new cloak
+   */
+  Channel.prototype.newSession = function() {
+    this.transport.newSession();
+    this.prepareSession();
   }
 
   /*
