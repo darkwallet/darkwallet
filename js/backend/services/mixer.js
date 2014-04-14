@@ -221,6 +221,17 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
       return coinJoin;
   }
 
+  MixerService.prototype.requestSignInputs = function(coinJoin) {
+      var password = '';
+      var identity = this.core.getIdentity();
+      if (password) {
+          identity.wallet.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, password);
+          return true;
+      } else {
+          // XXX should add a task
+      }
+  }
+
   /*
    * Protocol messages arriving
    */
@@ -236,6 +247,7 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
       console.log("[mixer] My CoinJoinOpen is back", msg);
     }
   }
+
   MixerService.prototype.onCoinJoin = function(msg) {
     if (msg.sender != this.channel.fingerprint) {
       var coinJoin = this.getOngoing(msg);
@@ -243,6 +255,14 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
           console.log("[mixer] CoinJoin", msg);
 
           var updatedTx = coinJoin.process(msg.peer, msg.body);
+          // if requested to sign, try to do it
+          if (coinJoin.state == 'sign') {
+              // Needs signing from user
+              var signed = this.requestSignInputs(coinJoin);
+              if (signed) {
+                  updatedTx = coinJoin.addSignatures(signed);
+              }
+          }
           if (updatedTx) {
               this.sendTo(msg.peer, msg.id, updatedTx);
           }

@@ -501,6 +501,37 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
     callback(null, pending);
 }
 
+/*
+ * Helper functions
+ */
+Wallet.prototype.signMyInputs = function(inputs, newTx, password) {
+    var identity = this.identity;
+    var signed = false;
+    for(var i=0; i<newTx.ins; i++) {
+        var anIn = newTx.ins[i];
+        if (identity.txdb.transactions.hasOwnProperty(anIn.outpoint.hash)) {
+            var prevTxHex = identity.txdb.transactions[anIn.outpoint.hash];
+            var prevTx = new Bitcoin.Transaction(prevTxHex);
+            var output = prevTx.out[anIn.outpoint.index];
+            var walletAddress = identity.wallet.getWalletAddress(output.address);
+
+            var found = inputs.filter(function(myIn, i) {
+                return (myIn.hash == newIn.hash) && (myIn.index == newIn.index);
+            });
+            if (found.length == 1) {
+                this.getPrivateKey(walletAddress.index, password, function(privKey) {
+                    newTx.sign(i, privKey);
+                    signed = true;
+                });
+            }
+        } else {
+            console.log("No wallet address for one of our addresses!");
+        }
+    }
+    return signed;
+}
+
+
 /**
  * Process an output from an external source
  * @see Bitcoin.Wallet.processOutput

@@ -61,13 +61,24 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
           return;
       }
 
-      // Now sign our input(s) against the outputs
-      this.signMyInputs(remoteTx, this.myTx);
-
-      // Save tx
+      // Needs signing of inputs
       this.tx = remoteTx;
-      this.state = 'signed';
-      return remoteTx;
+      this.state = 'sign';
+  }
+
+  /*
+   * Add signatures manually
+   * tx: Transaction with user inputs signed
+   */
+  CoinJoin.prototype.addSignatures = function(tx) {
+      // Save tx
+      this.tx = tx;
+      if (this.role == 'initiator') {
+          this.state = 'signed';
+      } else {
+          this.state = 'finished';
+      }
+      return tx;
   }
 
   /*
@@ -85,14 +96,8 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       // Check the guest signed
 
       // Now sign our input(s) against the outputs
-      this.signMyInputs(remoteTx, this.myTx);
-      
-      // We are done here...
-
-      // Save tx
       this.tx = remoteTx;
-      this.state = 'finished';
-      return remoteTx;
+      this.state = 'sign';
   }
 
   /*
@@ -172,30 +177,6 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   /*
    * Helper functions
    */
-  CoinJoin.prototype.signMyInputs = function(myTx, newTx) {
-      var identity = this.core.getCurrentIdentity();
-      for(var i=0; i<newTx.ins; i++) {
-          var anIn = newTx.ins[i];
-          if (identity.txdb.transactions.hasOwnProperty(anIn.outpoint.hash)) {
-              var prevTxHex = identity.txdb.transactions[anIn.outpoint.hash];
-              var prevTx = new Bitcoin.Transaction(prevTxHex);
-              var output = prevTx.out[anIn.outpoint.index];
-              var walletAddress = identity.wallet.getWalletAddress(output.address);
-
-              var found = myTx.ins.filter(function(myIn, i) {
-                  return (myIn.hash == newIn.hash) && (myIn.index == newIn.index);
-              });
-              if (found.length == 1) {
-                  identity.wallet.getPrivateKey(walletAddress.index, password, function(privKey) {
-                      newTx.sign(i, privKey);
-                  });
-              }
-          } else {
-              console.log("No wallet address for one of our addresses!");
-          }
-      }
-  }
-
   CoinJoin.prototype.checkInputsOutputs = function(origTx, newTx) {
       var isValid = true;
       if (origTx.ins.length != newTx.ins.length) return false;
