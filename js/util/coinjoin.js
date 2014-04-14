@@ -132,7 +132,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
               // 3. Initiator finally signs his part
               return this.finishInitiator();
           case 'signed':
-              // 3. Initiator finally signs his part
+              // 4. Guest finally signs his part
               return this.finishGuest();
       }
   }
