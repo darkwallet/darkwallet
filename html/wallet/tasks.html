@@ -1,9 +1,10 @@
       <tab heading="Tasks" ng-show="isFund && pocket.tasks.length" ng-controller="FundCtrl">
         <div ng-repeat="task in pocket.tasks">
             <h2>Collect signatures</h2>
-            <div><b>Signatures:</b> {{task.task.pending[0].signatures.length}} of {{pocket.fund.m}}</div>
-            <div><b>Index:</b> {{task.task.pending[0].index}}</div>
-            <div><b>Output:</b> {{task.task.pending[0].output}}</div>
+            <div ng-repeat="pending in task.task.pending">
+              <b>Signatures {{pending.index}}:</b> {{Object.keys(pending.signatures).length}} of {{pocket.fund.m}}
+              <ul><li><b>Outpoint:</b> {{pending.output}}</li></ul>
+            </div>
             <div><b>Tx:</b> {{task.task.tx}}</div>
             <h3>Destinations</h3>
             <div ng-repeat="out in task.tx.outs">

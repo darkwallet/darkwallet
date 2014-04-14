@@ -484,7 +484,7 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
             seq = outAddress.index;
         }
         if (!outAddress || outAddress.type == 'multisig' || outAddress.type == 'readonly') {
-            pending.push({output: utxo.output, address: utxo.address, index: idx, signatures: [], type: outAddress?outAddress.type:'signature'});
+            pending.push({output: utxo.output, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'});
         } else {
           // Get private keys and sign
           try {

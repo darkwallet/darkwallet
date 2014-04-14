@@ -10,26 +10,40 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
 
   controllers.controller('FundCtrl', ['$scope', 'notify', function($scope, notify) {
 
+  $scope.Object = Object;
+
   /**
    * Check if we have enough signatures and put them into the transaction
    */
   var finishSigning = function(fund, task) {
     // task format:
-    // task: {tx: tx, task: task, signatures: []} (added in frontend)
+    // task: {tx: tx, task: task} (added in frontend)
     // task: {tx: hexTx, 'pending': pending, stealth: metadata.stealth};
-    // pending:  [{output: utxo.output, address: utxo.address, index: idx, signatures: [], type: outAddress?outAddress.type:'signature'}] ...
+    // pending:  [{output: utxo.output, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'}] ...
 
     var script = convert.hexToBytes(fund.script);
 
+    var organizeSignatures = function(hexSigs) {
+        var signatures = [];
+        $scope.pocket.participants.forEach(function(participant, i) {
+            if (hexSigs.hasOwnProperty(i)) {
+                signatures.push(hexSigs[i]);
+            } else {
+                signatures.push(null);
+            }
+        });
+        signatures.reverse();
+        return signatures;
+    }
     var finished = true;
     task.task.pending.forEach(function(input) {
-        var hexSigs = input.signatures;
+        var hexSigs = organizeSignatures(input.signatures);
 
-        console.log(fund.m, hexSigs)
-        if (hexSigs.length >= fund.m) {
+        console.log(fund.m, hexSigs, Object.keys(input.signatures))
+        if (Object.keys(input.signatures).length >= fund.m) {
             // convert inputs to bytes
-            var sigs = hexSigs.map(function(sig) {return convert.hexToBytes(sig)});
-      
+            var sigs = hexSigs.map(function(sig) {return sig?convert.hexToBytes(sig):sig});
+            console.log("apply multisigs"); 
             // apply multisigs
             task.tx.applyMultisigs(input.index, script, sigs, 1);
         } else {
@@ -51,18 +65,26 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
     // TODO: can't just import a signature like this for all inputs,
     // lets hope there is just one for now ..
     try {
-       var bytes = convert.hexToBytes(sigHex);
+       var sig = convert.hexToBytes(sigHex);
     } catch(e) {
        notify.error('Malformed signature');
        return;
     }
     var added = false;
+
+    // Check where this signature goes
+    var script = new Bitcoin.Script(convert.hexToBytes($scope.pocket.fund.script));
     task.task.pending.forEach(function(input) {
-        if (input.signatures.indexOf(sigHex) == -1) {
-            input.signatures.push(sigHex);
-            added = true;
-        }
+        var txHash = task.tx.hashTransactionForSignature(script, input.index, 1);
+        $scope.pocket.participants.forEach(function(participant, pIdx) {
+            if (Bitcoin.ecdsa.verify(txHash, sig, participant.pubKey)) {
+                input.signatures[pIdx] = sigHex;
+                added = true;
+            }
+        });
     });
+
+    // Show some notification and finish task if we have all signatures.
     if (added) {
         if (finishSigning($scope.pocket.fund, task)) {
             notify.success('Imported', 'Signature imported and ready to go!');
@@ -70,7 +92,7 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
             notify.success('Imported', 'Signature imported');
         }
     } else {
-        notify.warning('Error importing', 'Signature already imported');
+        notify.warning('Error importing', 'Cant verify');
     }
   }
 
@@ -118,7 +140,7 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
           var pending = [];
           inputs.forEach(function(input) {
               var out = input.outpoint.hash+':'+input.outpoint.index;
-              pending.push({output: out, address: input.address, index: input.index, signatures: [], type: 'multisig'});
+              pending.push({output: out, address: input.address, index: input.index, signatures: {}, type: 'multisig'});
           });
           var task = {tx: hexTx, 'pending': pending, stealth: false};
           var frontTask = {tx: tx, task: task};
@@ -139,17 +161,15 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
 
       var signed = false;
       // find key
-      $scope.pocket.participants.forEach(function(participant) {
+      $scope.pocket.participants.forEach(function(participant, pIdx) {
           if (participant.type == 'me') {
               var seq = participant.address.index;
               identity.wallet.getPrivateKey(seq, password, function(privKey) {
                 inputs.forEach(function(input, i) {
                   var sig = task.tx.p2shsign(input.index, script, privKey.toBytes(), 1);
                   var hexSig = convert.bytesToHex(sig);
-                  if (!task.task.pending[i].signatures.hasOwnProperty(hexSig)) {
-                      task.task.pending[i].signatures.push(hexSig);
-                      signed = true;
-                  }
+                  task.task.pending[i].signatures[pIdx] = hexSig
+                  signed = true;
                 });
                 task.task.canSign = false;
               });

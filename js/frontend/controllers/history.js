@@ -69,7 +69,8 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
       var tasks = identity.tasks.tasks.multisig;
       if (tasks) {
           tasks.forEach(function(task) {
-              if (task.pending[0].address == fund.address) {
+              var addresses = task.pending.map(function(p){return p.address});
+              if (addresses.indexOf(fund.address) != -1) {
                   var tx = new Bitcoin.Transaction(task.tx);
                   res.push({tx: tx, task: task});
               }
