@@ -125,6 +125,11 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
         }
     }
 
+    $scope.newTempIdentity = function() {
+      currentChannel.newSession();
+      currentChannel.sendOpening();
+    }
+
     // Action to start announcements and reception
     $scope.joinChannel = function() {
         connectChannel($scope.pairCode);
