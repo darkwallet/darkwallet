@@ -9,21 +9,21 @@ define(['util/protocol'], function(Protocol) {
     });
 
     it('creates a coinjoin open message', function() {
-        var request = Protocol.CoinJoinOpenMsg(10000);
+        var request = Protocol.CoinJoinOpenMsg('id', 10000);
         expect(request.type).toBe('CoinJoinOpen');
-        expect(request.body).toEqual({amount: 10000});
+        expect(request.body).toEqual({id: 'id', amount: 10000});
     });
 
     it('creates a coinjoin message', function() {
-        var request = Protocol.CoinJoinMsg("deadbeef");
+        var request = Protocol.CoinJoinMsg('id', "deadbeef");
         expect(request.type).toBe('CoinJoin');
-        expect(request.body).toEqual({tx: "deadbeef"});
+        expect(request.body).toEqual({id: 'id', tx: "deadbeef"});
     });
 
     it('creates a coinjoin finish message', function() {
-        var request = Protocol.CoinJoinFinishMsg();
+        var request = Protocol.CoinJoinFinishMsg('id');
         expect(request.type).toBe('CoinJoinFinish');
-        expect(request.body).toEqual({});
+        expect(request.body).toEqual({id: 'id'});
     });
 
     it('creates a contact message', function() {
