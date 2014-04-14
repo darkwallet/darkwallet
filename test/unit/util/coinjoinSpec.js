@@ -212,6 +212,15 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
         expect(guest.state).toBe('finished');
     });
 
+    it('guest rejects an incorrect final transaction', function() {
+        guest.state = 'signed';
+        guest.tx = tx2;
+
+        var res = guest.process(msg4bad.body);
+        expect(res).toBeUndefined();
+        expect(guest.state).toBe('signed');
+    });
+
 
 
 
