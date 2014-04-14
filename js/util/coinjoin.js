@@ -2,7 +2,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   'use strict';
 
   /*
-   * CoinJoin Clas
+   * CoinJoin Class
    * @constructor
    */
   function CoinJoin(core, role, state, tx, myAmount, fee) {
@@ -13,6 +13,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
     this.myAmount = myAmount;
     this.fee = fee;
   }
+
   /*
    * CoinJoin State machine once paired
    * 1st message guest -> [initiator]

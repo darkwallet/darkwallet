@@ -141,7 +141,7 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
   /*
    * Find a pocket in mixing state with enough satoshis
    */
-  MixerService.prototype.getMixingPocket = function(amount) {
+  MixerService.prototype.findMixingPocket = function(amount) {
     var identity = this.core.getCurrentIdentity();
     var pockets = identity.wallet.pockets;
     for(var i=0; i<pockets.length; i++) {
@@ -170,7 +170,7 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
 
     // Evaluate mixing pockets to see if we can pair
 
-    var pocketIndex = this.getMixingPocket(opening.amount+fee);
+    var pocketIndex = this.findMixingPocket(opening.amount+fee);
 
     // If we found a pocket, continue with the protocol.
     if (pocketIndex != -1) {
