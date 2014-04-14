@@ -72,11 +72,12 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
    */
   CoinJoin.prototype.addSignatures = function(tx) {
       // Save tx
+      // TODO: maybe check signatures, but they come from the application here
       this.tx = tx;
       if (this.role == 'initiator') {
-          this.state = 'signed';
-      } else {
           this.state = 'finished';
+      } else {
+          this.state = 'signed';
       }
       return tx;
   }
@@ -139,7 +140,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
               // 3. Initiator finally signs his part
               return this.finishInitiator(msg);
           case 'signed':
-              // 4. Guest finally signs his part
+              // 4. Guest getting the final transaction
               return this.finishGuest(msg);
       }
   }

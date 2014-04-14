@@ -48,6 +48,12 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
   // 2.
   var msg2 = Protocol.CoinJoinMsg(joinId, tx2.serializeHex());
   var msg2bad = Protocol.CoinJoinMsg(joinId, tx2bad.serializeHex());
+  // 3. TODO
+  var msg3 = Protocol.CoinJoinMsg(joinId, tx2.serializeHex());
+  var msg3bad = Protocol.CoinJoinMsg(joinId, tx2bad.serializeHex());
+  // 4. TODO
+  var msg4 = Protocol.CoinJoinMsg(joinId, tx2.serializeHex());
+  var msg4bad = Protocol.CoinJoinMsg(joinId, tx2bad.serializeHex());
 
   describe('CoinJoin library', function() {
 
@@ -135,7 +141,7 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
         expect(res).toBe(false);
     });
 
-
+    // 1. Initiator accepting guest offer
     it('initiator starts to process', function() {
         var res = initiator.process(msg1.body);
         expect(res).toBeDefined();
@@ -148,11 +154,17 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
         expect(initiator.state).toBe('announce');
     });
 
-    xit('guest starts to process', function() {
+    // 2. Guest taking full tx from the initiator and 'signing'
+    it('guest starts to process', function() {
         console.log("guest starts process");
-        // TODO: signing not implemented yet...
         var res = guest.process(msg2.body);
-        expect(res).toBeDefined();
+        expect(res).toBeUndefined();
+        expect(guest.state).toBe('sign');
+    });
+
+    it('guest accepts user signatures', function() {
+        guest.state = 'sign';
+        guest.addSignatures("foo");
         expect(guest.state).toBe('signed');
     });
 
@@ -161,6 +173,47 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
         expect(res).toBeUndefined();
         expect(guest.state).toBe('accepted');
     });
+
+    // 3. Initiator 'signing' his inputs
+    it('initiator accepts signatures', function() {
+        initiator.state = 'fullfilled';
+        initiator.tx = tx2;
+
+        // TODO: not yet checking signatures so it will pass
+        var res = initiator.process(msg3.body);
+        expect(res).toBeUndefined();
+        expect(initiator.state).toBe('sign');
+    });
+
+    it('initiator rejects signatures', function() {
+        initiator.state = 'fullfilled';
+        initiator.tx = tx2;
+
+        var res = initiator.process(msg3bad.body);
+        expect(res).toBeUndefined();
+        expect(initiator.state).toBe('fullfilled');
+    });
+
+    it('initiator accepts user signatures', function() {
+        initiator.state = 'sign';
+        initiator.tx = tx2;
+        initiator.addSignatures("foo");
+        expect(initiator.state).toBe('finished');
+    });
+
+    // 4. Guest getting the final transaction
+    it('guest gets the final  transaction', function() {
+        guest.state = 'signed';
+        guest.tx = tx2;
+
+        // TODO: not yet checking signatures so it will pass (not so important here)
+        var res = guest.process(msg4.body);
+        expect(res).toBeDefined();
+        expect(guest.state).toBe('finished');
+    });
+
+
+
 
   });
  
