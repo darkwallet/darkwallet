@@ -66,11 +66,28 @@ var modals = {
   },
   
   onQrModalOk: function(data, vars) {
+    var address, amount;
     sounds.play('keygenEnd');
-    if (Array.isArray(vars.field)) {
-      vars.field.push({address: data});
+    if (data.slice(0,8)) {
+      data = data.slice(8);
+    }
+    if (!data.indexOf('?')) {
+      address = data;
     } else {
-      vars.field.address = data;
+      address = data.slice(0, data.indexOf('?'));
+      data = data.slice(data.indexOf('?') + 1).split('&');
+      data.forEach(function(keyvalue) {
+        keyvalue = keyvalue.split('=');
+        if(keyvalue[0] === 'amount') {
+          amount = keyvalue[1];
+        }
+      });
+    }
+    if (Array.isArray(vars.field)) {
+      vars.field.push({address: address, amount: amount});
+    } else {
+      vars.field.address = address;
+      vars.field.amount = amount;
     }
   },
   
