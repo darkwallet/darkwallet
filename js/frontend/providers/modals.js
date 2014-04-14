@@ -1,7 +1,7 @@
 define(['./module'], function (providers) {
 'use strict';
 
-providers.factory('modals', ['$modal', 'sounds', function($modal, sounds) {
+providers.factory('modals', ['$modal', 'notify', 'sounds', function($modal, notify, sounds) {
 
 var modals = {
 
@@ -28,6 +28,9 @@ var modals = {
       };
       $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
+      };
+      $scope.onError = function(e) {
+        $modalInstance.dismiss(e);
       };
     };
 
@@ -63,15 +66,35 @@ var modals = {
   },
   
   onQrModalOk: function(data, vars) {
+    var address, amount;
     sounds.play('keygenEnd');
-    if (Array.isArray(vars.field)) {
-      vars.field.push({address: data});
+    if (data.slice(0,8)) {
+      data = data.slice(8);
+    }
+    if (!data.indexOf('?')) {
+      address = data;
     } else {
-      vars.field.address = data;
+      address = data.slice(0, data.indexOf('?'));
+      data = data.slice(data.indexOf('?') + 1).split('&');
+      data.forEach(function(keyvalue) {
+        keyvalue = keyvalue.split('=');
+        if(keyvalue[0] === 'amount') {
+          amount = keyvalue[1];
+        }
+      });
+    }
+    if (Array.isArray(vars.field)) {
+      vars.field.push({address: address, amount: amount});
+    } else {
+      vars.field.address = address;
+      vars.field.amount = amount;
     }
   },
   
-  onQrModalCancel: function(data, vars) {
+  onQrModalCancel: function(data) {
+    if (data && data.name === 'PermissionDeniedError') {
+      notify.error('Your camera is disabled');
+    }
   },
   
   registerScope: function(scope) {

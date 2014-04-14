@@ -1,5 +1,5 @@
 <div class="row text-center">
   <h3>Scan QR code</h3>
-  <qr-scanner width="720" height="550" ng-success="ok(data)" />
+  <qr-scanner width="720" height="550" ng-success="ok(data)" ng-video-error="onError(error)" />
   <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
 </div>

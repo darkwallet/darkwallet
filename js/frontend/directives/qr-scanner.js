@@ -56,12 +56,16 @@ define(['./module', 'jsqrcode'], function (directives) {
             scope.ngVideoError({error: e});
           });
         } else {
-          scope.ngVideoError({error: 'Native web camera streaming (getUserMedia) not supported in this browser.'});
+          scope.ngVideoError({error: new Error('Native web camera streaming (getUserMedia) not supported in this browser.')});
         }
 
         element.bind('$destroy', function() {
-          localMediaStream.stop();
-          $interval.cancel(stopScan);
+          if (localMediaStream) {
+            localMediaStream.stop();
+          }
+          if (stopScan) {
+            $interval.cancel(stopScan);
+          }
         });
 
         qrcode.callback = function(data) {
