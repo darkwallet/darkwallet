@@ -18,11 +18,10 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
    * CoinJoin State machine once paired
    * 1st message guest -> [initiator]
    */
-  CoinJoin.prototype.fullfill = function(peer, msg) {
-      this.peer = peer;
+  CoinJoin.prototype.fullfill = function(msg) {
       // Check there is one output like we want to join
       var amount = this.myAmount;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
+      var remoteTx = Bitcoin.Transaction.deserialize(msg.tx);
       var isOk = false;
       remoteTx.outs.forEach(function(anOut) {
           if (anOut.value == amount) {
@@ -54,11 +53,13 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   /*
    * 1st message initiator -> [guest]
    */
-  CoinJoin.prototype.sign = function(peer, msg) {
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
+  CoinJoin.prototype.sign = function(msg) {
+      var remoteTx = Bitcoin.Transaction.deserialize(msg.tx);
 
       // Check the original inputs and outputs are there
-      this.checkMyInputsOutputs(this.myTx, remoteTx);
+      if (!this.checkMyInputsOutputs(this.myTx, remoteTx)) {
+          return;
+      }
 
       // Now sign our input(s) against the outputs
       this.signMyInputs(remoteTx, this.myTx);
@@ -72,12 +73,14 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   /*
    * 2nd message guest -> [initiator]
    */
-  CoinJoin.prototype.finishInitiator = function(peer, msg) {
+  CoinJoin.prototype.finishInitiator = function(msg) {
       var myTx = this.tx;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
+      var remoteTx = Bitcoin.Transaction.deserialize(msg.tx);
 
       // Check no new inputs or outputs where added
-      this.checkInputsOutputs(myTx, remoteTx);
+      if (!this.checkInputsOutputs(myTx, remoteTx)) {
+          return;
+      }
 
       // Check the guest signed
 
@@ -95,12 +98,13 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   /*
    * 2nd message initiator -> [guest]
    */
-  CoinJoin.prototype.finishGuest = function(peer, msg) {
-      var myTx = this.tx;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
+  CoinJoin.prototype.finishGuest = function(msg) {
+      var remoteTx = Bitcoin.Transaction.deserialize(msg.tx);
 
       // Check no new inputs or outputs where added
-      this.checkInputsOutputs(myTx, remoteTx);
+      if (!this.checkInputsOutputs(this.tx, remoteTx)) {
+          return;
+      }
 
       // Check our signatures are there
 
@@ -118,22 +122,20 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   /*
    * Process a message for an ongoing CoinJoin
    */
-  CoinJoin.prototype.process = function(peer, msg) {
-      var txHex = msg.tx;
-
+  CoinJoin.prototype.process = function(msg) {
       switch (this.state) {
           case 'announce':
               // 1. If initiator, comes with new input and outputs from guest
-              return this.fullfill();
+              return this.fullfill(msg);
           case 'accepted':
               // 2. If guest, comes with full tx, check and sign
-              return this.sign();
+              return this.sign(msg);
           case 'fullfilled':
               // 3. Initiator finally signs his part
-              return this.finishInitiator();
+              return this.finishInitiator(msg);
           case 'signed':
               // 4. Guest finally signs his part
-              return this.finishGuest();
+              return this.finishGuest(msg);
       }
   }
 
@@ -150,8 +152,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   /*
    * Process a message finishing a coinjoin conversation
    */
-  CoinJoin.prototype.kill = function(msg) {
-     console.log("Finished CoinJoin", msg.id)
+  CoinJoin.prototype.kill = function() {
 
      switch(this.state) {
          case 'accepted':
@@ -208,16 +209,16 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   CoinJoin.prototype.checkMyInputsOutputs = function(origTx, newTx) {
       for(var i=0; i<origTx.ins.length; i++) {
           // TODO: should check the scripts too
-          var origIn = origTx.ins[i];
+          var origInP = origTx.ins[i].outpoint;
           var found = newTx.ins.filter(function(newIn) {
-              return (origIn.hash == newIn.hash) && (origIn.index == newIn.index);
+              return (origInP.hash == newIn.outpoint.hash) && (parseInt(origInP.index) == parseInt(newIn.outpoint.index));
           });
           if (found.length != 1) return false;
       }
       for(var i=0; i<origTx.outs.length; i++) {
           var origOut = origTx.outs[i];
           var found = newTx.outs.filter(function(newOut) {
-             return (origOut.address != newOut.address) && (origOut.value != newOut.value) ;
+             return (origOut.address.toString() == newOut.address.toString()) && (origOut.value == newOut.value) ;
           });
           if (found.length != 1) return false;
       }
