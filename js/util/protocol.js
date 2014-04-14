@@ -9,20 +9,22 @@ var Protocol = {
   },
 
   // CoinJoin Messages
-  CoinJoinOpenMsg: function(amount) {
+  CoinJoinOpenMsg: function(id, amount) {
     var data = {};
+    data['id'] = id;
     data['amount'] = amount;
     return Protocol.packMessage('CoinJoinOpen', data)
   },
 
-  CoinJoinMsg: function(tx) {
+  CoinJoinMsg: function(id, tx) {
     var data = {};
+    data['id'] = id;
     data['tx'] = tx;
     return Protocol.packMessage('CoinJoin', data)
   },
 
-  CoinJoinFinishMsg: function() {
-    return Protocol.packMessage('CoinJoinFinish', {})
+  CoinJoinFinishMsg: function(id) {
+    return Protocol.packMessage('CoinJoinFinish', {id: id})
   },
 
   // Contact Pairing
