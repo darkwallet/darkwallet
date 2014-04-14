@@ -2,8 +2,8 @@
  * @fileOverview FundCtrl angular controller
  */
 
-define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services', 'darkwallet'],
-function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
+define(['./module', 'bitcoinjs-lib'],
+function (controllers, Bitcoin) {
   'use strict';
 
   var convert = Bitcoin.convert;
