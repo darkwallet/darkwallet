@@ -1,7 +1,7 @@
 define(['./module'], function (providers) {
 'use strict';
 
-providers.factory('modals', ['$modal', 'sounds', function($modal, sounds) {
+providers.factory('modals', ['$modal', 'notify', 'sounds', function($modal, notify, sounds) {
 
 var modals = {
 
@@ -28,6 +28,9 @@ var modals = {
       };
       $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
+      };
+      $scope.onError = function(e) {
+        $modalInstance.dismiss(e);
       };
     };
 
@@ -71,7 +74,10 @@ var modals = {
     }
   },
   
-  onQrModalCancel: function(data, vars) {
+  onQrModalCancel: function(data) {
+    if (data && data.name === 'PermissionDeniedError') {
+      notify.error('Your camera is disabled');
+    }
   },
   
   registerScope: function(scope) {
