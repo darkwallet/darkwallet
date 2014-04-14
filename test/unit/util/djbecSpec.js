@@ -71,6 +71,14 @@ define(['util/djbec', 'bitcoinjs-lib'], function(Djbec, Bitcoin) {
         expect(hash1.toString()).toBe(sk1IntHash)
         expect(hash2.toString()).toBe(sk2IntHash)
     });
+
+    it('runs internal dh test', function() {
+        var res = Djbec.dh_test(sk1, sk2);
+
+        expect(res).toBe(true);
+    });
+
+
    });
 
    describe('ed25519 signing library', function() {
