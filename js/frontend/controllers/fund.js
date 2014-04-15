@@ -29,10 +29,9 @@ function (controllers, Bitcoin) {
             if (hexSigs.hasOwnProperty(i)) {
                 signatures.push(hexSigs[i]);
             } else {
-                signatures.push(null);
+                // do nothing
             }
         });
-        signatures.reverse();
         return signatures;
     }
     var finished = true;
