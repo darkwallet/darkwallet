@@ -6,6 +6,18 @@
     <a id="newcontact" class="button tiny topright" ng-click="contactFormShown = true">New contact</a>
   </div>
 </div>
+<div class="row" ng-show="allContacts.length>5">
+  <div class="small-12 columns">
+    <div class="row collapse">
+      <div class="medium-2 columns">
+        <span class="prefix radius">Search:</span>
+      </div>
+      <div class="medium-10 columns">
+        <input type="text" size="50" ng-change="filterContacts()" ng-model="contactSearch"></input>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="row">
   <div class="small-12 columns">
     <form name="createContactForm" ng-submit="createContact()" ng-show="contactFormShown === true" novalidate>
@@ -32,7 +44,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="contact in identity.contacts.contacts | orderBy:'name' track by $index">
+        <tr ng-repeat="contact in contacts | orderBy:'name' track by $index">
           <td>
             <identicon icon-size="38" hash="contact.hash" title="{{contact.hash}}"></identicon>
           </td>
