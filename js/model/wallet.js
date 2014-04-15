@@ -216,7 +216,7 @@ Wallet.prototype.getAddress = function(seq) {
  */
 Wallet.prototype.getFreeAddress = function(branchIndex) {
     var walletAddress;
-    if (typeof pocketIndex == 'string') {
+    if (typeof branchIndex == 'string') {
         // multisig get the same address again
         walletAddress = this.getWalletAddress(branchIndex);
         if (walletAddress.type != 'multisig') {
@@ -244,13 +244,13 @@ Wallet.prototype.getFreeAddress = function(branchIndex) {
  *                 multisigs or int for a normal pocket (as usual).
  */
 
-Wallet.prototype.getChangeAddress = function(pocketIndex) {
+Wallet.prototype.getChangeAddress = function(pocketId) {
     var branchIndex;
-    if (typeof pocketIndex == 'string') {
-        branchIndex = pocketIndex;
+    if (typeof pocketId == 'string') {
+        branchIndex = pocketId;
     } else {
         // Change branch
-        branchIndex = pocketIndex+1;
+        branchIndex = (pocketId*2)+1;
     }
     return this.getFreeAddress(branchIndex);
 }

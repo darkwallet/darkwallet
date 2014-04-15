@@ -312,8 +312,10 @@ define(['model/wallet'], function(Wallet) {
       // Already stored
       expect(wallet.getChangeAddress(0).address).toBe('1JcmPQq3375pgukzqefdqQdpR4M9ThuR7x');
       // Derive and store
-      expect(wallet.getChangeAddress(1).address).toBe('1C5hWKG2yqFpUX7QdDqFsZymER1dbRNCh7');
-      expect(wallet.wallet.addresses).toContain('1C5hWKG2yqFpUX7QdDqFsZymER1dbRNCh7');
+      var changeAddress = wallet.getChangeAddress(1);
+      expect(changeAddress.address).toBe('1JTQfz3j4S2VmkgNGcV4BwGf5cLYYH7TgV');
+      expect(changeAddress.index).toEqual([3,0]);
+      expect(wallet.wallet.addresses).toContain('1JTQfz3j4S2VmkgNGcV4BwGf5cLYYH7TgV');
     });
     
     it('gets wallet address', function() {

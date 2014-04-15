@@ -21,7 +21,6 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   }
 
   $scope.setPocket = function(pocket) {
-      console.log("sendPocketChanged", pocket);
       if (pocket == 'any') {
           $scope.sendPocketName = 'Any';
           // TODO: Any is only using default pocket right now.
@@ -68,7 +67,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   $scope.finishSend = function(password) {
       // get a free change address
       var identity = DarkWallet.getIdentity();
-      var changeAddress = $scope.getChangeAddress();
+      var changeAddress = $scope.getChangeAddress($scope.pocketIndex);
 
       // prepare amounts
       var satoshis;

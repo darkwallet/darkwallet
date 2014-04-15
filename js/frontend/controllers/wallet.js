@@ -107,11 +107,11 @@ function (controllers, DarkWallet, Services) {
           // Regular addresses
           if (walletAddress.index.length > 1) {
               // add to scope
-              var pocketIndex = walletAddress.index[0];
-              if (!$scope.addresses[pocketIndex]) {
-                  $scope.addresses[pocketIndex] = [];
+              var branchId = walletAddress.index[0];
+              if (!$scope.addresses[branchId]) {
+                  $scope.addresses[branchId] = [];
               }
-              var addressArray = $scope.addresses[pocketIndex];
+              var addressArray = $scope.addresses[branchId];
               if ($scope.allAddresses.indexOf(walletAddress) == -1) {
                   addressArray.push(walletAddress);
                   $scope.allAddresses.push(walletAddress);
@@ -163,35 +163,42 @@ function (controllers, DarkWallet, Services) {
   };
 
   // Initialize pocket structures.
-  $scope.initPocket = function(rowIndex) {
-      var pocketIndex = rowIndex*2;
-      if (!$scope.addresses[pocketIndex]) {
-          $scope.addresses[pocketIndex] = [];
+  $scope.initPocket = function(pocketId) {
+      var branchId = pocketId*2;
+      if (!$scope.addresses[branchId]) {
+          $scope.addresses[branchId] = [];
       }
-      if (!$scope.addresses[pocketIndex+1]) {
-          $scope.addresses[pocketIndex+1] = [];
+      if (!$scope.addresses[branchId+1]) {
+          $scope.addresses[branchId+1] = [];
       }
   }
 
-  // scope function to generate (or load from cache) a new address
-  $scope.generateAddress = function(isChange, n) {
-    if (!isChange) {
-        isChange = 0;
-    }
-    if (!$scope.addresses[isChange]) {
-        $scope.addresses[isChange] = [];
-    }
-    var addressArray = $scope.addresses[isChange];
-    if (n === undefined || n === null) {
-        n = addressArray.length;
-    }
-    var walletAddress = $scope.identity.wallet.getAddress([isChange, n]);
-
-    // add to scope
+  // Add a wallet address to scope
+  var addToScope = function(walletAddress) {
+    var branchId = walletAddress.index[0];
+    var addressArray = $scope.addresses[branchId];
     if ($scope.allAddresses.indexOf(walletAddress) == -1) {
         addressArray.push(walletAddress);
         $scope.allAddresses.push(walletAddress);
     }
+  }
+
+  // scope function to generate (or load from cache) a new address
+  $scope.generateAddress = function(branchId, n) {
+    if (!branchId) {
+        branchId = 0;
+    }
+    if (!$scope.addresses[branchId]) {
+        $scope.addresses[branchId] = [];
+    }
+    var addressArray = $scope.addresses[branchId];
+    if (n === undefined || n === null) {
+        n = addressArray.length;
+    }
+    var walletAddress = $scope.identity.wallet.getAddress([branchId, n]);
+
+    // add to scope
+    addToScope(walletAddress);
 
     // get history for the new address
     bg.initAddress(walletAddress);
@@ -199,13 +206,12 @@ function (controllers, DarkWallet, Services) {
   };
 
   // get a free change address or a new one
-  $scope.getChangeAddress = function() {
-    for(var idx=0; $scope.allAddresses.length; idx++) {
-        if ($scope.allAddresses[idx].nOutputs == 0 && $scope.allAddresses[idx].index[0]%2 == 1) {
-            return $scope.allAddresses[idx];
-        }
-    }
-    return $scope.generateAddress(1);
+  $scope.getChangeAddress = function(pocketId) {
+    var identity = DarkWallet.getIdentity();
+    if (!pocketId) pocketId = 0;
+    var changeAddress = identity.wallet.getChangeAddress(pocketId);
+    addToScope(changeAddress);
+    return changeAddress;
   }
 
   // Load identity
