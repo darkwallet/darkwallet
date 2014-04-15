@@ -40,7 +40,15 @@ f2aeea554b7fb7d145061efad4398879b9be88ac00000000"
           
         },
         getLobbyTransport: function() {
-          
+           return {
+               getChannel: function(name) {
+                   return {
+                       name: name,
+                       addCallback: function(_name, _cb) { },
+                       removeCallback: function(_name, _cb) { }
+                   }
+               }
+           }
         }
       };
     },
