@@ -36,7 +36,7 @@
     <div ng-show="showFundScript"><code>{{pocket.fund.script}}</code></div>
 
     <h3>Tools:</h3>
-    <button class="button postfix fa large-6 fa-download" ng-click="importingFundTransaction = !importingFundTransaction">Import Spend</button>
+    <button class="button postfix fa large-6 fa-download" ng-show="!importingFundTransaction" ng-click="importingFundTransaction=true">Import Spend</button>
     <form name="fundTxForm" novalidate ng-submit="importFundTx(fundTxForm)" ng-show="importingFundTransaction">
         <input required ng-model="fundTxForm.newTx" type="text" placeholder="Paste the transaction hex here"></input>
         <button class="button postfix fa large-6 fa-check" type="submit">Import</button>

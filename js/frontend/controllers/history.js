@@ -85,6 +85,9 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
       $scope.pocket.index = fund.seq[0];
       var address = $scope.identity.wallet.getAddress(fund.seq)
       $scope.pocket.participants = detectFundParticipants(fund);
+      var meFound = $scope.pocket.participants.filter(function(participant) {return participant.type=='me'});
+      $scope.pocket.participants = detectFundParticipants(fund);
+      $scope.pocket.canSign = meFound.length ? true : false ;
       $scope.pocket.changeAddresses = [];
       $scope.pocket.addresses = [address];
       $scope.pocket.fund = fund;
