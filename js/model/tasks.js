@@ -23,6 +23,7 @@ Tasks.prototype.addTask = function(section, task) {
     if (!this.tasks.hasOwnProperty(section)) {
         this.tasks[section] = [];
     }
+    task.seen = false;
     this.tasks[section].push(task);
     this.store.save();
 }

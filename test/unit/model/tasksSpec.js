@@ -23,10 +23,10 @@ define(['model/tasks'], function(Tasks) {
 
     var tasksSample =  {
       multisig : [
-        { tx : 'mocktx' },
-        { tx : 'mocktx' }
+        { tx : 'mocktx', seen: false },
+        { tx : 'mocktx', seen: false }
       ],
-      foo : [ 'bar' ]
+      foo : [ { name: 'bar', seen: false } ]
     };
 
     it('is created properly', function() {
@@ -37,7 +37,8 @@ define(['model/tasks'], function(Tasks) {
     it('adds tasks', function() {
       tasks.addTask('multisig', {tx: 'mocktx'});
       tasks.addTask('multisig', {tx: 'mocktx'});
-      tasks.addTask('foo', 'bar');
+      tasks.addTask('foo', { name: 'bar' });
+      expect(tasks.tasks).toEqual(tasksSample);
       expect(tasks.tasks).toEqual(tasksSample);
       expect(_store).toEqual(tasksSample);
     });
