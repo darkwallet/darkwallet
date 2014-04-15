@@ -31,7 +31,7 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
 
     // Check to see we have anything to mix
     var anyMixing = false;
-    identity.wallet.pockets.forEach(function(pocket) {
+    identity.wallet.pockets.hdPockets.forEach(function(pocket) {
       if (pocket.mixing) {
         anyMixing = true;
       }
@@ -138,7 +138,7 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
    */
   MixerService.prototype.findMixingPocket = function(amount) {
     var identity = this.core.getCurrentIdentity();
-    var pockets = identity.wallet.pockets;
+    var pockets = identity.wallet.pockets.hdPockets;
     for(var i=0; i<pockets.length; i++) {
       var pocket = pockets[i];
       if (pocket.mixing) {

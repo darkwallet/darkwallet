@@ -27,7 +27,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
           // TODO: Any is only using default pocket right now.
           $scope.pocketIndex = 0;
       } else if (typeof pocket == 'number') {
-          $scope.sendPocketName = $scope.identity.wallet.pockets[pocket].name;
+          $scope.sendPocketName = $scope.identity.wallet.pockets.hdPockets[pocket].name;
           $scope.pocketIndex = pocket;
       } else {
           var idx = parseInt(pocket.split(':')[1])

@@ -133,7 +133,7 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
           $scope.pocket.stealth = walletAddress.stealth;
           $scope.pocket.addresses = $scope.addresses[$scope.pocket.index];
           $scope.pocket.changeAddresses = $scope.addresses[$scope.pocket.index+1];
-          var walletPocket = $scope.identity.wallet.getPocket(pocketName);
+          var walletPocket = $scope.identity.wallet.pockets.getPocket(pocketName);
           $scope.pocket.mixing = walletPocket.mixing;
           $scope.pocket.tasks = [];
           $scope.isAll = false;
@@ -164,12 +164,12 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
       $scope.openModal('confirm-delete', {name: pocket.name, object: pocket}, $scope.deletePocketFinish)
   }
   $scope.deletePocketFinish = function(pocket) {
-      $scope.identity.wallet.deletePocket(pocket.name);
+      $scope.identity.wallet.pockets.deletePocket(pocket.name);
       $scope.selectPocket();
   }
   $scope.setMixing = function(pocket) {
       var identity = $scope.identity;
-      var walletPocket = identity.wallet.getPocket(pocket.name);
+      var walletPocket = identity.wallet.pockets.getPocket(pocket.name);
       walletPocket.mixing = !walletPocket.mixing;
       pocket.mixing = walletPocket.mixing;
       identity.wallet.store.save();
@@ -180,15 +180,16 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
     if ($scope.creatingPocket) {
       if ($scope.newPocket.name) {
           // create pocket
-          $scope.identity.wallet.createPocket($scope.newPocket.name);
+          $scope.identity.wallet.pockets.createPocket($scope.newPocket.name);
+          var pocketIndex = $scope.identity.wallet.pockets.hdPockets.length-1;
           // initialize pocket on angular
-          $scope.initPocket($scope.identity.wallet.pockets.length-1);
+          $scope.initPocket(pocketIndex);
           // generate an address
-          $scope.generateAddress($scope.identity.wallet.pockets.length-1, 0);
+          $scope.generateAddress(pocketIndex, 0);
           // select the pocket
-          $scope.selectPocket($scope.newPocket.name, $scope.identity.wallet.pockets.length-1);
+          $scope.selectPocket($scope.newPocket.name, pocketIndex);
           // reset pocket form
-          $scope.newPocket = {};
+          $scope.newPocket = {name:''};
       }
     }
     $scope.creatingPocket = !$scope.creatingPocket;
@@ -270,7 +271,7 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
   $scope.moveFunds = function(type, index) {
     var to;
     if (type === 'pocket') {
-      to = $scope.identity.wallet.pockets[index].name;
+      to = $scope.identity.wallet.pockets.hdPockets[index].name;
     } else if (type === 'multisig') {
       to = $scope.identity.wallet.multisig.funds[index].name;
     } else {

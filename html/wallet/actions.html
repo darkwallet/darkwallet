@@ -4,7 +4,7 @@
             <a href="" dropdown-toggle="#pockets" class="fa button postfix fa-share">Move funds to another pocket</a>
             <ul id="pockets" class="f-dropdown">
               <li class="colorhead"><h6>My pockets</h6></li>
-              <li ng-repeat="pocket in identity.wallet.pockets track by $index">
+              <li ng-repeat="pocket in identity.wallet.pockets.hdPockets track by $index">
                 <a ng-click="moveFunds('pocket', $index)">{{pocket.name}}</a>
               </li>
               <li class="colorhead"><h6>Multisig funds</h6></li>

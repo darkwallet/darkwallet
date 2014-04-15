@@ -61,7 +61,7 @@
 
         <ul id="wallets" class="f-dropdown">
           <li class="colorhead"><h6>My pockets</h6></li>
-          <li ng-repeat="pocket in identity.wallet.pockets track by $index">
+          <li ng-repeat="pocket in identity.wallet.pockets.hdPockets track by $index">
             <a ng-click="setPocket($index)">{{pocket.name}}</a>
           </li>
           <li><a ng-click="setPocket('any')">Any</a></li>

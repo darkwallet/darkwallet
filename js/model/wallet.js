@@ -2,8 +2,8 @@
  * @fileOverview Access to the identity bitcoin keys
  */
 
-define(['util/stealth', 'bitcoinjs-lib', 'model/multisig'],
-function(Stealth, Bitcoin, MultisigFunds) {
+define(['util/stealth', 'bitcoinjs-lib', 'model/multisig', 'model/pockets'],
+function(Stealth, Bitcoin, MultisigFunds, Pockets) {
 /**
  * Wallet class.
  * @param {Object} store Store for the object.
@@ -19,35 +19,18 @@ function Wallet(store, identity) {
     if (this.scanKeys.length == 0) {
         console.log('You need to reseed the wallet to generate stealth scanning keys!');
     }
-    this.pockets = this.initPockets(store)
     this.mpk = store.get('mpk');
     if (!this.mpk) {
          console.log("Wallet without mpk!", this.mpk);
     }
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
+    this.pockets = new Pockets(store, identity, this)
     this.wallet = new Bitcoin.Wallet(this.mpk);
     this.multisig = new MultisigFunds(store, identity, this);
 
     // store balance
     this.loadPubKeys();
     this.balance = this.getBalance();
-}
-
-Wallet.prototype.initPockets = function(store) {
-    var pockets = store.init('pockets', [{name:'default'}, {name: 'savings'}]);
-
-    // Upgrade pocket store to new format
-    if (typeof pockets[0] == 'string') {
-        for(var i=0; i< pockets.length; i++) {
-            pockets[i] = {'name': pockets[i]};
-        };
-    }
-    // Init pocket wallets (temporary cache for pockets)
-    this.pocketWallets = {};
-    for(var idx=0; idx< pockets.length; idx++) {
-        this.initPocket(idx);
-    };
-    return pockets;
 }
 
 /**
@@ -83,83 +66,12 @@ Wallet.prototype.getBalance = function(pocketIndex) {
 }
 
 /**
- * Create pocket with the given name
- * @param {String} name Name for the new pocket
- */
-Wallet.prototype.createPocket = function(name) {
-    // Raise exception if name exists
-    if (this.getPocket(name)) {
-        throw Error("Pocket with that name already exists!");
-    }
-    this.pockets.push({name: name});
-    this.store.save();
-    this.initPocket(this.pockets.length-1);
-}
-
-/**
- * Initialize a pocket
- */
-Wallet.prototype.initPocket = function(idx) {
-    this.pocketWallets[idx] = {addresses: [], balance: 0};
-}
-
-/**
- * Get a pocket by name
- */
-Wallet.prototype.getPocket = function(name) {
-    for(var i=0; i<this.pockets.length; i++) {
-        if (this.pockets[i].name == name) {
-            return this.pockets[i];
-        }
-    }
-}
-
-/**
- * Delete a pocket
- */
-Wallet.prototype.deletePocket = function(name) {
-    for(var i=0; i<this.pockets.length; i++) {
-        if (this.pockets[i].name == name) {
-             this.pockets[i] = null;
-             this.store.save();
-             // TODO: Cleanup pocket addresses?
-             return;
-        }
-    }
-    throw Error("Pocket with that name does not exist!");
-}
-
-/**
- * Get the pocket index for a wallet address
- */
-Wallet.prototype.getAddressPocketIdx = function(walletAddress) {
-    if (walletAddress.type == 'multisig') {
-        return walletAddress.index[0];
-    } else {
-        return Math.floor(walletAddress.index[0]/2);
-    }
-}
-
-/**
- * Add an address to its pocket
- */
-Wallet.prototype.addToPocket = function(walletAddress) {
-    var pocketIdx = this.getAddressPocketIdx(walletAddress);
-
-    // add to the list of pocket addresses
-    if (!this.pocketWallets.hasOwnProperty(pocketIdx)) {
-        this.initPocket(pocketIdx)
-    }
-    this.pocketWallets[pocketIdx].addresses.push(walletAddress.address);
-}
-
-/**
  * Add an address to the wallet
  */
 Wallet.prototype.addToWallet = function(walletAddress) {
     this.wallet.addresses.push(walletAddress.address);
     this.pubKeys[walletAddress.index.slice()] = walletAddress;
-    this.addToPocket(walletAddress);
+    this.pockets.addToPocket(walletAddress);
     this.store.save();
 }
 
@@ -179,7 +91,7 @@ Wallet.prototype.loadPubKeys = function() {
         // Add all to the wallet
         self.wallet.addresses.push(walletAddress.address);
         if (walletAddress.index.length > 1) {
-            self.addToPocket(walletAddress);
+            self.pockets.addToPocket(walletAddress);
 
             if (walletAddress.history)
                 self.processHistory(walletAddress, walletAddress.history);
@@ -230,23 +142,15 @@ Wallet.prototype.storePrivateKey = function(seq, password, key) {
 }
 
 /**
- * Store the given public address
+ * Store the given public key
  * @param {Array} seq Address sequence (bip32 or stealth id)
  * @param {Bitcoin.Key} key Bitcoin.Key or public key bytes
  */
-Wallet.prototype.storeAddress = function(seq, key, properties) {
-    // BIP32 js support is still missing some part and we can't get addresses
-    // from pubkey yet, unless we do it custom like here...:
-    // (mpKey.key.getBitcoinAddress doesn't work since 'key' is not a key
-    // object but binary representation).
-    var mpPubKey, label;
-    if (key.length) {
-        mpPubKey = key;
-    } else {
-        mpPubKey = key.toBytes();
-    }
-    var mpKeyHash = Bitcoin.Util.sha256ripe160(mpPubKey);
-    var address = new Bitcoin.Address(mpKeyHash);
+Wallet.prototype.storePublicKey = function(seq, key, properties) {
+    var pubKey = key.length ? key : key.toBytes();
+
+    var pubKeyHash = Bitcoin.Util.sha256ripe160(pubKey);
+    var address = new Bitcoin.Address(pubKeyHash);
 
     var label = 'unused';
     if (seq.length == 1) {
@@ -262,7 +166,7 @@ Wallet.prototype.storeAddress = function(seq, key, properties) {
        'label': label,
        'balance': 0,
        'nOutputs': 0,
-       'pubKey': mpPubKey,
+       'pubKey': pubKey,
        'address': address.toString()
     };
 
@@ -276,7 +180,7 @@ Wallet.prototype.storeAddress = function(seq, key, properties) {
     // Precalculate stealth address for pockets (even branches)
     if ((seq.length == 1) && (seq[0]%2 == 0)) {
         var scanKey = this.getScanKey();
-        var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [mpPubKey]);
+        var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [pubKey]);
         walletAddress['stealth'] = stealthAddress;
     }
 
@@ -302,7 +206,7 @@ Wallet.prototype.getAddress = function(seq) {
         while(workSeq.length) {
             childKey = childKey.derive(workSeq.shift());
         }
-        return this.storeAddress(seq, childKey.pub);
+        return this.storePublicKey(seq, childKey.pub);
     }
 }
 
@@ -381,33 +285,13 @@ Wallet.prototype.setDefaultFee = function(newFee) {
     console.log("[wallet] saved new fees", newFee);
 }
 
-Wallet.prototype.getPocketWallet = function(idx) {
-    if (!this.pocketWallets.hasOwnProperty(idx)) {
-        throw Error("Pocket doesn't exist");
-    }
-    // Generate on the fly
-    var outputs = this.wallet.outputs;
-    var addresses = this.pocketWallets[idx].addresses;
-    var pocketOutputs = {};
-    Object.keys(outputs).forEach(function(outputKey) {
-        var output = outputs[outputKey];
-        if (addresses.indexOf(output.address.toString()) != -1) {
-            pocketOutputs[outputKey] = output;
-        }
-    })
-    var tmpWallet = new Bitcoin.Wallet(this.mpk)
-    tmpWallet.outputs = pocketOutputs;
-    tmpWallet.addresses = addresses;
-    return tmpWallet;
-}
-
 Wallet.prototype.getUtxoToPay = function(value, pocketIdx) {
     var outputs = this.wallet.outputs;
     var tmpWallet;
     if (pocketIdx == 'all') {
         tmpWallet = this.wallet;
     } else {
-        tmpWallet = this.getPocketWallet(pocketIdx);
+        tmpWallet = this.pockets.getPocketWallet(pocketIdx);
     }
     return tmpWallet.getUtxoToPay(value);
 }
@@ -660,7 +544,7 @@ Wallet.prototype.processStealth = function(stealthArray) {
         if (address == myAddress.toString()) {
             console.log("STEALTH MATCH!!");
             var seq = [0, 's'].concat(ephemKey);
-            var walletAddress = self.storeAddress(seq, myKeyBytes, {'type': 'stealth', 'ephemkey': ephemKey});
+            var walletAddress = self.storePublicKey(seq, myKeyBytes, {'type': 'stealth', 'ephemkey': ephemKey});
         }
     });
 }

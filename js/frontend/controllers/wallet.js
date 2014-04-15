@@ -101,7 +101,7 @@ function (controllers, DarkWallet, Services) {
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var walletAddress = identity.wallet.getAddress(pubKeyIndex);
           // Init pockets
-          for(var idx=0; idx<identity.wallet.pockets.length; idx++) {
+          for(var idx=0; idx<identity.wallet.pockets.hdPockets.length; idx++) {
               $scope.initPocket(idx);
           };
           // Regular addresses
