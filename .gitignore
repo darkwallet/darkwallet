@@ -34,6 +34,8 @@ Desktop.ini
 /vendors/angular-xeditable/*
 !/vendors/angular-xeditable/dist
 /vendors/angular-xeditable/dist/js/xeditable.js
+/vendors/angular-mocks/*
+!/vendors/angular-mocks/angular-mocks.js
 /vendors/mnemonic.js/*
 !/vendors/mnemonic.js/mnemonic.js
 /vendors/ngprogress/*
