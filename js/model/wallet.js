@@ -66,16 +66,6 @@ Wallet.prototype.getBalance = function(pocketIndex) {
 }
 
 /**
- * Add an address to the wallet
- */
-Wallet.prototype.addToWallet = function(walletAddress) {
-    this.wallet.addresses.push(walletAddress.address);
-    this.pubKeys[walletAddress.index.slice()] = walletAddress;
-    this.pockets.addToPocket(walletAddress);
-    this.store.save();
-}
-
-/**
  * Load wallet addresses into internal Bitcoin.Wallet
  * @private
  */
@@ -142,7 +132,7 @@ Wallet.prototype.storePrivateKey = function(seq, password, key) {
 }
 
 /**
- * Store the given public key
+ * Store the given public key as a wallet address
  * @param {Array} seq Address sequence (bip32 or stealth id)
  * @param {Bitcoin.Key} key Bitcoin.Key or public key bytes
  */
@@ -187,6 +177,16 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
     // add to internal bitcoinjs-lib wallet
     this.addToWallet(walletAddress);
     return walletAddress;
+}
+
+/**
+ * Add an address to the wallet
+ */
+Wallet.prototype.addToWallet = function(walletAddress) {
+    this.wallet.addresses.push(walletAddress.address);
+    this.pubKeys[walletAddress.index.slice()] = walletAddress;
+    this.pockets.addToPocket(walletAddress);
+    this.store.save();
 }
 
 /**
@@ -285,22 +285,26 @@ Wallet.prototype.setDefaultFee = function(newFee) {
     console.log("[wallet] saved new fees", newFee);
 }
 
-Wallet.prototype.getUtxoToPay = function(value, pocketIdx) {
+/**
+ * Get available unspent outputs for paying from the given pocket.
+ * @param {Number} value The amount to look for in satoshis
+ * @param {Object} pocketId The pocket identifier
+ */
+Wallet.prototype.getUtxoToPay = function(value, pocketId) {
     var outputs = this.wallet.outputs;
     var tmpWallet;
-    if (pocketIdx == 'all') {
+    if (pocketId == 'all') {
         tmpWallet = this.wallet;
     } else {
-        tmpWallet = this.pockets.getPocketWallet(pocketIdx);
+        tmpWallet = this.pockets.getPocketWallet(pocketId);
     }
     return tmpWallet.getUtxoToPay(value);
 }
 
 /**
  * Prepare a transaction with the given constraints
- * XXX preliminary... needs storing more info here or just use bitcoinjs-lib api
  */
-Wallet.prototype.prepareTx = function(pocketIdx, recipients, changeAddress, fee) {
+Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) {
     var self = this;
     var totalAmount = 0;
     recipients.forEach(function(recipient) {
@@ -311,7 +315,7 @@ Wallet.prototype.prepareTx = function(pocketIdx, recipients, changeAddress, fee)
     // find outputs with enough funds
     var txUtxo;
     try {
-        txUtxo = this.getUtxoToPay(totalAmount+fee, pocketIdx);
+        txUtxo = this.getUtxoToPay(totalAmount+fee, pocketId);
     } catch(e) {
         if (typeof e == 'string') {
             // Errors from libbitcoin come as strings
