@@ -97,8 +97,9 @@ function (controllers, Services, DarkWallet, Bitcoin) {
           if (error) {
               notify.error("Can't send", ""+error.message);
               console.log("error", error);
-          } else if (task && task.radar) {
+          } else if (task && (task.type == 'radar' || task.radar)) {
               console.log("radar", task.radar)
+              notify.note('Propagating!', task.radar + ' %')
           } else if (task && task.type == 'mixer') {
               notify.note('Sent to mixer ('+task.task.state+')', (fee + totalAmount) + ' satoshis')
               console.log("mixer", task)
