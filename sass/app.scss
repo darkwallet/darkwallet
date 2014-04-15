@@ -282,15 +282,14 @@ div.chat-text {
 
 /* Scrollbars ---------------------  */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #3c3c3c;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background: $body-bg;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #27ae60;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  border-radius: $global-radius;
+  background: $primary-color;
 }
