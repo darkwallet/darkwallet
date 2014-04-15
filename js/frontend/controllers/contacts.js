@@ -17,14 +17,16 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.contactSearch = '';
 
   $scope.filterContacts = function() {
+    var identity = DarkWallet.getIdentity();
     var search = $scope.contactSearch
-    $scope.contacts = $scope.identity.contacts.contacts.filter(function(contact) {
+    $scope.contacts = identity.contacts.contacts.filter(function(contact) {
         return contact.name.search(search) != -1;
     });
   }
 
   $scope.createContact = function() {
-    $scope.identity.contacts.addContact($scope.newContact)
+    var identity = DarkWallet.getIdentity();
+    identity.contacts.addContact($scope.newContact)
     $scope.newContact = {};
     $scope.contactFormShown = false;
   };
@@ -35,15 +37,17 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   };
 
   $scope.editContact = function(contact) {
+    var identity = DarkWallet.getIdentity();
     contact.name = $scope.contactToEdit.name;
     contact.address = $scope.contactToEdit.address;
-    $scope.identity.contacts.updateContact(contact);
+    identity.contacts.updateContact(contact);
     $scope.contactFormShown = false;
     $scope.contactToEdit = {};
   };
 
   $scope.deleteContact = function(contact) {
-    $scope.identity.contacts.deleteContact(contact);
+    var identity = DarkWallet.getIdentity();
+    identity.contacts.deleteContact(contact);
   };
 }]);
 });
