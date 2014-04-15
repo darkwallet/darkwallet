@@ -48,7 +48,6 @@ Contacts.prototype.updateContactHash = function(contact) {
  * @param {Object} data Contact information.
  */
 Contacts.prototype.findByPubKey = function (pubKey) {
-  // TODO: We will probably need some kind of index
   var toCheck = pubKey.slice(0, 65).toString();
   for(var i=0; i<this.contacts.length; i++) {
     var address = this.contacts[i].address;
