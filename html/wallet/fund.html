@@ -26,11 +26,15 @@
   <div class="columns large-8">
     <h3>Script:</h3>
     <div class="row">
-      <div class="large-6 columns">
+      <div class="large-4 columns">
         <button ng-click="copyClipboard(pocket.fund.script)" class="button postfix fa fa-clipboard">Copy</button>
       </div>
-      <div class="large-6 columns">
+      <div class="large-4 columns">
         <button ng-click="showFundScript=!showFundScript" class="button postfix fa fa-eye">Show</button>
+      </div>
+      <div class="medium-4 columns">
+        <!-- Maybe too heavy -->
+        <button ng-click="openModal('show-qr', {address: pocket.fund.script})" class="button postfix radius fa fa-qrcode">QR</button>
       </div>
     </div>
     <div ng-show="showFundScript"><code>{{pocket.fund.script}}</code></div>
