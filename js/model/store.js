@@ -1,11 +1,9 @@
-/**
- * @fileOverview Mapping coordinating with the app's database.
- */
-
 define(['bitcoinjs-lib', 'sjcl'], function(Bitcoin) {
 /**
- * Store class.
+ * Mapping coordinating with the app's database.
  * @constructor
+ * @param {Object} data Initial data
+ * @param {Object} keyring Keyring
  */
 function Store(data, keyring) {
     this.store = data;
@@ -15,6 +13,7 @@ function Store(data, keyring) {
 /**
  * Get a value from the store.
  * @param {String} key Key for the value to retrieve.
+ * @return {Mixed} Stored value
  */
 Store.prototype.get = function(key) {
     return this.store[key];
@@ -23,7 +22,7 @@ Store.prototype.get = function(key) {
 /**
  * Set a key value pair into the the store.
  * @param {String} key Key for the value to retrieve.
- * @param {Object} value Value to store, should be any simple type (including arrays).
+ * @param {Mixed} value Value to store, should be any simple type (including arrays).
  */
 Store.prototype.set = function(key, value) {
     this.store[key] = value;
@@ -32,7 +31,7 @@ Store.prototype.set = function(key, value) {
 /**
  * Set value to default if not defined.
  * @param {String} key Key for the value to retrieve.
- * @param {Object} value Value to store, should be any simple type (including arrays).
+ * @param {Mixed} value Value to store, should be any simple type (including arrays).
  */
 Store.prototype.init = function(key, value) {
     if (!this.store[key]) {
@@ -45,6 +44,7 @@ Store.prototype.init = function(key, value) {
 /**
  * Save the store to database.
  * This function must be called or changes to the store won't be saved.
+ * @param {Function} callback Function to call on save.
  */
 Store.prototype.save = function(callback) {
     this.keyring.save(this.store.name, this.store, callback);
@@ -53,6 +53,7 @@ Store.prototype.save = function(callback) {
 /**
  * Get the decrypted private user data.
  * @param {String} password Password to decrypt the private data
+ * @return {Mixed} Decrypted information
  */
 Store.prototype.getPrivateData = function(password) {
     var SHA256 = Bitcoin.CryptoJS.SHA256;
@@ -67,7 +68,7 @@ Store.prototype.getPrivateData = function(password) {
 
 /**
  * Encrypts identity private information and saves it.
- * @param {Object} data Information to be encrypted.
+ * @param {Mixed} data Information to be encrypted.
  * @param {String} password Password for the identity crypt.
  * 
  */

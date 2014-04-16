@@ -1,13 +1,10 @@
-/*
- * @fileOverview Multisig funds
- */
-
 define(function() {
 
 /**
- * Multisig class, holds multisig funds.
+ * Multisig, holds multisig funds.
  * @param {Object} store Store for the object.
  * @param {Object} identity Parent identity for the object
+ * @param {Object} wallet
  * @constructor
  */
 function Multisig(store, identity, wallet) {
@@ -18,6 +15,11 @@ function Multisig(store, identity, wallet) {
     this.store = store;
 }
 
+/**
+ * Initializes wallet address
+ * @param {Object} fund An object holding the fund properties.
+ * @return {Object} Wallet address structure. See {@link Wallet#getWalletAddress}
+ */
 Multisig.prototype.initWalletAddress = function(fund) {
     if (!fund.address || !fund.name) {
         console.log('[multisig] Fund is not correctly defined!');
@@ -42,6 +44,7 @@ Multisig.prototype.initWalletAddress = function(fund) {
 /**
  * Add a fund to the store
  * @param {Object} fund An object holding the fund properties.
+ * @return {Object} Wallet address structure. See {@link Wallet#getWalletAddress}
  */
 Multisig.prototype.addFund = function(fund) {
     if (!fund.name) {

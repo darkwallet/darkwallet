@@ -1,10 +1,6 @@
-/*
- * @fileOverview Transaction Store
- */
-
 define(['darkwallet'], function(DarkWallet) {
 /**
- * TransactionDatabase class.
+ * Transaction Store.
  * @param {Object} store Store for the object.
  * @constructor
  */
@@ -20,7 +16,7 @@ function TransactionDatabase(store) {
     };
 }
 
-/*
+/**
  * Get a transaction, will retrieve it from network if needed.
  * @param {String} txHash Transaction hash
  * @param {Function} callback Function that will be called with the transaction, callback will be called with (txData, userData) arguments
@@ -42,8 +38,10 @@ TransactionDatabase.prototype.fetchTransaction = function(txHash, callback, user
     }
 };
 
-/*
+/**
  * Store a transaction in the database.
+ * @param {String} txHash Transaction hash
+ * @param {Object} tx     Transaction data
  */
 TransactionDatabase.prototype.storeTransaction = function(txHash, tx) {
     if (!this.transactions.hasOwnProperty(txHash)) {

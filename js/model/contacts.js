@@ -1,13 +1,9 @@
-/**
- * @fileOverview Contacts (Address book).
- */
-
 define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
 var Crypto = Bitcoin.CryptoJS;
 
 /**
- * Contacts class.
+ * Contacts (Address book).
  * @param {Object} store Object store
  * @constructor
  */
@@ -38,6 +34,7 @@ Contacts.prototype.initContacts = function() {
 
 /**
  * Update fingerprint hash for a contact
+ * @param {Object} contact Dictionary with a field address to feed the hash
  */
 Contacts.prototype.updateContactHash = function(contact) {
     contact.hash = Crypto.SHA256(contact.address).toString();
@@ -45,7 +42,8 @@ Contacts.prototype.updateContactHash = function(contact) {
 
 /**
  * Find Contact
- * @param {Object} data Contact information.
+ * @param {Object} pubKey Public key to find.
+ * @return {Object|null} The contact if it is there
  */
 Contacts.prototype.findByPubKey = function (pubKey) {
   var toCheck = pubKey.toString();
@@ -68,16 +66,18 @@ Contacts.prototype.findByPubKey = function (pubKey) {
 
 /**
  * Add a contact to the address book
- * @param {Object} data Contact information.
+ * @param {Object} contact Contact information.
  */
-Contacts.prototype.addContact = function (data) {
-  this.updateContactHash(data);
-  this.contacts.push(data);
+Contacts.prototype.addContact = function (contact) {
+  this.updateContactHash(contact);
+  this.contacts.push(contact);
   this.store.save();
 };
 
 /**
  * Edit a contact in the address book
+ * @param {Object} contact Contact information.
+ * @throws {Error} When trying to update a non-existing contact
  */
 Contacts.prototype.updateContact = function (contact) {
   if (this.contacts.indexOf(contact) == -1) {
@@ -90,7 +90,8 @@ Contacts.prototype.updateContact = function (contact) {
 
 /**
  * Delete a contact from the address book
- * @param {String} data Contact information.
+ * @param {String} contact Contact information.
+ * @throws {Error} When trying to delete a non-existing contact
  */
 Contacts.prototype.deleteContact = function (contact) {
   var i = this.contacts.indexOf(contact);

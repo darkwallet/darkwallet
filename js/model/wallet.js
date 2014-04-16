@@ -1,12 +1,9 @@
-/*
- * @fileOverview Access to the identity bitcoin keys
- */
-
 define(['util/stealth', 'bitcoinjs-lib', 'model/multisig', 'model/pockets'],
 function(Stealth, Bitcoin, MultisigFunds, Pockets) {
 /**
- * Wallet class.
+ * Access to the identity bitcoin keys.
  * @param {Object} store Store for the object.
+ * @param {Object} identity Identity for the object.
  * @constructor
  */
 function Wallet(store, identity) {
@@ -35,7 +32,8 @@ function Wallet(store, identity) {
 
 /**
  * Get balance for a specific pocket or all pockets
- * @param {String or undefined} pocket Pocket number or all pockets if undefined
+ * @param {String|undefined} pocket Pocket number or all pockets if undefined
+ * @param {Number} Balance in satoshis
  */
 Wallet.prototype.getBalance = function(pocketIndex) {
     var balance = 0;
@@ -116,6 +114,7 @@ Wallet.prototype.loadPubKeys = function() {
 /**
  * Get the private key for the given address index
  * @param {Array} seq Array for the bip32 sequence to retrieve address for
+ * @param {String} password Password to encrypt the private data
  * @param {Function} callback A callback where the private key will be provided.
  */
 Wallet.prototype.getPrivateKey = function(seq, password, callback) {
@@ -134,7 +133,7 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     this.storePrivateKey(seq, password, key.priv);
    
     callback(key.priv);
-}
+};
 
 /**
  * Store the given private key
@@ -148,12 +147,13 @@ Wallet.prototype.storePrivateKey = function(seq, password, key) {
     var data = this.store.getPrivateData(password);
     data.privKeys[seq] = key.toBytes();
     this.store.setPrivateData(data, password);
-}
+};
 
 /**
  * Store the given public key as a wallet address
  * @param {Array} seq Address sequence (bip32 or stealth id)
  * @param {Bitcoin.ECKey} key Bitcoin.ECKey or public key bytes
+ * @return {Object} the wallet address
  */
 Wallet.prototype.storePublicKey = function(seq, key, properties) {
     var pubKey = key.length ? key : key.toBytes();
@@ -200,6 +200,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
 
 /**
  * Add an address to the wallet
+ * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}.
  */
 Wallet.prototype.addToWallet = function(walletAddress) {
     this.wallet.addresses.push(walletAddress.address);
@@ -232,6 +233,7 @@ Wallet.prototype.getAddress = function(seq) {
 /**
  * Get a free address from a branch id (can be pocket or pocket+1 for change)
  * @param {Array} seq Array for the bip32 sequence to retrieve address for
+ * @throws {Error} When generated an incorrect change address.
  */
 Wallet.prototype.getFreeAddress = function(branchIndex) {
     var walletAddress;
@@ -261,6 +263,7 @@ Wallet.prototype.getFreeAddress = function(branchIndex) {
  * Get a free change address for a pocket
  * @param {Object} pocketIndex Index for the pocket, can be string for
  *                 multisigs or int for a normal pocket (as usual).
+ * @return {Object} The first change address
  */
 
 Wallet.prototype.getChangeAddress = function(pocketId) {
@@ -282,6 +285,9 @@ Wallet.prototype.getChangeAddress = function(pocketId) {
  *   balance: satoshis
  *   nOutputs: number of outputs
  *   address: address hash
+ *   
+ * @param {String} address Bitcoin address
+ * @return {Object} The wallet address structure
  */
 Wallet.prototype.getWalletAddress = function(address) {
     var keys = Object.keys(this.pubKeys);
@@ -308,6 +314,7 @@ Wallet.prototype.setDefaultFee = function(newFee) {
  * Get available unspent outputs for paying from the given pocket.
  * @param {Number} value The amount to look for in satoshis
  * @param {Object} pocketId The pocket identifier
+ * @return {Object} List of outputs
  */
 Wallet.prototype.getUtxoToPay = function(value, pocketId) {
     var outputs = this.wallet.outputs;
@@ -347,6 +354,19 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
 
 /**
  * Prepare a transaction with the given constraints
+ * 
+ * @param {String} pocketId DOCME
+ * @param {Object[]} recipients DOCME
+ * @param {Object} changeAddress DOCME
+ * @param {Number} fee Fee for that transaction 
+ * @return {Object} The transaction object with the following fields:
+ *   - tx
+ *   - utxo
+ *   - total
+ *   - fee
+ *   - change
+ *   - myamount
+ *   - stealth
  */
 Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) {
     var self = this;
@@ -403,6 +423,10 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
 
 /**
  * Sign given transaction outputs
+ * @param {Object} newTx DOCME
+ * @param {Object} txUtxo DOCME
+ * @param {String} password DOCME
+ * @param {Function} callback DOCME
  */
 Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
     var pending = [];
@@ -435,6 +459,10 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
 
 /*
  * Helper functions
+ * @param {Object[]} inputs DOCME
+ * @param {Object} newTx DOCME
+ * @param {String} password Password to decrypt the private keys
+ * @return {Boolean} If signed or not
  */
 Wallet.prototype.signMyInputs = function(inputs, newTx, password) {
     var identity = this.identity;
@@ -466,7 +494,13 @@ Wallet.prototype.signMyInputs = function(inputs, newTx, password) {
 
 /**
  * Process an output from an external source
- * @see Bitcoin.Wallet.processOutput
+ * See Bitcoin.Wallet.processOutput
+ * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
+ * @param {String} txHash
+ * @param {String} index
+ * @param {Number} value
+ * @param {Number} height
+ * @param {Object} spend
  */
 Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, height, spend) {
     // Wallet wide
@@ -498,6 +532,9 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
 /*
  * Check if transaction involves given address.
  * Returns an array with involved inputs
+ * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
+ * @param {Object} tx             
+ * @return {Object[]}
  */
 Wallet.prototype.txForAddress = function(walletAddress, tx) {
     var identity = this.identity;
@@ -520,6 +557,10 @@ Wallet.prototype.txForAddress = function(walletAddress, tx) {
 
 /**
  * Process incoming transaction
+ * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
+ * @param {String} serializedTx  Transaction in hexadecimal
+ * @param {Number} height        Height of the block that the transaction was mined
+ * @return {Object} DOCME
  */
 Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
     var self = this;
@@ -570,6 +611,8 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
 
 /**
  * Process history report from obelisk
+ * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
+ * @param {Array} history
  */
 Wallet.prototype.processHistory = function(walletAddress, history) {
     var self = this;
@@ -602,6 +645,7 @@ Wallet.prototype.processHistory = function(walletAddress, history) {
 
 /**
  * Get the stealth scanning ECKey
+ * @return {Object} The scanning key
  */
 Wallet.prototype.getScanKey = function() {
     var scanMaster = this.scanKeys[0];
@@ -612,6 +656,7 @@ Wallet.prototype.getScanKey = function() {
 /**
  * Process stealth array from obelisk.
  * The array comes 
+ * @param {Object[]} stealthArray DOCME
  */
 Wallet.prototype.processStealth = function(stealthArray) {
     var self = this;

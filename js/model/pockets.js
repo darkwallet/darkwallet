@@ -1,12 +1,10 @@
-/*
- * @fileOverview Pocket functionality
- */
-
 define(['bitcoinjs-lib'], function(Bitcoin) {
 
 /**
- * Pockets class.
+ * Pocket functionality.
  * @param {Object} store Store for the object.
+ * @param {Object} identity Identity for the object.
+ * @param {Object} wallet Wallet for the object.
  * @constructor
  */
 function Pockets(store, identity, wallet) {
@@ -18,6 +16,7 @@ function Pockets(store, identity, wallet) {
 /**
  * Initialize store and internal caches for pockets
  * @param {String} store Identity store
+ * @return {Object[]} List of pockets
  * @private
  */
 Pockets.prototype.initPockets = function(store) {
@@ -56,7 +55,7 @@ Pockets.prototype.createPocket = function(name) {
 /**
  * Initialize a pockets wallet
  * @param {Object} id Pocket id (can be branch number, multisig address...)
- * @ private
+ * @private
  */
 Pockets.prototype.initPocketWallet = function(id) {
     this.pocketWallets[id] = {addresses: [], balance: 0};
@@ -65,6 +64,7 @@ Pockets.prototype.initPocketWallet = function(id) {
 /**
  * Get a pocket by name
  * @param {String} name Name for the pocket
+ * @return {Object} The pocket with the given name
  */
 Pockets.prototype.getPocket = function(name) {
     for(var i=0; i<this.hdPockets.length; i++) {
@@ -77,6 +77,7 @@ Pockets.prototype.getPocket = function(name) {
 /**
  * Delete a pocket
  * @param {String} name Name for the pocket to delete
+ * @throws {Error} When the pocket doesn't exist
  */
 Pockets.prototype.deletePocket = function(name) {
     for(var i=0; i<this.hdPockets.length; i++) {
@@ -92,7 +93,8 @@ Pockets.prototype.deletePocket = function(name) {
 
 /**
  * Get the pocket index for a wallet address
- * @param {Object} walletAddress Address we're looking for
+ * @param {Object} walletAddress Address we're looking for. See {@link Wallet#getWalletAddress}.
+ * @return {Number|String} The pocket index
  */
 Pockets.prototype.getAddressPocketId = function(walletAddress) {
     if (walletAddress.type == 'multisig') {
@@ -104,7 +106,7 @@ Pockets.prototype.getAddressPocketId = function(walletAddress) {
 
 /**
  * Add an address to its pocket
- * @param {Object} walletAddress Address we're adding
+ * @param {Object} walletAddress Address we're adding. See {@link Wallet#getWalletAddress}.
  */
 Pockets.prototype.addToPocket = function(walletAddress) {
     var pocketId = this.getAddressPocketId(walletAddress);
@@ -119,6 +121,7 @@ Pockets.prototype.addToPocket = function(walletAddress) {
 /**
  * Gets the pocket wallet for a pocket
  * @param {Object} id Pocket id (can be branch number, multisig address...)
+ * @return {Object} The pocket wallet
  */
 Pockets.prototype.getPocketWallet = function(id) {
     if (!this.pocketWallets.hasOwnProperty(id)) {

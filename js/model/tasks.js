@@ -1,11 +1,7 @@
-/**
- * @fileOverview Pending tasks
- */
-
 define(function() {
 
 /**
- * Tasks class.
+ * Pending tasks.
  * @param {Object} store Object store
  * @constructor
  */
@@ -16,7 +12,7 @@ function Tasks(store) {
 
 /**
  * Add a task into the given section
- * @param {string} section Section name
+ * @param {String} section Section name
  * @param {Object} task Task to add
  */
 Tasks.prototype.addTask = function(section, task) {
@@ -30,7 +26,7 @@ Tasks.prototype.addTask = function(section, task) {
 
 /**
  * Remove a task from the given section
- * @param {string} section Section name
+ * @param {String} section Section name
  * @param {Object} task Task to remove
  */
 Tasks.prototype.removeTask = function(section, task) {
@@ -44,8 +40,8 @@ Tasks.prototype.removeTask = function(section, task) {
 
 /**
  * Get task objects for a section
- * @param {string} section Section name
- * returns a list with the tasks.
+ * @param {String} section Section name
+ * @return {Object[]} List with the tasks.
  */
 Tasks.prototype.getTasks = function(section) {
     if (this.tasks.hasOwnProperty(section)) {
@@ -56,8 +52,8 @@ Tasks.prototype.getTasks = function(section) {
 
 /**
  * Get the number of tasks in the given section
- * @param {string} section Section name
- * returns the number of tasks.
+ * @param {String} section Section name
+ * @return {Number} Number of tasks.
  */
 Tasks.prototype.getOpenTasks = function(section) {
     var self = this;

@@ -35,7 +35,7 @@ Connections.prototype.addServer = function(name, address, type) {
 
 /**
  * Set the selected server
- * @param {Int} idx server index
+ * @param {Number} idx server index
  */
 Connections.prototype.setSelectedServer = function(idx) {
     this.selectedServer = idx;
@@ -46,7 +46,7 @@ Connections.prototype.setSelectedServer = function(idx) {
 
 /**
  * Set always connect
- * @param {Bool} alwaysConnect Always connect to the server when starting application
+ * @param {Boolean} alwaysConnect Always connect to the server when starting application
  */
 Connections.prototype.setAlwaysConnect = function(alwaysConnect) {
     this.alwaysConnect = alwaysConnect;

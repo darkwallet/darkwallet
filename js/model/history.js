@@ -1,10 +1,6 @@
-/*
- * @fileOverview User oriented history view
- */
-
 define(['bitcoinjs-lib'], function(Bitcoin) {
 /**
- * History class.
+ * User oriented history view.
  * @param {Object} store Store for the object.
  * @param {Object} identity Parent identity for the object
  * @constructor
@@ -14,10 +10,11 @@ function History(store, identity) {
     this.identity = identity;
 }
 
-/*
+/**
  * Find index for the given row
  * @param {Object} newRow row coming from history.buildHistoryRow
  * Will return -1 if row is already in history.
+ * @return {Number} The position to insert it in the array or negative if it is already in it.
  * @private
  */
 History.prototype.findIndexForRow = function(newRow) {
@@ -46,10 +43,11 @@ History.prototype.findIndexForRow = function(newRow) {
     return 0;
 };
 
-/*
+/**
  * Add a row into the history.
  * Will make sure it's inserted sorted by its height.
  * @param {Object} newRow row coming from history.buildHistoryRow
+ * @return {Number} The position to insert it in the array or negative if it is already in it.
  */
 History.prototype.addHistoryRow = function(newRow) {
     var insertInto = this.findIndexForRow(newRow);
@@ -60,11 +58,13 @@ History.prototype.addHistoryRow = function(newRow) {
     return insertInto;
 };
 
-/*
+/**
  * Build a history row from a transaction.
  * Will find out which inputs and outputs correspond to the identity wallet and calculate impact.
+ * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
  * @param {String} transaction Transaction in serialized form
  * @param {Number} height Height for the transaction
+ * @return {Object} The new row
  */
 History.prototype.buildHistoryRow = function(walletAddress, transaction, height) {
     var identity = this.identity;
@@ -113,8 +113,10 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
 };
 
 
-/*
+/**
  * Callback to fill missing input (depending on another transaction)
+ * @param {Object} transaction Transaction in serialized form.
+ * @param {Object} data        DOCME
  * @private
  */
 History.prototype.fillInput = function(transaction, data) {
@@ -125,8 +127,12 @@ History.prototype.fillInput = function(transaction, data) {
     this.update();
 };
 
-/*
+/**
  * Callback for fetching a transaction
+ * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
+ * @param {Object} transaction   Transaction in serialized form.
+ * @param {Number} height        Height of the block.
+ * @return {Object|null}         DOCME
  * @private
  */
 History.prototype.txFetched = function(walletAddress, transaction, height) {
@@ -149,8 +155,9 @@ History.prototype.txFetched = function(walletAddress, transaction, height) {
     }
 };
 
-/*
+/**
  * Look for transactions from given history records
+ * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
  * @param {Object} history History array as returned by obelisk
  */
 History.prototype.fillHistory = function(walletAddress, history) {
@@ -166,7 +173,7 @@ History.prototype.fillHistory = function(walletAddress, history) {
     });
 };
 
-/*
+/**
  * Update callback, needs to be filled in by the application to register.
  */
 History.prototype.update = function() {

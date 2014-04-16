@@ -1,15 +1,10 @@
-/**
- * @fileOverview Identity properties and data.
- */
-
-
 define(['./wallet', './txdb', './history', './tasks', './contacts', './connections', 'bitcoinjs-lib'],
 function(Wallet, TransactionDatabase, History, Tasks, Contacts, Connections, Bitcoin) {
 /**
- * Identity class.
+ * Identity properties and data.
  * @param {Store} store Object store.
- * @param {String} seed Seed in string form.
- * @param {String} password Password for the identity crypt.
+ * @param {String} [seed] Seed in string form.
+ * @param {String} [password] Password for the identity crypt.
  * @constructor
  */
 function Identity(store, seed, password) {
@@ -32,6 +27,12 @@ function Identity(store, seed, password) {
     this.tasks = new Tasks(store, this);
 }
 
+/**
+ * Change the password for the identity crypt.
+ * @param {String} oldPassword Password to decrypt
+ * @param {String} newPassword Password to re-encrypt
+ * @return {Boolean} Success or old password is not correct
+ */
 Identity.prototype.changePassword = function(oldPassword, newPassword) {
     try {
         var data = this.store.getPrivateData(oldPassword);
