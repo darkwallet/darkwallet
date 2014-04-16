@@ -5,6 +5,8 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
   var block292399 = 1395744824;
   var blockDiff = ((block292399-genesisTime) / 292399);
 
+  var allowedVersions = [Bitcoin.network.mainnet.addressVersion, Bitcoin.network.mainnet.p2shVersion, Stealth.version];
+
   var BtcUtils = {
     /*
      * Start a multisig structure out of participant public keys and m
@@ -44,6 +46,24 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     uncompressPublicKey: function(bytes) {
         var key = Bitcoin.ECPubKey(bytes, true);
         return key.toBytes(false);
+    },
+
+    /*
+     * Validate an address
+     */
+    validateAddress: function(address) {
+       if (address) {
+          // Check for base58 encoded addresses
+          if (Bitcoin.Address.validate(address) && allowedVersions.indexOf(Bitcoin.Address.getVersion(address)) != -1) {
+            return true;
+          }
+          // Check for public keys in different formats
+          try {
+            BtcUtils.extractPublicKey(address)
+            return true;
+          } catch (e) {
+          }
+        }
     },
 
     /*

@@ -1,5 +1,5 @@
-define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib'],
-function (controllers, Port, DarkWallet, Bitcoin) {
+define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc'],
+function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   'use strict';
   var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', function($scope, $window, notify) {
@@ -7,6 +7,8 @@ function (controllers, Port, DarkWallet, Bitcoin) {
   $scope.autoAddEnabled = false;
   $scope.sendPocket = 0;
   $scope.advanced = false;
+  $scope.sendEnabled = false;
+  var dustThreshold = 5600;
   
   $scope.updateBtcFiat = function(field) {
     var tickerService = DarkWallet.getService('ticker');
@@ -93,30 +95,71 @@ function (controllers, Port, DarkWallet, Bitcoin) {
     walletService.signTransaction(signTask.tx, signTask, password, onBroadcast);
   }
 
-  $scope.sendBitcoins = function() {
-      // get a free change address
-      var identity = DarkWallet.getIdentity();
-      var changeAddress = $scope.getChangeAddress($scope.pocketIndex);
-
-      // prepare amounts
+  var getSatoshis = function() {
       var satoshis;
+      var identity = DarkWallet.getIdentity();
       var currency = identity.settings.currency;
       if (currency == 'mBTC') {
           satoshis = 100000;
       } else {
           satoshis = 100000000;
       }
-      // Prepare recipients
+      return satoshis;
+  }
+
+  var prepareRecipients = function() {
+      var satoshis = getSatoshis();
       var recipients = [];
       var totalAmount = 0;
       $scope.recipients.fields.forEach(function(recipient) {
           if (!recipient.amount || !recipient.address) {
               return;
           }
+          if (!BtcUtils.validateAddress(recipient.address)) {
+              return;
+          }
           var amount = parseInt(BigInteger.valueOf(recipient.amount * satoshis).toString());
           totalAmount += amount;
           recipients.push({address: recipient.address, amount: amount})
       });
+      return {amount: totalAmount, recipients: recipients}
+  }
+
+  $scope.validateSendForm = function() {
+      var spend = prepareRecipients();
+      if ((spend.recipients.length > 0) && (spend.amount > dustThreshold)) {
+         $scope.sendEnabled = true;
+      } else {
+         $scope.sendEnabled = false;
+      }
+      if ($scope.sendEnabled) {
+         $scope.autoAddField();
+      }
+  }
+
+  $scope.sendBitcoins = function() {
+
+      // get a free change address
+      var identity = DarkWallet.getIdentity();
+      var changeAddress = $scope.getChangeAddress($scope.pocketIndex);
+
+      // prepare amounts
+      var satoshis = getSatoshis();
+
+      // Prepare recipients
+      var spend = prepareRecipients();
+      var recipients = spend.recipients;
+      var totalAmount = spend.amount;
+
+      if (!recipients.length) {
+          notify.note('You need to fill in at least one recipient');
+          return;
+      }
+
+      if (totalAmount < dustThreshold) {
+          notify.note('Amount is below the dust threshold', totalAmount+'<'+dustThreshold);
+          return;
+      }
 
       var fee = parseInt(BigInteger.valueOf($scope.send.fee * satoshis).toString());
 
@@ -160,12 +203,12 @@ function (controllers, Port, DarkWallet, Bitcoin) {
 
   $scope.addAddress = function(data, vars) {
     vars.field.address = data;
-    $scope.autoAddField();
+    $scope.validateSendForm();
   };
   
   $scope.onQrModalOkSend = function(data, vars) {
     $scope.onQrModalOk(data, vars);
-    $scope.autoAddField();
+    $scope.validateSendForm();
   }
 
   $scope.addField = function() {
