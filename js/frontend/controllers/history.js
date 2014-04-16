@@ -102,8 +102,11 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
       $scope.pocket.mpk = undefined;
       $scope.pocket.stealth = undefined;
       $scope.selectedPocket = 'fund:' + rowIndex;
-      $scope.balance = $scope.identity.wallet.getAddress(fund.seq).balance;
-      //balanceStart($scope.balance);
+
+      var balance = $scope.identity.wallet.getBalance(fund.seq[0]);
+
+      $scope.balance = balance.confirmed;
+      $scope.unconfirmed = balance.unconfirmed;
 
       // Check tasks and put some info in the pocket
       checkFundTasks(fund, $scope.pocket);
