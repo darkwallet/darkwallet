@@ -287,17 +287,27 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
   };
 
   $scope.moveFunds = function(type, index) {
+    var wallet = $scope.identity.wallet;
+    var walletService = DarkWallet.getService('wallet');
     var to;
+    var address;
     if (type === 'pocket') {
-      to = $scope.identity.wallet.pockets.hdPockets[index].name;
+      to = wallet.pockets.hdPockets[index].name;
+      address = wallet.getFreeAddress(index).address;
     } else if (type === 'multisig') {
-      to = $scope.identity.wallet.multisig.funds[index].name;
+      to = wallet.multisig.funds[index].name;
+      address = wallet.getFreeAddress(index).address;
     } else {
       to = $scope.availableIdentities[index];
+      address = '';
     }
-    $scope.openModal('confirm', {message: "Are you sure you want to move all " + $scope.pocket.name +
-    " funds to " + to + "?"}, function() {
-      console.log('Move funds not implemented yet');
+    $scope.openModal('ask-password', {text: "Are you sure you want to move all " + $scope.pocket.name +
+    " funds to " + to + "?"}, function(password) {
+      var fee = wallet.store.get('fee');
+      var amount = wallet.getBalance($scope.pocket.index).confirmed - fee;
+      walletService.send($scope.pocket.index, [{amount: amount, address: address}], null, fee, true, function() {
+        console.log('Not implemented yet.');
+      });
     });
   };
 
