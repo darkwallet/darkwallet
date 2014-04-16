@@ -46,7 +46,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
   }
   $scope.fiatCurrencyChanged = function() {
       var identity = DarkWallet.getIdentity();
-      var tickerService = DarkWallet.service().getTickerService();
+      var tickerService = DarkWallet.getService('ticker');
       identity.settings.fiatCurrency = $scope.selectedFiat;
       tickerService.setFiatCurrency($scope.selectedFiat);
       identity.store.save();

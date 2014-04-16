@@ -89,7 +89,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
             var identity = DarkWallet.getIdentity();
             var walletAddress = identity.wallet.multisig.addFund(multisig);
             $scope.selectFund(multisig, identity.wallet.multisig.funds.length-1);
-            DarkWallet.service().initAddress(walletAddress);
+            DarkWallet.core().initAddress(walletAddress);
             // clean up scope
             $scope.resetMultisigForm();
         }

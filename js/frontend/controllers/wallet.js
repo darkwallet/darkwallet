@@ -16,7 +16,7 @@ function (controllers, DarkWallet, Port) {
   var pubKey, mpKey, addressIndex;
 
   // Pointer to service
-  var bg = DarkWallet.service();
+  var bg = DarkWallet.core();
   $scope.rates = {};
   $scope.allAddresses = [];
   $scope.totalBalance = 0;

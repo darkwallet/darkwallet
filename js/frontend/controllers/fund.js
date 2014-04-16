@@ -76,7 +76,7 @@ function (controllers, Bitcoin) {
     // Broadcast
     if (finished) {
         task.broadcasting = true;
-        var walletService = DarkWallet.service().getWalletService();
+        var walletService = DarkWallet.getService('wallet');
         walletService.broadcastTx(task.tx, false, broadcastCallback);
     }
 

@@ -179,7 +179,7 @@ function(IdentityKeyRing, Port) {
         identity.tasks.addTask('mixer', task);
 
         // Now start the task in the mixer service
-        var mixerService = core.getMixerService();
+        var mixerService = core.getService('mixer');
         mixerService.startTask(task)
                 
         // Callback for calling process

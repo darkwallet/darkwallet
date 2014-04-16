@@ -31,7 +31,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (contr
   // Convert CRYPTO to FIAT
   $scope.$watch('calculator.amount', function() {
     var identity = DarkWallet.getIdentity();
-    var tickerService = DarkWallet.service().getTickerService();
+    var tickerService = DarkWallet.getService('ticker');
     var currency = identity.settings.currency;
     var fiatCurrency = identity.settings.fiatCurrency;
 
@@ -49,7 +49,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (contr
   // Convert FIAT to CRYPTO
   $scope.$watch('calculator.converted', function() {
     var identity = DarkWallet.getIdentity();
-    var tickerService = DarkWallet.service().getTickerService();
+    var tickerService = DarkWallet.getService('ticker');
     var currency = identity.settings.currency;
     var fiatCurrency = identity.settings.fiatCurrency;
 

@@ -181,7 +181,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
       walletPocket.mixing = !walletPocket.mixing;
       pocket.mixing = walletPocket.mixing;
       identity.wallet.store.save();
-      var mixerService = DarkWallet.service().getMixerService();
+      var mixerService = DarkWallet.getService('mixer');
       mixerService.checkMixing();
   }
   $scope.createPocket = function() {

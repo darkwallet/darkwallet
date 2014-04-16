@@ -12,16 +12,18 @@ require(['backend/services/lobby',
 function(LobbyService, ObeliskService, WalletService, GuiService, TickerService, MixerService, NotifierService, CtxMenusService) {
 
 function DarkWalletService() {
+  
+    var services = {};
 
     // Backend services
-    var lobbyService = new LobbyService(this);
-    var obeliskService = new ObeliskService(this);
-    var walletService = new WalletService(this);
-    var ctxMenusService = new CtxMenusService(this);
-    var guiService = new GuiService(this);
-    var tickerService = new TickerService(this);
-    var mixerService = new MixerService(this);
-    var notifierService = new NotifierService(this);
+    services.lobby = new LobbyService(this);
+    services.obelisk = new ObeliskService(this);
+    services.wallet = new WalletService(this);
+    services.ctxMenus = new CtxMenusService(this);
+    services.gui = new GuiService(this);
+    services.ticker = new TickerService(this);
+    services.mixer = new MixerService(this);
+    services.notifier = new NotifierService(this);
 
     var servicesStatus = { gateway: 'offline', obelisk: 'offline' };
     this.servicesStatus = servicesStatus;
@@ -29,66 +31,52 @@ function DarkWalletService() {
     /***************************************
     /* Hook up some utility functions
      */
-    this.getWalletService = function() {
-        return walletService;
-    }
-
-    this.getTickerService = function() {
-        return tickerService;
-    }
-
-    this.getMixerService = function() {
-        return mixerService;
-    }
-
-    this.getNotifierService = function() {
-        return notifierService;
-    }
 
     this.loadIdentity = function(idx) {
-        return walletService.loadIdentity(idx);
+        return services.wallet.loadIdentity(idx);
     }
 
     // Get an identity from the keyring
     this.getIdentity = function(idx) {
-        return walletService.getIdentity(idx);
+        return services.wallet.getIdentity(idx);
     }
     this.getCurrentIdentity = function() {
-        return walletService.getCurrentIdentity();
+        return services.wallet.getCurrentIdentity();
     }
     this.getLobbyTransport = function() {
-        return lobbyService.getLobbyTransport();
+        return services.lobby.getLobbyTransport();
     }
 
     // Start up history for an address
-    this.initAddress = function(walletAddress) { return walletService.initAddress(walletAddress) }
+    this.initAddress = function(walletAddress) { return services.wallet.initAddress(walletAddress) }
 
     /***************************************
     /* Global communications
      */
 
     this.connect = function(connectUri) {
-        var identity = walletService.getCurrentIdentity();
+        var identity = services.wallet.getCurrentIdentity();
         connectUri = connectUri || identity.connections.servers[identity.connections.selectedServer].address || 'wss://gateway.unsystem.net';
         servicesStatus.gateway = 'connecting';
-        obeliskService.connect(connectUri, function(err) {
+        services.obelisk.connect(connectUri, function(err) {
             if (err) {
                 servicesStatus.gateway = 'error';
             } else {
                 servicesStatus.gateway = 'ok';
-                walletService.handleInitialConnect();
+                services.wallet.handleInitialConnect();
             }
         });
     }
     this.getKeyRing = function() {
-        return walletService.getKeyRing();
+        return services.wallet.getKeyRing();
     }
 
     this.getClient = function() {
-        return obeliskService.getClient();
+        return services.obelisk.getClient();
     }
-    this.getObeliskClient = function() {
-        return obeliskService;
+    
+    this.getService = function(name) {
+        return services[name];
     }
 }
 
@@ -125,10 +113,7 @@ window.servicesStatus = service.servicesStatus;
 window.getLobbyTransport = service.getLobbyTransport
 
 window.getClient = service.getClient;
-window.getWalletService = service.getWalletService
-window.getTickerService = service.getTickerService
-window.getMixerService = service.getMixerService
-window.getNotifierService = service.getNotifierService
+window.getService = service.getService;
 
 window.initAddress = function(_w) {return service.initAddress(_w)};
 

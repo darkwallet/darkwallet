@@ -18,7 +18,7 @@ define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port,
 
     $scope.selectIdentity = function(identityName) {
         var identityIdx = $scope.availableIdentities.indexOf(identityName)
-        DarkWallet.service().loadIdentity(identityIdx)
+        DarkWallet.core().loadIdentity(identityIdx)
     }
 
   }]);
