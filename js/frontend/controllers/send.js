@@ -160,6 +160,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
         if (error) {
             var errorMessage = error.message || ''+error;
             notify.error("Error broadcasting", errorMessage);
+            $scope.send.sending = false;
         } else if (task && task.type == 'signatures') {
             notify.note('Signatures pending', amountNote)
         } else if (task && task.type == 'radar') {
@@ -211,7 +212,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           if (error) {
               var errorMessage = error.message || ''+error;
               notify.error("Transaction failed", errorMessage);
-              $scope.resetSendForm();
+              $scope.send.sending = false;
           } else if (task && task.type == 'sign') {
               // Need to sign so open modal
               $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(_password) {$scope.finishSign(task, amountNote, _password)})
