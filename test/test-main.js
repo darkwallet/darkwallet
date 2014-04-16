@@ -10,9 +10,16 @@ requirejs.config({
     baseUrl: '/base/js',
     
     paths: {
+      'angular-mocks': '../vendors/angular-mocks/angular-mocks',
       'chrome': '../test/mock/chrome_mock',
       'darkwallet': '../test/mock/darkwallet_mock',
       'frontend/app': '../test/mock/frontend_app'
+    },
+    shim: {
+      'angular-mocks': {
+        deps: ['angular'],
+        exports: 'angular.mock'
+      }
     },
 
     // ask Require.js to load these files (all our tests)

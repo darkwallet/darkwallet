@@ -11,7 +11,15 @@ var DarkWallet = {
       var _radar = 0;
       return {
         getKeyRing: function() {
-          
+          return {
+            createIdentity: function(name, seed, password) {
+              DarkWallet._createIdentityResult = {
+                name: name,
+                seed_length: seed.length,
+                password: password
+              };
+            }
+          };
         },
         getClient: function() {
           return {
