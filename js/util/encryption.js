@@ -1,7 +1,7 @@
 define(['bitcoinjs-lib', 'util/multiParty', 'util/stealth', 'util/djbec', 'sjcl'],
 function (Bitcoin, multiParty, Stealth, Curve25519) {
   'use strict';
-  var CryptoJS = Bitcoin.Crypto;
+  var CryptoJS = Bitcoin.CryptoJS;
   var BigInteger = Bitcoin.BigInteger;
   var convert = Bitcoin.convert;
 
@@ -32,7 +32,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
    * @param {String} message Message to decrypt, should have pub and data components
    */
   var stealthDecrypt = function(privKey, message) {
-    var masterSecret = privKey.export('bytes')
+    var masterSecret = privKey.toBytes();
     var priv = BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
 
     var decKey = Stealth.importPublic(message.pub);

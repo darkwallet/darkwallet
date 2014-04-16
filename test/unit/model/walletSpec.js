@@ -261,7 +261,7 @@ define(['model/wallet'], function(Wallet) {
       wallet = new Wallet(identity.store, identity);
       
       var key = {
-        export: function() { return 'mock'; }
+        toBytes: function() { return 'mock'; }
       };
       wallet.storePrivateKey([0,1], 'p4ssw0rd', key);
       expect(_private.privKeys).toEqual({'0,1': 'mock'});
@@ -349,17 +349,17 @@ define(['model/wallet'], function(Wallet) {
     it('gets utxo to pay', function() {
       
       var history00 = {
-        output: 'a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329:0',
+        receive: 'a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329:0',
         value: 40000, 
         address: '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ'
       };
       var history01 = {
-        output: '64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6:1',
+        receive: '64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6:1',
         value : 3000000,
         address : '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ'
       };
       var history20 = {
-        output: 'c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c:0',
+        receive: 'c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c:0',
         value: 5000000,
         address: '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs'
       };

@@ -127,7 +127,7 @@ Wallet.prototype.storePrivateKey = function(seq, password, key) {
     var self = this;
     seq = seq.slice(0);
     var data = this.store.getPrivateData(password);
-    data.privKeys[seq] = key.export('bytes');
+    data.privKeys[seq] = key.toBytes();
     this.store.setPrivateData(data, password);
 }
 
@@ -139,7 +139,7 @@ Wallet.prototype.storePrivateKey = function(seq, password, key) {
 Wallet.prototype.storePublicKey = function(seq, key, properties) {
     var pubKey = key.length ? key : key.toBytes();
 
-    var pubKeyHash = Bitcoin.Util.sha256ripe160(pubKey);
+    var pubKeyHash = Bitcoin.crypto.hash160(pubKey);
     var address = new Bitcoin.Address(pubKeyHash);
 
     var label = 'unused';
@@ -298,7 +298,26 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
     } else {
         tmpWallet = this.pockets.getPocketWallet(pocketId);
     }
-    return tmpWallet.getUtxoToPay(value);
+
+    var getCandidateOutputs = function(w, value) {
+        var h = []
+        for (var out in w.outputs) h.push(w.outputs[out])
+        var utxo = h.filter(function(x) { return !x.spend });
+        var valuecompare = function(a,b) { return a.value > b.value; }
+        var high = utxo.filter(function(o) { return o.value >= value; })
+                       .sort(valuecompare);
+        if (high.length > 0) return [high[0]];
+        utxo.sort(valuecompare);
+        var totalval = 0;
+        for (var i = 0; i < utxo.length; i++) {
+            totalval += utxo[i].value;
+            if (totalval >= value) return utxo.slice(0,i+1);
+        }
+        throw ("Not enough money to send funds including transaction fee. Have: "
+                     + (totalval / 100000000) + ", needed: " + (value / 100000000));
+   }
+
+   return getCandidateOutputs(tmpWallet, value);
 }
 
 /**
@@ -334,7 +353,7 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
     var outAmount = 0;
     txUtxo.forEach(function(utxo) {
         outAmount += utxo.value;
-        newTx.addInput(utxo.output);
+        newTx.addInput(utxo.receive);
     });
 
     // Add Outputs
@@ -372,7 +391,7 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
             seq = outAddress.index;
         }
         if (!outAddress || outAddress.type == 'multisig' || outAddress.type == 'readonly') {
-            pending.push({output: utxo.output, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'});
+            pending.push({output: utxo.receive, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'});
         } else {
           // Get private keys and sign
           try {
@@ -425,18 +444,21 @@ Wallet.prototype.signMyInputs = function(inputs, newTx, password) {
  * @see Bitcoin.Wallet.processOutput
  */
 Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, height, spend) {
-    var output = { output: txHash+":"+index, value: value, address: walletAddress.address};
+    var output = { receive: txHash+":"+index, value: value, address: walletAddress.address};
     if (!height) {
         output.pending = true;
     }
     if (spend) {
         output.spend = spend;
     }
-    // Wallet wide
-    this.wallet.processOutput(output);
 
-    // Pocket specific wallet
-    // this.pocketWallets[walletAddress.index[0]].processOutput(output);
+    // Wallet wide
+    var wallet = this.wallet;
+    var processOutput = function(o) {
+        if (!wallet.outputs[o.receive] || wallet.outputs[o.receive].pending)
+             wallet.outputs[o.receive] = o;
+    }
+    processOutput(output);
 }
 
 /*
@@ -542,7 +564,7 @@ Wallet.prototype.processStealth = function(stealthArray) {
         var spendKey = self.getAddress([0]).pubKey;
         var myKeyBytes = Stealth.uncoverStealth(scanKey.toBytes(), ephemKey, spendKey);
         // Turn to address
-        var myKeyHash = Bitcoin.Util.sha256ripe160(myKeyBytes);
+        var myKeyHash = Bitcoin.crypto.hash160(myKeyBytes);
         var myAddress = new Bitcoin.Address(myKeyHash);
 
         if (address == myAddress.toString()) {

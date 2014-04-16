@@ -23,8 +23,8 @@ define(['util/encryption', 'bitcoinjs-lib'], function (Encryption, Bitcoin) {
      });
 
      it('encrypts', function() {
-         var ivWords = Bitcoin.Crypto.lib.WordArray.create([964042148, 1339623129, -848535864]);
-         var saltWords = Bitcoin.Crypto.lib.WordArray.create([1257186216, 1232830679, 1170146244, -885338222]);
+         var ivWords = Bitcoin.CryptoJS.lib.WordArray.create([964042148, 1339623129, -848535864]);
+         var saltWords = Bitcoin.CryptoJS.lib.WordArray.create([1257186216, 1232830679, 1170146244, -885338222]);
          var cipher = Encryption.encrypt('foo', 'hello', ivWords, saltWords);
 
          expect(cipher.iv).toBe("OXYdpE/ZBtnNbF7I")

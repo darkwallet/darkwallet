@@ -21,7 +21,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
 
       // Ensure we check the compressed version for my address
       var myPubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
-      var myAddress = myPubKey.toString();
+      var myAddress = myPubKey.getAddress();
 
       var compressed = (pubKeyBytes.length == 33);
 
@@ -41,7 +41,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
           participant.address = walletAddress;
           // In some cases would not be the stealth identifier.
           // Also, doing it like this so it would show the same as in contacts..
-          participant.hash = Bitcoin.Crypto.SHA256(walletAddress.stealth).toString();
+          participant.hash = Bitcoin.CryptoJS.SHA256(walletAddress.stealth).toString();
       } else {
           // Check if it's a contact
           var contact = identity.contacts.findByPubKey(pubKeyBytes);

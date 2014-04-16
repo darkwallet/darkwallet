@@ -15,9 +15,9 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         // Create script
         var script = Bitcoin.Script.createMultiSigOutputScript(m, participants);
         // Hash for address
-        var hashed = Bitcoin.Util.sha256ripe160(script.buffer);
+        var hashed = Bitcoin.crypto.hash160(script.buffer);
         // Encode in base58, v0x05 is multisig
-        var address = Bitcoin.base58.checkEncode(hashed, 0x05);
+        var address = Bitcoin.base58check.encode(hashed, 0x05);
         // Encoded script
         var scriptHex = convert.bytesToHex(script.buffer);
         return {address: address, script: scriptHex, m: m, pubKeys: participants};
@@ -25,8 +25,8 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
 
     importMultiSig: function(data){
         var script = new Bitcoin.Script(convert.hexToBytes(data))
-        var hashed = Bitcoin.Util.sha256ripe160(script.buffer);
-        var address = Bitcoin.base58.checkEncode(hashed, 0x05);
+        var hashed = Bitcoin.crypto.hash160(script.buffer);
+        var address = Bitcoin.base58check.encode(hashed, 0x05);
         var pubKeys = script.extractPubkeys()
         var m = script.chunks[0] - Bitcoin.Opcode.map.OP_1 + 1;
         return {address: address, script: data, m: m, pubKeys: pubKeys};

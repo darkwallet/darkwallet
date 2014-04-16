@@ -19,7 +19,7 @@ function (controllers, Bitcoin) {
     // task format:
     // task: {tx: tx, task: task} (added in frontend)
     // task: {tx: hexTx, 'pending': pending, stealth: metadata.stealth};
-    // pending:  [{output: utxo.output, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'}] ...
+    // pending:  [{output: utxo.receive, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'}] ...
 
     var script = convert.hexToBytes(fund.script);
 

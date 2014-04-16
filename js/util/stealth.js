@@ -4,6 +4,8 @@
 
 define(['bitcoinjs-lib'], function(Bitcoin) {
 
+var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0)};
+
 var convert = Bitcoin.convert;
 
 var Stealth = {};
@@ -36,7 +38,7 @@ Stealth.stealthDH = function(e, decKey) {
 
     // start the second stage
     var S1 = [3].concat(point.getX().toBigInteger().toByteArrayUnsigned());
-    var c = convert.wordArrayToBytes(Bitcoin.Crypto.SHA256(convert.bytesToWordArray(S1)));
+    var c = convert.wordArrayToBytes(Bitcoin.CryptoJS.SHA256(convert.bytesToWordArray(S1)));
     return c;
 }
 
@@ -76,7 +78,7 @@ Stealth.formatAddress = function(scanPubKeyBytes, spendPubKeys) {
     // TODO: Add prefix
     stealth = stealth.concat([0]);
     // Encode in base58 and add version
-    return Bitcoin.base58.checkEncode(stealth, Stealth.version);
+    return Bitcoin.base58check.encode(stealth, Stealth.version);
 }
 
 /*
@@ -85,10 +87,11 @@ Stealth.formatAddress = function(scanPubKeyBytes, spendPubKeys) {
  */
 Stealth.parseAddress = function(recipient) {
     // TODO perform consistency checks here
-    var stealthBytes = Bitcoin.base58.checkDecode(recipient);
-    var options = stealthBytes.splice(0, 1)[0];
+    var stealthBytes = bufToArray(Bitcoin.base58check.decode(recipient).payload);
+    var options = stealthBytes.splice(0, 1)[0]
     var scanKeyBytes = stealthBytes.splice(0, 33);
     var nSpendKeys = stealthBytes.splice(0, 1)[0];
+
     var spendKeys = [];
     for(var idx=0; idx<nSpendKeys; idx++) {
         spendKeys.push(stealthBytes.splice(0, 33));
@@ -96,7 +99,7 @@ Stealth.parseAddress = function(recipient) {
     var nSigs = stealthBytes.splice(0, 1)[0];
 
     // Prefix should be the remaining bytes
-    var prefix = stealthBytes.slice(0);
+    var prefix = stealthBytes.splice(0);
 
     // Return packed in an object
     return {options: {reuseScan: options},
@@ -187,7 +190,7 @@ Stealth.deriveAddress = function(spendKey, c) {
     var bytes = this.deriveKey(spendKey, c);
 
     // Turn to address
-    var mpKeyHash = Bitcoin.Util.sha256ripe160(bytes);
+    var mpKeyHash = Bitcoin.crypto.hash160(bytes);
     var address = new Bitcoin.Address(mpKeyHash);
     return address;
 }
@@ -263,7 +266,7 @@ Stealth.addStealth = function(recipient, newTx, ephemKeyBytes) {
         // iterate through nonces to find a match for given prefix
         do {
 	    var nonceBytes = convert.numToBytes(nonce, 4)
-            outHash = Bitcoin.Util.sha256ripe160(nonceBytes.concat(ephemKey));
+            outHash = bufToArray(Bitcoin.crypto.hash160(nonceBytes.concat(ephemKey)));
             nonce += 1;
         } while(nonce < 4294967296 && !Stealth.checkPrefix(outHash, stealthPrefix));
 

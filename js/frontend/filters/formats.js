@@ -21,7 +21,7 @@ filters.filter('bytesToHex', function() {
 filters.filter('bytesToAddressHash', function() {
   return function(input) {
     if (input.length == 65 || input.length == 33) {
-        var hashed = Bitcoin.Util.sha256ripe160(input);
+        var hashed = Bitcoin.crypto.hash160(input);
         var address = Bitcoin.Address(hashed);
         return address.toString();
     } else {

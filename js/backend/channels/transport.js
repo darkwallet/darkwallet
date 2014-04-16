@@ -2,7 +2,7 @@ define(['bitcoinjs-lib', 'mnemonicjs'],
 function (Bitcoin, Mnemonic) {
   'use strict';
 
-  var SHA256 = Bitcoin.Crypto.SHA256;
+  var SHA256 = Bitcoin.CryptoJS.SHA256;
 
   /************************************
    * Transport
@@ -27,7 +27,7 @@ function (Bitcoin, Mnemonic) {
     else {
         selfKey = new Bitcoin.ECKey();
         selfKey.compressed = true;
-        identity.store.set('commsKey', selfKey.export('bytes'));
+        identity.store.set('commsKey', selfKey.toBytes());
         identity.store.save();
     }
     this.getSelfKey = function() { return selfKey; }
@@ -42,7 +42,7 @@ function (Bitcoin, Mnemonic) {
    * Initialize a new discardable session key
    */
   Transport.prototype.newSession = function() {
-    this.sessionKey = new Bitcoin.Key();
+    this.sessionKey = new Bitcoin.ECKey();
     this.sessionKey.compressed = true;
   }
 

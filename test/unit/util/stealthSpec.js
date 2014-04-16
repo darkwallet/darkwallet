@@ -13,9 +13,9 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
   var scanKey = new Bitcoin.ECKey(scanKeyBytes, true);
   var spendKey = new Bitcoin.ECKey(spendKeyBytes, true);
 
-  var ephemKeyPubBytes = ephemKey.getPub().export('bytes');
-  var scanKeyPubBytes = scanKey.getPub().export('bytes');
-  var spendKeyPubBytes = spendKey.getPub().export('bytes');
+  var ephemKeyPubBytes = ephemKey.getPub().toBytes();
+  var scanKeyPubBytes = scanKey.getPub().toBytes();
+  var spendKeyPubBytes = spendKey.getPub().toBytes();
 
   // Address created from the above keys
   var testAddress = "6aeUQj9EHB2hFowamkWWxfPQRwqUkHwKqve4wYNpuueHfkhSu877zGWgqceDzfyk99q2vRSev8FQAit8797kna96v4rf4tx5KKfrtj7";
@@ -24,7 +24,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
     it('imports a public component', function() {
       var Q = scanKeyPubBytes;
       var pubKey = Stealth.importPublic(Q);
-      expect(pubKey.export('bytes')).toEqual(Q)
+      expect(pubKey.toBytes()).toEqual(Q)
     });
     
     it('performs curvedh and stealth formatting', function() {
@@ -75,7 +75,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
 
       expect(keyBytes).toEqual([3, 5, 246, 185, 154, 68, 162, 189, 236, 139, 72, 79, 252, 238, 86, 28, 249, 160, 195, 183, 234, 146, 234, 142, 99, 52, 230, 251, 196, 241, 193, 120, 153]);
 
-      var keyHash = Bitcoin.Util.sha256ripe160(keyBytes);
+      var keyHash = Bitcoin.crypto.hash160(keyBytes);
       var address = new Bitcoin.Address(keyHash);
 
       expect(address.toString()).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");

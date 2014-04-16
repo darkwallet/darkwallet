@@ -2,8 +2,8 @@ define(['bitcoinjs-lib', 'util/multiParty', 'util/djbec', 'util/encryption', 'sj
 function (Bitcoin, multiParty, Curve25519, Encryption) {
   'use strict';
 
-  var CryptoJS = Bitcoin.Crypto;
-  var SHA256 = Bitcoin.Crypto.SHA256;
+  var CryptoJS = Bitcoin.CryptoJS;
+  var SHA256 = Bitcoin.CryptoJS.SHA256;
   var convert = Bitcoin.convert;
   var BigInteger = Bitcoin.BigInteger;
 

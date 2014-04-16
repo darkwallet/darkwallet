@@ -5,7 +5,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
 //  - darkwallet devs
 
 var BigInteger = Bitcoin.BigInteger;
-var SHA512 = Bitcoin.Crypto.SHA512;
+var SHA512 = Bitcoin.CryptoJS.SHA512;
 var convert = Bitcoin.convert;
 
 //  Ed25519 - digital signatures based on curve25519
