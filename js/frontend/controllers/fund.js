@@ -59,7 +59,7 @@ function (controllers, Bitcoin, DarkWallet) {
         if (err) {
            task.error = "Failed: " + err;
            notify.warning("Failed Broadcasting", "Imported but failed to broadcast " + err);
-        } else if (data.type == 'radar' && !isBroadcast) {
+        } else if (data.type == 'radar' && task.broadcasting) {
            task.broadcasted = true;
            task.radar = data.radar;
            task.broadcasting = false;

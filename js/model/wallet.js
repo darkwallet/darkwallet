@@ -539,7 +539,6 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
     // Now parse inputs and outputs
     tx.outs.forEach(function(txOut, i){
       var address = txOut.address.toString()
-      var index = txhash+':'+i
       var outputAddress = self.getWalletAddress(address);
       // already exists
       if (outputAddress) {
@@ -549,7 +548,7 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
 
     tx.ins.forEach(function(txIn, i){
       var op = txIn.outpoint
-      var o = self.outputs[op.hash+':'+op.index];
+      var o = self.wallet.outputs[op.hash+':'+op.index];
       if (o) {
         o.spend = txhash+':'+i;
         o.spendheight = height;
