@@ -1,14 +1,14 @@
 define(['./module'], function (providers) {
   'use strict';
 
-  providers.factory('sounds', function() {
+  providers.factory('sounds', ['$window', function($window) {
     return {
       play: function(sound) {
-        var audio = document.createElement('audio');
+        var audio = $window.document.createElement('audio');
         audio.setAttribute('autoplay', 'autoplay');
         audio.innerHTML = '<source src="../sound/' + sound + '.opus" type="audio/ogg" />';
-        document.getElementById('fixed').appendChild(audio);
+        $window.document.getElementById('fixed').appendChild(audio);
       },
     };
-  });
+  }]);
 });

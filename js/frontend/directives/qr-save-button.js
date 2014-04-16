@@ -1,9 +1,9 @@
 define(['./module', 'qrcodejs'], function (directives, QRCode) {
-  directives.directive('qrSaveButton', function() {
+  directives.directive('qrSaveButton', ['$window', function($window) {
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
-        var div = document.createElement('div');
+        var div = $window.document.createElement('div');
         var qrcode = new QRCode(div, {
           width : attrs.width,
           height : attrs.height,
@@ -18,5 +18,5 @@ define(['./module', 'qrcodejs'], function (directives, QRCode) {
         element[0].setAttribute('download', attrs.data + '.svg');
       }
     };
-  });
+  }]);
 });

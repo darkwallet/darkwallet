@@ -53,7 +53,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/services'], funct
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-controllers.controller('PasswordCtrl' ['$scope', function($scope) {
+controllers.controller('PasswordCtrl' ['$scope', '$window', function($scope, $window) {
 
   $scope.submit = function() {
     var keyRing = DarkWallet.keyRing;
@@ -73,7 +73,7 @@ controllers.controller('PasswordCtrl' ['$scope', function($scope) {
 
     // Fill 'random' array with cryptographically random numbers.
     // Should be done using api from bitcoin-js.
-    window.crypto.getRandomValues(random);
+    $window.crypto.getRandomValues(random);
 
     // Copy the random numbers to our seed array.
     // Why is this needed?

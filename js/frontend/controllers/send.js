@@ -2,7 +2,7 @@ define(['./module', 'frontend/services', 'darkwallet', 'bitcoinjs-lib'],
 function (controllers, Services, DarkWallet, Bitcoin) {
   'use strict';
   var BigInteger = Bitcoin.BigInteger;
-  controllers.controller('WalletSendCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', function($scope, $window, notify) {
   $scope.send = {recipient: '', amount: 0.2, mixing: true};
   $scope.autoAddEnabled = false;
   $scope.sendPocket = 0;
@@ -60,8 +60,8 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   })
 
   var updateRadar = function(radar) {
-      var progressBar = document.getElementById('send-progress')
-      var button = document.getElementById('send-button');
+      var progressBar = $window.document.getElementById('send-progress')
+      var button = $window.document.getElementById('send-button');
 
       if (!button.classList.contains('working')) {
           button.classList.add('working');

@@ -1,5 +1,5 @@
 define(['./module', 'jsqrcode'], function (directives) {
-  directives.directive('qrScanner', ['$interval', function($interval) {
+  directives.directive('qrScanner', ['$interval', '$window', function($interval, $window) {
     return {
       restrict: 'E',
       scope: {
@@ -9,16 +9,16 @@ define(['./module', 'jsqrcode'], function (directives) {
       },
       link: function(scope, element, attrs) {
 
-        window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
+        $window.URL = $window.URL || $window.webkitURL || $window.mozURL || $window.msURL;
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
         var height = attrs.height || 300;
         var width = attrs.width || 250;
 
-        var video = document.createElement('video');
+        var video = $window.document.createElement('video');
         video.setAttribute('width', width);
         video.setAttribute('height', height);
-        var canvas = document.createElement('canvas');
+        var canvas = $window.document.createElement('canvas');
         canvas.setAttribute('id', 'qr-canvas');
         canvas.setAttribute('width', width);
         canvas.setAttribute('height', height);
@@ -42,7 +42,7 @@ define(['./module', 'jsqrcode'], function (directives) {
         };
 
         var successCallback = function(stream) {
-          video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
+          video.src = ($window.URL && $window.URL.createObjectURL(stream)) || stream;
           localMediaStream = stream;
 
           scope.video = video;
