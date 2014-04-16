@@ -4348,12 +4348,28 @@ input[type="range"]::-webkit-slider-thumb {
   height: 16px; }
 
 /* BUTTONS ----------- */
+.progbar {
+  opacity: 0;
+  border-radius: 3px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 1%;
+  background: #145b32; }
+
 a.glow.button, button.glow, input[type="submit"].glow {
   -webkit-animation-name: glowpulse;
   -webkit-animation-duration: 4s;
   -webkit-animation-iteration-count: infinite; }
-  a.glow.button:hover, button.glow:hover, input[type="submit"].glow:hover {
+  a.glow.button:hover, a.glow.button.working, button.glow:hover, button.glow.working, input[type="submit"].glow:hover, input[type="submit"].glow.working {
     -webkit-animation: none; }
+  a.glow.button span, a.glow.button .progbar, button.glow span, button.glow .progbar, input[type="submit"].glow span, input[type="submit"].glow .progbar {
+    transition: all 300ms ease-out; }
+  a.glow.button.working .progbar, button.glow.working .progbar, input[type="submit"].glow.working .progbar {
+    opacity: 1; }
+  a.glow.button.working span, button.glow.working span, input[type="submit"].glow.working span {
+    opacity: 0; }
 
 button:active .button:active, table tr:nth-child(odd) a.button:active {
   background: #145b32;
@@ -4515,7 +4531,8 @@ span.meter {
 
 .contact-mosaic {
   max-height: 500px;
-  overflow: scroll; }
+  overflow-y: scroll;
+  overflow-x: hidden; }
 
 .select-list {
   min-height: 100px;

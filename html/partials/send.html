@@ -42,7 +42,9 @@
         <a ng-show="advanced" class="button small radius" ng-click="enableAutoAddFields()">Add another recipient</a>
         <a ng-click="advanced=!advanced" class="button small radius">Advanced</a>
       </div>
-      <div class="medium-2 columns aright"><input type="submit" class="button glow radius expand" value="Send" /></div>
+      <div class="medium-2 columns aright">
+        <button href="" class="button glow radius expand"><span>Send</span><div class="progbar"></div></button>
+      </div>
     </div>
     <div class="row" ng-show="advanced">
         <div class="small-6 columns">
