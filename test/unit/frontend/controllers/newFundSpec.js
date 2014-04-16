@@ -1,4 +1,4 @@
 
-define(['frontend/controllers/multisig'], function (MultisigCtrl) {
+define(['frontend/controllers/new_fund'], function (NewFundCtrl) {
   'use strict';
 });
