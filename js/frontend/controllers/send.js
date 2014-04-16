@@ -88,9 +88,9 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       var button = $window.document.getElementById('send-button');
 
       // Check if we're finished
-      if (radar > 0.75) {
+      if (radar >= 0.75) {
           radar = 1;
-          if (task.radar <= 0.75) {
+          if (task.radar < 0.75) {
               notify.success('Transaction finished propagating');
               $scope.resetSendForm();
           }
