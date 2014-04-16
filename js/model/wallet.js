@@ -630,7 +630,6 @@ Wallet.prototype.processHistory = function(walletAddress, history) {
         walletAddress.nOutputs += 1;
         if (inTxHash == null) {
             if (outHeight) {
-                walletAddress.balance += tx[3];
                 walletAddress.height = Math.max(outHeight, walletAddress.height);
             }
         } else {
