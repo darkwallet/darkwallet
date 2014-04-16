@@ -52,6 +52,34 @@ function (controllers, Bitcoin) {
     if (finished) {
         task.task.tx = task.tx.serializeHex();
     }
+
+    // Callback listening for radar events
+    var broadcastCallback = function(err, data) {
+        console.log("radar feedback", data);
+        if (err) {
+           task.error = "Failed: " + err;
+           notify.warning("Failed Broadcasting", "Imported but failed to broadcast " + err);
+        } else if (data.radar && !isBroadcast) {
+           task.broadcasted = true;
+           task.radar = data.radar;
+           task.broadcasting = false;
+           notify.success('Imported', 'Signature imported and sent to broadcaster!');
+        } else if (data.radar) {
+           task.radar = data.radar;
+           notify.note('Broadcasting', 'Radar: ' + data.radar);
+        }
+        if (!$scope.$$phase) {
+           $scope.$apply();
+        }
+    }
+
+    // Broadcast
+    if (finished) {
+        task.broadcasting = true;
+        var walletService = DarkWallet.services().getWalletService();
+        walletService.broadcastTx(task.tx, false, broadcastCallback);
+    }
+
     return finished;
   }
 
@@ -73,7 +101,7 @@ function (controllers, Bitcoin) {
     var fund = $scope.pocket.fund;
 
     // Check where this signature goes
-    var script = new Bitcoin.Script(convert.hexToBytes($scope.pocket.fund.script));
+    var script = new Bitcoin.Script(convert.hexToBytes(fund.script));
     task.task.pending.forEach(function(input) {
         var txHash = task.tx.hashTransactionForSignature(script, input.index, 1);
         fund.pubKeys.forEach(function(pubKey, pIdx) {
@@ -87,7 +115,7 @@ function (controllers, Bitcoin) {
     // Show some notification and finish task if we have all signatures.
     if (added) {
         if (finishSigning(fund, task)) {
-            notify.success('Imported', 'Signature imported and ready to go!');
+            // Wait for notification from broadcasting
         } else {
             notify.success('Imported', 'Signature imported');
         }

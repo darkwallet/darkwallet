@@ -19,9 +19,10 @@
         <!-- Maybe too heavy -->
         <button ng-click="openModal('show-qr', {address: task.task.tx})" class="button postfix radius fa fa-qrcode">QR</button>
       </div>
+      <div ng-show="task.broadcasting">Broadcasting...</div>
+      <div ng-show="task.broadcasted">Broadcasted ({{task.radar}}%)</div>
     </div>
     <div ng-show="showTx"><code>{{pocket.fund.script}}</code></div>
-
     <div class="row">
       <div class="large-1 columns">
       </div>
