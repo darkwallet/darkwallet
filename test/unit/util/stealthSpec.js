@@ -9,9 +9,9 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
   var scanKeyBytes = [250, 99, 82, 30, 51, 62, 75, 159, 106, 152, 161, 66, 104, 13, 58, 239, 77, 142, 127, 121, 114, 60, 224, 4, 54, 145, 219, 85, 195, 107, 217, 5];
   var spendKeyBytes = [220, 193, 37, 11, 81, 192, 240, 58, 228, 233, 120, 224, 37, 110, 222, 81, 220, 17, 68, 227, 69, 201, 38, 38, 43, 151, 23, 177, 188, 201, 189, 27];
 
-  var ephemKey = new Bitcoin.Key(ephemKeyBytes, true);
-  var scanKey = new Bitcoin.Key(scanKeyBytes, true);
-  var spendKey = new Bitcoin.Key(spendKeyBytes, true);
+  var ephemKey = new Bitcoin.ECKey(ephemKeyBytes, true);
+  var scanKey = new Bitcoin.ECKey(scanKeyBytes, true);
+  var spendKey = new Bitcoin.ECKey(spendKeyBytes, true);
 
   var ephemKeyPubBytes = ephemKey.getPub().export('bytes');
   var scanKeyPubBytes = scanKey.getPub().export('bytes');
