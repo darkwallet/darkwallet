@@ -9,7 +9,7 @@
         <div class="row collapse">
               <div class="large-10 columns">
                 <h6>Description</h6>
-                <input type="text" class="prefix radius" placeholder="Enter a short description for this transaction here." autofocus />
+                <input type="text" class="prefix radius" ng-model="send.title" ng-disabled="send.sending" placeholder="Enter a short description for this transaction here." autofocus />
               </div>
               <div class="large-2 columns">
                 <h6>Sending from</h6>
@@ -22,7 +22,7 @@
     <div class="row" ng-repeat="field in recipients.fields">
       <div class="medium-8 large-9 columns">
 
-            <input type="text" class="prefix radius" ng-model="field.address" ng-change="validateSendForm()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
+            <input type="text" class="prefix radius" ng-disabled="send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
             <a href="" tooltip="Scan QR code" ng-click="openModal('scan-qr', {field: field}, onQrModalOkSend, onQrModalCancel)" class="fa button square righted fa-qrcode"></a>
             <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button square righted fa-users"></a>
 
@@ -30,8 +30,8 @@
       <div class="medium-4 large-3 columns">
         <div class="row collapse">
           <div class="small-8 columns">
-            <input ng-hide="field.isFiatShown" type="text" class="prefix radius" ng-model="field.amount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
-            <input ng-show="field.isFiatShown" type="text" class="prefix radius" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
+            <input ng-hide="field.isFiatShown" ng-disabled="send.sending" type="text" class="prefix radius" ng-model="field.amount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
+            <input ng-show="field.isFiatShown" ng-disabled="send.sending" type="text" class="prefix radius" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
           </div>
           <div class="small-4 columns"><a class="button postfix radius" btn-checkbox tooltip="click to switch to {{selectedFiat}}" ng-model="field.isFiatShown">{{field.isFiatShown? selectedFiat : selectedCurrency}}</a></div>
         </div>

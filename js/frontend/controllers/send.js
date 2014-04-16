@@ -3,13 +3,27 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   'use strict';
   var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', function($scope, $window, notify) {
-  $scope.send = {recipient: '', amount: 0.2, mixing: true};
+  $scope.send = { mixing: true, sending: false };
   $scope.autoAddEnabled = false;
   $scope.sendPocket = 0;
   $scope.advanced = false;
-  $scope.sendEnabled = false;
   var dustThreshold = 5600;
-  
+
+  $scope.resetSendForm = function() {
+    $scope.send.sending = false;
+    $scope.send.title = '';
+    $scope.sendEnabled = false;
+    $scope.recipients = {
+      fields: [
+        { address: '', amount: '' }
+      ],
+      field_proto: { address: '', amount: '' }
+    };
+  }
+
+  $scope.resetSendForm();
+
+
   $scope.updateBtcFiat = function(field) {
     var tickerService = DarkWallet.getService('ticker');
     var identity = DarkWallet.getIdentity();
@@ -23,24 +37,30 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   }
 
   $scope.setPocket = function(pocket) {
+      var identity = DarkWallet.getIdentity();
       if (pocket == 'any') {
           $scope.sendPocketName = 'Any';
           // TODO: Any is only using default pocket right now.
           $scope.pocketIndex = 0;
       } else if (typeof pocket == 'number') {
-          $scope.sendPocketName = $scope.identity.wallet.pockets.hdPockets[pocket].name;
+          $scope.sendPocketName = identity.wallet.pockets.hdPockets[pocket].name;
           $scope.pocketIndex = pocket;
       } else {
           var idx = parseInt(pocket.split(':')[1])
-          var fund = $scope.identity.wallet.multisig.funds[idx];
+          var fund = identity.wallet.multisig.funds[idx];
           $scope.sendPocketName = fund.name;
           $scope.pocketIndex = fund.address;
       }
   };
 
+  var initialized;
   var initIdentity = function(identity) {
+      if (!identity || initialized == identity.name) {
+          return;
+      }
+      initialized = identity.name;
       // init scope variables
-      $scope.setPocket($scope.sendPocket);  
+      $scope.setPocket($scope.sendPocket);
       $scope.selectedCurrency = identity.settings.currency;
       if ($scope.selectedCurrency == 'mBTC') {
           $scope.send.fee = $scope.defaultFee*1000;
@@ -52,6 +72,8 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       }
   }
 
+  initIdentity(DarkWallet.getIdentity());
+
   // Identity ready
   Port.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
@@ -61,38 +83,30 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
     }
   })
 
-  var updateRadar = function(radar) {
+  var updateRadar = function(radar, task) {
       var progressBar = $window.document.getElementById('send-progress')
       var button = $window.document.getElementById('send-button');
 
-      if (!button.classList.contains('working')) {
-          button.classList.add('working');
+      // Check if we're finished
+      if (radar > 0.75) {
+          radar = 1;
+          if (task.radar <= 0.75) {
+              notify.success('Transaction finished propagating');
+              $scope.resetSendForm();
+          }
       }
+
+      // If task.radar is less than one keep updating
+      if (task.radar < 1) {
+          if (!button.classList.contains('working')) {
+              button.classList.add('working');
+          }
+
+          task.radar = radar;
+      }
+
+      // Progress bar must be updated at the end
       progressBar.style.width = radar*100 + '%';
-  }
-
-  $scope.finishSign = function(signTask, amountNote, password) {
-    // callback waiting for radar feedback
-    var isBroadcasted = false;
-    var onBroadcast = function(error, task) {
-        console.log("broadcast feedback", error, task)
-        if (error) {
-            var errorMessage = error.message || ''+error;
-            notify.error("Error broadcasting", errorMessage);
-        } else if (task && task.type == 'signatures') {
-            notify.note('Signatures pending', amountNote)
-        } else if (task && task.type == 'radar') {
-            updateRadar(task.radar || 0)
-            if (!isBroadcasted) {
-                notify.success('Transaction sent', amountNote)
-                isBroadcasted = true;
-            } else {
-            }
-        }
-    }
-
-    var walletService = DarkWallet.getService('wallet');
-    walletService.signTransaction(signTask.tx, signTask, password, onBroadcast);
   }
 
   var getSatoshis = function() {
@@ -137,6 +151,31 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       }
   }
 
+  $scope.finishSign = function(signTask, amountNote, password) {
+    // callback waiting for radar feedback
+    var isBroadcasted = false;
+    var radarCache = {radar: 0};
+    var onBroadcast = function(error, task) {
+        console.log("broadcast feedback", error, task)
+        if (error) {
+            var errorMessage = error.message || ''+error;
+            notify.error("Error broadcasting", errorMessage);
+        } else if (task && task.type == 'signatures') {
+            notify.note('Signatures pending', amountNote)
+        } else if (task && task.type == 'radar') {
+            updateRadar(task.radar || 0, radarCache);
+            if (!isBroadcasted) {
+                notify.success('Transaction sent', amountNote)
+                isBroadcasted = true;
+            }
+        }
+    }
+
+    var walletService = DarkWallet.getService('wallet');
+    walletService.signTransaction(signTask.tx, signTask, password, onBroadcast);
+  }
+
+
   $scope.sendBitcoins = function() {
 
       // get a free change address
@@ -161,6 +200,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           return;
       }
 
+      $scope.send.sending = true;
       var fee = parseInt(BigInteger.valueOf($scope.send.fee * satoshis).toString());
 
       // callback waiting for radar feedback
@@ -171,15 +211,19 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           if (error) {
               var errorMessage = error.message || ''+error;
               notify.error("Transaction failed", errorMessage);
+              $scope.resetSendForm();
           } else if (task && task.type == 'sign') {
               // Need to sign so open modal
               $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(_password) {$scope.finishSign(task, amountNote, _password)})
           } else if (task && task.type == 'mixer') {
               notify.note('Sent to mixer ('+task.task.state+')', amountNote)
+              $scope.resetSendForm();
           } else if (task) {
               notify.note('New task: ' + task.type, amountNote)
+              $scope.resetSendForm();
           } else {
               notify.success('Transaction created', amountNote);
+              $scope.resetSendForm();
           }
       }
 
@@ -193,13 +237,6 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
                          $scope.send.mixing,
                          onSent);
   }
-
-  $scope.recipients = {
-    fields: [
-      { address: '', amount: '' }
-    ],
-    field_proto: { address: '', amount: '' }
-  };
 
   $scope.addAddress = function(data, vars) {
     vars.field.address = data;

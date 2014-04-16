@@ -123,7 +123,13 @@ function (controllers, DarkWallet, Port) {
       });
   }
 
+  var initialized;
+
   function loadIdentity(identity) {
+      if (!identity || initialized == identity.name) {
+          return;
+      }
+      initialized = identity.name;
       $scope.addresses = {};
       $scope.allAddresses.splice(0,$scope.allAddresses.length);
       // set some links
@@ -218,8 +224,14 @@ function (controllers, DarkWallet, Port) {
   }
 
   // Load identity
-  if (bg.getKeyRing().availableIdentities.length && !bg.getIdentity()) {
-    bg.loadIdentity(0);
+  var identity = DarkWallet.getIdentity();
+  if (identity) {
+      loadIdentity(identity)
+  } else {
+      if (bg.getKeyRing().availableIdentities.length) {
+        bg.loadIdentity(0);
+      }
   }
+
 }]);
 });
