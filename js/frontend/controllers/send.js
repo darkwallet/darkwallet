@@ -59,12 +59,41 @@ function (controllers, Services, DarkWallet, Bitcoin) {
     }
   })
 
+  var updateRadar = function(radar) {
+      var progressBar = document.getElementById('send-progress')
+      var button = document.getElementById('send-button');
+
+      if (!button.classList.contains('working')) {
+          button.classList.add('working');
+      }
+      progressBar.style.width = radar*100 + '%';
+  }
+
+  $scope.finishSign = function(signTask, password) {
+    var amountNote = (signTask.fee + signTask.totalAmount) + ' satoshis';
+
+    // callback waiting for radar feedback
+    var isBroadcasted = false;
+    var onBroadcast = function(error, task) {
+        console.log("broadcast feedback", error, task)
+        if (error) {
+            var errorMessage = error.message || ''+error;
+            notify.error("Error broadcasting", errorMessage);
+        } else if (task && task.type == 'radar') {
+            updateRadar(task.radar || 0)
+            if (!isBroadcasted) {
+                notify.success('Transaction sent', amountNote)
+                isBroadcasted = true;
+            } else {
+            }
+        }
+    }
+
+    var walletService = DarkWallet.service().getWalletService();
+    walletService.signTransaction(signTask.tx, signTask, password, onBroadcast);
+  }
 
   $scope.sendBitcoins = function() {
-    
-      $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, $scope.finishSend)
-  }
-  $scope.finishSend = function(password) {
       // get a free change address
       var identity = DarkWallet.getIdentity();
       var changeAddress = $scope.getChangeAddress($scope.pocketIndex);
@@ -91,23 +120,25 @@ function (controllers, Services, DarkWallet, Bitcoin) {
 
       var fee = parseInt(BigInteger.valueOf($scope.send.fee * satoshis).toString());
 
+      // callback waiting for radar feedback
+      var isBroadcasted = false;
       var onSent = function(error, task) {
-          // this should actually be a starting note, but we don't have a finishing callback yet.
-          // we can also use something to show radar progress
+          console.log("send feedback", error, task)
+          var amountNote = (fee + totalAmount) + ' satoshis';
           if (error) {
-              notify.error("Can't send", ""+error.message);
-              console.log("error", error);
-          } else if (task && (task.type == 'radar' || task.radar)) {
-              console.log("radar", task.radar)
-              notify.note('Propagating!', task.radar + ' %')
+              var errorMessage = error.message || ''+error;
+              notify.error("Transaction failed", errorMessage);
+          } else if (task && task.type == 'sign') {
+              // Need to sign so open modal
+              $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(_password) {$scope.finishSign(task, _password)})
           } else if (task && task.type == 'mixer') {
-              notify.note('Sent to mixer ('+task.task.state+')', (fee + totalAmount) + ' satoshis')
-              console.log("mixer", task)
+              notify.note('Sent to mixer ('+task.task.state+')', amountNote)
+          } else if (task && task.type == 'signatures') {
+              notify.note('Signatures pending', amountNote)
           } else if (task) {
-              notify.note('Signatures pending', 'Sending ' + (fee + totalAmount) + ' satoshis')
-              console.log("pending", task)
+              notify.note('New task: ' + task.type, amountNote)
           } else {
-              notify.success('Bitcoins sent', 'Sent ' + (fee + totalAmount) + ' satoshis');
+              notify.success('Transaction created', amountNote);
           }
       }
 
@@ -119,7 +150,6 @@ function (controllers, Services, DarkWallet, Bitcoin) {
                          changeAddress,
                          fee,
                          $scope.send.mixing,
-                         password,
                          onSent);
   }
 

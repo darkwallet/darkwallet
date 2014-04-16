@@ -189,7 +189,7 @@ function(IdentityKeyRing, Services) {
     /*
      * Sign a transaction, then broadcast or add task to gather sigs
      */
-    var signTransaction = function(newTx, metadata, password, callback) {
+    this.signTransaction = function(newTx, metadata, password, callback) {
         var identity = self.getCurrentIdentity();
         // Otherwise just sign and lets go
         identity.wallet.signTransaction(newTx, metadata.utxo, password, function(err, pending) {
@@ -211,7 +211,7 @@ function(IdentityKeyRing, Services) {
     /*
      * Send bitcoins
      */
-    this.send = function(pocketIdx, recipients, changeAddress, fee, mixing, password, callback) {
+    this.send = function(pocketIdx, recipients, changeAddress, fee, mixing, callback) {
         var identity = self.getCurrentIdentity();
 
         // Prepare the transaction
@@ -226,7 +226,9 @@ function(IdentityKeyRing, Services) {
         if (mixing) {
             mixTransaction(prepared.tx, prepared, callback);
         } else {
-            signTransaction(prepared.tx, prepared, password, callback);
+            prepared.type = 'sign';
+            callback(null, prepared);
+            //signTransaction(prepared.tx, prepared, password, callback);
         }
     }
 
