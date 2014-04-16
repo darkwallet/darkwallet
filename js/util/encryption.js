@@ -16,7 +16,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
    * @param {Bytes} encKeyBytes (Optional)
    */
   var stealthEncrypt = function(pubKey, message, encKeyBytes) {
-    var encKey = new Bitcoin.Key(encKeyBytes);
+    var encKey = new Bitcoin.ECKey(encKeyBytes);
     var ephemKey = encKey.getPub().pub.getEncoded(true);
 
     var decKey = Stealth.importPublic(pubKey);
@@ -28,7 +28,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
 
   /*
    * Decrypt the given message
-   * @param {Bitcoin.Key} pubKey Private key
+   * @param {Bitcoin.ECKey} pubKey Private key
    * @param {String} message Message to decrypt, should have pub and data components
    */
   var stealthDecrypt = function(privKey, message) {

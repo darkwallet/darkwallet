@@ -27,7 +27,7 @@ Stealth.importPublic = function(Q) {
 /*
  * Perform curvedh and stealth formatting
  * @param {Bitcoin.BigInteger} e private part
- * @param {Bitcoin.Key} decKey public key
+ * @param {Bitcoin.ECKey} decKey public key
  * @private
  */
 Stealth.stealthDH = function(e, decKey) {
@@ -120,7 +120,7 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, ephemKeyBytes) {
     var spendKey = Stealth.importPublic(spendKeyBytes);
 
     // new ephemeral key
-    var encKey = new Bitcoin.Key(ephemKeyBytes);
+    var encKey = new Bitcoin.ECKey(ephemKeyBytes);
     var ephemKey = encKey.getPub().pub.getEncoded(true);
 
     // Generate shared secret
@@ -170,7 +170,7 @@ Stealth.derivePrivateKey = function(spendKey, c) {
 Stealth.deriveKey = function(spendKey, c) {
     // Now generate address
     var bytes = spendKey.pub
-                          .add(new Bitcoin.Key(c).getPub().pub)
+                          .add(new Bitcoin.ECKey(c).getPub().pub)
                           .getEncoded(true);
 
     return bytes;

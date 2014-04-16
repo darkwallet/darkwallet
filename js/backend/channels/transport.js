@@ -22,10 +22,10 @@ function (Bitcoin, Mnemonic) {
     // Identity (communications) key
     var selfKey;
     if (identity.store.get('commsKey')) {
-        selfKey = new Bitcoin.Key(identity.store.get('commsKey'));
+        selfKey = new Bitcoin.ECKey(identity.store.get('commsKey'));
     }
     else {
-        selfKey = new Bitcoin.Key();
+        selfKey = new Bitcoin.ECKey();
         selfKey.compressed = true;
         identity.store.set('commsKey', selfKey.export('bytes'));
         identity.store.save();

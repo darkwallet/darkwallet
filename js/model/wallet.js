@@ -104,7 +104,7 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     var workSeq = seq.slice(0);
     var data = this.store.getPrivateData(password);
     if (data.privKeys[seq]) {
-        var key = new Bitcoin.Key(data.privKeys[seq], true);
+        var key = new Bitcoin.ECKey(data.privKeys[seq], true);
         callback(key);
         return;
     }
@@ -121,7 +121,7 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
  * Store the given private key
  * @param {Array} seq Address sequence (bip32 or stealth id)
  * @param {String} password Password to decrypt the private data
- * @param {Bitcoin.Key} key Private key to store
+ * @param {Bitcoin.ECKey} key Private key to store
  */
 Wallet.prototype.storePrivateKey = function(seq, password, key) {
     var self = this;
@@ -134,7 +134,7 @@ Wallet.prototype.storePrivateKey = function(seq, password, key) {
 /**
  * Store the given public key as a wallet address
  * @param {Array} seq Address sequence (bip32 or stealth id)
- * @param {Bitcoin.Key} key Bitcoin.Key or public key bytes
+ * @param {Bitcoin.ECKey} key Bitcoin.ECKey or public key bytes
  */
 Wallet.prototype.storePublicKey = function(seq, key, properties) {
     var pubKey = key.length ? key : key.toBytes();
