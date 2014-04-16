@@ -59,12 +59,12 @@ function (controllers, Bitcoin) {
         if (err) {
            task.error = "Failed: " + err;
            notify.warning("Failed Broadcasting", "Imported but failed to broadcast " + err);
-        } else if (data.radar && !isBroadcast) {
+        } else if (data.type == 'radar' && !isBroadcast) {
            task.broadcasted = true;
            task.radar = data.radar;
            task.broadcasting = false;
            notify.success('Imported', 'Signature imported and sent to broadcaster!');
-        } else if (data.radar) {
+        } else if (data.type == 'radar') {
            task.radar = data.radar;
            notify.note('Broadcasting', 'Radar: ' + data.radar);
         }
