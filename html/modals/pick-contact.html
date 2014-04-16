@@ -5,11 +5,11 @@
 <div class="row" ng-show="allContacts.length>5">
   <div class="small-12 columns">
     <div class="row collapse">
-      <div class="medium-2 columns">
-        <span class="prefix radius">Search:</span>
+      <div class="small-2 columns">
+        <span class="prefix radius">Search</span>
       </div>
-      <div class="medium-10 columns">
-        <input type="text" size="50" ng-change="filterContacts()" ng-model="contactSearch"></input>
+      <div class="small-10 columns">
+        <input type="text" class="postfix radius" ng-change="filterContacts()" ng-model="contactSearch">
       </div>
     </div>
   </div>
@@ -29,6 +29,6 @@
       </div>
   </div>
 </div>
-
+</div>
+</div>
 <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
-</div></div>
