@@ -26,7 +26,13 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   $scope.createContact = function() {
     var identity = DarkWallet.getIdentity();
-    identity.contacts.addContact($scope.newContact)
+    var newContact = $scope.newContact;
+
+    identity.contacts.addContact(newContact);
+
+    // add to scope
+    $scope.contacts.push(newContact);
+
     $scope.newContact = {};
     $scope.contactFormShown = false;
   };
