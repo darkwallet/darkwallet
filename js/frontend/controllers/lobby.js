@@ -95,10 +95,12 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
         $scope.subscribed = pairCodeHash;
     }
 
-    if (!selectedChannel && transport.channels && transport.channels.length) {
+    var availableChannels = Object.keys(transport.channels);
+    if (!selectedChannel && availableChannels.length) {
         // should remember the last connected channel but for
-        // now reconnect the first
-        selectedChannel = transport.channels[transport.channels.length-1].name;
+        // now reconnect the last
+        var lastChannel = transport.channels[availableChannels[availableChannels.length-1]];
+        selectedChannel = lastChannel.name;
     }
 
     $scope.subscribed = false;
