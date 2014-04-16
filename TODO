@@ -2,7 +2,7 @@ Immediate:
  - Review and stabilize gateway
  - Send:
    - Review sending
-   - Better radar feedback
+   * Better radar feedback DONE
    + multisig spending STARTED
      * import spend from someone else DONE
      * sign spend with own keys DONE
@@ -28,6 +28,8 @@ Style:
    - Add sections (or something)
  - Utils
    - Controls for sign message / check signed
+ - Identities
+   - Modals or something for restore and backup
 
 Other:
  - Cache address history and resume
