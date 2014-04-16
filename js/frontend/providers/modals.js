@@ -1,7 +1,7 @@
 define(['./module'], function (providers) {
 'use strict';
 
-providers.factory('modals', ['$modal', 'notify', 'sounds', function($modal, notify, sounds) {
+providers.factory('modals', ['$modal', '$window', 'notify', 'sounds', function($modal, $window, notify, sounds) {
 
 var modals = {
 
@@ -55,7 +55,7 @@ var modals = {
     // Fix autofocus in modals (broken because they have tabindex attribute set to -1)
     modal.opened.then(function() {
       setTimeout(function() {
-        var element = document.querySelectorAll(".modal-" + tplName + " [autofocus]")[0];
+        var element = $window.document.querySelectorAll(".modal-" + tplName + " [autofocus]")[0];
         if (element) {
           element.focus();
         }
