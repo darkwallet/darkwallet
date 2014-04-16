@@ -10,7 +10,7 @@ define([
     './history',
     './identities',
     './lobby',
-    './multisig',
+    './new_fund',
     './new_wallet',
     './send',
     './settings',

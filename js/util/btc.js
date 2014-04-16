@@ -29,10 +29,19 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         var m = script.chunks[0] - Bitcoin.Opcode.map.OP_1 + 1;
         return {address: address, script: data, m: m, pubKeys: pubKeys};
     },
+
     /*
      *  Uncompress a public address
      */
-    uncompressAddress: function(bytes) {
+    compressPublicKey: function(bytes) {
+        var key = Bitcoin.ECPubKey(bytes, false);
+        return key.toBytes(true);
+    },
+
+    /*
+     *  Uncompress a public address
+     */
+    uncompressPublicKey: function(bytes) {
         var key = Bitcoin.ECPubKey(bytes, true);
         return key.toBytes(false);
     },
@@ -45,7 +54,10 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
      *  - stealth (6...)
      *  - mpk (xpub...)
      */
-    decodeAddress: function(address) {
+    extractPublicKey: function(address, compressed) {
+        if (compressed === undefined) {
+            compressed = true;
+        }
         if (address.length == 130) {
             // Hex uncompressed address
             bytes = convert.hexToBytes(address)
@@ -70,8 +82,11 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
             throw Error("Can't decode address for multisig with length " + address.length);
         }
         // Decompress if needed
-        if (bytes.length == 33) {
-            bytes = BtcUtils.uncompressAddress(bytes);
+        if (!compressed && bytes.length == 33) {
+            bytes = BtcUtils.uncompressPublicKey(bytes);
+        }
+        else if (compressed && bytes.length == 65) {
+            bytes = BtcUtils.compressPublicKey(bytes);
         }
         return bytes;
     },

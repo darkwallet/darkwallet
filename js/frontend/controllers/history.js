@@ -17,18 +17,23 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
 
   // Create a profile out of a public key by looking in contacts and wallet.
   var detectParticipant = function(pubKeyBytes) {
-      var identity = $scope.identity;
+      var identity = DarkWallet.getIdentity();
 
-      // Ensure we check the compressed version
-      var pubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
-      var address = pubKey.toString();
+      // Ensure we check the compressed version for my address
+      var myPubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
+      var myAddress = myPubKey.toString();
 
-      var uncompressedAddress = new Bitcoin.ECPubKey(pubKeyBytes, false).toString();
-      var participant = { name: uncompressedAddress,
-                          pubKey: pubKey.toBytes(false),
-                          hash: pubKey.toHex() };
+      var compressed = (pubKeyBytes.length == 33);
 
-      var walletAddress = identity.wallet.getWalletAddress(address);
+      // Initially show the address for the compressed key, not necessarily the
+      // one we know about the contact if they're using uncompressed addresses
+      var contactAddress = new Bitcoin.ECPubKey(pubKeyBytes, compressed);
+
+      var participant = { name: contactAddress.toString(),
+                          pubKey: pubKeyBytes,
+                          hash: contactAddress.toHex() };
+
+      var walletAddress = identity.wallet.getWalletAddress(myAddress);
       if (walletAddress) {
           // Current identity
           participant.type = 'me';
@@ -39,7 +44,7 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
           participant.hash = Bitcoin.Crypto.SHA256(walletAddress.stealth).toString();
       } else {
           // Check if it's a contact
-          var contact = identity.contacts.findByPubKey(pubKey.toBytes(false));
+          var contact = identity.contacts.findByPubKey(pubKeyBytes);
           if (contact) {
               participant.name = contact.name;
               participant.hash = contact.hash;
@@ -63,7 +68,7 @@ function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
 
   // Check tasks and put some info in the pocket
   var checkFundTasks = function(fund) {
-      var identity = $scope.identity;
+      var identity = DarkWallet.getIdentity();
       var res = [];
       // Check pending tasks for fund
       var tasks = identity.tasks.tasks.multisig;

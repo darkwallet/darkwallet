@@ -25,7 +25,7 @@ function (controllers, Bitcoin) {
 
     var organizeSignatures = function(hexSigs) {
         var signatures = [];
-        $scope.pocket.participants.forEach(function(participant, i) {
+        fund.participants.forEach(function(participant, i) {
             if (hexSigs.hasOwnProperty(i)) {
                 signatures.push(hexSigs[i]);
             } else {
@@ -70,13 +70,14 @@ function (controllers, Bitcoin) {
        return;
     }
     var added = false;
+    var fund = $scope.pocket.fund;
 
     // Check where this signature goes
     var script = new Bitcoin.Script(convert.hexToBytes($scope.pocket.fund.script));
     task.task.pending.forEach(function(input) {
         var txHash = task.tx.hashTransactionForSignature(script, input.index, 1);
-        $scope.pocket.participants.forEach(function(participant, pIdx) {
-            if (Bitcoin.ecdsa.verify(txHash, sig, participant.pubKey)) {
+        fund.pubKeys.forEach(function(pubKey, pIdx) {
+            if (Bitcoin.ecdsa.verify(txHash, sig, pubKey)) {
                 input.signatures[pIdx] = sigHex;
                 added = true;
             }
@@ -85,7 +86,7 @@ function (controllers, Bitcoin) {
 
     // Show some notification and finish task if we have all signatures.
     if (added) {
-        if (finishSigning($scope.pocket.fund, task)) {
+        if (finishSigning(fund, task)) {
             notify.success('Imported', 'Signature imported and ready to go!');
         } else {
             notify.success('Imported', 'Signature imported');

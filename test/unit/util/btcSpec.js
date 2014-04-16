@@ -47,12 +47,12 @@ define(['util/btc'], function(BtcUtils) {
       expect(multisig.pubKeys).toEqual(pubkeys); 
     });
     
-    it('Uncompress a public address', function() {
+    it('Uncompress a public key', function() {
 
-      var _address1 = BtcUtils.uncompressAddress(address1);
-      var _address2 = BtcUtils.uncompressAddress(address2);
-      var _address3 = BtcUtils.uncompressAddress(address3);
-      var _address4 = BtcUtils.uncompressAddress(address4);
+      var _address1 = BtcUtils.uncompressPublicKey(address1);
+      var _address2 = BtcUtils.uncompressPublicKey(address2);
+      var _address3 = BtcUtils.uncompressPublicKey(address3);
+      var _address4 = BtcUtils.uncompressPublicKey(address4);
       
       expect(_address1).toEqual([ 4, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
         192, 182, 190, 154, 179, 92, 113, 161, 81, 128, 99, 36, 58, 205, 77, 254, 150, 182, 110, 63, 46, 200, 1, 60, 142, 7, 44, 208, 155, 56, 52,
@@ -70,10 +70,10 @@ define(['util/btc'], function(BtcUtils) {
     
     it('Decode an address from string to bytes', function() {
       
-      var _address1 = BtcUtils.decodeAddress(address1);
-      var _address2 = BtcUtils.decodeAddress(address2);
-      var _address3 = BtcUtils.decodeAddress(address3);
-      var _address4 = BtcUtils.decodeAddress(address4);
+      var _address1 = BtcUtils.extractPublicKey(address1, false);
+      var _address2 = BtcUtils.extractPublicKey(address2, false);
+      var _address3 = BtcUtils.extractPublicKey(address3, false);
+      var _address4 = BtcUtils.extractPublicKey(address4, false);
       
       expect(_address1).toEqual([ 4, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
         192, 182, 190, 154, 179, 92, 113, 161, 81, 128, 99, 36, 58, 205, 77, 254, 150, 182, 110, 63, 46, 200, 1, 60, 142, 7, 44, 208, 155, 56, 52,

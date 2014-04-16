@@ -15,7 +15,7 @@ directives.directive('btcAddress', function() {
           }
           // Check for public keys in different formats
           try {
-            BtcUtils.decodeAddress(viewValue)
+            BtcUtils.extractPublicKey(viewValue)
             ctrl.$setValidity('address', true);
           } catch (e) {
             ctrl.$setValidity('address', false);

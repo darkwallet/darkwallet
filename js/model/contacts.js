@@ -48,12 +48,13 @@ Contacts.prototype.updateContactHash = function(contact) {
  * @param {Object} data Contact information.
  */
 Contacts.prototype.findByPubKey = function (pubKey) {
-  var toCheck = pubKey.slice(0, 65).toString();
+  var toCheck = pubKey.toString();
+  var compressed = (pubKey.length == 33);
   for(var i=0; i<this.contacts.length; i++) {
     var address = this.contacts[i].address;
     var cPubKey;
     try {
-        cPubKey = BtcUtils.decodeAddress(address);
+        cPubKey = BtcUtils.extractPublicKey(address, compressed);
     } catch(e) {
         // not a good address
         continue;
