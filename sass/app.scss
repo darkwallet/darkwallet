@@ -25,11 +25,26 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 /* BUTTONS ----------- */
+
+.progbar {
+	opacity: 0;
+	border-radius: $global-radius;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 1%;
+	background: darken($primary-color, 20%);
+}
+
 a.glow.button, button.glow, input[type="submit"].glow {
   -webkit-animation-name: glowpulse;
   -webkit-animation-duration: 4s;
   -webkit-animation-iteration-count: infinite;
-  &:hover { -webkit-animation: none; }
+  &:hover, &.working { -webkit-animation: none; }
+  span, .progbar { @include single-transition(); }
+  &.working .progbar { opacity: 1; }
+  &.working span { opacity: 0; }
 }
 
 button:active .button:active, table tr:nth-child(odd) a.button:active { 
@@ -149,7 +164,7 @@ span.meter { padding: 5px 0 0 5px; }
 
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover { background: $primary-color; cursor: pointer; }
 
-.contact-mosaic { max-height: 500px; overflow: scroll; }
+.contact-mosaic { max-height: 500px; overflow-y: scroll; overflow-x: hidden; }
 
 .select-list { min-height: 100px; background-image: none; }
 
