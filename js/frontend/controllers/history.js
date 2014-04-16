@@ -226,7 +226,9 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
       else {
           // row pocket here is just 1st element in index, pocket can be pocket/2
           if (typeof row.pocket === 'number') {
-              return Math.floor(row.pocket/2) == $scope.pocket.index;
+              // row.pocket here is the branch id, pocket.index is 2*pocketId
+              var pocketBranch = (row.pocket%2) ? row.pocket-1 : row.pocket;
+              return pocketBranch == $scope.pocket.index;
           } else {
               return row.pocket == $scope.pocket.index;
           }
