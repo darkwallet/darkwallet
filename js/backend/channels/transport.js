@@ -1,15 +1,14 @@
-define(['bitcoinjs-lib', 'mnemonicjs', 'backend/services'],
-function (Bitcoin, Mnemonic, Services) {
+define(['bitcoinjs-lib', 'mnemonicjs'],
+function (Bitcoin, Mnemonic) {
   'use strict';
 
-  var CryptoJS = Bitcoin.Crypto;
   var SHA256 = Bitcoin.Crypto.SHA256;
 
   /************************************
    * Transport
    */
-  function Transport(identity, obeliskClient) {
-    this.client = obeliskClient;
+  function Transport(identity, obeliskService) {
+    this.obelisk = obeliskService;
     this.channels = {};
     this.sessionKey = {};
 
@@ -48,7 +47,7 @@ function (Bitcoin, Mnemonic, Services) {
   }
 
   Transport.prototype.getClient = function() {
-    return this.client.getClient();
+    return this.obelisk.getClient();
   }
 
   Transport.prototype.update = function() {
