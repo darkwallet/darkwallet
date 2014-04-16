@@ -59,6 +59,10 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           return;
       }
       initialized = identity.name;
+
+      // Set the dust threshold
+      dustThreshold = identity.wallet.wallet.dustThreshold;
+
       // init scope variables
       $scope.setPocket($scope.sendPocket);
       $scope.selectedCurrency = identity.settings.currency;
