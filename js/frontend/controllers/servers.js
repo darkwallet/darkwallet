@@ -63,7 +63,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       identity.connections.addServer(newServer.name, address);
       $scope.newServer = {address: '', name: ''};
       $scope.addServerError = '';
-  }
+  };
 
   // Connect the given server, triggered by select changing $scope.selectedServerIdx
   $scope.connectServer = function() {
@@ -72,7 +72,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       identity.connections.setSelectedServer($scope.selectedServerIdx);
       // Trigger connection
       DarkWallet.core().connect();
-  }
+  };
 
 }]);
 

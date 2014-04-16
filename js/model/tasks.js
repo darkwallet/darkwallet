@@ -26,7 +26,7 @@ Tasks.prototype.addTask = function(section, task) {
     task.seen = false;
     this.tasks[section].push(task);
     this.store.save();
-}
+};
 
 /**
  * Remove a task from the given section
@@ -40,7 +40,7 @@ Tasks.prototype.removeTask = function(section, task) {
     var idx = this.tasks[section].indexOf(task);
     this.tasks[section].splice(idx, 1);
     this.store.save();
-}
+};
 
 /**
  * Get task objects for a section
@@ -52,7 +52,7 @@ Tasks.prototype.getTasks = function(section) {
         return this.tasks[section];
     }
     return [];
-}
+};
 
 /**
  * Get the number of tasks in the given section
@@ -66,7 +66,7 @@ Tasks.prototype.getOpenTasks = function(section) {
         nOpen += self.tasks[section].length;
     });
     return nOpen;
-}
+};
 
 /**
  * Clear all tasks
@@ -77,7 +77,7 @@ Tasks.prototype.clear = function() {
         delete self.tasks[section];
     });
     this.store.save();
-}
+};
 
 return Tasks;
 });

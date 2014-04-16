@@ -13,7 +13,7 @@ function(Port, Transport, Channel) {
          switch(data.type) {
              case 'initChannel':
                lobbyTransport.initChannel(data.name, Channel);
-               Port.post('lobby', data)
+               Port.post('lobby', data);
                break;
        }
       }, function(port) {
@@ -26,10 +26,10 @@ function(Port, Transport, Channel) {
         console.log('[lobby] init lobby transport');
         var identity = core.getCurrentIdentity();
         lobbyTransport = new Transport(identity, core.getService('obelisk'));
-        lobbyTransport.update = function() { Port.post('gui', {'type': 'update'}) };
+        lobbyTransport.update = function() { Port.post('gui', {'type': 'update'}); };
       }
       return lobbyTransport;
-    }
+    };
   }
 
   return LobbyService;

@@ -81,8 +81,8 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     if (pocketIndex === undefined) {
         this.balance = balance;
     }
-    return {confirmed: balance, unconfirmed: unconfirmed}
-}
+    return {confirmed: balance, unconfirmed: unconfirmed};
+};
 
 /**
  * Load wallet addresses into internal Bitcoin.Wallet
@@ -108,10 +108,10 @@ Wallet.prototype.loadPubKeys = function() {
     });
     // Cleanup malformed addresses
     toRemove.forEach(function(index) {
-        console.log("[model] Deleting", self.pubKeys[index])
+        console.log("[model] Deleting", self.pubKeys[index]);
         delete self.pubKeys[index];
-    })
-}
+    });
+};
 
 /**
  * Get the private key for the given address index
@@ -196,7 +196,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
     // add to internal bitcoinjs-lib wallet
     this.addToWallet(walletAddress);
     return walletAddress;
-}
+};
 
 /**
  * Add an address to the wallet
@@ -206,7 +206,7 @@ Wallet.prototype.addToWallet = function(walletAddress) {
     this.pubKeys[walletAddress.index.slice()] = walletAddress;
     this.pockets.addToPocket(walletAddress);
     this.store.save();
-}
+};
 
 /**
  * Get an address from this wallet.
@@ -227,7 +227,7 @@ Wallet.prototype.getAddress = function(seq) {
         }
         return this.storePublicKey(seq, childKey.pub);
     }
-}
+};
 
 /**
  * Get a free address from a branch id (can be pocket or pocket+1 for change)
@@ -255,7 +255,7 @@ Wallet.prototype.getFreeAddress = function(branchIndex) {
         }
     }
     return walletAddress;
-}
+};
 
 /**
  * Get a free change address for a pocket
@@ -272,7 +272,7 @@ Wallet.prototype.getChangeAddress = function(pocketId) {
         branchIndex = (pocketId*2)+1;
     }
     return this.getFreeAddress(branchIndex);
-}
+};
 
 /**
  * Get the wallet address structure for an address.
@@ -291,7 +291,7 @@ Wallet.prototype.getWalletAddress = function(address) {
              return walletAddress;
          }
     }
-}
+};
 
 /**
  * Set the default fee
@@ -302,7 +302,7 @@ Wallet.prototype.setDefaultFee = function(newFee) {
     this.store.set('fee', newFee);
     this.store.save();
     console.log("[wallet] saved new fees", newFee);
-}
+};
 
 /**
  * Get available unspent outputs for paying from the given pocket.
@@ -343,7 +343,7 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
    }
 
    return getCandidateOutputs(tmpWallet, value);
-}
+};
 
 /**
  * Prepare a transaction with the given constraints
@@ -353,7 +353,7 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
     var totalAmount = 0;
     recipients.forEach(function(recipient) {
         totalAmount += recipient.amount;
-    })
+    });
     var isStealth = false;
 
     // find outputs with enough funds
@@ -390,7 +390,7 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
             address = Stealth.addStealth(address, newTx);
         }
         newTx.addOutput(address, recipient.amount);
-    })
+    });
 
     // Calculate change
     var change = outAmount - (totalAmount + fee);
@@ -399,7 +399,7 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
     }
     // Return the transaction and some metadata
     return {tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth};
-}
+};
 
 /**
  * Sign given transaction outputs
@@ -424,14 +424,14 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
                 newTx.sign(idx, outKey);
             });
           } catch (e) {
-            callback({data: e, message: "Password incorrect!"})
+            callback({data: e, message: "Password incorrect!"});
             return;
           }
         }
     };
     // No error so callback with success
     callback(null, pending);
-}
+};
 
 /*
  * Helper functions
@@ -461,7 +461,7 @@ Wallet.prototype.signMyInputs = function(inputs, newTx, password) {
         }
     }
     return signed;
-}
+};
 
 
 /**
@@ -493,7 +493,7 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
         output.spend = spend;
         output.spendheight = height;
     }
-}
+};
 
 /*
  * Check if transaction involves given address.
@@ -510,12 +510,12 @@ Wallet.prototype.txForAddress = function(walletAddress, tx) {
          if (identity.txdb.transactions.hasOwnProperty(txHash)) {
             var prevTx = new Bitcoin.Transaction(identity.txdb.transactions[txHash]);
             if (prevTx.outs[outpoint.index].address == walletAddress.address) {
-                inputs.push({index: i, address: walletAddress.address, outpoint: outpoint})
+                inputs.push({index: i, address: walletAddress.address, outpoint: outpoint});
             }
         }
     };
     return inputs;
-}
+};
 
 
 /**
@@ -530,15 +530,15 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
     if (!this.identity.txdb.transactions.hasOwnProperty(txHash)) {
         // don't run if we already processed the transaction since
         // otherwise bitcoinjs-lib will reset 'pending' attribute.
-        var txhash = Bitcoin.convert.bytesToHex(tx.getHash())
+        var txhash = Bitcoin.convert.bytesToHex(tx.getHash());
 
         // store in our tx db
-        this.identity.txdb.storeTransaction(txHash, serializedTx)
+        this.identity.txdb.storeTransaction(txHash, serializedTx);
     }
 
     // Now parse inputs and outputs
     tx.outs.forEach(function(txOut, i){
-      var address = txOut.address.toString()
+      var address = txOut.address.toString();
       var outputAddress = self.getWalletAddress(address);
       // already exists
       if (outputAddress) {
@@ -566,7 +566,7 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
 
     // process in history (updates history rows)
     return this.identity.history.txFetched(walletAddress, serializedTx, height)
-}
+};
 
 /**
  * Process history report from obelisk
@@ -598,7 +598,7 @@ Wallet.prototype.processHistory = function(walletAddress, history) {
         self.processOutput(walletAddress, tx[0], tx[1], tx[3], outHeight, spend);
     });
     this.store.save();
-}
+};
 
 /**
  * Get the stealth scanning ECKey
@@ -607,7 +607,7 @@ Wallet.prototype.getScanKey = function() {
     var scanMaster = this.scanKeys[0];
     var scanMasterKey = Bitcoin.HDWallet.fromBase58(scanMaster.priv);
     return scanMasterKey.priv;
-}
+};
 
 /**
  * Process stealth array from obelisk.
@@ -635,7 +635,7 @@ Wallet.prototype.processStealth = function(stealthArray) {
             var walletAddress = self.storePublicKey(seq, myKeyBytes, {'type': 'stealth', 'ephemkey': ephemKey});
         }
     });
-}
+};
 
 return Wallet;
 });

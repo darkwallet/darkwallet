@@ -35,7 +35,7 @@ Pockets.prototype.initPockets = function(store) {
         this.initPocketWallet(i);
     };
     return pockets;
-}
+};
 
 /**
  * Create pocket with the given name
@@ -51,7 +51,7 @@ Pockets.prototype.createPocket = function(name) {
 
     // Multisig addresses also have pocket wallets
     this.initPocketWallet(this.hdPockets.length-1);
-}
+};
 
 /**
  * Initialize a pockets wallet
@@ -60,7 +60,7 @@ Pockets.prototype.createPocket = function(name) {
  */
 Pockets.prototype.initPocketWallet = function(id) {
     this.pocketWallets[id] = {addresses: [], balance: 0};
-}
+};
 
 /**
  * Get a pocket by name
@@ -72,7 +72,7 @@ Pockets.prototype.getPocket = function(name) {
             return this.hdPockets[i];
         }
     }
-}
+};
 
 /**
  * Delete a pocket
@@ -88,7 +88,7 @@ Pockets.prototype.deletePocket = function(name) {
         }
     }
     throw Error("Pocket with that name does not exist!");
-}
+};
 
 /**
  * Get the pocket index for a wallet address
@@ -100,7 +100,7 @@ Pockets.prototype.getAddressPocketId = function(walletAddress) {
     } else {
         return Math.floor(walletAddress.index[0]/2);
     }
-}
+};
 
 /**
  * Add an address to its pocket
@@ -111,10 +111,10 @@ Pockets.prototype.addToPocket = function(walletAddress) {
 
     // add to the list of pocket addresses
     if (!this.pocketWallets.hasOwnProperty(pocketId)) {
-        this.initPocketWallet(pocketId)
+        this.initPocketWallet(pocketId);
     }
     this.pocketWallets[pocketId].addresses.push(walletAddress.address);
-}
+};
 
 /**
  * Gets the pocket wallet for a pocket
@@ -133,12 +133,12 @@ Pockets.prototype.getPocketWallet = function(id) {
         if (addresses.indexOf(output.address) != -1) {
             pocketOutputs[outputKey] = output;
         }
-    })
-    var tmpWallet = new Bitcoin.Wallet(this.mpk)
+    });
+    var tmpWallet = new Bitcoin.Wallet(this.mpk);
     tmpWallet.outputs = pocketOutputs;
     tmpWallet.addresses = addresses;
     return tmpWallet;
-}
+};
 
 return Pockets;
 });

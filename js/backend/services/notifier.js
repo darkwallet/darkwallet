@@ -26,7 +26,7 @@ define(['backend/port', 'backend/channels/catchan', 'darkwallet'], function(Port
       this.channel = lobbyTransport.initChannel(channel, Channel);
       this.channel.addCallback('Shout', function(_d) {self.onShout(channel, _d)});
     }
-  }
+  };
   
   NotifierService.prototype.onShout = function(channel, msg) {
     var identity = DarkWallet.getIdentity();
@@ -39,7 +39,7 @@ define(['backend/port', 'backend/channels/catchan', 'darkwallet'], function(Port
         }, 10000);
       };
     }
-  }
+  };
 
   return NotifierService;
 

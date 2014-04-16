@@ -34,14 +34,14 @@ Contacts.prototype.initContacts = function() {
           self.updateContactHash(contact);
       }
   });
-}
+};
 
 /**
  * Update fingerprint hash for a contact
  */
 Contacts.prototype.updateContactHash = function(contact) {
     contact.hash = Crypto.SHA256(contact.address).toString();
-}
+};
 
 /**
  * Find Contact

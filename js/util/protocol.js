@@ -3,8 +3,8 @@ define(function() {
 var Protocol = {
   packMessage: function(type, data) {
     var request = {}
-    request['type'] = type
-    request['body'] = data
+    request['type'] = type;
+    request['body'] = data;
     return request;
   },
 
@@ -13,18 +13,18 @@ var Protocol = {
     var data = {};
     data['id'] = id;
     data['amount'] = amount;
-    return Protocol.packMessage('CoinJoinOpen', data)
+    return Protocol.packMessage('CoinJoinOpen', data);
   },
 
   CoinJoinMsg: function(id, tx) {
     var data = {};
     data['id'] = id;
     data['tx'] = tx;
-    return Protocol.packMessage('CoinJoin', data)
+    return Protocol.packMessage('CoinJoin', data);
   },
 
   CoinJoinFinishMsg: function(id) {
-    return Protocol.packMessage('CoinJoinFinish', {id: id})
+    return Protocol.packMessage('CoinJoinFinish', {id: id});
   },
 
   // Contact Pairing
@@ -35,7 +35,7 @@ var Protocol = {
     var mpk = address.mpk;
     data['name'] = identity.name;
     data['stealth'] = address.stealth;
-    return Protocol.packMessage('Contact', data)
+    return Protocol.packMessage('Contact', data);
   },
   // Chatting
   ShoutMsg: function(text) {
@@ -45,15 +45,15 @@ var Protocol = {
   MultisigAnnounceMsg: function(multisig) {
     var data = {};
     data['multisig'] = multisig;
-    return Protocol.packMessage('MultisigAnnounce', data)
+    return Protocol.packMessage('MultisigAnnounce', data);
   },
   MultisigProposalMsg: function(proposal) {
     var data = {};
     data['proposal'] = proposal;
-    return Protocol.packMessage('MultisigProposal', data)
+    return Protocol.packMessage('MultisigProposal', data);
   }
-}
+};
 
 return Protocol;
 
-})
+});

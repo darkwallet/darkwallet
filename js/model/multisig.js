@@ -23,7 +23,7 @@ Multisig.prototype.initWalletAddress = function(fund) {
         console.log('[multisig] Fund is not correctly defined!');
         return;
     }
-    var seq = [fund.address, 'm']
+    var seq = [fund.address, 'm'];
     var walletAddress = {
        'type': 'multisig',
        'index': seq.slice(0),
@@ -37,7 +37,7 @@ Multisig.prototype.initWalletAddress = function(fund) {
     // in the backend store
     fund.seq = seq.slice(0);
     return walletAddress;
-}
+};
 
 /**
  * Add a fund to the store
@@ -55,7 +55,7 @@ Multisig.prototype.addFund = function(fund) {
     this.funds.push(fund);
     this.store.save();
     return walletAddress;
-}
+};
 
 return Multisig;
 });

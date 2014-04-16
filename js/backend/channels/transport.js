@@ -30,8 +30,8 @@ function (Bitcoin, Mnemonic) {
         identity.store.set('commsKey', selfKey.toBytes());
         identity.store.save();
     }
-    this.getSelfKey = function() { return selfKey; }
-    this.getSessionKey = function() { return this.sessionKey; }
+    this.getSelfKey = function() { return selfKey; };
+    this.getSessionKey = function() { return this.sessionKey; };
 
     // Initialize some own data
     this.comms = this.initializePeer(this.sessionKey.getPub().toBytes(true));
@@ -44,23 +44,23 @@ function (Bitcoin, Mnemonic) {
   Transport.prototype.newSession = function() {
     this.sessionKey = new Bitcoin.ECKey();
     this.sessionKey.compressed = true;
-  }
+  };
 
   Transport.prototype.getClient = function() {
     return this.obelisk.getClient();
-  }
+  };
 
   Transport.prototype.update = function() {
       /*if(!$scope.$$phase) {
           $scope.$apply();
       }*/
-  }
+  };
 
   Transport.prototype.hashChannelName = function(channel) {
       var channelHash = SHA256(SHA256(SHA256('Lobby channel: ' + channel)));
       channelHash = Bitcoin.convert.wordArrayToBytes(channelHash);
       return Bitcoin.convert.bytesToHex(channelHash);
-  }
+  };
 
   // Get a simple mnemonic name
   Transport.prototype.getMnemoname = function(dataBytes) {
@@ -71,7 +71,7 @@ function (Bitcoin, Mnemonic) {
       var mnemoName = mnemonic.toWords().slice(0,4).join(" ");
       return mnemoName;
 
-  }
+  };
 
   // Initialize peer structure
   Transport.prototype.initializePeer = function(pubKeyBytes, fingerprint) {
@@ -80,13 +80,13 @@ function (Bitcoin, Mnemonic) {
       var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname, pubKey: pubKeyBytes, fingerprint: fingerprint};
       return newPeer;
 
-  }
+  };
 
   // Initialize and add peer to scope
   Transport.prototype.addPeer = function(pubKeyBytes, fingerprint) {
       var peer;
       var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
-      var peerIndex = this.peerIds.indexOf(pubKeyHex)
+      var peerIndex = this.peerIds.indexOf(pubKeyHex);
       if (peerIndex == -1) {
           peer = this.initializePeer(pubKeyBytes, fingerprint);
           this.peerIds.push(peer.pubKeyHex);
@@ -95,7 +95,7 @@ function (Bitcoin, Mnemonic) {
           peer = this.peers[this.peerIds.indexOf(pubKeyHex)];
       }
       return peer;
-  }
+  };
 
   // Action to start announcements and reception
   Transport.prototype.initChannel = function(name, chanClass) {
@@ -110,7 +110,7 @@ function (Bitcoin, Mnemonic) {
       }
       channel.sendOpening();
       return channel;
-  }
+  };
   Transport.prototype.closeChannel = function(name) {
       if (!this.channels.hasOwnProperty(name)) {
           throw Error("Channel does not exist");
@@ -118,10 +118,10 @@ function (Bitcoin, Mnemonic) {
       console.log("[transport] close channel");
       this.channels[name].disconnect();
       delete this.channels[name];
-  }
+  };
 
   Transport.prototype.getChannel = function(name) {
       return this.channels[name];
-  }
+  };
   return Transport;
 });

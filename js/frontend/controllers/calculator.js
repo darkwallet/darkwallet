@@ -19,7 +19,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (contr
     $scope.selectedCurrency = identity.settings.currency;
     var fiat = identity.settings.fiatCurrency;
     $scope.fiatSymbol = FiatCurrencies[fiat].symbol_native;
-  }
+  };
 
   // Wallet service, connect to get notified about identity getting loaded.
   Port.connectNg('wallet', $scope, function(data) {

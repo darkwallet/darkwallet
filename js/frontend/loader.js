@@ -3,7 +3,7 @@
  * prefer named modules to long paths
  */
 require.config({
-  baseUrl: '/js',
+  baseUrl: '/js'
 });
 
 require([

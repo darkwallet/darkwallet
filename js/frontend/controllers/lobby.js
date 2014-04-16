@@ -20,21 +20,21 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
           channelLink = new ChannelLink(name, $scope);
           channelLinks[name] = channelLink;
           channelLink.addCallback('subscribed', function() {
-              notify.success('channel', 'subscribed successfully')
+              notify.success('channel', 'subscribed successfully');
               channelLink.channel.sendOpening();
               if(!$scope.$$phase) {
                   $scope.$apply();
               }
-          })
+          });
           channelLink.addCallback('Contact', function(data) {
-              notify.success('contact', data.body.name)
+              notify.success('contact', data.body.name);
               var peer = data.peer;
               $scope.newContact = data.body;
               $scope.newContact.pubKeyHex = peer.pubKeyHex;
               $scope.newContact.fingerprint = peer.fingerprint;
-          })
+          });
           channelLink.addCallback('Shout', function(data) {
-              var peer = channelLink.channel.getPeer(data.sender)
+              var peer = channelLink.channel.getPeer(data.sender);
               var channel = channelLink.channel;
 
               // add user pubKeyHex to use as identicon
@@ -45,14 +45,14 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
 
               // show notification
               if (data.sender == channel.fingerprint) {
-                  notify.success('me', data.body.text)
+                  notify.success('me', data.body.text);
               } else {
-                  notify.note(data.sender.slice(0,12), data.body.text)
+                  notify.note(data.sender.slice(0,12), data.body.text);
               }
               if (!$scope.$$phase) {
                   $scope.$apply();
               }
-          })
+          });
       }
       $scope.shoutboxLog = channelLink.channel.chatLog;
 
@@ -64,7 +64,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
           $scope.$apply();
       }
       return channelLink;
-  }
+  };
 
   // Lobby service port
   Port.connectNg('lobby', $scope, function(data) {
@@ -93,7 +93,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
             ChannelLink.start(name, port);
         }
         $scope.subscribed = pairCodeHash;
-    }
+    };
 
     var availableChannels = Object.keys(transport.channels);
     if (!selectedChannel && availableChannels.length) {
@@ -128,20 +128,20 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
         if (currentChannel) {
             currentChannel.sendOpening();
         }
-    }
+    };
 
     $scope.newTempIdentity = function() {
       currentChannel.newSession();
       currentChannel.sendOpening();
-    }
+    };
 
     // Action to start announcements and reception
     $scope.joinChannel = function() {
         connectChannel($scope.pairCode);
-    }
+    };
     $scope.selectPeer = function(peer) {
         $scope.selectedPeer = peer;
-    }
+    };
     $scope.pairPeer = function(peer) {
         $scope.selectedPeer = peer;
         var identity = DarkWallet.getIdentity();
@@ -149,7 +149,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
         currentChannel.postDH(peer.pubKey, msg, function() {
             notify.success("lobby", "pairing sent");
         });
-    }
+    };
     $scope.sendText = function() {
         var toSend = $scope.shoutbox;
         // don't send empty shouts
@@ -158,17 +158,17 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
         $scope.shoutbox = '';
         currentChannel.postEncrypted(Protocol.ShoutMsg(toSend), function(err, data) {
           if (err) {
-              notify.error("error sending " + err)
+              notify.error("error sending " + err);
           }
         });
-    }
+    };
     $scope.addNewContact = function(contact) {
         var identity = DarkWallet.getIdentity();
         var newContact = {name: contact.name, address: contact.stealth, fingerprint: contact.fingerprint};
-        identity.contacts.addContact(newContact)
+        identity.contacts.addContact(newContact);
         $scope.newContact = null;
-        notify.success('Contact added')
-    }
+        notify.success('Contact added');
+    };
   });
 }]);
 });

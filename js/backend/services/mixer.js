@@ -46,7 +46,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     } else {
       this.stopMixing();
     }
-  }
+  };
 
   /*
    * Initialize the mixer connection
@@ -57,11 +57,11 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     var lobbyTransport = this.core.getLobbyTransport();
     if (!this.channel) {
       this.channel = lobbyTransport.initChannel('CoinJoin', Channel);
-      this.channel.addCallback('CoinJoinOpen', function(_d) {self.onCoinJoinOpen(_d)});
-      this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d)});
-      this.channel.addCallback('CoinJoinFinish', function(_d) {self.onCoinJoinFinish(_d)});
+      this.channel.addCallback('CoinJoinOpen', function(_d) {self.onCoinJoinOpen(_d);});
+      this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d);});
+      this.channel.addCallback('CoinJoinFinish', function(_d) {self.onCoinJoinFinish(_d);});
     }
-  }
+  };
 
   /*
    * Stop mixing
@@ -73,7 +73,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       lobbyTransport.closeChannel(this.channel.name);
       this.channel = null;
     }
-  }
+  };
 
   // Tasks
 
@@ -108,7 +108,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
         console.log('[mixer] start Task!', task.state, task);
         break;
     }
-  }
+  };
 
   /*
    * Count the number of pending tasks
@@ -118,7 +118,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     console.log('[mixer] check Tasks!', identity);
 
     return identity.tasks.getTasks('mixer').length;
-  }
+  };
 
   /*
    * Resume available (pending) tasks
@@ -131,7 +131,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     tasks.forEach(function(task) {
       self.startTask(task);
     });
-  }
+  };
 
   /*
    * Find a pocket in mixing state with enough satoshis
@@ -149,7 +149,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       }
     };
     return -1;
-  }
+  };
 
   /*
    * Evaluate a coinjoin opening and respond if appropriate.
@@ -179,9 +179,9 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       var tx = identity.wallet.prepareTx(pocketIndex, [recipient], changeAddress, fee);
       this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', tx.clone(), opening.amount, fee);
       // Post using end to end channel capabilities
-      this.sendTo(peer, opening.id, tx.tx)
+      this.sendTo(peer, opening.id, tx.tx);
     }
-  }
+  };
 
   MixerService.prototype.sendTo = function(peer, id, tx, callback) {
       // Save the transaction with the ongoing task
@@ -193,7 +193,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       this.channel.postDH(peer.pubKey, msg, function(err, data) {
           callback ? callback(err, data) : null;
       });
-  }
+  };
 
   /*
    * Check join state to see if we need to delete, and do it
@@ -204,7 +204,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
           console.log("[mixer] Deleting coinjoin because " + coinJoin.state);
           delete this.ongoing[id];
       }
-  }
+  };
 
   /*
    * Get a running coinjoin from a message doing some tests
@@ -219,7 +219,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
           return;
       }
       return coinJoin;
-  }
+  };
 
   MixerService.prototype.requestSignInputs = function(coinJoin) {
       var password = '';
@@ -230,7 +230,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       } else {
           // XXX should add a task
       }
-  }
+  };
 
   /*
    * Protocol messages arriving
@@ -246,7 +246,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     } else {
       console.log("[mixer] My CoinJoinOpen is back", msg);
     }
-  }
+  };
 
   MixerService.prototype.onCoinJoin = function(msg) {
     if (msg.sender != this.channel.fingerprint) {
@@ -269,7 +269,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
           this.checkDelete(msg.id);
       }
     }
-  }
+  };
   MixerService.prototype.onCoinJoinFinish = function(msg) {
     if (msg.sender != this.channel.fingerprint) {
       console.log("[mixer] CoinJoinFinish", msg);
@@ -279,7 +279,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
         this.checkDelete(msg.id);
       }
     }
-  }
+  };
 
   return MixerService;
 

@@ -34,21 +34,21 @@ function DarkWalletService() {
 
     this.loadIdentity = function(idx) {
         return services.wallet.loadIdentity(idx);
-    }
+    };
 
     // Get an identity from the keyring
     this.getIdentity = function(idx) {
         return services.wallet.getIdentity(idx);
-    }
+    };
     this.getCurrentIdentity = function() {
         return services.wallet.getCurrentIdentity();
-    }
+    };
     this.getLobbyTransport = function() {
         return services.lobby.getLobbyTransport();
-    }
+    };
 
     // Start up history for an address
-    this.initAddress = function(walletAddress) { return services.wallet.initAddress(walletAddress) }
+    this.initAddress = function(walletAddress) { return services.wallet.initAddress(walletAddress); }
 
     /***************************************
     /* Global communications
@@ -66,25 +66,25 @@ function DarkWalletService() {
                 services.wallet.handleInitialConnect();
             }
         });
-    }
+    };
     this.getKeyRing = function() {
         return services.wallet.getKeyRing();
-    }
+    };
 
     this.getClient = function() {
         return services.obelisk.getClient();
-    }
+    };
     
     this.getService = function(name) {
         return services[name];
-    }
+    };
 }
 
 /***************************************
 /* Communications
  */
 var sendInternalMessage = function(msg) {
-    chrome.runtime.sendMessage(chrome.runtime.id, msg)
+    chrome.runtime.sendMessage(chrome.runtime.id, msg);
 };
 
 var addListener = function(callback) {
@@ -102,7 +102,7 @@ var service = new DarkWalletService();
 /* Bindings for the page window so we can have easy access
  */
 
-window.connect = function(_server) { return service.connect(_server) };
+window.connect = function(_server) { return service.connect(_server); };
 
 window.loadIdentity = service.loadIdentity;
 window.getIdentity = function(idx) { return service.getIdentity(idx); };
@@ -110,14 +110,14 @@ window.getCurrentIdentity = service.getCurrentIdentity;
 
 window.getKeyRing = service.getKeyRing;
 window.servicesStatus = service.servicesStatus;
-window.getLobbyTransport = service.getLobbyTransport
+window.getLobbyTransport = service.getLobbyTransport;
 
 window.getClient = service.getClient;
 window.getService = service.getService;
 
-window.initAddress = function(_w) {return service.initAddress(_w)};
+window.initAddress = function(_w) {return service.initAddress(_w);};
 
-window.addListener = addListener
+window.addListener = addListener;
 window.sendInternalMessage = sendInternalMessage;
 });
 

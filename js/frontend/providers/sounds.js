@@ -8,7 +8,7 @@ define(['./module'], function (providers) {
         audio.setAttribute('autoplay', 'autoplay');
         audio.innerHTML = '<source src="../sound/' + sound + '.opus" type="audio/ogg" />';
         $window.document.getElementById('fixed').appendChild(audio);
-      },
+      }
     };
   }]);
 });

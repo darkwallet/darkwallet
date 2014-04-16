@@ -18,11 +18,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   $scope.filterContacts = function() {
     var identity = DarkWallet.getIdentity();
-    var search = $scope.contactSearch
+    var search = $scope.contactSearch;
     $scope.contacts = identity.contacts.contacts.filter(function(contact) {
         return contact.name.search(search) != -1;
     });
-  }
+  };
 
   $scope.createContact = function() {
     var identity = DarkWallet.getIdentity();

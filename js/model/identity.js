@@ -43,7 +43,7 @@ Identity.prototype.changePassword = function(oldPassword, newPassword) {
         }
         return false;
     }
-}
+};
 
 /**
  * Generate master keys for this identity.
@@ -86,7 +86,7 @@ Identity.prototype.generate = function(seed, password) {
     this.store.set('contacts', {});
     this.store.set('transactions', {});
     this.store.save();
-}
+};
 
 return Identity;
 });

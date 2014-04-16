@@ -31,6 +31,6 @@ define([
     });
     // In case we need to initialize something after the application is created.
     app.initialize = function() {
-    }
+    };
     return app;
 });

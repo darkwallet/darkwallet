@@ -19,7 +19,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       ],
       field_proto: { address: '', amount: '' }
     };
-  }
+  };
 
   $scope.resetSendForm();
 
@@ -34,7 +34,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
     } else {
       field.fiatAmount = tickerService.btcToFiat(field.amount, currency, fiatCurrency);
     }
-  }
+  };
 
   $scope.setPocket = function(pocket) {
       var identity = DarkWallet.getIdentity();
@@ -46,7 +46,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           $scope.sendPocketName = identity.wallet.pockets.hdPockets[pocket].name;
           $scope.pocketIndex = pocket;
       } else {
-          var idx = parseInt(pocket.split(':')[1])
+          var idx = parseInt(pocket.split(':')[1]);
           var fund = identity.wallet.multisig.funds[idx];
           $scope.sendPocketName = fund.name;
           $scope.pocketIndex = fund.address;
@@ -74,7 +74,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       if (!$scope.$$phase) {
           $scope.$apply();
       }
-  }
+  };
 
   initIdentity(DarkWallet.getIdentity());
 
@@ -85,10 +85,10 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
         var identity = DarkWallet.getIdentity();
         initIdentity(identity);
     }
-  })
+  });
 
   var updateRadar = function(radar, task) {
-      var progressBar = $window.document.getElementById('send-progress')
+      var progressBar = $window.document.getElementById('send-progress');
       var button = $window.document.getElementById('send-button');
 
       // Check if we're finished
@@ -111,7 +111,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
 
       // Progress bar must be updated at the end
       progressBar.style.width = radar*100 + '%';
-  }
+  };
 
   var getSatoshis = function() {
       var satoshis;
@@ -123,7 +123,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           satoshis = 100000000;
       }
       return satoshis;
-  }
+  };
 
   var prepareRecipients = function() {
       var satoshis = getSatoshis();
@@ -138,10 +138,10 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           }
           var amount = parseInt(BigInteger.valueOf(recipient.amount * satoshis).toString());
           totalAmount += amount;
-          recipients.push({address: recipient.address, amount: amount})
+          recipients.push({address: recipient.address, amount: amount});
       });
-      return {amount: totalAmount, recipients: recipients}
-  }
+      return {amount: totalAmount, recipients: recipients};
+  };
 
   $scope.validateSendForm = function() {
       var spend = prepareRecipients();
@@ -153,14 +153,14 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       if ($scope.sendEnabled) {
          $scope.autoAddField();
       }
-  }
+  };
 
   $scope.finishSign = function(signTask, amountNote, password) {
     // callback waiting for radar feedback
     var isBroadcasted = false;
     var radarCache = {radar: 0};
     var onBroadcast = function(error, task) {
-        console.log("broadcast feedback", error, task)
+        console.log("broadcast feedback", error, task);
         if (error) {
             var errorMessage = error.message || ''+error;
             notify.error("Error broadcasting", errorMessage);
@@ -170,15 +170,15 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
         } else if (task && task.type == 'radar') {
             updateRadar(task.radar || 0, radarCache);
             if (!isBroadcasted) {
-                notify.success('Transaction sent', amountNote)
+                notify.success('Transaction sent', amountNote);
                 isBroadcasted = true;
             }
         }
-    }
+    };
 
     var walletService = DarkWallet.getService('wallet');
     walletService.signTransaction(signTask.tx, signTask, password, onBroadcast);
-  }
+  };
 
 
   $scope.sendBitcoins = function() {
@@ -211,7 +211,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       // callback waiting for radar feedback
       var isBroadcasted = false;
       var onSent = function(error, task) {
-          console.log("send feedback", error, task)
+          console.log("send feedback", error, task);
           var amountNote = (fee + totalAmount) + ' satoshis';
           if (error) {
               var errorMessage = error.message || ''+error;
@@ -219,18 +219,18 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
               $scope.send.sending = false;
           } else if (task && task.type == 'sign') {
               // Need to sign so open modal
-              $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(_password) {$scope.finishSign(task, amountNote, _password)})
+              $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(_password) {$scope.finishSign(task, amountNote, _password)});
           } else if (task && task.type == 'mixer') {
-              notify.note('Sent to mixer ('+task.task.state+')', amountNote)
+              notify.note('Sent to mixer ('+task.task.state+')', amountNote);
               $scope.resetSendForm();
           } else if (task) {
-              notify.note('New task: ' + task.type, amountNote)
+              notify.note('New task: ' + task.type, amountNote);
               $scope.resetSendForm();
           } else {
               notify.success('Transaction created', amountNote);
               $scope.resetSendForm();
           }
-      }
+      };
 
       // prepare the transaction
       var walletService = DarkWallet.getService('wallet');
@@ -241,7 +241,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
                          fee,
                          $scope.send.mixing,
                          onSent);
-  }
+  };
 
   $scope.addAddress = function(data, vars) {
     vars.field.address = data;
@@ -251,7 +251,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   $scope.onQrModalOkSend = function(data, vars) {
     $scope.onQrModalOk(data, vars);
     $scope.validateSendForm();
-  }
+  };
 
   $scope.addField = function() {
     // add the new option to the model
@@ -278,7 +278,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   
   $scope.toggleCoinJoin = function() {
     $scope.send.mixing = !$scope.send.mixing;
-  }
+  };
 
   $scope.enableAutoAddFields = function() {
     $scope.addField();

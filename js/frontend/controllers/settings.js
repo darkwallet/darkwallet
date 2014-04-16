@@ -15,13 +15,13 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
       var keyRing = DarkWallet.getKeyRing();
       keyRing.clear();
       notify.note('Storage cleared, please restart your browser.');
-  }
+  };
   
   $scope.clearTasks = function() {
       var identity = DarkWallet.getIdentity();
       identity.tasks.clear();
       notify.note('Tasks cleared.');
-  }
+  };
   
   $scope.passwordChanged = function() {
       if ($scope.newPassword === $scope.newPasswordRepeat) {
@@ -36,31 +36,31 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
               $scope.incorrectPassword = true;
           }
       }
-  }
+  };
 
   // Callback for saving the selected currency
   $scope.currencyChanged = function() {
       var identity = DarkWallet.getIdentity();
       identity.settings.currency = $scope.selectedCurrency;
       identity.store.save();
-  }
+  };
   $scope.fiatCurrencyChanged = function() {
       var identity = DarkWallet.getIdentity();
       var tickerService = DarkWallet.getService('ticker');
       identity.settings.fiatCurrency = $scope.selectedFiat;
       tickerService.setFiatCurrency($scope.selectedFiat);
       identity.store.save();
-  }
+  };
   $scope.defaultFeeChanged = function() {
       var identity = DarkWallet.getIdentity();
       if (!isNaN($scope.defaultFee)) {
           identity.wallet.setDefaultFee($scope.defaultFee*100000000);
       }
-  }
+  };
   $scope.storeSettings = function() {
       var identity = DarkWallet.getIdentity();
       identity.store.save();
-  }
+  };
   $scope.showSeed = function(){
       /* show mnemonic pass and hex seed*/
       var current_password = $scope.seedPassword; 
@@ -85,6 +85,6 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
       $scope.yourSeed = true;
       $scope.yourSeedHex = seed;
       $scope.yourSeedWords = m.toWords().join(' ');
-  }
+  };
 }]);
 });

@@ -26,7 +26,7 @@ function (Encryption, Bitcoin) {
                 if (!err) {
                     self.subscribed = channelHash;
                 }
-                console.log("channel subscribed", err, data)
+                console.log("channel subscribed", err, data);
             }, _onChannelData);
         }
       }
@@ -39,27 +39,27 @@ function (Encryption, Bitcoin) {
 
       // Send encrypted
       this.channelPostEncrypted(pubKeyHash, function(err, data){
-          console.log("announcement posted", err, data)
+          console.log("announcement posted", err, data);
       });
-  }
+  };
 
   // Subscribe to given channel
   Channel.prototype.channelSubscribe = function(callback, update_cb) {
       var client = this.transport.getClient();
       client.chan_subscribe("b", this.channelHash, callback, update_cb);
-  }
+  };
 
   // Post to given channel
   Channel.prototype.channelPost = function(data, callback) {
       var client = this.transport.getClient();
       client.chan_post("b", this.channelHash, data, callback);
-  }
+  };
 
   Channel.prototype.channelPostEncrypted = function(data, callback) {
       var encrypted = sjcl.encrypt(this.channelHash, data, {ks: 256, ts: 128});
       console.log("encrypted", encrypted);
       this.channelPost(encrypted, callback);
-  }
+  };
 
   // Callback for data received on channel
   Channel.prototype.onChannelData = function(message) {
@@ -89,7 +89,7 @@ function (Encryption, Bitcoin) {
       }
       console.log("data for channel2", message, message.data);
       transport.update();
-  }
+  };
 
   // Start pairing with another identity
   Channel.prototype.startPairing = function(pubKey) {
@@ -97,9 +97,9 @@ function (Encryption, Bitcoin) {
       var msg = 'hello';
       var encrypted = Encryption.stealth.encrypt(pubKey, msg);
       this.channelPost(JSON.stringify(encrypted), function(err, data){
-          console.log("channel post2", err, data)
+          console.log("channel post2", err, data);
       });
-  }
+  };
 
 
   return Channel;

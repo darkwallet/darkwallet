@@ -27,7 +27,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
           if (anOut.value == amount) {
               isOk = true;
           }
-      })
+      });
       if (!isOk) {
           console.log("no output found with the right value");
           return;
@@ -48,7 +48,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       this.tx = remoteTx;
       this.state = 'fullfilled';
       return remoteTx;
-  }
+  };
 
   /*
    * 1st message initiator -> [guest]
@@ -64,7 +64,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       // Needs signing of inputs
       this.tx = remoteTx;
       this.state = 'sign';
-  }
+  };
 
   /*
    * Add signatures manually
@@ -99,7 +99,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       // Now sign our input(s) against the outputs
       this.tx = remoteTx;
       this.state = 'sign';
-  }
+  };
 
   /*
    * 2nd message initiator -> [guest]
@@ -123,7 +123,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       this.state = 'finished';
       this.tx = remoteTx;
       return remoteTx;
-  }
+  };
 
   /*
    * Process a message for an ongoing CoinJoin
@@ -143,7 +143,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
               // 4. Guest getting the final transaction
               return this.finishGuest(msg);
       }
-  }
+  };
 
   CoinJoin.prototype.cancel = function() {
       if (this.role == 'initiator') {
@@ -153,7 +153,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       else if (this.role == 'guest') {
           this.state = 'cancelled';
       }
-  }
+  };
 
   /*
    * Process a message finishing a coinjoin conversation
@@ -173,7 +173,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
              break;
      }
 
-  }
+  };
 
   /*
    * Helper functions
@@ -186,7 +186,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       isValid = this.checkMyInputsOutputs(origTx, newTx);
 
       return isValid;
-  }
+  };
 
   CoinJoin.prototype.checkMyInputsOutputs = function(origTx, newTx) {
       for(var i=0; i<origTx.ins.length; i++) {
@@ -200,12 +200,12 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       for(var i=0; i<origTx.outs.length; i++) {
           var origOut = origTx.outs[i];
           var found = newTx.outs.filter(function(newOut) {
-             return (origOut.address.toString() == newOut.address.toString()) && (origOut.value == newOut.value) ;
+             return (origOut.address.toString() == newOut.address.toString()) && (origOut.value == newOut.value);
           });
           if (found.length != 1) return false;
       }
       return true;
-  }
+  };
 
 
   return CoinJoin;

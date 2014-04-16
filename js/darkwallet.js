@@ -27,14 +27,14 @@ var DarkWallet = {
      * 
      * @returns {Object}
      */
-    getKeyRing: function() {return DarkWallet.core().getKeyRing()},
+    getKeyRing: function() {return DarkWallet.core().getKeyRing();},
 
     /**
      * Light client
      * 
      * @returns {Object}
      */
-    getClient: function() {return DarkWallet.core().getClient()},
+    getClient: function() {return DarkWallet.core().getClient();},
 
     /**
      * Get identtiy
@@ -42,14 +42,14 @@ var DarkWallet = {
      * @param {Number} [idx] Index of the identity, default is current.
      * @returns {Object}
      */
-    getIdentity: function(idx) {return DarkWallet.core().getIdentity(idx)},
+    getIdentity: function(idx) {return DarkWallet.core().getIdentity(idx);},
 
     /**
      * Lobby transport
      * 
      * @returns {Object}
      */
-    getLobbyTransport: function() {return DarkWallet.core().getLobbyTransport()}
+    getLobbyTransport: function() {return DarkWallet.core().getLobbyTransport();}
 };
 return DarkWallet;
 });

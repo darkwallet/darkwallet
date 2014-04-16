@@ -52,7 +52,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
           }
       }
       return participant;
-  }
+  };
 
   // Detect participants for a fund from contacts and wallet.
   var detectFundParticipants = function(fund) {
@@ -64,7 +64,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
       });
 
       return participants;
-  }
+  };
 
   // Check tasks and put some info in the pocket
   var checkFundTasks = function(fund) {
@@ -82,15 +82,15 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
           });
       }
       return res;
-  }
+  };
 
   // History Listing
   $scope.selectFund = function(fund, rowIndex) {
       $scope.pocket.name = fund.name;
       $scope.pocket.index = fund.seq[0];
-      var address = $scope.identity.wallet.getAddress(fund.seq)
+      var address = $scope.identity.wallet.getAddress(fund.seq);
       $scope.pocket.participants = detectFundParticipants(fund);
-      var meFound = $scope.pocket.participants.filter(function(participant) {return participant.type=='me'});
+      var meFound = $scope.pocket.participants.filter(function(participant) {return participant.type=='me';});
       $scope.pocket.participants = detectFundParticipants(fund);
       $scope.pocket.canSign = meFound.length ? true : false ;
       $scope.pocket.changeAddresses = [];
@@ -110,7 +110,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
 
       // Check tasks and put some info in the pocket
       checkFundTasks(fund, $scope.pocket);
-  }
+  };
   $scope.selectPocket = function(pocketName, rowIndex, form) {
       var pocketIndex;
       if (pocketName === undefined) {
@@ -159,7 +159,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
           $scope.forms.pocketLabelForm = form;
       }
       $scope.selectedPocket = 'pocket:' + rowIndex;
-  }
+  };
 
   $scope.renamePocket = function(pocket) {
     if (!pocket.name) {
@@ -171,18 +171,18 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
 
   $scope.newMultiSig = function() {
     $scope.selectedPocket = 'newMultisig';
-  }
+  };
 
   // Pockets
   $scope.newPocket = {};
   $scope.creatingPocket = false;
   $scope.deletePocket = function(pocket) {
       $scope.openModal('confirm-delete', {name: pocket.name, object: pocket}, $scope.deletePocketFinish)
-  }
+  };
   $scope.deletePocketFinish = function(pocket) {
       $scope.identity.wallet.pockets.deletePocket(pocket.name);
       $scope.selectPocket();
-  }
+  };
   $scope.setMixing = function(pocket) {
       var identity = $scope.identity;
       var walletPocket = identity.wallet.pockets.getPocket(pocket.name);
@@ -191,7 +191,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
       identity.wallet.store.save();
       var mixerService = DarkWallet.getService('mixer');
       mixerService.checkMixing();
-  }
+  };
   $scope.createPocket = function() {
     if ($scope.creatingPocket) {
       if ($scope.newPocket.name) {
@@ -209,7 +209,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
       }
     }
     $scope.creatingPocket = !$scope.creatingPocket;
-  }
+  };
 
   // Filters
 
@@ -231,31 +231,31 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
               return row.pocket == $scope.pocket.index;
           }
       }
-  }
+  };
 
   // Get date 30 days ago
   var prevmonth = new Date();
-  prevmonth.setDate(prevmonth.getDate()-30)
+  prevmonth.setDate(prevmonth.getDate()-30);
   // Get date 7 days ago
   var prevweek = new Date();
-  prevweek.setDate(prevweek.getDate()-7)
+  prevweek.setDate(prevweek.getDate()-7);
 
   // Set the history filter
   $scope.setHistoryFilter = function(name) {
       $scope.txFilter = name;
       shownRows = [];
-  }
+  };
 
   // History filter, run for every row to see if we should show it
   $scope.unusedAddressFilter = function(address) {
       return address.nOutputs == 0;
-  }
+  };
   $scope.usedAddressFilter = function(address) {
       return address.nOutputs;
-  }
+  };
   $scope.pocketFilter = function(row) {
       return pocketFilter(row);
-  }
+  };
   $scope.historyFilter = function(row) {
       switch($scope.txFilter) {
           case 'all':
@@ -277,12 +277,12 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
               if (shownRows.indexOf(row.hash) != -1) {
                   return true;
               } else if (shownRows.length < 10) {
-                  shownRows.push(row.hash)
+                  shownRows.push(row.hash);
                   return true;
               }
       }
       return false;
-  }
+  };
 
   $scope.moveFunds = function(type, index) {
     var to;
@@ -296,7 +296,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
     $scope.openModal('confirm', {message: "Are you sure you want to move all " + $scope.pocket.name +
     " funds to " + to + "?"}, function() {
       console.log('Move funds not implemented yet');
-    })
+    });
   };
 
 }]);

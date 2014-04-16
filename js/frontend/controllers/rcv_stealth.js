@@ -18,14 +18,14 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
           console.log("STEALTH", results);
           try {
               $scope.identity.wallet.processStealth(results);
-              notify.success("stealth", "ok")
+              notify.success("stealth", "ok");
           } catch (e) {
-              notify.error("stealth", e.message)
+              notify.error("stealth", e.message);
           }
           notify.progress.complete();
       }
       client.fetch_stealth([0,0], stealth_fetched, 0);
-  }
+  };
 
 }]);
 });

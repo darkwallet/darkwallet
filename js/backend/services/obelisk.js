@@ -61,10 +61,10 @@ function(Port) {
               self.connected = false;
           }, function(evt) {
               // Error
-              console.log("[obelisk] websocket error", evt)
+              console.log("[obelisk] websocket error", evt);
           });
       }
-  }
+  };
 
 
   /**
@@ -74,7 +74,7 @@ function(Port) {
       if (this.client && this.connected) {
           this.client.websocket.close();
       }
-  }
+  };
 
 
   /**
@@ -84,7 +84,7 @@ function(Port) {
       var self = this;
       this.connecting = true;
       this.client = new GatewayClient(connectUri, handleConnect, handleDisconnect);
-  }
+  };
 
 
   /**
@@ -92,7 +92,7 @@ function(Port) {
    */
   ObeliskService.prototype.getClient = function() {
     return this.client;
-  }
+  };
 
   return ObeliskService;
 

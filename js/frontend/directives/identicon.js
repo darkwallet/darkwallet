@@ -29,8 +29,8 @@ define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identic
             // skip first 8 bytes to avoid headers (the input can be arbitrary hex)
             createFromHex(scope.hash.substr(16, 38));
           }
-        })
+        });
       }
-    }
+    };
   });
 });

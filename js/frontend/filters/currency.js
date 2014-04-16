@@ -7,7 +7,7 @@ var getAsBtc = function(currency, input) {
   } else {
     return input / 100000000;
   }
-}
+};
 
 
 // Calculating partial balance for history listings
@@ -18,7 +18,7 @@ filters.filter('balanceStart', function() {
   return function(input) {
       partialBalance = input;
       return input;
-  }
+  };
 });
 
 // Filter that calculates current row balance
@@ -27,7 +27,7 @@ filters.filter('balanceFilter', function() {
       var prevBalance = partialBalance;
       partialBalance -= input;
       return prevBalance;
-  }
+  };
 });
 
 

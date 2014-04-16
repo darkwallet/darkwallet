@@ -33,15 +33,15 @@ function (controllers, Bitcoin, DarkWallet) {
             }
         });
         return signatures;
-    }
+    };
     var finished = true;
     task.task.pending.forEach(function(input) {
         var hexSigs = organizeSignatures(input.signatures);
 
-        console.log(fund.m, hexSigs, Object.keys(input.signatures))
+        console.log(fund.m, hexSigs, Object.keys(input.signatures));
         if (Object.keys(input.signatures).length >= fund.m) {
             // convert inputs to bytes
-            var sigs = hexSigs.map(function(sig) {return sig?convert.hexToBytes(sig):sig});
+            var sigs = hexSigs.map(function(sig) {return sig?convert.hexToBytes(sig):sig;});
             console.log("apply multisigs"); 
             // apply multisigs
             task.tx.applyMultisigs(input.index, script, sigs, 1);
@@ -71,7 +71,7 @@ function (controllers, Bitcoin, DarkWallet) {
         if (!$scope.$$phase) {
            $scope.$apply();
         }
-    }
+    };
 
     // Broadcast
     if (finished) {
@@ -81,7 +81,7 @@ function (controllers, Bitcoin, DarkWallet) {
     }
 
     return finished;
-  }
+  };
 
   /**
    * Import a signature
@@ -122,7 +122,7 @@ function (controllers, Bitcoin, DarkWallet) {
     } else {
         notify.warning('Error importing', 'Cant verify');
     }
-  }
+  };
 
   /**
    * Import a partial transaction into the fund
@@ -144,7 +144,7 @@ function (controllers, Bitcoin, DarkWallet) {
               tx = Bitcoin.Transaction.deserialize(hexTx);
           } catch(e) {
               notify.error('Error importing', 'Malformed transaction');
-              console.log(e)
+              console.log(e);
               return;
           }
           // Find our inputs
@@ -178,14 +178,14 @@ function (controllers, Bitcoin, DarkWallet) {
           notify.success('Added transaction');
       }
     }
-  }
+  };
 
   /**
    * Continue signing after getting the password
    */
   var finishSignFundTx = function(password, fund, task, inputs) {
       var identity = $scope.identity;
-      var script = convert.hexToBytes(fund.script)
+      var script = convert.hexToBytes(fund.script);
 
       var signed = false;
       // find key
@@ -212,7 +212,7 @@ function (controllers, Bitcoin, DarkWallet) {
       } else {
           notify.success('Signed transaction');
       }
-  }
+  };
 
   /**
    * Sign a transaction with our keys
@@ -226,15 +226,15 @@ function (controllers, Bitcoin, DarkWallet) {
       if (walletAddress) {
           // we import the tx
           var inputs = identity.wallet.txForAddress(walletAddress, task.tx);
-          console.log(task.tx)
+          console.log(task.tx);
           if (inputs.length == 0) {
               // Shouldn't happen
               notify.error('Error importing', 'Transaction is not for this multisig');
               return;
           }
-          $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(password) { finishSignFundTx(password, fund, task, inputs); } )
+          $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(password) { finishSignFundTx(password, fund, task, inputs); } );
       }
-  }
+  };
 
 }]);
 });

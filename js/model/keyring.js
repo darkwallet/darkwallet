@@ -29,14 +29,14 @@ IdentityKeyRing.prototype.get = function(name, callback) {
     } else {
         throw "Identity doesn't exist";
     }
-}
+};
 
 /**
  * Get names for all identities available.
  */
 IdentityKeyRing.prototype.getIdentityNames = function() {
     return this.availableIdentities;
-}
+};
 
 /**
  * Release resources for an identity.
@@ -44,7 +44,7 @@ IdentityKeyRing.prototype.getIdentityNames = function() {
  */
 IdentityKeyRing.prototype.close = function(name) {
     delete this.identities[name];
-}
+};
 
 /**
  * Create an identity.
@@ -59,7 +59,7 @@ IdentityKeyRing.prototype.createIdentity = function(name, seed, password) {
         this.availableIdentities.push(name);
     }
     return identity;
-}
+};
 
 /**
  * @private
@@ -94,7 +94,7 @@ IdentityKeyRing.prototype.loadIdentities = function(callback) {
             _callback(self.availableIdentities);
         }
     });
-}
+};
 
 /**
  * @private
@@ -112,7 +112,7 @@ IdentityKeyRing.prototype.load = function(name, callback) {
             _callback(self.identities[_name]);
         }
     });
-}
+};
 
 /*
  * @private
@@ -125,14 +125,14 @@ IdentityKeyRing.prototype.save = function(name, data, callback) {
     var pars = {};
     pars[DW_NS+name] = data;
     chrome.storage.local.set(pars, callback);
-}
+};
 
 /*
  * Clear database (DANGEROUS!)
  */
 IdentityKeyRing.prototype.clear = function() {
       chrome.storage.local.clear();
-}
+};
 
 return IdentityKeyRing;
 });

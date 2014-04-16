@@ -49,7 +49,7 @@ function (controllers, DarkWallet, Port) {
             $scope.$apply();
         }
     }
-  })
+  });
 
   // Obelisk service, connect to get notified on events and connection.
   Port.connectNg('obelisk', $scope, function(data) {
@@ -64,29 +64,29 @@ function (controllers, DarkWallet, Port) {
         notify.warning('disconnected', identity.connections.servers[identity.connections.selectedServer].name);
             $scope.$apply();
     } else if (data.type == 'connectionError') {
-        notify.error("Error connecting", data.error)
+        notify.error("Error connecting", data.error);
         //notify.progress.color('red');
         //notify.progress.complete();
     }
-  })
+  });
 
   // Wallet service, connect to get notified about identity getting loaded.
   Port.connectNg('wallet', $scope, function(data) {
     console.log("[WalletCtrl] wallet bus:", data.type);
     if (data.type == 'ready') {
         // identity is ready here
-        loadIdentity(DarkWallet.getIdentity())
+        loadIdentity(DarkWallet.getIdentity());
     }
     if (data.type == 'ticker') {
         $scope.rates[data.currency] = data.rate;
     }
-  })
+  });
 
 
   // Check if a route is active
   $scope.isActive = function(route) {
     return route === $location.path();
-  }
+  };
 
   // Initialize if empty wallet
   function initializeEmpty() {
@@ -165,7 +165,7 @@ function (controllers, DarkWallet, Port) {
           // Request connecting to blockchain
           setTimeout(function() {
             bg.connect();
-          })
+          });
       }
       console.log("[WalletCtrl] loadIdentity", identity.name);
       // apply scope changes
@@ -183,7 +183,7 @@ function (controllers, DarkWallet, Port) {
       if (!$scope.addresses[branchId+1]) {
           $scope.addresses[branchId+1] = [];
       }
-  }
+  };
 
   // Add a wallet address to scope
   var addToScope = function(walletAddress) {
@@ -193,7 +193,7 @@ function (controllers, DarkWallet, Port) {
         addressArray.push(walletAddress);
         $scope.allAddresses.push(walletAddress);
     }
-  }
+  };
 
   // scope function to generate (or load from cache) a new address
   $scope.generateAddress = function(branchId, n) {
@@ -224,12 +224,12 @@ function (controllers, DarkWallet, Port) {
     var changeAddress = identity.wallet.getChangeAddress(pocketId);
     addToScope(changeAddress);
     return changeAddress;
-  }
+  };
 
   // Load identity
   var identity = DarkWallet.getIdentity();
   if (identity) {
-      loadIdentity(identity)
+      loadIdentity(identity);
   } else {
       if (bg.getKeyRing().availableIdentities.length) {
         bg.loadIdentity(0);

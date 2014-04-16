@@ -23,7 +23,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
     var c = Stealth.stealthDH(encKey.priv, decKey);
     var _pass = Bitcoin.convert.bytesToString(c);
     var encrypted = sjcl.encrypt(_pass, message, {ks: 256, ts: 128});
-    return {pub: ephemKey, data: sjcl.json.decode(encrypted)}
+    return {pub: ephemKey, data: sjcl.json.decode(encrypted)};
   }
 
   /*
@@ -36,12 +36,12 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
     var priv = BigInteger.fromByteArrayUnsigned(masterSecret.slice(0, 32));
 
     var decKey = Stealth.importPublic(message.pub);
-    var c = Stealth.stealthDH(priv, decKey)
+    var c = Stealth.stealthDH(priv, decKey);
     var _pass = Bitcoin.convert.bytesToString(c);
     var decrypted = sjcl.decrypt(_pass, sjcl.json.encode(message.data));
 
     return decrypted;
-  }
+  };
 
   /*
    * Decrypt the given message for some identity bip32 key
@@ -56,7 +56,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
     identity.wallet.getPrivateKey(seq, password, function(privKey) {
         callback(stealthDecrypt(privKey, message));
     });
-  }
+  };
 
 
 
@@ -71,7 +71,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
 
       // faster sjcl implementation
       return sjcl.misc.pbkdf2(password, salt, iterations);
-  }
+  };
   /*
    * Generate message tag. 8 rounds of SHA512
    * Input: WordArray
@@ -79,10 +79,10 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
    */
   var messageTag = function(message) {
     for (var i = 0; i !== 8; i++) {
-      message = CryptoJS.SHA512(message)
+      message = CryptoJS.SHA512(message);
     }
-    return message.toString(CryptoJS.enc.Base64)
-  }
+    return message.toString(CryptoJS.enc.Base64);
+  };
 
   /*
    * Utility function to generate fingerprints like cryptocat
@@ -100,8 +100,8 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
         )
                 .toString()
                 .substring(0, 40)
-                .toUpperCase()
-  }
+                .toUpperCase();
+  };
 
   /*
    * Adapt a private key for use with curve25519
@@ -120,7 +120,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
       mysecret[31] |= 64;
       // Now back to a big integer
       return Curve25519.bytes2bi(mysecret);
-  }
+  };
 
   /*
    * Generate a shared secret
@@ -131,13 +131,13 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
       convert.bytesToWordArray(
         Curve25519.ecDH(priv,pub).toByteArrayUnsigned()
       )
-    )
+    );
 
     return {
     'message': CryptoJS.lib.WordArray.create(sharedSecret.words.slice(0, 8)),
     'hmac': CryptoJS.lib.WordArray.create(sharedSecret.words.slice(8, 16))
-    }
-  }
+    };
+  };
 
   /*
    * Encrypt with password derivation
@@ -148,7 +148,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
     var encKey = pbkdf2(password, salt.words, 1000);
 
     // prepare for aes
-    var ivWords = userIv || CryptoJS.lib.WordArray.random(12)
+    var ivWords = userIv || CryptoJS.lib.WordArray.random(12);
     var iv = CryptoJS.enc.Base64.stringify(ivWords);
 
     var message = CryptoJS.enc.Utf8.parse(msg);
@@ -168,7 +168,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
 
     // TODO: should use full range to encode instead of just base64
     return {data: cypher, iv: iv, salt: CryptoJS.enc.Base64.stringify(salt), it: 1000, ks: 256, pad: 64/*, tag: CryptoJS.enc.Base64.stringify(tag)*/};
-  }
+  };
 
   /*
    * Decrypt with password derivation
@@ -196,7 +196,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
     */
  
     return plaintext.toString(CryptoJS.enc.Utf8);
-  }
+  };
 
   return {
     pbkdf2: pbkdf2,
@@ -210,6 +210,6 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
       decrypt: stealthDecrypt,
       decryptForIdentity: stealthDecryptForIdentity
     }
-  }
+  };
 
 });

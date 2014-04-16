@@ -13,7 +13,7 @@ function(Port) {
           var currency = identity.settings.fiatCurrency;
 
           var client = core.getClient();
-          self.setFiatCurrency(currency)
+          self.setFiatCurrency(currency);
         }
  
       });
@@ -34,7 +34,7 @@ function(Port) {
         } else {
           // No values we can use
           Port.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info"});
-          console.log("[ticker] can't get ticker info", lastRates)
+          console.log("[ticker] can't get ticker info", lastRates);
           return;
         }
         Port.post('wallet', {type: 'ticker', currency: currency, rates: lastRates, rate: self.rates[currency]});
@@ -47,16 +47,16 @@ function(Port) {
             console.log("[ticker] fetching ticker for", currency);
             client.fetch_ticker(currency, function(err, lastRates) {handleTicker(err, currency, lastRates)});
         }
-    }
+    };
      this.btcToFiat = function(amount, currency, fiatCurrency) {
       if (currency === 'mBTC') {
         amount /= 1000;
       }
-      var result = amount * this.rates[fiatCurrency]
+      var result = amount * this.rates[fiatCurrency];
       if (!isNaN(result)) {
         return result.toFixed(2); 
       }
-    }
+    };
     
     this.fiatToBtc = function(amount, currency, fiatCurrency) {
       var result = amount / this.rates[fiatCurrency];
@@ -68,7 +68,7 @@ function(Port) {
       if (!isNaN(result)) {
           return result.toFixed(decimals);
       }
-    }
+    };
 
 
   }

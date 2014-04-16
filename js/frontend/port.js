@@ -16,7 +16,7 @@ define(function () {
                 } else {
                     onMessage ? onMessage(data) : null;
                 }
-            })
+            });
  
             //onConnect ? port.onConnect.addListener(onConnect) : null;
             onDisconnect ? port.onDisconnect.addListener(onDisconnect) : null;

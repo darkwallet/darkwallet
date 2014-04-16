@@ -7,42 +7,42 @@ var convert =  Bitcoin.convert;
 
 // Leave this here for now so it doesn't crash
 var Cryptocat = {
-    sendPublicKey: function() {console.log('send public key')},
-    addToConversation: function() {console.log('add to conversation')},
+    sendPublicKey: function() {console.log('send public key');},
+    addToConversation: function() {console.log('add to conversation');},
     myNickName: 'nickname'
-}
+};
 
 var getRawBytes = function(number) {
     var bytes = new Uint8Array(number);
     return bytes;
-}
+};
 var getRandomBytes = function(number) {
     var bytes = getRawBytes(number);
     window.crypto.getRandomValues(bytes);
     return bytes;
-}
+};
 
 var multiParty = function() {};
 (function(){
 
-var publicKeys = {}
-var sharedSecrets = {}
-var fingerprints = {}
-var usedIVs = []
-var myPrivateKey
-var myPublicKey
+var publicKeys = {};
+var sharedSecrets = {};
+var fingerprints = {};
+var usedIVs = [];
+var myPrivateKey;
+var myPublicKey;
 
 function correctIvLength(iv){
-	var ivAsWordArray = CryptoJS.enc.Base64.parse(iv)
-	var ivAsArray = ivAsWordArray.words
-	ivAsArray.push(0)  // adds 0 as the 4th element, causing the equivalent
+	var ivAsWordArray = CryptoJS.enc.Base64.parse(iv);
+	var ivAsArray = ivAsWordArray.words;
+	ivAsArray.push(0); // adds 0 as the 4th element, causing the equivalent
 					   // bytestring to have a length of 16 bytes, with
 					   // \x00\x00\x00\x00 at the end.
 					   // without this, crypto-js will take in a counter of
 					   // 12 bytes, and the first 2 counter iterations will
 					   // use 0, instead of 0 and then 1.
 					   // see https://github.com/cryptocat/cryptocat/issues/258
-	return CryptoJS.lib.WordArray.create(ivAsArray)
+	return CryptoJS.lib.WordArray.create(ivAsArray);
 }
 
 // AES-CTR-256 encryption
@@ -54,13 +54,13 @@ function encryptAES(msg, c, iv) {
 		mode: CryptoJS.mode.CTR,
 		iv: correctIvLength(iv),
 		padding: CryptoJS.pad.NoPadding
-	}
+	};
 	var aesctr = CryptoJS.AES.encrypt(
 		msg,
 		c,
 		opts
-	)
-	return aesctr.toString()
+	);
+	return aesctr.toString();
 }
 
 // AES-CTR-256 decryption
@@ -72,13 +72,13 @@ function decryptAES(msg, c, iv) {
 		mode: CryptoJS.mode.CTR,
 		iv: correctIvLength(iv),
 		padding: CryptoJS.pad.NoPadding
-	}
+	};
 	var aesctr = CryptoJS.AES.decrypt(
 		msg,
 		c,
 		opts
-	)
-	return aesctr
+	);
+	return aesctr;
 }
 
 // HMAC-SHA512
@@ -87,7 +87,7 @@ function decryptAES(msg, c, iv) {
 function HMAC(msg, key) {
 	return CryptoJS.HmacSHA512(
 		msg, key
-	).toString(CryptoJS.enc.Base64)
+	).toString(CryptoJS.enc.Base64);
 }
 
 // Generate private key (32 random bytes)
@@ -96,21 +96,21 @@ multiParty.genPrivateKey = function() {
         var bytes = new Uint8Array(32);
         window.crypto.getRandomValues(bytes);
         myPrivateKey = Curve25519.bytes2bi(bytes);
-	return myPrivateKey
-}
+	return myPrivateKey;
+};
 
 // Set a previously generated private key (32 byte random number)
 // Represented as BigInt
 multiParty.setPrivateKey = function(privateKey) {
-	myPrivateKey = privateKey
-}
+	myPrivateKey = privateKey;
+};
 
 // Generate public key (Curve 25519 Diffie-Hellman with basePoint 9)
 // Represented as BigInt
 multiParty.genPublicKey = function() {
-	myPublicKey = Curve25519.ecDH(myPrivateKey)
-	return myPublicKey
-}
+	myPublicKey = Curve25519.ecDH(myPrivateKey);
+	return myPublicKey;
+};
 
 // Generate shared secrets
 // First 256 bytes are for encryption, last 256 bytes are for HMAC.
@@ -126,22 +126,22 @@ multiParty.genSharedSecret = function(user) {
 				), 32
                         )
 		)
-	)
+	);
 	sharedSecrets[user] = {
 		'message': CryptoJS.lib.WordArray.create(sharedSecret.words.slice(0, 8)),
 		'hmac': CryptoJS.lib.WordArray.create(sharedSecret.words.slice(8, 16))
-	}
-}
+	};
+};
 
 // Get fingerprint
 // If user is null, returns own fingerprint
 multiParty.genFingerprint = function(user) {
-	var key
+	var key;
 	if (!user) {
-		key = myPublicKey
+		key = myPublicKey;
 	}
 	else {
-		key = publicKeys[user]
+		key = publicKeys[user];
 	}
 	fingerprints[user] = CryptoJS.SHA512(
 		convert.bytesToWordArray(
@@ -150,73 +150,73 @@ multiParty.genFingerprint = function(user) {
 	)
 		.toString()
 		.substring(0, 40)
-		.toUpperCase()
-	return fingerprints[user]
-}
+		.toUpperCase();
+	return fingerprints[user];
+};
 
 // Send public key request string.
 multiParty.sendPublicKeyRequest = function(user) {
-	var request = {}
-	request['type'] = 'publicKeyRequest'
-	request['text'] = {}
-	request['text'][user] = {}
-	return JSON.stringify(request)
-}
+	var request = {};
+	request['type'] = 'publicKeyRequest';
+	request['text'] = {};
+	request['text'][user] = {};
+	return JSON.stringify(request);
+};
 
 // Send my public key in response to a public key request.
 multiParty.sendPublicKey = function(user) {
-	var answer = {}
-	answer['type'] = 'publicKey'
-	answer['text'] = {}
-	answer['text'][user] = {}
-	answer['text'][user]['message'] = convert.bytesToBase64(myPublicKey.toByteArrayUnsigned())
-	return JSON.stringify(answer)
-}
+	var answer = {};
+	answer['type'] = 'publicKey';
+	answer['text'] = {};
+	answer['text'][user] = {};
+	answer['text'][user]['message'] = convert.bytesToBase64(myPublicKey.toByteArrayUnsigned());
+	return JSON.stringify(answer);
+};
 
 // Return number of users
 multiParty.userCount = function() {
-	return Object.keys(sharedSecrets).length
-}
+	return Object.keys(sharedSecrets).length;
+};
 
 // Return nicknames of all users
 multiParty.users = function() {
-	var users = Object.keys(sharedSecrets)
-	users.push(Cryptocat.myNickname)
-	return users
-}
+	var users = Object.keys(sharedSecrets);
+	users.push(Cryptocat.myNickname);
+	return users;
+};
 
 // Issue a warning for decryption failure to the main conversation window
 multiParty.messageWarning = function(sender) {
 	/*var messageWarning = Cryptocat.locale['warnings']['messageWarning']
 		.replace('(NICKNAME)', sender)*/
-	var messageWarning = "Warning (NICKNAME)".replace('(NICKNAME)', sender)
-	Cryptocat.addToConversation(messageWarning, sender, 'main-Conversation', 'warning')
-}
+	var messageWarning = "Warning (NICKNAME)".replace('(NICKNAME)', sender);
+	Cryptocat.addToConversation(messageWarning, sender, 'main-Conversation', 'warning');
+};
 
 // Generate message tag. 8 rounds of SHA512
 // Input: WordArray
 // Output: Base64
 multiParty.messageTag = function(message) {
 	for (var i = 0; i !== 8; i++) {
-		message = CryptoJS.SHA512(message)
+		message = CryptoJS.SHA512(message);
 	}
-	return message.toString(CryptoJS.enc.Base64)
-}
+	return message.toString(CryptoJS.enc.Base64);
+};
 
 // Send message.
 multiParty.sendMessage = function(message) {
 	//Convert from UTF8
-	message = CryptoJS.enc.Utf8.parse(message)
+	message = CryptoJS.enc.Utf8.parse(message);
 	// Add 64 bytes of padding
-	message.concat(getRawBytes(64))
-	var encrypted = {}
-	encrypted['text'] = {}
-	encrypted['type'] = 'message'
+	message.concat(getRawBytes(64));
+	var encrypted = {};
+	encrypted['text'] = {};
+	encrypted['type'] = 'message';
 	//Sort recipients
-	var sortedRecipients = Object.keys(sharedSecrets).sort()
-	var hmac = CryptoJS.lib.WordArray.create()
+	var sortedRecipients = Object.keys(sharedSecrets).sort();
+	var hmac = CryptoJS.lib.WordArray.create();
 	//For each recipient
-	var i, iv
+	var i, iv;
 	for (i = 0; i !== sortedRecipients.length; i++) {
 		//Generate a random IV
 		//iv = Cryptocat.random.encodedBytes(12, CryptoJS.enc.Base64)
@@ -226,167 +226,167 @@ multiParty.sendMessage = function(message) {
 			//iv = Cryptocat.random.encodedBytes(12, CryptoJS.enc.Base64)
 		        iv = convert.bytesToBase64(getRandomBytes(12));
 		}
-		usedIVs.push(iv)
+		usedIVs.push(iv);
 		//Encrypt the message
-		encrypted['text'][sortedRecipients[i]] = {}
-		encrypted['text'][sortedRecipients[i]]['message'] = encryptAES(message, sharedSecrets[sortedRecipients[i]]['message'], iv)
-		encrypted['text'][sortedRecipients[i]]['iv'] = iv
+		encrypted['text'][sortedRecipients[i]] = {};
+		encrypted['text'][sortedRecipients[i]]['message'] = encryptAES(message, sharedSecrets[sortedRecipients[i]]['message'], iv);
+		encrypted['text'][sortedRecipients[i]]['iv'] = iv;
 		//Append to HMAC
-		hmac.concat(CryptoJS.enc.Base64.parse(encrypted['text'][sortedRecipients[i]]['message']))
-		hmac.concat(CryptoJS.enc.Base64.parse(encrypted['text'][sortedRecipients[i]]['iv']))
+		hmac.concat(CryptoJS.enc.Base64.parse(encrypted['text'][sortedRecipients[i]]['message']));
+		hmac.concat(CryptoJS.enc.Base64.parse(encrypted['text'][sortedRecipients[i]]['iv']));
 	}
-	encrypted['tag'] = message.clone()
+	encrypted['tag'] = message.clone();
 	//For each recipient again
 	for (i = 0; i !== sortedRecipients.length; i++) {
 		//Compute the HMAC
-		encrypted['text'][sortedRecipients[i]]['hmac'] = HMAC(hmac, sharedSecrets[sortedRecipients[i]]['hmac'])
+		encrypted['text'][sortedRecipients[i]]['hmac'] = HMAC(hmac, sharedSecrets[sortedRecipients[i]]['hmac']);
 		//Append to tag
-		encrypted['tag'].concat(CryptoJS.enc.Base64.parse(encrypted['text'][sortedRecipients[i]]['hmac']))
+		encrypted['tag'].concat(CryptoJS.enc.Base64.parse(encrypted['text'][sortedRecipients[i]]['hmac']));
 	}
 	//Compute tag
-	encrypted['tag'] = multiParty.messageTag(encrypted['tag'])
-	return JSON.stringify(encrypted)
-}
+	encrypted['tag'] = multiParty.messageTag(encrypted['tag']);
+	return JSON.stringify(encrypted);
+};
 
 // Receive message. Detects requests/reception of public keys.
 multiParty.receiveMessage = function(sender, myName, message) {
 	try {
-		message = JSON.parse(message)
+		message = JSON.parse(message);
 	}
 	catch(err) {
-		console.log('multiParty: failed to parse message object')
-		return false
+		console.log('multiParty: failed to parse message object');
+		return false;
 	}
 	if (typeof(message['text'][myName]) === 'object') {
 		// Detect public key reception, store public key and generate shared secret
 		if (message['type'] === 'publicKey') {
 			if (typeof(message['text'][myName]['message']) !== 'string') {
-				console.log('multiParty: publicKey without message field')
-				return false
+				console.log('multiParty: publicKey without message field');
+				return false;
 			}
 			if (!publicKeys.hasOwnProperty(sender)) {
-				var publicKey = BigInteger.fromByteArrayUnsigned(convert.base64ToBytes(message['text'][myName]['message']))
-				publicKeys[sender] = publicKey
-				multiParty.genFingerprint(sender)
-				multiParty.genSharedSecret(sender)
-				Cryptocat.sendPublicKey(sender)
+				var publicKey = BigInteger.fromByteArrayUnsigned(convert.base64ToBytes(message['text'][myName]['message']));
+				publicKeys[sender] = publicKey;
+				multiParty.genFingerprint(sender);
+				multiParty.genSharedSecret(sender);
+				Cryptocat.sendPublicKey(sender);
 			}
-			return false
+			return false;
 		}
 		// Detect public key request and send public key
 		else if (message['type'] === 'publicKeyRequest') {
-			Cryptocat.sendPublicKey(sender)
+			Cryptocat.sendPublicKey(sender);
 		}
 		else if (message['type'] === 'message') {
 			// Make sure message is being sent to all chat room participants
-			var recipients = multiParty.users()
-			var missingRecipients = []
-			recipients.splice(recipients.indexOf(sender), 1)
+			var recipients = multiParty.users();
+			var missingRecipients = [];
+			recipients.splice(recipients.indexOf(sender), 1);
 			for (var r = 0; r !== recipients.length; r++) {
 				try {
 					if (typeof(message['text'][recipients[r]]) === 'object') {
-						var noMessage = typeof(message['text'][recipients[r]]['message']) !== 'string'
-						var noIV = typeof(message['text'][recipients[r]]['iv']) !== 'string'
-						var noHMAC = typeof(message['text'][recipients[r]]['hmac']) !== 'string'
+						var noMessage = typeof(message['text'][recipients[r]]['message']) !== 'string';
+						var noIV = typeof(message['text'][recipients[r]]['iv']) !== 'string';
+						var noHMAC = typeof(message['text'][recipients[r]]['hmac']) !== 'string';
 						if (noMessage || noIV || noHMAC) {
-							missingRecipients.push(recipients[r])
+							missingRecipients.push(recipients[r]);
 						}
 					}
 					else {
-						missingRecipients.push(recipients[r])
+						missingRecipients.push(recipients[r]);
 					}
 				}
 				catch(err) {
-					missingRecipients.push(recipients[r])
+					missingRecipients.push(recipients[r]);
 				}
 			}
 			if (missingRecipients.length) {
-				Cryptocat.addToConversation(missingRecipients, sender, 'main-Conversation', 'missingRecipients')
+				Cryptocat.addToConversation(missingRecipients, sender, 'main-Conversation', 'missingRecipients');
 			}
 			// Decrypt message
 			if (!sharedSecrets.hasOwnProperty(sender)) {
-				return false
+				return false;
 			}
 			//Sort recipients
-			var sortedRecipients = Object.keys(message['text']).sort()
+			var sortedRecipients = Object.keys(message['text']).sort();
 			//Check HMAC
-			var hmac = CryptoJS.lib.WordArray.create()
-			var i
+			var hmac = CryptoJS.lib.WordArray.create();
+			var i;
 			for (i = 0; i !== sortedRecipients.length; i++) {
-				hmac.concat(CryptoJS.enc.Base64.parse(message['text'][sortedRecipients[i]]['message']))
-				hmac.concat(CryptoJS.enc.Base64.parse(message['text'][sortedRecipients[i]]['iv']))
+				hmac.concat(CryptoJS.enc.Base64.parse(message['text'][sortedRecipients[i]]['message']));
+				hmac.concat(CryptoJS.enc.Base64.parse(message['text'][sortedRecipients[i]]['iv']));
 			}
 			if (message['text'][myName]['hmac'] !== HMAC(hmac, sharedSecrets[sender]['hmac']))	{
-				console.log('multiParty: HMAC failure')
-				multiParty.messageWarning(sender)
-				return false
+				console.log('multiParty: HMAC failure');
+				multiParty.messageWarning(sender);
+				return false;
 			}
 			//Check IV reuse
 			if (usedIVs.indexOf(message['text'][myName]['iv']) >= 0) {
-				console.log('multiParty: IV reuse detected, possible replay attack')
-				multiParty.messageWarning(sender)
-				return false
+				console.log('multiParty: IV reuse detected, possible replay attack');
+				multiParty.messageWarning(sender);
+				return false;
 			}
-			usedIVs.push(message['text'][myName]['iv'])
+			usedIVs.push(message['text'][myName]['iv']);
 			//Decrypt
-			var plaintext = decryptAES(message['text'][myName]['message'], sharedSecrets[sender]['message'], message['text'][myName]['iv'])
+			var plaintext = decryptAES(message['text'][myName]['message'], sharedSecrets[sender]['message'], message['text'][myName]['iv']);
 			//Check tag
-			var messageTag = plaintext.clone()
+			var messageTag = plaintext.clone();
 			for (i = 0; i !== sortedRecipients.length; i++) {
-				messageTag.concat(CryptoJS.enc.Base64.parse(message['text'][sortedRecipients[i]]['hmac']))
+				messageTag.concat(CryptoJS.enc.Base64.parse(message['text'][sortedRecipients[i]]['hmac']));
 			}
 			if (multiParty.messageTag(messageTag) !== message['tag']) {
-				console.log('multiParty: message tag failure')
-				multiParty.messageWarning(sender)
-				return false
+				console.log('multiParty: message tag failure');
+				multiParty.messageWarning(sender);
+				return false;
 			}
 			//Remove padding
 			if (plaintext.sigBytes < 64) {
-				console.log('multiParty: invalid plaintext size')
-				multiParty.messageWarning(sender)
-				return false
+				console.log('multiParty: invalid plaintext size');
+				multiParty.messageWarning(sender);
+				return false;
 			}
-			plaintext = CryptoJS.lib.WordArray.create(plaintext.words, plaintext.sigBytes-64)
+			plaintext = CryptoJS.lib.WordArray.create(plaintext.words, plaintext.sigBytes-64);
 			//Convert to UTF8
-			return plaintext.toString(CryptoJS.enc.Utf8)
+			return plaintext.toString(CryptoJS.enc.Utf8);
 		}
 		else {
-			console.log('multiParty: Unknown message type: ' + message['type'])
-			multiParty.messageWarning(sender)
+			console.log('multiParty: Unknown message type: ' + message['type']);
+			multiParty.messageWarning(sender);
 		}
 	}
-	return false
-}
+	return false;
+};
 
 // Rename keys (useful in case of nickname change)
 multiParty.renameKeys = function(oldName, newName) {
-	publicKeys[newName] = publicKeys[oldName]
-	sharedSecrets[newName] = sharedSecrets[oldName]
-	multiParty.genFingerprint(newName)
-	multiParty.removeKeys(oldName)
-}
+	publicKeys[newName] = publicKeys[oldName];
+	sharedSecrets[newName] = sharedSecrets[oldName];
+	multiParty.genFingerprint(newName);
+	multiParty.removeKeys(oldName);
+};
 
 // Remove user keys and information
 multiParty.removeKeys = function(user) {
-	delete publicKeys[user]
-	;delete sharedSecrets[user]
-	;delete fingerprints[user]
-}
+	delete publicKeys[user];
+	delete sharedSecrets[user];
+	delete fingerprints[user];
+};
 
 // Reset everything except my own key pair
 multiParty.reset = function() {
-	publicKeys = {}
-	sharedSecrets = {}
-	fingerprints = {}
-	usedIVs = []
-}
+	publicKeys = {};
+	sharedSecrets = {};
+	fingerprints = {};
+	usedIVs = [];
+};
 
 multiParty.correctIvLength = correctIvLength;
 multiParty.encryptAES = encryptAES;
 multiParty.decryptAES = decryptAES;
-multiParty.setNickName = function (nickName) {Cryptocat.myNickName = nickName};
+multiParty.setNickName = function (nickName) {Cryptocat.myNickName = nickName;};
 
-})()//:3
+})();//:3
 
 return multiParty;
 });

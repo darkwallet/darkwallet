@@ -22,7 +22,7 @@ function(IdentityKeyRing, Port) {
           // Connected
           console.log('[bus] wallet client connected');
           if (currentIdentity && keyRing.identities.hasOwnProperty(currentIdentity)) {
-              port.postMessage({'type': 'ready', 'identity': currentIdentity})
+              port.postMessage({'type': 'ready', 'identity': currentIdentity});
           }
       }, function(port) {
           // Disconnected
@@ -36,7 +36,7 @@ function(IdentityKeyRing, Port) {
     this.loadIdentity = function(idx) {
         var name = keyRing.availableIdentities[idx];
         if (currentIdentity != name) {
-            console.log("[wallet] Load identity", name)
+            console.log("[wallet] Load identity", name);
             currentIdentity = name;
             keyRing.get(name, function(identity) {
                 //Load up tasks
@@ -47,11 +47,11 @@ function(IdentityKeyRing, Port) {
 
                 // Inform gui
                 identity.history.update = function() { Port.post('gui', {name: 'update'}); };
-                Port.post('wallet', {'type': 'ready', 'identity': name})
-                Port.post('wallet', {'type': 'loaded', 'identity': name})
+                Port.post('wallet', {'type': 'ready', 'identity': name});
+                Port.post('wallet', {'type': 'loaded', 'identity': name});
             });
         }
-    }
+    };
 
     // Get an identity from the keyring
     this.getIdentity = function(idx) {
@@ -62,10 +62,10 @@ function(IdentityKeyRing, Port) {
         currentIdentity = identity;
         return keyRing.identities[identity];
 
-    }
+    };
     this.getCurrentIdentity = function() {
         return keyRing.identities[currentIdentity];
-    }
+    };
 
     // Notify frontend of history row updates
     var notifyRow = function(newRow, height) {
@@ -76,7 +76,7 @@ function(IdentityKeyRing, Port) {
                 Port.post('gui', {type: "note", text: 'Unconfirmed: ' + newRow.myOutValue - newRow.myInValue});
             }
         }
-    }
+    };
 
     /***************************************
     /* History and address subscription
@@ -102,7 +102,7 @@ function(IdentityKeyRing, Port) {
             // fill history after subscribing to ensure we got all histories already (for now).
             identity.history.fillHistory(walletAddress, history);
         }, function(addressUpdate) {
-            console.log("[wallet] update", addressUpdate)
+            console.log("[wallet] update", addressUpdate);
 
             // Get variables from the update
             var height = addressUpdate.height;
@@ -132,19 +132,19 @@ function(IdentityKeyRing, Port) {
         var identity = self.getCurrentIdentity();
         client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
         if (walletAddress.history) {
-            identity.history.fillHistory(walletAddress, walletAddress.history)
+            identity.history.fillHistory(walletAddress, walletAddress.history);
         }
-    }
+    };
 
     // Handle initial connection to obelisk
     function handleHeight(err, height) {
         self.currentHeight = height;
         console.log("[wallet] height fetched", height);
-        Port.post('gui', {type: 'height', value: height})
+        Port.post('gui', {type: 'height', value: height});
     }
 
     this.handleInitialConnect = function() {
-        console.log("[wallet] initial connect")
+        console.log("[wallet] initial connect");
         var identity = self.getCurrentIdentity();
 
         var client = core.getClient();
@@ -157,11 +157,11 @@ function(IdentityKeyRing, Port) {
                 self.initAddress(walletAddress);
             }
         });
-    }
+    };
 
     this.getKeyRing = function() {
         return keyRing;
-    }
+    };
 
     /*
      * Send a transaction into the mixer
@@ -180,11 +180,11 @@ function(IdentityKeyRing, Port) {
 
         // Now start the task in the mixer service
         var mixerService = core.getService('mixer');
-        mixerService.startTask(task)
+        mixerService.startTask(task);
                 
         // Callback for calling process
-        callback(null, {task: task, tx: newTx, type: 'mixer'})
-    }
+        callback(null, {task: task, tx: newTx, type: 'mixer'});
+    };
 
     /*
      * Sign a transaction, then broadcast or add task to gather sigs
@@ -199,14 +199,14 @@ function(IdentityKeyRing, Port) {
             } else if (pending.length) {
                 // If pending signatures add task and callback with 2nd parameter
                 var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: metadata.stealth};
-                identity.tasks.addTask('multisig', task)
-                callback(null, {task: task, tx: newTx, type: 'signatures'})
+                identity.tasks.addTask('multisig', task);
+                callback(null, {task: task, tx: newTx, type: 'signatures'});
             } else {
                 // Else, just broadcast
                 self.broadcastTx(newTx, metadata.stealth, callback);
             }
         });
-    }
+    };
 
     /*
      * Send bitcoins
@@ -218,7 +218,7 @@ function(IdentityKeyRing, Port) {
         try {
             var prepared = identity.wallet.prepareTx(pocketIdx, recipients, changeAddress, fee);
         } catch (e) {
-            callback(e)
+            callback(e);
             return;
         }
 
@@ -230,7 +230,7 @@ function(IdentityKeyRing, Port) {
             callback(null, prepared);
             //signTransaction(prepared.tx, prepared, password, callback);
         }
-    }
+    };
 
     /*
      * Broadcast the given transaction
@@ -242,19 +242,19 @@ function(IdentityKeyRing, Port) {
          var notifyTx = function(error, count) {
              if (error) {
                  console.log("Error sending tx: " + error);
-                 callback({data: error, text: "Error sending tx"})
+                 callback({data: error, text: "Error sending tx"});
              } else {
                  // TODO: radar can be added as a task to maintain progress
                  callback(null, {radar: count, type: 'radar'});
                  console.log("tx radar: " + count);
              }
-         }
+         };
          if (isStealth) {
              console.log("not broadcasting stealth tx yet...");
          } else {
-             core.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx)
+             core.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx);
          }
-     }
+     };
   }
   return WalletService;
 });

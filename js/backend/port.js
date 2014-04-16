@@ -25,19 +25,19 @@ define(function () {
             }
             chrome.runtime.onConnect.addListener(function(port) {
               if (port.name == name) {
-                allPorts[name].push(port)
+                allPorts[name].push(port);
                 // Call the onConnect callback
                 onConnect ? onConnect(port) : null;
                 // Register onMessage callback
                 onMessage ? port.onMessage.addListener(onMessage) : null;
                 port.onDisconnect.addListener(function(_port) {
                   if (_port.name == name) {
-                    allPorts[name].splice(allPorts[name].indexOf(_port), 1)
+                    allPorts[name].splice(allPorts[name].indexOf(_port), 1);
                     // Call the onDisconnect callback
                     onDisconnect ? onDisconnect(_port) : null;
                   }
                 });
-                port.postMessage({type: 'portConnected'})
+                port.postMessage({type: 'portConnected'});
               }
             });
         },

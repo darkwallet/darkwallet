@@ -35,12 +35,12 @@ TransactionDatabase.prototype.fetchTransaction = function(txHash, callback, user
                 self.storeTransaction(txHash, tx);
                 callback(tx, userData);
             }
-        }
+        };
         client.fetch_transaction(txHash, gotTransaction);
     } else {
         callback(this.transactions[txHash], userData);
     }
-}
+};
 
 /*
  * Store a transaction in the database.
@@ -50,7 +50,7 @@ TransactionDatabase.prototype.storeTransaction = function(txHash, tx) {
         this.transactions[txHash] = tx;
         this.store.save();
     }
-}
+};
 
 return TransactionDatabase;
 });

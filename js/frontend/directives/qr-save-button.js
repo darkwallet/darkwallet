@@ -8,7 +8,7 @@ define(['./module', 'qrcodejs'], function (directives, QRCode) {
           width : attrs.width,
           height : attrs.height,
           correctLevel : QRCode.CorrectLevel.H,
-          useSVG: true,
+          useSVG: true
         });
         qrcode.makeCode(attrs.data);
         div.firstChild.setAttribute('width', '400');

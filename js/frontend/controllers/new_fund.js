@@ -11,7 +11,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
           participants: [],
           m: 1
         };
-    }
+    };
 
     // Reset the fund to set initial values
     $scope.resetMultisigForm();
@@ -26,7 +26,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
         var participant = { address: data };
 
         // Generate an identifying hash
-        identity.contacts.updateContactHash(participant)
+        identity.contacts.updateContactHash(participant);
 
         // Add to scope participants
         vars.participants.push(participant);
@@ -49,10 +49,10 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
                                 fixed: true };
 
             // Generate an identifying hash
-            identity.contacts.updateContactHash(participant)
+            identity.contacts.updateContactHash(participant);
 
             // Add to scope participants
-            $scope.multisig.participants.push(participant)
+            $scope.multisig.participants.push(participant);
         });
 
         $scope.multisig.script = multiSig;

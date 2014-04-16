@@ -72,7 +72,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
     var newMe = this.transport.initializePeer(this.pub.toByteArrayUnsigned(), this.fingerprint);
     this.transport.comms.pubKeyHex = newMe.pubKeyHex;
     this.transport.comms.name = newMe.name;
-  }
+  };
 
   /*
    * Initialize a new session with a new cloak
@@ -80,7 +80,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
   Channel.prototype.newSession = function() {
     this.transport.newSession();
     this.prepareSession();
-  }
+  };
 
   /*
    * Disconnect the channel
@@ -89,7 +89,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
   Channel.prototype.disconnect = function() {
       this.removeAllCallbacks();
       this.channelUnsubscribe(function(){});
-  }
+  };
 
   /*
    * Get peer from the fingerprint
@@ -101,7 +101,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
               return peer;
           }
       }
-  }
+  };
 
   // Send opening messages when joining a channel
   Channel.prototype.sendOpening = function() {
@@ -112,26 +112,26 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       this.postEncrypted(data, function(err, data){
           //console.log("announcement posted", err, data)
       });
-  }
+  };
 
   // Subscribe to the channel
   Channel.prototype.channelSubscribe = function(callback, update_cb) {
       var client = this.transport.getClient();
       client.chan_subscribe("b", this.channelHash, callback, update_cb);
-  }
+  };
 
   // Unsubscribe from the channel
   Channel.prototype.channelUnsubscribe = function(callback, update_cb) {
       var client = this.transport.getClient();
       client.chan_unsubscribe("b", this.channelHash, callback, update_cb);
-  }
+  };
 
   // Post to given channel
   Channel.prototype.post = function(data, callback) {
       var client = this.transport.getClient();
       data.sender = this.fingerprint;
       client.chan_post("b", this.channelHash, data, callback);
-  }
+  };
 
   Channel.prototype.receiveDH = function(data) {
       // should be changed by version using multiParty functions
@@ -139,8 +139,8 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey);
       var shared = Curve25519.ecDH(this.priv, pk2);
 
-      shared = shared.toByteArrayUnsigned()
-      shared = Curve25519.bytes2string(shared)
+      shared = shared.toByteArrayUnsigned();
+      shared = Curve25519.bytes2string(shared);
 
       // First decrypt with given dh secret
       var decrypted;
@@ -163,52 +163,52 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       decoded.metadata = {
          whisper: true,
          pubKey: otherKey 
-      }
+      };
       // add the peer
       var fingerprint = Encryption.genFingerprint(otherKey);
       this.transport.addPeer(otherKey, fingerprint);
 
       // Notify listeners
       this.triggerCallbacks(decoded.type, decoded);
-  }
+  };
 
   Channel.prototype.postDH = function(otherKey, data, callback) {
       // should be changed by version using multiParty functions
       data.sender = this.fingerprint;
-      var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey)
+      var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey);
       var shared = Curve25519.ecDH(this.priv, pk2);
       var myPub = this.pub.toByteArrayUnsigned();
       data.pubKey = myPub;
 
       shared = shared.toByteArrayUnsigned();
-      shared = Curve25519.bytes2string(shared)
+      shared = Curve25519.bytes2string(shared);
 
       // sjcl here will do pbkdf2 on the shared, so thats our real shared secret
       var encrypted = sjcl.encrypt(shared, JSON.stringify(data), {ks: 256, ts: 128});
       this.postEncrypted({'type': 'personal', 'data': encrypted, 'pubKey': myPub}, callback);
-  }
+  };
 
   Channel.prototype.postEncrypted = function(data, callback) {
       data.sender = this.fingerprint;
       var encrypted = sjcl.encrypt(this.name, JSON.stringify(data), {ks: 256, ts: 128});
       this.post(encrypted, callback);
-  }
+  };
 
   // Callback for data received on channel
   Channel.prototype.addCallback = function(type, callback) {
       if (!this.callbacks.hasOwnProperty(type)) {
-          this.callbacks[type] = [callback]
+          this.callbacks[type] = [callback];
       } else {
-          this.callbacks[type].push(callback)
+          this.callbacks[type].push(callback);
       }
       return callback;
-  }
+  };
   Channel.prototype.triggerCallbacks = function(type, data) {
       data.peer = this.getPeer(data.sender);
       if (this.callbacks.hasOwnProperty(type)) {
-          this.callbacks[type].forEach(function(cb) {cb(data)})
+          this.callbacks[type].forEach(function(cb) {cb(data);});
       }
-  }
+  };
   Channel.prototype.removeCallback = function(type, callback) {
       if (this.callbacks.hasOwnProperty(type)) {
           var cbArr = this.callbacks[type];
@@ -216,7 +216,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
               cbArr.splice(cbArr.indexOf(callback), 1);
           }
       }
-  }
+  };
   Channel.prototype.removeAllCallbacks = function() {
       // tell listeners we're being unsubscribed
       if (this.callbacks['unsubscribed'] && this.callbacks['unsubscribed'].length) {
@@ -226,7 +226,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       }
       // Now delete all callbacks
       this.callbacks = {};
-  }
+  };
 
   Channel.prototype.onChannelData = function(message) {
       var transport = this.transport;
@@ -259,7 +259,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
               var pubKey = convert.base64ToBytes(pubKeyB64);
               var fingerprint = Encryption.genFingerprint(pubKey);
               var newPeer = transport.addPeer(pubKey, fingerprint);
-              this.startPairing(fingerprint, pubKey)
+              this.startPairing(fingerprint, pubKey);
               // set key owner to 'myName' so cryptocat will import the key
               if (first == 'all') {
                 multiParty.receiveMessage(decoded.sender, first, decrypted);
@@ -280,7 +280,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
           this.triggerCallbacks(decoded.type, decoded);
       }
       transport.update();
-  }
+  };
 
   Channel.prototype.onChatMessage = function(data) {
       // Insert new
@@ -288,11 +288,11 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
           this.chatLog.pop();
       }
       this.chatLog.splice(0,0,data);
-  }
+  };
 
   Channel.prototype.startPairing = function(fingerprint, pubKey) {
-    console.log('[catchan] startpairing', fingerprint, pubKey)
-  }
+    console.log('[catchan] startpairing', fingerprint, pubKey);
+  };
 
   return Channel;
 });

@@ -44,7 +44,7 @@ History.prototype.findIndexForRow = function(newRow) {
         }
     }
     return 0;
-}
+};
 
 /*
  * Add a row into the history.
@@ -58,7 +58,7 @@ History.prototype.addHistoryRow = function(newRow) {
         this.history.splice(insertInto, 0, newRow);
     }
     return insertInto;
-}
+};
 
 /*
  * Build a history row from a transaction.
@@ -110,7 +110,7 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
     var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr};
     return newRow;
-}
+};
 
 
 /*
@@ -123,7 +123,7 @@ History.prototype.fillInput = function(transaction, data) {
         txObj = new Bitcoin.Transaction(transaction);
     newRow.address = txObj.outs[index].address.toString();
     this.update();
-}
+};
 
 /*
  * Callback for fetching a transaction
@@ -136,7 +136,7 @@ History.prototype.txFetched = function(walletAddress, transaction, height) {
     if (newRow.address == 'unknown') {
         if (newRow.tx.ins[0])
         this.identity.txdb.fetchTransaction(newRow.tx.ins[0].outpoint.hash,
-                                            function(_a, _b) {self.fillInput(_a, _b)},
+                                            function(_a, _b) {self.fillInput(_a, _b);},
                                             [newRow.tx.ins[0].outpoint.index, newRow]);
         else
         console.log("No input!", newRow.tx);
@@ -147,7 +147,7 @@ History.prototype.txFetched = function(walletAddress, transaction, height) {
         this.update();
         return newRow;
     }
-}
+};
 
 /*
  * Look for transactions from given history records
@@ -160,18 +160,18 @@ History.prototype.fillHistory = function(walletAddress, history) {
         var outTxHash = tx[0],
             inTxHash = tx[4];
         if (inTxHash) {
-            txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b)}, tx[6]);
+            txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b);}, tx[6]);
         }
-        txdb.fetchTransaction(outTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b)}, tx[2]);
+        txdb.fetchTransaction(outTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b);}, tx[2]);
     });
-}
+};
 
 /*
  * Update callback, needs to be filled in by the application to register.
  */
 History.prototype.update = function() {
     console.log("Program needs to register an update callback!");
-}
+};
 
 return History;
 });

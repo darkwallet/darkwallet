@@ -30,7 +30,7 @@ Connections.prototype.addServer = function(name, address, type) {
     if (!type) type = 'gateway';
     this.servers.push({name: name, type: type, address: address});
     this.store.save();
-}
+};
 
 
 /**
@@ -40,9 +40,9 @@ Connections.prototype.addServer = function(name, address, type) {
 Connections.prototype.setSelectedServer = function(idx) {
     this.selectedServer = idx;
     this.connections.selectedServer = idx;
-    console.log("[model] selectedServer", idx)
+    console.log("[model] selectedServer", idx);
     this.store.save();
-}
+};
 
 /**
  * Set always connect
@@ -52,8 +52,8 @@ Connections.prototype.setAlwaysConnect = function(alwaysConnect) {
     this.alwaysConnect = alwaysConnect;
     this.connections.alwaysConnect = alwaysConnect;
     this.store.save();
-}
+};
 
 return Connections;
 
-})
+});

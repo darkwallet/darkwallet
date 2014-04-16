@@ -24,10 +24,10 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     },
 
     importMultiSig: function(data){
-        var script = new Bitcoin.Script(convert.hexToBytes(data))
+        var script = new Bitcoin.Script(convert.hexToBytes(data));
         var hashed = Bitcoin.crypto.hash160(script.buffer);
         var address = Bitcoin.base58check.encode(hashed, 0x05);
-        var pubKeys = script.extractPubkeys()
+        var pubKeys = script.extractPubkeys();
         var m = script.chunks[0] - Bitcoin.Opcode.map.OP_1 + 1;
         return {address: address, script: data, m: m, pubKeys: pubKeys};
     },
@@ -59,7 +59,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
           }
           // Check for public keys in different formats
           try {
-            BtcUtils.extractPublicKey(address)
+            BtcUtils.extractPublicKey(address);
             return true;
           } catch (e) {
           }
@@ -120,7 +120,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         var date = new Date(ts);
         return date.toLocaleDateString();
     }
-  }
+  };
 
   return BtcUtils;
 });

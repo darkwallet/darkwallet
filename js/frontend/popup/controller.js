@@ -17,13 +17,13 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
     console.log("wallet bus message", data);
     if (data.type == 'ready') {
         // identity is ready here
-        console.log('loaded', data.identity)
+        console.log('loaded', data.identity);
         $scope.currentIdentity = data.identity;
         if(!$scope.$$phase) {
             $scope.$apply();
         }
     }
-  })
+  });
 
 
   // we don't have the same background page here, so we initialize our
