@@ -100,8 +100,10 @@ Wallet.prototype.loadPubKeys = function() {
         if (walletAddress.index.length > 1) {
             self.pockets.addToPocket(walletAddress);
 
-            if (walletAddress.history)
-                self.processHistory(walletAddress, walletAddress.history);
+            // TODO: Don't process previous history so we can cache
+            // properly later
+            //if (walletAddress.history)
+            //    self.processHistory(walletAddress, walletAddress.history);
         }
     });
     // Cleanup malformed addresses
@@ -515,8 +517,8 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
                    address: walletAddress.address };
         wallet.outputs[outId] = output;
     }
-    // If confirmed add balance
-    if (height && !output.height) {
+    // If confirmed and not spent add balance
+    if (height && !output.height && !spend) {
         walletAddress.balance += value;
     }
     // Save height
