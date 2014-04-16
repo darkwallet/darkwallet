@@ -39,30 +39,49 @@ function Wallet(store, identity) {
  */
 Wallet.prototype.getBalance = function(pocketIndex) {
     var balance = 0;
+    var unconfirmed = 0;
     var allAddresses = [];
     var keys = Object.keys(this.pubKeys);
     if (pocketIndex === undefined) {
-        for(var idx=0; idx<keys.length; idx++) {
+        for(var i=0; i<keys.length; i++) {
             // don't add fund or readonly addresses to total funds
-            if (['multisig', 'readonly'].indexOf(this.pubKeys[keys[idx]].type) == -1) {
-                allAddresses.push(this.pubKeys[keys[idx]]);
+            if (['multisig', 'readonly'].indexOf(this.pubKeys[keys[i]].type) == -1) {
+                allAddresses.push(this.pubKeys[keys[i]].address);
             }
         }
     } else {
-        for(var idx=0; idx<keys.length; idx++) {
-            var walletAddress = this.pubKeys[keys[idx]];
+        for(var i=0; i<keys.length; i++) {
+            var walletAddress = this.pubKeys[keys[i]];
             if (walletAddress.index && walletAddress.index[0] == pocketIndex) {
-                allAddresses.push(walletAddress);
+                allAddresses.push(walletAddress.address);
            }
         }
     }
-    allAddresses.forEach(function(walletAddress) {
+    // Get balance directly from available outputs
+    var outputs = this.wallet.outputs;
+    var keys = Object.keys(outputs);
+    for(var i=0; i<keys.length; i++) {
+        var out = outputs[keys[i]];
+        if (allAddresses.indexOf(out.address) != -1) {
+            if (out.spend && out.spendheight == 0) {
+                unconfirmed -= out.value;
+            } else if (out.spend) {
+                // spent so don't count it
+            } else if (!out.height) {
+                unconfirmed += out.value;
+            }
+            else {
+                balance += out.value;
+            }
+        }
+    };
+    /*allAddresses.forEach(function(walletAddress) {
         balance += walletAddress.balance;
-    });
+    });*/
     if (pocketIndex === undefined) {
         this.balance = balance;
     }
-    return balance;
+    return {confirmed: balance, unconfirmed: unconfirmed}
 }
 
 /**
@@ -302,7 +321,13 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
     var getCandidateOutputs = function(w, value) {
         var h = []
         for (var out in w.outputs) h.push(w.outputs[out])
+        // remove spent
         var utxo = h.filter(function(x) { return !x.spend });
+
+        // remove unconfirmed
+        utxo = utxo.filter(function(x) { return x.height });
+
+        // organize and select
         var valuecompare = function(a,b) { return a.value > b.value; }
         var high = utxo.filter(function(o) { return o.value >= value; })
                        .sort(valuecompare);
@@ -444,21 +469,30 @@ Wallet.prototype.signMyInputs = function(inputs, newTx, password) {
  * @see Bitcoin.Wallet.processOutput
  */
 Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, height, spend) {
-    var output = { receive: txHash+":"+index, value: value, address: walletAddress.address};
-    if (!height) {
-        output.pending = true;
+    // Wallet wide
+    var output;
+    var wallet = this.wallet;
+    var outId = txHash+":"+index;
+    var output = wallet.outputs[outId];
+    // If it doesn't exist create a new one
+    if (!output) {
+        output = { receive: outId,
+                   value: value,
+                   address: walletAddress.address };
+        wallet.outputs[outId] = output;
     }
+    // If confirmed add balance
+    if (height && !output.height) {
+        walletAddress.balance += value;
+    }
+    // Save height
+    output.height = height;
+
+    // If it's a spend save the next output and spend height
     if (spend) {
         output.spend = spend;
+        output.spendheight = height;
     }
-
-    // Wallet wide
-    var wallet = this.wallet;
-    var processOutput = function(o) {
-        if (!wallet.outputs[o.receive] || wallet.outputs[o.receive].pending)
-             wallet.outputs[o.receive] = o;
-    }
-    processOutput(output);
 }
 
 /*
@@ -496,13 +530,42 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
     if (!this.identity.txdb.transactions.hasOwnProperty(txHash)) {
         // don't run if we already processed the transaction since
         // otherwise bitcoinjs-lib will reset 'pending' attribute.
-        this.wallet.processTx(tx, height)
+        var txhash = convert.bytesToHex(tx.getHash())
 
         // store in our tx db
         this.identity.txdb.storeTransaction(txHash, serializedTx)
     }
 
-    // process in history (updates walletAddress balance and confirms outputs pending status)
+    // Now parse inputs and outputs
+    tx.outs.forEach(function(txOut, i){
+      var address = txOut.address.toString()
+      var index = txhash+':'+i
+      var outputAddress = self.getWalletAddress(address);
+      // already exists
+      if (outputAddress) {
+          processOutput(outputAddress, txhash, i, txOut.value, height);
+      }
+    });
+
+    tx.ins.forEach(function(txIn, i){
+      var op = txIn.outpoint
+      var o = self.outputs[op.hash+':'+op.index];
+      if (o) {
+        o.spend = txhash+':'+i;
+        o.spendheight = height;
+        if (height) {
+            if (o.spendpending && walletAddress.address == o.address) {
+                o.spendpending = false;
+                walletAddress.balance -= o.value;
+            } 
+        } else {
+            o.spendpending = true;
+        }
+      }
+    });
+
+
+    // process in history (updates history rows)
     return this.identity.history.txFetched(walletAddress, serializedTx, height)
 }
 

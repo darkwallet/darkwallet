@@ -130,7 +130,7 @@ Pockets.prototype.getPocketWallet = function(id) {
     var pocketOutputs = {};
     Object.keys(outputs).forEach(function(outputKey) {
         var output = outputs[outputKey];
-        if (addresses.indexOf(output.address.toString()) != -1) {
+        if (addresses.indexOf(output.address) != -1) {
             pocketOutputs[outputKey] = output;
         }
     })

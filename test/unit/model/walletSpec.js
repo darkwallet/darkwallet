@@ -134,11 +134,11 @@ define(['model/wallet'], function(Wallet) {
     });
     
     it('gets balance', function() {
-      expect(wallet.getBalance()).toBe(8040000);
-      expect(wallet.balance).toBe(8040000);
+      var balance = wallet.getBalance();
+      expect(balance.confirmed).toBe(8040000);
       
-      expect(wallet.getBalance('0')).toBe(3040000);
-      expect(wallet.getBalance('2')).toBe(5000000);
+      expect(wallet.getBalance('0')).toEqual({ confirmed : 3040000, unconfirmed : 0 });
+      expect(wallet.getBalance('2')).toEqual({ confirmed : 5000000, unconfirmed : 0 });
     });
     
     it('creates a pocket', function() {
@@ -351,17 +351,20 @@ define(['model/wallet'], function(Wallet) {
       var history00 = {
         receive: 'a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329:0',
         value: 40000, 
-        address: '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ'
+        address: '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ',
+        height: 287813
       };
       var history01 = {
         receive: '64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6:1',
         value : 3000000,
-        address : '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ'
+        address : '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ',
+        height: 287583
       };
       var history20 = {
         receive: 'c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c:0',
         value: 5000000,
-        address: '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs'
+        address: '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs',
+        height: 269614
       };
       
       expect(wallet.getUtxoToPay(9000, 0)).toEqual([history00]);

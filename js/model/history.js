@@ -83,24 +83,8 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
         var outIdx = anIn.outpoint.hash+":"+anIn.outpoint.index;
         if (btcWallet.outputs[outIdx]) {
             inMine += 1;
-            myInValue += btcWallet.outputs[outIdx].value;
-            // mark output as spent
             var output = btcWallet.outputs[outIdx];
-            if (!output.spend) {
-                output.spend = txHash + ":" + idx;
-            } else if (output.spend != txHash + ":" + idx) {
-                console.log("spend doesn't match!", output.spend, txHash + ":" + idx)
-            }
-            if (height) {
-                if (output.spendpending) {
-                    output.spendpending = false;
-                    if (walletAddress.address == output.address) {
-                        walletAddress.balance -= output.value
-                    }
-                }
-            } else {
-                output.spendpending = true;
-            }
+            myInValue += output.value;
         }
     }
     if (!inMine) {
@@ -112,18 +96,6 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
         if (btcWallet.addresses.indexOf(anOut.address.toString())>-1) {
             outMine += 1;
             myOutValue += anOut.value;
-            var outIdx = txHash+":"+idx;
-            var output = btcWallet.outputs[outIdx];
-            if (height) {
-                if (output.pending) {
-                    output.pending = false;
-                    if (walletAddress.address == output.address) {
-                        walletAddress.balance += output.value;
-                    }
-                }
-            } else {
-                output.pending = true;
-            }
         } else {
             if (inMine) {
                 txAddr = anOut.address.toString();

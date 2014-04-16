@@ -142,7 +142,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     for(var i=0; i<pockets.length; i++) {
       var pocket = pockets[i];
       if (pocket.mixing) {
-        var balance = identity.wallet.getBalance(i);
+        var balance = identity.wallet.getBalance(i).balance;
         if (balance >= amount) {
             return i;
         }

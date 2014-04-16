@@ -120,7 +120,9 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
           $scope.pocket.changeAddresses = [];
           $scope.isAll = true;
           $scope.isFund = false;
-          $scope.balance = $scope.identity.wallet.getBalance()
+          var balance = $scope.identity.wallet.getBalance();
+          $scope.balance = balance.confirmed;
+          $scope.unconfirmed = balance.unconfirmed;
           $scope.pocket.tasks = [];
           //balanceStart($scope.balance);
           rowIndex = 'all';
@@ -147,7 +149,10 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
           $scope.isAll = false;
           $scope.isFund = false;
           // balance is sum of public and change branches
-          $scope.balance = $scope.identity.wallet.getBalance(pocketIndex)+$scope.identity.wallet.getBalance(pocketIndex+1);
+          var mainBalance = $scope.identity.wallet.getBalance(pocketIndex);
+          var changeBalance = $scope.identity.wallet.getBalance(pocketIndex+1);
+          $scope.balance = mainBalance.confirmed + changeBalance.confirmed;
+          $scope.unconfirmed = mainBalance.unconfirmed + changeBalance.unconfirmed;
           $scope.forms.pocketLabelForm = form;
       }
       $scope.selectedPocket = 'pocket:' + rowIndex;

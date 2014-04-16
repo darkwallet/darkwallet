@@ -8,7 +8,7 @@
       </ng-include>
   </div>
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns">
-    <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | balanceStart | currencyPresenter}}</small></h4>
+    <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | balanceStart | currencyPresenter}}</small> <small ng-show="unconfirmed">{{((unconfirmed===undefined)?totalUnconfirmed:unconfirmed) | currencyPresenter}}</small></h4>
     <tabset>
       <ng-include src="'wallet/history.html'">
       </ng-include>

@@ -137,7 +137,10 @@ function (controllers, DarkWallet, Port) {
       $scope.availableIdentities = bg.getKeyRing().availableIdentities;
       $scope.history = identity.history.history;
       // set history update callback
-      $scope.totalBalance = identity.wallet.getBalance();
+      var balance = identity.wallet.getBalance();
+      
+      $scope.totalBalance = balance.confirmed;
+      $scope.totalUnconfirmed = balance.unconfirmed;
       $scope.selectedCurrency = identity.settings.currency;
       $scope.selectedFiat = identity.settings.fiatCurrency;
       $scope.defaultFee = identity.wallet.fee / 100000000;
