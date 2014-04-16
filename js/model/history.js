@@ -23,11 +23,8 @@ History.prototype.findIndexForRow = function(newRow) {
     for(var idx=this.history.length-1; idx>=0; idx--) {
         if (this.history[idx].hash == newRow.hash) {
             // replace by new row
-            if (this.history[idx].height == 0) {
-                this.history[idx] = newRow;
-                return -1; // confirmed
-            }
-            return -2; // already confirmed
+            this.history[idx] = newRow;
+            return -1; // replaced
         }
     }
     // If height is 0 put at the end
@@ -138,6 +135,7 @@ History.prototype.fillInput = function(transaction, data) {
 History.prototype.txFetched = function(walletAddress, transaction, height) {
     var self = this,
         newRow = this.buildHistoryRow(walletAddress, transaction, height);
+
     // unknown for now means we need to fill in some extra inputs for now get 1st one
     if (newRow.address == 'unknown') {
         if (newRow.tx.ins[0])
