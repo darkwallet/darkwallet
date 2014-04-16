@@ -117,6 +117,9 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
         connectChannel(selectedChannel);
     }
 
+    if (!$scope.$$phase) {
+        $scope.$apply();
+    }
     $scope.selectChannel = function(channel) {
         // Relink
         connectChannel(channel.name);
