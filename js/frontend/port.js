@@ -1,8 +1,8 @@
 define(function () {
-    var Services = {
+    var Port = {
         /*
          * Connect to given service
-         * @param {String} name Service name
+         * @param {String} name Port name
          * @param {Function} onMessage Message callback
          * @param {Function} onConnect Connect callback
          * @param {Function} onDisconnect Disconnect callback
@@ -26,7 +26,7 @@ define(function () {
         /*
          * Connect to given service and register destruction with
          * angular scope, aimed at controllers.
-         * @param {String} name Service name
+         * @param {String} name Port name
          * @param {Angular.Scope} scope Controller scope
          * @param {Function} onMessage Message callback
          * @param {Function} onConnect Connect callback
@@ -34,10 +34,10 @@ define(function () {
          * returns a chrome.runtime.Port.
          */
         connectNg: function(name, scope, onMessage, onConnect, onDisconnect) {
-            var port = Services.connect(name, onMessage, onConnect, onDisconnect);
+            var port = Port.connect(name, onMessage, onConnect, onDisconnect);
             scope.$on('$destroy', function () { port.disconnect(); });
             return port;
         }
     };
-    return Services;
+    return Port;
 });

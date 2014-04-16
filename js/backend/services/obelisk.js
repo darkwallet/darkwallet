@@ -1,5 +1,5 @@
-define(['backend/services', 'darkwallet_gateway'],
-function(Services) {
+define(['backend/port', 'darkwallet_gateway'],
+function(Port) {
   'use strict';
   function ObeliskService(core) {
       var self = this;
@@ -7,8 +7,8 @@ function(Services) {
       this.connected = false;
       this.connecting = false;
     
-      // Background service for communication with the frontend
-      Services.start('obelisk', function() {
+      // Port for communication with the frontend
+      Port.listen('obelisk', function() {
         }, function(port) {
             // Connected
             console.log('[bus] obelisk client connected');
@@ -28,7 +28,7 @@ function(Services) {
           // wait for connection
       } else {
           console.log("[obelisk] Connecting");
-          Services.post('obelisk', {'type': 'connecting'});
+          Port.post('obelisk', {'type': 'connecting'});
           this.connectClient(connectUri, function(err) {
               if (!err) {
                   console.log("[obelisk] Connected");
@@ -36,9 +36,9 @@ function(Services) {
               handleConnect ? handleConnect(err) : null;
               if (err) {
                   console.log("[obelisk] Error connecting");
-                  Services.post('obelisk', {'type': 'connectionError', 'error': 'Error connecting'});
+                  Port.post('obelisk', {'type': 'connectionError', 'error': 'Error connecting'});
               } else {
-                  Services.post('obelisk', {'type': 'connected'});
+                  Port.post('obelisk', {'type': 'connected'});
               }
           });
       }

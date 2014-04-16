@@ -2,7 +2,7 @@
  * @fileOverview CalculatorCtrl angular controller
  */
 
-define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (controllers, DarkWallet, Services, FiatCurrencies) {
+define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (controllers, DarkWallet, Port, FiatCurrencies) {
   'use strict';
   controllers.controller('CalculatorCtrl', ['$scope', function($scope) {
   var firstTime = true;
@@ -22,7 +22,7 @@ define(['./module', 'darkwallet', 'frontend/services', 'util/fiat'], function (c
   }
 
   // Wallet service, connect to get notified about identity getting loaded.
-  Services.connectNg('wallet', $scope, function(data) {
+  Port.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
       initCurrencyIcon();
     }

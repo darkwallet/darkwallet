@@ -1,7 +1,7 @@
-define(['./module', 'frontend/services', 'darkwallet'], function (controllers, Services, DarkWallet) {
+define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port, DarkWallet) {
   'use strict';
   controllers.controller('IdentitiesCtrl', ['$scope', function($scope) {
-    Services.connectNg('wallet', $scope, function(data) {
+    Port.connectNg('wallet', $scope, function(data) {
       console.log("wallet bus message", data);
       if (data.type == 'ready') {
         // identity is ready here

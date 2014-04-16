@@ -2,8 +2,8 @@
  * @fileOverview HistoryCtrl angular controller
  */
 
-define(['./module', 'bitcoinjs-lib', 'util/btc', 'frontend/services', 'darkwallet'],
-function (controllers, Bitcoin, BtcUtils, Services, DarkWallet) {
+define(['./module', 'bitcoinjs-lib', 'util/btc', 'darkwallet'],
+function (controllers, Bitcoin, BtcUtils, DarkWallet) {
   'use strict';
   controllers.controller('HistoryCtrl', ['$scope', 'notify', function($scope, notify) {
 

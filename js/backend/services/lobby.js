@@ -1,5 +1,5 @@
-define(['backend/services', 'backend/channels/transport', 'backend/channels/catchan'],
-function(Services, Transport, Channel) {
+define(['backend/port', 'backend/channels/transport', 'backend/channels/catchan'],
+function(Port, Transport, Channel) {
   'use strict';
 
   function LobbyService(core) {
@@ -7,13 +7,13 @@ function(Services, Transport, Channel) {
     var self = this;
 
      // Transport service managing background lobby transport
-    Services.start('lobby',
+    Port.listen('lobby',
       function(data) {
          // onMessage
          switch(data.type) {
              case 'initChannel':
                lobbyTransport.initChannel(data.name, Channel);
-               Services.post('lobby', data)
+               Port.post('lobby', data)
                break;
        }
       }, function(port) {
@@ -26,7 +26,7 @@ function(Services, Transport, Channel) {
         console.log('[lobby] init lobby transport');
         var identity = core.getCurrentIdentity();
         lobbyTransport = new Transport(identity, core.getObeliskClient());
-        lobbyTransport.update = function() { Services.post('gui', {'type': 'update'}) };
+        lobbyTransport.update = function() { Port.post('gui', {'type': 'update'}) };
       }
       return lobbyTransport;
     }

@@ -1,5 +1,5 @@
-define(['./module', 'darkwallet', 'frontend/services', 'frontend/channel_link', 'bitcoinjs-lib', 'util/protocol'],
-function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
+define(['./module', 'darkwallet', 'frontend/port', 'frontend/channel_link', 'bitcoinjs-lib', 'util/protocol'],
+function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
   'use strict';
 
   var selectedChannel;
@@ -67,7 +67,7 @@ function (controllers, DarkWallet, Services, ChannelLink, Bitcoin, Protocol) {
   }
 
   // Lobby service port
-  Services.connectNg('lobby', $scope, function(data) {
+  Port.connectNg('lobby', $scope, function(data) {
     // onMesssage callback
     console.log("[LobbyCtrl] Message", data);
     if (data.type == 'initChannel') {

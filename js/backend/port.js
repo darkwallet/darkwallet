@@ -1,15 +1,15 @@
 define(function () {
     var allPorts = {};
     var instances = {};
-    var Services = {
+    var Port = {
         /*
-         * Start the given service
+         * Listen on the given port
          * @param {String} name Service name
          * @param {Function} onMessage Message callback
          * @param {Function} onConnect Connect callback
          * @param {Function} onDisconnect Disconnect callback
          */
-        start: function(name, onMessage, onConnect, onDisconnect) {
+        listen: function(name, onMessage, onConnect, onDisconnect) {
             if (!allPorts.hasOwnProperty(name)) {
                 allPorts[name] = [];
             }
@@ -71,5 +71,5 @@ define(function () {
             return port;
         }
     };
-    return Services;
+    return Port;
 });

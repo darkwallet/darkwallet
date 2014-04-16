@@ -1,5 +1,5 @@
-define(['backend/services'],
-function(Services) {
+define(['backend/port'],
+function(Port) {
   'use strict';
   function TickerService(core) {
       var self = this;
@@ -7,7 +7,7 @@ function(Services) {
     this.rates = {};
 
       // Port for communication with other services
-      Services.connect('obelisk', function(data) {
+      Port.connect('obelisk', function(data) {
         if (data.type == 'connected') {
           var identity = core.getCurrentIdentity();
           var currency = identity.settings.fiatCurrency;
@@ -21,7 +21,7 @@ function(Services) {
     // Handle getting ticker information
     function handleTicker(err, currency, lastRates) {
         if (err || !lastRates) {
-          Services.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info", error: err});
+          Port.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info", error: err});
           return;
         }
         if (lastRates.hasOwnProperty('24h_avg')) {
@@ -33,11 +33,11 @@ function(Services) {
           self.rates[currency] = lastRates['last'];
         } else {
           // No values we can use
-          Services.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info"});
+          Port.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info"});
           console.log("[ticker] can't get ticker info", lastRates)
           return;
         }
-        Services.post('wallet', {type: 'ticker', currency: currency, rates: lastRates, rate: self.rates[currency]});
+        Port.post('wallet', {type: 'ticker', currency: currency, rates: lastRates, rate: self.rates[currency]});
         console.log("[ticker] ticker fetched");
     }
 

@@ -1,11 +1,11 @@
-define(['backend/services', 'chrome'], function (Services, chrome) {
+define(['backend/port', 'chrome'], function (Port, chrome) {
   'use strict';
 
   describe('Core service api', function() {
 
     beforeEach(function() {
       chrome.runtime.clear();
-      // TODO: How to clear the Services cache here?
+      // TODO: How to clear the Ports cache here?
     });
 
     it('Creates a service and registers callbacks', function() {
@@ -21,7 +21,7 @@ define(['backend/services', 'chrome'], function (Services, chrome) {
       var onConnect = function() {connectTriggered += 1;};
       var onDisconnect = function() {disconnectTriggered += 1};
 
-      Services.start('wallet', onMessage, onConnect, onDisconnect);
+      Port.listen('wallet', onMessage, onConnect, onDisconnect);
 
       var port = chrome.runtime.initPort({name: 'wallet'});
 
@@ -38,12 +38,12 @@ define(['backend/services', 'chrome'], function (Services, chrome) {
     });
 
     it('Sends a message to a port', function() {
-      Services.start('wallet2');
+      Port.listen('wallet2');
 
       var port = chrome.runtime.initPort({name: 'wallet2'});
 
       chrome.runtime.received = [];
-      Services.post('wallet2', {text: 'foo'});
+      Port.post('wallet2', {text: 'foo'});
 
       expect(chrome.runtime.received.length).toBe(1);
       expect(chrome.runtime.received[0]).toEqual({text: 'foo'});
@@ -55,9 +55,9 @@ define(['backend/services', 'chrome'], function (Services, chrome) {
       var onConnect = function() {connectTriggered += 1;};
       var onMessage = function(data) {received.push(data)};
 
-      Services.start('wallet3', null, onConnect);
+      Port.listen('wallet3', null, onConnect);
 
-      Services.connect('wallet3', onMessage)
+      Port.connect('wallet3', onMessage)
 
       // Check connect was triggered
       expect(connectTriggered).toBe(1);
@@ -73,16 +73,16 @@ define(['backend/services', 'chrome'], function (Services, chrome) {
       var onConnect = function() {connectTriggered += 1;};
       var onMessage = function(data) {received.push(data)};
 
-      Services.start('wallet4', null, onConnect);
+      Port.listen('wallet4', null, onConnect);
 
-      Services.connect('wallet4', onMessage)
+      Port.connect('wallet4', onMessage)
 
       expect(connectTriggered).toBe(1);
 
       // reset received messages
       received = [];
 
-      Services.post('wallet4', {text: 'bar'});
+      Port.post('wallet4', {text: 'bar'});
 
       // Check we received the message
       expect(received.length).toBe(1);

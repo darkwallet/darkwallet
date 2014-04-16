@@ -1,4 +1,4 @@
-define(['backend/services', 'backend/channels/catchan', 'darkwallet'], function(Services, Channel, DarkWallet) {
+define(['backend/port', 'backend/channels/catchan', 'darkwallet'], function(Port, Channel, DarkWallet) {
   'use strict';
 
   /*
@@ -10,7 +10,7 @@ define(['backend/services', 'backend/channels/catchan', 'darkwallet'], function(
     this.core = core;
     
     // Port for communication with other services
-    Services.connect('obelisk', function(data) {
+    Port.connect('obelisk', function(data) {
       // WakeUp when connected to obelisk
       if (data.type == 'connected') {
         self.connectTo('Trollbox');

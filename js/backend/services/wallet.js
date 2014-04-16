@@ -1,8 +1,8 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-define(['model/keyring', 'backend/services'],
-function(IdentityKeyRing, Services) {
+define(['model/keyring', 'backend/port'],
+function(IdentityKeyRing, Port) {
   'use strict';
 
   function WalletService(core) {
@@ -17,7 +17,7 @@ function(IdentityKeyRing, Services) {
     this.currentHeight = 0;
 
     // Wallet port
-    Services.start('wallet', function() {
+    Port.listen('wallet', function() {
       }, function(port) {
           // Connected
           console.log('[bus] wallet client connected');
@@ -46,9 +46,9 @@ function(IdentityKeyRing, Services) {
                 }
 
                 // Inform gui
-                identity.history.update = function() { Services.post('gui', {name: 'update'}); };
-                Services.post('wallet', {'type': 'ready', 'identity': name})
-                Services.post('wallet', {'type': 'loaded', 'identity': name})
+                identity.history.update = function() { Port.post('gui', {name: 'update'}); };
+                Port.post('wallet', {'type': 'ready', 'identity': name})
+                Port.post('wallet', {'type': 'loaded', 'identity': name})
             });
         }
     }
@@ -71,9 +71,9 @@ function(IdentityKeyRing, Services) {
     var notifyRow = function(newRow, height) {
         if (newRow && (newRow.myOutValue - newRow.myInValue) > 0) {
             if (height) {
-                Services.post('gui', {type: "note", text: 'Received: ' + newRow.myOutValue - newRow.myInValue});
+                Port.post('gui', {type: "note", text: 'Received: ' + newRow.myOutValue - newRow.myInValue});
             } else {
-                Services.post('gui', {type: "note", text: 'Unconfirmed: ' + newRow.myOutValue - newRow.myInValue});
+                Port.post('gui', {type: "note", text: 'Unconfirmed: ' + newRow.myOutValue - newRow.myInValue});
             }
         }
     }
@@ -118,7 +118,7 @@ function(IdentityKeyRing, Services) {
                 notifyRow(newRow, height);
             }
         });
-        Services.post('gui', {type: "balance"});
+        Port.post('gui', {type: "balance"});
     }
 
     // Start up history for an address
@@ -140,7 +140,7 @@ function(IdentityKeyRing, Services) {
     function handleHeight(err, height) {
         self.currentHeight = height;
         console.log("[wallet] height fetched", height);
-        Services.post('gui', {type: 'height', value: height})
+        Port.post('gui', {type: 'height', value: height})
     }
 
     this.handleInitialConnect = function() {

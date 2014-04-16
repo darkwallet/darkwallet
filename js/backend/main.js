@@ -1,8 +1,7 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['backend/services',
-         'backend/services/lobby',
+require(['backend/services/lobby',
          'backend/services/obelisk',
          'backend/services/wallet',
          'backend/services/gui',
@@ -10,7 +9,7 @@ require(['backend/services',
          'backend/services/mixer',
          'backend/services/notifier',
          'backend/services/ctxmenus'],
-function(Services, LobbyService, ObeliskService, WalletService, GuiService, TickerService, MixerService, NotifierService, CtxMenusService) {
+function(LobbyService, ObeliskService, WalletService, GuiService, TickerService, MixerService, NotifierService, CtxMenusService) {
 
 function DarkWalletService() {
 
@@ -91,9 +90,6 @@ function DarkWalletService() {
     this.getObeliskClient = function() {
         return obeliskService;
     }
-    this.getServices = function() {
-        return Services;
-    }
 }
 
 /***************************************
@@ -129,7 +125,6 @@ window.servicesStatus = service.servicesStatus;
 window.getLobbyTransport = service.getLobbyTransport
 
 window.getClient = service.getClient;
-window.getServices = service.getServices;
 window.getWalletService = service.getWalletService
 window.getTickerService = service.getTickerService
 window.getMixerService = service.getMixerService

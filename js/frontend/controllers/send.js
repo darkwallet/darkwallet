@@ -1,5 +1,5 @@
-define(['./module', 'frontend/services', 'darkwallet', 'bitcoinjs-lib'],
-function (controllers, Services, DarkWallet, Bitcoin) {
+define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib'],
+function (controllers, Port, DarkWallet, Bitcoin) {
   'use strict';
   var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', function($scope, $window, notify) {
@@ -51,7 +51,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
   }
 
   // Identity ready
-  Services.connectNg('wallet', $scope, function(data) {
+  Port.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
         // Set the default fee
         var identity = DarkWallet.getIdentity();

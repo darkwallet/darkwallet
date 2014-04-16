@@ -1,5 +1,5 @@
-define(['backend/services', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin'],
-function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
+define(['backend/port', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin'],
+function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
   'use strict';
 
   /*
@@ -12,7 +12,7 @@ function(Services, Channel, Protocol, Bitcoin, CoinJoin) {
     this.ongoing = {};
 
     // Port for communication with other services
-    Services.connect('obelisk', function(data) {
+    Port.connect('obelisk', function(data) {
       // WakeUp when connected to obelisk
       if (data.type == 'connected') {
         self.checkMixing(data);

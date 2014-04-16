@@ -2,7 +2,7 @@
  * @fileOverview ServersCtrl angular controller
  */
 
-define(['./module', 'darkwallet', 'frontend/services'], function (controllers, DarkWallet, Services) {
+define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
   'use strict';
   controllers.controller('ServersCtrl', ['$scope', function($scope) {
 
@@ -20,7 +20,7 @@ define(['./module', 'darkwallet', 'frontend/services'], function (controllers, D
   };
 
   // Track wallet status
-  Services.connectNg('wallet', $scope, function(data) {
+  Port.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
       var identity = DarkWallet.getIdentity();
       $scope.servers = identity.connections.servers;
@@ -32,7 +32,7 @@ define(['./module', 'darkwallet', 'frontend/services'], function (controllers, D
   });
 
   // Track obelisk status
-  Services.connectNg('obelisk', $scope, function(data) {
+  Port.connectNg('obelisk', $scope, function(data) {
     if (data.type == 'connected') {
       var client = DarkWallet.getClient();
       $scope.connectionStatus = 'Connected';

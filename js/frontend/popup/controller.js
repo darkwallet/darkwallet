@@ -7,13 +7,13 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['frontend/controllers/module', 'darkwallet', 'frontend/services'], function (controllers, DarkWallet, Services) {
+define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
   'use strict';
   controllers.controller('PopupCtrl', ['$scope', function($scope) {
 
   $scope.currentIdentity = false;
   // Wallet service, connect to get notified about identity getting loaded.
-  Services.connect('wallet', function(data) {
+  Port.connect('wallet', function(data) {
     console.log("wallet bus message", data);
     if (data.type == 'ready') {
         // identity is ready here

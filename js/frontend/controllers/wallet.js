@@ -7,8 +7,8 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet', 'frontend/services'],
-function (controllers, DarkWallet, Services) {
+define(['./module', 'darkwallet', 'frontend/port'],
+function (controllers, DarkWallet, Port) {
   'use strict';
   controllers.controller('WalletCtrl',
   ['$scope', '$location', 'notify', 'clipboard', 'modals', '$timeout',
@@ -28,7 +28,7 @@ function (controllers, DarkWallet, Services) {
   clipboard.registerScope($scope);
 
   // Gui service, connect to report events on page.
-  Services.connectNg('gui', $scope, function(data) {
+  Port.connectNg('gui', $scope, function(data) {
     // console.log('[WalletCtrl] gui bus:', data.type, data.text);
     if (data.type == 'balance') {
     }
@@ -52,7 +52,7 @@ function (controllers, DarkWallet, Services) {
   })
 
   // Obelisk service, connect to get notified on events and connection.
-  Services.connectNg('obelisk', $scope, function(data) {
+  Port.connectNg('obelisk', $scope, function(data) {
     console.log("[WalletCtrl] obelisk bus:", data.type);
     if (data.type == 'connected') {
         var identity = DarkWallet.getIdentity();
@@ -68,7 +68,7 @@ function (controllers, DarkWallet, Services) {
   })
 
   // Wallet service, connect to get notified about identity getting loaded.
-  Services.connectNg('wallet', $scope, function(data) {
+  Port.connectNg('wallet', $scope, function(data) {
     console.log("[WalletCtrl] wallet bus:", data.type);
     if (data.type == 'ready') {
         // identity is ready here
