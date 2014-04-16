@@ -28,7 +28,7 @@ We have been following this procedure since the wallet is under development with
 
 Remember: Your funds are safe as long as you *don't lose your seed* to restore later.
 
-Other than that we're not making many gurantees.
+Other than that we're not making many guarantees.
 
 
 Development
