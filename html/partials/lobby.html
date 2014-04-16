@@ -48,7 +48,7 @@
           </div>
           <h5>Your permanent identity</h5>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
-          <h5>Your temporary identity</h5><button ng-click="newTempIdentity()">New</button>
+          <h5>Your temporary identity</h5><button class="button small radius expand" ng-click="newTempIdentity()">New</button>
           <div class="wrapper"><identicon title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></identicon> {{comms.name}}</div>
           <h5>Peers</h5>
           <div ng-repeat="peer in peers">
