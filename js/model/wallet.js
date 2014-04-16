@@ -530,7 +530,7 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
     if (!this.identity.txdb.transactions.hasOwnProperty(txHash)) {
         // don't run if we already processed the transaction since
         // otherwise bitcoinjs-lib will reset 'pending' attribute.
-        var txhash = convert.bytesToHex(tx.getHash())
+        var txhash = Bitcoin.convert.bytesToHex(tx.getHash())
 
         // store in our tx db
         this.identity.txdb.storeTransaction(txHash, serializedTx)
