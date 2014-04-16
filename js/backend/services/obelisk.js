@@ -54,7 +54,7 @@ function(Port) {
               } else {
                   Port.post('obelisk', {'type': 'connected'});
               }
-          }, function(evt) {
+          }, function(err, evt) {
               // Disconnected
               console.log("[obelisk] Disconnected", evt);
               Port.post('obelisk', {'type': 'disconnected'});
@@ -80,10 +80,10 @@ function(Port) {
   /**
    * Start the gateway client
    */
-  ObeliskService.prototype.connectClient = function(connectUri, handleConnect) {
+  ObeliskService.prototype.connectClient = function(connectUri, handleConnect, handleDisconnect) {
       var self = this;
       this.connecting = true;
-      this.client = new GatewayClient(connectUri, handleConnect);
+      this.client = new GatewayClient(connectUri, handleConnect, handleDisconnect);
   }
 
 

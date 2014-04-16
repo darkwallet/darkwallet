@@ -59,8 +59,11 @@ function (controllers, DarkWallet, Port) {
         notify.success('connected', identity.connections.servers[identity.connections.selectedServer].name);
         //notify.progress.color('green');
         //notify.progress.complete();
-    }
-    if (data.type == 'connectionError') {
+    } else if (data.type == 'disconnected') {
+        var identity = DarkWallet.getIdentity();
+        notify.warning('disconnected', identity.connections.servers[identity.connections.selectedServer].name);
+            $scope.$apply();
+    } else if (data.type == 'connectionError') {
         notify.error("Error connecting", data.error)
         //notify.progress.color('red');
         //notify.progress.complete();
