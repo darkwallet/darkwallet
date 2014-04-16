@@ -583,7 +583,7 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
       var outputAddress = self.getWalletAddress(address);
       // already exists
       if (outputAddress) {
-          processOutput(outputAddress, txhash, i, txOut.value, height);
+          self.processOutput(outputAddress, txhash, i, txOut.value, height);
       }
     });
 
