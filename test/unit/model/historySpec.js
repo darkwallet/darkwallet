@@ -114,7 +114,6 @@ c09fd9179e635bcfd95a2b989fc16b1e88ac00000000";
 
         tx = { hash: "txUnconfirmed", height: 294513 };
         expect(history.findIndexForRow(tx)).toBe(-1);
-        expect(history.findIndexForRow(tx)).toBe(-2);
       });
     });
 

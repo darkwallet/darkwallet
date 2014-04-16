@@ -100,6 +100,13 @@ define(['model/wallet'], function(Wallet) {
         }
       };
       wallet = new Wallet(identity.store, identity);
+      
+      Object.keys(wallet.pubKeys).forEach(function(index) {
+        var walletAddress = wallet.pubKeys[index];
+        if (walletAddress.index.length > 1 && walletAddress.history) {
+          wallet.processHistory(walletAddress, walletAddress.history);
+        }
+      });
     });
     
     it('is created properly', function() {
