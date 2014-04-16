@@ -11,13 +11,12 @@
  */
 define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWallet, Mnemonic) {
   'use strict';
-  controllers.controller('NewWalletCtrl', ['$scope', function($scope) {
+  controllers.controller('NewWalletCtrl', ['$scope', '$window', function($scope, $window) {
 
   $scope.activeForm = 'password';
   $scope.create_or_restore = 'create';
 
   $scope.passwordSubmit = function() {
-    var passwd = $scope.passwd;
 
     // Check that passwords match.
     if ($scope.passwd != $scope.passwd2) {
@@ -42,14 +41,14 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
 
   $scope.mnemonic2Submit = function() {
     if ($scope.mnemonicWords && $scope.mnemonicWords != $scope.mnemonic2Words) {
-      alert("ey!");
+      $scope.message2 = 'Mnemonics are not the same';
       return;
     }
     
     var words = $scope.mnemonic2Words.split(' ');
     var mnemonic = new Mnemonic(words);
     DarkWallet.getKeyRing().createIdentity($scope.name, mnemonic.toHex(), $scope.passwd);
-    window.location = 'index.html'
+    $window.location = 'index.html'
   }
 }]);
 });
