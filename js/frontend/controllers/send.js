@@ -69,9 +69,7 @@ function (controllers, Services, DarkWallet, Bitcoin) {
       progressBar.style.width = radar*100 + '%';
   }
 
-  $scope.finishSign = function(signTask, password) {
-    var amountNote = (signTask.fee + signTask.totalAmount) + ' satoshis';
-
+  $scope.finishSign = function(signTask, amountNote, password) {
     // callback waiting for radar feedback
     var isBroadcasted = false;
     var onBroadcast = function(error, task) {
@@ -79,6 +77,8 @@ function (controllers, Services, DarkWallet, Bitcoin) {
         if (error) {
             var errorMessage = error.message || ''+error;
             notify.error("Error broadcasting", errorMessage);
+        } else if (task && task.type == 'signatures') {
+            notify.note('Signatures pending', amountNote)
         } else if (task && task.type == 'radar') {
             updateRadar(task.radar || 0)
             if (!isBroadcasted) {
@@ -130,11 +130,9 @@ function (controllers, Services, DarkWallet, Bitcoin) {
               notify.error("Transaction failed", errorMessage);
           } else if (task && task.type == 'sign') {
               // Need to sign so open modal
-              $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(_password) {$scope.finishSign(task, _password)})
+              $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(_password) {$scope.finishSign(task, amountNote, _password)})
           } else if (task && task.type == 'mixer') {
               notify.note('Sent to mixer ('+task.task.state+')', amountNote)
-          } else if (task && task.type == 'signatures') {
-              notify.note('Signatures pending', amountNote)
           } else if (task) {
               notify.note('New task: ' + task.type, amountNote)
           } else {
