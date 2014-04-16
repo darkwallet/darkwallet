@@ -131,9 +131,6 @@ function(IdentityKeyRing, Port) {
         }
         var identity = self.getCurrentIdentity();
         client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
-        if (walletAddress.history) {
-            identity.history.fillHistory(walletAddress, walletAddress.history);
-        }
     };
 
     // Handle initial connection to obelisk
