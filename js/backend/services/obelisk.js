@@ -74,7 +74,9 @@ function(Port) {
       Port.post('obelisk', {'type': 'disconnect'});
       console.log("[obelisk] Disconnect");
       if (this.client && this.connected) {
+          this.connected = false;
           this.client.websocket.close();
+          this.client = null;
       }
   };
 
