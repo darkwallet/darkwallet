@@ -37,18 +37,19 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $scope.contactFormShown = false;
   };
 
-  $scope.openEditForm = function(i, contact) {
-    $scope.contactFormShown = i;
+  $scope.openEditForm = function(contact) {
     $scope.contactToEdit = {name: contact.name, address: contact.address};
   };
+
+  $scope.openContact = function(contact) {
+    $scope.openModal('show-contact', {contact: contact});
+  }
 
   $scope.editContact = function(contact) {
     var identity = DarkWallet.getIdentity();
     contact.name = $scope.contactToEdit.name;
     contact.address = $scope.contactToEdit.address;
     identity.contacts.updateContact(contact);
-    $scope.contactFormShown = false;
-    $scope.contactToEdit = {};
   };
 
   $scope.deleteContact = function(contact) {

@@ -34,6 +34,7 @@
         </div>
       </div>
     </form>
+    <!--
     <table class="expand contacts">
       <thead>
         <tr>
@@ -64,11 +65,11 @@
             <button ng-click="openModal('show-qr', {address: contact.address})" class="button square fa fa-qrcode"></button>
             <button ng-click="openEditForm($index, contact)" class="button square fa fa-edit"></button>
             <button ng-click="openModal('confirm-delete', {name: contact.name, object: contact}, deleteContact)" class="button square alert fa fa-trash-o"></button>
-            <!--<button ng-click="deleteContact(contact)" class="button square alert fa fa-trash-o"></button>-->
           </td>
         </tr>
       </tbody>
     </table>
+    -->
   </div>
 </div>
 <div class="row">
@@ -81,10 +82,10 @@
         <div class="contact-label">{{contact.name}}</div>
         <div class="row collapse contact-menu">
           <div class="small-6 columns">
-            <button ng-click="openModal('show-contact')" class="prefix button radius">Addresses</button>
+            <button ng-click="openContact(contact)" class="prefix button radius">Addresses</button>
           </div>
           <div class="small-6 columns">
-            <button class="postfix button radius alert">Delete</button>
+            <button ng-click="openModal('confirm-delete', {name: contact.name, object: contact}, deleteContact)" class="postfix button radius alert">Delete</button>
           </div>
       </div>
       </li>
