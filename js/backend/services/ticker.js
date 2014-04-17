@@ -1,27 +1,33 @@
 define(['backend/port'],
 function(Port) {
   'use strict';
-  function TickerService(core) {
+    function TickerService(core) {
       var self = this;
-    // Some scope variables
-    this.rates = {};
+      // Some scope variables
+      self.rates = {};
+      self.core = core;
 
       // Port for communication with other services
       Port.connect('obelisk', function(data) {
         if (data.type == 'connected') {
-          var identity = core.getCurrentIdentity();
+          var identity = self.core.getCurrentIdentity();
           var currency = identity.settings.fiatCurrency;
 
-          var client = core.getClient();
           self.setFiatCurrency(currency);
         }
- 
-      });
 
+      });
+    }
     // Handle getting ticker information
-    function handleTicker(err, currency, lastRates) {
+    TickerService.prototype.handleTicker = function(err, currency, lastRates) {
+        var self = this;
         if (err || !lastRates) {
-          Port.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info", error: err});
+          Port.post('gui', {
+            type: 'error',
+            title: 'ticker',
+            text: "can't get ticker info",
+            error: err
+          });
           return;
         }
         if (lastRates.hasOwnProperty('24h_avg')) {
@@ -33,33 +39,47 @@ function(Port) {
           self.rates[currency] = lastRates['last'];
         } else {
           // No values we can use
-          Port.post('gui', {type: 'error', title: 'ticker', text: "can't get ticker info"});
+          Port.post('gui', {
+            type: 'error',
+            title: 'ticker',
+            text: "can't get ticker info"
+          });
           console.log("[ticker] can't get ticker info", lastRates);
           return;
         }
-        Port.post('wallet', {type: 'ticker', currency: currency, rates: lastRates, rate: self.rates[currency]});
+        Port.post('wallet', {
+          type: 'ticker',
+          currency: currency,
+          rates: lastRates,
+          rate: self.rates[currency]
+        });
         console.log("[ticker] ticker fetched");
     }
 
-    this.setFiatCurrency = function(currency) {
-        var client = core.getClient();
+    TickerService.prototype.setFiatCurrency = function(currency) {
+        var self = this;
+        var client = self.core.getClient();
         if (!self.rates.hasOwnProperty(currency)) {
             console.log("[ticker] fetching ticker for", currency);
-            client.fetch_ticker(currency, function(err, lastRates) {handleTicker(err, currency, lastRates)});
+            client.fetch_ticker(currency, function(err, lastRates) {
+                self.handleTicker(err, currency, lastRates);
+            });
         }
     };
-     this.btcToFiat = function(amount, currency, fiatCurrency) {
+    TickerService.prototype.btcToFiat = function(amount, currency, fiatCurrency) {
+      var self = this;
       if (currency === 'mBTC') {
         amount /= 1000;
       }
-      var result = amount * this.rates[fiatCurrency];
+      var result = amount * self.rates[fiatCurrency];
       if (!isNaN(result)) {
         return result.toFixed(2); 
       }
     };
     
-    this.fiatToBtc = function(amount, currency, fiatCurrency) {
-      var result = amount / this.rates[fiatCurrency];
+    TickerService.prototype.fiatToBtc = function(amount, currency, fiatCurrency) {
+      var self = this;
+      var result = amount / self.rates[fiatCurrency];
       var decimals = 8;
       if (currency === 'mBTC') {
         result *= 1000;
@@ -69,9 +89,6 @@ function(Port) {
           return result.toFixed(decimals);
       }
     };
-
-
-  }
 
   return TickerService;
 

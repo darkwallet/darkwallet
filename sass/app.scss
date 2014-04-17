@@ -6,6 +6,8 @@ html, body, div.container { height: 100%; }
 *:focus { outline: 0; } /* Remove webkit's default outline */
 .nomarginbottom { margin-bottom: 0 !important; }
 
+.tooltip { max-width: none; }
+
 input[type="text"].ng-invalid:not(.ng-pristine) { background: red; }
 
 input[type=range] {
@@ -67,6 +69,13 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 	top: 0;
 	&:first-of-type { right: 37px; }
 	&:last-of-type { border-radius: 0 $global-radius $global-radius 0; }
+	&:before { position: absolute; top: 50%; left: 50%; margin: -8px 0 0 -7px; }
+}
+
+.button.square.lefted {
+	z-index: 3; 
+	float: left;
+	&:first-of-type { border-radius: $global-radius 0 0 $global-radius; }
 	&:before { position: absolute; top: 50%; left: 50%; margin: -8px 0 0 -7px; }
 }
 

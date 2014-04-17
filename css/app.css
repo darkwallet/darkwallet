@@ -4330,6 +4330,9 @@ html, body, div.container {
 .nomarginbottom {
   margin-bottom: 0 !important; }
 
+.tooltip {
+  max-width: none; }
+
 input[type="text"].ng-invalid:not(.ng-pristine) {
   background: red; }
 
@@ -4396,6 +4399,17 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
   .button.square.righted:last-of-type {
     border-radius: 0 3px 3px 0; }
   .button.square.righted:before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -7px; }
+
+.button.square.lefted {
+  z-index: 3;
+  float: left; }
+  .button.square.lefted:first-of-type {
+    border-radius: 3px 0 0 3px; }
+  .button.square.lefted:before {
     position: absolute;
     top: 50%;
     left: 50%;
