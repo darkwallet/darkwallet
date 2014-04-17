@@ -592,7 +592,7 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
       var op = txIn.outpoint
       var o = self.wallet.outputs[op.hash+':'+op.index];
       if (o) {
-        o.spend = txhash+':'+i;
+        o.spend = txHash+':'+i;
         o.spendheight = height;
         if (height) {
             if (o.spendpending && walletAddress.address == o.address) {
