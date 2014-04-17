@@ -17,14 +17,12 @@ function(IdentityKeyRing, Port) {
     // Wallet port
     Port.listen('wallet', function() {
       }, function(port) {
-          // Connected
-          console.log('[bus] wallet client connected');
+          // Client connected
           if (currentIdentity && keyRing.identities.hasOwnProperty(currentIdentity)) {
               port.postMessage({'type': 'ready', 'identity': currentIdentity});
           }
       }, function(port) {
-          // Disconnected
-          console.log('[bus] wallet client disconnected');
+          // Client disconnected
     });
 
     /***************************************
@@ -111,9 +109,7 @@ function(IdentityKeyRing, Port) {
         identity.wallet.processHistory(walletAddress, history);
 
         // now subscribe the address for notifications
-        console.log("[wallet] subscribing", walletAddress.address);
         client.subscribe(walletAddress.address, function(err, res) {
-            console.log("[wallet] subscribed", walletAddress.address, err, res);
 
             // fill history after subscribing to ensure we got all histories already (for now).
             identity.history.fillHistory(walletAddress, history);
