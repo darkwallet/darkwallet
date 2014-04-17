@@ -47,8 +47,12 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
     
     var words = $scope.mnemonic2Words.split(' ');
     var mnemonic = new Mnemonic(words);
-    DarkWallet.getKeyRing().createIdentity($scope.name, mnemonic.toHex(), $scope.passwd);
-    $window.location = 'index.html'
+
+    var walletService = DarkWallet.getService('wallet');
+
+    var identity = walletService.createIdentity($scope.name, mnemonic.toHex(), $scope.passwd, function() {
+        $window.location = '#dashboard';
+    });
   }
 }]);
 });

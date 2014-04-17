@@ -65,17 +65,31 @@ function (mocks, NewWalletCtrl, DarkWallet) {
     });
     
     it('generates a new identity when a mnemonic is provided', function() {
+      // Setup some mockup objects
+      var pars = {};
+      var walletService = {
+        createIdentity: function(name, secret, password, callback) {
+            pars.name = name;
+            pars.secret = secret;
+            pars.password = password;
+            callback();
+        }
+      }
+      DarkWallet.setMockService('wallet', walletService);
+
+      // Start testing
       scope.name = 'Satoshi';
       scope.passwd = 'p4ssw0rd';
       scope.mnemonic2Words = "king government grown apologize bowl precious eternal ceiling satisfy just silently control";
       scope.mnemonic2Submit();
-      expect(DarkWallet._createIdentityResult).toEqual({
-        name: 'Satoshi',
-        seed_length: 32,
-        password: 'p4ssw0rd'
-      });
-      expect($window.location).toBe('index.html');
+
+      expect($window.location).toBe('#dashboard');
+
       expect(scope.message2).toBeUndefined();
+
+      expect(pars.name).toBe(scope.name);
+      expect(pars.secret).toBe('be21b135c24c58c0fd72182db940af8d');
+      expect(pars.password).toBe(scope.passwd);
     });
   });
 });

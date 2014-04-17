@@ -70,12 +70,17 @@ function (controllers, DarkWallet, Port) {
     }
   });
 
+  var prevIdentity = false;
   // Wallet service, connect to get notified about identity getting loaded.
   Port.connectNg('wallet', $scope, function(data) {
     console.log("[WalletCtrl] wallet bus:", data.type);
     if (data.type == 'ready') {
         // identity is ready here
         loadIdentity(DarkWallet.getIdentity());
+        if(!$scope.$$phase && prevIdentity && prevIdentity != data.name) {
+            $scope.$apply();
+        }
+        prevIdentity = data.name;
     }
     if (data.type == 'ticker') {
         $scope.rates[data.currency] = data.rate;
@@ -169,9 +174,6 @@ function (controllers, DarkWallet, Port) {
       }
       console.log("[WalletCtrl] loadIdentity", identity.name);
       // apply scope changes
-      /*if(!$scope.$$phase) {
-          $scope.$apply();
-      }*/
   };
 
   // Initialize pocket structures.

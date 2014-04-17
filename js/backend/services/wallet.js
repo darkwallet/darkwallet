@@ -33,22 +33,36 @@ function(IdentityKeyRing, Port) {
     /* Identities
      */
 
-    this.loadIdentity = function(idx) {
+    var startIdentity = function(identity, callback) {
+        currentIdentity = identity.name;
+
+        //Load up tasks
+        var openTasks = identity.tasks.getOpenTasks();
+        if (openTasks) {
+             chrome.browserAction.setBadgeText({text: ""+openTasks});
+        }
+
+        // Inform gui and other services
+        identity.history.update = function() { Port.post('gui', {name: 'update'}); };
+
+        Port.post('wallet', {'type': 'ready', 'identity': identity.name});
+        Port.post('wallet', {'type': 'loaded', 'identity': identity.name});
+
+        callback ? callback(identity) : null;
+    }
+
+    this.createIdentity = function(name, secret, password, callback) {
+        console.log("[wallet] Create identity", name);
+        var identity = keyRing.createIdentity(name, secret, password);
+        startIdentity(identity, callback);
+    }
+
+    this.loadIdentity = function(idx, callback) {
         var name = keyRing.availableIdentities[idx];
         if (currentIdentity != name) {
             console.log("[wallet] Load identity", name);
-            currentIdentity = name;
             keyRing.get(name, function(identity) {
-                //Load up tasks
-                var openTasks = identity.tasks.getOpenTasks();
-                if (openTasks) {
-                    chrome.browserAction.setBadgeText({text: ""+openTasks});
-                }
-
-                // Inform gui
-                identity.history.update = function() { Port.post('gui', {name: 'update'}); };
-                Port.post('wallet', {'type': 'ready', 'identity': name});
-                Port.post('wallet', {'type': 'loaded', 'identity': name});
+                startIdentity(identity, callback);
             });
         }
     };

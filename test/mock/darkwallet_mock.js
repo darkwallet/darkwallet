@@ -4,20 +4,26 @@
 
 define(function() {
 // DarkWallet object.
+var _availableIdentities = [];
 var DarkWallet = {
 
     // Get the wallet service.
-    service: function() {
+    core: function() {
       var _radar = 0;
       return {
         getKeyRing: function() {
           return {
             createIdentity: function(name, seed, password) {
-              DarkWallet._createIdentityResult = {
+              var identity = {
                 name: name,
-                seed_length: seed.length,
+                seed: seed,
                 password: password
               };
+              _availableIdentities.push(name);
+              return identity;
+            },
+            getIdentityNames: function() {
+                return _availableIdentities;
             }
           };
         },
@@ -47,6 +53,9 @@ f2aeea554b7fb7d145061efad4398879b9be88ac00000000"
         getIdentity: function() {
           
         },
+        loadIdentity: function(idx) {
+            DarkWallet._currentIdentityIdx = idx;
+        },
         getLobbyTransport: function() {
            return {
                getChannel: function(name) {
@@ -60,18 +69,14 @@ f2aeea554b7fb7d145061efad4398879b9be88ac00000000"
         }
       };
     },
-
-    // Identity key ring. Holds all identities.
-    getKeyRing: function() {return DarkWallet.service().getKeyRing()},
-
-    // Light client
-    getClient: function() {return DarkWallet.service().getClient()},
-
-    // Get identity
-    getIdentity: function(idx) {return DarkWallet.service().getIdentity(idx)},
-
-    // Lobby transport
-    getLobbyTransport: function() {return DarkWallet.service().getLobbyTransport()}
+    _services: {},
+    getService: function(name) {return DarkWallet._services[name];},
+    getKeyRing: function() {return DarkWallet.core().getKeyRing()},
+    getClient: function() {return DarkWallet.core().getClient()},
+    getIdentity: function(idx) {return DarkWallet.core().getIdentity(idx)},
+    getLobbyTransport: function() {return DarkWallet.core().getLobbyTransport()},
+    // following is only for tests
+    setMockService: function(name, obj) { DarkWallet._services[name] = obj;}
 };
 return DarkWallet;
 });
