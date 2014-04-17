@@ -17,7 +17,6 @@ function DarkWalletService() {
     var services = {};
 
     // Backend services
-    services.lobby = new LobbyService(this);
     services.obelisk = new ObeliskService(this);
     services.wallet = new WalletService(this);
     services.ctxMenus = new CtxMenusService(this);
@@ -25,6 +24,7 @@ function DarkWalletService() {
     services.ticker = new TickerService(this);
     services.mixer = new MixerService(this);
     services.notifier = new NotifierService(this);
+    services.lobby = new LobbyService(this);
 
     var servicesStatus = { gateway: 'offline', obelisk: 'offline' };
     this.servicesStatus = servicesStatus;
