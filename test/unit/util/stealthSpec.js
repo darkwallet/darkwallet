@@ -67,11 +67,17 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       expect(res.length).toBe(2);
     });
 
+    it('uncovers the stealth secret', function() {
+      var secret = [75,73,116,38,110,230,200,190,217,239,242,205,16,135,187,193,16,31,23,186,217,195,120,20,248,86,27,103,245,80,197,68];
+      var c = Stealth.uncoverStealth(scanKeyBytes, ephemKeyPubBytes);
+      expect(c).toEqual(secret);
+    });
+
     it('generates an address for receiving for a spend key with the given ephemkey', function() {
       var scanSecret = scanKeyBytes;
       var ephemBytes = ephemKeyPubBytes;
       var spendBytes = spendKeyPubBytes;
-      var keyBytes = Stealth.uncoverStealth(scanSecret, ephemBytes, spendBytes);
+      var keyBytes = Stealth.uncoverPublic(scanSecret, ephemBytes, spendBytes);
 
       expect(keyBytes).toEqual([3, 5, 246, 185, 154, 68, 162, 189, 236, 139, 72, 79, 252, 238, 86, 28, 249, 160, 195, 183, 234, 146, 234, 142, 99, 52, 230, 251, 196, 241, 193, 120, 153]);
 
@@ -81,12 +87,19 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       expect(address.toString()).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
     });
     
-    it('derives a private key from spend key and shared secret');
+    it('derives a private key from spend key and shared secret', function() {
+      var privKey = Stealth.uncoverPrivate(scanKeyBytes, ephemKeyPubBytes, spendKeyBytes);
+      var keyBytes = privKey.getPub().toBytes();
+
+      var keyHash = Bitcoin.crypto.hash160(keyBytes);
+      var address = new Bitcoin.Address(keyHash);
+      expect(address.toString()).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
+    });
 
     it('derives public key from spend key and shared secret', function() {
       var spendKey = new Bitcoin.ECPubKey(spendKeyPubBytes);
       var c = new Bitcoin.BigInteger("10000");
-      var keyBytes = Stealth.deriveKey(spendKey, c);
+      var keyBytes = Stealth.derivePublicKey(spendKey, c);
 
       expect(keyBytes).toEqual([3, 173, 36, 66, 71, 110, 69, 203, 135, 107, 57, 44, 117, 28, 232, 195, 123, 20, 36, 239, 18, 50, 107, 196, 154, 84, 37, 176, 43, 123, 246, 179, 204]);
     });
@@ -123,23 +136,41 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       outHash = [255,1,2,3,12,54,67];
       var res2 = Stealth.checkPrefix(outHash, stealthPrefix);
 
+      // prefix with size 13
+      stealthPrefix = [13, 255, 255, 2, 3];
+      outHash = [255,248,2,3,12,54,67];
+      var res3 = Stealth.checkPrefix(outHash, stealthPrefix);
+
+      // prefix with size 13, last bit fail
+      stealthPrefix = [13, 255, 255, 2, 3];
+      outHash = [255,240,2,3,12,54,67];
+      var res4 =   Stealth.checkPrefix(outHash, stealthPrefix);
+
+
       // prefix with size 8, not equal
       stealthPrefix = [8, 255, 1, 2, 3];
       outHash = [254,255,2,3,12,54,12];
-      var res3 = Stealth.checkPrefix(outHash, stealthPrefix);
+      var res5 = Stealth.checkPrefix(outHash, stealthPrefix);
 
       expect(res1).toBe(true);
       expect(res2).toBe(true);
-      expect(res3).toBe(false);
+      expect(res3).toBe(true);
+      expect(res4).toBe(false);
+      expect(res5).toBe(false);
     });
     
     it('adds stealth output to the given transaction and return destination address', function() {
       var recipient = testAddress;
       var newTx = new Bitcoin.Transaction();
-      var recipient = Stealth.addStealth(recipient, newTx, ephemKeyBytes);
+      var recipient = Stealth.addStealth(recipient, newTx, ephemKeyBytes, 1);
 
       expect(recipient).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
       expect(newTx.outs.length).toBe(1);
+      var outBuffer = newTx.outs[0].script.chunks[1];
+      expect(newTx.outs[0].script.chunks[0]).toBe(Bitcoin.Opcode.map.OP_RETURN); // OP_RETURN
+      expect(outBuffer[0]).toBe(Stealth.version);
+      expect(outBuffer.slice(1,5)).toEqual([1,0,0,0]);
+      expect(newTx.outs[0].script.buffer)
     });
   });
 });

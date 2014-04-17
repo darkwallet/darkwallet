@@ -132,33 +132,63 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, ephemKeyBytes) {
     // Now generate address
     var address = Stealth.deriveAddress(spendKey, c);
     return [address, ephemKey];
-}
+};
 
 /*
- * Generate address for receiving for a spend key with the given ephemkey
+ * Generate shared secret given the scan secret and an ephemeral key
  * @param {Object} scanSecretBytes Secret as byte array
  * @param {Object} ephemKeyBytes Ephemeral key data as byte array
  * @param {Object} spendKeyBytes Spend key as bytes
+ * @private
  */
-Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
+Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes) {
     // Parse public keys into api objects
     var decKey = Stealth.importPublic(ephemKeyBytes);
-    var spendKey = Stealth.importPublic(spendKeyBytes);
 
     // Parse the secret into a BigInteger
     var priv = Bitcoin.BigInteger.fromByteArrayUnsigned(scanSecret.slice(0, 32));
 
     // Generate shared secret
-    var c = Stealth.stealthDH(priv, decKey);
-
-    // Now generate address
-    return Stealth.deriveKey(spendKey, c);
+    return Stealth.stealthDH(priv, decKey);
 };
 
 /*
+ * Generate a public key bytes for a stealth transaction 
+ * @param {Object} scanSecretBytes User's scan secret as byte array
+ * @param {Object} ephemKeyBytes Tx ephemeral key data as byte array
+ * @param {Object} spendKeyBytes User's public spend key as bytes
+ * @returns byte array representing the public key
+ */
+Stealth.uncoverPublic = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
+    // Now generate address
+    var spendKey = Stealth.importPublic(spendKeyBytes);
+
+    var c = Stealth.uncoverStealth(scanSecret, ephemKeyBytes);
+
+    return Stealth.derivePublicKey(spendKey, c);
+};
+
+/*
+ * Generate a public key bytes for a stealth transaction 
+ * @param {Object} scanSecretBytes User's scan secret as byte array
+ * @param {Object} ephemKeyBytes Tx ephemeral key data as byte array
+ * @param {Object} spendKeyBytes User's private spend key as bytes
+ */
+Stealth.uncoverPrivate = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
+    var c = Stealth.uncoverStealth(scanSecret, ephemKeyBytes);
+
+    // Now generate address
+    var spendKey = new Bitcoin.ECKey(spendKeyBytes, true);
+    return Stealth.derivePrivateKey(spendKey, c);
+};
+
+
+/*
  * Derive a private key from spend key and shared secret
- * @param {Bitcoin.ECKey} spendKey Spend Key
+ * @param {Bitcoin.ECKey} spendKey Spend Private Key
  * @param {BigInteger} c Derivation value
+ * @returns {Bitcoin.ECKey}
+ * @private
  */
 Stealth.derivePrivateKey = function(spendKey, c) {
     // Generate the key with the bitcoin api
@@ -169,8 +199,10 @@ Stealth.derivePrivateKey = function(spendKey, c) {
  * Derive public key from spendKey and shared secret
  * @param {Bitcoin.ECPubKey} spendKey Spend Key
  * @param {BigInteger} c Derivation value
+ * @returns {Bitcoin.ECKey} Derived (compressed) public key bytes
+ * @private
  */
-Stealth.deriveKey = function(spendKey, c) {
+Stealth.derivePublicKey = function(spendKey, c) {
     // Now generate address
     var bytes = spendKey.pub
                           .add(new Bitcoin.ECKey(c).getPub().pub)
@@ -184,10 +216,12 @@ Stealth.deriveKey = function(spendKey, c) {
  * Derive a Bitcoin Address from spendKey and shared secret
  * @param {Bitcoin.ECPubKey} spendKey Spend Key
  * @param {BigInteger} c Derivation value
+ * @returns {Bitcoin.Address} Derived bitcoin address
+ * @private
  */
 Stealth.deriveAddress = function(spendKey, c) {
     // Now generate address
-    var bytes = this.deriveKey(spendKey, c);
+    var bytes = this.derivePublicKey(spendKey, c);
 
     // Turn to address
     var mpKeyHash = Bitcoin.crypto.hash160(bytes);
@@ -200,6 +234,8 @@ Stealth.deriveAddress = function(spendKey, c) {
  * returns a Bitcoin.TransactionOut object.
  * @param {Object} ephemKeyBytes Ephemeral key data as byte array
  * @param {Number} nonce Nonce for the output
+ * @returns {Bitcoin.TransactionOut} stealth transaction output
+ * @private
  */
 Stealth.buildNonceOutput = function(ephemKeyBytes, nonce) {
     var ephemScript = new Bitcoin.Script();
@@ -215,6 +251,8 @@ Stealth.buildNonceOutput = function(ephemKeyBytes, nonce) {
  * returns true or false
  * @param {Object} outHash byte array to compare to
  * @param {Number} prefix prefix array including first byte defining mask
+ * @returns {Boolean} whether the prefix matches
+ * @private
  */
 Stealth.checkPrefix = function(outHash, stealthPrefix) {
     var prefixN = stealthPrefix[0];
@@ -248,32 +286,44 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
  *                                if null will be generated.
  */
 
-Stealth.addStealth = function(recipient, newTx, ephemKeyBytes) {
-    var stealthData, outHash, ephemKey, nonce;
+Stealth.addStealth = function(recipient, newTx, ephemKeyBytes, initialNonce) {
+    var outHash, ephemKey, recipient;
     var stealthAddress = Stealth.parseAddress(recipient);
     var stealthPrefix = stealthAddress.prefix;
-    // iterate since we might not find a nonce for our required prefix then
-    // we need to create a new ephemkey
     var scanKeyBytes = stealthAddress.scanKey;
 
-    // TODO: Correctly manage spend keys here
+    // start checking nonce in a random position so we don't leak information
+    var maxNonce = Math.pow(2, 32);
+    var startingNonce = initialNonce || Math.floor(Math.random()*maxNonce);
+
+    // iterate since we might not find a nonce for our required prefix then
+    // we need to create a new ephemkey
+    // TODO: Correctly manage spend keys here when there is more than one
     var spendKeyBytes = stealthAddress.spendKeys[0];
     do {
-        stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, ephemKeyBytes);
+        var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, ephemKeyBytes);
         recipient = stealthData[0].toString();
         ephemKey = stealthData[1];
-        nonce = 0;
+        var nonce = startingNonce;
+        var iters = 0;
         // iterate through nonces to find a match for given prefix
         do {
-	    var nonceBytes = convert.numToBytes(nonce, 4)
-            outHash = bufToArray(Bitcoin.crypto.hash160(nonceBytes.concat(ephemKey)));
+            // modify the nonce first so it's unchanged after exiting the loop
             nonce += 1;
-        } while(nonce < 4294967296 && !Stealth.checkPrefix(outHash, stealthPrefix));
+            iters += 1;
+            if (nonce > maxNonce) {
+                nonce = 0;
+            }
+	    var nonceBytes = convert.numToBytes(nonce, 4)
+
+            // Hash the nonce 
+            outHash = bufToArray(Bitcoin.crypto.hash160(nonceBytes.concat(ephemKey)));
+        } while(iters < maxNonce && !Stealth.checkPrefix(outHash, stealthPrefix));
 
     } while(!Stealth.checkPrefix(outHash, stealthPrefix));
 
     // we finally mined the ephemKey that makes the hash match
-    var stealthOut = Stealth.buildNonceOutput(ephemKey, nonce);
+    var stealthOut = Stealth.buildNonceOutput(ephemKey, nonce-1);
     newTx.addOutput(stealthOut);
     return recipient;
 };
