@@ -55,6 +55,10 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.deleteContact = function(contact) {
     var identity = DarkWallet.getIdentity();
     identity.contacts.deleteContact(contact);
+    var contactIndex = $scope.contacts.indexOf(contact);
+    if (contactIndex > -1) {
+        $scope.contacts.splice(contactIndex, 1);
+    }
   };
 }]);
 });
