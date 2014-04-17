@@ -148,7 +148,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .tabs dd.active > a { background: lighten($primary-color, 10%); color: black; }
 
-.top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave, div.scroller.ng-animate.ng-hide-remove, div.scroller.ng-animate.ng-hide-add { @include single-transition(); }
+.contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave, div.scroller.ng-animate.ng-hide-remove, div.scroller.ng-animate.ng-hide-add { @include single-transition(); }
 
 .top-bar { z-index: 3; position: absolute; width: 100%; }
 
@@ -165,6 +165,27 @@ span.meter { padding: 5px 0 0 5px; }
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover { background: $primary-color; cursor: pointer; }
 
 .contact-mosaic { max-height: 500px; overflow-y: scroll; overflow-x: hidden; }
+
+.contact-mosaic-full { overflow: hidden; }
+
+.contact-mosaic-square { 
+	text-align: center; 
+	border-radius: $global-radius; 
+	background: rgba(40,40,40,0.8); 
+	img { padding: 1em; -webkit-transform: scale(1) translateY(0); }
+}
+
+.contact-label { -webkit-transform: translateY(0); border-radius: $global-radius; background: rgba(60,60,60,0.8); width: 100%; padding: 0.3em 0; }
+
+.row.collapse.contact-menu { opacity: 0; margin: -2.3em 0 0 0; }
+
+.contact-mosaic-square:hover {
+	.contact-menu { opacity: 1; }
+	.contact-label { -webkit-transform: translateY(-2.3em); background: transparent; }
+	img { -webkit-transform: scale(0.8) translateY(-1em); }
+}
+
+.contact-menu button { margin: 0; }
 
 .select-list { min-height: 100px; background-image: none; }
 

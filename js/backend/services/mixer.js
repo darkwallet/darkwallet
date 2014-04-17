@@ -87,7 +87,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     // Now do stuff with the task...
     switch(task.state) {
       case 'announce':
-        var id = Bitcoin.Crypto.SHA256(Math.random()+'').toString();
+        var id = Bitcoin.CryptoJS.SHA256(Math.random()+'').toString();
         var msg = Protocol.CoinJoinOpenMsg(id, task.myamount);
         console.log("[mixer] Announce join");
         var myTx = new Bitcoin.Transaction(task.tx);

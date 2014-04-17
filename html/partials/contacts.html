@@ -71,3 +71,24 @@
     </table>
   </div>
 </div>
+<div class="row">
+  <div class="small-12 columns">
+<div class="contact-mosaic-full">
+  <ul class="contacts large-block-grid-5 medium-block-grid-3 small-block-grid-2">
+    <li ng-repeat="contact in contacts | orderBy:'name' track by $index" ng-click="ok(contact.address)">
+      <div class="contact-mosaic-square">
+        <identicon icon-size="70" hash="contact.hash" title="{{contact.hash}}"></identicon>
+        <div class="contact-label">{{contact.name}}</div>
+        <div class="row collapse contact-menu">
+          <div class="small-6 columns">
+            <button ng-click="openModal('show-contact')" class="prefix button radius">Addresses</button>
+          </div>
+          <div class="small-6 columns">
+            <button class="postfix button radius alert">Delete</button>
+          </div>
+      </div>
+      </li>
+  </ul>
+</div>
+</div>
+</div>
