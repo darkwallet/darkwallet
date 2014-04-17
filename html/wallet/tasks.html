@@ -33,15 +33,24 @@
             </span>
             </p>
             <!-- Sign -->
-            <button ng-show="pocket.canSign && !importingFundSig" ng-click="signFundTx(task)" class="button-sm postfix fa large-6 fa-pencil" >Sign</button>
+            <button ng-show="pocket.canSign && !importingFundSig && !foreignFundSig" ng-click="signFundTx(task)" class="button-sm postfix fa large-6 fa-pencil" >Sign</button>
 
             <!-- Import sig -->
-            <button class="button-sm postfix fa large-6 fa-download" ng-show="!importingFundSig" ng-click="importingFundSig=true">Import Signature</button>
+            <button class="button-sm postfix fa large-6 fa-download" ng-show="!importingFundSig && !foreignFundSig" ng-click="importingFundSig=true">Import Signature</button>
             <form name="fundImportSigForm" novalidate ng-submit="importFundSig(fundImportSigForm, task)" ng-show="importingFundSig">
                 <input required ng-model="fundImportSigForm.text" type="text" placeholder="Paste the signature here"></input>
                 <button class="button-sm postfix fa large-6 fa-check" type="submit">Import</button>
             </form>
             <button ng-show="importingFundSig" class="alert button-sm postfix large-6 fa fa-times" ng-click="importingFundSig=false">Cancel</button>
+
+            <!-- Sign with foreign key -->
+            <button class="button-sm postfix fa large-6 fa-download" ng-show="!importingFundSig && !foreignFundSig" ng-click="foreignFundSig=true">Sign with foreign key</button>
+            <form name="fundForeignForm" novalidate ng-submit="signFundTxForeign(fundForeignForm.foreignKey, task)" ng-show="foreignFundSig">
+                <input required ng-model="fundForeignForm.foreignKey" type="text" placeholder="Paste the private key here"></input>
+                <button class="button-sm postfix fa large-6 fa-check" type="submit">Sign</button>
+            </form>
+            <button ng-show="foreignFundSig" class="alert button-sm postfix large-6 fa fa-times" ng-click="foreignFundSig=false">Cancel</button>
+
       </div>
       <div class="large-1 columns">
       </div>

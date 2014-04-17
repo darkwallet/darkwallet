@@ -213,7 +213,56 @@ function (controllers, Bitcoin, DarkWallet) {
           notify.success('Signed transaction');
       }
   };
+  /**
+   * Sign a transaction with our keys
+   */
+  $scope.signFundTxForeign = function(form, task) {
+      var identity = $scope.identity;
+      var fund = $scope.pocket.fund;
+      var walletAddress = identity.wallet.getWalletAddress(fund.address);
 
+      var inputs = identity.wallet.txForAddress(walletAddress, task.tx);
+      if (inputs.length == 0) {
+           // Shouldn't happen
+           notify.error('Error importing', 'Transaction is not for this multisig');
+           return;
+      }
+
+      var script = convert.hexToBytes(fund.script);
+      var privKey = new Bitcoin.ECKey(form.foreignKey, true);
+      var signingAddress = privKey.getAddress().toString();
+
+      var signed = false;
+
+      // find key
+      $scope.pocket.participants.forEach(function(participant, pIdx) {
+          if (participant.type != 'me') {     // can't be me if we're importing the key
+              var pubKey = new Bitcoin.ECPubKey(participant.pubKey, true);
+
+              if (pubKey.getAddress().toString() == signingAddress) {
+                 // It's this position, so sign all inputs
+                 inputs.forEach(function(input, i) {
+                  var sig = task.tx.p2shsign(input.index, script, privKey.toBytes(), 1);
+                  var hexSig = convert.bytesToHex(sig);
+                  task.task.pending[i].signatures[pIdx] = hexSig;
+                  signed = true;
+                });
+                 
+              }
+          }
+      });
+      if (!signed) {
+          notify.warning("Could not sign with the given key");
+          return;
+      }
+      if (finishSigning(fund, task)) {
+          notify.success('Signed transaction and ready to go!');
+      } else {
+          notify.success('Signed transaction');
+      }
+ 
+  }
+ 
   /**
    * Sign a transaction with our keys
    */
