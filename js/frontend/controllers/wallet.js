@@ -11,9 +11,8 @@ define(['./module', 'darkwallet', 'frontend/port'],
 function (controllers, DarkWallet, Port) {
   'use strict';
   controllers.controller('WalletCtrl',
-  ['$scope', '$location', 'notify', 'clipboard', 'modals', '$timeout',
-   function($scope, $location, notify, clipboard, modals, $timeout) {
-  var pubKey, mpKey, addressIndex;
+  ['$scope', '$location', 'notify', 'clipboard', 'modals',
+   function($scope, $location, notify, clipboard, modals) {
 
   // Pointer to service
   var bg = DarkWallet.core();

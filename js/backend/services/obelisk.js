@@ -81,7 +81,6 @@ function(Port) {
    * Start the gateway client
    */
   ObeliskService.prototype.connectClient = function(connectUri, handleConnect, handleDisconnect) {
-      var self = this;
       this.connecting = true;
       this.client = new GatewayClient(connectUri, handleConnect, handleDisconnect);
   };
