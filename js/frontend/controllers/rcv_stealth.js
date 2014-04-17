@@ -2,7 +2,6 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   'use strict';
   controllers.controller('ReceiveStealthCtrl', ['$scope', 'notify', function($scope, notify) {
   // function to receive stealth information
-  $scope.stealth = {'password': ''};
   $scope.receiveStealth = function() {
       notify.note("stealth", "initializing");
       notify.progress.start();
