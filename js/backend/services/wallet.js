@@ -10,7 +10,7 @@ function(IdentityKeyRing, Port) {
     var self = this;
 
     // Some scope variables
-    var currentIdentity = 0;
+    var currentIdentity = false;
 
     var identityNames = [];
 
@@ -53,6 +53,9 @@ function(IdentityKeyRing, Port) {
 
     this.createIdentity = function(name, secret, password, callback) {
         console.log("[wallet] Create identity", name);
+        if (currentIdentity) {
+            Port.post('wallet', {'type': 'closing', 'identity': currentIdentity});
+        }
         var identity = keyRing.createIdentity(name, secret, password);
         startIdentity(identity, callback);
     }
@@ -60,6 +63,7 @@ function(IdentityKeyRing, Port) {
     this.loadIdentity = function(idx, callback) {
         var name = keyRing.availableIdentities[idx];
         if (currentIdentity != name) {
+            Port.post('wallet', {'type': 'closing', 'identity': currentIdentity});
             console.log("[wallet] Load identity", name);
             keyRing.get(name, function(identity) {
                 startIdentity(identity, callback);
@@ -72,11 +76,11 @@ function(IdentityKeyRing, Port) {
         if (idx === null || idx === undefined) {
             return self.getCurrentIdentity();
         }
-        var identity = keyRing.availableIdentities[idx];
-        currentIdentity = identity;
-        return keyRing.identities[identity];
-
+        var name = keyRing.availableIdentities[idx];
+        currentIdentity = name;
+        return keyRing.identities[name];
     };
+
     this.getCurrentIdentity = function() {
         return keyRing.identities[currentIdentity];
     };

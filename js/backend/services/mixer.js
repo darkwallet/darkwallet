@@ -14,7 +14,10 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     // Port for communication with other services
     Port.connect('obelisk', function(data) {
       // WakeUp when connected to obelisk
-      if (data.type == 'connected') {
+      if (data.type == 'disconnect') {
+        self.stopTasks();
+      }
+      else if (data.type == 'connected') {
         self.checkMixing(data);
         // resume tasks
         self.resumeTasks();
@@ -76,6 +79,10 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
   };
 
   // Tasks
+
+  MixerService.prototype.stopTasks = function(task) {
+    this.ongoing = {};
+  }
 
   /*
    * Start a task either internally or by external command

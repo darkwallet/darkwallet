@@ -1,7 +1,8 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-require(['backend/services/lobby',
+require(['backend/port',
+         'backend/services/lobby',
          'backend/services/obelisk',
          'backend/services/wallet',
          'backend/services/gui',
@@ -9,7 +10,7 @@ require(['backend/services/lobby',
          'backend/services/mixer',
          'backend/services/notifier',
          'backend/services/ctxmenus'],
-function(LobbyService, ObeliskService, WalletService, GuiService, TickerService, MixerService, NotifierService, CtxMenusService) {
+function(Port, LobbyService, ObeliskService, WalletService, GuiService, TickerService, MixerService, NotifierService, CtxMenusService) {
 
 function DarkWalletService() {
   
@@ -53,6 +54,13 @@ function DarkWalletService() {
     /***************************************
     /* Global communications
      */
+
+    Port.connect('wallet', function(data) {
+        // wallet closing
+        if (data.type == 'closing') {
+            services['obelisk'].disconnect();
+        }
+    });
 
     this.connect = function(connectUri) {
         var identity = services.wallet.getCurrentIdentity();

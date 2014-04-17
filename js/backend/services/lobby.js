@@ -21,6 +21,17 @@ function(Port, Transport, Channel) {
          self.getLobbyTransport();
     });
 
+    Port.connect('obelisk', function(data) {
+        if (data.type == 'disconnect') {
+            // obelisk being instructed to disconnect
+            if (lobbyTransport) {
+                lobbyTransport.disconnect();
+                lobbyTransport = false;
+            }
+        }
+    });
+
+
     this.getLobbyTransport = function() {
       if (!lobbyTransport) {
         console.log('[lobby] init lobby transport');

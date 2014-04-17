@@ -123,5 +123,16 @@ function (Bitcoin, Mnemonic) {
   Transport.prototype.getChannel = function(name) {
       return this.channels[name];
   };
+
+  /**
+   * Disconnect the transport
+   */
+  Transport.prototype.disconnect = function() {
+      var self = this;
+      var channelNames = Object.keys(this.channels);
+      channelNames.forEach(function(name) {
+          self.closeChannel(name);
+      });
+  };
   return Transport;
 });

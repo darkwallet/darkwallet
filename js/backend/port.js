@@ -66,8 +66,13 @@ define(function () {
             }
             var port = {postMessage: onMessage};
             allPorts[name].push(port);
-            console.log("["+name+"] connect child service");
-            instances[name].onConnect ? instances[name].onConnect(port) : null;
+            if (instances[name]) {
+                console.log("["+name+"] connect child service");
+                instances[name].onConnect ? instances[name].onConnect(port) : null;
+            } else {
+                // TODO: won't get the onConnect callback
+                console.log("["+name+"] pre-connect child service");
+            }
             return port;
         }
     };

@@ -14,6 +14,8 @@ function (controllers, DarkWallet, Port) {
   ['$scope', '$location', 'notify', 'clipboard', 'modals', '$timeout',
    function($scope, $location, notify, clipboard, modals, $timeout) {
   var pubKey, mpKey, addressIndex;
+  var prevIdentity = false;
+  var closingConnection = false;
 
   // Pointer to service
   var bg = DarkWallet.core();
@@ -32,16 +34,16 @@ function (controllers, DarkWallet, Port) {
     // console.log('[WalletCtrl] gui bus:', data.type, data.text);
     if (data.type == 'balance') {
     }
-    if (data.type == 'height') {
+    else if (data.type == 'height') {
         $scope.currentHeight = data.value;
     }
-    if (data.type == 'text' || data.type == 'note') {
+    else if (data.type == 'text' || data.type == 'note') {
         notify.note('gui', data.text);
     }
-    if (data.type == 'error') {
+    else if (data.type == 'error') {
         notify.error(data.title || 'gui', data.text);
     }
-    if (data.type == 'warning') {
+    else if (data.type == 'warning') {
         notify.warning('gui', data.text);
     }
     if (['height', 'update', 'balance'].indexOf(data.type) > -1) {
@@ -53,36 +55,32 @@ function (controllers, DarkWallet, Port) {
 
   // Obelisk service, connect to get notified on events and connection.
   Port.connectNg('obelisk', $scope, function(data) {
-    console.log("[WalletCtrl] obelisk bus:", data.type);
     if (data.type == 'connected') {
         var identity = DarkWallet.getIdentity();
+        closingConnection = false;
         notify.success('connected', identity.connections.servers[identity.connections.selectedServer].name);
-        //notify.progress.color('green');
-        //notify.progress.complete();
-    } else if (data.type == 'disconnected') {
+    }
+    else if (data.type == 'disconnect') {
+        closingConnection = true;
+    } else if (data.type == 'disconnected' && !closingConnection) {
         var identity = DarkWallet.getIdentity();
         notify.warning('disconnected', identity.connections.servers[identity.connections.selectedServer].name);
             $scope.$apply();
     } else if (data.type == 'connectionError') {
         notify.error("Error connecting", data.error);
-        //notify.progress.color('red');
-        //notify.progress.complete();
     }
   });
 
-  var prevIdentity = false;
   // Wallet service, connect to get notified about identity getting loaded.
   Port.connectNg('wallet', $scope, function(data) {
-    console.log("[WalletCtrl] wallet bus:", data.type);
     if (data.type == 'ready') {
-        // identity is ready here
         loadIdentity(DarkWallet.getIdentity());
         if(!$scope.$$phase && prevIdentity && prevIdentity != data.name) {
             $scope.$apply();
         }
         prevIdentity = data.name;
     }
-    if (data.type == 'ticker') {
+    else if (data.type == 'ticker') {
         $scope.rates[data.currency] = data.rate;
     }
   });
