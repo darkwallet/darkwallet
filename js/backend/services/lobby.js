@@ -12,6 +12,7 @@ function(Port, Transport, Channel) {
          // onMessage
          switch(data.type) {
              case 'initChannel':
+               console.log("[lobby] InitChannel", data.name);
                lobbyTransport.initChannel(data.name, Channel);
                Port.post('lobby', data);
                break;
@@ -23,6 +24,7 @@ function(Port, Transport, Channel) {
 
     Port.connect('obelisk', function(data) {
         if (data.type == 'disconnect') {
+            console.log("[lobby] disconnect");
             // obelisk being instructed to disconnect
             if (lobbyTransport) {
                 lobbyTransport.disconnect();

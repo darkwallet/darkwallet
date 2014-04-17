@@ -42,7 +42,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
                     // now tell listeners we'resubscribed
                     self.triggerCallbacks('subscribed', {})
                 }
-                console.log("[catchan] channel subscribed", err)
+                console.log("[catchan] channel subscribed", name)
             }, this._onChannelData);
         }
       }
@@ -284,7 +284,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
   };
 
   Channel.prototype.startPairing = function(fingerprint, pubKey) {
-    console.log('[catchan] startpairing', fingerprint, pubKey);
+    // console.log('[catchan] startpairing', fingerprint, pubKey);
   };
 
   return Channel;

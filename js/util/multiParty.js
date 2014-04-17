@@ -7,8 +7,8 @@ var convert =  Bitcoin.convert;
 
 // Leave this here for now so it doesn't crash
 var Cryptocat = {
-    sendPublicKey: function() {console.log('send public key');},
-    addToConversation: function() {console.log('add to conversation');},
+    sendPublicKey: function() {console.log('[multiparty] send public key');},
+    addToConversation: function() {console.log('[multiparty] add to conversation');},
     myNickName: 'nickname'
 };
 

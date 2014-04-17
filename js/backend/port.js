@@ -67,7 +67,7 @@ define(function () {
             var port = {postMessage: onMessage};
             allPorts[name].push(port);
             if (instances[name]) {
-                console.log("["+name+"] connect child service");
+                // console.log("["+name+"] connect child service");
                 instances[name].onConnect ? instances[name].onConnect(port) : null;
             } else {
                 // TODO: won't get the onConnect callback

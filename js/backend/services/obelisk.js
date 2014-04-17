@@ -15,8 +15,7 @@ function(Port) {
       // Port for communication with the frontend
       Port.listen('obelisk', function() {
         }, function(port) {
-            // Connected
-            console.log('[bus] obelisk client connected');
+            // Client connected
             var client = self.client;
             if (client && client.connected) {
                 port.postMessage({'type': 'connected'});
@@ -24,7 +23,7 @@ function(Port) {
                 port.postMessage({'type': 'connecting'});
             }
       }, function() {
-          console.log('[bus] obelisk client disconnected');
+          // Client disconnected
       });
   }
 
