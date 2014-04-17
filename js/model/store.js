@@ -51,14 +51,23 @@ Store.prototype.save = function(callback) {
 };
 
 /**
+ * Get a hashed version of the given password
+ * @param {String} password Password to hash
+ * @return {String} Hashed password
+ */
+Store.prototype.getPasswordHash = function(password) {
+    var SHA256 = Bitcoin.CryptoJS.SHA256;
+    var passwordDigest = Bitcoin.convert.wordArrayToBytes(SHA256(SHA256(SHA256(password))));
+    return Bitcoin.convert.bytesToString(passwordDigest);
+}
+
+/**
  * Get the decrypted private user data.
  * @param {String} password Password to decrypt the private data
  * @return {Mixed} Decrypted information
  */
 Store.prototype.getPrivateData = function(password) {
-    var SHA256 = Bitcoin.CryptoJS.SHA256;
-    var passwordDigest = Bitcoin.convert.wordArrayToBytes(SHA256(SHA256(SHA256(password))));
-    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
+    var passwordDigest = this.getPasswordHash(password);
     var data = JSON.parse(sjcl.decrypt(passwordDigest, this.get('private')));
     if (!data.privKeys) {
         data.privKeys = {};
@@ -73,9 +82,7 @@ Store.prototype.getPrivateData = function(password) {
  * 
  */
 Store.prototype.setPrivateData = function(data, password) {
-    var Crypto = Bitcoin.CryptoJS;
-    var passwordDigest = Bitcoin.convert.wordArrayToBytes(Crypto.SHA256(Crypto.SHA256(Crypto.SHA256(password))));
-    passwordDigest = Bitcoin.convert.bytesToString(passwordDigest);
+    var passwordDigest = this.getPasswordHash(password);
     var privData = sjcl.encrypt(passwordDigest, JSON.stringify(data), {ks: 256, ts: 128});
     this.set('private', privData);
 };
