@@ -14,7 +14,7 @@ var Stealth = {};
 Stealth.version = 255;
 
 // Can these be different in the future?
-Stealth.nonceVersion = Stealth.version;
+Stealth.nonceVersion = 6;
 
 /*
  * Create a bitcoin key with just public component.
