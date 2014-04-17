@@ -73,13 +73,12 @@ Wallet.prototype.getBalance = function(pocketIndex) {
             }
         }
     };
-    /*allAddresses.forEach(function(walletAddress) {
-        balance += walletAddress.balance;
-    });*/
+    var balances = {confirmed: balance, unconfirmed: unconfirmed};
+    
     if (pocketIndex === undefined) {
-        this.balance = balance;
+        this.balance = balances;
     }
-    return {confirmed: balance, unconfirmed: unconfirmed};
+    return balances;
 };
 
 /**
