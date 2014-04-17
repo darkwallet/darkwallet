@@ -196,7 +196,7 @@ GatewayClient.prototype.chan_post = function(section_name, thread_id, data, hand
 
     this.make_request("chan_post", [section_name, thread_id, data], function(response) {
         if (handle_fetch)
-            console.log("raw chan post", response["result"]);
+            //console.log("raw chan post", response["result"]);
             handle_fetch(response["error"], response["result"]);
     });
 };
