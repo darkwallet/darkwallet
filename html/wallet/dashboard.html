@@ -1,0 +1,39 @@
+<tab heading="Dashboard">
+  <div class="row">
+    <div class="large-6 columns">
+      <div class="row collapse panel radius">
+        <h5>Quick send</h5>
+        <div class="small-1 columns">
+          <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button square prefix radius fa-users"></a>
+        </div>
+        <div class="small-1 columns">
+          <a href="" tooltip="Scan QR code" ng-click="openModal('scan-qr', {field: field}, onQrModalOkSend, onQrModalCancel)" class="fa button square prefix fa-qrcode"></a>
+        </div>
+        <div class="small-6 columns">
+          <input type="text" placeholder="Bitcoin address..." />
+        </div>
+        <div class="small-4 columns">
+          <a href="" class="button postfix radius fa fa-arrow-right">Next</a></span>
+        </div>
+      </div>
+    </div>
+    <div class="large-6 columns">
+      <div class="row collapse panel radius">
+        <h5>Quick receive (unused address)</h5>
+        <div class="small-11 columns">
+          <input type="text" ng-model="dashboard.address" />
+        </div>
+        <div class="small-1 columns">
+          <a href="" ng-click="copyClipboard(address)" class="button square righted fa fa-clipboard"></a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns">
+      <div class="row collapse panel radius">
+        <h5>Latest transactions</h5>
+      </div>
+    </div>
+  </div>
+</tab>
