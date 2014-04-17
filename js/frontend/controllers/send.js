@@ -184,7 +184,6 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   $scope.sendBitcoins = function() {
 
       // get a free change address
-      var identity = DarkWallet.getIdentity();
       var changeAddress = $scope.getChangeAddress($scope.pocketIndex);
 
       // prepare amounts
@@ -209,7 +208,6 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       var fee = parseInt(BigInteger.valueOf($scope.send.fee * satoshis).toString());
 
       // callback waiting for radar feedback
-      var isBroadcasted = false;
       var onSent = function(error, task) {
           console.log("send feedback", error, task);
           var amountNote = (fee + totalAmount) + ' satoshis';

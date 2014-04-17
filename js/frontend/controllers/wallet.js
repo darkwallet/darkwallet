@@ -13,7 +13,6 @@ function (controllers, DarkWallet, Port) {
   controllers.controller('WalletCtrl',
   ['$scope', '$location', 'notify', 'clipboard', 'modals', '$timeout',
    function($scope, $location, notify, clipboard, modals, $timeout) {
-  var pubKey, mpKey, addressIndex;
   var prevIdentity = false;
   var closingConnection = false;
 

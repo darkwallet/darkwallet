@@ -12,8 +12,6 @@ function(IdentityKeyRing, Port) {
     // Some scope variables
     var currentIdentity = false;
 
-    var identityNames = [];
-
     this.currentHeight = 0;
 
     // Wallet port
@@ -125,7 +123,7 @@ function(IdentityKeyRing, Port) {
             // Get variables from the update
             var height = addressUpdate.height;
             var tx = addressUpdate.tx;
-            var block_hash = addressUpdate.block_hash;
+            // var block_hash = addressUpdate.block_hash;
             var address = addressUpdate.address;
 
             // Process

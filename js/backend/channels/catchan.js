@@ -2,14 +2,8 @@ define(['bitcoinjs-lib', 'util/multiParty', 'util/djbec', 'util/encryption', 'sj
 function (Bitcoin, multiParty, Curve25519, Encryption) {
   'use strict';
 
-  var CryptoJS = Bitcoin.CryptoJS;
-  var SHA256 = Bitcoin.CryptoJS.SHA256;
   var convert = Bitcoin.convert;
   var BigInteger = Bitcoin.BigInteger;
-
-  // Utility functions from our encryption module
-  var genFingerprint = Encryption.genFingerprint;
-  var adaptPrivateKey = Encryption.adaptPrivateKey;
 
   /************************************
    * Channel
@@ -136,7 +130,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
   Channel.prototype.receiveDH = function(data) {
       // should be changed by version using multiParty functions
       var otherKey = data.pubKey;
-      var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey);
+      var pk2 = BigInteger.fromByteArrayUnsigned(otherKey);
       var shared = Curve25519.ecDH(this.priv, pk2);
 
       shared = shared.toByteArrayUnsigned();
@@ -175,7 +169,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
   Channel.prototype.postDH = function(otherKey, data, callback) {
       // should be changed by version using multiParty functions
       data.sender = this.fingerprint;
-      var pk2 = Bitcoin.BigInteger.fromByteArrayUnsigned(otherKey);
+      var pk2 = BigInteger.fromByteArrayUnsigned(otherKey);
       var shared = Curve25519.ecDH(this.priv, pk2);
       var myPub = this.pub.toByteArrayUnsigned();
       data.pubKey = myPub;
@@ -230,9 +224,8 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
 
   Channel.prototype.onChannelData = function(message) {
       var transport = this.transport;
-      var sessionKey = transport.getSessionKey();
 
-      var decrypted, rawDecrypted;
+      var decrypted;
       var decoded = JSON.parse(message.data);
 
       // An encrypted message coming on the channel
@@ -258,7 +251,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
               var pubKeyB64 = decoded.text[first]['message'];
               var pubKey = convert.base64ToBytes(pubKeyB64);
               var fingerprint = Encryption.genFingerprint(pubKey);
-              var newPeer = transport.addPeer(pubKey, fingerprint);
+              transport.addPeer(pubKey, fingerprint);
               this.startPairing(fingerprint, pubKey);
               // set key owner to 'myName' so cryptocat will import the key
               if (first == 'all') {
