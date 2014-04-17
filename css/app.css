@@ -346,7 +346,7 @@ html, body {
   font-size: 100%; }
 
 body {
-  background: #000;
+  background: #222;
   color: #fff;
   padding: 0;
   margin: 0;
@@ -2525,7 +2525,7 @@ ul.pagination {
 
 /* Progress Bar */
 .progress {
-  background-color: #000;
+  background-color: #222;
   height: 1.875rem;
   border: 1px none white;
   padding: 0.0625rem;
@@ -4330,8 +4330,13 @@ html, body, div.container {
 .nomarginbottom {
   margin-bottom: 0 !important; }
 
+.topmargin {
+  margin-top: 1.6em !important; }
+
 .tooltip {
-  max-width: none; }
+  max-width: 400px;
+  min-width: 170px;
+  text-align: center; }
 
 input[type="text"].ng-invalid:not(.ng-pristine) {
   background: red; }
@@ -4630,11 +4635,12 @@ div.scroller.ng-enter {
   animation: moveFromTopFade 0.7s ease both; }
 
 div.scroller {
-  background: rgba(40, 40, 40, 0.8);
+  background: black;
   height: 100%;
   width: 100%;
   padding-top: 3em;
-  position: absolute; }
+  position: absolute;
+  overflow-y: scroll; }
 
 
 div.scroller.ng-leave {
@@ -4662,8 +4668,7 @@ div.chat-text {
 
 .lobbyback {
   background: url(../images/virtual.svg) top/cover no-repeat;
-  background-attachment: fixed;
-  overflow-y: scroll; }
+  background-attachment: fixed; }
 
 .setback > * {
   opacity: 0.8; }
@@ -4738,7 +4743,7 @@ div.chat-text {
   width: 8px; }
 
 ::-webkit-scrollbar-track {
-  background: #000; }
+  background: #222; }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 3px;

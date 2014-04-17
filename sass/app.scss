@@ -5,8 +5,8 @@
 html, body, div.container { height: 100%; }
 *:focus { outline: 0; } /* Remove webkit's default outline */
 .nomarginbottom { margin-bottom: 0 !important; }
-
-.tooltip { max-width: none; }
+.topmargin { margin-top: 1.6em !important; }
+.tooltip { max-width: 400px; min-width: 170px; text-align: center; }
 
 input[type="text"].ng-invalid:not(.ng-pristine) { background: red; }
 
@@ -229,11 +229,12 @@ div.scroller.ng-enter {
 
 
 div.scroller { 
-	background: rgba(40,40,40,0.8);
+	background: black;
 	height: 100%;
 	width: 100%;
 	padding-top: 3em;
 	position: absolute;
+	overflow-y: scroll;
 }
  
 div.scroller.ng-enter.ng-enter-active {
@@ -270,7 +271,6 @@ div.chat-text {
 .lobbyback { 
 	background: url(../images/virtual.svg) top/cover no-repeat;
 	background-attachment: fixed;
-	overflow-y: scroll;
  }
 
 .setback > * { opacity: 0.8; }
