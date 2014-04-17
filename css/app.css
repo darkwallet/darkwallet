@@ -4502,7 +4502,7 @@ li.colorhead h6 {
   background: #36d277;
   color: black; }
 
-.top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave, div.scroller.ng-animate.ng-hide-remove, div.scroller.ng-animate.ng-hide-add {
+.contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave, div.scroller.ng-animate.ng-hide-remove, div.scroller.ng-animate.ng-hide-add {
   transition: all 300ms ease-out; }
 
 .top-bar {
@@ -4533,6 +4533,39 @@ span.meter {
   max-height: 500px;
   overflow-y: scroll;
   overflow-x: hidden; }
+
+.contact-mosaic-full {
+  overflow: hidden; }
+
+.contact-mosaic-square {
+  text-align: center;
+  border-radius: 3px;
+  background: rgba(40, 40, 40, 0.8); }
+  .contact-mosaic-square img {
+    padding: 1em;
+    -webkit-transform: scale(1) translateY(0); }
+
+.contact-label {
+  -webkit-transform: translateY(0);
+  border-radius: 3px;
+  background: rgba(60, 60, 60, 0.8);
+  width: 100%;
+  padding: 0.3em 0; }
+
+.row.collapse.contact-menu {
+  opacity: 0;
+  margin: -2.3em 0 0 0; }
+
+.contact-mosaic-square:hover .contact-menu {
+  opacity: 1; }
+.contact-mosaic-square:hover .contact-label {
+  -webkit-transform: translateY(-2.3em);
+  background: transparent; }
+.contact-mosaic-square:hover img {
+  -webkit-transform: scale(0.8) translateY(-1em); }
+
+.contact-menu button {
+  margin: 0; }
 
 .select-list {
   min-height: 100px;
