@@ -90,7 +90,7 @@ define(['util/btc'], function(BtcUtils) {
     });
 
     it('Convert height to js timestamp', function() {
-      expect(BtcUtils.heightToTimestamp(5000)).toEqual(1233823517352.9834);
+      expect(BtcUtils.heightToTimestamp(5000)).toEqual(1233819777043.3193);
     });
 
     it('Convert height to date string', function() {
