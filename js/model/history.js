@@ -13,18 +13,25 @@ function History(store, identity) {
 /**
  * Find index for the given row
  * @param {Object} newRow row coming from history.buildHistoryRow
- * Will return -1 if row is already in history.
+ * Will return -1 if row is confirmed, -2 if still not confirmed, -3 if already was confirmed
  * @return {Number} The position to insert it in the array or negative if it is already in it.
  * @private
  */
 History.prototype.findIndexForRow = function(newRow) {
-    var insertInto = 0;
     // Look for repeated element
     for(var idx=this.history.length-1; idx>=0; idx--) {
-        if (this.history[idx].hash == newRow.hash) {
+        var row = this.history[idx];
+        if (row.hash == newRow.hash) {
             // replace by new row
             this.history[idx] = newRow;
-            return -1; // replaced
+            // set return code depending on status
+            if (!row.height && newRow.height) {
+                return -1; // confirmed
+            } else if (!row.height && !newRow.height) {
+                return -2; // still not confirmed
+            } else {
+                return -3; // already confirmed
+            }
         }
     }
     // If height is 0 put at the end
