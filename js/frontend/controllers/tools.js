@@ -4,11 +4,15 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   // Controller
   controllers.controller('ToolsCtrl', ['$scope', 'notify', function($scope, notify) {
 
-  // Clear the local storage
-  $scope.clearStorage = function() {
+  var finishClearStorage = function() {
       var keyRing = DarkWallet.getKeyRing();
       keyRing.clear();
       notify.note('Storage cleared, please restart your browser.');
+  }
+
+  // Clear the local storage
+  $scope.clearStorage = function() {
+      $scope.openModal('confirm-delete', {name: 'Your WHOLE storage', object: {}}, finishClearStorage)
   };
   
   $scope.clearTasks = function() {
