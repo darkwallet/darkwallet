@@ -102,7 +102,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
 
       // If task.radar is less than one keep updating
       if (task.radar < 1) {
-          if (!button.classList.contains('working')) {
+          if (button && !button.classList.contains('working')) {
               button.classList.add('working');
           }
 
