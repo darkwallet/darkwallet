@@ -29,6 +29,9 @@ requirejs.config({
       'frontend/controllers/calculator': {
         'frontend/port': mock1_url,
         'darkwallet': mock2_url
+      },
+      'frontend/controllers/contacts': {
+        'darkwallet': mock1_url
       }
     },
     
