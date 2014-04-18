@@ -157,7 +157,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .tabs dd.active > a { background: lighten($primary-color, 10%); color: black; }
 
-.contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave, div.scroller.ng-animate.ng-hide-remove, div.scroller.ng-animate.ng-hide-add { @include single-transition(); }
+
 
 .top-bar { z-index: 3; position: absolute; width: 100%; }
 
@@ -189,9 +189,11 @@ span.meter { padding: 5px 0 0 5px; }
 .row.collapse.contact-menu { opacity: 0; margin: -2.3em 0 0 0; }
 
 .contact-mosaic-square:hover {
+	cursor: pointer;
+	background: $primary-color;
 	.contact-menu { opacity: 1; }
-	.contact-label { -webkit-transform: translateY(-2.3em); background: transparent; }
-	img { -webkit-transform: scale(0.8) translateY(-1em); }
+	.contact-label { background: transparent; }
+	img { -webkit-transform: scale(1.6) translateY(0.4em); }
 }
 
 .contact-menu button { margin: 0; }
@@ -277,9 +279,20 @@ div.chat-text {
 .setback > * { opacity: 0.8; }
 
 .setback.seed { background: url(../images/seed.svg) center/cover no-repeat; }
-.pt-page-rotateCarouselRightIn {
 
-}
+.contact-mosaic-square,
+.contact-mosaic-square img, 
+.contact-mosaic-square .contact-label, 
+.contact-mosaic-square .contact-menu, 
+.top-bar a, 
+.tabs dd > a, 
+button.button, 
+a.button, 
+button.square, 
+div.ng-enter, 
+div.ng-leave, 
+div.scroller.ng-animate.ng-hide-remove, 
+div.scroller.ng-animate.ng-hide-add { @include single-transition(); }
 
 @-webkit-keyframes rotateFoldBottom {
 	to { opacity: 0; -webkit-transform: translateY(100%) rotateX(-90deg); }
@@ -310,11 +323,6 @@ div.chat-text {
 @keyframes rotatePushBottom {
 	to { opacity: 0; transform: rotateX(90deg); }
 }
-
-.pt-page-scaleDown {
-
-}
-
 
 @-webkit-keyframes scaleDown {
 	to { opacity: 0; -webkit-transform: scale(.8); }
