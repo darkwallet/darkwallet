@@ -63,6 +63,7 @@ Wallet.prototype.getBalance = function(pocketIndex) {
         if (allAddresses.indexOf(out.address) != -1) {
             if (out.spend && out.spendheight == 0) {
                 unconfirmed -= out.value;
+                balance += out.value;
             } else if (out.spend) {
                 // spent so don't count it
             } else if (!out.height) {
@@ -503,7 +504,7 @@ Wallet.prototype.signMyInputs = function(inputs, newTx, password) {
  * @param {Number} height
  * @param {Object} spend
  */
-Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, height, spend) {
+Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, height, spend, spendheight) {
     // Wallet wide
     var output;
     var wallet = this.wallet;
@@ -521,12 +522,14 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
         walletAddress.balance += value;
     }
     // Save height
-    output.height = height;
+    if (!output.height) {
+        output.height = height;
+    }
 
     // If it's a spend save the next output and spend height
     if (spend) {
         output.spend = spend;
-        output.spendheight = height;
+        output.spendheight = spendheight;
     }
 };
 
@@ -637,7 +640,7 @@ Wallet.prototype.processHistory = function(walletAddress, history) {
             spend = inTxHash + ":" + tx[5];
         }
         // pass on to internal Bitcoin.Wallet
-        self.processOutput(walletAddress, tx[0], tx[1], tx[3], outHeight, spend);
+        self.processOutput(walletAddress, tx[0], tx[1], tx[3], outHeight, spend, tx[6]);
     });
     this.store.save();
 };
