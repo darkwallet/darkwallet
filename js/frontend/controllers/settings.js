@@ -10,19 +10,6 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
   $scope.selectedCurrency = identity.settings.currency;
   $scope.selectedFiat = identity.settings.fiatCurrency;
 
-  // Clear the local storage
-  $scope.clearStorage = function() {
-      var keyRing = DarkWallet.getKeyRing();
-      keyRing.clear();
-      notify.note('Storage cleared, please restart your browser.');
-  };
-  
-  $scope.clearTasks = function() {
-      var identity = DarkWallet.getIdentity();
-      identity.tasks.clear();
-      notify.note('Tasks cleared.');
-  };
-  
   $scope.passwordChanged = function() {
       if ($scope.newPassword === $scope.newPasswordRepeat) {
           var identity = DarkWallet.getIdentity();

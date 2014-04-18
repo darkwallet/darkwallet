@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="small-12 columns"><h3>Settings</h3></div>
+</div>
+<div class="row">
+      <div class="large-4 columns">
+        <div class="panel setback seed">
+          <h5>Signing</h5>
+        </div>
+      </div>
+      <div class="large-5 columns">
+        <div class="panel setback notifications">
+          <h5>Tasks</h5>
+          <a href="" class="button" ng-click="clearTasks();">
+            <div><i class="icon-large"></i></div>Clear tasks
+          </a>
+        </div>
+        <div ng-controller="ServersCtrl" class="panel setback net">
+          <h5>Servers</h5>
+        </div>
+      </div>
+      <div class="large-3 columns">
+        <div class="panel setback coins">
+          <h5>Stealth</h5>
+        <div ng-controller="ReceiveStealthCtrl">
+          <button ng-click="receiveStealth()">Receive stealth</button>
+        </div>
+      </div>
+</div>
