@@ -33,6 +33,26 @@
     <div class="small-12 columns">
       <div class="row collapse panel radius">
         <h5>Latest transactions</h5>
+        <div class="small-12 columns">
+            <div class="row"  ng-repeat="row in history | filter:pocketFilter  | orderBy:'height':true | filter:historyFilter">
+             <div class="small-1 columns">
+              <div class="icon"><div ng-class="{'fa-money': (row.myOutValue-row.myInValue)>0 , 'fa-external-link-square': (row.myOutValue-row.myInValue)<0}" class="square fa"></div></div>
+             </div>
+             <div class="small-6 columns">
+               <p>{{row.address}} <span class="label radius" ng-show="row.isStealth">stealth</span></p>
+             </div>
+             <div class="small-2 columns">
+               <p>{{row.height | heightToDate}}</p>
+             </div>
+             <div class="small-1 columns">
+              <p>{{(row.myOutValue-row.myInValue) | currencyFilter}}</p>
+             </div>
+             <div class="small-1 columns">
+              <p class="text-right">{{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}</p>
+             </div>
+            </div>
+  
+        </div>
       </div>
     </div>
   </div>

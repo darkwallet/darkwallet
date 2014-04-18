@@ -114,7 +114,6 @@ function(IdentityKeyRing, Port) {
             // fill history after subscribing to ensure we got all histories already (for now).
             identity.history.fillHistory(walletAddress, history);
         }, function(addressUpdate) {
-            console.log("[wallet] update", addressUpdate);
 
             // Get variables from the update
             var height = addressUpdate.height;
@@ -142,6 +141,7 @@ function(IdentityKeyRing, Port) {
             return;
         }
         var identity = self.getCurrentIdentity();
+        console.log("fetch history for", walletAddress.address);
         client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
     };
 
@@ -258,11 +258,7 @@ function(IdentityKeyRing, Port) {
                  console.log("tx radar: " + count);
              }
          };
-         if (isStealth) {
-             console.log("not broadcasting stealth tx yet...");
-         } else {
-             core.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx);
-         }
+         core.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx);
      };
   }
   return WalletService;

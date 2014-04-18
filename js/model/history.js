@@ -72,6 +72,7 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
         myOutValue = 0,
         txAddr = "",
         txObj = new Bitcoin.Transaction(transaction);
+    var isStealth = false;
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
 
     // Check inputs
@@ -91,6 +92,11 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     for(var idx=0; idx<txObj.outs.length; idx++) {
         var anOut = txObj.outs[idx];
         if (btcWallet.addresses.indexOf(anOut.address.toString())>-1) {
+            var output = btcWallet.outputs[txHash+":"+idx];
+            // TODO: mark also when input is mine and output not
+            if (output && output.stealth) {
+                isStealth = true;
+            }
             outMine += 1;
             myOutValue += anOut.value;
         } else {
@@ -105,7 +111,7 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     // Create a row representing this change (if already referenced will
     // be replaced)
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
-    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr};
+    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth};
     return newRow;
 };
 

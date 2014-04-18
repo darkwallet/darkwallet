@@ -168,7 +168,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       expect(newTx.outs.length).toBe(1);
       var outBuffer = newTx.outs[0].script.chunks[1];
       expect(newTx.outs[0].script.chunks[0]).toBe(Bitcoin.Opcode.map.OP_RETURN); // OP_RETURN
-      expect(outBuffer[0]).toBe(Stealth.version);
+      expect(outBuffer[0]).toBe(Stealth.nonceVersion);
       expect(outBuffer.slice(1,5)).toEqual([1,0,0,0]);
       expect(newTx.outs[0].script.buffer)
     });

@@ -14,14 +14,23 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
               //write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
               return;
           }
-          console.log("STEALTH", results);
+          console.log("fetching stealth", results);
+          var addresses;
           try {
-              $scope.identity.wallet.processStealth(results);
-              notify.success("stealth", "ok");
+              addresses = $scope.identity.wallet.processStealth(results);
           } catch (e) {
               notify.error("stealth", e.message);
+              return;
           }
-          notify.progress.complete();
+          if (addresses && addresses.length) {
+              var walletService = DarkWallet.getService('wallet');
+              addresses.forEach(function(walletAddress) {
+                  walletService.initAddress(walletAddress);
+              })
+              notify.success("stealth ok");
+          } else {
+              notify.success("stealth ok", "payments detected");
+          }
       }
       client.fetch_stealth([0,0], stealth_fetched, 0);
   };

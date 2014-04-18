@@ -113,6 +113,29 @@ Wallet.prototype.loadPubKeys = function() {
     });
 };
 
+Wallet.prototype.deriveHDPrivateKey = function(seq, masterKey) {
+    var key = masterKey;
+    var workSeq = seq.slice(0);
+    while(workSeq.length) {
+        key = key.derive(workSeq.shift());
+    }
+    return key.priv;
+};
+
+Wallet.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
+    var spendKey;
+    var scanKey = this.getScanKey();
+    var privData = keyStore.privKeys[seq.slice(0,1)];
+    if (privData) {
+        spendKey = new Bitcoin.ECKey(privData, true);
+    } else {
+        // stealth address take the spend key from the pocket 0
+        spendKey = this.deriveHDPrivateKey(seq.slice(0,1), masterKey);
+    }
+    return Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), spendKey.toBytes());
+};
+
+
 /**
  * Get the private key for the given address index
  * @param {Array} seq Array for the bip32 sequence to retrieve address for
@@ -121,20 +144,22 @@ Wallet.prototype.loadPubKeys = function() {
  */
 Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     // clone seq since we're mangling it
-    var workSeq = seq.slice(0);
     var data = this.store.getPrivateData(password);
     if (data.privKeys[seq]) {
         var key = new Bitcoin.ECKey(data.privKeys[seq], true);
         callback(key);
         return;
     }
-    var key = Bitcoin.HDWallet.fromBase58(data.privKey);
-    while(workSeq.length) {
-        key = key.derive(workSeq.shift());
+    var masterKey = Bitcoin.HDWallet.fromBase58(data.privKey);
+    var privKey;
+    if (seq.length > 1 && seq[1] == 's') {
+        privKey = this.deriveStealthPrivateKey(seq, masterKey, data);
+    } else {
+        privKey = this.deriveHDPrivateKey(seq, masterKey);
+        this.storePrivateKey(seq, password, privKey);
     }
-    this.storePrivateKey(seq, password, key.priv);
    
-    callback(key.priv);
+    callback(privKey);
 };
 
 /**
@@ -521,6 +546,9 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
     if (height && !output.height && !spend) {
         walletAddress.balance += value;
     }
+    if (walletAddress.type == 'stealth') {
+        output.stealth = true;
+    }
     // Save height
     if (!output.height) {
         output.height = height;
@@ -662,8 +690,8 @@ Wallet.prototype.getScanKey = function() {
  */
 Wallet.prototype.processStealth = function(stealthArray) {
     var self = this;
+    var matches = [];
     stealthArray.forEach(function(stealthData) {
-        var nonceArray = Bitcoin.convert.hexToBytes(stealthData[0]);
         var ephemKey = Bitcoin.convert.hexToBytes(stealthData[0]);
         var address = stealthData[1];
         var txId = stealthData[2];
@@ -677,11 +705,15 @@ Wallet.prototype.processStealth = function(stealthArray) {
         var myAddress = new Bitcoin.Address(myKeyHash);
 
         if (address == myAddress.toString()) {
-            console.log("STEALTH MATCH!!");
             var seq = [0, 's'].concat(ephemKey);
-            var walletAddress = self.storePublicKey(seq, myKeyBytes, {'type': 'stealth', 'ephemkey': ephemKey});
+            var walletAddress = self.getAddress(seq);
+            if (!walletAddress) {
+                walletAddress = self.storePublicKey(seq, myKeyBytes, {'type': 'stealth', 'ephemKey': ephemKey, 'address': address});
+            }
+            matches.push(walletAddress);
         }
     });
+    return matches;
 };
 
 return Wallet;
