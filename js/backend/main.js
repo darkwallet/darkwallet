@@ -13,18 +13,33 @@ require(['backend/port',
 function(Port, LobbyService, ObeliskService, WalletService, GuiService, TickerService, MixerService, NotifierService, CtxMenusService) {
 
 function DarkWalletService() {
-  
-    var services = {};
+
+    var self = this;
 
     // Backend services
-    services.obelisk = new ObeliskService(this);
-    services.wallet = new WalletService(this);
-    services.ctxMenus = new CtxMenusService(this);
-    services.gui = new GuiService(this);
-    services.ticker = new TickerService(this);
-    services.mixer = new MixerService(this);
-    services.notifier = new NotifierService(this);
-    services.lobby = new LobbyService(this);
+    var services = {
+        obelisk: new ObeliskService(this),
+        wallet: new WalletService(this),
+        ctxMenus: new CtxMenusService(this),
+        gui: new GuiService(this),
+        ticker: new TickerService(this),
+        mixer: new MixerService(this),
+        notifier: new NotifierService(this),
+        lobby: new LobbyService(this)
+    };
+    
+    // Public API
+    this.service = {};
+    for(var i in services) {
+        Object.defineProperty(this.service, i, {
+            get: function() {
+                var j = services[i];
+                return function() {
+                    return j;
+                };
+            }()
+        });
+    };
 
     var servicesStatus = { gateway: 'offline', obelisk: 'offline' };
     this.servicesStatus = servicesStatus;
@@ -83,8 +98,8 @@ function DarkWalletService() {
         return services.obelisk.getClient();
     };
     
-    this.getService = function(name) {
-        return services[name];
+    this.getServices = function() {
+        return self.service;
     };
 }
 
@@ -121,7 +136,7 @@ window.servicesStatus = service.servicesStatus;
 window.getLobbyTransport = service.getLobbyTransport;
 
 window.getClient = service.getClient;
-window.getService = service.getService;
+window.getServices = service.getServices;
 
 window.initAddress = function(_w) {return service.initAddress(_w);};
 

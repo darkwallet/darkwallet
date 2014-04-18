@@ -24,7 +24,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
     if (data.type == 'ready') {
       var identity = DarkWallet.getIdentity();
       $scope.servers = identity.connections.servers;
-      $scope.servicesStatus = DarkWallet.core().servicesStatus;
+      $scope.servicesStatus = DarkWallet.core.servicesStatus;
       $scope.selectedServerIdx = identity.connections.selectedServer;
       $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
       applyScope();
@@ -71,7 +71,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
       identity.connections.setSelectedServer($scope.selectedServerIdx);
       // Trigger connection
-      DarkWallet.core().connect();
+      DarkWallet.core.connect();
   };
 
 }]);

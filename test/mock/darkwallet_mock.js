@@ -8,7 +8,7 @@ var _availableIdentities = [];
 var DarkWallet = {
 
     // Get the wallet service.
-    core: function() {
+    get core() {
       var _radar = 0;
       return {
         getKeyRing: function() {
@@ -70,11 +70,11 @@ f2aeea554b7fb7d145061efad4398879b9be88ac00000000"
       };
     },
     _services: {},
-    getService: function(name) {return DarkWallet._services[name];},
-    getKeyRing: function() {return DarkWallet.core().getKeyRing()},
-    getClient: function() {return DarkWallet.core().getClient()},
-    getIdentity: function(idx) {return DarkWallet.core().getIdentity(idx)},
-    getLobbyTransport: function() {return DarkWallet.core().getLobbyTransport()},
+    get service() {return DarkWallet._services;},
+    getKeyRing: function() {return DarkWallet.core.getKeyRing()},
+    getClient: function() {return DarkWallet.core.getClient()},
+    getIdentity: function(idx) {return DarkWallet.core.getIdentity(idx)},
+    getLobbyTransport: function() {return DarkWallet.core.getLobbyTransport()},
     // following is only for tests
     setMockService: function(name, obj) { DarkWallet._services[name] = obj;}
 };

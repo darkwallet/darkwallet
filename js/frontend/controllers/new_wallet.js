@@ -48,7 +48,7 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
     var words = $scope.mnemonic2Words.split(' ');
     var mnemonic = new Mnemonic(words);
 
-    var walletService = DarkWallet.getService('wallet');
+    var walletService = DarkWallet.service.wallet;
 
     var identity = walletService.createIdentity($scope.name, mnemonic.toHex(), $scope.passwd, function() {
         $window.location = '#dashboard';

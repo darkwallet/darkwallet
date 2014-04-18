@@ -17,7 +17,7 @@ function (controllers, DarkWallet, Port) {
   var closingConnection = false;
 
   // Pointer to service
-  var bg = DarkWallet.core();
+  var bg = DarkWallet.core;
   $scope.rates = {};
   $scope.allAddresses = [];
   $scope.totalBalance = 0;

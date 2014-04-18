@@ -25,7 +25,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
 
 
   $scope.updateBtcFiat = function(field) {
-    var tickerService = DarkWallet.getService('ticker');
+    var tickerService = DarkWallet.service.ticker;
     var identity = DarkWallet.getIdentity();
     var currency = identity.settings.currency;
     var fiatCurrency = identity.settings.fiatCurrency;
@@ -176,7 +176,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
         }
     };
 
-    var walletService = DarkWallet.getService('wallet');
+    var walletService = DarkWallet.service.wallet;
     walletService.signTransaction(signTask.tx, signTask, password, onBroadcast);
   };
 
@@ -231,7 +231,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       };
 
       // prepare the transaction
-      var walletService = DarkWallet.getService('wallet');
+      var walletService = DarkWallet.service.wallet;
 
       walletService.send($scope.pocketIndex,
                          recipients,

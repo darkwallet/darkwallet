@@ -38,7 +38,7 @@ function(Port, Transport, Channel) {
       if (!lobbyTransport) {
         console.log('[lobby] init lobby transport');
         var identity = core.getCurrentIdentity();
-        lobbyTransport = new Transport(identity, core.getService('obelisk'));
+        lobbyTransport = new Transport(identity, core.service.obelisk);
         lobbyTransport.update = function() { Port.post('gui', {'type': 'update'}); };
       }
       return lobbyTransport;

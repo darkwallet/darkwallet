@@ -1,3 +1,4 @@
+'use strict';
 /*
  * @fileOverview Main object for generic dark wallet api.
  */
@@ -11,30 +12,28 @@ var DarkWallet = {
      * 
      * @returns {Object}
      */
-    core: function() {return chrome.extension.getBackgroundPage();},
+    get core() {return chrome.extension.getBackgroundPage();},
 
     /**
      * Get a service from the background script.
      * 
-     * @param {String} name The name of the service. It can be lobby, obelisk,
-     * wallet, gui, ticker, mixer, notifier or ctxMenus.
      * @returns {Object}
      */
-    getService: function(name) {return DarkWallet.core().getService(name);},
+    get service() {return DarkWallet.core.getServices();},
 
     /**
      * Identity key ring. Holds all identities.
      * 
      * @returns {Object}
      */
-    getKeyRing: function() {return DarkWallet.core().getKeyRing();},
+    getKeyRing: function() {return DarkWallet.core.getKeyRing();},
 
     /**
      * Light client
      * 
      * @returns {Object}
      */
-    getClient: function() {return DarkWallet.core().getClient();},
+    getClient: function() {return DarkWallet.core.getClient();},
 
     /**
      * Get identtiy
@@ -42,14 +41,14 @@ var DarkWallet = {
      * @param {Number} [idx] Index of the identity, default is current.
      * @returns {Object}
      */
-    getIdentity: function(idx) {return DarkWallet.core().getIdentity(idx);},
+    getIdentity: function(idx) {return DarkWallet.core.getIdentity(idx);},
 
     /**
      * Lobby transport
      * 
      * @returns {Object}
      */
-    getLobbyTransport: function() {return DarkWallet.core().getLobbyTransport();}
+    getLobbyTransport: function() {return DarkWallet.core.getLobbyTransport();}
 };
 return DarkWallet;
 });
