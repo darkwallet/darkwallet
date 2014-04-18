@@ -2,11 +2,6 @@ Immediate:
  - Review and stabilize gateway
  - Send:
    - Review sending
-   * Better radar feedback DONE
-   + multisig spending STARTED
-     * import spend from someone else DONE
-     * sign spend with own keys DONE
-     - check final composition of multisig spend tx
  - Lobby system
    + then finish CoinJoin STARTED
    - then automatize Multisig
@@ -33,6 +28,7 @@ Style:
 
 Other:
  - Cache address history and resume
+ - Polishing stealth support
  - Notifications
   - when receiving funds
   - new multisig
@@ -53,11 +49,19 @@ Done:
  * Currency support
    * Select BTC/mBTC DONE
    * Show as EUR/USD/CNY... (prices from bitcoinaverage) DONE
+ * multisig spending STARTED
+     * import spend from someone else DONE
+     * sign spend with own keys DONE
+     * check final composition of multisig spend tx
  * Send:
+   * Better radar feedback DONE
    * Several destinations support DONE
    * Implement send from pocket DONE
    * Implement choose from contacts DONE
    * Specify amount in FIAT DONE
+ * Stealth support
+   * Send
+   * Receive
  * Multisig support
    * Create funds DONE
    * Share / Import funds
