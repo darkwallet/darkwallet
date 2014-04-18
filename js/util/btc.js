@@ -2,8 +2,8 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
   var convert = Bitcoin.convert;
 
   var genesisTime = 1231006505;
-  var block292399 = 1395744824;
-  var blockDiff = ((block292399-genesisTime) / 292399);
+  var block296405 = 1397780085;
+  var blockDiff = ((block296405-genesisTime) / 296405);
 
   var allowedVersions = [Bitcoin.network.mainnet.addressVersion, Bitcoin.network.mainnet.p2shVersion, Stealth.version];
 
