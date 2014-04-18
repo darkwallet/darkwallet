@@ -98,7 +98,7 @@ function (controllers, Bitcoin, DarkWallet) {
        return;
     }
     var added = false;
-    var fund = $scope.pocket.fund;
+    var fund = $scope.pocket.fund.multisig;
 
     // Check where this signature goes
     var script = new Bitcoin.Script(convert.hexToBytes(fund.script));
@@ -133,7 +133,7 @@ function (controllers, Bitcoin, DarkWallet) {
 
       // import transaction here
       var identity = $scope.identity;
-      var fund = $scope.pocket.fund;
+      var fund = $scope.pocket.fund.multisig;
       var walletAddress = identity.wallet.getWalletAddress(fund.address);
 
       // Go on
@@ -189,7 +189,7 @@ function (controllers, Bitcoin, DarkWallet) {
 
       var signed = false;
       // find key
-      $scope.pocket.participants.forEach(function(participant, pIdx) {
+      $scope.pocket.fund.participants.forEach(function(participant, pIdx) {
           if (participant.type == 'me') {
               var seq = participant.address.index;
               identity.wallet.getPrivateKey(seq, password, function(privKey) {
@@ -218,7 +218,7 @@ function (controllers, Bitcoin, DarkWallet) {
    */
   $scope.signFundTxForeign = function(form, task) {
       var identity = $scope.identity;
-      var fund = $scope.pocket.fund;
+      var fund = $scope.pocket.fund.multisig;
       var walletAddress = identity.wallet.getWalletAddress(fund.address);
 
       var inputs = identity.wallet.txForAddress(walletAddress, task.tx);
@@ -235,7 +235,7 @@ function (controllers, Bitcoin, DarkWallet) {
       var signed = false;
 
       // find key
-      $scope.pocket.participants.forEach(function(participant, pIdx) {
+      $scope.pocket.fund.participants.forEach(function(participant, pIdx) {
           if (participant.type != 'me') {     // can't be me if we're importing the key
               var pubKey = new Bitcoin.ECPubKey(participant.pubKey, true);
 
@@ -269,7 +269,7 @@ function (controllers, Bitcoin, DarkWallet) {
   $scope.signFundTx = function(task) {
       // import transaction here
       var identity = $scope.identity;
-      var fund = $scope.pocket.fund;
+      var fund = $scope.pocket.fund.multisig;
       var walletAddress = identity.wallet.getWalletAddress(fund.address);
 
       if (walletAddress) {

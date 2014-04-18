@@ -5,21 +5,21 @@
             <span class="prefix radius">Fund Address</span>
         </div>
         <div class="medium-6 columns">
-            <input type="text" disabled="true" value="{{pocket.fund.address}}" />
+            <input type="text" disabled="true" value="{{pocket.fund.multisig.address}}" />
         </div>
         <div class="medium-2 columns">
-            <button ng-click="copyClipboard(pocket.fund.address)" class="button postfix fa fa-clipboard">Copy</button>
+            <button ng-click="copyClipboard(pocket.fund.multisig.address)" class="button postfix fa fa-clipboard">Copy</button>
         </div>
         <div class="medium-2 columns">
-            <button ng-click="openModal('show-qr', {address: pocket.fund.address})" class="button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="openModal('show-qr', {address: pocket.fund.multisig.address})" class="button postfix radius fa fa-qrcode">QR</button>
         </div>
       </div>
-      <div>{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}} signatures are needed for spends</div>
+      <div>{{pocket.fund.multisig.m}} of {{pocket.fund.multisig.pubKeys.length}} signatures are needed for spends</div>
     </div>
   <div class="row">
   <div class="columns large-4">
     <h3>Participants:</h3>
-    <div ng-repeat="participant in pocket.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
+    <div ng-repeat="participant in pocket.fund.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
         <identicon icon-size="38" hash="participant.hash" title="{{contact.hash}}"></identicon> {{participant.name}} <span ng-show="participant.type=='me'">(me)</span>
     </div>
   </div>
@@ -27,17 +27,17 @@
     <h3>Script:</h3>
     <div class="row">
       <div class="large-4 columns">
-        <button ng-click="copyClipboard(pocket.fund.script)" class="button postfix fa fa-clipboard">Copy</button>
+        <button ng-click="copyClipboard(pocket.fund.multisig.script)" class="button postfix fa fa-clipboard">Copy</button>
       </div>
       <div class="large-4 columns">
         <button ng-click="showFundScript=!showFundScript" class="button postfix fa fa-eye">Show</button>
       </div>
       <div class="medium-4 columns">
         <!-- Maybe too heavy -->
-        <button ng-click="openModal('show-qr', {address: pocket.fund.script})" class="button postfix radius fa fa-qrcode">QR</button>
+        <button ng-click="openModal('show-qr', {address: pocket.fund.multisig.script})" class="button postfix radius fa fa-qrcode">QR</button>
       </div>
     </div>
-    <div ng-show="showFundScript"><code>{{pocket.fund.script}}</code></div>
+    <div ng-show="showFundScript"><code>{{pocket.fund.multisig.script}}</code></div>
 
     <h3>Tools:</h3>
     <button class="button postfix fa large-6 fa-cloud-download" ng-show="!importingFundTransaction" ng-click="importingFundTransaction=true">Import Spend</button>

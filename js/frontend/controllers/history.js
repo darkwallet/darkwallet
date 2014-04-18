@@ -2,8 +2,8 @@
  * @fileOverview HistoryCtrl angular controller
  */
 
-define(['./module', 'bitcoinjs-lib', 'util/btc', 'darkwallet'],
-function (controllers, Bitcoin, BtcUtils, DarkWallet) {
+define(['./module', 'bitcoinjs-lib', 'util/btc', 'darkwallet', 'dwutil/multisig'],
+function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
   'use strict';
   controllers.controller('HistoryCtrl', ['$scope', 'notify', function($scope, notify) {
 
@@ -15,88 +15,17 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
   $scope.isAll = true;
   $scope.isFund = false;
 
-  // Create a profile out of a public key by looking in contacts and wallet.
-  var detectParticipant = function(pubKeyBytes) {
-      var identity = DarkWallet.getIdentity();
-
-      // Ensure we check the compressed version for my address
-      var myPubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
-      var myAddress = myPubKey.getAddress();
-
-      var compressed = (pubKeyBytes.length == 33);
-
-      // Initially show the address for the compressed key, not necessarily the
-      // one we know about the contact if they're using uncompressed addresses
-      var contactAddress = new Bitcoin.ECPubKey(pubKeyBytes, compressed);
-
-      var participant = { name: contactAddress.toString(),
-                          pubKey: pubKeyBytes,
-                          hash: contactAddress.toHex() };
-
-      var walletAddress = identity.wallet.getWalletAddress(myAddress);
-      if (walletAddress) {
-          // Current identity
-          participant.type = 'me';
-          participant.name = identity.name;
-          participant.address = walletAddress;
-          // In some cases would not be the stealth identifier.
-          // Also, doing it like this so it would show the same as in contacts..
-          participant.hash = Bitcoin.CryptoJS.SHA256(walletAddress.stealth).toString();
-      } else {
-          // Check if it's a contact
-          var contact = identity.contacts.findByPubKey(pubKeyBytes);
-          if (contact) {
-              participant.name = contact.name;
-              participant.hash = contact.hash;
-              participant.type = 'contact';
-          }
-      }
-      return participant;
-  };
-
-  // Detect participants for a fund from contacts and wallet.
-  var detectFundParticipants = function(fund) {
-      // TODO: Not very efficient, should keep track in some way
-      var participants = [];
-
-      fund.pubKeys.forEach(function(pubKey) {
-          participants.push(detectParticipant(pubKey));
-      });
-
-      return participants;
-  };
-
-  // Check tasks and put some info in the pocket
-  var checkFundTasks = function(fund) {
-      var identity = DarkWallet.getIdentity();
-      var res = [];
-      // Check pending tasks for fund
-      var tasks = identity.tasks.tasks.multisig;
-      if (tasks) {
-          tasks.forEach(function(task) {
-              var addresses = task.pending.map(function(p){return p.address});
-              if (addresses.indexOf(fund.address) != -1) {
-                  var tx = new Bitcoin.Transaction(task.tx);
-                  res.push({tx: tx, task: task});
-              }
-          });
-      }
-      return res;
-  };
-
   // History Listing
   $scope.selectFund = function(fund, rowIndex) {
       $scope.pocket.name = fund.name;
       $scope.pocket.index = fund.seq[0];
       var address = $scope.identity.wallet.getAddress(fund.seq);
-      $scope.pocket.participants = detectFundParticipants(fund);
-      var meFound = $scope.pocket.participants.filter(function(participant) {return participant.type=='me';});
-      $scope.pocket.participants = detectFundParticipants(fund);
-      $scope.pocket.canSign = meFound.length ? true : false ;
+
       $scope.pocket.changeAddresses = [];
       $scope.pocket.addresses = [address];
-      $scope.pocket.fund = fund;
-      $scope.pocket.tasks = checkFundTasks(fund);
+      $scope.pocket.fund = new MultisigFund(fund);
+      $scope.pocket.tasks = $scope.pocket.fund.tasks;
+
       $scope.isAll = false;
       $scope.isFund = true;
       $scope.pocket.mpk = undefined;
@@ -108,8 +37,6 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet) {
       $scope.balance = balance.confirmed;
       $scope.unconfirmed = balance.unconfirmed;
 
-      // Check tasks and put some info in the pocket
-      checkFundTasks(fund, $scope.pocket);
   };
   $scope.selectPocket = function(pocketName, rowIndex, form) {
       var pocketIndex;

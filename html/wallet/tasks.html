@@ -29,11 +29,11 @@
       <div class="large-10 columns">
             <p> <b>Signed: </b>
             <span ng-repeat="pending in task.task.pending" title="{{pending.output}}">
-              [{{Object.keys(pending.signatures).length}}/{{pocket.fund.m}}]
+              [{{Object.keys(pending.signatures).length}}/{{pocket.fund.multisig.m}}]
             </span>
             </p>
             <!-- Sign -->
-            <button ng-show="pocket.canSign && !importingFundSig && !foreignFundSig" ng-click="signFundTx(task)" class="button-sm postfix fa large-6 fa-pencil" >Sign</button>
+            <button ng-show="pocket.fund.canSign && !importingFundSig && !foreignFundSig" ng-click="signFundTx(task)" class="button-sm postfix fa large-6 fa-pencil" >Sign</button>
 
             <!-- Import sig -->
             <button class="button-sm postfix fa large-6 fa-link" ng-show="!importingFundSig && !foreignFundSig" ng-click="importingFundSig=true">Import Signature</button>
