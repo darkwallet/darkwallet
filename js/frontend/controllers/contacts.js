@@ -4,12 +4,27 @@
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   'use strict';
-  controllers.controller('ContactsCtrl', ['$scope', function($scope) {
+  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', function($scope, $routeParams, $location) {
+
   $scope.newContact = {};
   $scope.contactToEdit = {};
   $scope.contactFormShown = false;
 
+  // Check the route to see if we have to connect some contact
+  var initRouteContact = function(identity) {
+      if ($routeParams.contactId) {
+          if (identity.contacts.contacts[$routeParams.contactId]) {
+              $scope.vars = { contact: identity.contacts.contacts[$routeParams.contactId] }
+          } else {
+              $location.path('/contacts');
+          }
+      }
+  }
+
   var identity = DarkWallet.getIdentity();
+  if (identity) {
+      initRouteContact(identity);
+  }
 
   $scope.contacts = identity.contacts.contacts.slice(0);
   $scope.allContacts = identity.contacts.contacts;
@@ -42,7 +57,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   };
 
   $scope.openContact = function(contact) {
-    $scope.openModal('show-contact', {contact: contact});
+    // $scope.openModal('show-contact', {contact: contact});
+    var identity = DarkWallet.getIdentity();
+    var contactIndex = identity.contacts.contacts.indexOf(contact);;
+
+    $location.path('/contact/'+contactIndex);
   }
 
   $scope.editContact = function(contact) {
@@ -59,6 +78,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     if (contactIndex > -1) {
         $scope.contacts.splice(contactIndex, 1);
     }
+    $location.path('/contacts');
   };
 }]);
 });

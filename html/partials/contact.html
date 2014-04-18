@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="small-12 columns">
+
+     <div class="row">
+	<div class="small-2 columns">
+        	<identicon icon-size="64" hash="vars.contact.hash" title="{{vars.contact.hash}}"></identicon>
+	</div>
+	<div class="small-10 columns">
+		<h1>{{vars.contact.name}}</h1>
+	</div>
+     </div>
+     <h3>Addresses</h3>
+     <div class="row collapse">
+	<div class="medium-3 large-6 columns">
+		<form ng-init="openEditForm(vars.contact)" ng-submit="editContact(vars.contact)">
+			<input type="text" ng-model="contactToEdit.address">
+		</form>
+	</div>
+	<div class="medium-3 large-2 columns">
+		<a ng-click="openModal('show-qr', {address: vars.contact.address})" class="button postfix fa fa-qrcode">QRcode</a>
+
+	</div>
+	<div class="medium-3 large-2 columns">
+		<a ng-click="copyClipboard(vars.contact.address)" class="button postfix fa fa-clipboard">Copy</a>
+	</div>
+	<div class="medium-3 large-2 columns">
+                <!-- Delete address -->
+		<a class="button postfix fa fa-trash-o alert radius">Delete</a>
+	</div>
+      </div>
+    </div>
+    <div class="row collapse">
+	<div class="small-6 medium-3 columns">
+	    <a href="#contacts" class="fa fa-arrow-left button small radius"> Back</a>
+	    <a class="fa fa-plus button small radius"> Add another address</a>
+        </div>
+	<div class="small-6 medium-3 columns">
+            <button ng-click="openModal('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="postfix button radius alert">Delete</button>
+        </div>
+    </div>
+</div>
