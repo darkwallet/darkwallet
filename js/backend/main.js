@@ -29,7 +29,7 @@ function DarkWalletService() {
     };
     
     // Public API
-    this.service = this.serviceGetter(services);
+    this.service = this.initializeServices(services);
 
     var servicesStatus = { gateway: 'offline', obelisk: 'offline' };
     this.servicesStatus = servicesStatus;
@@ -98,7 +98,7 @@ function DarkWalletService() {
  * @param {Object} services Object that contains the real services
  * @private
  */
-DarkWalletService.prototype.serviceGetter = function(services) {
+DarkWalletService.prototype.initializeServices = function(services) {
     var getters = {};
     for(var i in services) {
         Object.defineProperty(getters, i, {
