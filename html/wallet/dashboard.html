@@ -2,7 +2,7 @@
   <div class="row">
     <div class="large-6 columns">
       <div class="row collapse panel radius">
-        <h5>Quick send</h5>
+        <h5>Send</h5>
         <div class="small-1 columns">
           <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button square prefix radius fa-users"></a>
         </div>
@@ -13,47 +13,63 @@
           <input type="text" placeholder="Bitcoin address..." />
         </div>
         <div class="small-4 columns">
-          <a href="" class="button postfix radius fa fa-arrow-right">Next</a></span>
+          <a href="" class="button postfix radius fa fa-arrow-right">Next</a>
+        </div>
+      </div>
+      <div class="row collapse panel radius">
+        <h5>Sending to 1sdgsfgrtt5645646hthrt...</h5>
+      
+        <div class="small-6 columns">
+          <input type="text" placeholder="Amount" />
+        </div>
+        <div class="small-2 columns">
+          <a class="button postfix" btn-checkbox tooltip="click to switch to {{selectedFiat}}" ng-model="field.isFiatShown">{{field.isFiatShown? selectedFiat : selectedCurrency}}</a>
+        </div>
+        <div class="small-4 columns">
+        <a class="button postfix radius fa fa-rocket glow">Send</a>
         </div>
       </div>
     </div>
     <div class="large-6 columns">
       <div class="row collapse panel radius">
-        <h5>Quick receive (unused address)</h5>
-        <div class="small-11 columns">
-          <input type="text" ng-model="dashboard.address" />
+        <h5>Receive (unused address)</h5>
+        <div class="small-1 columns">
+          <a href="" ng-click="copyClipboard(address)" class="button prefix radius fa fa-clipboard"></a>
         </div>
         <div class="small-1 columns">
-          <a href="" ng-click="copyClipboard(address)" class="button square righted fa fa-clipboard"></a></span>
+          <a href="" ng-click="copyClipboard(address)" class="button prefix fa fa-qrcode"></a>
+        </div>
+        <div class="small-6 columns">
+          <input type="text" ng-model="dashboard.address" />
+        </div>
+        <div class="small-4 columns">
+          <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{sendPocketName}}</a>
         </div>
       </div>
     </div>
   </div>
   <div class="row topmargin">
     <div class="small-12 columns">
-      <div class="row collapse panel radius">
-        <h5>Latest transactions</h5>
-        <div class="small-12 columns">
-            <div class="row"  ng-repeat="row in history | filter:pocketFilter  | orderBy:'height':true | filter:historyFilter">
-             <div class="small-1 columns">
-              <div class="icon"><div ng-class="{'fa-money': (row.myOutValue-row.myInValue)>0 , 'fa-external-link-square': (row.myOutValue-row.myInValue)<0}" class="square fa"></div></div>
+
+        <div class="row collapse panel radius">
+            <h5>Latest transactions</h5>
+            <div class="row collapse"  ng-repeat="row in history | filter:pocketFilter  | orderBy:'height':true | filter:historyFilter">
+             <div class="small-2 columns">
+                <div ng-class="{'fa-money': (row.myOutValue-row.myInValue)>0 , 'fa-external-link-square': (row.myOutValue-row.myInValue)<0}" class="fa"></div>
+              {{(row.myOutValue-row.myInValue) | currencyFilter}}
              </div>
              <div class="small-6 columns">
-               <p>{{row.address}} <span class="label radius" ng-show="row.isStealth">stealth</span></p>
+               {{row.address}} <span class="label radius" ng-show="row.isStealth">stealth</span>
              </div>
              <div class="small-2 columns">
-               <p>{{row.height | heightToDate}}</p>
+               {{row.height | heightToDate}}
              </div>
-             <div class="small-1 columns">
-              <p>{{(row.myOutValue-row.myInValue) | currencyFilter}}</p>
-             </div>
-             <div class="small-1 columns">
-              <p class="text-right">{{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}</p>
+             <div class="small-2 columns text-right">
+              {{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}
              </div>
             </div>
   
         </div>
       </div>
-    </div>
   </div>
 </tab>
