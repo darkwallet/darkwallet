@@ -29,17 +29,7 @@ function DarkWalletService() {
     };
     
     // Public API
-    this.service = {};
-    for(var i in services) {
-        Object.defineProperty(this.service, i, {
-            get: function() {
-                var j = services[i];
-                return function() {
-                    return j;
-                };
-            }()
-        });
-    };
+    this.service = this.serviceGetter(services);
 
     var servicesStatus = { gateway: 'offline', obelisk: 'offline' };
     this.servicesStatus = servicesStatus;
@@ -102,6 +92,26 @@ function DarkWalletService() {
         return self.service;
     };
 }
+
+/**
+ * Fills an object with service getters
+ * @param {Object} services Object that contains the real services
+ * @private
+ */
+DarkWalletService.prototype.serviceGetter = function(services) {
+    var getters = {};
+    for(var i in services) {
+        Object.defineProperty(getters, i, {
+            get: function() {
+                var j = services[i];
+                return function() {
+                    return j;
+                };
+            }()
+        });
+    };
+    return getters;
+};
 
 /***************************************
 /* Communications
