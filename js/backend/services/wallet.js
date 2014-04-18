@@ -83,14 +83,47 @@ function(IdentityKeyRing, Port) {
 
     // Notify frontend of history row updates
     var notifyRow = function(newRow, height) {
-        if (newRow && (newRow.myOutValue - newRow.myInValue) > 0) {
+        var title;
+        if ((newRow.myOutValue - newRow.myInValue) > 0) {
             if (height) {
-                Port.post('gui', {type: "note", text: 'Received: ' + newRow.myOutValue - newRow.myInValue});
+                title = "Received";
             } else {
-                Port.post('gui', {type: "note", text: 'Unconfirmed: ' + newRow.myOutValue - newRow.myInValue});
+                title = "Receiving (unconfirmed)";
+            }
+        } else {
+            if (height) {
+                title = "Sending";
+            } else {
+                title = "Sending (unconfirmed)";
             }
         }
+        core.service.notifier.post(title, ""+(newRow.myOutValue - newRow.myInValue))
     };
+
+    // Callback for when an address was updated
+    var onAddressUpdate = function(walletAddress, addressUpdate) {
+        var identity = self.getCurrentIdentity();
+
+        // Get variables from the update
+        var height = addressUpdate.height;
+        var tx = addressUpdate.tx;
+        // var block_hash = addressUpdate.block_hash;
+        var address = addressUpdate.address;
+
+        if (addressUpdate.address != walletAddress.address) {
+            // not for us..
+            console.log("Invalid address update!!!!!");
+            return;
+        }
+
+        // Process
+        var newRow = identity.wallet.processTx(walletAddress, tx, height);
+
+        // Show a notification for incoming transactions
+        if (newRow) {
+            notifyRow(newRow, height);
+        }
+    }
 
     /***************************************
     /* History and address subscription
@@ -110,24 +143,10 @@ function(IdentityKeyRing, Port) {
 
         // now subscribe the address for notifications
         client.subscribe(walletAddress.address, function(err, res) {
-
             // fill history after subscribing to ensure we got all histories already (for now).
             identity.history.fillHistory(walletAddress, history);
         }, function(addressUpdate) {
-
-            // Get variables from the update
-            var height = addressUpdate.height;
-            var tx = addressUpdate.tx;
-            // var block_hash = addressUpdate.block_hash;
-            var address = addressUpdate.address;
-
-            // Process
-            var walletAddress = identity.wallet.getWalletAddress(address);
-            if (walletAddress) {
-                var newRow = identity.wallet.processTx(walletAddress, tx, height);
-                // Show a notification for incoming transactions
-                notifyRow(newRow, height);
-            }
+            onAddressUpdate(walletAddress, addressUpdate);
         });
         Port.post('gui', {type: "balance"});
     }
