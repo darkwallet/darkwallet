@@ -1,7 +1,7 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-define(['backend/services/ticker', 'base/test/mock/mock.js'], function(TickerService, Port) {
+define(['backend/services/ticker', 'base/test/mock/mock1.js'], function(TickerService, Port) {
   'use strict';
   describe('Ticker service', function() {
 

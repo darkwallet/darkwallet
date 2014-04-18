@@ -5,7 +5,8 @@ for (var file in window.__karma__.files) {
     }
 }
 
-var mock_url = 'base/test/mock/mock.js';
+var mock1_url = 'base/test/mock/mock1.js';
+var mock2_url = 'base/test/mock/mock2.js';
 
 requirejs.config({
     // Karma serves files from '/base'
@@ -23,7 +24,11 @@ requirejs.config({
         'frontend/app': '../test/mock/frontend_app'
       },
       'backend/services/ticker': {
-        'backend/port': mock_url
+        'backend/port': mock1_url
+      },
+      'frontend/controllers/calculator': {
+        'frontend/port': mock1_url,
+        'darkwallet': mock2_url
       }
     },
     
