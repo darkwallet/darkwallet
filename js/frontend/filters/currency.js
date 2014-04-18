@@ -1,14 +1,4 @@
-define(['./module', 'darkwallet', 'util/fiat'], function (filters, DarkWallet, FiatCurrencies) {
-
-// Convert input to BTC units
-var getAsBtc = function(currency, input) {
-  if (currency === 'mBTC') {
-    return input / 100000;
-  } else {
-    return input / 100000000;
-  }
-};
-
+define(['./module', 'dwutil/currencyformat'], function (filters, CurrencyFormatting) {
 
 // Calculating partial balance for history listings
 var partialBalance;
@@ -34,30 +24,14 @@ filters.filter('balanceFilter', function() {
 // Filter for presenting a satoshi amount into selected btc unit
 filters.filter('currencyFilter', function() {
   return function(input) {
-    var identity = DarkWallet.getIdentity();
-    return getAsBtc(identity.settings.currency, input);
+    return CurrencyFormatting.asBtc(input);
   };
 });
 
 // Filter for presenting a satoshi amount into selected btc unit with unit label
 filters.filter('currencyPresenter', function() {
   return function(input) {
-    /*if (input) {
-        console.log('currencyPresenter');
-    }*/
-    var identity = DarkWallet.getIdentity();
-    var tickerService = DarkWallet.service.ticker;
-    var rate = tickerService.rates[identity.settings.fiatCurrency];
-    var formatted = getAsBtc(identity.settings.currency, input);
-    formatted += " " + identity.settings.currency;
-
-    if (rate) {
-      var converted = (input * rate / 100000000).toFixed(2);
-      var currency = FiatCurrencies[identity.settings.fiatCurrency];
-      formatted += " ("+converted+" "+currency.symbol+")";
-    }
-
-    return formatted;
+    return CurrencyFormatting.format(input);
   };
 });
 

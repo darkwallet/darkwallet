@@ -1,8 +1,8 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-define(['model/keyring', 'backend/port'],
-function(IdentityKeyRing, Port) {
+define(['model/keyring', 'backend/port', 'dwutil/currencyformat'],
+function(IdentityKeyRing, Port, CurrencyFormatting) {
   'use strict';
 
   function WalletService(core) {
@@ -84,7 +84,8 @@ function(IdentityKeyRing, Port) {
     // Notify frontend of history row updates
     var notifyRow = function(newRow, height) {
         var title;
-        if ((newRow.myOutValue - newRow.myInValue) > 0) {
+        var value = newRow.myOutValue - newRow.myInValue;
+        if (value > 0) {
             if (height) {
                 title = "Received";
             } else {
@@ -97,7 +98,8 @@ function(IdentityKeyRing, Port) {
                 title = "Sending (unconfirmed)";
             }
         }
-        core.service.notifier.post(title, ""+(newRow.myOutValue - newRow.myInValue))
+        var formattedValue = CurrencyFormatting.format(amount);
+        core.service.notifier.post(title, formattedValue)
     };
 
     // Callback for when an address was updated
