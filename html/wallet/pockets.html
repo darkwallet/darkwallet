@@ -1,4 +1,4 @@
-    <ul class="side-nav">
+    <ul class="side-nav" ng-controller="PocketCreateCtrl">
       <li>Pockets on my wallet</li>
       <li ng-class="{active: 'pocket:all'===selectedPocket}" class="active" ng-click="selectPocket()"><a>All</a></li>
       <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat="pocket in identity.wallet.pockets.hdPockets track by $index">

@@ -88,54 +88,8 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
       $scope.selectedPocket = 'pocket:' + rowIndex;
   };
 
-  $scope.renamePocket = function(pocket) {
-    if (!pocket.name) {
-      $scope.forms.pocketLabelForm.$show();
-    } else {
-      $scope.identity.store.save();
-    }
-  };
-
   $scope.newMultiSig = function() {
     $scope.selectedPocket = 'newMultisig';
-  };
-
-  // Pockets
-  $scope.newPocket = {};
-  $scope.creatingPocket = false;
-  $scope.deletePocket = function(pocket) {
-      $scope.openModal('confirm-delete', {name: pocket.name, object: pocket}, $scope.deletePocketFinish)
-  };
-  $scope.deletePocketFinish = function(pocket) {
-      $scope.identity.wallet.pockets.deletePocket(pocket.name);
-      $scope.selectPocket();
-  };
-  $scope.setMixing = function(pocket) {
-      var identity = $scope.identity;
-      var walletPocket = identity.wallet.pockets.getPocket(pocket.name);
-      walletPocket.mixing = !walletPocket.mixing;
-      pocket.mixing = walletPocket.mixing;
-      identity.wallet.store.save();
-      var mixerService = DarkWallet.service.mixer;
-      mixerService.checkMixing();
-  };
-  $scope.createPocket = function() {
-    if ($scope.creatingPocket) {
-      if ($scope.newPocket.name) {
-          // create pocket
-          $scope.identity.wallet.pockets.createPocket($scope.newPocket.name);
-          var pocketIndex = $scope.identity.wallet.pockets.hdPockets.length-1;
-          // initialize pocket on angular
-          $scope.initPocket(pocketIndex);
-          // generate an address
-          $scope.generateAddress(pocketIndex, 0);
-          // select the pocket
-          $scope.selectPocket($scope.newPocket.name, pocketIndex);
-          // reset pocket form
-          $scope.newPocket = {name:''};
-      }
-    }
-    $scope.creatingPocket = !$scope.creatingPocket;
   };
 
   // Filters
@@ -211,31 +165,6 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
               }
       }
       return false;
-  };
-
-  $scope.moveFunds = function(type, index) {
-    var wallet = $scope.identity.wallet;
-    var walletService = DarkWallet.service.wallet;
-    var to;
-    var address;
-    if (type === 'pocket') {
-      to = wallet.pockets.hdPockets[index].name;
-      address = wallet.getFreeAddress(index).address;
-    } else if (type === 'multisig') {
-      to = wallet.multisig.funds[index].name;
-      address = wallet.getFreeAddress(index).address;
-    } else {
-      to = $scope.availableIdentities[index];
-      address = '';
-    }
-    $scope.openModal('ask-password', {text: "Are you sure you want to move all " + $scope.pocket.name +
-    " funds to " + to + "?"}, function(password) {
-      var fee = wallet.store.get('fee');
-      var amount = wallet.getBalance($scope.pocket.index).confirmed - fee;
-      walletService.send($scope.pocket.index, [{amount: amount, address: address}], null, fee, true, function() {
-        console.log('Not implemented yet.');
-      });
-    });
   };
 
 }]);
