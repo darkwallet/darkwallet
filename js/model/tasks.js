@@ -52,10 +52,13 @@ Tasks.prototype.getTasks = function(section) {
 
 /**
  * Get the number of tasks in the given section
- * @param {String} section Section name
+ * @param {String} section Section name or nothing to get all tasks
  * @return {Number} Number of tasks.
  */
 Tasks.prototype.getOpenTasks = function(section) {
+    if (section) {
+        return self.tasks[section] ? self.tasks[section].length : 0;
+    }
     var self = this;
     var nOpen = 0;
     Object.keys(this.tasks).forEach(function(section) {
