@@ -1,0 +1,16 @@
+<h3 ng-show="!tools.open || tools.signOpen">Signing</h3>
+<a class="button fa fa-pencil postfix" ng-click="tools.open=true;tools.signOpen=true" ng-show="!tools.open" novalidate>Sign</a>
+<form name="signingForm" ng-show="tools.signOpen" ng-submit="signText()">
+    <label>Text:</label>
+    <textarea required ng-model="tools.signText" rows="4" cols="50"></textarea>
+    <label>Address:</label>
+    <input required type="text" ng-model="tools.signAddress" placeholder="Address to sign with..."></input>
+    <div class="row collapse">
+      <div class="medium-6 columns">
+        <button type="submit" class="button fa fa-pencil postfix">Sign</button>
+      </div>
+      <div class="medium-6 columns">
+        <a class="button alert fa fa-times postfix" ng-click="tools.signOpen=false;tools.open=false;">Cancel</a>
+      </div>
+    </div>
+</form>
