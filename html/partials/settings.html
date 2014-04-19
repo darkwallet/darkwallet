@@ -32,9 +32,9 @@
       <div class="large-5 columns">
         <div class="panel setback notifications">
           <h5>Notifications</h5>
-          <input id="checkbox-outtx" ng-model="checkboxOutTx" type="checkbox"><label for="checkbox-outtx">For outgoing transactions</label><br>
-          <input id="checkbox-intx" ng-model="checkboxInTx" type="checkbox"><label for="checkbox-intx">For incoming transactions</label><br>
-          <input id="checkbox-multisig" ng-model="checkboxMutisig" type="checkbox"><label for="checkbox-multisig">For multisig spend requests</label><br>
+          <input id="checkbox-outtx" ng-model="identity.settings.notifications.send" type="checkbox"><label for="checkbox-outtx">For outgoing transactions</label><br>
+          <input id="checkbox-intx" ng-model="identity.settings.notifications.receive" type="checkbox"><label for="checkbox-intx">For incoming transactions</label><br>
+          <input id="checkbox-multisig" ng-model="identity.settings.notifications.multisig" type="checkbox"><label for="checkbox-multisig">For multisig spend requests</label><br>
           <input id="checkbox-notify" ng-model="identity.settings.notifications.popup" type="checkbox" ng-change="storeSettings()"><label for="checkbox-notify">Show popup notifications</label><br>
         </div>
         <div ng-controller="ServersCtrl" class="panel setback net">
