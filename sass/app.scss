@@ -87,6 +87,8 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 	padding: 0.18em 1em;
 	}
 
+.button.postfix.fa.alert:before, button.postfix.fa.alert:before { background: darken($alert-color, 10%); }
+
 .button.postfix.fa, button.postfix.fa { padding-left: 2em; }
 
 .button.topright { margin: 0.7em 0 0 0; }

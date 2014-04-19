@@ -4427,6 +4427,9 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
   top: 0px;
   padding: 0.18em 1em; }
 
+.button.postfix.fa.alert:before, button.postfix.fa.alert:before {
+  background: #d3290e; }
+
 .button.postfix.fa, button.postfix.fa {
   padding-left: 2em; }
 
