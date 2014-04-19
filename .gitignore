@@ -71,6 +71,8 @@ Desktop.ini
 /vendors/identicon/*
 !/vendors/identicon/pnglib.js
 !/vendors/identicon/identicon.js
+/vendors/async/*
+!/vendors/async/lib
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*

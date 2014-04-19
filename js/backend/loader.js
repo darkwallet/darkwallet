@@ -17,6 +17,7 @@ require.config({
     'pnglib': "../vendors/identicon/pnglib",
     'qrcodejs': "../vendors/qrcodejs/qrcode",
     'jsqrcode': "../vendors/jsqrcode/jsqrcode",
+    'async': "../vendors/async/lib/async",
     
     'bitcoinjs-lib': "../vendors/bitcoinjs-lib/bitcoinjs",
     'sjcl-real': "../vendors/sjcl/sjcl",

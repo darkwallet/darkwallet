@@ -39,6 +39,7 @@
     "jsqrcode": "https://github.com/LazarSoft/jsqrcode.git#master",
     "qrcodejs": "https://github.com/davidshimjs/qrcodejs.git",
     "identicon": "https://github.com/stewartlord/identicon.js.git",
-    "angular-xeditable": "~0.1.8"
+    "angular-xeditable": "~0.1.8",
+    "async": "~0.7.0"
   }
 }
