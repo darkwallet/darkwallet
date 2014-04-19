@@ -94,6 +94,12 @@ DarkWalletService.prototype.initializeServices = function(serviceClasses) {
     
     for(var i in serviceClasses) {
         var service = new serviceClasses[i](this);
+        if (!service.name) {
+          throw Error('Service ' + serviceClasses[i].name + ' has no name property');
+        }
+        if (Object.keys(services).indexOf(service.name) !== -1) {
+          throw Error('Name of service ' + service.name + ' repeated');
+        }
         services[service.name] = service;
     }
     
