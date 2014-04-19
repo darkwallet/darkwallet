@@ -160,5 +160,11 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
       return false;
   };
 
+  $scope.copyClipboardPublic = function(walletAddress) {
+      var pubKey = new Bitcoin.ECPubKey(walletAddress.pubKey, true);
+      var publicHex = pubKey.toHex();
+      $scope.copyClipboard(publicHex, 'Copied public key to clipboard');
+  }
+
 }]);
 });
