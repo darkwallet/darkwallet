@@ -5,6 +5,7 @@ define([
     'angular',
     'mm.foundation',
     'frontend/popup/controller',
+    'frontend/controllers/notifications',
     'frontend/filters/currency'
 ], function (angular) {
     'use strict';

@@ -18,6 +18,7 @@ define([
     './settings',
     './wallet',
     './calculator',
+    './notifications',
     './servers',
     './fund',
     './tools',

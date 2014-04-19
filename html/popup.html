@@ -10,7 +10,7 @@
   </head>
   <body ng-controller="PopupCtrl">
     <div class="popupcontainer">
- <div class="popupcontainer">
+ <div class="popupcontainer" ng-controller="NotificationsCtrl">
       <div ng-show="identities.length" ng-cloak class="row">
         <div class="small-6 columns text-center">
           <a href="" id="pop-identities"><h3><i class="fa fa-user"></i> {{currentIdentity}}</h3></a>
