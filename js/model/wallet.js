@@ -226,7 +226,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
         }
     }
 
-    // Precalculate stealth address and mpk for pockets (even branches)
+    // Precalculate stealth address and mpk for pockets (only main branch)
     if ((seq.length == 1) && (seq[0]%2 == 0)) {
         // Stealth
         var scanKey = this.getScanKey();
