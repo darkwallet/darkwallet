@@ -31,9 +31,10 @@ var clipboard = {
     return text;
   },
   registerScope: function(scope) {
-    scope.copyClipboard = function (text) {
+    scope.copyClipboard = function (text, notification) {
+        notification = notification || 'Copied to clipboard';
         clipboard.copyClipboard(text);
-        notify.note('Copied to clipboard');
+        notify.note(notification);
     };
     scope.pasteClipboard = clipboard.pasteClipboard;
   }
