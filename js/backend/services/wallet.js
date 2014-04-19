@@ -8,6 +8,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
   function WalletService(core) {
     var keyRing = new IdentityKeyRing();
     var self = this;
+    this.name = 'wallet';
 
     // Some scope variables
     var currentIdentity = false;

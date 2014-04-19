@@ -5,6 +5,7 @@ function(Port, Transport, Channel) {
   function LobbyService(core) {
     var lobbyTransport;
     var self = this;
+    this.name = 'lobby';
 
      // Transport service managing background lobby transport
     Port.listen('lobby',

@@ -1,6 +1,7 @@
 define(function() {
 
   function CtxMenusService(core) {
+      this.name = 'ctxMenus';
       /***************************************
       /* Right click context menus.
 

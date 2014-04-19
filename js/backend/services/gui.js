@@ -2,6 +2,7 @@ define(['backend/port', 'darkwallet'],
 function(Port, DarkWallet) {
   'use strict';
   function GuiService(core) {
+    this.name = 'gui';
     // Gui service
     Port.listen('gui', function() {
       }, function(port) {

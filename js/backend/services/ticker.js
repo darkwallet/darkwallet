@@ -4,6 +4,7 @@ function(Port) {
     function TickerService(core) {
       var self = this;
       // Some scope variables
+      self.name = 'ticker';
       self.rates = {};
       self.core = core;
 

@@ -7,6 +7,7 @@ define(['backend/port', 'backend/channels/catchan', 'darkwallet'], function(Port
    */
   function NotifierService(core) {
     var self = this;
+    this.name = 'notifier';
     this.core = core;
     
     // Port for communication with other services

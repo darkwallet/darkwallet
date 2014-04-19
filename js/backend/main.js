@@ -10,29 +10,16 @@ require(['backend/port',
          'backend/services/mixer',
          'backend/services/notifier',
          'backend/services/ctxmenus'],
-function(Port, LobbyService, ObeliskService, WalletService, GuiService, TickerService, MixerService, NotifierService, CtxMenusService) {
+function(Port) {
 
-function DarkWalletService() {
+var serviceClasses = [].splice.call(arguments, 1);
 
+function DarkWalletService(serviceClasses) {
     var self = this;
 
     // Backend services
-    var services = {
-        obelisk: new ObeliskService(this),
-        wallet: new WalletService(this),
-        ctxMenus: new CtxMenusService(this),
-        gui: new GuiService(this),
-        ticker: new TickerService(this),
-        mixer: new MixerService(this),
-        notifier: new NotifierService(this),
-        lobby: new LobbyService(this)
-    };
-    
-    // Public API
-    this.service = this.initializeServices(services);
-
-    var servicesStatus = { gateway: 'offline', obelisk: 'offline' };
-    this.servicesStatus = servicesStatus;
+    var services = this.initializeServices(serviceClasses);
+    var servicesStatus = this.servicesStatus;
 
     /***************************************
     /* Hook up some utility functions
@@ -94,14 +81,25 @@ function DarkWalletService() {
 }
 
 /**
- * Fills an object with service getters
- * @param {Object} services Object that contains the real services
+ * Instantiates an object and prepares a getter function for each service.
+ * Getter functions are available under `service` property, for example you can
+ * get obelisk from `obj.service.obelisk`.
+ * @param {Object[]} serviceClasses Array with the services modules to be instantialzed
+ * @return {Object[]} Object that contains the real services
  * @private
  */
-DarkWalletService.prototype.initializeServices = function(services) {
-    var getters = {};
+DarkWalletService.prototype.initializeServices = function(serviceClasses) {
+    this.service = {};
+    var services = {};
+    
+    for(var i in serviceClasses) {
+        var service = new serviceClasses[i](this);
+        services[service.name] = service;
+    }
+    
+    // Public API
     for(var i in services) {
-        Object.defineProperty(getters, i, {
+        Object.defineProperty(this.service, i, {
             get: function() {
                 var j = services[i];
                 return function() {
@@ -110,7 +108,9 @@ DarkWalletService.prototype.initializeServices = function(services) {
             }()
         });
     };
-    return getters;
+    
+    this.servicesStatus = { gateway: 'offline', obelisk: 'offline' };
+    return services;
 };
 
 /***************************************
@@ -128,7 +128,7 @@ var addListener = function(callback) {
 /***************************************
 /* Service instance that will be running in the background page
  */
-var service = new DarkWalletService();
+var service = new DarkWalletService(serviceClasses);
 
 
 /***************************************

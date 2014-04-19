@@ -8,6 +8,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
    */
   function MixerService(core) {
     var self = this;
+    this.name = 'mixer';
     this.core = core;
     this.ongoing = {};
 

@@ -8,6 +8,7 @@ function(Port) {
    */
   function ObeliskService(core) {
       var self = this;
+      this.name = 'obelisk';
       this.client = null;
       this.connected = false;
       this.connecting = false;
