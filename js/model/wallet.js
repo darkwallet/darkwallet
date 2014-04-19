@@ -726,6 +726,13 @@ Wallet.prototype.processStealth = function(stealthArray) {
             if (!walletAddress) {
                 walletAddress = self.storePublicKey(seq, myKeyBytes, {'type': 'stealth', 'ephemKey': ephemKey, 'address': address});
             }
+            console.log('stealth detected', walletAddress);
+            if (!walletAddress.ephemKey) {
+                walletAddress.ephemKey = ephemKey;
+                walletAddress.type = 'stealth';
+                walletAddress.address = address;
+                self.store.save();
+            }
             matches.push(walletAddress);
         }
     });
