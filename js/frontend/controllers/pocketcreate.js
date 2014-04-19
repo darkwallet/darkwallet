@@ -28,7 +28,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
             $scope.initPocket(pocketIndex);
 
             // generate an address
-            $scope.generateAddress(pocketIndex, 0);
+            $scope.generateAddress(pocketIndex*2, 0);
 
             // select the pocket
             $scope.selectPocket($scope.newPocket.name, pocketIndex);
