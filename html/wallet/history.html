@@ -21,7 +21,7 @@
               <td class="icon"><button class="button square fa fa-info"></button></td>
               <td>{{row.address}} <span class="label radius" ng-show="row.isStealth">stealth</span></td>
               <td>{{row.height | heightToDate}}</td>
-              <td>{{(row.myOutValue-row.myInValue) | currencyFilter}}</td>
+              <td>{{(row.myOutValue-row.myInValue) | amountFilter}}</td>
               <td class="text-right">{{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}</td>
             </tr>
           </tbody>

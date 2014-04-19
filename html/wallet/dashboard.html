@@ -56,7 +56,7 @@
             <div class="row collapse"  ng-repeat="row in history | filter:pocketFilter  | orderBy:'height':true | filter:historyFilter">
              <div class="small-2 columns">
                 <div ng-class="{'fa-money': (row.myOutValue-row.myInValue)>0 , 'fa-external-link-square': (row.myOutValue-row.myInValue)<0}" class="fa"></div>
-              {{(row.myOutValue-row.myInValue) | currencyFilter}}
+             {{(row.myOutValue-row.myInValue) | amountFilter}}
              </div>
              <div class="small-6 columns">
                 <div class="row">

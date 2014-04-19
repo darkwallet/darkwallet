@@ -20,6 +20,15 @@ filters.filter('balanceFilter', function() {
   };
 });
 
+// Filter like currencyFilter adding the + sign for positive amounts.
+filters.filter('amountFilter', function() {
+  return function(input) {
+    var value = CurrencyFormatting.asBtc(input);
+
+    var prefix = (value>=0) ? '+' : '-';
+    return prefix + Math.abs(value);
+  };
+});
 
 // Filter for presenting a satoshi amount into selected btc unit
 filters.filter('currencyFilter', function() {
