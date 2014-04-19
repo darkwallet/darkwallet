@@ -182,6 +182,9 @@ span.meter { padding: 5px 0 0 5px; }
 
 .seed { font-size: 120%; }
 
+.transaction-icon.fa-arrow-circle-down { color: $primary-color; }
+.transaction-icon.fa-arrow-circle-up { color: $alert-color; }
+
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover { background: $primary-color; cursor: pointer; }
 
 .contact-mosaic { max-height: 500px; overflow-y: scroll; overflow-x: hidden; }

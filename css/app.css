@@ -4551,6 +4551,12 @@ span.meter {
 .seed {
   font-size: 120%; }
 
+.transaction-icon.fa-arrow-circle-down {
+  color: #27ae60; }
+
+.transaction-icon.fa-arrow-circle-up {
+  color: #f04124; }
+
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover {
   background: #27ae60;
   cursor: pointer; }

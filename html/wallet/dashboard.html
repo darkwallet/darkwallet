@@ -58,7 +58,7 @@
             <h5>Latest transactions</h5>
             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
              <div class="small-2 columns">
-                <div ng-class="{'fa-arrow-circle-down': (row.myOutValue-row.myInValue)>0 , 'fa-arrow-circle-up': (row.myOutValue-row.myInValue)<0}" class="fa"></div>
+                <div ng-class="{'fa-arrow-circle-down': (row.myOutValue-row.myInValue)>0 , 'fa-arrow-circle-up': (row.myOutValue-row.myInValue)<0}" class="fa transaction-icon"></div>
              {{(row.myOutValue-row.myInValue) | amountFilter}}
              </div>
              <div class="small-6 columns">
