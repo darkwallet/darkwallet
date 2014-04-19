@@ -17,8 +17,10 @@
           <div><i class="icon-large icon-qrcode"></i></div>Clear storage (DANGEROUS!!)
         </a>
         </div>
-        <div ng-controller="ServersCtrl" class="panel setback net">
-          <h5>Plugins</h5>
+        <div ng-controller="NotificationsCtrl" class="panel setback net popupcontainer">
+          <h5>Notifications</h5>
+              <div class="panel" ng-repeat="task in tasks" ng-include="'notifications/'+task.section+'.html'">
+              </div>
         </div>
       </div>
       <div class="large-3 columns">
