@@ -82,7 +82,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
     };
 
     // Notify frontend of history row updates
-    var notifyRow = function(newRow, height) {
+    var notifyRow = function(walletAddress, newRow, height) {
         var title;
         var value = newRow.myOutValue - newRow.myInValue;
         if (value > 0) {
@@ -104,7 +104,8 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
         core.service.notifier.post(title, formattedValue);
 
         // Post the balance update to the gui so it can be updated
-        Port.post('gui', {type: 'balance'});
+        var pocketId = core.getIdentity().wallet.pockets.getAddressPocketId(walletAddress);
+        Port.post('gui', {type: 'balance', pocketId: pocketId});
     };
 
     // Callback for when an address was updated
@@ -128,7 +129,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
 
         // Show a notification for incoming transactions
         if (newRow) {
-            notifyRow(newRow, height);
+            notifyRow(walletAddress, newRow, height);
         }
     }
 
@@ -152,10 +153,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
         client.subscribe(walletAddress.address, function(err, res) {
             // fill history after subscribing to ensure we got all histories already (for now).
             identity.history.fillHistory(walletAddress, history);
+            var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
+            Port.post('gui', {type: 'balance', pocketId: pocketId});
         }, function(addressUpdate) {
             onAddressUpdate(walletAddress, addressUpdate);
         });
-        Port.post('gui', {type: "balance"});
     }
 
     // Start up history for an address
