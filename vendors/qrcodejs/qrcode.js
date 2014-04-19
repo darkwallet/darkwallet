@@ -190,12 +190,15 @@ var QRCode;
 
 			function makeSVG(tag, attrs) {
 				var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-				for (var k in attrs)
+				for (var k in attrs) {
+                    if (k== 'width' && !attrs[k]) continue;
+                    if (k== 'height' && !attrs[k]) continue;
 					if (attrs.hasOwnProperty(k)) el.setAttribute(k, attrs[k]);
+                  }
 				return el;
 			}
 
-			var svg = makeSVG("svg" , {'viewBox': '0 0 ' + String(nCount) + " " + String(nCount), 'width': '100%', 'height': '100%', 'fill': _htOption.colorLight});
+			var svg = makeSVG("svg" , {'viewBox': '0 0 ' + String(nCount) + " " + String(nCount), 'width': _htOption.width, 'height': _htOption.height, 'fill': _htOption.colorLight});
 			svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
 			_el.appendChild(svg);
 
