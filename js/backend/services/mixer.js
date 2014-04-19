@@ -35,7 +35,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     // Check to see we have anything to mix
     var anyMixing = false;
     identity.wallet.pockets.hdPockets.forEach(function(pocket) {
-      if (pocket.mixing) {
+      if (pocket && pocket.mixing) {
         anyMixing = true;
       }
     });
