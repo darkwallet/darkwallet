@@ -17,7 +17,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
      * Rename a pocket
      */
     $scope.renamePocket = function(pocket) {
-        if (!pocket.name) {
+        if (!pocket || !pocket.name) {
             $scope.forms.pocketLabelForm.$show();
         } else {
             var identity = DarkWallet.getIdentity();
