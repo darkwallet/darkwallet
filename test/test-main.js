@@ -1,6 +1,6 @@
 var tests = [];
 for (var file in window.__karma__.files) {
-    if (/Spec\.js$/.test(file)) {
+    if (/formatSpec\.js$/.test(file)) {
         tests.push(file);
     }
 }
@@ -31,6 +31,9 @@ requirejs.config({
         'darkwallet': mock2_url
       },
       'frontend/controllers/contacts': {
+        'darkwallet': mock1_url
+      },
+      'dwutil/currencyformat': {
         'darkwallet': mock1_url
       }
     },
