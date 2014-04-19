@@ -23,6 +23,12 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         return {address: address, script: scriptHex, m: m, pubKeys: participants};
     },
 
+    deriveMpk: function(mpk, index) {
+        var mpKey = Bitcoin.HDWallet.fromBase58(mpk);
+        var childKey = mpKey.derive(index);
+        return childKey.toBase58(false);
+    },
+
     importMultiSig: function(data){
         var script = new Bitcoin.Script(convert.hexToBytes(data));
         var hashed = Bitcoin.crypto.hash160(script.buffer);

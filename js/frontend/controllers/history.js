@@ -62,13 +62,6 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
           $scope.pocket.name = pocketName;
           $scope.pocket.fund = null;
           var walletAddress = $scope.identity.wallet.getAddress([$scope.pocket.index]);
-          if (!walletAddress.mpk) {
-              // derive mpk here for now so we can show as master address
-	      var mpKey = Bitcoin.HDWallet.fromBase58($scope.identity.wallet.mpk);
-              var childKey = mpKey.derive($scope.pocket.index);
-              walletAddress.mpk = childKey.toBase58(false);
-              $scope.identity.wallet.store.save();
-          }
           $scope.pocket.mpk = walletAddress.mpk;
           $scope.pocket.stealth = walletAddress.stealth;
           $scope.pocket.addresses = $scope.addresses[$scope.pocket.index];

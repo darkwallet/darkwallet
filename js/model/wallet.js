@@ -1,5 +1,5 @@
-define(['util/stealth', 'bitcoinjs-lib', 'model/multisig', 'model/pockets'],
-function(Stealth, Bitcoin, MultisigFunds, Pockets) {
+define(['util/stealth', 'bitcoinjs-lib', 'model/multisig', 'model/pockets', 'util/btc'],
+function(Stealth, Bitcoin, MultisigFunds, Pockets, BtcUtils) {
 /**
  * Access to the identity bitcoin keys.
  * @param {Object} store Store for the object.
@@ -88,6 +88,7 @@ Wallet.prototype.getBalance = function(pocketIndex) {
  */
 Wallet.prototype.loadPubKeys = function() {
     var self = this;
+    var updated = false;
     var toRemove = [];
     Object.keys(this.pubKeys).forEach(function(index) {
         var walletAddress = self.pubKeys[index];
@@ -104,13 +105,25 @@ Wallet.prototype.loadPubKeys = function() {
             // properly later
             //if (walletAddress.history)
             //    self.processHistory(walletAddress, walletAddress.history);
+        } else {
+            // TODO: change to store upgrade area
+            // Check pockets (those with index length == 1)
+            if (!walletAddress.mpk) {
+                // precalculate mpk for pockets that dont have it
+                walletAddress.mpk = BtcUtils.deriveMpk(this.mpk);
+                updated = true;
+            }
         }
     });
     // Cleanup malformed addresses
     toRemove.forEach(function(index) {
         console.log("[model] Deleting", self.pubKeys[index]);
         delete self.pubKeys[index];
+        updated = true;
     });
+    if (updated) {
+        this.store.save();
+    }
 };
 
 Wallet.prototype.deriveHDPrivateKey = function(seq, masterKey) {
@@ -213,11 +226,14 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
         }
     }
 
-    // Precalculate stealth address for pockets (even branches)
+    // Precalculate stealth address and mpk for pockets (even branches)
     if ((seq.length == 1) && (seq[0]%2 == 0)) {
+        // Stealth
         var scanKey = this.getScanKey();
         var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [pubKey]);
         walletAddress['stealth'] = stealthAddress;
+        // Mpk
+        walletAddress['mpk'] = BtcUtils.deriveMpk(this.mpk)
     }
 
     // add to internal bitcoinjs-lib wallet
