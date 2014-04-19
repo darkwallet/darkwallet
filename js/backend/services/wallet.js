@@ -98,8 +98,13 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
                 title = "Sending (unconfirmed)";
             }
         }
-        var formattedValue = CurrencyFormatting.format(amount);
-        core.service.notifier.post(title, formattedValue)
+        var formattedValue = CurrencyFormatting.format(value);
+
+        // Port the the os notification service
+        core.service.notifier.post(title, formattedValue);
+
+        // Post the balance update to the gui so it can be updated
+        Port.post('gui', {type: 'balance'});
     };
 
     // Callback for when an address was updated

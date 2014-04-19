@@ -2,8 +2,8 @@
  * @fileOverview HistoryCtrl angular controller
  */
 
-define(['./module', 'bitcoinjs-lib', 'util/btc', 'darkwallet', 'dwutil/multisig'],
-function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
+define(['./module', 'bitcoinjs-lib', 'util/btc', 'darkwallet', 'dwutil/multisig', 'frontend/port'],
+function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
   'use strict';
   controllers.controller('HistoryCtrl', ['$scope', 'notify', function($scope, notify) {
 
@@ -11,9 +11,53 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
   $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $scope.allAddresses, changeAddresses: []};
   $scope.pocketName = "All Pockets";
   $scope.selectedPocket = 'pocket:all';
+  $scope.historyRows = [];
 
   $scope.isAll = true;
   $scope.isFund = false;
+
+  function calculateBalance(pocket, isFund, isAll) {
+        var balance;
+        if (isFund) {
+            balance = $scope.identity.wallet.getBalance(pocket.fund.multisig.seq[0]);
+        } else if (isAll) {
+            balance = $scope.identity.wallet.getBalance();
+        } else {
+          var mainBalance = $scope.identity.wallet.getBalance(pocket.index);
+          var changeBalance = $scope.identity.wallet.getBalance(pocket.index+1);
+
+          var confirmed = mainBalance.confirmed + changeBalance.confirmed;
+          var unconfirmed = mainBalance.unconfirmed + changeBalance.unconfirmed;
+          balance = {confirmed: confirmed, unconfirmed: unconfirmed};
+ 
+        }
+        return balance;
+  }
+
+  Port.connectNg('gui', $scope, function(data) {
+    // Check on gui balance updates to recalculate pocket balance so it shows properly
+    if (data.type == 'balance') {
+        var balance = calculateBalance($scope.pocket, $scope.isFund, $scope.isAll);
+        $scope.balance = balance.confirmed;
+        $scope.unconfirmed = balance.unconfirmed;
+        $scope.chooseRows();
+        if (!$scope.$$phase) {
+            $scope.$apply();
+        }
+    }
+  });
+ 
+  Port.connectNg('wallet', $scope, function(data) {
+    if (data.type == 'ready') {
+        var balance = calculateBalance($scope.pocket, $scope.isFund, $scope.isAll);
+        $scope.balance = balance.confirmed;
+        $scope.unconfirmed = balance.unconfirmed;
+        $scope.chooseRows();
+        if (!$scope.$$phase) {
+            $scope.$apply();
+        }
+    }
+  });
 
   // History Listing
   $scope.selectFund = function(fund, rowIndex) {
@@ -36,7 +80,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
 
       $scope.balance = balance.confirmed;
       $scope.unconfirmed = balance.unconfirmed;
-
+      $scope.chooseRows();
   };
   $scope.selectPocket = function(pocketName, rowIndex, form) {
       var pocketIndex;
@@ -79,6 +123,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
           $scope.forms.pocketLabelForm = form;
       }
       $scope.selectedPocket = 'pocket:' + rowIndex;
+      $scope.chooseRows();
   };
 
   $scope.newMultiSig = function() {
@@ -88,11 +133,46 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
   // Filters
 
   var shownRows = [];
+  // Filter the rows we want to show
+  var chooseRows = function() {
+    var history = $scope.identity.history.history;
+    var rows = history.filter($scope.pocketFilter);
+    if (!rows.length) {
+        return [];
+    }
+    rows = rows.sort(function(a, b) {
+       if (!a.height) {
+          return -10000000;
+       }
+       if (!b.height) {
+          return 10000000;
+       }
+       return b.height - a.height;
+    });
+    rows = rows.filter($scope.historyFilter);
+
+    var prevRow = rows[0];
+    prevRow.confirmed = $scope.balance;
+    prevRow.unconfirmed = $scope.unconfirmed;
+    var idx = 1;
+    while(idx<rows.length) {
+        var row = rows[idx];
+        var value = prevRow.myOutValue - prevRow.myInValue;
+        if (prevRow.height) {
+            row.confirmed = prevRow.confirmed-value;
+        } else {
+            row.unconfirmed = prevRow.unconfirmed-value;
+        }
+        prevRow = row;
+        idx++;
+    }
+    return rows;
+  }
+
   $scope.txFilter = 'last10';
 
   var pocketFilter = function(row) {
       // Making sure shownRows is reset before historyFilter stage is reached.
-      shownRows = [];
       if ($scope.isAll) {
           // only add pocket transactions for now
           return typeof row.pocket === 'number';
@@ -119,7 +199,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
   // Set the history filter
   $scope.setHistoryFilter = function(name) {
       $scope.txFilter = name;
-      shownRows = [];
+      $scope.chooseRows();
   };
 
   // History filter, run for every row to see if we should show it
@@ -133,6 +213,10 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
       return pocketFilter(row);
   };
   $scope.historyFilter = function(row) {
+      if (!row.height) {
+          shownRows.push(row.hash);
+          return true;
+      }
       switch($scope.txFilter) {
           case 'all':
               return true;
@@ -159,6 +243,10 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund) {
       }
       return false;
   };
+
+  $scope.chooseRows = function() {
+      $scope.historyRows = chooseRows();
+  }
 
   $scope.copyClipboardPublic = function(walletAddress) {
       var pubKey = new Bitcoin.ECPubKey(walletAddress.pubKey, true);

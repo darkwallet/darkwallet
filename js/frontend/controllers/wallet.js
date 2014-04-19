@@ -45,7 +45,7 @@ function (controllers, DarkWallet, Port) {
     else if (data.type == 'warning') {
         notify.warning('gui', data.text);
     }
-    if (['height', 'update', 'balance'].indexOf(data.type) > -1) {
+    if (['height', 'update'].indexOf(data.type) > -1) {
         if (!$scope.$$phase) {
             $scope.$apply();
         }
@@ -137,7 +137,7 @@ function (controllers, DarkWallet, Port) {
       // set some links
       $scope.identity = identity;
       $scope.availableIdentities = bg.getKeyRing().availableIdentities;
-      $scope.history = identity.history.history;
+      // $scope.history = identity.history.history;
       // set history update callback
       var balance = identity.wallet.getBalance();
       

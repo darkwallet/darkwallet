@@ -17,12 +17,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="row in history | filter:pocketFilter  | orderBy:'height':true | filter:historyFilter">
+            <tr ng-repeat="row in historyRows track by $index">
               <td class="icon"><button class="button square fa fa-info"></button></td>
-              <td>{{row.address}} <span class="label radius" ng-show="row.isStealth">stealth</span></td>
-              <td>{{row.height | heightToDate}}</td>
+              <td><span>{{row.address}}</span> <span class="label radius" ng-show="row.isStealth">stealth</span></td>
+              <td><span ng-show="row.height">{{row.height | heightToDate}}</span><span ng-show="!row.height">unconfirmed</span></td>
               <td>{{(row.myOutValue-row.myInValue) | amountFilter}}</td>
-              <td class="text-right">{{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}</td>
+              <td class="text-right">{{row.confirmed | currencyFilter}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span></td>
             </tr>
           </tbody>
         </table>

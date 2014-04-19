@@ -53,7 +53,7 @@
 
         <div class="row collapse panel radius">
             <h5>Latest transactions</h5>
-            <div class="row collapse"  ng-repeat="row in history | filter:pocketFilter  | orderBy:'height':true | filter:historyFilter">
+            <div class="row collapse"  ng-repeat="row in historyRows track by $index">
              <div class="small-2 columns">
                 <div ng-class="{'fa-money': (row.myOutValue-row.myInValue)>0 , 'fa-external-link-square': (row.myOutValue-row.myInValue)<0}" class="fa"></div>
              {{(row.myOutValue-row.myInValue) | amountFilter}}
@@ -68,11 +68,14 @@
                     </div>
                 </div>
              </div>
-             <div class="small-2 columns">
+             <div ng-show="row.height" class="small-2 columns">
                {{row.height | heightToDate}}
              </div>
+             <div ng-show="!row.height" class="small-2 columns">
+               unconfirmed
+             </div>
              <div class="small-1 columns text-right">
-              {{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}
+              {{row.confirmed | currencyFilter}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span>
              </div>
             </div>
   
