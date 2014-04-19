@@ -1,7 +1,7 @@
 <tab heading="Overview">
   <div class="row">
     <div class="large-6 columns">
-      <div class="row collapse panel radius">
+      <div class="row collapse panel radius" ng-show="!quickSending">
         <h5>Send</h5>
         <div class="small-1 columns">
           <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button square prefix radius fa-users"></a>
@@ -13,10 +13,10 @@
           <input type="text" placeholder="Bitcoin address..." />
         </div>
         <div class="small-4 columns">
-          <a href="" class="button postfix radius fa fa-arrow-right">Next</a>
+          <a ng-click="quickSending=true" class="button postfix radius fa fa-arrow-right">Next</a>
         </div>
       </div>
-      <div class="row collapse panel radius">
+      <div class="row collapse panel radius" ng-show="quickSending" >
         <h5>Sending to 1sdgsfgrtt5645646hthrt...</h5>
       
         <div class="small-6 columns">
@@ -26,7 +26,7 @@
           <a class="button postfix" btn-checkbox tooltip="click to switch to {{selectedFiat}}" ng-model="field.isFiatShown">{{field.isFiatShown? selectedFiat : selectedCurrency}}</a>
         </div>
         <div class="small-4 columns">
-        <a class="button postfix radius fa fa-rocket glow">Send</a>
+        <a ng-click="quickSending=false" class="button postfix radius fa fa-rocket glow">Send</a>
         </div>
       </div>
     </div>
@@ -59,12 +59,19 @@
               {{(row.myOutValue-row.myInValue) | currencyFilter}}
              </div>
              <div class="small-6 columns">
-               {{row.address}} <span class="label radius" ng-show="row.isStealth">stealth</span>
+                <div class="row">
+                    <div class="small-8 columns">
+                        {{row.address}}
+                    </div>
+                    <div class="small-4 columns">
+                        <span class="label radius" ng-show="row.isStealth">stealth</span>
+                    </div>
+                </div>
              </div>
              <div class="small-2 columns">
                {{row.height | heightToDate}}
              </div>
-             <div class="small-2 columns text-right">
+             <div class="small-1 columns text-right">
               {{row.myOutValue-row.myInValue | balanceFilter | currencyFilter}}
              </div>
             </div>
