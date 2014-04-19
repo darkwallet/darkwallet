@@ -19,6 +19,7 @@ function MultisigFund(multisig) {
     this.canSign = this.participants.filter(function(participant) {return participant.type=='me';});
 }
 
+
 /**
  * Create a profile out of a public key by looking in contacts and wallet.
  */
@@ -60,6 +61,7 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes) {
     return participant;
 };
 
+
 /**
  * Detect participants for a fund from contacts and wallet.
  */
@@ -74,6 +76,7 @@ MultisigFund.prototype.detectParticipants = function() {
 
     return participants;
 }
+
 
 /**
  * Check tasks and put some info in the pocket
@@ -96,6 +99,7 @@ MultisigFund.prototype.detectTasks = function() {
     return res;
 };
 
+
 /**
  * Order signatures for this multisig
  */
@@ -111,6 +115,7 @@ MultisigFund.prototype.organizeSignatures = function(hexSigs) {
     });
     return signatures;
 }
+
 
 /**
  * Check if we have enough signatures and put them into the transaction
@@ -138,6 +143,7 @@ MultisigFund.prototype.finishTransaction = function(spend) {
         return spend.tx;
     }
 };
+
 
 /**
  * Import a signature
@@ -167,49 +173,51 @@ MultisigFund.prototype.importSignature = function(sigHex, spend) {
     return added;
 };
 
+
 /**
  * Import a partial transaction into the fund
  */
 MultisigFund.prototype.importTransaction = function(serializedTx) {
-      // import transaction here
-      var identity = DarkWallet.getIdentity();
-      var multisig = this.multisig;
-      var walletAddress = identity.wallet.getWalletAddress(multisig.address);
+    // import transaction here
+    var identity = DarkWallet.getIdentity();
+    var multisig = this.multisig;
+    var walletAddress = identity.wallet.getWalletAddress(multisig.address);
 
-      // we import the tx
-      var tx;
-      try {
-          tx = Bitcoin.Transaction.deserialize(serializedTx);
-      } catch(e) {
-          throw Error('Malformed transaction');
-      }
-      // Find our inputs
-      var inputs = identity.wallet.txForAddress(walletAddress, tx);
+    // we import the tx
+    var tx;
+    try {
+        tx = Bitcoin.Transaction.deserialize(serializedTx);
+    } catch(e) {
+        throw Error('Malformed transaction');
+    }
+    // Find our inputs
+    var inputs = identity.wallet.txForAddress(walletAddress, tx);
 
-      if (inputs.length == 0) {
-          throw Error('Transaction is not for this multisig');
-      }
+    if (inputs.length == 0) {
+        throw Error('Transaction is not for this multisig');
+    }
 
-      // Check if we have the tx in the identity store
-      var tasks = identity.tasks.getTasks('multisig');
-      tasks.forEach(function(task) {
-          if (task.tx == serializedTx) {
-              throw Error('Already have this transaction!');
-          }
-      });
+    // Check if we have the tx in the identity store
+    var tasks = identity.tasks.getTasks('multisig');
+    tasks.forEach(function(task) {
+        if (task.tx == serializedTx) {
+            throw Error('Already have this transaction!');
+        }
+    });
 
-      // Now create the task
-      var pending = [];
-      inputs.forEach(function(input) {
-          var out = input.outpoint.hash+':'+input.outpoint.index;
-          pending.push({output: out, address: input.address, index: input.index, signatures: {}, type: 'multisig'});
-      });
-      var task = {tx: serializedTx, 'pending': pending, stealth: false};
-      var spend = {tx: tx, task: task};
-      // Maybe should be imported here but now it's done on the angular controller..
-      // this.tasks.push(spend)
-      return spend;
-  };
+    // Now create the task
+    var pending = [];
+    inputs.forEach(function(input) {
+        var out = input.outpoint.hash+':'+input.outpoint.index;
+        pending.push({output: out, address: input.address, index: input.index, signatures: {}, type: 'multisig'});
+    });
+    var task = {tx: serializedTx, 'pending': pending, stealth: false};
+    var spend = {tx: tx, task: task};
+    // Maybe should be imported here but now it's done on the angular controller..
+    // this.tasks.push(spend)
+    return spend;
+};
+
 
 /**
  * Continue signing after getting the password
@@ -237,6 +245,7 @@ MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
     });
     return signed;
 };
+
 
 /**
  * Sign a transaction with our keys
@@ -276,7 +285,8 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
     });
     return signed;
 }
- 
+
+
 /**
  * Get valid inputs for this transaction
  * @returns [{output: utxo.receive, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'}, ...]
