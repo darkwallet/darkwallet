@@ -1,6 +1,6 @@
 <tab heading="Overview">
   <div class="row">
-    <div class="large-6 columns" ng-controller="WalletSendCtrl">
+    <form class="large-6 columns" ng-controller="WalletSendCtrl" ng-submit="sendBitcoins()">
       <div class="row collapse panel radius" ng-hide="quicksend.next">
         <h5>Send</h5>
         <div class="small-1 columns">
@@ -29,10 +29,10 @@
           <a class="button postfix" btn-checkbox tooltip="click to switch to {{selectedFiat}}" ng-model="quicksend.isFiatShown">{{quicksend.isFiatShown? selectedFiat : selectedCurrency}}</a>
         </div>
         <div class="small-4 columns">
-        <a ng-click="quicksend.next = false" class="button postfix radius fa fa-rocket glow">Send</a>
+        <button class="button postfix radius fa fa-rocket glow">Send</button>
         </div>
       </div>
-    </div>
+    </form>
     <div class="large-6 columns">
       <div class="row collapse panel radius">
         <h5>Receive (unused address)</h5>

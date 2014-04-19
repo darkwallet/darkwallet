@@ -131,6 +131,14 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       var satoshis = getSatoshis();
       var recipients = [];
       var totalAmount = 0;
+      
+      if ($scope.quicksend.next) {
+        $scope.recipients.fields = [{
+          address: $scope.quicksend.address,
+          amount: $scope.quicksend.amount
+        }];
+      }
+      
       $scope.recipients.fields.forEach(function(recipient) {
           if (!recipient.amount || !recipient.address) {
               return;
