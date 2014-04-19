@@ -23,7 +23,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
               return;
           }
           if (addresses && addresses.length) {
-              var walletService = DarkWallet.getService('wallet');
+              var walletService = DarkWallet.service.wallet;
               addresses.forEach(function(walletAddress) {
                   walletService.initAddress(walletAddress);
               })
