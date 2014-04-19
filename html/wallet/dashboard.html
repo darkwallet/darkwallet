@@ -54,22 +54,15 @@
   <div class="row topmargin">
     <div class="small-12 columns">
 
-        <div class="row collapse panel radius">
+        <div class="row collapse panel radius transactions">
             <h5>Latest transactions</h5>
             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
              <div class="small-2 columns">
-                <div ng-class="{'fa-money': (row.myOutValue-row.myInValue)>0 , 'fa-external-link-square': (row.myOutValue-row.myInValue)<0}" class="fa"></div>
+                <div ng-class="{'fa-arrow-circle-down': (row.myOutValue-row.myInValue)>0 , 'fa-arrow-circle-up': (row.myOutValue-row.myInValue)<0}" class="fa"></div>
              {{(row.myOutValue-row.myInValue) | amountFilter}}
              </div>
              <div class="small-6 columns">
-                <div class="row">
-                    <div class="small-8 columns">
-                        {{row.address}}
-                    </div>
-                    <div class="small-4 columns">
-                        <span class="label radius" ng-show="row.isStealth">stealth</span>
-                    </div>
-                </div>
+                {{row.address}}<span class="label radius" ng-show="row.isStealth">stealth</span>
              </div>
              <div ng-show="row.height" class="small-2 columns">
                {{row.height | heightToDate}}

@@ -117,6 +117,15 @@ table tr:nth-child(odd) button {
 
 table.expand { width: 100%; text-overflow: ellipsis; }
 
+.transactions div.row {
+	padding: 0.5em;
+}
+
+.transactions div.row:nth-child(odd) { 
+	background: darken($body-bg, 5%);
+	border-radius: $global-radius;
+}
+
 /* Wallets dropdown ---------------------  */
 
 li.colorhead, li.colorhead:hover { 
@@ -202,8 +211,7 @@ span.meter { padding: 5px 0 0 5px; }
 
 .select-list { min-height: 100px; background-image: none; }
 
-.showqr > svg { margin: 1em 0; }
-.showqr { margin-bottom: 1em; }
+.showqr svg rect { width: 90%; height: 90%; }
 
 .qractions { position: absolute; top: 0; right: 0; }
 .qractions a.button { position: absolute; top: 0; right: 0; width: 36px; padding: 8px 0; }
