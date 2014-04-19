@@ -170,7 +170,9 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
         var value = prevRow.myOutValue - prevRow.myInValue;
         if (prevRow.height) {
             row.confirmed = prevRow.confirmed-value;
+            row.unconfirmed = prevRow.unconfirmed;
         } else {
+            row.confirmed = prevRow.confirmed;
             row.unconfirmed = prevRow.unconfirmed-value;
         }
         prevRow = row;
