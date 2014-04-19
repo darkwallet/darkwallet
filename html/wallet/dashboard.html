@@ -1,32 +1,35 @@
 <tab heading="Overview">
   <div class="row">
-    <div class="large-6 columns">
-      <div class="row collapse panel radius" ng-show="!quickSending">
+    <div class="large-6 columns" ng-controller="WalletSendCtrl">
+      <div class="row collapse panel radius" ng-hide="quicksend.next">
         <h5>Send</h5>
         <div class="small-1 columns">
-          <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button square prefix radius fa-users"></a>
+          <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: quicksend}, addAddress)" class="fa button square prefix radius fa-users"></a>
         </div>
         <div class="small-1 columns">
-          <a href="" tooltip="Scan QR code" ng-click="openModal('scan-qr', {field: field}, onQrModalOkSend, onQrModalCancel)" class="fa button square prefix fa-qrcode"></a>
+          <a href="" tooltip="Scan QR code" ng-click="openModal('scan-qr', {field: quicksend}, onQrModalOkSend, onQrModalCancel)" class="fa button square prefix fa-qrcode"></a>
         </div>
         <div class="small-6 columns">
-          <input type="text" placeholder="Bitcoin address..." />
+          <input type="text" ng-model="quicksend.address" placeholder="Bitcoin address..." />
         </div>
         <div class="small-4 columns">
-          <a ng-click="quickSending=true" class="button postfix radius fa fa-arrow-right">Next</a>
+          <a ng-click="quicksend.next = true" class="button postfix radius fa fa-arrow-right">Next</a>
         </div>
       </div>
-      <div class="row collapse panel radius" ng-show="quickSending" >
-        <h5>Sending to 1sdgsfgrtt5645646hthrt...</h5>
-      
-        <div class="small-6 columns">
-          <input type="text" placeholder="Amount" />
+      <div class="row collapse panel radius" ng-show="quicksend.next" >
+        <h5>Sending to {{quicksend.address}}</h5>
+        <div class="small-1 columns">
+          <a ng-click="quicksend.next = false" class="button prefix radius fa fa-arrow-left"></a>
+        </div>
+        <div class="small-5 columns">
+          <input ng-hide="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.amount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="Enter amount" autofocus />
+          <input ng-show="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.fiatAmount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="Enter amount" />
         </div>
         <div class="small-2 columns">
-          <a class="button postfix" btn-checkbox tooltip="click to switch to {{selectedFiat}}" ng-model="field.isFiatShown">{{field.isFiatShown? selectedFiat : selectedCurrency}}</a>
+          <a class="button postfix" btn-checkbox tooltip="click to switch to {{selectedFiat}}" ng-model="quicksend.isFiatShown">{{quicksend.isFiatShown? selectedFiat : selectedCurrency}}</a>
         </div>
         <div class="small-4 columns">
-        <a ng-click="quickSending=false" class="button postfix radius fa fa-rocket glow">Send</a>
+        <a ng-click="quicksend.next = false" class="button postfix radius fa fa-rocket glow">Send</a>
         </div>
       </div>
     </div>

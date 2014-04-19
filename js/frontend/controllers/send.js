@@ -8,6 +8,8 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   $scope.sendPocket = 0;
   $scope.advanced = false;
   var dustThreshold = 5600;
+  
+  $scope.quicksend = {};
 
   $scope.resetSendForm = function() {
     $scope.send.sending = false;
