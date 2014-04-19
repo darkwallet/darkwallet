@@ -142,7 +142,6 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
 
   // Filters
 
-  var shownRows = [];
   // Filter the rows we want to show
   var chooseRows = function() {
     var history = $scope.identity.history.history;
@@ -156,11 +155,11 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
        }
        return b.height - a.height;
     });
-    rows = rows.filter($scope.historyFilter);
+    var shownRows = [];
+    rows = rows.filter(function(row) { return $scope.historyFilter(row, shownRows) } );
     if (!rows.length) {
         return [];
     }
-
     // Now calculate balances
     var prevRow = rows[0];
     prevRow.confirmed = $scope.balance;
@@ -223,7 +222,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
   $scope.pocketFilter = function(row) {
       return pocketFilter(row);
   };
-  $scope.historyFilter = function(row) {
+  $scope.historyFilter = function(row, shownRows) {
       if (!row.height) {
           shownRows.push(row.hash);
           return true;
