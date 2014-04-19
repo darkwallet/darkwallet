@@ -39,5 +39,18 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         $scope.creatingPocket = !$scope.creatingPocket;
     };
 
+    /**
+     * Rename a pocket
+     */
+    $scope.finalizeRenamePocket = function(pocket) {
+        if (!pocket || !pocket.name) {
+            // if empty just toggle visibility
+            $scope.forms.pocketLabelForm.$show();
+        } else {
+            var identity = DarkWallet.getIdentity();
+            identity.store.save();
+        }
+    };
+
 }]);
 });
