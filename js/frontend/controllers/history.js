@@ -109,7 +109,6 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
           $scope.balance = balance.confirmed;
           $scope.unconfirmed = balance.unconfirmed;
           $scope.pocket.tasks = [];
-          //balanceStart($scope.balance);
           rowIndex = 'all';
       } else {
           pocketIndex = rowIndex*2;
