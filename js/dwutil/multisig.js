@@ -1,6 +1,10 @@
 define(['darkwallet', 'bitcoinjs-lib'], function(DarkWallet, Bitcoin) {
 
-// Class for dark wallet multisig funds
+var convert = Bitcoin.convert;
+
+/**
+ * Class for dark wallet multisig funds
+ */
 function MultisigFund(multisig) {
     // Multisig here is linked to the model store
     this.multisig = multisig;
@@ -15,7 +19,9 @@ function MultisigFund(multisig) {
     this.canSign = this.participants.filter(function(participant) {return participant.type=='me';});
 }
 
-// Create a profile out of a public key by looking in contacts and wallet.
+/**
+ * Create a profile out of a public key by looking in contacts and wallet.
+ */
 MultisigFund.prototype.detectParticipant = function(pubKeyBytes) {
     var identity = DarkWallet.getIdentity();
 
@@ -54,7 +60,9 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes) {
     return participant;
 };
 
-// Detect participants for a fund from contacts and wallet.
+/**
+ * Detect participants for a fund from contacts and wallet.
+ */
 MultisigFund.prototype.detectParticipants = function() {
     // TODO: Not very efficient, should keep track in some way
     var self = this;
@@ -67,7 +75,9 @@ MultisigFund.prototype.detectParticipants = function() {
     return participants;
 }
 
-// Check tasks and put some info in the pocket
+/**
+ * Check tasks and put some info in the pocket
+ */
 MultisigFund.prototype.detectTasks = function() {
     var fund = this.multisig;
     var identity = DarkWallet.getIdentity();
@@ -84,6 +94,205 @@ MultisigFund.prototype.detectTasks = function() {
         });
     }
     return res;
+};
+
+/**
+ * Order signatures for this multisig
+ */
+MultisigFund.prototype.organizeSignatures = function(hexSigs) {
+    var signatures = [];
+    var multisig = this.multisig;
+    multisig.participants.forEach(function(participant, i) {
+        if (hexSigs.hasOwnProperty(i)) {
+            signatures.push(hexSigs[i]);
+        } else {
+            // do nothing
+        }
+    });
+    return signatures;
+}
+
+/**
+ * Check if we have enough signatures and put them into the transaction
+ */
+MultisigFund.prototype.finishTransaction = function(spend) {
+    var self = this;
+    var multisig = this.multisig;
+    var script = convert.hexToBytes(multisig.script);
+
+    var finished = true;
+    spend.task.pending.forEach(function(input) {
+        var hexSigs = self.organizeSignatures(input.signatures);
+
+        if (Object.keys(input.signatures).length >= multisig.m) {
+            // convert inputs to bytes
+            var sigs = hexSigs.map(function(sig) {return sig?convert.hexToBytes(sig):sig;});
+            // apply multisigs
+            spend.tx.applyMultisigs(input.index, script, sigs, 1);
+        } else {
+            finished = false;
+        }
+    });
+    if (finished) {
+        spend.task.tx = spend.tx.serializeHex();
+        return spend.tx;
+    }
+};
+
+/**
+ * Import a signature
+ */
+MultisigFund.prototype.importSignature = function(sigHex, spend) {
+    var added = false;
+    var multisig = this.multisig;
+
+    var sig;
+    try {
+       sig = convert.hexToBytes(sigHex);
+    } catch(e) {
+       throw Error('Malformed signature');
+    }
+
+    // Check where this signature goes
+    var script = new Bitcoin.Script(convert.hexToBytes(multisig.script));
+    spend.task.pending.forEach(function(input) {
+        var txHash = spend.tx.hashTransactionForSignature(script, input.index, 1);
+        multisig.pubKeys.forEach(function(pubKey, pIdx) {
+            if (Bitcoin.ecdsa.verify(txHash, sig, pubKey)) {
+                input.signatures[pIdx] = sigHex;
+                added = true;
+            }
+        });
+    });
+    return added;
+};
+
+/**
+ * Import a partial transaction into the fund
+ */
+MultisigFund.prototype.importTransaction = function(serializedTx) {
+      // import transaction here
+      var identity = DarkWallet.getIdentity();
+      var multisig = this.multisig;
+      var walletAddress = identity.wallet.getWalletAddress(multisig.address);
+
+      // we import the tx
+      var tx;
+      try {
+          tx = Bitcoin.Transaction.deserialize(serializedTx);
+      } catch(e) {
+          throw Error('Malformed transaction');
+      }
+      // Find our inputs
+      var inputs = identity.wallet.txForAddress(walletAddress, tx);
+
+      if (inputs.length == 0) {
+          throw Error('Transaction is not for this multisig');
+      }
+
+      // Check if we have the tx in the identity store
+      var tasks = identity.tasks.getTasks('multisig');
+      tasks.forEach(function(task) {
+          if (task.tx == serializedTx) {
+              throw Error('Already have this transaction!');
+          }
+      });
+
+      // Now create the task
+      var pending = [];
+      inputs.forEach(function(input) {
+          var out = input.outpoint.hash+':'+input.outpoint.index;
+          pending.push({output: out, address: input.address, index: input.index, signatures: {}, type: 'multisig'});
+      });
+      var task = {tx: serializedTx, 'pending': pending, stealth: false};
+      var spend = {tx: tx, task: task};
+      // Maybe should be imported here but now it's done on the angular controller..
+      // this.tasks.push(spend)
+      return spend;
+  };
+
+/**
+ * Continue signing after getting the password
+ */
+MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
+    var identity = DarkWallet.getIdentity();
+    var script = convert.hexToBytes(this.multisig.script);
+
+    var signed = false;
+
+    // find key
+    this.participants.forEach(function(participant, pIdx) {
+        if (participant.type == 'me') {
+            var seq = participant.address.index;
+            identity.wallet.getPrivateKey(seq, password, function(privKey) {
+                inputs.forEach(function(input, i) {
+                    var sig = spend.tx.p2shsign(input.index, script, privKey.toBytes(), 1);
+                    var hexSig = convert.bytesToHex(sig);
+                    spend.task.pending[i].signatures[pIdx] = hexSig
+                    signed = true;
+                });
+                spend.task.canSign = false;
+            });
+        }
+    });
+    return signed;
+};
+
+/**
+ * Sign a transaction with our keys
+ */
+MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
+    var identity = DarkWallet.getIdentity();
+    var multisig = this.multisig;
+    var walletAddress = identity.wallet.getWalletAddress(multisig.address);
+
+    var inputs = identity.wallet.txForAddress(walletAddress, spend.tx);
+    if (inputs.length == 0) {
+         // Shouldn't happen
+         throw Error('Transaction is not for this multisig');
+    }
+
+    var script = convert.hexToBytes(multisig.script);
+    var privKey = new Bitcoin.ECKey(foreignKey, true);
+    var signingAddress = privKey.getAddress().toString();
+
+    var signed = false;
+
+    // Check each participant
+    this.participants.forEach(function(participant, pIdx) {
+        if (participant.type != 'me') {     // can't be me if we're importing the key
+            var pubKey = new Bitcoin.ECPubKey(participant.pubKey, true);
+
+            if (pubKey.getAddress().toString() == signingAddress) {
+                // It's this position, so sign all inputs
+                inputs.forEach(function(input, i) {
+                    var sig = spend.tx.p2shsign(input.index, script, privKey.toBytes(), 1);
+                    var hexSig = convert.bytesToHex(sig);
+                    spend.task.pending[i].signatures[pIdx] = hexSig;
+                    signed = true;
+                });
+            }
+        }
+    });
+    return signed;
+}
+ 
+/**
+ * Get valid inputs for this transaction
+ * @returns [{output: utxo.receive, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'}, ...]
+ */
+MultisigFund.prototype.getValidInputs = function(tx) {
+    // import transaction here
+    var identity = DarkWallet.getIdentity();
+    var multisig = this.fund.multisig;
+    var walletAddress = identity.wallet.getWalletAddress(multisig.address);
+
+    if (walletAddress) {
+        // we import the tx
+        var inputs = identity.wallet.txForAddress(walletAddress, tx);
+        return inputs;
+    }
+    return [];
 };
 
 return MultisigFund;
