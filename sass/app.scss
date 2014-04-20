@@ -3,10 +3,26 @@
 @import "foundation";
 
 html, body { height: 100%; overflow-y: hidden; }
+
 *:focus { outline: 0; } /* Remove webkit's default outline */
+
 .nomarginbottom { margin-bottom: 0 !important; }
+
 .topmargin { margin-top: 1.6em !important; }
+
 .tooltip { max-width: 400px; min-width: 170px; text-align: center; }
+
+div.container { 
+	padding-top: 45px; height: 100%;
+}
+
+div.scroller { 
+	background: black;
+	height: 100%;
+	width: 100%;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
 
 span.input-status { 
 	position: absolute;
@@ -250,16 +266,6 @@ div.scroller.ng-enter {
 	animation: moveFromTopFade .7s ease both;
 }
 
-
-
-div.scroller { 
-	padding-top: 45px;
-	background: black;
-	height: 100%;
-	width: 100%;
-	overflow-y: scroll;
-	overflow-x: hidden;
-}
  
 div.scroller.ng-enter.ng-enter-active {
  /* The animation code itself */

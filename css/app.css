@@ -4339,6 +4339,17 @@ html, body {
   min-width: 170px;
   text-align: center; }
 
+div.container {
+  padding-top: 45px;
+  height: 100%; }
+
+div.scroller {
+  background: black;
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden; }
+
 span.input-status {
   position: absolute;
   opacity: 0;
@@ -4655,14 +4666,6 @@ div.scroller.ng-enter {
   -webkit-animation: moveFromTopFade 0.7s ease both;
   -moz-animation: moveFromTopFade 0.7s ease both;
   animation: moveFromTopFade 0.7s ease both; }
-
-div.scroller {
-  padding-top: 45px;
-  background: black;
-  height: 100%;
-  width: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden; }
 
 
 div.scroller.ng-leave {
