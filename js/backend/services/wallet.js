@@ -114,6 +114,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
             }
         }
         TransactionTasks.processRow(taskType, value, row, height);
+        setBadgeItems();
         var formattedValue = CurrencyFormatting.format(value);
 
         // Port the the os notification service
@@ -282,6 +283,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
                 // Else, broadcast and add task
                 var txHash = Bitcoin.convert.bytesToHex(newTx.getHash());
                 TransactionTasks.processSpend(txHash, metadata.myamount, metadata.recipients);
+                setBadgeItems(identity);
                 self.broadcastTx(newTx, metadata.stealth, callback);
             }
         });
