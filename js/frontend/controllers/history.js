@@ -164,6 +164,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
     var prevRow = rows[0];
     prevRow.confirmed = $scope.balance;
     prevRow.unconfirmed = $scope.unconfirmed;
+
     var idx = 1;
     while(idx<rows.length) {
         var row = rows[idx];
@@ -172,7 +173,11 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
             row.confirmed = prevRow.confirmed-value;
             row.unconfirmed = prevRow.unconfirmed;
         } else {
-            row.confirmed = prevRow.confirmed;
+            row.confirmed = prevRow.confirmed-value;
+            // Outgoing unconfirmed are credited straight away
+            if (value < 0) {
+                row.confirmed -= value;
+            }
             row.unconfirmed = prevRow.unconfirmed-value;
         }
         prevRow = row;
