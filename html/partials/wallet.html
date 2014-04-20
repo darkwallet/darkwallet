@@ -10,10 +10,10 @@
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns">
     <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | currencyPresenter}}</small> <small ng-show="unconfirmed">{{((unconfirmed===undefined)?totalUnconfirmed:unconfirmed) | currencyPresenter}}</small></h4>
     <tabset>
-      <tab ng-show="tab.visible" heading="{{tab.heading}}" active="tab.active" select="tabs.current=$index" ng-repeat="tab in tabs.pages">
+      <tab ng-show="tab.visible" heading="{{tab.heading}}" active="tab.active" select="tabs.current=$index" ng-repeat="tab in tabs.pages" ng-click="tabs.selectTab(tab)" >
       </tab>
     </tabset>
-    <div class="tab-scroller" ng-include="'wallet/' + tabs.pages[tabs.current].page + '.html'">
+    <div class="tab-scroller" ng-include="'wallet/' + tabs.pages[tabs.current].page + '.html'" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
     </div>
   </div>
 </div>
