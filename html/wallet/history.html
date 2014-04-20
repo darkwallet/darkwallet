@@ -22,7 +22,7 @@
               <td class="icon"><button class="button square fa fa-info"></button></td>
               <td><span>{{row.address}}</span> <span class="label radius" ng-show="row.isStealth">stealth</span></td>
               <td><span ng-show="row.height">{{row.height | heightToDate}}</span><span ng-show="!row.height">unconfirmed</span></td>
-              <td ng-show="currentHeight"><span ng-show="row.height">{{1+currentHeight-row.height}}</span><span ng-show="!row.height">unconfirmed</span></td>
+              <td ng-show="currentHeight"><span ng-show="row.height">{{row.height?1+currentHeight-row.height:0}}</span></td>
               <td>{{(row.myOutValue-row.myInValue) | amountFilter}}</td>
               <td class="text-right">{{row.confirmed | currencyFilter}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span></td>
             </tr>
