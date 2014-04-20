@@ -15,6 +15,39 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
 
   $scope.isAll = true;
   $scope.isFund = false;
+  
+  $scope.tabs = {
+    current: 0,
+    pages: [
+      {heading: 'Overview', page: 'dashboard', active: true, visible: true},
+      {heading: 'Transactions', page: 'history', visible: true},
+      {heading: 'Addresses', page: 'addresses', visible: true},
+      {heading: 'Fund', page: 'fund'},
+      {heading: 'Tasks', page: 'tasks'},
+      {heading: 'Actions', page: 'actions'}
+    ]
+  };
+  
+  $scope.updateTabs = function() {
+    if ($scope.isFund) {
+      $scope.tabs.pages[3].visible = true;  // fund
+      $scope.tabs.pages[5].visible = false; // actions
+    } else {
+      $scope.tabs.pages[3].visible = false; // fund
+      $scope.tabs.pages[5].visible = !$scope.isAll;  // actions
+    }
+    if ($scope.pocket && $scope.pocket.tasks && $scope.pocket.tasks.length) {
+      $scope.tabs.pages[4].visible = true;
+    } else {
+      $scope.tabs.pages[4].visible = false;
+    }
+    if ($scope.tabs.pages[$scope.tabs.current].visible == false) {
+      $scope.tabs.pages[$scope.tabs.current].active = false;
+      $scope.tabs.current = 0;
+      $scope.tabs.pages[0].active = true;      
+    }
+  }
+  $scope.updateTabs();
 
   function calculateBalance(pocket, isFund, isAll) {
         var balance;
@@ -92,6 +125,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
       $scope.balance = balance.confirmed;
       $scope.unconfirmed = balance.unconfirmed;
       $scope.chooseRows();
+      $scope.updateTabs();
   };
   $scope.selectPocket = function(pocketName, rowIndex, form) {
       var pocketIndex;
@@ -134,6 +168,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
       }
       $scope.selectedPocket = 'pocket:' + rowIndex;
       $scope.chooseRows();
+      $scope.updateTabs();
   };
 
   $scope.newMultiSig = function() {
