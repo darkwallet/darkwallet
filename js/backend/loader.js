@@ -10,6 +10,7 @@ require.config({
     'angular': '../vendors/angular/angular.min',
     'angular-animate': '../vendors/angular-animate/angular-animate.min',
     'angular-route': '../vendors/angular-route/angular-route.min',
+    'angular-sanitize': '../vendors/angular-sanitize/angular-sanitize.min',
     'mm.foundation': '../vendors/angular-foundation/mm-foundation-tpls.min',
     'angular-xeditable': '../vendors/angular-xeditable/dist/js/xeditable.min',
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
@@ -40,6 +41,9 @@ require.config({
       deps: ['angular']
     },
     'angular-route': {
+      deps: ['angular']
+    },
+    'angular-sanitize': {
       deps: ['angular']
     },
     'mm.foundation': {
