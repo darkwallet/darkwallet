@@ -4320,7 +4320,7 @@ th.hide-for-touch {
 .touch th.show-for-touch {
   display: table-cell !important; }
 
-html, body {
+html, body:not(.popupbody) {
   height: 100%;
   overflow-y: hidden; }
 
@@ -4338,6 +4338,15 @@ html, body {
   max-width: 400px;
   min-width: 170px;
   text-align: center; }
+
+.popupcontainer .panel {
+  background: #333; }
+  .popupcontainer .panel a {
+    color: white; }
+
+.popupcontainer {
+  min-width: 350px;
+  padding-top: 0.6em; }
 
 div.container {
   padding-top: 45px;
@@ -4557,15 +4566,6 @@ li.colorhead h6 {
   width: 100%;
   z-index: 3; }
 
-.popupcontainer .panel {
-  background: #333; }
-  .popupcontainer .panel a {
-    color: white; }
-
-.popupcontainer {
-  min-width: 350px;
-  padding-top: 0.6em; }
-
 span.meter {
   padding: 5px 0 0 5px; }
 
@@ -4656,6 +4656,26 @@ span.meter {
 #logo {
   margin: -2px 5px 0 -5px; }
 
+div.pockets {
+  z-index: 2; }
+
+div.tab-scroller {
+  overflow-x: hidden; }
+
+div.tab-scroller.ng-enter {
+  opacity: 0.1;
+  -webkit-transform: translate3d(100%, 0, 0); }
+
+div.tab-scroller.ng-leave.ng-leave-active {
+  opacity: 0;
+  -webkit-transform: translate3d(-100%, 0, 0); }
+
+div.tab-scroller.ng-enter-active, div.tab-scroller.ng-leave {
+  opacity: 1;
+  -webkit-transform: translate3d(0, 0, 0);
+  position: absolute;
+  width: 100%; }
+
 .ng-hide-add.ng-hide-add-active, .ng-animate.ng-hide-remove {
   opacity: 0; }
 
@@ -4701,7 +4721,7 @@ div.chat-text {
 .setback.seed {
   background: url(../images/seed.svg) center/cover no-repeat; }
 
-.contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave, div.scroller.ng-animate.ng-hide-remove, div.scroller.ng-animate.ng-hide-add {
+.contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave {
   transition: all 300ms ease-out; }
 
 @-webkit-keyframes rotateFoldBottom {
