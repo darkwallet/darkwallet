@@ -461,7 +461,7 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
         newTx.addOutput(changeAddress.address, change);
     }
     // Return the transaction and some metadata
-    return {tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth};
+    return {tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth, recipients: recipients};
 };
 
 /**
