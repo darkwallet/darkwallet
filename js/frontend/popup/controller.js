@@ -24,6 +24,14 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
     }
   });
 
+  Port.connect('gui', function(data) {
+    if (data.type == 'height') {
+        if(!$scope.$$phase) {
+            $scope.$apply();
+        }
+    }
+  });
+
 
   var keyRing = DarkWallet.getKeyRing();
   $scope.identityChange = function() {
