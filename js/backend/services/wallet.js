@@ -1,14 +1,15 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-define(['model/keyring', 'backend/port', 'dwutil/currencyformat'],
-function(IdentityKeyRing, Port, CurrencyFormatting) {
+define(['model/keyring', 'backend/port', 'dwutil/currencyformat', 'dwutil/tasks/transaction', 'bitcoinjs-lib'],
+function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
   'use strict';
 
   function WalletService(core) {
     var keyRing = new IdentityKeyRing();
     var self = this;
     this.name = 'wallet';
+    var heightTimeout;
 
     // Some scope variables
     var currentIdentity = false;
@@ -31,6 +32,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
      */
 
     var startIdentity = function(identity, callback) {
+        if (heightTimeout) {
+            clearInterval(heightTimeout);
+            heightTimeout = false;
+        }
         currentIdentity = identity.name;
 
         //Load up tasks
@@ -83,9 +88,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
     };
 
     // Notify frontend of history row updates
-    var notifyRow = function(walletAddress, newRow, height) {
+    var notifyRow = function(walletAddress, row, height) {
         var title;
-        var value = newRow.myOutValue - newRow.myInValue;
+        var value = row.myOutValue - row.myInValue;
+        var taskType = value>0 ? 'receive' : 'send';
+
         if (value > 0) {
             if (height) {
                 title = "Received";
@@ -99,6 +106,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
                 title = "Sending (unconfirmed)";
             }
         }
+        TransactionTasks.processRow(taskType, value, row, height);
         var formattedValue = CurrencyFormatting.format(value);
 
         // Port the the os notification service
@@ -126,11 +134,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
         }
 
         // Process
-        var newRow = identity.wallet.processTx(walletAddress, tx, height);
+        var row = identity.wallet.processTx(walletAddress, tx, height);
 
         // Show a notification for incoming transactions
-        if (newRow) {
-            notifyRow(walletAddress, newRow, height);
+        if (row) {
+            notifyRow(walletAddress, row, height);
         }
     }
 
@@ -176,17 +184,40 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
 
     // Handle initial connection to obelisk
     function handleHeight(err, height) {
-        self.currentHeight = height;
-        console.log("[wallet] height fetched", height);
-        Port.post('gui', {type: 'height', value: height});
+        if (height != self.currentHeight) {
+            self.currentHeight = height;
+            console.log("[wallet] height fetched", height);
+            TransactionTasks.processHeight(height);
+            Port.post('gui', {type: 'height', value: height});
+        }
     }
+
+    this.fetchHeight = function() {
+        if (heightTimeout) {
+            console.log("[wallet] warning, height timeout launched but still active!");
+            clearInterval(heightTimeout);
+        }
+
+        var client = core.getClient();
+        client.fetch_last_height(handleHeight);
+
+        // Run again in one minute to get last height (gateway doesn't give this yet..)
+        heightTimeout = setInterval(function() {
+            var client = core.getClient();
+            if (client && client.connected) {
+                client.fetch_last_height(handleHeight);
+            }
+        }, 60000);
+    }
+
 
     this.handleInitialConnect = function() {
         console.log("[wallet] initial connect");
         var identity = self.getCurrentIdentity();
 
         var client = core.getClient();
-        client.fetch_last_height(handleHeight);
+
+        self.fetchHeight();
 
         // get balance for addresses
         Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
@@ -240,7 +271,9 @@ function(IdentityKeyRing, Port, CurrencyFormatting) {
                 identity.tasks.addTask('multisig', task);
                 callback(null, {task: task, tx: newTx, type: 'signatures'});
             } else {
-                // Else, just broadcast
+                // Else, broadcast and add task
+                var txHash = Bitcoin.convert.bytesToHex(newTx.getHash());
+                TransactionTasks.processSpend(txHash, metadata.myamount, metadata.recipients);
                 self.broadcastTx(newTx, metadata.stealth, callback);
             }
         });
