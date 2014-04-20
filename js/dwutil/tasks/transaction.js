@@ -34,7 +34,7 @@ TransactionTasks.processSpend = function(hash, total, recipients) {
 /**
  * Create or update a task for given history row (from an incoming transaction)
  */
-TransactionTasks.processRow = function(type, value, row, height) {
+TransactionTasks.processRow = function(value, row, height) {
     var created;
     var taskType = value>0 ? 'receive' : 'send';
     var identity = DarkWallet.getIdentity();

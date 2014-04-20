@@ -112,7 +112,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
                 title = "Sending (unconfirmed)";
             }
         }
-        TransactionTasks.processRow(taskType, value, row, height);
+        TransactionTasks.processRow(value, row, height);
         setBadgeItems();
         var formattedValue = CurrencyFormatting.format(value);
 
