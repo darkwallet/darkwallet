@@ -30,8 +30,12 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
       {heading: 'Tasks', page: 'tasks'},
       {heading: 'Actions', page: 'actions'}
     ],
-    selectTab: function(tab) {
+    selectTab: function(selected, index) {
         $scope.tabs.previous = $scope.tabs.current;
+        $scope.tabs.current = index;
+        $scope.tabs.forEach(function(tab) {
+            tab.active = tab.page == selected.page;
+        });
     }
   };
   
