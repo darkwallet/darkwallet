@@ -27,9 +27,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
               addresses.forEach(function(walletAddress) {
                   walletService.initAddress(walletAddress);
               })
-              notify.success("stealth ok");
+              notify.success("stealth ok", addresses.length + " payments detected");
           } else {
-              notify.success("stealth ok", "payments detected");
+              notify.success("stealth ok");
           }
       }
       client.fetch_stealth([0,0], stealth_fetched, 0);
