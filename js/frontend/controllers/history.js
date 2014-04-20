@@ -13,54 +13,11 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
   $scope.selectedPocket = 'pocket:all';
   $scope.historyRows = [];
 
+  $scope.tabs = {};
+
   $scope.isAll = true;
   $scope.isFund = false;
- 
-  /**
-   * Tabs
-   */ 
-  $scope.tabs = {
-    current: 0,
-    previous: 0,
-    pages: [
-      {heading: 'Overview', page: 'dashboard', active: true, visible: true},
-      {heading: 'Transactions', page: 'history', visible: true},
-      {heading: 'Addresses', page: 'addresses', visible: true},
-      {heading: 'Fund', page: 'fund'},
-      {heading: 'Tasks', page: 'tasks'},
-      {heading: 'Actions', page: 'actions'}
-    ],
-    selectTab: function(selected, index) {
-        $scope.tabs.previous = $scope.tabs.current;
-        $scope.tabs.current = index;
-        $scope.tabs.forEach(function(tab) {
-            tab.active = tab.page == selected.page;
-        });
-    }
-  };
   
-  $scope.updateTabs = function() {
-    if ($scope.isFund) {
-      $scope.tabs.pages[3].visible = true;  // fund
-      $scope.tabs.pages[5].visible = false; // actions
-    } else {
-      $scope.tabs.pages[3].visible = false; // fund
-      $scope.tabs.pages[5].visible = !$scope.isAll;  // actions
-    }
-    if ($scope.pocket && $scope.pocket.tasks && $scope.pocket.tasks.length) {
-      $scope.tabs.pages[4].visible = true;
-    } else {
-      $scope.tabs.pages[4].visible = false;
-    }
-    if ($scope.tabs.pages[$scope.tabs.current].visible == false) {
-      $scope.tabs.pages[$scope.tabs.current].active = false;
-      $scope.tabs.current = 0;
-      $scope.tabs.pages[0].active = true;      
-    }
-  }
-  $scope.updateTabs();
-
-
   /**
    * Balance
    */ 
@@ -144,7 +101,7 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
       $scope.balance = balance.confirmed;
       $scope.unconfirmed = balance.unconfirmed;
       $scope.chooseRows();
-      $scope.updateTabs();
+      $scope.tabs.updateTabs($scope.isAll, $scope.isFund, $scope.pocket.tasks);
   };
   $scope.selectPocket = function(pocketName, rowIndex, form) {
       var pocketIndex;
@@ -187,7 +144,7 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
       }
       $scope.selectedPocket = 'pocket:' + rowIndex;
       $scope.chooseRows();
-      $scope.updateTabs();
+      $scope.tabs.updateTabs($scope.isAll, $scope.isFund, $scope.pocket.tasks);
   };
 
   $scope.newMultiSig = function() {

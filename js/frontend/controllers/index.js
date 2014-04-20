@@ -21,6 +21,7 @@ define([
     './notifications',
     './servers',
     './fund',
+    './tabs',
     './tools',
     './rcv_stealth'
 ], function () {});
