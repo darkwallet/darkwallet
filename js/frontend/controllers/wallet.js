@@ -154,15 +154,9 @@ function (controllers, DarkWallet, Port) {
       initializeEmpty();
 
       // this will connect to obelisk if we're not yet connected
-      //notify.progress.color('firebrick');
-      //notify.progress.start();
       if (bg.getClient() && bg.getClient().connected) {
-          // If already connected set the progress bar to finish
-          // we wait a moment to provide better visual feedback
-          /*$timeout(function() {
-              notify.progress.color('green');
-              notify.progress.complete();
-          }, 500);*/
+          // Already connected, set height
+          $scope.currentHeight = DarkWallet.service.wallet.currentHeight;
       } else {
           // Request connecting to blockchain
           setTimeout(function() {
@@ -193,6 +187,7 @@ function (controllers, DarkWallet, Port) {
         $scope.allAddresses.push(walletAddress);
     }
   };
+  $scope.addToScope = addToScope;
 
   // scope function to generate (or load from cache) a new address
   $scope.generateAddress = function(branchId, n) {
