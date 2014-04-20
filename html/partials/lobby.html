@@ -48,11 +48,16 @@
           </div>
           <h5>Your permanent identity</h5>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
-          <h5>Your temporary identity</h5><button class="button small radius expand" ng-click="newTempIdentity()">New</button>
-          <div class="wrapper"><identicon title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></identicon> {{comms.name}}</div>
+          <h5>Your temporary identity</h5>
+          <div class="row">
+            <div class="small-12 columns">
+              <identicon title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></identicon> {{comms.name}}
+              <a class="fa fa-refresh" title="New" ng-click="newTempIdentity()"></a>
+            </div>
+          </div>
           <h5>Peers</h5>
           <div ng-repeat="peer in peers">
-            <span ng-click="selectPeer(peer)"><identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}</span> <a ng-click="pairPeer(peer)">pair</a>
+            <span ng-click="selectPeer(peer)"><identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}</span> <a class="fa fa-link" ng-click="pairPeer(peer)" title="pair"></a>
           </div>
       </div>
 
