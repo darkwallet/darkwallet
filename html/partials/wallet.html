@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="large-2 columns panel">
+  <div class="large-2 columns panel pockets">
       <ng-include src="'wallet/pockets.html'">
       </ng-include>
   </div>
@@ -13,7 +13,7 @@
       <tab ng-show="tab.visible" heading="{{tab.heading}}" active="tab.active" select="tabs.current=$index" ng-repeat="tab in tabs.pages">
       </tab>
     </tabset>
-    <ng-include src="'wallet/' + tabs.pages[tabs.current].page + '.html'">
-    </ng-include>
+    <div class="tab-scroller" ng-include="'wallet/' + tabs.pages[tabs.current].page + '.html'">
+    </div>
   </div>
 </div>
