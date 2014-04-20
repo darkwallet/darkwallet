@@ -98,7 +98,6 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
     var notifyRow = function(walletAddress, row, height) {
         var title;
         var value = row.myOutValue - row.myInValue;
-        var taskType = value>0 ? 'receive' : 'send';
 
         if (value > 0) {
             if (height) {

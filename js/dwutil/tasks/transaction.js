@@ -13,7 +13,7 @@ var TransactionTasks = {};
  */
 TransactionTasks.processSpend = function(hash, total, recipients) {
     var identity = DarkWallet.getIdentity();
-    if (identity.tasks.search('spend', 'hash', hash)) {
+    if (identity.tasks.search('send', 'hash', hash)) {
         // already sent
         return;
     }
@@ -26,7 +26,7 @@ TransactionTasks.processSpend = function(hash, total, recipients) {
     task.confirmations = 0;
     task.state = 'unconfirmed';
 
-    identity.tasks.addTask('spend', task);
+    identity.tasks.addTask('send', task);
     return task;
 }
 
@@ -36,8 +36,9 @@ TransactionTasks.processSpend = function(hash, total, recipients) {
  */
 TransactionTasks.processRow = function(type, value, row, height) {
     var created;
+    var taskType = value>0 ? 'receive' : 'send';
     var identity = DarkWallet.getIdentity();
-    var task = identity.tasks.search(type, 'hash', row.hash);
+    var task = identity.tasks.search(taskType, 'hash', row.hash);
     if (!task) {
         task = { hash: row.hash, height: row.height, value: value };
         created = true;
@@ -57,7 +58,7 @@ TransactionTasks.processRow = function(type, value, row, height) {
     this.updateTaskHeight(task, height);
 
     if (created) {
-        identity.tasks.addTask(type, task);
+        identity.tasks.addTask(taskType, task);
     } else {
         identity.tasks.store.save();
     }
