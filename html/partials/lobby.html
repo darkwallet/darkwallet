@@ -35,7 +35,7 @@
             </div>
           </form>
           <div class="chat-text">
-             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><identicon title="{{shoutLog.sender}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></identicon> {{shoutLog.body.text}}</div>
+             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><identicon title="{{shoutLog.sender}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></identicon><span ng-bind-html="shoutLog.body.text | linky"></span></div>
           </div>
         </div>
       </div>
