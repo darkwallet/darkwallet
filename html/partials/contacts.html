@@ -3,39 +3,36 @@
     <h3>Contacts</h3>
   </div>
   <div class="small-6 columns text-right">
-    <a id="newcontact" class="button tiny topright" ng-show="!(contactFormShown===true)" ng-click="contactFormShown = true">New contact</a>
+    <a id="newcontact" class="button tiny radius fa fa-plus topright" ng-show="!(contactFormShown===true)" ng-click="contactFormShown = true"> New contact</a>
   </div>
 </div>
 <div class="row" ng-show="!(contactFormShown === true) && allContacts.length>5">
   <div class="small-12 columns">
-    <div class="row collapse">
-      <div class="small-2 columns">
-        <span class="prefix radius">Search</span>
-      </div>
-      <div class="small-10 columns">
-        <input type="text" class="postfix radius" ng-change="filterContacts()" ng-model="contactSearch">
+        <input type="text" placeholder="Search..." class="radius" ng-change="filterContacts()" ng-model="contactSearch">
+  </div>
+</div>
+<form name="createContactForm" ng-show="contactFormShown === true" ng-submit="createContact()" novalidate>
+  <div class="row">
+    <div class="small-12 columns">
+      <div class="row collapse">
+        <div class="large-3 columns"><input ng-model="newContact.name" type="text" class="radius prefix" placeholder="Write a new contact name" required autofocus /></div>
+        <div class="large-5 columns">
+          <input ng-model="newContact.address" class="prefix" type="text" placeholder="Enter a bitcoin address here or use the buttons on the right." required btc-address />
+          <span class="input-status fa fa-check"></span>
+        </div>
+        <div class="large-2 columns"><a href="" ng-click="newContact.address = pasteClipboard()" class="button postfix fa fa-clipboard">Paste</a></div>
+        <div class="large-2 columns"><a href="" ng-click="openModal('scan-qr', {field: newContact}, onQrModalOk, onQrModalCancel)" class="button radius postfix fa fa-qrcode">Scan QR</a></div> 
       </div>
     </div>
   </div>
-</div>
-<div class="row">
-  <div class="small-12 columns">
-    <form name="createContactForm" ng-submit="createContact()" ng-show="contactFormShown === true" novalidate>
-    <div class="row collapse">
-      <div class="large-3 columns"><input ng-model="newContact.name" type="text" placeholder="Write a new contact name" required autofocus /></div>
-        <div class="large-5 columns"><input ng-model="newContact.address" type="text" placeholder="Enter a bitcoin address here or use the buttons on the right." required btc-address /></div>
-        <div class="large-2 columns"><a href="" ng-click="newContact.address = pasteClipboard()" class="button postfix fa fa-clipboard">Paste</a></div>
-        <div class="large-2 columns"><a href="" ng-click="openModal('scan-qr', {field: newContact}, onQrModalOk, onQrModalCancel)" class="button postfix fa fa-qrcode">Scan</a></div>
-      </div>
-      <div class="row text-right">
+  <div class="row text-right">
         <div class="small-12 columns">
-          <a href="" ng-click="contactFormShown = false" class="button alert small">Cancel</a>
-          <input ng-disabled="createContactForm.$invalid" type="submit" class="button small" value="Save" />
+          <a href="" ng-click="contactFormShown = false" class="button alert small radius">Cancel</a>
+          <input ng-disabled="createContactForm.$invalid" type="submit" class="button small radius" value="Save" />
         </div>
-      </div>
-    </form>
   </div>
-</div>
+</form>
+
 <div class="row">
   <div class="small-12 columns">
 <div class="contact-mosaic-full">

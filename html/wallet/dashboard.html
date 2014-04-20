@@ -34,18 +34,15 @@
     </form>
     <div class="large-6 columns">
       <div class="row collapse panel radius">
-        <h5>Receive (unused address)</h5>
+        <h5>Stealth address</h5>
         <div class="small-1 columns">
           <a href="" ng-click="copyClipboard(address)" class="button prefix radius fa fa-clipboard"></a>
         </div>
         <div class="small-1 columns">
           <a href="" ng-click="copyClipboard(address)" class="button prefix fa fa-qrcode"></a>
         </div>
-        <div class="small-6 columns">
-          <input type="text" ng-model="dashboard.address" />
-        </div>
-        <div class="small-4 columns">
-          <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{sendPocketName}}</a>
+        <div class="small-10 columns">
+          <input type="text" class="postfix radius" ng-model="dashboard.address" />
         </div>
       </div>
     </div>
