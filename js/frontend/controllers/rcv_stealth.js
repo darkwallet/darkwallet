@@ -25,6 +25,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
           if (addresses && addresses.length) {
               var walletService = DarkWallet.service.wallet;
               addresses.forEach(function(walletAddress) {
+                  // TODO: should be added to scope in response to some event
+                  $scope.addToScope(walletAddress);
                   walletService.initAddress(walletAddress);
               })
               notify.success("stealth ok", addresses.length + " payments detected");
