@@ -27,6 +27,16 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
           // Client disconnected
     });
 
+    var setBadgeItems = function(identity) {
+        var identity = identity || self.getCurrentIdentity();
+        var openTasks = identity.tasks.getOpenTasks();
+        if (openTasks) {
+            chrome.browserAction.setBadgeText({text: ""+openTasks});
+        } else {
+            chrome.browserAction.setBadgeText({text: ""});
+        }
+    }
+
     /***************************************
     /* Identities
      */
@@ -39,10 +49,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
         currentIdentity = identity.name;
 
         //Load up tasks
-        var openTasks = identity.tasks.getOpenTasks();
-        if (openTasks) {
-             chrome.browserAction.setBadgeText({text: ""+openTasks});
-        }
+        setBadgeItems(identity);
 
         // Inform gui and other services
         identity.history.update = function() { Port.post('gui', {name: 'update'}); };
@@ -188,6 +195,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
             self.currentHeight = height;
             console.log("[wallet] height fetched", height);
             TransactionTasks.processHeight(height);
+            setBadgeItems();
             Port.post('gui', {type: 'height', value: height});
         }
     }
