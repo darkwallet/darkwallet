@@ -4660,7 +4660,8 @@ div.pockets {
   z-index: 2; }
 
 div.tab-scroller {
-  overflow-x: hidden; }
+  overflow-x: hidden;
+  margin-top: 1em; }
 
 div.tab-scroller.ng-enter {
   opacity: 0.1;
