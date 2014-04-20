@@ -32,6 +32,8 @@ History.prototype.addHistoryRow = function(newRow) {
             } else if (!row.height && !newRow.height) {
                 return 2; // still not confirmed
             } else {
+                // keep initial height
+                this.history[idx].height = row.height;
                 return 3; // already confirmed
             }
         }
