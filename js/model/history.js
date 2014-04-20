@@ -1,4 +1,5 @@
 define(['bitcoinjs-lib'], function(Bitcoin) {
+
 /**
  * User oriented history view.
  * @param {Object} store Store for the object.
@@ -11,13 +12,14 @@ function History(store, identity) {
 }
 
 /**
- * Find index for the given row
+ * Add a row into the history.
+ * Will make sure it's inserted sorted by its height.
  * @param {Object} newRow row coming from history.buildHistoryRow
  * Will return -1 if row is confirmed, -2 if still not confirmed, -3 if already was confirmed
- * @return {Number} The position to insert it in the array or negative if it is already in it.
+ * @return {Number} 0 if inserted, 1 confirmed, 2 still not confirmed, 3 was already confirmed
  * @private
  */
-History.prototype.findIndexForRow = function(newRow) {
+History.prototype.addHistoryRow = function(newRow) {
     // Look for repeated element
     for(var idx=this.history.length-1; idx>=0; idx--) {
         var row = this.history[idx];
@@ -26,41 +28,19 @@ History.prototype.findIndexForRow = function(newRow) {
             this.history[idx] = newRow;
             // set return code depending on status
             if (!row.height && newRow.height) {
-                return -1; // confirmed
+                return 1; // confirmed
             } else if (!row.height && !newRow.height) {
-                return -2; // still not confirmed
+                return 2; // still not confirmed
             } else {
-                return -3; // already confirmed
+                return 3; // already confirmed
             }
         }
     }
-    // If height is 0 put at the end
-    if (newRow.height == 0) {
-        return this.history.length;
-    }
-    // Find index for insertion
-    for(var idx=this.history.length-1; idx>=0; idx--) {
-        if (this.history[idx].height > 0 && this.history[idx].height < newRow.height) {
-            return idx+1;
-        }
-    }
+    // Not found so insert
+    this.history.push(newRow);
     return 0;
 };
 
-/**
- * Add a row into the history.
- * Will make sure it's inserted sorted by its height.
- * @param {Object} newRow row coming from history.buildHistoryRow
- * @return {Number} The position to insert it in the array or negative if it is already in it.
- */
-History.prototype.addHistoryRow = function(newRow) {
-    var insertInto = this.findIndexForRow(newRow);
-    if (insertInto > -1) {
-        // Add if it wasn't replaced
-        this.history.splice(insertInto, 0, newRow);
-    }
-    return insertInto;
-};
 
 /**
  * Build a history row from a transaction.
@@ -152,16 +132,16 @@ History.prototype.txFetched = function(walletAddress, transaction, height) {
     // unknown for now means we need to fill in some extra inputs for now get 1st one
     if (newRow.address == 'unknown') {
         if (newRow.tx.ins[0])
-        this.identity.txdb.fetchTransaction(newRow.tx.ins[0].outpoint.hash,
+            this.identity.txdb.fetchTransaction(newRow.tx.ins[0].outpoint.hash,
                                             function(_a, _b) {self.fillInput(_a, _b);},
                                             [newRow.tx.ins[0].outpoint.index, newRow]);
         else
-        console.log("No input!", newRow.tx);
+            console.log("No input!", newRow.tx);
      }
     newRow.addressIndex = walletAddress.index.slice(0);
     newRow.pocket = walletAddress.index[0];
-    if (this.addHistoryRow(newRow) > -2) {
-        this.update();
+    if (this.addHistoryRow(newRow) < 2) {
+        // It's a relevant event so return the row (initial unspent or initial confirm)
         return newRow;
     }
 };
@@ -178,8 +158,10 @@ History.prototype.fillHistory = function(walletAddress, history) {
         var outTxHash = tx[0],
             inTxHash = tx[4];
         if (inTxHash) {
+            // fetch a row for the spend
             txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b);}, tx[6]);
         }
+        // fetch a row for the incoming tx
         txdb.fetchTransaction(outTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b);}, tx[2]);
     });
 };

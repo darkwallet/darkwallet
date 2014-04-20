@@ -83,16 +83,19 @@ c09fd9179e635bcfd95a2b989fc16b1e88ac00000000";
         ];
         
         var tx = { hash: "tx14", height: 14 };
-        expect(history.findIndexForRow(tx)).toBe(1);
+        expect(history.addHistoryRow(tx)).toBe(0);
 
         tx = { hash: "tx9", height: 9 };
-        expect(history.findIndexForRow(tx)).toBe(0);
+        expect(history.addHistoryRow(tx)).toBe(0);
+
+        tx = { hash: "tx15", height: 9 };
+        expect(history.addHistoryRow(tx)).toBe(3);
 
         tx = { hash: "tx21", height: 21 };
-        expect(history.findIndexForRow(tx)).toBe(3);
+        expect(history.addHistoryRow(tx)).toBe(0);
         
         tx = { hash: "txUnconfirmed", height: 0 };
-        expect(history.findIndexForRow(tx)).toBe(3);
+        expect(history.addHistoryRow(tx)).toBe(0);
       });
       
       it('with an unconfirmed transaction', function() {
@@ -104,16 +107,19 @@ c09fd9179e635bcfd95a2b989fc16b1e88ac00000000";
         ];
         
         var tx = { hash: "tx14", height: 14 };
-        expect(history.findIndexForRow(tx)).toBe(1);
+        expect(history.addHistoryRow(tx)).toBe(0);
 
         tx = { hash: "tx9", height: 9 };
-        expect(history.findIndexForRow(tx)).toBe(0);      
+        expect(history.addHistoryRow(tx)).toBe(0);      
 
         tx = { hash: "tx21", height: 21 };
-        expect(history.findIndexForRow(tx)).toBe(3);      
+        expect(history.addHistoryRow(tx)).toBe(0);      
+
+        tx = { hash: "txUnconfirmed", height: 0 };
+        expect(history.addHistoryRow(tx)).toBe(2);
 
         tx = { hash: "txUnconfirmed", height: 294513 };
-        expect(history.findIndexForRow(tx)).toBe(-1);
+        expect(history.addHistoryRow(tx)).toBe(1);
       });
     });
 
@@ -127,12 +133,12 @@ c09fd9179e635bcfd95a2b989fc16b1e88ac00000000";
       var tx = { hash: "tx14", height: 14 };
       history.addHistoryRow(tx);
       expect(history.history.length).toBe(4)
-      expect(history.history[1]).toBe(tx);
+      expect(history.history[3]).toBe(tx);
       
       tx = { hash: "tx9", height: 9 };
       history.addHistoryRow(tx);
       expect(history.history.length).toBe(5);
-      expect(history.history[0]).toBe(tx);
+      expect(history.history[4]).toBe(tx);
       
       tx = { hash: "tx21", height: 21 };
       history.addHistoryRow(tx);
