@@ -13,7 +13,7 @@ var TransactionTasks = {};
  */
 TransactionTasks.processSpend = function(hash, total, recipients) {
     var identity = DarkWallet.getIdentity();
-    if (identity.tasks.search(type, 'hash', row.hash)) {
+    if (identity.tasks.search('spend', 'hash', hash)) {
         // already sent
         return;
     }
