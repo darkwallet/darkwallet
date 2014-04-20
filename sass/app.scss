@@ -182,8 +182,8 @@ span.meter { padding: 5px 0 0 5px; }
 
 .seed { font-size: 120%; }
 
-.transaction-icon.fa-arrow-circle-down { color: $primary-color; }
-.transaction-icon.fa-arrow-circle-up { color: $alert-color; }
+.transaction-icon.green { color: $primary-color; }
+.transaction-icon.red { color: $alert-color; }
 
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover { background: $primary-color; cursor: pointer; }
 

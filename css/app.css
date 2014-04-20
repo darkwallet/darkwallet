@@ -4551,10 +4551,10 @@ span.meter {
 .seed {
   font-size: 120%; }
 
-.transaction-icon.fa-arrow-circle-down {
+.transaction-icon.green {
   color: #27ae60; }
 
-.transaction-icon.fa-arrow-circle-up {
+.transaction-icon.red {
   color: #f04124; }
 
 .contact-mosaic .panel:hover, .popupcontainer .panel:hover {
