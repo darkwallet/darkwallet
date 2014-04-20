@@ -2,10 +2,10 @@
  * @fileOverview HistoryCtrl angular controller
  */
 
-define(['./module', 'bitcoinjs-lib', 'util/btc', 'darkwallet', 'dwutil/multisig', 'frontend/port'],
-function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
+define(['./module', 'angular', 'bitcoinjs-lib', 'util/btc', 'darkwallet', 'dwutil/multisig', 'frontend/port'],
+function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
   'use strict';
-  controllers.controller('HistoryCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('HistoryCtrl', ['$scope', 'notify', '$window', function($scope, notify, $window) {
 
   // Start some structures
   $scope.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $scope.allAddresses, changeAddresses: []};
@@ -15,9 +15,13 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
 
   $scope.isAll = true;
   $scope.isFund = false;
-  
+ 
+  /**
+   * Tabs
+   */ 
   $scope.tabs = {
     current: 0,
+    previous: 0,
     pages: [
       {heading: 'Overview', page: 'dashboard', active: true, visible: true},
       {heading: 'Transactions', page: 'history', visible: true},
@@ -25,7 +29,10 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
       {heading: 'Fund', page: 'fund'},
       {heading: 'Tasks', page: 'tasks'},
       {heading: 'Actions', page: 'actions'}
-    ]
+    ],
+    selectTab: function(tab) {
+        $scope.tabs.previous = $scope.tabs.current;
+    }
   };
   
   $scope.updateTabs = function() {
@@ -49,6 +56,10 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
   }
   $scope.updateTabs();
 
+
+  /**
+   * Balance
+   */ 
   function calculateBalance(pocket, isFund, isAll) {
         var balance;
         var wallet = DarkWallet.getIdentity().wallet;
@@ -67,6 +78,10 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
         return balance;
   }
 
+
+  /**
+   * Pocket change
+   */ 
   function isCurrentPocket(pocketId) {
       if ($scope.isAll) {
           return true;
