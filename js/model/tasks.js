@@ -11,6 +11,23 @@ function Tasks(store) {
 }
 
 /**
+ * Search for a task in the given section
+ * @param {String} section Section name
+ * @param {Object} search Array with search condition {name: value}
+ */
+Tasks.prototype.search = function(section, name, value) {
+    if (!this.tasks.hasOwnProperty(section)) {
+        return;
+    }
+    for(var i in this.tasks[section]) {
+        var task = this.tasks[section][i];
+        if (task[name] == value) {
+            return task;
+        }
+    }
+};
+
+/**
  * Add a task into the given section
  * @param {String} section Section name
  * @param {Object} task Task to add

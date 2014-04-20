@@ -53,6 +53,19 @@ define(['model/tasks'], function(Tasks) {
       expect(_store).toEqual({lol: []});
     });
 
+    it('searches for tasks', function() {
+      tasks.addTask('multisig', {tx: 'mocktx'});
+      tasks.addTask('multisig', {tx: 'mocktx'});
+      tasks.addTask('foo', { name: 'bar' });
+      // section doesn't exist
+      expect(tasks.search('bla', 'foo', 'bar')).toBeUndefined();
+      // task doesn't exist
+      expect(tasks.search('foo', 'foo', 'bar')).toBeUndefined();
+      // can be found
+      expect(tasks.search('foo', 'name', 'bar')).toBeDefined();
+      expect(tasks.search('multisig', 'tx', 'mocktx')).toBeDefined();
+    });
+
     it('gets open tasks', function() {
       expect(tasks.getOpenTasks()).toEqual(0);
       tasks.tasks = tasksSample;
