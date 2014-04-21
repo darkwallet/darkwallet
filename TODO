@@ -1,7 +1,7 @@
 Immediate:
  - Review and stabilize gateway
  - Send:
-   - Review sending
+   + Review sending
  - Lobby system
    + then finish CoinJoin STARTED
    - then automatize Multisig
@@ -14,26 +14,26 @@ Immediate:
 
 Style:
  - 'Dashboard' for all pockets
- - 'Dashboard' for pockets/funds
+ + 'Dashboard' for pockets/funds
  - Contacts
    - Web of trust controls
-   - Review contact edit form (needs to be able to add more fields)
-   - Contact view with more fields
+   * Review contact edit form (needs to be able to add more fields)
+   * Contact view with more fields
  - Settings
    - Add sections (or something)
  - Utils
-   - Controls for sign message / check signed
+   + Controls for sign message / check signed
  - Identities
    - Modals or something for restore and backup
 
 Other:
  - Cache address history and resume
- - Polishing stealth support
+ + Polishing stealth support
  - Notifications
-  - when receiving funds
+  * when receiving funds
   - new multisig
   - multisig spend
-  - radar when sending
+  + radar when sending
  - Validate input fields, specially addresses (on contacts and send)
  - Watch only pockets
  - Blockchain.info compatible coinjoin
