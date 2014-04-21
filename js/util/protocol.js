@@ -1,6 +1,8 @@
 'use strict';
 
-define(function() {
+define(['bitcoinjs-lib'], function(Bitcoin) {
+
+var convert = Bitcoin.convert;
 
 var Protocol = {
   packMessage: function(type, data) {
@@ -53,6 +55,22 @@ var Protocol = {
     var data = {};
     data['proposal'] = proposal;
     return Protocol.packMessage('MultisigProposal', data);
+  },
+  // Key exchange
+  PublicKeyRequestMsg: function(fingerprint) {
+	var request = {};
+	request['type'] = 'publicKeyRequest';
+	request['text'] = {};
+	request['text'][fingerprint] = {};
+	return request;
+  },
+  PublicKeyMsg: function(fingerprint, pubKey) {
+	var answer = {};
+	answer['type'] = 'publicKey';
+	answer['text'] = {};
+	answer['text'][fingerprint] = {};
+	answer['text'][fingerprint]['message'] = convert.bytesToBase64(pubKey.toByteArrayUnsigned());
+	return answer;
   }
 };
 

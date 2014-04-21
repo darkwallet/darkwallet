@@ -1,7 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/multiParty', 'util/djbec', 'util/encryption', 'sjcl'],
-function (Bitcoin, multiParty, Curve25519, Encryption) {
+define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'sjcl'],
+function (Bitcoin, Curve25519, Encryption, Protocol) {
 
   var convert = Bitcoin.convert;
   var BigInteger = Bitcoin.BigInteger;
@@ -14,6 +14,8 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       var client = transport.getClient();
       this.callbacks = {};
       this.chatLog = [];
+      this.requested = [];
+      this.lastRequest = 0;
       // max messages in the log
       this.maxChatLog = 200;
 
@@ -50,27 +52,26 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       }
   }
 
+  /**
+   * Get the session from the transport
+   */
   Channel.prototype.prepareSession = function() {
     // Set keys
     var priv = this.transport.getSessionKey().priv;
     var ecPriv = Encryption.adaptPrivateKey(priv);
 
-    multiParty.setPrivateKey(ecPriv);
-    var pub = multiParty.genPublicKey();
-
-    this.pub = pub;
+    this.pub = Curve25519.ecDH(ecPriv);
     this.priv = ecPriv;
 
     // Set some identity variables
-    this.fingerprint = multiParty.genFingerprint();
-    multiParty.setNickName = this.fingerprint;
+    this.fingerprint = Encryption.genFingerprint(this.pub);
 
     var newMe = this.transport.initializePeer(this.pub.toByteArrayUnsigned(), this.fingerprint);
     this.transport.comms.pubKeyHex = newMe.pubKeyHex;
     this.transport.comms.name = newMe.name;
   };
 
-  /*
+  /**
    * Initialize a new session with a new cloak
    */
   Channel.prototype.newSession = function() {
@@ -78,7 +79,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
     this.prepareSession();
   };
 
-  /*
+  /**
    * Disconnect the channel
    * Will be unusable afterwards and *must* be discarded.
    */
@@ -91,6 +92,9 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
    * Get peer from the fingerprint
    */
   Channel.prototype.getPeer = function(fingerprint, discover) {
+      if (fingerprint == this.fingerprint) {
+          return this.transport.comms;
+      }
       for(var idx=0; idx<this.transport.peers.length; idx++) {
           var peer = this.transport.peers[idx];
           if (peer.fingerprint == fingerprint) {
@@ -100,14 +104,25 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
 
       // unknown, request public key
       if (discover) {
-          console.log("[catchan] request pubKey", fingerprint);
+          console.log("[catchan] request pubKey", fingerprint, 'me: ', this.fingerprint);
           this.requestPublicKey(fingerprint);
       }
   };
 
+  /**
+   * Request the public key from the given fingerprint
+   */
   Channel.prototype.requestPublicKey = function(fingerprint) {
-       // Send announcement
-      var data = JSON.parse(multiParty.sendPublicKeyRequest(fingerprint));
+      if (fingerprint == this.fingerprint) {
+          throw Error("Requesting my own public key");
+      }
+      if (this.requested.indexOf(fingerprint)) {
+          console.log("[catchan] dropping request since already requested");
+          return;
+      }
+      this.requested.push(fingerprint);
+       // Prepare request
+      var data = Protocol.PublicKeyRequestMsg(fingerprint);
  
       // Send encrypted
       this.postEncrypted(data, function(err, data){
@@ -115,17 +130,38 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       }, true);
   };
 
+  /**
+   * Callback for a public key request
+   */
   Channel.prototype.onPublicKeyRequest = function(data) {
-      if (data.text[this.fingerprint]) {
-          console.log("[catchan] answering to pubKey request");
+      var now = Date.now();
+      console.log("[catchan] pubkey request", Object.keys(data.text)[0], 'me:', this.fingerprint);
+      if (data.text[this.fingerprint] && (now - this.lastRequest) > 10000) {
+          console.log("[catchan] answering to pubKey request", this.fingerprint);
           this.sendOpening();
+          this.lastRequest = now;
       }
   };
+
+  /**
+   * Callback for a public key being received
+   */
+  Channel.prototype.onPublicKey = function(data) {
+      var first = Object.keys(data.text)[0];
+
+      var pubKeyB64 = data.text[first]['message'];
+      var pubKey = convert.base64ToBytes(pubKeyB64);
+
+      var fingerprint = Encryption.genFingerprint(pubKey);
+      this.transport.addPeer(pubKey, fingerprint);
+      this.startPairing(fingerprint, pubKey);
+  };
+
 
   // Send opening messages when joining a channel
   Channel.prototype.sendOpening = function() {
       // Send announcement
-      var data = JSON.parse(multiParty.sendPublicKey('all'));
+      var data = Protocol.PublicKeyMsg(this.fingerprint, this.pub);
  
       // Send encrypted
       this.postEncrypted(data, function(err, data){
@@ -152,8 +188,10 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       client.chan_post("b", this.channelHash, data, callback);
   };
 
-  Channel.prototype.receiveDH = function(data) {
-      // should be changed by version using multiParty functions
+  /**
+   * Callback for a public key being received
+   */
+  Channel.prototype.onReceiveDH = function(data) {
       var otherKey = data.pubKey;
       var pk2 = BigInteger.fromByteArrayUnsigned(otherKey);
       var shared = Curve25519.ecDH(this.priv, pk2);
@@ -191,8 +229,10 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       this.triggerCallbacks(decoded.type, decoded);
   };
 
+  /**
+   * Post data to a public key
+   */
   Channel.prototype.postDH = function(otherKey, data, callback) {
-      // should be changed by version using multiParty functions
       data.sender = this.fingerprint;
       var pk2 = BigInteger.fromByteArrayUnsigned(otherKey);
       var shared = Curve25519.ecDH(this.priv, pk2);
@@ -207,6 +247,9 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       this.postEncrypted({'type': 'personal', 'data': encrypted, 'pubKey': myPub}, callback);
   };
 
+  /**
+   * Post data encrypted for the channel
+   */
   Channel.prototype.postEncrypted = function(data, callback, hiding) {
       if (!hiding) {
           data.sender = this.fingerprint;
@@ -224,17 +267,25 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       }
       return callback;
   };
+
+  /**
+   * Trigger all callbacks of the given type
+   */
   Channel.prototype.triggerCallbacks = function(type, data) {
       // channel messages don't have sender
-      if (data.sender) {
+      if (data.sender && data.type != 'publicKey') {
           data.peer = this.getPeer(data.sender, true);
-      } else if (['subscribed', 'publicKeyRequest'].indexOf(data.type) != -1) {
+      } else if (!data.sender && ['subscribed', 'publicKeyRequest'].indexOf(data.type) == -1) {
           console.log("[catchan] message with no sender", type, data)
       }
       if (this.callbacks.hasOwnProperty(type)) {
           this.callbacks[type].forEach(function(cb) {cb(data);});
       }
   };
+
+  /**
+   * Remove a callback
+   */
   Channel.prototype.removeCallback = function(type, callback) {
       if (this.callbacks.hasOwnProperty(type)) {
           var cbArr = this.callbacks[type];
@@ -243,6 +294,10 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
           }
       }
   };
+
+  /**
+   * Remove all callbacks
+   */
   Channel.prototype.removeAllCallbacks = function() {
       // tell listeners we're being unsubscribed
       if (this.callbacks['unsubscribed'] && this.callbacks['unsubscribed'].length) {
@@ -254,6 +309,9 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       this.callbacks = {};
   };
 
+  /**
+   * Channel data arriving
+   */
   Channel.prototype.onChannelData = function(message) {
       var transport = this.transport;
 
@@ -276,31 +334,16 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
               return;
           }
 
-          // cryptocat protocol layer
+          // protocol layer
           var first;
           if (decoded.type == 'publicKey') {
-              first = Object.keys(decoded.text)[0];
-              var pubKeyB64 = decoded.text[first]['message'];
-              var pubKey = convert.base64ToBytes(pubKeyB64);
-              var fingerprint = Encryption.genFingerprint(pubKey);
-              transport.addPeer(pubKey, fingerprint);
-              this.startPairing(fingerprint, pubKey);
-              // set key owner to 'myName' so cryptocat will import the key
-              if (first == 'all') {
-                multiParty.receiveMessage(decoded.sender, first, decrypted);
-              } else {
-                // normal cryptocat protocol
-                multiParty.receiveMessage(decoded.sender, this.fingerprint, decrypted);
-                
-              }
-          } else if (decoded.type == 'personal') {
+              this.onPublicKey(decoded);
+          }
+          else if (decoded.type == 'personal') {
               console.log("[catchan] Decoding DH message");
-              this.receiveDH(decoded);
+              this.onReceiveDH(decoded);
               // don't want to trigger normal callbacks here.
               return;
-          } else {
-              // Not forwarding to cryptocat layer for 'normal' messages
-              // multiParty.receiveMessage(decoded.sender, this.fingerprint, rawDecrypted);
           }
           this.triggerCallbacks(decoded.type, decoded);
       }
