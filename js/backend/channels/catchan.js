@@ -121,6 +121,9 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
           console.log("[catchan] request pubKey", fingerprint);
           this.requestPublicKey(fingerprint);
       }
+      // create a dummy entry in the peers table, we can update it later
+      this.transport.addPeer(Bitcoin.convert.hexToBytes('deadbeefdeadbeefdeadbeef'), fingerprint);
+      return true;
   };
 
   /**

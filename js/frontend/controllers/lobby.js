@@ -35,12 +35,12 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
               $scope.newContact.fingerprint = peer.fingerprint;
           });
           channelLink.addCallback('Shout', function(data) {
-              var peer = channelLink.channel.getPeer(data.sender);
               var channel = channelLink.channel;
 
               // add user pubKeyHex to use as identicon
               if (!data.peer) {
                   // lets set a dummy hex code for now
+                  console.log("[Lobby] no peer!!!")
                   data.peer = {pubKeyHex: "deadbeefdeadbeefdeadbeef"};
               }
 

@@ -87,13 +87,16 @@ function (Bitcoin, Mnemonic) {
   Transport.prototype.addPeer = function(pubKeyBytes, fingerprint) {
       var peer;
       var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
-      var peerIndex = this.peerIds.indexOf(pubKeyHex);
+      var peerIndex = this.peerIds.indexOf(fingerprint);
       if (peerIndex == -1) {
           peer = this.initializePeer(pubKeyBytes, fingerprint);
-          this.peerIds.push(peer.pubKeyHex);
+          this.peerIds.push(fingerprint);
           this.peers.push(peer);
       } else {
-          peer = this.peers[this.peerIds.indexOf(pubKeyHex)];
+          peer = this.peers[this.peerIds.indexOf(fingerprint)];
+          peer.pubKey = pubKeyBytes;
+          peer.name = this.getMnemoname(pubKeyBytes);
+          peer.pubKeyHex = pubKeyHex;
       }
       return peer;
   };
