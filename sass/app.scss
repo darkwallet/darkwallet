@@ -257,18 +257,22 @@ span.meter { padding: 5px 0 0 5px; }
 
 div.pockets { z-index: 2; }
 
+div.wallet-view {  }
+
 div.tab-scroller { margin-top: 1em; }
 
 div.tab-scroller.totheright.ng-enter,
 div.tab-scroller.totheleft.ng-leave.ng-leave-active { 
 	opacity: 0.1; 
-	-webkit-transform: translate3d(100%, 0, 0); 
+	-webkit-transform: translate3d(30%,0,0) scale3d(0.3,1,1); 
+	-webkit-transform-origin: right;
 }
 
 div.tab-scroller.totheright.ng-leave.ng-leave-active,
 div.tab-scroller.totheleft.ng-enter { 
 	opacity: 0; 
-	-webkit-transform: translate3d(-100%, 0, 0); 
+	-webkit-transform: translate3d(-30%,0,0) scale3d(0.3,1,1);
+	-webkit-transform-origin: left;
 }
 
 div.tab-scroller.totheright.ng-enter-active,
@@ -276,8 +280,8 @@ div.tab-scroller.totheleft.ng-enter-active,
 div.tab-scroller.totheleft.ng-leave,
 div.tab-scroller.totheright.ng-leave { 
 	opacity: 1; 
-	-webkit-transform: translate3d(0, 0, 0); 
-	position: absolute; 
+	-webkit-transform: translate3d(0,0,0) scale3d(1,1,1);
+	position: absolute;
 	width: 100%;
 }
 
