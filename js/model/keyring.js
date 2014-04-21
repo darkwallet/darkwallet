@@ -127,6 +127,17 @@ IdentityKeyRing.prototype.save = function(name, data, callback) {
 };
 
 /*
+ * Get the storage space the identity uses
+ * @param {String} name Identity identifier.
+ * @param {Function} callback Callback providing results for the function.
+ */
+
+IdentityKeyRing.prototype.getSize = function(name, callback) {
+    name = name ? DW_NS+name : null;
+    chrome.storage.local.getBytesInUse(name, callback);
+};
+
+/*
  * Clear database (DANGEROUS!)
  */
 IdentityKeyRing.prototype.clear = function() {
