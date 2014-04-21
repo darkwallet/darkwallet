@@ -53,10 +53,10 @@ Contacts.prototype.prepareAddress = function(data) {
   var addresses = []; // {pubKey: ..., address: ..., data: ..., type: ...}
   var pubKey;
   try {
-      pubKey = BtcUtils.extractPublicKey(data);
+      // for now show uncompressed for contacts from uncompressed pubkeys
+      pubKey = BtcUtils.extractPublicKey(data, (data.length == 130) ? false : true);
   } catch (e) {
   }
-
   var newKey = {data: data, pubKey: pubKey, type: 'address'};
 
   if (BtcUtils.isAddress(data)) {
