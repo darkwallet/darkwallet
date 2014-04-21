@@ -42,7 +42,7 @@
             <td class="icon"><button ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible" class="button square fa fa-pencil-square"></button></td>
             <td editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="identity.store.save()">{{address.label}}</td>
             <td>{{address.address}}</td>
-            <td><span class="label" ng-show="address.type=='stealth'">stealth</span></td>
+            <td><span class="label" ng-show="address.type=='stealth'"><div class="fa fa-fighter-jet"></div> stealth</span></td>
             <td>0</td>
             <td class="icon text-right"><button title="Scan a QR code" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></button><button title="Copy address to clipboard" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></button><button title="Copy public key to clipboard" ng-click="copyClipboardPublic(address)" class="button square fa fa-key"></button></td>
           </tr>
@@ -50,7 +50,7 @@
             <td class="icon"><button class="button square fa fa-pencil-square"></button></td>
             <td>{{address.label}}</td>
             <td>{{address.address}}</td>
-            <td><span class="label radius" ng-show="address.type=='stealth'">stealth</span> <span class="label radius" title="Number of times this address has been used"> {{address.nOutputs}} </span></td>
+            <td><span class="label radius" ng-show="address.type=='stealth'"><div class="fa fa-fighter-jet"></div> stealth</span> <span class="label radius" title="Number of times this address has been used"> {{address.nOutputs}} </span></td>
             <td>{{address.balance | currencyFilter}}</td>
             <td class="icon text-right"><button title="Scan a QR code" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></button><button title="Copy address to clipboard" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"><button title="Copy public key to clipboard" ng-click="copyClipboardPublic(address)" class="button square fa fa-key"></button></button></td>
           </tr>

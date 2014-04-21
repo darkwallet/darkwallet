@@ -19,7 +19,7 @@
           <tbody>
             <tr ng-repeat="row in historyRows track by $index">
               <td class="icon"><button class="button square fa fa-info"></button></td>
-              <td><span>{{row.address}}</span> <span class="label radius" ng-show="row.isStealth">stealth</span></td>
+              <td><span>{{row.address}}</span> <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span></td>
               <td><span ng-show="row.height">{{row.height | heightToDate}}</span><span ng-show="!row.height">unconfirmed</span></td>
               <td ng-show="currentHeight"><span ng-show="row.height">{{row.height?1+currentHeight-row.height:0}}</span></td>
               <td>{{(row.myOutValue-row.myInValue) | amountFilter}}</td>

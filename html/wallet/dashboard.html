@@ -58,7 +58,7 @@
              {{(row.myOutValue-row.myInValue) | amountFilter}}
              </div>
              <div class="small-6 columns">
-                {{row.address}}<span class="label radius" ng-show="row.isStealth">stealth</span>
+                {{row.address}}<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
              </div>
              <div ng-show="row.height" class="small-2 columns">
                {{row.height | heightToDate}}
