@@ -16,7 +16,7 @@
              <div class="small-5 columns">
                Address
              </div>
-             <div class="small-3 columns">
+             <div class="small-2 columns">
                Date
              </div>
              <div class="small-2 columns">
@@ -26,10 +26,10 @@
                Total
              </div>
             </div>
-             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
+             <div class="row collapse"  ng-repeat="row in historyRows">
              <div class="small-2 columns">
-                <div ng-class="{'fa-sign-in': (row.myOutValue-row.myInValue)>0 , 'fa-sign-out': (row.myOutValue-row.myInValue)<0, 'red': (row.myOutValue-row.myInValue)<0, 'green': (row.myOutValue-row.myInValue)>0}" class="fa transaction-icon"></div>
-             {{(row.myOutValue-row.myInValue) | amountFilter}}
+                <div ng-class="{'fa-sign-in': row.total>0 , 'fa-sign-out': row.total<0, 'red': row.total<0, 'green': row.total>0}" class="fa transaction-icon"></div>
+             {{(row.total) | amountFilter}}
              </div>
              <div class="small-5 columns">
                <div ng-hide="row.contact">
@@ -42,10 +42,10 @@
                 <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                </div>
              </div>
-             <div ng-show="row.height" class="small-3 columns">
+             <div ng-show="row.height" class="small-2 columns">
                {{row.height | heightToDate}}
              </div>
-             <div ng-show="!row.height" class="small-3 columns">
+             <div ng-show="!row.height" class="small-2 columns">
                unconfirmed
              </div>
              <div class="small-2 columns">
