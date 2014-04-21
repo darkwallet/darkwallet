@@ -165,6 +165,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
         // pass to the wallet to process outputs
         identity.wallet.processHistory(walletAddress, history);
 
+        if (TransactionTasks.processHistory(history, self.currentHeight)) {
+            // some task was updated
+        }
+
         // now subscribe the address for notifications
         client.subscribe(walletAddress.address, function(err, res) {
             // fill history after subscribing to ensure we got all histories already (for now).
@@ -281,9 +285,9 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
             } else {
                 // Else, broadcast and add task
                 var txHash = Bitcoin.convert.bytesToHex(newTx.getHash());
-                TransactionTasks.processSpend(txHash, metadata.myamount, metadata.recipients);
+                var task = TransactionTasks.processSpend(txHash, metadata.myamount, metadata.recipients);
                 setBadgeItems(identity);
-                self.broadcastTx(newTx, metadata.stealth, callback);
+                self.broadcastTx(newTx, task, callback);
             }
         });
     };
@@ -315,7 +319,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
     /*
      * Broadcast the given transaction
      */
-     this.broadcastTx = function(newTx, isStealth, callback) {
+     this.broadcastTx = function(newTx, task, callback) {
          // Broadcasting
          console.log("send tx", newTx);
          console.log("send tx", newTx.serializeHex());
@@ -324,7 +328,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
                  console.log("Error sending tx: " + error);
                  callback({data: error, text: "Error sending tx"});
              } else {
-                 // TODO: radar can be added as a task to maintain progress
+                 TransactionTasks.processRadar(task, count);
+
+                 // notify gui about radar updates
+                 Port.post('gui', {type: 'radar', count: count});
+
                  callback(null, {radar: count, type: 'radar'});
                  console.log("tx radar: " + count);
              }

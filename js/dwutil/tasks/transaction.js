@@ -20,30 +20,83 @@ TransactionTasks.processSpend = function(hash, total, recipients) {
     var task = { hash: hash, height: 0, recipients: recipients};
 
     task.address = recipients[0].address;
-    task.value = total;
+    // task expects negative for outgoing and positive for incoming
+    task.value = -total;
 
+    task.radar = 0;
     task.progress = 0;
     task.confirmations = 0;
-    task.state = 'unconfirmed';
+    task.state = 'sending';
 
     identity.tasks.addTask('send', task);
     return task;
 }
 
+/**
+ * Process radar value incoming (from 0 to 1)
+ */
+TransactionTasks.processRadar = function(task, count) {
+    task.radar = count;
+    if (count >= 0.7 && task.state == 'sending') {
+        task.state = 'unconfirmed';
+        task.progress = 10;
+    } else if (task.state == 'sending') {
+        task.progress = count*10;
+    }
+}
+
+
+/**
+ * Process a history report from obelisk
+ */
+TransactionTasks.processHistory = function(history, height) {
+    var identity = DarkWallet.getIdentity();
+
+    var updated = false;
+
+    // process history
+    history.forEach(function(tx) {
+        // sum unspent outputs for the address
+        var outTxHash = tx[0];
+        var inTxHash = tx[4];
+
+        // check if we had some receive task for the outputs
+        var taskOut = identity.tasks.search('receive', 'hash', outTxHash);
+        if (taskOut && !taskOut.height) {
+            taskOut.height = tx[2];
+            taskOut.state = 'confirmed';
+            if (TransactionTasks.updateTaskHeight(taskOut, height)) {
+                updated = true;
+            }
+        }
+        // check if we had some send task for the spends
+        if (inTxHash) {
+            var taskIn = identity.tasks.search('send', 'hash', inTxHash);
+            if (taskIn && !taskIn.height) {
+                taskIn.height = tx[6];
+                taskIn.state = 'confirmed';
+                if (TransactionTasks.updateTaskHeight(taskIn, height)) {
+                    updated = true;
+                }
+            }
+        }
+    });
+    return true;
+}
 
 /**
  * Create or update a task for given history row (from an incoming transaction)
  */
 TransactionTasks.processRow = function(value, row, height) {
     var created;
-    var taskType = value>0 ? 'receive' : 'send';
+    var section = value>0 ? 'receive' : 'send';
     var identity = DarkWallet.getIdentity();
-    var task = identity.tasks.search(taskType, 'hash', row.hash);
+    var task = identity.tasks.search(section, 'hash', row.hash);
     if (!task) {
-        task = { hash: row.hash, height: row.height, value: value };
+        // Since we create tasks for spends ourselves this should be 'receive'
+        task = { hash: row.hash, height: row.height, value: value, progress: 10 };
         created = true;
     }
-    console.log("process row", task, height, row);
 
     // save initial height when confirmed
     if (row.height && !task.height) {
@@ -55,10 +108,10 @@ TransactionTasks.processRow = function(value, row, height) {
     }
     task.state = height ? 'confirmed' : 'unconfirmed';
 
-    this.updateTaskHeight(task, height);
+    TransactionTasks.updateTaskHeight(task, height);
 
     if (created) {
-        identity.tasks.addTask(taskType, task);
+        identity.tasks.addTask(section, task);
     } else {
         identity.tasks.store.save();
     }
@@ -76,9 +129,15 @@ TransactionTasks.processHeight = function(height) {
     var receiveTasks = identity.tasks.getTasks('receive');
     var tasks = spendTasks.concat(receiveTasks);
 
+    var updated = false;
     tasks.forEach(function(task) {
-        TransactionTasks.updateTaskHeight(task, height);
+        if (TransactionTasks.updateTaskHeight(task, height)) {
+            updated = true;
+        }
     });
+    if (updated) {
+        identity.tasks.store.save();
+    }
 };
 
 
@@ -93,11 +152,21 @@ TransactionTasks.updateTaskHeight = function(task, height) {
     if (task.state == 'confirmed') {
         task.confirmations = height ? 1 + height - task.height : 0;
         progress = (((1 + task.confirmations) / 7 )*100).toFixed(1);
-    } else {
-        progress=10;
+        task.progress = Math.min(100, progress);
+
+        // If fully confirmed set to finished
+        if (task.confirmations >= 6) {
+            task.state = 'finished';
+        }
+        return true;
     }
-    task.progress = Math.min(100, progress);
 };
+
+TransactionTasks.removeTask = function(task) {
+    var identity = DarkWallet.getIdentity();
+    var section = task.value > 0 ? 'receive' : 'send';
+    identity.tasks.removeTask(section, task);
+}
 
 return TransactionTasks;
 
