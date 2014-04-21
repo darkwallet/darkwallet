@@ -188,7 +188,7 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
             row.confirmed = prevRow.confirmed-value;
             row.unconfirmed = prevRow.unconfirmed;
         } else {
-            row.confirmed = prevRow.confirmed-value;
+            row.confirmed = prevRow.confirmed;
             // Outgoing unconfirmed are credited straight away
             if (value < 0) {
                 row.confirmed -= value;
