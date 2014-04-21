@@ -1,12 +1,21 @@
 /*
  * @fileOverview Background service running for the wallet
  */
-define(['backend/services/ticker', 'base/test/mock/mock1.js'], function(TickerService, Port) {
+define(['testUtils'], function(testUtils) {
   'use strict';
   describe('Ticker service', function() {
 
-    var core, ticker;
-    beforeEach(function() {
+    var core, ticker, Port;
+    
+    beforeEach(function(done) {
+      
+      testUtils.stub('backend/port', {
+        connect: function(service, callback) {
+          callback({type: 'connected'});
+        },
+        post: function(service, obj) {}
+      });
+      
       core = {
         getClient: function() {
           return {
@@ -37,15 +46,16 @@ define(['backend/services/ticker', 'base/test/mock/mock1.js'], function(TickerSe
           };
         }
       };
-      Port.mock({
-        connect: function(service, callback) {
-          callback({type: 'connected'});
-        },
-        post: function(service, obj) {}
+      testUtils.loadWithCurrentStubs('backend/services/ticker', function(TickerService) {
+        Port = require('backend/port');
+        spyOn(Port, 'post');
+        ticker = new TickerService(core);
+        done();
       });
-      spyOn(Port, 'post');
-      
-      ticker = new TickerService(core);      
+    });
+    
+    afterEach(function() {
+      testUtils.reset();
     });
 
     it('is initialized correctly', function() {

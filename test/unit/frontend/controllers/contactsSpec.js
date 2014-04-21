@@ -2,11 +2,11 @@
  * @fileOverview ContactsCtrl angular controller
  */
 
-define(['angular-mocks', 'frontend/controllers/contacts', 'base/test/mock/mock1.js'], function (mocks, ContactsCtrl, DarkWallet) {
+define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
   'use strict';
 
   describe('Contacts controller', function() {
-    var contactsController, scope, routeParams, location, _contacts;
+    var contactsController, scope, routeParams, location, _contacts, DarkWallet;
 
     var identity = {
       contacts: {
@@ -19,12 +19,6 @@ define(['angular-mocks', 'frontend/controllers/contacts', 'base/test/mock/mock1.
       }
     };
     
-    DarkWallet.mock({
-      getIdentity: function() {
-        return identity;
-      }
-    });
-    
     var resetContacts = function() {
       identity.contacts.contacts = [
         {name: "Satoshi Nakamoto", address: "address1"},
@@ -35,8 +29,6 @@ define(['angular-mocks', 'frontend/controllers/contacts', 'base/test/mock/mock1.
     };
     
     var injectController = function(routeParams) {
-      mocks.module("DarkWallet.controllers");
-
       mocks.inject(["$rootScope", "$controller", function ($rootScope, $controller) {
         scope = $rootScope.$new();
         routeParams = routeParams || {};
@@ -48,15 +40,31 @@ define(['angular-mocks', 'frontend/controllers/contacts', 'base/test/mock/mock1.
         contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location});
       }]);
     };
-
-    describe('', function() {
-
-      beforeEach(function() {
+    
+    beforeEach(function(done) {
+      testUtils.stub('darkwallet', {
+        getIdentity: function() {
+          return identity;
+        }
+      });
+      
+      mocks.module("DarkWallet.controllers");
+      
+      testUtils.loadWithCurrentStubs('frontend/controllers/contacts', function() {
         resetContacts();
         injectController();
+        DarkWallet = require('darkwallet');
         spyOn(identity.contacts, 'updateContact');
         spyOn(identity.contacts, 'deleteContact');
+        done();
       });
+    });
+    
+    afterEach(function() {
+      testUtils.reset();
+    });
+
+    describe('', function() {
 
       it('is created properly', function() {
         expect(scope.newContact).toEqual({});

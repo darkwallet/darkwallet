@@ -3,21 +3,41 @@
  * @file New Wallet Angular Tricks
  */
 
-define(['angular-mocks', 'frontend/controllers/new_wallet', 'darkwallet'],
-function (mocks, NewWalletCtrl, DarkWallet) {
+define(['angular-mocks', 'testUtils'],
+function (mocks, testUtils) {
   'use strict';
   describe('New wallet controller', function() {
 
-    var newWalletCtrl, scope, $window;
+    var newWalletCtrl, scope, $window, DarkWallet, pars = {};
 
-    beforeEach(function () {
-      mocks.module("DarkWallet.controllers");
-
-      mocks.inject(["$rootScope", "$controller", function ($rootScope, $controller) {
+    beforeEach(function (done) {
+      testUtils.stub('darkwallet', {
+        service: {
+          wallet: {
+            createIdentity: function(name, secret, password, callback) {
+                pars.name = name;
+                pars.secret = secret;
+                pars.password = password;
+                callback();
+            }
+          }
+        }
+      });
+    
+      testUtils.loadWithCurrentStubs('frontend/controllers/new_wallet', function() {
+        DarkWallet = require('darkwallet');
+        mocks.module("DarkWallet.controllers");
+        mocks.inject(["$rootScope", "$controller", function ($rootScope, $controller) {
           scope = $rootScope.$new();
           $window = {};
           newWalletCtrl = $controller('NewWalletCtrl', {$scope: scope, $window: $window});
-      }]);
+          done();
+        }]);
+      });
+    });
+    
+    afterEach(function() {
+      testUtils.reset();
     });
     
     it('is initialized properly', function() {
@@ -65,19 +85,6 @@ function (mocks, NewWalletCtrl, DarkWallet) {
     });
     
     it('generates a new identity when a mnemonic is provided', function() {
-      // Setup some mockup objects
-      var pars = {};
-      var walletService = {
-        createIdentity: function(name, secret, password, callback) {
-            pars.name = name;
-            pars.secret = secret;
-            pars.password = password;
-            callback();
-        }
-      }
-      DarkWallet.setMockService('wallet', walletService);
-
-      // Start testing
       scope.name = 'Satoshi';
       scope.passwd = 'p4ssw0rd';
       scope.mnemonic2Words = "king government grown apologize bowl precious eternal ceiling satisfy just silently control";
