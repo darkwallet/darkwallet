@@ -146,6 +146,21 @@ Contacts.prototype.addContact = function (contact) {
   this.store.save();
 };
 
+/**
+ * Add key
+ */
+Contacts.prototype.addContactKey = function (contact, data) {
+  var newKey = this.prepareAddress(data);
+
+  if (!contact.pubKeys) {
+      contact.pubKeys = [];
+  }
+  contact.pubKeys.push(newKey);
+  this.store.save();
+  // delete address since now is contained inside contact.pubKeys
+};
+
+
 
 /**
  * Update a key from given user input

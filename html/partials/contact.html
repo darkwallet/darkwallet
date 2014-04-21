@@ -8,35 +8,52 @@
 	</div>
 </div>
 <div class="row collapse" ng-repeat="pubKey in vars.contact.pubKeys">
-	<div class="medium-3 large-6 columns" title="{{pubKey.data}}" ng-show="!editingContact" ng-click="openEditForm(vars.contact, $index)" >
+	<div class="medium-3 large-6 columns" title="{{pubKey.data}}" ng-show="!(editingContact===$index)" ng-click="openEditForm(vars.contact, $index)" >
             {{pubKey.address.slice(0,48)}}{{pubKey.address.length>48?'...':''}}
             <span class="label radius" title="Type of address"> <div class="fa" 
                  ng-class="{'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth'}" 
                  ng-click="pairPeer(peer)"></div> {{pubKey.type}} </span>
 	</div>
-	<div ng-show="editingContact" class="medium-3 large-6 columns">
+	<div ng-show="editingContact===$index" class="medium-3 large-6 columns">
 		<form ng-submit="editContact(vars.contact, $index)">
 			<input type="text" ng-model="contactToEdit.address">
 		</form>
 	</div>
-	<div class="medium-3 large-2 columns">
+	<div class="medium-3 large-2 columns" ng-show="!creatingContact">
 		<a ng-click="openModal('show-qr', {address: pubKey.address})" class="button postfix fa fa-qrcode">QRcode</a>
 
 	</div>
-	<div class="medium-3 large-2 columns">
+	<div class="medium-3 large-2 columns" ng-show="!creatingContact">
 		<a ng-click="copyClipboard(pubKey.address)" class="button postfix fa fa-clipboard">Copy</a>
 	</div>
-	<div ng-show="$index" class="medium-3 large-2 columns">
+	<div ng-show="$index" class="medium-3 large-2 columns" ng-show="!creatingContact">
                 <!-- Delete address -->
 		<a class="button postfix alert radius">Delete address</a>
 	</div>
 </div>
-<div class="row collapse">
+<a ng-click="creatingContact=true" class="fa fa-plus button small radius" ng-show="!creatingContact"> Add another address</a>
+<form name="createContact" ng-show="creatingContact" ng-submit="creatingContact=false;addContactKey(vars.contact);" novalidate>
+    <div class="row">
+	<div class="small-6 medium-3 columns">
+                <input type="text" placeholder="name" required ng-model="newContact.name"></input>
+        </div>
+	<div class="small-6 medium-3 columns">
+                <input type="text" placeholder="address" required btc-address ng-model="newContact.address"></input>
+        </div>
+	<div class="small-6 medium-3 columns">
+                <input type="submit" class="button postfix fa fa-check"></input>
+        </div>
+	<div class="small-6 medium-3 columns">
+                <a class="button postfix alert fa fa-times" ng-click="creatingContact=false">Cancel</a>
+        </div>
+    </div>
+</form>
+<div ng-show="!creatingContact" class="row collapse">
 	<div class="small-6 medium-3 columns">
 	    <a href="#contacts" class="fa fa-arrow-left button small radius"> Back</a>
-	    <a class="fa fa-plus button small radius"> Add another address</a>
     </div>
 	<div class="small-6 medium-3 columns text-right">
+            <a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button postfix">Watch</a>
             <a href="" ng-click="openModal('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button radius alert fa fa-trash-o"> Delete contact</a>
     </div>
 </div>

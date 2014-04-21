@@ -53,9 +53,21 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $scope.contactFormShown = false;
   };
 
+  $scope.addContactKey = function(contact) {
+    var identity = DarkWallet.getIdentity();
+    var name = $scope.newContact.name;
+    var address = $scope.newContact.address;
+
+    identity.contacts.addContactKey(contact, address);
+
+    // add to scope
+    $scope.newContact = {};
+  };
+
+
   $scope.openEditForm = function(contact, index) {
     $scope.contactToEdit = {name: contact.name, address: contact.pubKeys[index].data};
-    $scope.editingContact = true;
+    $scope.editingContact = index;
   };
 
   $scope.openContact = function(contact) {
@@ -72,6 +84,10 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     identity.contacts.updateContact(contact, $scope.contactToEdit.address, index);
     $scope.editingContact = false;
   };
+
+  $scope.toggleWatch = function(contact, index) {
+    contact.watch = !contact.watch;
+  }
 
   $scope.deleteContact = function(contact) {
     var identity = DarkWallet.getIdentity();
