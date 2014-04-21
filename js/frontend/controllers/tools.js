@@ -28,7 +28,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
 
 
   /**
-   * Verify a signature
+   * Message formatting
    */
 
   var SIGHEADER = '-----BEGIN BITCOIN SIGNED MESSAGE-----\n';
@@ -38,12 +38,21 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
   var parseText = function(text) {
       var initHead = text.indexOf(SIGHEADER);
 
+      if (initHead == -1) {
+          throw Error('Not a bitcoin signed message');
+      }
       var message = text.substring(initHead);
       var initText = message.indexOf('\n\n');
       var initSigHead = message.indexOf(SIGINIT);
+      if (initSigHead == -1) {
+          throw Error('Message is incomplete');
+      }
       var initSig = message.substring(initSigHead).indexOf('\n\n');
       var endSig = message.indexOf(SIGEND);
 
+      if (endSig == -1) {
+          throw Error('Message is incomplete');
+      }
       var initAddress = message.indexOf('Address: ');
       var endAddress = message.substring(initAddress).indexOf('\n');
       var address = message.substring(initAddress+9, initAddress+endAddress);
@@ -56,6 +65,29 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
       return {text: resText, signature: sigBase64, address: address};
   }
 
+  /**
+   * Format text address and signatures as one message
+   */
+  var formatText = function(text, address, signature) {
+      var formatted = SIGHEADER;
+      formatted += 'Address: '+address+'\n';
+      formatted += 'Hash: SHA256\n\n';
+      formatted += text;
+      formatted += SIGINIT;
+      formatted += 'Version: GnuPG v1.4.12 (GNU/Linux)\n\n';
+      var i = 0;
+      while(i*64 < signature.length) {
+          formatted += signature.substr(i*64, (i+1)*64)+'\n';
+          i += 1;
+      }
+      formatted += SIGEND;
+      return formatted;
+  };
+
+
+  /**
+   * Verify a signature
+   */
 
   $scope.verifyText = function() {
       var address = $scope.tools.verifyAddress;
@@ -63,7 +95,13 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
       var text = $scope.tools.verifyText;
 
       if (!sigText) {
-          var parsed = parseText(text);
+          var parsed;
+          try {
+              parsed = parseText(text);
+          } catch(e) {
+              notify.error('Error decoding', e.message);
+              return;
+          }
           sigText = parsed.signature;
           if (!address) {
               address = parsed.address;
@@ -101,21 +139,6 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
 
       return sigText;
   };
-  var formatText = function(text, address, signature) {
-      var formatted = SIGHEADER;
-      formatted += 'Address: '+address+'\n';
-      formatted += 'Hash: SHA256\n\n';
-      formatted += text;
-      formatted += SIGINIT;
-      formatted += 'Version: GnuPG v1.4.12 (GNU/Linux)\n\n';
-      var i = 0;
-      while(i*64 < signature.length) {
-          formatted += signature.substr(i*64, (i+1)*64)+'\n';
-          i += 1;
-      }
-      formatted += SIGEND;
-      return formatted;
-  };
 
   /**
    * Sign the given text
@@ -134,7 +157,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
                       var signature = signText(privKey, walletAddress.address, text);
                       $scope.tools.output = formatText(text, address, signature);
                       $scope.tools.status = 'ok';
-                      $scope.signOpen = false;
+                      $scope.tools.signOpen = false;
                       $scope.tools.open = false;
                       notify.success("Signed");
                   });
