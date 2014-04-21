@@ -10,7 +10,11 @@ html, body:not(.popupbody) { height: 100%; overflow-y: hidden; }
 
 .topmargin { margin-top: 1.6em !important; }
 
-.tooltip { max-width: 400px; min-width: 170px; text-align: center; }
+ .tooltip { margin-left: -1em; } 
+
+
+span.tooltip.fade { opacity: 0; }
+span.tooltip.fade.in { opacity: 1; }
 
 .popupcontainer .panel { 
 	background: #333; 
@@ -44,6 +48,8 @@ span.input-status {
  }
 
 input.ng-valid:not(.ng-pristine) + span.input-status { opacity: 1 }
+
+input.address-buttons { padding-right: 5.3em; }
 
 input[type=range] {
     -webkit-appearance: none;
@@ -323,6 +329,8 @@ div.scroller.ng-leave.ng-leave-active {
 
 }
 
+
+
 div.chat-text {
 	word-wrap: break-word;
 }
@@ -346,6 +354,7 @@ div.chat-text {
 
 .setback.seed { background: url(../images/seed.svg) center/cover no-repeat; }
 
+span.tooltip.fade,
 .contact-mosaic-square,
 .contact-mosaic-square img, 
 .contact-mosaic-square .contact-label, 
