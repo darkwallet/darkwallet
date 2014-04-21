@@ -54,8 +54,8 @@
             <h5>Latest transactions</h5>
             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
              <div class="small-2 columns">
-                <div ng-class="{'fa-sign-in': (row.myOutValue-row.myInValue)>0 , 'fa-sign-out': (row.myOutValue-row.myInValue)<0, 'red': (row.myOutValue-row.myInValue)<0, 'green': (row.myOutValue-row.myInValue)>0}" class="fa transaction-icon"></div>
-             {{(row.myOutValue-row.myInValue) | amountFilter}}
+                <div ng-class="{'fa-sign-in': row.total>0 , 'fa-sign-out': row.total<0, 'red': row.total<0, 'green': row.total>0}" class="fa transaction-icon"></div>
+             {{row.total | amountFilter}}
              </div>
              <div class="small-6 columns">
                <div ng-hide="row.contact">

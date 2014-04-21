@@ -82,7 +82,9 @@
             {{address.balance | currencyFilter}}
         </div>
         <div class="small-2 columns text-right">
-            <button title="Scan a QR code" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></button><button title="Copy address to clipboard" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></button><button title="Copy public key to clipboard" ng-click="copyClipboardPublic(address)" class="button square fa fa-key"></button>
+            <button title="Scan a QR code" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></button>
+            <button title="Copy address to clipboard" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></button>
+            <button title="Copy public key to clipboard" ng-click="copyClipboardPublic(address)" class="button square fa fa-key"></button>
         </div>
     </div>
   

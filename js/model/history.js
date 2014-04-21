@@ -102,7 +102,7 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     // Create a row representing this change (if already referenced will
     // be replaced)
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
-    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth};
+    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue};
     return newRow;
 };
 

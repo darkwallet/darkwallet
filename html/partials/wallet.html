@@ -3,10 +3,6 @@
       <ng-include src="'wallet/pockets.html'">
       </ng-include>
   </div>
-  <div ng-show="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 columns">
-      <ng-include src="'wallet/new_fund.html'">
-      </ng-include>
-  </div>
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns wallet-view" ng-controller="TabsCtrl">
     <h4>{{pocket.name}} <small>{{((balance===undefined)?totalBalance:balance) | currencyPresenter}}</small> <small ng-show="unconfirmed">{{((unconfirmed===undefined)?totalUnconfirmed:unconfirmed) | currencyPresenter}}</small></h4>
     <div class="tabbable">
@@ -19,4 +15,9 @@
         </div>
     </div>
   </div>
+  <div ng-show="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 columns">
+      <ng-include src="'wallet/new_fund.html'">
+      </ng-include>
+  </div>
+
 </div>
