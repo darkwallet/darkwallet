@@ -34,15 +34,15 @@
     </form>
     <div class="large-6 columns">
       <div class="row collapse panel radius">
-        <h5>Stealth address</h5>
+        <h5>{{isFund?'Fund':'Stealth'}} address</h5>
         <div class="small-1 columns">
-          <a href="" ng-click="copyClipboard(pocket.stealth)" class="button prefix radius fa fa-clipboard"></a>
+          <a href="" ng-click="copyClipboard(isFund?pocket.fund.multisig.address:pocket.stealth)" class="button prefix radius fa fa-clipboard"></a>
         </div>
         <div class="small-1 columns">
-          <a href="" ng-click="copyClipboard(pocket.stealth)" class="button prefix square fa fa-qrcode"></a>
+          <a href="" ng-click="copyClipboard(isFund?pocket.fund.multisig.address:pocket.stealth)" class="button prefix square fa fa-qrcode"></a>
         </div>
         <div class="small-10 columns">
-          <input type="text" class="postfix radius" readonly ng-model="pocket.stealth" />
+          <input type="text" class="postfix radius" readonly value="{{isFund?pocket.fund.multisig.address:pocket.stealth}}" />
         </div>
       </div>
     </div>
