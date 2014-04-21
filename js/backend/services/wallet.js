@@ -88,7 +88,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
     // Notify frontend of history row updates
     var notifyRow = function(walletAddress, row, height) {
         var title;
-        var value = row.myOutValue - row.myInValue;
+        var value = row.total;
 
         if (value > 0) {
             if (height) {
