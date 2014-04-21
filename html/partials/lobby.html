@@ -35,7 +35,7 @@
             </div>
           </form>
           <div class="chat-text">
-             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><identicon title="{{shoutLog.sender}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></identicon> {{shoutLog.body.text}}</div>
+             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><face title="{{shoutLog.sender}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></face> {{shoutLog.body.text}}</div>
           </div>
         </div>
       </div>
@@ -47,17 +47,17 @@
             <span class="label">{{subscribed.slice(0, 8)}}</span>
           </div>
           <h5>Your permanent identity</h5>
-          <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
+          <div class="wrapper"><face title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></face> {{myself.name}}</div>
           <h5>Your temporary identity</h5>
           <div class="row">
             <div class="small-12 columns">
-              <identicon title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></identicon> {{comms.name}}
+              <face title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></face> {{comms.name}}
               <a class="fa fa-refresh" title="New" ng-click="newTempIdentity()"></a>
             </div>
           </div>
           <h5>Peers</h5>
           <div ng-repeat="peer in peers">
-            <span ng-click="selectPeer(peer)"><identicon icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></identicon> {{peer.name}}</span> <a class="fa fa-link" ng-click="pairPeer(peer)" title="pair"></a>
+            <span ng-click="selectPeer(peer)"><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.name}}</span> <a class="fa fa-link" ng-click="pairPeer(peer)" title="pair"></a>
           </div>
       </div>
 
@@ -65,7 +65,7 @@
       <div class="large-2 columns" ng-show="newContact">
           <h2>{{newContact.name}}</h2>
           <div title="{{newContact.stealth}}">{{newContact.stealth.slice(0,8)}}...</div>
-          <div class="wrapper"><identicon title="{{newContact.pubKeyHex}}" hash="newContact.pubKeyHex" icon-size="64"></identicon></div>
+          <div class="wrapper"><face title="{{newContact.pubKeyHex}}" hash="newContact.pubKeyHex" icon-size="64"></face></div>
           <button ng-click="addNewContact(newContact)">Add contact</button>
           <button class="cancel" ng-click="newContact=false">Cancel</button>
       </div>

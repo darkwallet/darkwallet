@@ -3,6 +3,7 @@
 'use strict';
 
 define([
+    './face',
     './identicon',
     './qr',
     './qr-save-button',
