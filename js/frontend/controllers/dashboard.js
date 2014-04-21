@@ -1,9 +1,19 @@
 'use strict';
 
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
+define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
   controllers.controller('DashboardCtrl', ['$scope', function($scope) {
     $scope.dashboard = {};
-    var identity = DarkWallet.getIdentity();
-    $scope.dashboard.address = identity.wallet.getFreeAddress(0).address;
+
+    Port.connectNg('wallet', $scope, function(data) {
+        if (data.type == 'ready') {
+            var identity = DarkWallet.getIdentity();
+            $scope.dashboard.address = identity.wallet.getFreeAddress(0).address;
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
+        }
+    });
+
+
   }]);
 });
