@@ -74,7 +74,11 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     console.log("[mixer] Stop mixing...");
     if (this.channel) {
       var lobbyTransport = this.core.getLobbyTransport();
-      lobbyTransport.closeChannel(this.channel.name);
+      try {
+          lobbyTransport.closeChannel(this.channel.name);
+      } catch(e) {
+          // doesnt exist any more
+      }
       this.channel = null;
     }
   };
