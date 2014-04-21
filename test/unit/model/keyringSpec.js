@@ -19,13 +19,13 @@ define(['testUtils'], function(testUtils) {
         storage: {
           local: {
             get: function(key, callback) {
-              var value;
+              var obj = {};
               if (key === null) {
-                value = chrome_storage;
+                obj = chrome_storage;
               } else {
-                value = (typeof chrome_storage[key] != 'undefined') ? chrome_storage[key] : {};
+                obj[key] = (typeof chrome_storage[key] != 'undefined') ? chrome_storage[key] : {};
               }
-              callback? callback(value) : null;
+              callback? callback(obj) : null;
             },
             set: function(pairs, callback) {
               for(var key in pairs) {
@@ -44,6 +44,16 @@ define(['testUtils'], function(testUtils) {
       //});
       };
       window.chrome = chrome;
+      
+      testUtils.stub('model/identity', function(store) {
+        this.name = store.store.name;
+        this.store = store;
+      });
+      
+      testUtils.stub('model/store', function(data, keyring) {
+        this.store = data;
+        this.keyring = keyring;
+      });
       
       testUtils.loadWithCurrentStubs('model/keyring', function(_IdentityKeyRing) {
         //chrome = require('chrome');
@@ -68,17 +78,25 @@ define(['testUtils'], function(testUtils) {
       expect(keyring.availableIdentities).toEqual(['Satoshi', 'Dorian']);
     });
 
-    xit('gets an idenity', function() {
+    it('gets an idenity', function() {
       keyring.get('Satoshi', function(identity) {
         expect(identity.name).toBe('Satoshi');
       });
+      
+      // Cached
+      keyring.get('Satoshi', function(identity) {
+        expect(identity.name).toBe('Satoshi');
+      });
+      expect(function() {
+        keyring.get('Amir');
+      }).toThrow();
     });
 
     it('gets identity names', function() {
       expect(keyring.getIdentityNames()).toEqual(['Satoshi', 'Dorian']);
     });
 
-    xit('closes', function() {
+    it('closes', function() {
       keyring.load('Satoshi');
       expect(keyring.identities.Satoshi).toBeDefined();
       keyring.close('Satoshi');
@@ -89,19 +107,51 @@ define(['testUtils'], function(testUtils) {
       keyring.createIdentity('Max', 'seed', 'p4ssw0rd');
       expect(keyring.identities.Max).toBeDefined();
       expect(keyring.availableIdentities).toContain('Max');
+      expect(keyring.availableIdentities.length).toBe(3);
+      
+      // Override identity
+      keyring.createIdentity('Satoshi', 'seed', 'p4ssw0rd');
+      expect(keyring.identities.Satoshi).toBeDefined();
+      expect(keyring.availableIdentities).toContain('Satoshi');
+      expect(keyring.availableIdentities.length).toBe(3);
+      
     });
 
-    it('loads identities', function() {
-      keyring.loadIdentities(function() {
-        expect(keyring.availableIdentities).toEqual(['Satoshi', 'Dorian']);
-        chrome.storage.local.clear();
-        keyring = new IdentityKeyRing();
-        expect(keyring.identities).toEqual({});
-        expect(keyring.availableIdentities).toEqual([]);
-      })
+    describe('loads identities', function() {
+      it('that are not cached', function() {
+        keyring.availableIdentities = [];
+        keyring.loadIdentities(function(identities) {
+          expect(identities).toEqual(['Satoshi', 'Dorian']);
+        });
+        
+        keyring.availableIdentities = [];
+        var pars = {};
+        pars[DW_NS + 'Satoshi'] = {name: 'Satoshi'};
+        pars[DW_NS + 'Dorian'] = {name: 'Dorian'};
+        pars['Somethingelse'] = {};
+        chrome.storage.local.set(pars, function() {
+          keyring.loadIdentities(function(identities) {
+            expect(identities).toEqual([ 'Satoshi', 'Dorian' ]);
+          });
+        });
+      });
+      it('that are cached', function() {
+        keyring.loadIdentities(function() {
+          expect(keyring.availableIdentities).toEqual(['Satoshi', 'Dorian']);
+          chrome.storage.local.clear();
+          keyring = new IdentityKeyRing();
+          expect(keyring.identities).toEqual({});
+          expect(keyring.availableIdentities).toEqual([]);
+        });
+      });
+      it('and do not throw if there is no callback', function() {
+        keyring.loadIdentities();
+        keyring.availableIdentities = [];
+        keyring.loadIdentities();
+      });
     });
     
-    xit('loads', function() { // private
+    it('loads', function() { // private
       keyring.load('Satoshi', function(identity) {
         expect(identity.name).toBe('Satoshi');
       });

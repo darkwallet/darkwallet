@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./identity', './store'], function(Identity, Store) {
+define(['model/identity', 'model/store'], function(Identity, Store) {
 // DarkWallet namespace for the local storage.
 var DW_NS = 'dw:identity:';
 
@@ -86,9 +86,7 @@ IdentityKeyRing.prototype.loadIdentities = function(callback) {
         for(var idx=0; idx<keys.length; idx++) {
             if (keys[idx].substring(0, DW_NS.length) == DW_NS) {
                 var name = keys[idx].substring(DW_NS.length);
-                if (self.availableIdentities.indexOf(name) == -1) {
-                    self.availableIdentities.push(name);
-                }
+                self.availableIdentities.push(name);
             }
         }
         if (_callback) {
