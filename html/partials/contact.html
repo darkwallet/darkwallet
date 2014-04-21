@@ -1,5 +1,7 @@
+<!-- Header -->
 <div class="row panel radius topmargin">
-<div class="row">
+  <!-- Contact info -->
+  <div class="row">
 	<div class="small-1 columns text-center">
         	<identicon icon-size="64" hash="vars.contact.hash" title="{{vars.contact.hash}}"></identicon>
 	</div>
@@ -9,33 +11,102 @@
 	<div class="small-1 columns">
         	<face icon-size="64" hash="vars.contact.hash" title="{{vars.contact.hash}}"></face>
 	</div>
+  </div>
+
+  <!-- Options -->
+  <div class="row collapse topmargin">
+    <div class="small-2 columns">
+        <a ng-click="contactSection='overview'">Overview</a>
+    </div>
+    <div class="small-2 columns">
+        <a ng-click="contactSection='addresses'">Addresses</a>
+    </div>
+    <div class="small-2 columns">
+        <a ng-click="contactSection='trust'">Trust</a>
+    </div>
+    <!--<div class="small-2 columns">
+        <a ng-click="contactSection='history'">History</a>
+    </div>-->
+    <div class="small-8 columns">
+        
+    </div>
+  </div>
+<div class="row panel radius topmargin" ng-show="contactSection=='trust'">
+    <p>You have no trust on this peer</p>
+    <a class="button fa fa-flask postfix" ng-click="">Set trust</a>
 </div>
-<div class="row collapse" ng-repeat="pubKey in vars.contact.pubKeys">
-	<div class="medium-3 large-6 columns" title="{{pubKey.data}}" ng-show="!(editingContact===$index)" ng-click="openEditForm(vars.contact, $index)" >
-            {{pubKey.address.slice(0,48)}}{{pubKey.address.length>48?'...':''}}
-            <span class="label radius" title="Type of address"> <div class="fa" 
+<div class="row panel radius topmargin" ng-show="contactSection=='history'">
+    <p>You have no history with this peer</p>
+</div>
+<div class="row panel radius topmargin" ng-show="contactSection=='overview' || !contactSection">
+    <div class="columns large-10" ng-init="pubKey=vars.contact.pubKeys[vars.contact.mainKey]">
+      <div class="row collapse panel radius">
+        <h5>The main address for this contact is:</h5>
+        <div class="small-1 columns">
+          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="copyClipboard(pubKey.address)" class="button prefix square radius fa fa-clipboard"></a>
+        </div>
+        <div class="small-1 columns">
+          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="openModal('show-qr', {address: pubKey.address})"></a>
+        </div>
+        <div class="small-10 columns">
+          <input type="text" class="postfix radius" readonly value="{{pubKey.address}}" />
+
+        </div>
+      </div>
+      <div class="row collapse">
+          <p ng-show="vars.contact.pubKeys.length>1">This peer has <a ng-click="contactSection='addresses'">{{vars.contact.pubKeys.length}} keys</a>.</p>
+          <p>You have no <a ng-click="contactSection='trust'">trust defined</a> with this contact.</p>
+      </div>
+      <div class="row radius">
+      </div>
+    </div>
+    <div class="columns large-2 collapse">
+          <!-- badge -->
+          <span class="label radius" title="Type of address"> <span class="fa" 
+                 ng-class="{'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth'}" 
+                 ng-click="pairPeer(peer)"></span> {{pubKey.type}} </span>
+
+    </div>
+
+</div>
+<!-- Addresses for the user -->
+<div class="row panel radius topmargin" ng-show="contactSection=='addresses'">
+  <h4>Addresses</h4>
+  <div class="row collapse" ng-repeat="pubKey in vars.contact.pubKeys">
+	<div class="medium-1 large-2 columns">
+            <!-- Show a star for main address -->
+            <div ng-show="$index===vars.contact.mainKey" class="fa fa-star"></div>
+            <div ng-show="$index!=vars.contact.mainKey" class="fa fa-star-o"></div>
+            <!-- Badge for type of address -->
+            <span class="label radius" title="Type of address">
+               <div class="fa" 
                  ng-class="{'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth'}" 
                  ng-click="pairPeer(peer)"></div> {{pubKey.type}} </span>
+
 	</div>
-	<div ng-show="editingContact===$index" class="medium-3 large-6 columns">
+	<div class="medium-3 large-7 columns" title="{{pubKey.data}}" ng-show="!(editingContact===$index)" ng-click="openEditForm(vars.contact, $index)" >
+            {{pubKey.address.slice(0,48)}}{{pubKey.address.length>48?'...':''}}
+	</div>
+	<div ng-show="editingContact===$index" class="medium-3 large-7 columns">
 		<form ng-submit="editContact(vars.contact, $index)">
 			<input type="text" ng-model="contactToEdit.address">
 		</form>
 	</div>
-	<div class="medium-3 large-2 columns" ng-show="!creatingContact">
-		<a ng-click="openModal('show-qr', {address: pubKey.address})" class="button postfix fa fa-qrcode">QRcode</a>
+	<div class="medium-3 large-1 columns" ng-show="!creatingContact">
+		<button ng-click="openModal('show-qr', {address: pubKey.address})" class="button postfix fa fa-qrcode" title="Show QR Code">QR</button>
 
 	</div>
-	<div class="medium-3 large-2 columns" ng-show="!creatingContact">
+	<div class="medium-3 large-1 columns" ng-show="!creatingContact">
 		<a ng-click="copyClipboard(pubKey.address)" class="button postfix fa fa-clipboard">Copy</a>
 	</div>
-	<div ng-show="$index" class="medium-3 large-2 columns" ng-show="!creatingContact">
+	<div ng-show="$index" class="icon medium-3 large-1 columns" ng-show="!creatingContact">
                 <!-- Delete address -->
-		<a class="button postfix alert radius">Delete address</a>
+		<a class="button postfix alert fa fa-trash-o">Delete</a>
 	</div>
-</div>
-<a ng-click="creatingContact=true" class="fa fa-plus button small radius" ng-show="!creatingContact"> Add another address</a>
-<form name="createContact" ng-show="creatingContact" ng-submit="creatingContact=false;addContactKey(vars.contact);" novalidate>
+  </div>
+  <!-- Create contact form -->
+  <a ng-click="creatingContact=true" class="fa fa-plus button small radius" ng-show="!creatingContact"> Add another address</a>
+  <form name="createContact" ng-show="creatingContact" ng-submit="creatingContact=false;addContactKey(vars.contact);" novalidate>
     <div class="row">
 	<div class="small-6 medium-3 columns">
                 <input type="text" placeholder="name" required ng-model="newContact.name"></input>
@@ -50,14 +121,19 @@
                 <a class="button postfix alert fa fa-times" ng-click="creatingContact=false">Cancel</a>
         </div>
     </div>
-</form>
+  </form>
+</div>
+</div> <!-- panel -->
+<!-- Bottom row -->
 <div ng-show="!creatingContact" class="row collapse">
-	<div class="small-6 medium-3 columns">
+	<div class="small-8 medium-8 columns">
 	    <a href="#contacts" class="fa fa-arrow-left button small radius"> Back</a>
-    </div>
-	<div class="small-6 medium-3 columns text-right">
-            <a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button postfix">Watch</a>
+        </div>
+	<div class="small-2 medium-2 columns text-right">
+            <a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button postfix small radius">Watch</a>
+        </div>
+	<div class="small-2 medium-2 columns text-right">
             <a href="" ng-click="openModal('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button radius alert fa fa-trash-o"> Delete contact</a>
-    </div>
+        </div>
 </div>
-</div>
+
