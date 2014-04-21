@@ -49,26 +49,30 @@
         </div>
       </div>
     </div>
-
-    <div class="row" ng-show="advanced">
-        <div class="small-6 columns">
-          <a class="button small radius" ng-click="enableAutoAddFields()">Add another recipient</a>
-          <h6>Fee</h6>
-          <input ng-model="send.fee" type="text" class="radius" />
+    <div class="send-advanced" ng-show="advanced">
+      <div class="row">
+        <div class="small-12 columns">
+          <a class="button small radius fa fa-plus" ng-click="enableAutoAddFields()"> Add another recipient</a>
         </div>
-        <div class="small-6 columns">
-          <h6>Coin mixing</h6>
-          <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!send.mixing, 'fa-check-square-o': send.mixing}" class="fa button postfix">{{send.mixing?'Enabled':'Disabled'}}</a>
-        </div>
-        <div class="small-6 columns">
-          <h6>Escrow address</h6>
-          <input ng-model="send.escrow" type="text" class="radius"  btc-address />
-        </div>
+      </div>
+      <div class="row panel">
+          <div class="small-6 columns">
+            <h6>Fee</h6>
+            <input ng-model="send.fee" type="text" class="radius" />
+          </div>
+          <div class="small-6 columns">
+            <h6>Coin mixing</h6>
+            <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!send.mixing, 'fa-check-square-o': send.mixing}" class="fa button postfix">{{send.mixing?'Enabled':'Disabled'}}</a>
+          </div>
+          <div class="small-6 columns">
+            <h6>Escrow address</h6>
+            <input ng-model="send.escrow" type="text" class="radius"  btc-address />
+          </div>
+      </div>
     </div>
-
     <div class="row">
       <div class="medium-10 columns">
-        <a ng-click="advanced=!advanced" class="button tiny radius">Show advanced options</a>
+        <a ng-click="advanced=!advanced" class="button tiny radius fa fa-eye"> Show advanced options</a>
       </div>
       <div class="medium-2 columns aright">
         <button id="send-button" href="" ng-class="{'glow':sendEnabled}" ng-disabled="!sendEnabled" class="button radius expand"><span>Send</span><div id="send-progress" class="progbar"></div></button>

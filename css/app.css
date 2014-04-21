@@ -4334,9 +4334,6 @@ html, body:not(.popupbody) {
 .topmargin {
   margin-top: 1.6em !important; }
 
-.tooltip {
-  margin-left: -1em; }
-
 span.tooltip.fade {
   opacity: 0; }
 
@@ -4686,11 +4683,13 @@ div.tab-scroller.totheright.ng-enter-active, div.tab-scroller.totheleft.ng-enter
   position: absolute;
   width: 97%; }
 
-.transactions div.ng-leave-active, .transactions div.ng-enter, .ng-hide-add.ng-hide-add-active, .ng-animate.ng-hide-remove {
+.transactions div.ng-leave-active, .transactions div.ng-enter, div.send-advanced.ng-hide-add, .ng-animate.ng-hide-remove {
   opacity: 0; }
 
-.transactions div.ng-enter.ng-enter-active, .transactions div.ng-leave .ng-hide-add, .ng-animate.ng-hide-remove.ng-hide-remove-active {
+.transactions div.ng-enter.ng-enter-active, .transactions div.ng-leave, div.send-advanced.ng-hide-add-active, .ng-animate.ng-hide-remove.ng-hide-remove-active {
   opacity: 1; }
+
+
 
 div.scroller.ng-enter {
   -webkit-animation: moveFromTopFade 0.7s ease both;
@@ -4731,7 +4730,7 @@ div.chat-text {
 .setback.seed {
   background: url(../images/seed.svg) center/cover no-repeat; }
 
-span.tooltip.fade, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave {
+.ng-hide-add, div.send-advanced.ng-hide, span.tooltip.fade, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave {
   transition: all 300ms ease-out; }
 
 @-webkit-keyframes rotateFoldBottom {

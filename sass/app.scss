@@ -10,8 +10,6 @@ html, body:not(.popupbody) { height: 100%; overflow-y: hidden; }
 
 .topmargin { margin-top: 1.6em !important; }
 
- .tooltip { margin-left: -1em; } 
-
 
 span.tooltip.fade { opacity: 0; }
 span.tooltip.fade.in { opacity: 1; }
@@ -293,17 +291,20 @@ div.tab-scroller.totheright.ng-leave {
 
 .transactions div.ng-leave-active,
 .transactions div.ng-enter,
-.ng-hide-add.ng-hide-add-active,
+div.send-advanced.ng-hide-add,
 .ng-animate.ng-hide-remove {
   opacity:0;
 }
 
 .transactions div.ng-enter.ng-enter-active,
-.transactions div.ng-leave
-.ng-hide-add,
+.transactions div.ng-leave,
+div.send-advanced.ng-hide-add-active,
 .ng-animate.ng-hide-remove.ng-hide-remove-active {
   opacity:1;
 }
+
+div.send-advanced.ng-hide-add { } 
+div.send-advanced {  } 
 
 div.scroller.ng-enter {
 	-webkit-animation: moveFromTopFade .7s ease both;
@@ -354,6 +355,8 @@ div.chat-text {
 
 .setback.seed { background: url(../images/seed.svg) center/cover no-repeat; }
 
+.ng-hide-add,
+div.send-advanced.ng-hide,
 span.tooltip.fade,
 .contact-mosaic-square,
 .contact-mosaic-square img, 
