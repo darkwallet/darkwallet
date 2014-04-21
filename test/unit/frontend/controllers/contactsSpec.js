@@ -21,9 +21,9 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
     
     var resetContacts = function() {
       identity.contacts.contacts = [
-        {name: "Satoshi Nakamoto", address: "address1"},
-        {name: "Dorian Nakamoto", address: "address2"},
-        {name: "Satoshi Forest", address: "address3"}
+        {name: "Satoshi Nakamoto", mainKey: 0, pubKeys: [{address: "address1", data: "address1"}]},
+        {name: "Dorian Nakamoto", mainKey: 0, pubKeys: [{address: "address2", data: "address2"}]},
+        {name: "Satoshi Forest", mainKey: 0, pubKeys: [{address: "address3", data: "address3"}]}
       ];
       _contacts = identity.contacts.contacts;
     };
@@ -94,9 +94,8 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
       });
 
       it('opens the edit form', function() {
-        scope.openEditForm(_contacts[0]);
-        expect(scope.contactToEdit).not.toBe(_contacts[0]);
-        expect(scope.contactToEdit).toEqual(_contacts[0]);
+        scope.openEditForm(_contacts[0], 0);
+        expect(scope.contactToEdit).toEqual({name: _contacts[0].name, address: _contacts[0].pubKeys[0].data});
       });
 
       it('opens a contact', function() {
@@ -106,8 +105,8 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
 
       it('edits a contact', function() {
         scope.contactToEdit = {name: 'Nakamoto Satoshi', address: '6...'};
-        scope.editContact(_contacts[0]);
-        expect(identity.contacts.updateContact).toHaveBeenCalledWith(scope.contactToEdit);
+        scope.editContact(_contacts[0], 0);
+        expect(identity.contacts.updateContact).toHaveBeenCalledWith(_contacts[0], '6...', 0);
       });
 
       it('deletes a contact', function() {
