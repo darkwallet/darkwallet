@@ -25,5 +25,6 @@ define([
     './fund',
     './tabs',
     './tools',
+    './signing',
     './rcv_stealth'
 ], function () {});
