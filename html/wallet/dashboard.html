@@ -58,7 +58,15 @@
              {{(row.myOutValue-row.myInValue) | amountFilter}}
              </div>
              <div class="small-6 columns">
-                {{row.address}}<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
+               <div ng-hide="row.contact">
+                {{row.address}}
+                <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
+               </div>
+               <div title="{{row.contact.pubKeys[row.contact.mainKey].address}}" ng-show="row.contact">
+                <identicon icon-size="24" hash="row.contact.hash"></identicon>
+                {{row.contact.name}}
+                <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
+               </div>
              </div>
              <div ng-show="row.height" class="small-2 columns">
                {{row.height | heightToDate}}

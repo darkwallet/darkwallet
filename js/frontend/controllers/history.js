@@ -160,7 +160,15 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
   };
 
   // Filters
-
+  var fillRowContact = function(contacts, row) {
+    if (!row.contact) {
+        var contact = contacts.findByAddress(row.address);
+        if (contact) {
+            row.contact = contact;
+        }
+    }
+  }
+ 
   // Filter the rows we want to show
   var chooseRows = function() {
     var history = $scope.identity.history.history;
@@ -184,10 +192,15 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
     prevRow.confirmed = $scope.balance;
     prevRow.unconfirmed = $scope.unconfirmed;
 
+    var contacts = $scope.identity.contacts;
+    fillRowContact(contacts, prevRow);
     var idx = 1;
     while(idx<rows.length) {
+        fillRowContact(contacts, row);
+
         var row = rows[idx];
         var value = prevRow.myOutValue - prevRow.myInValue;
+
         if (prevRow.height) {
             row.confirmed = prevRow.confirmed-value;
             row.unconfirmed = prevRow.unconfirmed;

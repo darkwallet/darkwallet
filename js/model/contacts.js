@@ -105,7 +105,7 @@ Contacts.prototype.generateContactHash = function(data) {
 
 
 /**
- * Find Contact
+ * Find Contact by pubkey
  * @param {Object} pubKey Public key to find.
  * @return {Object|null} The contact if it is there
  */
@@ -123,6 +123,23 @@ Contacts.prototype.findByPubKey = function (pubKey) {
           continue;
       }
       if (cPubKey.toString() == toCheck) {
+        return this.contacts[i];
+      }
+    }
+  }
+};
+
+
+/**
+ * Find Contact by address
+ * @param {Object} address Address to find
+ * @return {Object|null} The contact if it is there
+ */
+Contacts.prototype.findByAddress = function (address) {
+  for(var i=0; i<this.contacts.length; i++) {
+    for(var j=0; j<this.contacts[i].pubKeys.length; j++) {
+      var cAddress = this.contacts[i].pubKeys[j].address;
+      if (cAddress == address) {
         return this.contacts[i];
       }
     }
