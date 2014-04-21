@@ -17,7 +17,7 @@ function BadgeService(core) {
             // Connected
         }, function(port) {
             // Disconnected
-            if (TransactionTasks.checkFinished()) {
+            if (DarkWallet.getIdentity() && TransactionTasks.checkFinished()) {
                 self.setItems();
             }
     });
