@@ -9,6 +9,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.newContact = {};
   $scope.contactToEdit = {};
   $scope.contactFormShown = false;
+  $scope.editingContact = false;
 
   // Check the route to see if we have to connect some contact
   var initRouteContact = function(identity) {
@@ -35,7 +36,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     var identity = DarkWallet.getIdentity();
     var search = $scope.contactSearch;
     $scope.contacts = identity.contacts.contacts.filter(function(contact) {
-        return contact.name.search(search) != -1;
+        return contact.name.toLowerCase().search(search) != -1;
     });
   };
 
@@ -52,8 +53,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $scope.contactFormShown = false;
   };
 
-  $scope.openEditForm = function(contact) {
-    $scope.contactToEdit = {name: contact.name, address: contact.address};
+  $scope.openEditForm = function(contact, index) {
+    $scope.contactToEdit = {name: contact.name, address: contact.pubKeys[index].data};
+    $scope.editingContact = true;
   };
 
   $scope.openContact = function(contact) {
@@ -64,11 +66,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $location.path('/contact/'+contactIndex);
   }
 
-  $scope.editContact = function(contact) {
+  $scope.editContact = function(contact, index) {
     var identity = DarkWallet.getIdentity();
     contact.name = $scope.contactToEdit.name;
-    contact.address = $scope.contactToEdit.address;
-    identity.contacts.updateContact(contact);
+    identity.contacts.updateContact(contact, $scope.contactToEdit.address, index);
+    $scope.editingContact = false;
   };
 
   $scope.deleteContact = function(contact) {

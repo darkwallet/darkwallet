@@ -30,6 +30,8 @@ define(['util/btc'], function(BtcUtils) {
     var address3 = '6aeUMoVHfr47sXWvzVGhhuMHg3qpMZFE115smoBZe4Wi1KbqjmAaK6iatRUpTsgddQH9oTpEbwvtSvonvvx33kVLtJa3VLEG8yXgXwz';
     // Master public key
     var address4 = 'xpub6BckLqjjDDbTBLH22dh73dJYDPV1HCyfTJL3TstPkPKLSK44Y7Ah49CjZ1rkRo5YU3zci6xVjd4pg187LUpL9SjUw6Pnk897B24LEwKStsQ';
+    // Pubkey hash
+    var address5 = '13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd';
 
     it('create multisig', function() {
       var multisig = BtcUtils.multiSig(3, pubkeys);
@@ -93,6 +95,24 @@ define(['util/btc'], function(BtcUtils) {
 
     it('Convert height to js timestamp', function() {
       expect(BtcUtils.heightToTimestamp(5000)).toEqual(1233819777043.3193);
+    });
+
+    it('Validates addresses', function() {
+      expect(BtcUtils.isAddress(address1)).toBeUndefined();
+      expect(BtcUtils.isAddress(address2)).toBeUndefined();
+      expect(BtcUtils.isAddress(address3)).toEqual(true);
+      expect(BtcUtils.isAddress(address4)).toBeUndefined();
+      expect(BtcUtils.isAddress(address5)).toEqual(true);
+      expect(BtcUtils.isAddress('foo')).toBeUndefined();
+    });
+
+    it('Validates addresses and public keys', function() {
+      expect(BtcUtils.validateAddress(address1)).toEqual(true);
+      expect(BtcUtils.validateAddress(address2)).toEqual(true);
+      expect(BtcUtils.validateAddress(address3)).toEqual(true);
+      expect(BtcUtils.validateAddress(address4)).toEqual(true);
+      expect(BtcUtils.validateAddress(address5)).toEqual(true);
+      expect(BtcUtils.validateAddress('foo')).toBeUndefined();
     });
 
     it('Convert height to date string', function() {

@@ -57,12 +57,24 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     },
 
     /*
+     * See if this is a valid address
+     */
+    isAddress: function(address) {
+       if (address) {
+          // Check for base58 encoded addresses
+          if (Bitcoin.Address.validate(address) && allowedVersions.indexOf(Bitcoin.Address.getVersion(address)) != -1) {
+            return true;
+          }
+        }
+    },
+
+    /*
      * Validate an address
      */
     validateAddress: function(address) {
        if (address) {
           // Check for base58 encoded addresses
-          if (Bitcoin.Address.validate(address) && allowedVersions.indexOf(Bitcoin.Address.getVersion(address)) != -1) {
+          if (BtcUtils.isAddress(address)) {
             return true;
           }
           // Check for public keys in different formats
