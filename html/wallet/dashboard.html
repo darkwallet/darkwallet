@@ -3,10 +3,10 @@
       <div class="row collapse panel radius" ng-hide="quicksend.next">
         <h5>Send</h5>
         <div class="small-1 columns">
-          <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: quicksend}, addAddress)" class="fa button square prefix radius fa-users"></a>
+          <a href="" tooltip-append-to-body="true" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: quicksend}, addAddress)" class="fa button square prefix radius fa-users"></a>
         </div>
         <div class="small-1 columns">
-          <a href="" tooltip="Scan QR code" ng-click="openModal('scan-qr', {field: quicksend}, onQrModalOkSend, onQrModalCancel)" class="fa button square prefix fa-qrcode"></a>
+          <a href="" tooltip-append-to-body="true" tooltip="Scan QR code" ng-click="openModal('scan-qr', {field: quicksend}, onQrModalOkSend, onQrModalCancel)" class="fa button square prefix fa-qrcode"></a>
         </div>
         <div class="small-6 columns">
           <input type="text" ng-model="quicksend.address" placeholder="Bitcoin address..." />
@@ -36,10 +36,10 @@
       <div class="row collapse panel radius">
         <h5>{{isFund?'Fund':'Stealth'}} address</h5>
         <div class="small-1 columns">
-          <a href="" ng-click="copyClipboard(isFund?pocket.fund.multisig.address:pocket.stealth)" class="button prefix radius fa fa-clipboard"></a>
+          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="copyClipboard(isFund?pocket.fund.multisig.address:pocket.stealth)" class="button prefix radius fa fa-clipboard"></a>
         </div>
         <div class="small-1 columns">
-          <a href="" ng-click="copyClipboard(isFund?pocket.fund.multisig.address:pocket.stealth)" class="button prefix square fa fa-qrcode"></a>
+          <a href="" tooltip-append-to-body="true" tooltip="Show QR code" class="button prefix square fa fa-qrcode"></a>
         </div>
         <div class="small-10 columns">
           <input type="text" class="postfix radius" readonly value="{{isFund?pocket.fund.multisig.address:pocket.stealth}}" />
