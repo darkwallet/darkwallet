@@ -34,7 +34,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   $scope.filterContacts = function() {
     var identity = DarkWallet.getIdentity();
-    var search = $scope.contactSearch;
+    var search = $scope.contactSearch.toLowerCase();
     $scope.contacts = identity.contacts.contacts.filter(function(contact) {
         return contact.name.toLowerCase().search(search) != -1;
     });
