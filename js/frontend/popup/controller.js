@@ -32,6 +32,10 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
     }
   });
 
+  Port.connect('badge', function(data) {
+      // just so the service gets disconnected when we close.
+  });
+
 
   var keyRing = DarkWallet.getKeyRing();
   $scope.identityChange = function() {

@@ -8,6 +8,7 @@ require(['backend/port',
          'backend/services/gui',
          'backend/services/ticker',
          'backend/services/mixer',
+         'backend/services/badge',
          'backend/services/notifier',
          'backend/services/ctxmenus'],
 function(Port) {

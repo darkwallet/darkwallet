@@ -7,7 +7,6 @@ define(['darkwallet'], function(DarkWallet) {
 
 var TransactionTasks = {};
 
-
 /**
  * Create a task for a spend initiated by the wallet
  */
@@ -168,11 +167,31 @@ TransactionTasks.updateTaskHeight = function(task, height) {
 };
 
 /**
+ * Check for already finished tasks
+ */
+TransactionTasks.checkFinished = function() {
+    var identity = DarkWallet.getIdentity();
+
+    var sendTasks = identity.tasks.getTasks('send');
+    var receiveTasks = identity.tasks.getTasks('receive');
+
+    var tasks = sendTasks.concat(receiveTasks);
+    tasks.forEach(function(task) {
+        if (task.state == 'finished') {
+            console.log('cleaning up task', task);
+            TransactionTasks.removeTask(task)
+        }
+    })
+}
+
+/**
  * Remove a task
+ * @private
  */
 TransactionTasks.removeTask = function(task) {
     var identity = DarkWallet.getIdentity();
     var section = task.value > 0 ? 'receive' : 'send';
+
     identity.tasks.removeTask(section, task);
 }
 
