@@ -9,6 +9,7 @@ define([
     'angular',
     'angular-route',
     'angular-animate',
+    'angular-sanitize',
     'mm.foundation',
     'angular-xeditable',
     'ngProgress',
@@ -19,7 +20,7 @@ define([
     'frontend/providers/index'
 ], function (require, angular) {
     var app = angular.module('DarkWallet', [
-      'ngRoute', 'mm.foundation', 'xeditable',
+      'ngRoute', 'mm.foundation', 'xeditable', 'ngSanitize',
       'ngProgress', 'ngAnimate', 'toaster',
       'DarkWallet.controllers',
       'DarkWallet.directives',
