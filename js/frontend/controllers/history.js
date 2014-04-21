@@ -196,9 +196,8 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
     fillRowContact(contacts, prevRow);
     var idx = 1;
     while(idx<rows.length) {
-        fillRowContact(contacts, row);
-
         var row = rows[idx];
+        fillRowContact(contacts, row);
         var value = prevRow.myOutValue - prevRow.myInValue;
 
         if (prevRow.height) {
