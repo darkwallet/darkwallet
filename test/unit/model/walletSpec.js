@@ -1,6 +1,7 @@
 /*
  * @fileOverview Access to the identity bitcoin keys
  */
+'use strict';
 
 define(['model/wallet'], function(Wallet) {
   describe('Wallet model', function() {

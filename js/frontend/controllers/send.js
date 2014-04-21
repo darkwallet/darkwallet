@@ -1,6 +1,7 @@
+'use strict';
+
 define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc'],
 function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
-  'use strict';
   var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', function($scope, $window, notify) {
   $scope.send = { mixing: true, sending: false };

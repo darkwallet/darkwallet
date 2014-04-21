@@ -1,6 +1,7 @@
 /**
  * @fileOverview Popup classes.
  */
+'use strict';
 
 /**
  * Popup class constructor to handle identities.
@@ -8,7 +9,6 @@
  * @constructor
  */
 define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  'use strict';
   controllers.controller('PopupCtrl', ['$scope', function($scope) {
 
   $scope.currentIdentity = false;

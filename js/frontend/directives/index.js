@@ -1,5 +1,7 @@
 /** attach directives to this module 
  **/
+'use strict';
+
 define([
     './identicon',
     './qr',

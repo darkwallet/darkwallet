@@ -1,10 +1,10 @@
 /**
  * @fileOverview CalculatorCtrl angular controller
  */
+'use strict';
 
 define(['angular-mocks', 'testUtils'],
 function (mocks, testUtils) {
-  'use strict';
   describe('Calculator controller', function() {
     
     var calculatorController, scope;

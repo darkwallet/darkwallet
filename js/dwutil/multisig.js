@@ -1,3 +1,5 @@
+'use strict';
+
 define(['darkwallet', 'bitcoinjs-lib'], function(DarkWallet, Bitcoin) {
 
 var convert = Bitcoin.convert;

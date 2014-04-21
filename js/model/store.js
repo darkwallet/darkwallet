@@ -1,3 +1,5 @@
+'use strict';
+
 define(['bitcoinjs-lib', 'sjcl'], function(Bitcoin) {
 /**
  * Mapping coordinating with the app's database.

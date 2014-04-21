@@ -1,5 +1,6 @@
+'use strict';
+
 define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkWallet, Bitcoin) {
-  'use strict';
 
   // Controller
   controllers.controller('ToolsCtrl', ['$scope', 'notify', function($scope, notify) {

@@ -1,6 +1,8 @@
 /*
  * @fileOverview Background service running for the wallet
  */
+'use strict';
+
 require(['backend/port',
          'backend/services/lobby',
          'backend/services/obelisk',

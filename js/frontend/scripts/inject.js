@@ -1,3 +1,5 @@
+'use strict';
+
 // Search for things that look like Bitcoin addresses
 // Replace them with clickable links.
 //var replaced = $("body").html().replace(/text/g,'replace');

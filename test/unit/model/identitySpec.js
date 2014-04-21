@@ -1,6 +1,7 @@
 /**
  * @fileOverview Identity properties and data.
  */
+'use strict';
 
 define(['model/identity'], function(Identity) {
   describe('Identity model', function() {

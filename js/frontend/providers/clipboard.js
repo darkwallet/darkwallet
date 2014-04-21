@@ -1,5 +1,6 @@
-define(['./module'], function (providers) {
 'use strict';
+
+define(['./module'], function (providers) {
 
 providers.factory('clipboard', ['notify', '$window', function(notify, $window) {
 

@@ -1,5 +1,6 @@
+'use strict';
+
 define(['backend/port', 'chrome'], function (Port, chrome) {
-  'use strict';
 
   describe('Core service api', function() {
 

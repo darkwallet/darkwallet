@@ -1,3 +1,5 @@
+'use strict';
+
 define(['darkwallet'], function (DarkWallet) {
   var ChannelLink = function(name, scope) {
       this.callbacks = [];

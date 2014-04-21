@@ -4,6 +4,8 @@
  * below, you can see we bring in our services and constants modules 
  * which avails each controller of, for example, the `config` constants object.
  **/
+'use strict';
+
 define([
     './contacts',
     './dashboard',

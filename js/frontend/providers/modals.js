@@ -1,5 +1,6 @@
-define(['./module'], function (providers) {
 'use strict';
+
+define(['./module'], function (providers) {
 
 providers.factory('modals', ['$modal', '$window', 'notify', 'sounds', function($modal, $window, notify, sounds) {
 

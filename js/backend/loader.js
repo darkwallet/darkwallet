@@ -2,6 +2,8 @@
  * configure RequireJS
  * prefer named modules to long paths
  */
+'use strict';
+
 require.config({
   baseUrl: '../js',
   paths: {

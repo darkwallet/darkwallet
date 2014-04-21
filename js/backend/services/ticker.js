@@ -1,6 +1,7 @@
+'use strict';
+
 define(['backend/port'],
 function(Port) {
-  'use strict';
     function TickerService(core) {
       var self = this;
       // Some scope variables

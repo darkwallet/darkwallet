@@ -1,3 +1,5 @@
+'use strict';
+
 define(['./identity', './store'], function(Identity, Store) {
 // DarkWallet namespace for the local storage.
 var DW_NS = 'dw:identity:';

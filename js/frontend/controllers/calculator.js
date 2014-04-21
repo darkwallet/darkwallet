@@ -1,9 +1,9 @@
 /**
  * @fileOverview CalculatorCtrl angular controller
  */
+'use strict';
 
 define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (controllers, DarkWallet, Port, FiatCurrencies) {
-  'use strict';
   controllers.controller('CalculatorCtrl', ['$scope', function($scope) {
   var firstTime = true;
   $scope.calculator = {

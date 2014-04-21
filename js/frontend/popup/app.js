@@ -1,6 +1,8 @@
 /**
  * Minimal file for the popup
  */
+'use strict';
+
 define([
     'angular',
     'mm.foundation',
@@ -8,7 +10,6 @@ define([
     'frontend/controllers/notifications',
     'frontend/filters/currency'
 ], function (angular) {
-    'use strict';
     var app = angular.module('DarkWallet', [
       'mm.foundation',
       'DarkWallet.controllers',

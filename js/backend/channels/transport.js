@@ -1,6 +1,7 @@
+'use strict';
+
 define(['bitcoinjs-lib', 'mnemonicjs'],
 function (Bitcoin, Mnemonic) {
-  'use strict';
 
   var SHA256 = Bitcoin.CryptoJS.SHA256;
 

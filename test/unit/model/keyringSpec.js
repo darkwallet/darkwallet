@@ -1,6 +1,7 @@
 /*
  * @fileOverview Manage and serialize identities.
  */
+'use strict';
 
 define(['model/keyring', 'chrome'], function(IdentityKeyRing, chrome) {
   // DarkWallet namespace for the local storage.

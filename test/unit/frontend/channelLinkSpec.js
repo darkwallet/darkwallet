@@ -1,5 +1,6 @@
+'use strict';
+
 define(['frontend/channel_link'], function (ChannelLink) {
-  'use strict';
 
   describe('Channel Link', function() {
 

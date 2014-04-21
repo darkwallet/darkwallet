@@ -1,9 +1,9 @@
 /**
  * @fileOverview PocketCreateCtrl angular controller
  */
+'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  'use strict';
   controllers.controller('PocketCreateCtrl', ['$scope', function($scope) {
 
     /**

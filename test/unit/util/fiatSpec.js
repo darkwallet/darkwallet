@@ -1,5 +1,6 @@
+'use strict';
+
 define(['util/fiat'], function(fiatCurrencies) {
-  'use strict';
   
   describe('Fiat Currencies data', function() {
     

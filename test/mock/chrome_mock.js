@@ -1,3 +1,5 @@
+'use strict';
+
 define(function() {
   var chrome_storage = {};
   chrome = {storage: {local: {

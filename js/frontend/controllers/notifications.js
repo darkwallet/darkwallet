@@ -1,6 +1,7 @@
 /**
  * @fileOverview Popup classes.
  */
+'use strict';
 
 /**
  * Controller for notifications
@@ -8,7 +9,6 @@
  * @constructor
  */
 define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  'use strict';
   controllers.controller('NotificationsCtrl', ['$scope', function($scope) {
 
   $scope.tasks = [];

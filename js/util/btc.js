@@ -1,3 +1,5 @@
+'use strict';
+
 define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
   var convert = Bitcoin.convert;
 

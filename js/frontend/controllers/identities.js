@@ -1,5 +1,6 @@
+'use strict';
+
 define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port, DarkWallet) {
-  'use strict';
   controllers.controller('IdentitiesCtrl', ['$scope', function($scope) {
     Port.connectNg('wallet', $scope, function(data) {
       console.log("wallet bus message", data);

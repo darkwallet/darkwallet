@@ -1,6 +1,7 @@
 /**
  * @fileOverview Wallet classes.
  */
+'use strict';
 
 /**
  * Wallet constructor class.

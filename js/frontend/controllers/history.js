@@ -1,10 +1,10 @@
 /**
  * @fileOverview HistoryCtrl angular controller
  */
+'use strict';
 
 define(['./module', 'angular', 'bitcoinjs-lib', 'util/btc', 'darkwallet', 'dwutil/multisig', 'frontend/port'],
 function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
-  'use strict';
   controllers.controller('HistoryCtrl', ['$scope', 'notify', '$window', function($scope, notify, $window) {
 
   // Start some structures

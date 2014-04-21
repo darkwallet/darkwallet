@@ -1,3 +1,5 @@
+'use strict';
+
 define(['darkwallet', 'util/fiat'], function(DarkWallet, FiatCurrencies) {
 
 function CurrencyFormatting() {

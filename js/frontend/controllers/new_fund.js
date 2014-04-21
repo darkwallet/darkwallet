@@ -1,6 +1,7 @@
+'use strict';
+
 define(['./module', 'darkwallet', 'util/btc', 'bitcoinjs-lib'],
 function (controllers, DarkWallet, BtcUtils, Bitcoin) {
-  'use strict';
   controllers.controller('NewFundCtrl', ['$scope', function($scope) {
     /**
      * Reset the multisig fund

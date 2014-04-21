@@ -2,6 +2,7 @@
  * From http://www.symphonious.net/2013/07/08/injecting-stubsmocks-into-tests-with-require-js/
  */
 'use strict';
+
 define(['require'], function(require) {
     var stubbed = [];
     return {

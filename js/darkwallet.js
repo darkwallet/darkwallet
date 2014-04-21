@@ -1,7 +1,7 @@
-'use strict';
 /*
  * @fileOverview Main object for generic dark wallet api.
  */
+'use strict';
 
 define(function() {
 // DarkWallet object.

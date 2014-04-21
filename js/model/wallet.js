@@ -1,3 +1,5 @@
+'use strict';
+
 define(['util/stealth', 'bitcoinjs-lib', 'model/multisig', 'model/pockets', 'util/btc'],
 function(Stealth, Bitcoin, MultisigFunds, Pockets, BtcUtils) {
 /**

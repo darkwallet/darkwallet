@@ -1,6 +1,7 @@
 /*
  * @fileOverview Multisig funds
  */
+'use strict';
 
 define(['model/multisig'], function(Multisig) {
   describe('Multisig model', function() {

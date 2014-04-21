@@ -1,6 +1,7 @@
+'use strict';
+
 define(['bitcoinjs-lib', 'util/multiParty', 'util/stealth', 'util/djbec', 'sjcl'],
 function (Bitcoin, multiParty, Stealth, Curve25519) {
-  'use strict';
   var CryptoJS = Bitcoin.CryptoJS;
   var BigInteger = Bitcoin.BigInteger;
   var convert = Bitcoin.convert;

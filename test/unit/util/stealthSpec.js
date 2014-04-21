@@ -1,6 +1,7 @@
 /*
  * @fileOverview Stealth support.
  */
+'use strict';
 
 define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
 

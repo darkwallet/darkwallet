@@ -1,5 +1,6 @@
+'use strict';
+
 define(['./module'], function (providers) {
-  'use strict';
 
   providers.factory('notify', ['toaster', 'ngProgress', function(toaster, ngProgress) {
     return {

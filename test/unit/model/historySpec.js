@@ -1,6 +1,7 @@
 /*
  * @fileOverview User oriented history view
  */
+'use strict';
 
 define(['model/history'], function(History) {
   describe('History model', function() {

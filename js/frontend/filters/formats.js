@@ -1,3 +1,5 @@
+'use strict';
+
 define(['./module', 'bitcoinjs-lib', 'util/btc'], function (filters, Bitcoin, BtcUtils) {
 
 var convert = Bitcoin.convert;

@@ -1,6 +1,7 @@
 /**
  * @fileOverview Pending tasks
  */
+'use strict';
 
 define(['model/tasks'], function(Tasks) {
   describe('Tasks model', function() {

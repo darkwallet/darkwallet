@@ -1,3 +1,5 @@
+'use strict';
+
 define(['bitcoinjs-lib', 'util/djbec'], function(Bitcoin, Curve25519) {
 
 var CryptoJS = Bitcoin.CryptoJS;

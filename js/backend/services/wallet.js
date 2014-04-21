@@ -1,9 +1,10 @@
 /*
  * @fileOverview Background service running for the wallet
  */
+'use strict';
+
 define(['model/keyring', 'backend/port', 'dwutil/currencyformat', 'dwutil/tasks/transaction', 'bitcoinjs-lib'],
 function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
-  'use strict';
 
   function WalletService(core) {
     var keyRing = new IdentityKeyRing();

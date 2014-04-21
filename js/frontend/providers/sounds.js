@@ -1,5 +1,6 @@
+'use strict';
+
 define(['./module'], function (providers) {
-  'use strict';
 
   providers.factory('sounds', ['$window', function($window) {
     return {

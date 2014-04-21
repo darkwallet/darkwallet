@@ -1,6 +1,7 @@
+'use strict';
+
 define(['backend/port', 'darkwallet_gateway'],
 function(Port) {
-  'use strict';
 
 
   /**

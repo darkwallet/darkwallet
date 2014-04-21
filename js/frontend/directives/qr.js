@@ -1,3 +1,5 @@
+'use strict';
+
 define(['./module', 'qrcodejs'], function (directives, QRCode) {
   directives.directive('qr', function() {
     return {

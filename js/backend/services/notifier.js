@@ -1,5 +1,6 @@
+'use strict';
+
 define(['backend/port', 'backend/channels/catchan', 'darkwallet'], function(Port, Channel, DarkWallet) {
-  'use strict';
 
   /*
    * Service managing backend notifications.

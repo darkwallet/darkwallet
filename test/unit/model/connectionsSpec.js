@@ -1,6 +1,7 @@
 /*
  * @fileOverview Identity connections to servers.
  */
+'use strict';
 
 define(['model/connections'], function(Connections) {
   describe('Connections model', function() {

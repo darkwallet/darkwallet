@@ -1,6 +1,7 @@
+'use strict';
+
 define(['backend/port', 'backend/channels/transport', 'backend/channels/catchan'],
 function(Port, Transport, Channel) {
-  'use strict';
 
   function LobbyService(core) {
     var lobbyTransport;

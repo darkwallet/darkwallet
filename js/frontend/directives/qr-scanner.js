@@ -1,3 +1,5 @@
+'use strict';
+
 define(['./module', 'jsqrcode'], function (directives) {
   directives.directive('qrScanner', ['$interval', '$window', function($interval, $window) {
     return {

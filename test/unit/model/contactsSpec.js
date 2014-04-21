@@ -1,6 +1,7 @@
 /**
  * @fileOverview Contacts (Address book).
  */
+'use strict';
 
 define(['model/contacts'], function(Contacts) {
   describe('Contacts model', function() {

@@ -1,5 +1,6 @@
+'use strict';
+
 define(['testUtils'], function (testUtils) {
-  'use strict';
 
   describe('Currency formatting module', function() {
     

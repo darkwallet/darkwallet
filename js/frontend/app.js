@@ -2,6 +2,8 @@
  * loads sub modules and wraps them up into the main module
  * this should be used for top-level module definitions only
  */
+'use strict';
+
 define([
     'require',
     'angular',
@@ -16,7 +18,6 @@ define([
     'frontend/filters/index',
     'frontend/providers/index'
 ], function (require, angular) {
-    'use strict';
     var app = angular.module('DarkWallet', [
       'ngRoute', 'mm.foundation', 'xeditable',
       'ngProgress', 'ngAnimate', 'toaster',

@@ -1,3 +1,5 @@
+'use strict';
+
 define(['./module', 'util/btc'], function (directives, BtcUtils) {
 
 directives.directive('btcAddress', function() {

@@ -1,3 +1,5 @@
+'use strict';
+
 define(['./module'], function (directives) {
   directives.directive('slider', function() {
     return {

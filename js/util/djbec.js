@@ -1,3 +1,5 @@
+'use strict';
+
 define(['bitcoinjs-lib'], function(Bitcoin) {
 
 // March 2014

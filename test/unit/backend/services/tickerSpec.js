@@ -1,8 +1,9 @@
 /*
  * @fileOverview Background service running for the wallet
  */
+'use strict';
+
 define(['testUtils'], function(testUtils) {
-  'use strict';
   describe('Ticker service', function() {
 
     var core, ticker, Port;

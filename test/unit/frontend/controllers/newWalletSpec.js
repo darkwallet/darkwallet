@@ -1,11 +1,10 @@
-
 /**
  * @file New Wallet Angular Tricks
  */
+'use strict';
 
 define(['angular-mocks', 'testUtils'],
 function (mocks, testUtils) {
-  'use strict';
   describe('New wallet controller', function() {
 
     var newWalletCtrl, scope, $window, DarkWallet, pars = {};

@@ -1,3 +1,5 @@
+'use strict';
+
 define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identicon, Bitcoin) {
   var iconCache = {};
   directives.directive('identicon', function () {

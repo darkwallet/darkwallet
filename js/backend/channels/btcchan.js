@@ -1,6 +1,7 @@
+'use strict';
+
 define(['util/encryption', 'bitcoinjs-lib'],
 function (Encryption, Bitcoin) {
-  'use strict';
 
   var CryptoJS = Bitcoin.CryptoJS;
   var SHA256 = Bitcoin.CryptoJS.SHA256;

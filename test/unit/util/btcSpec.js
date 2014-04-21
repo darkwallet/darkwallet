@@ -1,3 +1,5 @@
+'use strict';
+
 define(['util/btc'], function(BtcUtils) {
   describe('Bitcoin Utils', function() {
     

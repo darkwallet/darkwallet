@@ -1,5 +1,6 @@
+'use strict';
+
 define(['util/djbec', 'bitcoinjs-lib'], function(Djbec, Bitcoin) {
-  'use script';
 
    var sk1, sk2;
 

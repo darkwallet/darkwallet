@@ -1,8 +1,9 @@
 /*
  * @fileOverview Background service running for the wallet
  */
+'use strict';
+
 define(['backend/services/wallet'], function(WalletService) {
-  'use strict';
     
    /*xit('broadcasts transactions', function() {
       var tx = {};

@@ -1,9 +1,9 @@
 /**
  * @fileOverview TabsCtrl angular controller
  */
+'use strict';
 
 define(['./module'], function (controllers) {
-  'use strict';
   controllers.controller('TabsCtrl', ['$scope', function($scope) {
 
   /**

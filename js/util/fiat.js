@@ -1,3 +1,5 @@
+'use strict';
+
 define(function() {
   // Available fiat currencies
   // Based on http://www.localeplanet.com/api/auto/currencymap.html

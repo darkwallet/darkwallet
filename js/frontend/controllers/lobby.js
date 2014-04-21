@@ -1,6 +1,7 @@
+'use strict';
+
 define(['./module', 'darkwallet', 'frontend/port', 'frontend/channel_link', 'bitcoinjs-lib', 'util/protocol'],
 function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
-  'use strict';
 
   var selectedChannel;
 

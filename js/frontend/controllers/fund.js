@@ -1,10 +1,10 @@
 /**
  * @fileOverview FundCtrl angular controller
  */
+'use strict';
 
 define(['./module', 'darkwallet'],
 function (controllers, DarkWallet) {
-  'use strict';
 
   controllers.controller('FundCtrl', ['$scope', 'notify', function($scope, notify) {
 

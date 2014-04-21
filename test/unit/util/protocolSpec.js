@@ -1,5 +1,6 @@
+'use strict';
+
 define(['util/protocol'], function(Protocol) {
-  'use strict';
 
   describe('Protocol format', function() {
     it('packs a message', function() {

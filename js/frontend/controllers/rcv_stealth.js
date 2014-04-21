@@ -1,5 +1,6 @@
+'use strict';
+
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  'use strict';
   controllers.controller('ReceiveStealthCtrl', ['$scope', 'notify', function($scope, notify) {
   // function to receive stealth information
   $scope.receiveStealth = function() {

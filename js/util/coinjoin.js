@@ -1,5 +1,6 @@
+'use strict';
+
 define(['bitcoinjs-lib'], function(Bitcoin) {
-  'use strict';
 
   /*
    * CoinJoin Class

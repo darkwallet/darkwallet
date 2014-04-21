@@ -1,6 +1,7 @@
 /*
  * @fileOverview Transaction Store
  */
+'use strict';
 
 define(['model/txdb'], function(TransactionDatabase) {
   describe('Transaction Database model', function() {

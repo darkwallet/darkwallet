@@ -1,5 +1,6 @@
-define(['backend/port', 'darkwallet', 'dwutil/tasks/transaction'], function(Port, DarkWallet, TransactionTasks) {
 'use strict';
+
+define(['backend/port', 'darkwallet', 'dwutil/tasks/transaction'], function(Port, DarkWallet, TransactionTasks) {
 
 /**
  * Service to manage updating all badges.

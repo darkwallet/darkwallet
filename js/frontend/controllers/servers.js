@@ -1,9 +1,9 @@
 /**
  * @fileOverview ServersCtrl angular controller
  */
+'use strict';
 
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  'use strict';
   controllers.controller('ServersCtrl', ['$scope', function($scope) {
 
   $scope.servers = [];

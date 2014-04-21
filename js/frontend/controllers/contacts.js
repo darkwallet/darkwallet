@@ -1,9 +1,9 @@
 /**
  * @fileOverview ContactsCtrl angular controller
  */
+'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  'use strict';
   controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', function($scope, $routeParams, $location) {
 
   $scope.newContact = {};

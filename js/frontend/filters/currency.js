@@ -1,3 +1,5 @@
+'use strict';
+
 define(['./module', 'dwutil/currencyformat'], function (filters, CurrencyFormatting) {
 
 // Filter like currencyFilter adding the + sign for positive amounts.

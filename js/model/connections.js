@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * @fileOverview Identity connections to servers.
  */

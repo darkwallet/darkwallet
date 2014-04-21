@@ -1,7 +1,7 @@
-
 /**
  * @file New Wallet Angular Tricks
  */
+'use strict';
 
 
 /**
@@ -10,7 +10,6 @@
  * @constructor
  */
 define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWallet, Mnemonic) {
-  'use strict';
   controllers.controller('NewWalletCtrl', ['$scope', '$window', function($scope, $window) {
 
   $scope.activeForm = 'password';

@@ -1,9 +1,9 @@
 /**
  * @fileOverview ContactsCtrl angular controller
  */
+'use strict';
 
 define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
-  'use strict';
 
   describe('Contacts controller', function() {
     var contactsController, scope, routeParams, location, _contacts, DarkWallet;

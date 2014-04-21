@@ -1,3 +1,5 @@
+'use strict';
+
 define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
 var Crypto = Bitcoin.CryptoJS;

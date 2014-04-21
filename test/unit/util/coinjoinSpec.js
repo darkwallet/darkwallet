@@ -1,5 +1,6 @@
+'use strict';
+
 define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, Protocol, Bitcoin) {
-  'use strict';
 
   var guest;
   var initiator

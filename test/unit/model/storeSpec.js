@@ -1,6 +1,7 @@
 /**
  * @fileOverview Mapping coordinating with the app's database.
  */
+'use strict';
 
 define(['model/store'], function(Store) {
   

@@ -1,3 +1,5 @@
+'use strict';
+
 define(['./wallet', './txdb', './history', './tasks', './contacts', './connections', 'bitcoinjs-lib'],
 function(Wallet, TransactionDatabase, History, Tasks, Contacts, Connections, Bitcoin) {
 /**

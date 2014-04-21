@@ -1,5 +1,6 @@
+'use strict';
+
 define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic) {
-  'use strict';
 
   // Controller
   controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', function($scope, notify) {
