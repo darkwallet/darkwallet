@@ -64,7 +64,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
     this.priv = ecPriv;
 
     // Set some identity variables
-    this.fingerprint = Encryption.genFingerprint(this.pub);
+    this.fingerprint = Encryption.genFingerprint(this.pub.toByteArrayUnsigned());
 
     var newMe = this.transport.initializePeer(this.pub.toByteArrayUnsigned(), this.fingerprint);
     this.transport.comms.pubKeyHex = newMe.pubKeyHex;
@@ -86,6 +86,8 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
   Channel.prototype.disconnect = function() {
       this.removeAllCallbacks();
       this.channelUnsubscribe(function(){});
+      this.requested = [];
+      this.lastRequest = 0;
   };
 
   /*
@@ -101,10 +103,22 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
               return peer;
           }
       }
+      if (fingerprint.length != 40) {
+          // bad peers
+          var pubKeyBytes = Bitcoin.convert.stringToBytes(fingerprint);
+          while(pubKeyBytes.length<32) { pubKeyBytes.push(6) };
+          pubKeyBytes = pubKeyBytes.slice(32);
 
+          console.log("[catchan] bad peer detected, dropping lookup", fingerprint);
+
+          var newPeer = this.transport.addPeer(pubKeyBytes, fingerprint);
+          newPeer.name = 'troll: ' + newPeer.name;
+          newPeer.troll = true;
+          return newPeer;
+      }
       // unknown, request public key
       if (discover) {
-          console.log("[catchan] request pubKey", fingerprint, 'me: ', this.fingerprint);
+          console.log("[catchan] request pubKey", fingerprint);
           this.requestPublicKey(fingerprint);
       }
   };
@@ -116,12 +130,12 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
       if (fingerprint == this.fingerprint) {
           throw Error("Requesting my own public key");
       }
-      if (this.requested.indexOf(fingerprint)) {
+      if (this.requested.indexOf(fingerprint) > -1) {
           console.log("[catchan] dropping request since already requested");
           return;
       }
       this.requested.push(fingerprint);
-       // Prepare request
+      // Prepare request
       var data = Protocol.PublicKeyRequestMsg(fingerprint);
  
       // Send encrypted
@@ -135,8 +149,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
    */
   Channel.prototype.onPublicKeyRequest = function(data) {
       var now = Date.now();
-      console.log("[catchan] pubkey request", Object.keys(data.text)[0], 'me:', this.fingerprint);
-      if (data.text[this.fingerprint] && (now - this.lastRequest) > 10000) {
+      if (data.text[this.fingerprint] && (now - this.lastRequest) > 100) {
           console.log("[catchan] answering to pubKey request", this.fingerprint);
           this.sendOpening();
           this.lastRequest = now;
@@ -359,7 +372,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
   };
 
   Channel.prototype.startPairing = function(fingerprint, pubKey) {
-    // console.log('[catchan] startpairing', fingerprint, pubKey);
+     console.log('[catchan] stored pubkey', fingerprint);
   };
 
   return Channel;
