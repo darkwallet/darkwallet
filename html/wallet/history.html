@@ -1,14 +1,14 @@
-<dl class="sub-nav">
-    <dt>Filter:</dt>
-    <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
-    <dd ng-class="{active: 'lastWeek'===txFilter}"><a ng-click="setHistoryFilter('lastWeek')">Last week</a></dd>
-    <dd ng-class="{active: 'lastMonth'===txFilter}"><a ng-click="setHistoryFilter('lastMonth')">Last month</a></dd>
-    <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
-</dl>
 <div class="row topmargin">
     <div class="small-12 columns">
         <div class="row collapse panel radius transactions">
-            <h5>Latest transactions</h5>
+            <dl class="sub-nav">
+                <dt>Filter:</dt>
+                <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
+                <dd ng-class="{active: 'lastWeek'===txFilter}"><a ng-click="setHistoryFilter('lastWeek')">Last week</a></dd>
+                <dd ng-class="{active: 'lastMonth'===txFilter}"><a ng-click="setHistoryFilter('lastMonth')">Last month</a></dd>
+                <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
+            </dl>
+
             <div class="row collapse">
              <div class="small-2 columns">
                Value
