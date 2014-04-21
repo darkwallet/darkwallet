@@ -39,7 +39,7 @@
           <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="copyClipboard(isFund?pocket.fund.multisig.address:pocket.stealth)" class="button prefix radius fa fa-clipboard"></a>
         </div>
         <div class="small-1 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Show QR code" class="button prefix square fa fa-qrcode"></a>
+          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="openModal('show-qr', {address: isFund?pocket.fund.multisig.address:pocket.stealth})"></a>
         </div>
         <div class="small-10 columns">
           <input type="text" class="postfix radius" readonly value="{{isFund?pocket.fund.multisig.address:pocket.stealth}}" />
