@@ -13,9 +13,9 @@ define(['./module'], function (controllers) {
   $scope.tabs.previous = 0;
   $scope.tabs.pages = [
       {heading: 'Overview', page: 'dashboard', active: true, visible: true},
+      {heading: 'Fund', page: 'fund'},
       {heading: 'Transactions', page: 'history', visible: true},
       {heading: 'Addresses', page: 'addresses', visible: true},
-      {heading: 'Fund', page: 'fund'},
       {heading: 'Tasks', page: 'tasks'},
       {heading: 'Actions', page: 'actions'}
   ];
@@ -28,10 +28,10 @@ define(['./module'], function (controllers) {
   };
   $scope.tabs.updateTabs = function(isAll, isFund, tasks) {
       if (isFund) {
-          $scope.tabs.pages[3].visible = true;  // fund
+          $scope.tabs.pages[1].visible = true;  // fund
           $scope.tabs.pages[5].visible = false; // actions
       } else {
-          $scope.tabs.pages[3].visible = false; // fund
+          $scope.tabs.pages[1].visible = false; // fund
           $scope.tabs.pages[5].visible = !isAll;  // actions
       }
       if (tasks && tasks.length) {
