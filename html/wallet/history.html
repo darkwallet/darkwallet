@@ -1,40 +1,71 @@
-        <dl class="sub-nav">
-          <dt>Filter:</dt>
-          <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
-          <dd ng-class="{active: 'lastWeek'===txFilter}"><a ng-click="setHistoryFilter('lastWeek')">Last week</a></dd>
-          <dd ng-class="{active: 'lastMonth'===txFilter}"><a ng-click="setHistoryFilter('lastMonth')">Last month</a></dd>
-          <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
-        </dl>
-        <table class="expand">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Date</th>
-              <th ng-show="currentHeight">Confirmations</th>
-              <th>Amount</th>
-              <th class="text-right">Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="row in historyRows track by $index">
-              <td class="icon"><button class="button square fa fa-info"></button></td>
-              <td><span>{{row.address}}</span> <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span></td>
-              <td><span ng-show="row.height">{{row.height | heightToDate}}</span><span ng-show="!row.height">unconfirmed</span></td>
-              <td ng-show="currentHeight"><span ng-show="row.height">{{row.height?1+currentHeight-row.height:0}}</span></td>
-              <td>{{(row.myOutValue-row.myInValue) | amountFilter}}</td>
-              <td class="text-right">{{row.confirmed | currencyFilter}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span></td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="pagination-centered">
-          <ul class="pagination">
-            <li class="arrow unavailable"><a href="">&laquo;</a></li>
-            <li class="current"><a href="">1</a></li>
-            <li><a href="">2</a></li>
-            <li class="unavailable"><a href="">&hellip;</a></li>
-            <li><a href="">12</a></li>
-            <li><a href="">13</a></li>
-            <li class="arrow"><a href="">&raquo;</a></li>
-          </ul>
+<dl class="sub-nav">
+    <dt>Filter:</dt>
+    <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
+    <dd ng-class="{active: 'lastWeek'===txFilter}"><a ng-click="setHistoryFilter('lastWeek')">Last week</a></dd>
+    <dd ng-class="{active: 'lastMonth'===txFilter}"><a ng-click="setHistoryFilter('lastMonth')">Last month</a></dd>
+    <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
+</dl>
+<div class="row topmargin">
+    <div class="small-12 columns">
+        <div class="row collapse panel radius transactions">
+            <h5>Latest transactions</h5>
+            <div class="row collapse">
+             <div class="small-2 columns">
+               Value
+             </div>
+             <div class="small-5 columns">
+               Address
+             </div>
+             <div class="small-3 columns">
+               Date
+             </div>
+             <div class="small-2 columns">
+               Confirmations
+             </div>
+             <div class="small-1 columns text-right">
+               Total
+             </div>
+            </div>
+             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
+             <div class="small-2 columns">
+                <div ng-class="{'fa-sign-in': (row.myOutValue-row.myInValue)>0 , 'fa-sign-out': (row.myOutValue-row.myInValue)<0, 'red': (row.myOutValue-row.myInValue)<0, 'green': (row.myOutValue-row.myInValue)>0}" class="fa transaction-icon"></div>
+             {{(row.myOutValue-row.myInValue) | amountFilter}}
+             </div>
+             <div class="small-5 columns">
+               <div ng-hide="row.contact">
+                {{row.address}}
+                <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
+               </div>
+               <div title="{{row.address}}" ng-show="row.contact">
+                <identicon icon-size="24" hash="row.contact.hash"></identicon>
+                {{row.contact.name}}
+                <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
+               </div>
+             </div>
+             <div ng-show="row.height" class="small-3 columns">
+               {{row.height | heightToDate}}
+             </div>
+             <div ng-show="!row.height" class="small-3 columns">
+               unconfirmed
+             </div>
+             <div class="small-2 columns">
+               {{row.height?1+currentHeight-row.height:0}}
+             </div>
+             <div class="small-1 columns text-right">
+              {{row.confirmed | currencyFilter}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span>
+             </div>
+            </div>
         </div>
+    </div>
+</div>
+<div class="pagination-centered">
+    <ul class="pagination">
+        <li class="arrow unavailable"><a href="">&laquo;</a></li>
+        <li class="current"><a href="">1</a></li>
+        <li><a href="">2</a></li>
+        <li class="unavailable"><a href="">&hellip;</a></li>
+        <li><a href="">12</a></li>
+        <li><a href="">13</a></li>
+        <li class="arrow"><a href="">&raquo;</a></li>
+    </ul>
+</div>
