@@ -4335,9 +4335,13 @@ html, body:not(.popupbody) {
   margin-top: 1.6em !important; }
 
 .tooltip {
-  max-width: 400px;
-  min-width: 170px;
-  text-align: center; }
+  margin-left: -1em; }
+
+span.tooltip.fade {
+  opacity: 0; }
+
+span.tooltip.fade.in {
+  opacity: 1; }
 
 .popupcontainer .panel {
   background: #333; }
@@ -4370,6 +4374,9 @@ span.input-status {
 
 input.ng-valid:not(.ng-pristine) + span.input-status {
   opacity: 1; }
+
+input.address-buttons {
+  padding-right: 5.3em; }
 
 input[type=range] {
   -webkit-appearance: none;
@@ -4724,7 +4731,7 @@ div.chat-text {
 .setback.seed {
   background: url(../images/seed.svg) center/cover no-repeat; }
 
-.contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave {
+span.tooltip.fade, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave {
   transition: all 300ms ease-out; }
 
 @-webkit-keyframes rotateFoldBottom {
