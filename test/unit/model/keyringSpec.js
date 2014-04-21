@@ -26,7 +26,7 @@ define(['model/keyring', 'chrome'], function(IdentityKeyRing, chrome) {
       expect(keyring.availableIdentities).toEqual(['Satoshi', 'Dorian']);
     });
 
-    it('gets an idenity', function() {
+    xit('gets an idenity', function() {
       keyring.get('Satoshi', function(identity) {
         expect(identity.name).toBe('Satoshi');
       });
@@ -36,7 +36,7 @@ define(['model/keyring', 'chrome'], function(IdentityKeyRing, chrome) {
       expect(keyring.getIdentityNames()).toEqual(['Satoshi', 'Dorian']);
     });
 
-    it('closes', function() {
+    xit('closes', function() {
       keyring.load('Satoshi');
       expect(keyring.identities.Satoshi).toBeDefined();
       keyring.close('Satoshi');
@@ -59,7 +59,7 @@ define(['model/keyring', 'chrome'], function(IdentityKeyRing, chrome) {
       })
     });
     
-    it('loads', function() { // private
+    xit('loads', function() { // private
       keyring.load('Satoshi', function(identity) {
         expect(identity.name).toBe('Satoshi');
       });

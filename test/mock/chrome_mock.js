@@ -2,17 +2,18 @@
 
 define(function() {
   var chrome_storage = {};
-  chrome = {storage: {local: {
+  var chrome = {storage: {local: {
     get: function(key, callback) {
+      var value;
       if (key === null) {
         value = chrome_storage;
       } else {
-        // FIXME value = chrome_storage[key];
+        value = chrome_storage[key];
       }
       callback? callback(value) : null;
     },
     set: function(pairs, callback) {
-      for(key in pairs) {
+      for(var key in pairs) {
         chrome_storage[key] = pairs[key];
       }
       callback? callback() : null;
@@ -56,5 +57,6 @@ define(function() {
       chrome.runtime.msgListeners.forEach(function(listener) {listener(data)});
     }
   }};
+  window.chrome = chrome;
   return chrome;
 });

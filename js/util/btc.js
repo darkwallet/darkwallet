@@ -83,6 +83,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
      *  - mpk (xpub...)
      */
     extractPublicKey: function(address, compressed) {
+        var bytes;
         if (compressed === undefined) {
             compressed = true;
         }

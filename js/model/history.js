@@ -55,7 +55,7 @@ History.prototype.addHistoryRow = function(newRow) {
  * @return {Object} The new row
  */
 History.prototype.buildHistoryRow = function(walletAddress, transaction, height) {
-    var identity = this.identity;
+    var identity = this.identity,
         btcWallet = identity.wallet.wallet,
         inMine = 0,
         outMine = 0,

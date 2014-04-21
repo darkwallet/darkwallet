@@ -2,7 +2,7 @@
 
 define(['util/djbec', 'bitcoinjs-lib'], function(Djbec, Bitcoin) {
 
-   var sk1, sk2;
+   var sk1, sk2, pk1, pk2;
 
    // TODO: We should add standard test vectors here
    var sk1Bytes = [1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8];
