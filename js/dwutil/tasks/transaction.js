@@ -106,7 +106,12 @@ TransactionTasks.processRow = function(value, row, height) {
         task.address = row.address;
         task.recipients = [{address: row.address, amount: value}]
     }
-    task.state = height ? 'confirmed' : 'unconfirmed';
+    if (height) {
+        task.state = 'confirmed';
+    } else {
+        task.state = 'unconfirmed';
+        task.confirmations = 0;
+    }
 
     TransactionTasks.updateTaskHeight(task, height);
 
