@@ -3,6 +3,7 @@
 
 define(['./module', 'async'], function (directives, async) {
 var iconCache = {};
+var callbackCache = {};
   directives.directive('face', ['$window', function ($window) {
     return {
       restrict: 'E', // element
@@ -82,7 +83,7 @@ var iconCache = {};
               ctx.drawImage(pieces[i], 0, 0);
             }
             callback(canvas.toDataURL('image/png'));
-          });
+          }); 
         }
 
         // Create the identicon
@@ -94,8 +95,15 @@ var iconCache = {};
           };
           if (iconCache.hasOwnProperty(iconId)) {
             update(iconCache[iconId]);
+          } else if(callbackCache.hasOwnProperty(iconId)) {
+            callbackCache[iconId].push(update);
           } else {
-            generateImage(calcDataFromFingerprint(dataHex), update);
+            callbackCache[iconId] = [update];
+            generateImage(calcDataFromFingerprint(dataHex), function(data) {
+              callbackCache[iconId].forEach(function(callback) {
+                callback(data);
+              });
+            });
           }
         }
         // Watch for hash changes
