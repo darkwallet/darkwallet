@@ -6,6 +6,7 @@ define(['backend/port', 'darkwallet', 'dwutil/tasks/transaction'], function(Port
  * Service to manage updating all badges.
  */
 function BadgeService(core) {
+    var self = this;
     this.name = 'badge';
     this.core = core;
 
@@ -16,7 +17,9 @@ function BadgeService(core) {
             // Connected
         }, function(port) {
             // Disconnected
-            TransactionTasks.checkFinished();
+            if (TransactionTasks.checkFinished()) {
+                self.setItems();
+            }
     });
 };
 

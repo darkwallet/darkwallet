@@ -178,12 +178,14 @@ TransactionTasks.checkFinished = function() {
     var receiveTasks = identity.tasks.getTasks('receive');
 
     var tasks = sendTasks.concat(receiveTasks);
+    var updated;
     tasks.forEach(function(task) {
         if (task.state == 'finished') {
-            console.log('cleaning up task', task);
             TransactionTasks.removeTask(task)
+            updated = true;
         }
     })
+    return updated;
 }
 
 /**
