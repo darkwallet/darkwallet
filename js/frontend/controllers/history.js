@@ -218,6 +218,7 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
   }
 
   $scope.txFilter = 'last10';
+  $scope.addrFilter = 'unused';
 
   var pocketFilter = function(row) {
       // Making sure shownRows is reset before historyFilter stage is reached.
@@ -245,9 +246,31 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
   prevweek.setDate(prevweek.getDate()-7);
 
   // Set the history filter
+  $scope.setAddressFilter = function(name) {
+      $scope.addrFilter = name;
+      var addresses = $scope.pocket.addresses.concat($scope.pocket.changeAddresses);
+  };
+
+  // Set the history filter
   $scope.setHistoryFilter = function(name) {
       $scope.txFilter = name;
       $scope.chooseRows();
+  };
+
+  $scope.addressFilter = function(row) {
+      switch($scope.addrFilter) {
+          case 'all':
+              return true;
+          case 'unused':
+              return !row.nOutputs;
+          case 'top':
+              return !row.balance>1000000;
+          case 'labelled':
+              return ['unused', 'change'].indexOf(row.label) == -1;
+          default:
+              break;
+      }
+
   };
 
   // History filter, run for every row to see if we should show it
