@@ -52,30 +52,33 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
       }
   }
 
+  function onBalanceUpdate() {
+      var balance = calculateBalance($scope.pocket, $scope.isFund, $scope.isAll);
+      $scope.balance = balance.confirmed;
+      $scope.unconfirmed = balance.unconfirmed;
+      $scope.chooseRows();
+      if (!$scope.$$phase) {
+          $scope.$apply();
+      }
+  }
+
   Port.connectNg('gui', $scope, function(data) {
     // Check on gui balance updates to recalculate pocket balance so it shows properly
     if (data.type == 'balance') {
         if (isCurrentPocket(data.pocketId)) {
-            var balance = calculateBalance($scope.pocket, $scope.isFund, $scope.isAll);
-            $scope.balance = balance.confirmed;
-            $scope.unconfirmed = balance.unconfirmed;
-            $scope.chooseRows();
-            if (!$scope.$$phase) {
-                $scope.$apply();
-            }
+            onBalanceUpdate();
         }
     }
   });
  
   Port.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
-        var balance = calculateBalance($scope.pocket, $scope.isFund, $scope.isAll);
-        $scope.balance = balance.confirmed;
-        $scope.unconfirmed = balance.unconfirmed;
-        $scope.chooseRows();
-        if (!$scope.$$phase) {
-            $scope.$apply();
+        if ($scope.isAll) {
+            // set stealth address on the general section
+            var mainAddress = $scope.identity.wallet.getAddress([0]);
+            $scope.pocket.stealth = mainAddress.stealth;
         }
+        onBalanceUpdate();
     }
   });
 
@@ -109,7 +112,8 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
           $scope.pocket.name = "All Pockets";
           $scope.pocket.index = undefined;
           $scope.pocket.mpk = undefined;
-          $scope.pocket.stealth = undefined;
+          var mainAddress = $scope.identity.wallet.getAddress([0]);
+          $scope.pocket.stealth = mainAddress.stealth;
           $scope.pocket.fund = null;
           $scope.pocket.addresses = $scope.allAddresses;
           $scope.pocket.changeAddresses = [];
