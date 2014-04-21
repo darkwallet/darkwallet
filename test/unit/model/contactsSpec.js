@@ -65,7 +65,7 @@ define(['model/contacts'], function(Contacts) {
 
     it('generates a contact hash', function() {
       var data = '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b';
-      expect(contacts.generateContactHash(data)).toBe("1e3e2b5cb607bcd53de71e3b2c62dc165cf9ddae9c22b894e3f23166f29b9130");
+      expect(contacts.generateContactHash(data)).toBe("8f22baa6aeb2005c90187e52bedbf2201872bf225d247dc1c09541de2c393de0");
     });
 
     it('throws updating a wrong index', function() {
@@ -83,9 +83,12 @@ define(['model/contacts'], function(Contacts) {
     it('prepares an address', function() {
       var data = '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b';
       var key = contacts.prepareAddress(data);
+      var libBitcoinPub = [4,207,46,91,2,214,240,35,64,245,169,222,251,191,113,12,56,139,132,81,200,
+                           33,69,177,65,159,233,105,104,55,177,205,239,197,105,162,167,155,170,109,162,
+                           247,71,195,178,90,16,42,8,29,253,94,121,154,188,65,38,33,3,224,209,113,20,119,11];
       expect(key.data).toBe(data);
-      expect(key.address).toBe('1C1vwLbunGupvKUMhgrhkFnUTZcGe8wpH2');
-      expect(key.pubKey).toEqual([3,207,46,91,2,214,240,35,64,245,169,222,251,191,113,12,56,139,132,81,200,33,69,177,65,159,233,105,104,55,177,205,239]);
+      expect(key.address).toBe('1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY');
+      expect(key.pubKey).toEqual(libBitcoinPub);
       expect(key.type).toBe('pubkey');
       
     });
@@ -169,7 +172,7 @@ define(['model/contacts'], function(Contacts) {
     var store = {
       init: function(key, value) {
         if (key == 'contacts') {
-            return [satoshiForestNew, undefined];
+            return [satoshiForestNew];
         }
         return value;
       },
@@ -185,7 +188,7 @@ define(['model/contacts'], function(Contacts) {
 
     it('it upgrades from array properly', function() {
       expect(contacts.store).toBe(store);
-      expect(contacts.contacts).toEqual([satoshiForestNew]);
+      expect(contacts.contacts[0]).toEqual(satoshiForestNew);
     });
 
   });
