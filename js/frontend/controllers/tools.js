@@ -1,11 +1,38 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkWallet, Bitcoin) {
+define(['./module', 'darkwallet', 'bitcoinjs-lib', 'frontend/port'], function (controllers, DarkWallet, Bitcoin, Port) {
 
   // Controller
   controllers.controller('ToolsCtrl', ['$scope', 'notify', function($scope, notify) {
 
   $scope.tools = {status: 'OK'};
+  $scope.storeSize = 0;
+  $scope.totalStoreSize = 0;
+
+  var loadIdentity = function(name) {
+      console.log("getting", name);
+      DarkWallet.getKeyRing().getSize(name, function(value) {
+          $scope.storeSize = Math.ceil(value/1024);
+          console.log("partial", value);
+          if(!$scope.$$phase) {
+              $scope.$apply();
+          }
+      });
+      DarkWallet.getKeyRing().getSize(null, function(value) {
+          $scope.totalStoreSize = Math.ceil(value/1024);
+          console.log("total", value);
+          if(!$scope.$$phase) {
+              $scope.$apply();
+          }
+      });
+  };
+
+  Port.connectNg('wallet', $scope, function(data) {
+    if (data.type == 'ready') {
+        loadIdentity(data.identity);
+    }
+  });
+
 
   var finishClearStorage = function() {
       var keyRing = DarkWallet.getKeyRing();
