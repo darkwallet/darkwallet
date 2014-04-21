@@ -106,10 +106,13 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
       $scope.chooseRows();
       $scope.tabs.updateTabs($scope.isAll, $scope.isFund, $scope.pocket.tasks);
   };
+  $scope.selectOverview = function() {
+      $scope.selectPocket('overview');
+  }
   $scope.selectPocket = function(pocketName, rowIndex, form) {
       var pocketIndex;
-      if (pocketName === undefined) {
-          $scope.pocket.name = "All Pockets";
+      if (pocketName === undefined || pocketName == 'overview') {
+          $scope.pocket.name = pocketName ? "Overview" : "All Pockets";
           $scope.pocket.index = undefined;
           $scope.pocket.mpk = undefined;
           var mainAddress = $scope.identity.wallet.getAddress([0]);
@@ -118,12 +121,13 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
           $scope.pocket.addresses = $scope.allAddresses;
           $scope.pocket.changeAddresses = [];
           $scope.isAll = true;
+          $scope.isOverview = (pocketName == 'overview');
           $scope.isFund = false;
           var balance = $scope.identity.wallet.getBalance();
           $scope.balance = balance.confirmed;
           $scope.unconfirmed = balance.unconfirmed;
           $scope.pocket.tasks = [];
-          rowIndex = 'all';
+          rowIndex = pocketName ? pocketName : 'all';
       } else {
           pocketIndex = rowIndex*2;
           $scope.pocket.index = pocketIndex;
