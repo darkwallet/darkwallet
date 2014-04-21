@@ -112,7 +112,9 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       }
 
       // Progress bar must be updated at the end
-      progressBar.style.width = radar*100 + '%';
+      if (progressBar) {
+          progressBar.style.width = radar*100 + '%';
+      }
   };
 
   var getSatoshis = function() {
