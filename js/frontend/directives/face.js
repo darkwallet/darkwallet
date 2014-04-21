@@ -2,7 +2,7 @@
 'use strict';
 
 define(['./module', 'async'], function (directives, async) {
-  var iconCache = {};
+var iconCache = {};
   directives.directive('face', ['$window', function ($window) {
     return {
       restrict: 'E', // element
@@ -12,10 +12,11 @@ define(['./module', 'async'], function (directives, async) {
       },
       link: function(scope, element, attrs) {
         var iconSize = scope.iconSize || 32;
+        var canvasSize = iconSize > 32 ? 64 : 32;
         
         var canvas = $window.document.createElement('canvas');
-        canvas.width = 400;
-        canvas.height = 400;
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
         var ctx = canvas.getContext('2d');
         var nPieces = 6;
         var pieces = [];
@@ -29,7 +30,7 @@ define(['./module', 'async'], function (directives, async) {
           var head = gender === 'female' ? 'head' : 'hair';
           var pieces = ['background', 'face', head, 'mouth', 'clothes', 'eye'];
           var num = random % total[gender][piece] + 1;
-          return '../images/faces/'+gender+'/'+pieces[piece]+num+'.png';
+          return '../images/faces/'+gender+canvasSize+'/'+pieces[piece]+num+'.png';
         };
         
         function calcDataFromFingerprint(dataHex) {
