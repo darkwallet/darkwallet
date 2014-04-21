@@ -264,7 +264,7 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
           case 'unused':
               return !row.nOutputs;
           case 'top':
-              return !row.balance>1000000;
+              return row.balance>100000;
           case 'labelled':
               return ['unused', 'change'].indexOf(row.label) == -1;
           default:
