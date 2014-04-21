@@ -64,7 +64,7 @@ TransactionTasks.processHistory = function(history, height) {
         var taskOut = identity.tasks.search('receive', 'hash', outTxHash);
         if (taskOut && !taskOut.height) {
             taskOut.height = tx[2];
-            taskOut.state = 'confirmed';
+            taskOut.state = tx[2] ? 'confirmed' : 'unconfirmed';
             if (TransactionTasks.updateTaskHeight(taskOut, height)) {
                 updated = true;
             }
@@ -74,7 +74,7 @@ TransactionTasks.processHistory = function(history, height) {
             var taskIn = identity.tasks.search('send', 'hash', inTxHash);
             if (taskIn && !taskIn.height) {
                 taskIn.height = tx[6];
-                taskIn.state = 'confirmed';
+                taskIn.state = tx[6] ? 'confirmed' : 'unconfirmed';
                 if (TransactionTasks.updateTaskHeight(taskIn, height)) {
                     updated = true;
                 }
@@ -106,7 +106,7 @@ TransactionTasks.processRow = function(value, row, height) {
         task.address = row.address;
         task.recipients = [{address: row.address, amount: value}]
     }
-    if (height) {
+    if (row.height) {
         task.state = 'confirmed';
     } else {
         task.state = 'unconfirmed';
@@ -167,6 +167,9 @@ TransactionTasks.updateTaskHeight = function(task, height) {
     }
 };
 
+/**
+ * Remove a task
+ */
 TransactionTasks.removeTask = function(task) {
     var identity = DarkWallet.getIdentity();
     var section = task.value > 0 ? 'receive' : 'send';
