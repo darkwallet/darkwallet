@@ -62,7 +62,7 @@
                 {{row.address}}
                 <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                </div>
-               <div title="{{row.contact.pubKeys[row.contact.mainKey].address}}" ng-show="row.contact">
+               <div title="{{row.address}}" ng-show="row.contact">
                 <identicon icon-size="24" hash="row.contact.hash"></identicon>
                 {{row.contact.name}}
                 <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
