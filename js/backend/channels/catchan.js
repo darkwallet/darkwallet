@@ -288,7 +288,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
       // channel messages don't have sender
       if (data.sender && data.type != 'publicKey') {
           data.peer = this.getPeer(data.sender, true);
-      } else if (!data.sender && ['subscribed', 'publicKeyRequest'].indexOf(data.type) == -1) {
+      } else if (!data.sender && ['subscribed', 'publicKeyRequest'].indexOf(type) == -1) {
           console.log("[catchan] message with no sender", type, data)
       }
       if (this.callbacks.hasOwnProperty(type)) {
