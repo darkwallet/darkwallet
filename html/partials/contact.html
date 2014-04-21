@@ -1,10 +1,13 @@
 <div class="row panel radius topmargin">
 <div class="row">
 	<div class="small-1 columns text-center">
-        	<face icon-size="64" hash="vars.contact.hash" title="{{vars.contact.hash}}"></face>
+        	<identicon icon-size="64" hash="vars.contact.hash" title="{{vars.contact.hash}}"></identicon>
 	</div>
-	<div class="small-11 columns">
+	<div class="small-10 columns">
 		<h1>{{vars.contact.name}}</h1>
+	</div>
+	<div class="small-1 columns">
+        	<face icon-size="64" hash="vars.contact.hash" title="{{vars.contact.hash}}"></face>
 	</div>
 </div>
 <div class="row collapse" ng-repeat="pubKey in vars.contact.pubKeys">

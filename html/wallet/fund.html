@@ -19,7 +19,7 @@
   <div class="columns large-4">
     <h3>Participants:</h3>
     <div ng-repeat="participant in pocket.fund.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
-        <face icon-size="38" hash="participant.hash" title="{{contact.hash}}"></face> {{participant.name}} <span ng-show="participant.type=='me'">(me)</span>
+        <identicon icon-size="38" hash="participant.hash" title="{{contact.hash}}"></identicon> {{participant.name}} <span ng-show="participant.type=='me'">(me)</span>
     </div>
   </div>
   <div class="columns large-8">

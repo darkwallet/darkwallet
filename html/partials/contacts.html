@@ -39,7 +39,7 @@
   <ul class="contacts large-block-grid-5 medium-block-grid-3 small-block-grid-2">
     <li ng-repeat="contact in contacts | orderBy:'name' track by $index">
       <div ng-click="openContact(contact)" class="contact-mosaic-square">
-        <face icon-size="64" hash="contact.hash" title="{{contact.pubKeys[contact.mainKey].address}}"></face>
+        <identicon icon-size="64" hash="contact.hash" title="{{contact.pubKeys[contact.mainKey].address}}"></identicon>
         <div 
              class="contact-label">
             <div class="fa" 

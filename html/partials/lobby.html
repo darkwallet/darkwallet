@@ -47,8 +47,8 @@
             <span class="label">{{subscribed.slice(0, 8)}}</span>
           </div>
           <h5>Your permanent identity</h5>
-          <div class="wrapper"><face title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></face> {{myself.name}}</div>
-          <h5>Your temporary identity</h5>
+          <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
+          <h5 title="Your temporary identity">Cloak</h5>
           <div class="row">
             <div class="small-12 columns">
               <face title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></face> {{comms.name}}
