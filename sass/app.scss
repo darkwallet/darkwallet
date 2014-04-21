@@ -285,12 +285,15 @@ div.tab-scroller.totheright.ng-leave {
 	width: 97%;
 }
 
+.transactions div.ng-leave-active,
+.transactions div.ng-enter,
 .ng-hide-add.ng-hide-add-active,
 .ng-animate.ng-hide-remove {
   opacity:0;
 }
 
-
+.transactions div.ng-enter.ng-enter-active,
+.transactions div.ng-leave
 .ng-hide-add,
 .ng-animate.ng-hide-remove.ng-hide-remove-active {
   opacity:1;

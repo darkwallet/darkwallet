@@ -4679,10 +4679,10 @@ div.tab-scroller.totheright.ng-enter-active, div.tab-scroller.totheleft.ng-enter
   position: absolute;
   width: 97%; }
 
-.ng-hide-add.ng-hide-add-active, .ng-animate.ng-hide-remove {
+.transactions div.ng-leave-active, .transactions div.ng-enter, .ng-hide-add.ng-hide-add-active, .ng-animate.ng-hide-remove {
   opacity: 0; }
 
-.ng-hide-add, .ng-animate.ng-hide-remove.ng-hide-remove-active {
+.transactions div.ng-enter.ng-enter-active, .transactions div.ng-leave .ng-hide-add, .ng-animate.ng-hide-remove.ng-hide-remove-active {
   opacity: 1; }
 
 div.scroller.ng-enter {
