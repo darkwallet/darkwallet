@@ -43,18 +43,23 @@ Tasks.prototype.addTask = function(section, task) {
     this.store.save();
 };
 
+
 /**
  * Remove a task from the given section
  * @param {String} section Section name
  * @param {Object} task Task to remove
+ * @return true of false if the object was removed
  */
 Tasks.prototype.removeTask = function(section, task) {
     if (!this.tasks.hasOwnProperty(section)) {
         return;
     }
     var idx = this.tasks[section].indexOf(task);
-    this.tasks[section].splice(idx, 1);
-    this.store.save();
+    if (idx > -1) {
+        this.tasks[section].splice(idx, 1);
+        this.store.save();
+        return true;
+    }
 };
 
 /**
