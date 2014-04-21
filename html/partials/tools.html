@@ -11,7 +11,18 @@
       </div>
       <div class="large-5 columns">
         <div class="panel setback notifications">
-           {{tools.status}}
+           <code>{{tools.status}}</code>
+           <div ng-show="tools.output">
+             <div class="row">
+               <div class="large-6 columns">
+                 <button ng-click="copyClipboard(tools.output)" class="button postfix fa fa-clipboard">Copy</button>
+               </div>
+               <div class="large-6 columns">
+                 <button ng-click="tools.output=false" class="button postfix fa fa-check">Ok</button>
+               </div>
+             </div>
+             <code><pre>{{tools.output}}</pre></code>
+           </div>
         </div>
         <div ng-controller="NotificationsCtrl" class="panel setback net popupcontainer">
           <h5>Notifications</h5>
@@ -24,15 +35,11 @@
           <h4>Development</h4>
           <h5>Stealth</h5>
         <div ng-controller="ReceiveStealthCtrl">
-          <button ng-click="receiveStealth()">Receive stealth</button>
+          <a class="button fa fa-fighter-jet postfix" ng-click="receiveStealth();">Receive Stealth</a>
         </div>
           <h5>Storage</h5>
-          <a href="" class="button" ng-click="clearTasks();">
-            <div><i class="icon-large"></i></div>Clear tasks
-          </a>
-        <a href="" class="button" ng-click="clearStorage();">
-          <div><i class="icon-large icon-qrcode"></i></div>Clear storage (DANGEROUS!!)
-        </a>
+          <a class="button fa fa-eraser postfix" ng-click="clearTasks();">Clear Tasks</a>
+          <a class="button fa fa-trash-o postfix alert" ng-click="clearStorage();">Clear Storage</a>
 
       </div>
 </div>
