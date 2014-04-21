@@ -3,22 +3,64 @@
  */
 'use strict';
 
-define(['model/keyring', 'chrome'], function(IdentityKeyRing, chrome) {
+define(['testUtils'], function(testUtils) {
   // DarkWallet namespace for the local storage.
   var DW_NS = 'dw:identity:';
 
   describe('Identity keyring model', function() {
     
-    var keyring;
+    var keyring, chrome, IdentityKeyRing;
     
-    beforeEach(function() {
-      chrome.storage.local.clear();
-      var pars = {};
-      pars[DW_NS + 'Satoshi'] = {name: 'Satoshi'};
-      pars[DW_NS + 'Dorian'] = {name: 'Dorian'};
-      chrome.storage.local.set(pars, function(){
-        keyring = new IdentityKeyRing();
+    beforeEach(function(done) {
+      
+      var chrome_storage = {};
+      //testUtils.stub('chrome', {
+      chrome = {
+        storage: {
+          local: {
+            get: function(key, callback) {
+              var value;
+              if (key === null) {
+                value = chrome_storage;
+              } else {
+                value = (typeof chrome_storage[key] != 'undefined') ? chrome_storage[key] : {};
+              }
+              callback? callback(value) : null;
+            },
+            set: function(pairs, callback) {
+              for(var key in pairs) {
+                chrome_storage[key] = pairs[key];
+              }
+              callback? callback() : null;
+            },
+            clear: function() {
+              chrome_storage = {};
+            },
+            _: function() {
+              return chrome_storage;
+            }
+          }
+        }
+      //});
+      };
+      window.chrome = chrome;
+      
+      testUtils.loadWithCurrentStubs('model/keyring', function(_IdentityKeyRing) {
+        //chrome = require('chrome');
+        IdentityKeyRing = _IdentityKeyRing;
+        chrome.storage.local.clear();
+        var pars = {};
+        pars[DW_NS + 'Satoshi'] = {name: 'Satoshi'};
+        pars[DW_NS + 'Dorian'] = {name: 'Dorian'};
+        chrome.storage.local.set(pars, function() {
+          keyring = new IdentityKeyRing();
+          done();
+        });
       });
+    });
+    
+    afterEach(function() {
+      testUtils.reset();
     });
 
     it('is created properly', function() {

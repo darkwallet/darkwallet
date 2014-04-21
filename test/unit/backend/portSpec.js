@@ -1,12 +1,62 @@
 'use strict';
 
-define(['backend/port', 'chrome'], function (Port, chrome) {
-
+define(['testUtils'], function(testUtils) {
+  
   describe('Core service api', function() {
+    
+    var chrome, Port;
 
-    beforeEach(function() {
-      chrome.runtime.clear();
-      // TODO: How to clear the Ports cache here?
+    beforeEach(function(done) {
+      //testUtils.stub('chrome', {
+      chrome = {
+        runtime: {
+          clear: function() {
+             chrome.runtime.listeners = [];
+             chrome.runtime.disconnectListeners = [];
+             chrome.runtime.msgListeners = [];
+             chrome.runtime.received = [];
+          },
+          listeners: [],
+          disconnectListeners: [],
+          msgListeners: [],
+          received: [],
+          // This will be called when creating a service
+          onConnect: {
+            addListener: function(cb) { chrome.runtime.listeners.push(cb) }
+          },
+          // Call this to trigger the onConnect
+          initPort: function(port) {
+            port.onDisconnect = {addListener: function(cb) {chrome.runtime.disconnectListeners.push(cb);}};
+            port.onMessage = {addListener: function(cb) {chrome.runtime.msgListeners.push(cb);}};
+            port.postMessage = function(data) { chrome.runtime.received.push(data) };
+            chrome.runtime.listeners.forEach(function(listener) {listener(port)});
+            return port;
+          },
+          // Call this to trigger the onDisconnect
+          closePort: function(port) {
+            chrome.runtime.disconnectListeners.forEach(function(listener) {listener(port)});
+
+          },
+          // Call this to trigger onMessage
+          postMessage: function(data) {
+            chrome.runtime.msgListeners.forEach(function(listener) {listener(data)});
+          }
+        }
+      //});
+      };
+      window.chrome = chrome;
+      
+      testUtils.loadWithCurrentStubs('backend/port', function(port) {
+        //chrome = require('chrome');
+        Port = port;
+        chrome.runtime.clear();
+        // TODO: How to clear the Ports cache here?
+        done();
+      });
+    });
+    
+    afterEach(function() {
+      testUtils.reset();
     });
 
     it('Creates a service and registers callbacks', function() {
