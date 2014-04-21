@@ -15,6 +15,7 @@ function Wallet(store, identity) {
     this.fee = store.init('fee', 10000); // 0.1 mBTC
     this.pubKeys = store.init('pubkeys', {});
     this.scanKeys = store.init('scankeys', []);
+    this.idKeys = store.init('idkeys', []);
     if (this.scanKeys.length == 0) {
         console.log('You need to reseed the wallet to generate stealth scanning keys!');
     }
@@ -700,6 +701,20 @@ Wallet.prototype.getScanKey = function() {
     var scanMasterKey = Bitcoin.HDWallet.fromBase58(scanMaster.priv);
     return scanMasterKey.priv;
 };
+
+/**
+ * Get the identity ECKey
+ * @param {Number} n key index
+ * @return {Object} The scanning key
+ */
+Wallet.prototype.getIdentityKey = function(n) {
+    n = n || 0;
+    var idMaster = this.idKeys[0];
+    var idMasterKey = Bitcoin.HDWallet.fromBase58(idMaster.priv);
+    var childKey = idMasterKey.derive(n);
+    return childKey.priv;
+};
+
 
 /**
  * Process stealth array from obelisk.
