@@ -4422,26 +4422,29 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 .button.fa:before, button.fa:before {
   font-family: FontAwesome; }
 
-.button.square, button.square {
-  width: 37px;
-  height: 37px;
+.button.square {
+  margin: 0;
   padding: 0;
-  margin: 0; }
+  height: 37px; }
+
+.button.square:before, button.square:before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -1.2em 0 0 -0.4em; }
 
 .button.square.righted {
   z-index: 3;
   position: absolute;
   right: 0;
-  top: 0; }
+  top: 0;
+  width: 37px; }
   .button.square.righted:first-of-type {
     right: 37px; }
   .button.square.righted:last-of-type {
     border-radius: 0 3px 3px 0; }
   .button.square.righted:before {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -8px 0 0 -7px; }
+    margin-top: -0.5em; }
 
 .button.square.lefted {
   z-index: 3;
@@ -4459,7 +4462,8 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
   position: absolute;
   left: 0px;
   top: 0px;
-  padding: 0.18em 1em; }
+  width: 37px;
+  height: 37px; }
 
 .button.postfix.fa.alert:before, button.postfix.fa.alert:before {
   background: #9e1c34; }
