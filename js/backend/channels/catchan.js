@@ -38,6 +38,7 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
                     self.subscribed = channelHash;
                     // Internal log only for shout messages for now
                     self.addCallback('Shout', function(_data) {self.onChatMessage(_data)})
+                    self.addCallback('publicKeyRequest', function(_data) {self.onPublicKeyRequest(_data)})
 
                     // now tell listeners we'resubscribed
                     self.triggerCallbacks('subscribed', {})
@@ -88,12 +89,35 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
   /*
    * Get peer from the fingerprint
    */
-  Channel.prototype.getPeer = function(fingerprint) {
+  Channel.prototype.getPeer = function(fingerprint, discover) {
       for(var idx=0; idx<this.transport.peers.length; idx++) {
           var peer = this.transport.peers[idx];
           if (peer.fingerprint == fingerprint) {
               return peer;
           }
+      }
+
+      // unknown, request public key
+      if (discover) {
+          console.log("[catchan] request pubKey", fingerprint);
+          this.requestPublicKey(fingerprint);
+      }
+  };
+
+  Channel.prototype.requestPublicKey = function(fingerprint) {
+       // Send announcement
+      var data = JSON.parse(multiParty.sendPublicKeyRequest(fingerprint));
+ 
+      // Send encrypted
+      this.postEncrypted(data, function(err, data){
+          //console.log("announcement posted", err, data)
+      }, true);
+  };
+
+  Channel.prototype.onPublicKeyRequest = function(data) {
+      if (data.text[this.fingerprint]) {
+          console.log("[catchan] answering to pubKey request");
+          this.sendOpening();
       }
   };
 
@@ -182,8 +206,10 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       this.postEncrypted({'type': 'personal', 'data': encrypted, 'pubKey': myPub}, callback);
   };
 
-  Channel.prototype.postEncrypted = function(data, callback) {
-      data.sender = this.fingerprint;
+  Channel.prototype.postEncrypted = function(data, callback, hiding) {
+      if (!hiding) {
+          data.sender = this.fingerprint;
+      }
       var encrypted = sjcl.encrypt(this.name, JSON.stringify(data), {ks: 256, ts: 128});
       this.post(encrypted, callback);
   };
@@ -198,7 +224,12 @@ function (Bitcoin, multiParty, Curve25519, Encryption) {
       return callback;
   };
   Channel.prototype.triggerCallbacks = function(type, data) {
-      data.peer = this.getPeer(data.sender);
+      // channel messages don't have sender
+      if (data.sender) {
+          data.peer = this.getPeer(data.sender, true);
+      } else if (['subscribed', 'publicKeyRequest'].indexOf(data.type) != -1) {
+          console.log("[catchan] message with no sender", type, data)
+      }
       if (this.callbacks.hasOwnProperty(type)) {
           this.callbacks[type].forEach(function(cb) {cb(data);});
       }
