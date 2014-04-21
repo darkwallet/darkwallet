@@ -21,6 +21,7 @@ TransactionTasks.processSpend = function(hash, total, recipients) {
     var task = { hash: hash, height: 0, recipients: recipients};
 
     task.address = recipients[0].address;
+
     // task expects negative for outgoing and positive for incoming
     task.value = -total;
 
@@ -196,7 +197,9 @@ TransactionTasks.removeTask = function(task) {
     var identity = DarkWallet.getIdentity();
     var section = task.value > 0 ? 'receive' : 'send';
 
-    identity.tasks.removeTask(section, task);
+    if (!identity.tasks.removeTask(section, task)) {
+        console.log("[TransactionTasks] could not remove task", task);
+    }
 }
 
 return TransactionTasks;
