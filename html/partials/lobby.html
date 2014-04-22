@@ -56,7 +56,7 @@
             </div>
           </div>
           <h5>Peers</h5>
-          <div ng-repeat="peer in peers">
+          <div ng-repeat="peer in peers track by $index">
             <span ng-click="selectPeer(peer)"><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.name}}</span> <a class="fa fa-link" ng-click="pairPeer(peer)" title="pair"></a>
           </div>
       </div>
