@@ -13,7 +13,7 @@
         <a href="" ng-click="addParticipant(newAddress); newAddress = ''" class="button small radius postfix">Add</a>
       </div>
     </div>
-    <a href="" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, participants: multisig.participants}, addParticipant)" class="button small radius">Select from contacts</a>
+    <a href="" ng-click="openModal('pick-contact', {participants: multisig.participants}, addParticipant)" class="button small radius">Select from contacts</a>
     <a href="" ng-click="openModal('scan-qr', {field: multisig.participants}, onQrModalOk, onQrModalCancel)" class="button small radius">Scan a QR code</a>
     <a href="" ng-click="addParticipant(pasteClipboard(), multisig)" class="button small radius">Paste a Master/Stealth address</a>
   </div>

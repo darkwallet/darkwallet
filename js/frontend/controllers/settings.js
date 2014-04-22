@@ -6,6 +6,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
   controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', function($scope, notify) {
   var identity = DarkWallet.getIdentity();
 
+  $scope.settings = identity.settings;
   // Available fiat currencies
   $scope.fiatCurrencies = FiatCurrencies;
   $scope.selectedCurrency = identity.settings.currency;

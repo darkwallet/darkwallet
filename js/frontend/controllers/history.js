@@ -75,7 +75,12 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
     if (data.type == 'ready') {
         if ($scope.isAll) {
             // set stealth address on the general section
-            var mainAddress = $scope.identity.wallet.getAddress([0]);
+            var identity = DarkWallet.getIdentity();
+            var mainAddress = identity.wallet.getAddress([0]);
+
+            $scope.hdPockets = identity.wallet.pockets.hdPockets;
+            $scope.allFunds = identity.wallet.multisig.funds;
+
             $scope.pocket.stealth = mainAddress.stealth;
         }
         onBalanceUpdate();
@@ -84,9 +89,10 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
 
   // History Listing
   $scope.selectFund = function(fund, rowIndex) {
+      var identity = DarkWallet.getIdentity();
       $scope.pocket.name = fund.name;
       $scope.pocket.index = fund.seq[0];
-      var address = $scope.identity.wallet.getAddress(fund.seq);
+      var address = identity.wallet.getAddress(fund.seq);
 
       $scope.pocket.changeAddresses = [];
       $scope.pocket.addresses = [address];
@@ -99,7 +105,7 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
       $scope.pocket.stealth = undefined;
       $scope.selectedPocket = 'fund:' + rowIndex;
 
-      var balance = $scope.identity.wallet.getBalance(fund.seq[0]);
+      var balance = identity.wallet.getBalance(fund.seq[0]);
 
       $scope.balance = balance.confirmed;
       $scope.unconfirmed = balance.unconfirmed;
@@ -110,12 +116,13 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
       $scope.selectPocket('overview');
   }
   $scope.selectPocket = function(pocketName, rowIndex, form) {
+      var identity = DarkWallet.getIdentity();
       var pocketIndex;
       if (pocketName === undefined || pocketName == 'overview') {
           $scope.pocket.name = pocketName ? "Overview" : "All Pockets";
           $scope.pocket.index = undefined;
           $scope.pocket.mpk = undefined;
-          var mainAddress = $scope.identity.wallet.getAddress([0]);
+          var mainAddress = identity.wallet.getAddress([0]);
           $scope.pocket.stealth = mainAddress.stealth;
           $scope.pocket.fund = null;
           $scope.pocket.addresses = $scope.allAddresses;
@@ -123,7 +130,7 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
           $scope.isAll = true;
           $scope.isOverview = (pocketName == 'overview');
           $scope.isFund = false;
-          var balance = $scope.identity.wallet.getBalance();
+          var balance = identity.wallet.getBalance();
           $scope.balance = balance.confirmed;
           $scope.unconfirmed = balance.unconfirmed;
           $scope.pocket.tasks = [];
@@ -133,19 +140,19 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
           $scope.pocket.index = pocketIndex;
           $scope.pocket.name = pocketName;
           $scope.pocket.fund = null;
-          var walletAddress = $scope.identity.wallet.getAddress([$scope.pocket.index]);
+          var walletAddress = identity.wallet.getAddress([$scope.pocket.index]);
           $scope.pocket.mpk = walletAddress.mpk;
           $scope.pocket.stealth = walletAddress.stealth;
           $scope.pocket.addresses = $scope.addresses[$scope.pocket.index];
           $scope.pocket.changeAddresses = $scope.addresses[$scope.pocket.index+1];
-          var walletPocket = $scope.identity.wallet.pockets.getPocket(pocketName);
+          var walletPocket = identity.wallet.pockets.getPocket(pocketName);
           $scope.pocket.mixing = walletPocket.mixing;
           $scope.pocket.tasks = [];
           $scope.isAll = false;
           $scope.isFund = false;
           // balance is sum of public and change branches
-          var mainBalance = $scope.identity.wallet.getBalance(pocketIndex);
-          var changeBalance = $scope.identity.wallet.getBalance(pocketIndex+1);
+          var mainBalance = identity.wallet.getBalance(pocketIndex);
+          var changeBalance = identity.wallet.getBalance(pocketIndex+1);
           $scope.balance = mainBalance.confirmed + changeBalance.confirmed;
           $scope.unconfirmed = mainBalance.unconfirmed + changeBalance.unconfirmed;
           $scope.forms.pocketLabelForm = form;
@@ -170,8 +177,9 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
   }
  
   // Filter the rows we want to show
-  var chooseRows = function() {
-    var history = $scope.identity.history.history;
+  var chooseRows = function(i) {
+    var identity =  DarkWallet.getIdentity();
+    var history = identity.history.history;
     var rows = history.filter($scope.pocketFilter);
     rows = rows.sort(function(a, b) {
        if (!a.height) {
@@ -192,7 +200,7 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
     prevRow.confirmed = $scope.balance;
     prevRow.unconfirmed = $scope.unconfirmed;
 
-    var contacts = $scope.identity.contacts;
+    var contacts = identity.contacts;
     fillRowContact(contacts, prevRow);
     var idx = 1;
     while(idx<rows.length) {
@@ -323,6 +331,11 @@ function (controllers, Angular, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Por
       var pubKey = new Bitcoin.ECPubKey(walletAddress.pubKey, true);
       var publicHex = pubKey.toHex();
       $scope.copyClipboard(publicHex, 'Copied public key to clipboard');
+  }
+
+  $scope.saveStore = function() {
+      var identity = DarkWallet.getIdentity();
+      identity.store.save();
   }
 
 }]);

@@ -63,7 +63,7 @@
                 <button class="fa square button fa-pencil-square" ng-click="textBtnForm.$show()" ng-disabled="textBtnForm.$visible"></button>
         </div>
         <div class="small-2 columns">
-            <div editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="identity.store.save()">
+            <div editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
                 {{address.label}}
             </div>
         </div>

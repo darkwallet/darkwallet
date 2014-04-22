@@ -100,7 +100,7 @@ function (controllers, DarkWallet) {
    * Continue signing after getting the password
    */
   function finishSignFundTx(password, fund, task, inputs) {
-      var identity = $scope.identity;
+      var identity = DarkWallet.getIdentity();
 
       var signed = fund.signTransaction(password, task, inputs);
 

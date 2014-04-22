@@ -61,6 +61,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       if (!identity || initialized == identity.name) {
           return;
       }
+
       initialized = identity.name;
 
       // Set the dust threshold

@@ -43,7 +43,7 @@
 
                 <a href="" tooltip-placement="left" tooltip-append-to-body="true" tooltip="Scan QR code" ng-click="openModal('scan-qr', {field: field}, onQrModalOkSend, onQrModalCancel)" class="fa button square righted fa-qrcode"></a>
 
-                <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {contacts: identity.contacts.contacts, field: field}, addAddress)" class="fa button square righted fa-users"></a>
+                <a href="" tooltip="Select from contacts" ng-click="openModal('pick-contact', {field: field}, addAddress)" class="fa button square righted fa-users"></a>
 
           </div>
         </div>
@@ -82,12 +82,12 @@
 
         <ul id="wallets" class="f-dropdown">
           <li class="colorhead"><h6>My pockets</h6></li>
-          <li ng-repeat="pocket in identity.wallet.pockets.hdPockets track by $index">
+          <li ng-repeat="pocket in hdPockets track by $index">
             <a ng-click="setPocket($index)">{{pocket.name}}</a>
           </li>
           <li><a ng-click="setPocket('any')">Any</a></li>
           <li class="colorhead"><h6>Multisig funds</h6></li>
-          <li ng-repeat="fund in identity.wallet.multisig.funds track by $index">
+          <li ng-repeat="fund in allFunds track by $index">
             <a ng-click="setPocket('multisig:'+$index)">{{fund.name}}</a>
           </li>
         </ul>

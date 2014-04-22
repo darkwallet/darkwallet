@@ -35,9 +35,9 @@
       </ul>
       <section class="top-bar-section">
         <!-- Right Nav Section -->
-        <ul ng-cloak ng-show="identity.name" class="right">
+        <ul ng-cloak ng-show="identityName" class="right">
           <li id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="fa fa-cog"></i> Settings</a></li>
-          <li ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="fa fa-user"></i> {{identity.name}}</a></li>
+          <li ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="fa fa-user"></i> {{identityName}}</a></li>
         </ul>
         <!-- Left Nav Section -->
         <ul class="left">

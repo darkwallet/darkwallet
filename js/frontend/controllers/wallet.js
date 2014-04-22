@@ -14,6 +14,7 @@ function (controllers, DarkWallet, Port) {
   controllers.controller('WalletCtrl',
   ['$scope', '$location', 'notify', 'clipboard', 'modals', '$timeout',
    function($scope, $location, notify, clipboard, modals, $timeout) {
+
   var prevIdentity = false;
   var closingConnection = false;
 
@@ -23,6 +24,7 @@ function (controllers, DarkWallet, Port) {
   $scope.allAddresses = [];
   $scope.totalBalance = 0;
   $scope.forms = {};
+  $scope.identityName = '';
 
   // Global scope utils
   // TODO: Remove functions in scope
@@ -75,10 +77,11 @@ function (controllers, DarkWallet, Port) {
   Port.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
         loadIdentity(DarkWallet.getIdentity());
-        if(!$scope.$$phase && prevIdentity && prevIdentity != data.name) {
+        if(!$scope.$$phase && prevIdentity && prevIdentity != data.identity) {
             $scope.$apply();
         }
-        prevIdentity = data.name;
+        $scope.identityName = data.identity;
+        prevIdentity = data.identity;
     }
     else if (data.type == 'ticker') {
         $scope.rates[data.currency] = data.rate;
@@ -136,7 +139,7 @@ function (controllers, DarkWallet, Port) {
       $scope.addresses = {};
       $scope.allAddresses.splice(0,$scope.allAddresses.length);
       // set some links
-      $scope.identity = identity;
+      //$scope.identity = identity;
       $scope.availableIdentities = bg.getKeyRing().availableIdentities;
       // $scope.history = identity.history.history;
       // set history update callback
@@ -202,7 +205,7 @@ function (controllers, DarkWallet, Port) {
     if (n === undefined || n === null) {
         n = addressArray.length;
     }
-    var walletAddress = $scope.identity.wallet.getAddress([branchId, n]);
+    var walletAddress = DarkWallet.getIdentity().wallet.getAddress([branchId, n]);
 
     // add to scope
     addToScope(walletAddress);

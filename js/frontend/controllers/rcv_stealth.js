@@ -17,8 +17,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
           }
           console.log("fetching stealth", results);
           var addresses;
+          var identity = DarkWallet.getIdentity();
           try {
-              addresses = $scope.identity.wallet.processStealth(results);
+              addresses = identity.wallet.processStealth(results);
           } catch (e) {
               notify.error("stealth", e.message);
               return;

@@ -38,11 +38,6 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
 
 
   var keyRing = DarkWallet.getKeyRing();
-  $scope.identityChange = function() {
-    if (!$scope.identity) {
-        return;
-    }
-  };
   keyRing.loadIdentities(function(identityNames) {
     var identities = [];
     identityNames.forEach(function(item) {
