@@ -40,6 +40,7 @@
     "qrcodejs": "https://github.com/davidshimjs/qrcodejs.git",
     "identicon": "https://github.com/stewartlord/identicon.js.git",
     "angular-xeditable": "~0.1.8",
-    "async": "~0.7.0"
+    "async": "~0.7.0",
+    "angular-moment": "~0.7.0"
   }
 }

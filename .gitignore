@@ -73,6 +73,12 @@ Desktop.ini
 !/vendors/identicon/identicon.js
 /vendors/async/*
 !/vendors/async/lib
+/vendors/angular-moment/*
+!/vendors/angular-moment/angular-moment.min.js
+/vendors/moment/*
+!/vendors/moment/min/
+/vendors/moment/min/*
+!/vendors/moment/min/moment-with-langs.min.js
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*

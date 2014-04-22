@@ -12,6 +12,8 @@ require.config({
     'angular-route': '../vendors/angular-route/angular-route.min',
     'mm.foundation': '../vendors/angular-foundation/mm-foundation-tpls.min',
     'angular-xeditable': '../vendors/angular-xeditable/dist/js/xeditable.min',
+    'moment': '../vendors/moment/min/moment-with-langs.min',
+    'angular-moment': '../vendors/angular-moment/angular-moment.min',
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
     'ngProgress': "../vendors/ngprogress/build/ngProgress",
     'toaster': "../vendors/AngularJS-Toaster/toaster",
@@ -53,6 +55,9 @@ require.config({
     },
     'toaster': {
       deps: ['angular']
+    },
+    'angular-moment': {
+      deps: ['moment', 'angular']
     },
     'qrcodejs': {
       exports: 'QRCode'
