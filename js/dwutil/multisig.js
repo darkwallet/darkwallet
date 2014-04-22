@@ -32,15 +32,7 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes) {
     var myPubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
     var myAddress = myPubKey.getAddress();
 
-    var compressed = (pubKeyBytes.length == 33);
-
-    // Initially show the address for the compressed key, not necessarily the
-    // one we know about the contact if they're using uncompressed addresses
-    var contactAddress = new Bitcoin.ECPubKey(pubKeyBytes, compressed);
-
-    var participant = { name: contactAddress.toString(),
-                        pubKey: pubKeyBytes,
-                        hash: contactAddress.toHex() };
+    var participant = { pubKey: pubKeyBytes };
 
     var walletAddress = identity.wallet.getWalletAddress(myAddress);
     if (walletAddress) {
@@ -58,6 +50,13 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes) {
             participant.name = contact.name;
             participant.hash = contact.hash;
             participant.type = 'contact';
+        } else {
+            // Just set some values
+            var compressed = (pubKeyBytes.length == 33);
+
+            var contactAddress = new Bitcoin.ECPubKey(pubKeyBytes, compressed);
+            participant.name = contactAddress.toString();
+            participant.hash = contactAddress.toHex();
         }
     }
     return participant;
