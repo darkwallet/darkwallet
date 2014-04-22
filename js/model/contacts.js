@@ -177,7 +177,19 @@ Contacts.prototype.addContactKey = function (contact, data) {
   // delete address since now is contained inside contact.pubKeys
 };
 
-
+/**
+ * Sets key index as main key
+ * Will also update the contact hash to reflect new main identity.
+ */
+Contacts.prototype.setMainKey = function (contact, index) {
+    if (index >= contact.pubKeys.length) {
+       throw Error("Key does not exist");
+    }
+    contact.mainKey = index;
+    this.updateContactHash(contact);
+    this.store.save();
+}
+ 
 
 /**
  * Update a key from given user input

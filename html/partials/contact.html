@@ -76,7 +76,7 @@
 	<div class="medium-1 large-2 columns">
             <!-- Show a star for main address -->
             <div ng-show="$index===vars.contact.mainKey" class="fa fa-star"></div>
-            <div ng-show="$index!=vars.contact.mainKey" class="fa fa-star-o"></div>
+            <div ng-click="setMainKey(vars.contact, $index)"  ng-show="$index!=vars.contact.mainKey" class="fa fa-star-o"></div>
             <!-- Badge for type of address -->
             <span class="label radius" title="Type of address">
                <div class="fa" 
