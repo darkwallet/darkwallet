@@ -39,17 +39,17 @@
     <p>You have no history with this peer</p>
 </div>
 <div class="row panel radius topmargin" ng-show="contactSection=='overview' || !contactSection">
-    <div class="columns large-10" ng-init="pubKey=vars.contact.pubKeys[vars.contact.mainKey]">
+    <div class="columns large-10">
       <div class="row collapse panel radius">
         <h5>The main address for this contact is:</h5>
         <div class="small-1 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="copyClipboard(pubKey.address)" class="button prefix square radius fa fa-clipboard"></a>
+          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="copyClipboard(vars.contact.pubKeys[vars.contact.mainKey].address)" class="button prefix square radius fa fa-clipboard"></a>
         </div>
         <div class="small-1 columns">
-          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="openModal('show-qr', {address: pubKey.address})"></a>
+          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="openModal('show-qr', {address: vars.contact.pubKeys[vars.contact.mainKey].address})"></a>
         </div>
         <div class="small-10 columns">
-          <input type="text" class="postfix radius" readonly value="{{pubKey.address}}" />
+          <input type="text" class="postfix radius" readonly value="{{vars.contact.pubKeys[vars.contact.mainKey].address}}" />
 
         </div>
       </div>
@@ -63,8 +63,7 @@
     <div class="columns large-2 collapse">
           <!-- badge -->
           <span class="label radius" title="Type of address"> <span class="fa" 
-                 ng-class="{'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth'}" 
-                 ng-click="pairPeer(peer)"></span> {{pubKey.type}} </span>
+                 ng-class="{'fa-btc': vars.contact.pubKeys[vars.contact.mainKey].type=='address', 'fa-key': vars.contact.pubKeys[vars.contact.mainKey].type=='pubkey', 'fa-fighter-jet': vars.contact.pubKeys[vars.contact.mainKey].type=='stealth'}"></span> {{vars.contact.pubKeys[vars.contact.mainKey].type}} </span>
 
     </div>
 
@@ -80,8 +79,8 @@
             <!-- Badge for type of address -->
             <span class="label radius" title="Type of address">
                <div class="fa" 
-                 ng-class="{'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth'}" 
-                 ng-click="pairPeer(peer)"></div> {{pubKey.type}} </span>
+                 ng-class="{'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth'}">
+                 </div> {{pubKey.type}} </span>
 
 	</div>
 	<div class="medium-3 large-7 columns" title="{{pubKey.data}}" ng-show="!(editingContact===$index)" ng-click="openEditForm(vars.contact, $index)" >
