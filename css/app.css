@@ -4368,6 +4368,8 @@ span.input-status {
   z-index: 2; }
   span.input-status:before {
     color: #27ae60; }
+  span.input-status:not(:last-child) {
+    z-index: 5; }
 
 input.ng-valid:not(.ng-pristine) + span.input-status {
   opacity: 1; }
@@ -4725,7 +4727,8 @@ div.chat-text {
   background: url(../images/notifications.svg) right/contain no-repeat; }
 
 .lobbyback {
-  background: url(../images/virtual.svg) top/cover no-repeat; }
+  background: url(../images/virtual.svg) top/cover no-repeat;
+  -webkit-box-shadow: inset -0 0px 130px black; }
 
 .setback > * {
   opacity: 0.8; }

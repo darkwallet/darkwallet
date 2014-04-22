@@ -43,6 +43,7 @@ span.input-status {
 	margin-top: -2.7em;
 	z-index: 2;
 	&:before { color: $primary-color; }
+	&:not(:last-child) { z-index: 5; }
  }
 
 input.ng-valid:not(.ng-pristine) + span.input-status { opacity: 1 }
@@ -352,7 +353,7 @@ div.chat-text {
 
 .lobbyback { 
 	background: url(../images/virtual.svg) top/cover no-repeat;
-	
+	-webkit-box-shadow: inset -0 0px 130px black;	
  }
 
 .setback > * { opacity: 0.8; }
