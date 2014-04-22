@@ -21,6 +21,8 @@ define([
     './wallet',
     './calculator',
     './notifications',
+    './connection_notify',
+    './gui_notify',
     './servers',
     './fund',
     './tabs',

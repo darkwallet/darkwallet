@@ -193,6 +193,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
             console.log("[wallet] height fetched", height);
             TransactionTasks.processHeight(height);
             core.service.badge.setItems();
+            Port.post('wallet', {type: 'height', value: height});
             Port.post('gui', {type: 'height', value: height});
         }
     }
