@@ -126,6 +126,18 @@ IdentityKeyRing.prototype.save = function(name, data, callback) {
     chrome.storage.local.set(pars, callback);
 };
 
+/**
+ * Get raw data for an identity
+ * @param {String} name Identity identifier.
+ * @param {Function} callback Callback providing results for the function.
+ * @private
+ */
+IdentityKeyRing.prototype.getRaw = function(name, callback) {
+    name = name ? DW_NS+name : null;
+    chrome.storage.local.get(name, callback);
+};
+
+
 /*
  * Get the storage space the identity uses
  * @param {String} name Identity identifier.
