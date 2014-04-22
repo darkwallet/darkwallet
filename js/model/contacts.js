@@ -112,8 +112,8 @@ Contacts.prototype.generateContactHash = function(data) {
 Contacts.prototype.findByPubKey = function (pubKey) {
   var toCheck = pubKey.toString();
   var compressed = (pubKey.length == 33);
-  for(var i=0; i<this.contacts.length; i++) {
-    for(var j=0; j<this.contacts[i].pubKeys.length; j++) {
+  for(var i in this.contacts) {
+    for(var j in this.contacts[i].pubKeys) {
       var address = this.contacts[i].pubKeys[j].data;
       var cPubKey;
       try {
@@ -136,8 +136,8 @@ Contacts.prototype.findByPubKey = function (pubKey) {
  * @return {Object|null} The contact if it is there
  */
 Contacts.prototype.findByAddress = function (address) {
-  for(var i=0; i<this.contacts.length; i++) {
-    for(var j=0; j<this.contacts[i].pubKeys.length; j++) {
+  for(var i in this.contacts) {
+    for(var j in this.contacts[i].pubKeys) {
       var cAddress = this.contacts[i].pubKeys[j].address;
       if (cAddress == address) {
         return this.contacts[i];
