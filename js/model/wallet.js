@@ -28,10 +28,27 @@ function Wallet(store, identity) {
     this.wallet = new Bitcoin.Wallet(this.mpk);
     this.multisig = new MultisigFunds(store, identity, this);
 
-    // store balance
     this.loadPubKeys();
+
+    // store balance
     this.balance = this.getBalance();
-}
+};
+
+/**
+ * Initialize addresses for the wallet if empty
+ */
+Wallet.prototype.initIfEmpty = function() {
+    var self = this;
+    // If empty generate two addresses and one change for each initial pocket
+    if (!Object.keys(this.pubKeys).length) {
+        this.pockets.pockets.forEach(function (pocket, i) {
+            self.getAddress([i*2,0]);
+            self.getAddress([i*2,1]);
+            self.getAddress([(i*2)+1,0]);
+        });
+        self.store.save();
+    };
+};
 
 /**
  * Get balance for a specific pocket or all pockets
@@ -127,6 +144,7 @@ Wallet.prototype.loadPubKeys = function() {
     if (updated) {
         this.store.save();
     }
+    return updated;
 };
 
 Wallet.prototype.deriveHDPrivateKey = function(seq, masterKey) {

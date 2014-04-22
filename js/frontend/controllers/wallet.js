@@ -94,17 +94,6 @@ function (controllers, DarkWallet, Port) {
     return route === $location.path();
   };
 
-  // Initialize if empty wallet
-  function initializeEmpty() {
-      if (Object.keys($scope.addresses).length == 0) {
-          // generate 5 addresses for now
-          for(var idx=0; idx<5; idx++) {
-              $scope.generateAddress(0);
-              $scope.generateAddress(1);
-          }
-      }
-  }
-
   function loadAddresses(identity) {
       /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
@@ -136,13 +125,18 @@ function (controllers, DarkWallet, Port) {
           return;
       }
       initialized = identity.name;
+
+      // Clear addresses arrays
       $scope.addresses = {};
       $scope.allAddresses.splice(0,$scope.allAddresses.length);
+
       // set some links
-      //$scope.identity = identity;
       $scope.availableIdentities = bg.getKeyRing().availableIdentities;
-      // $scope.history = identity.history.history;
-      // set history update callback
+
+      // initialize wallet addresses if empty
+      identity.wallet.initIfEmpty();
+
+      // get the balance for the wallet
       var balance = identity.wallet.getBalance();
       
       $scope.totalBalance = balance.confirmed;
@@ -153,9 +147,6 @@ function (controllers, DarkWallet, Port) {
 
       // load addresses into angular
       loadAddresses(identity);
-
-      // initialize if empty wallet
-      initializeEmpty();
 
       // this will connect to obelisk if we're not yet connected
       if (bg.getClient() && bg.getClient().connected) {

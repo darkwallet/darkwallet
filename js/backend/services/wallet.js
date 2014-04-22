@@ -156,6 +156,9 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
         // pass to the wallet to process outputs
         identity.wallet.processHistory(walletAddress, history);
 
+        // start filling history
+        identity.history.fillHistory(walletAddress, history);
+
         if (TransactionTasks.processHistory(history, self.currentHeight)) {
             // some task was updated
         }
@@ -180,7 +183,6 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
             return;
         }
         var identity = self.getCurrentIdentity();
-        console.log("fetch history for", walletAddress.address);
         client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
     };
 
