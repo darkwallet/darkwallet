@@ -64,6 +64,9 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
 
       initialized = identity.name;
 
+      $scope.hdPockets = identity.wallet.pockets.hdPockets;
+      $scope.allFunds = identity.wallet.multisig.funds;
+
       // Set the dust threshold
       dustThreshold = identity.wallet.wallet.dustThreshold;
 
