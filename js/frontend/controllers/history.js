@@ -3,9 +3,9 @@
  */
 'use strict';
 
-define(['./module', 'bitcoinjs-lib', 'util/btc', 'darkwallet', 'dwutil/multisig', 'frontend/port'],
-function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
-  controllers.controller('HistoryCtrl', ['$scope', 'notify', '$window', '$history', function($scope, notify, $window, $history) {
+define(['./module', 'bitcoinjs-lib', 'darkwallet', 'frontend/port'],
+function (controllers, Bitcoin, DarkWallet, Port) {
+  controllers.controller('HistoryCtrl', ['$scope', '$history', function($scope, $history) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
@@ -16,6 +16,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
   // Filters
   $scope.txFilter = $history.txFilter;
   $scope.addrFilter = $history.addrFilter;
+
 
   /**
    * Identity Loading
@@ -36,27 +37,27 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
 
 
   /**
-   * Ports: Gui
+   * Gui Port
    */
   Port.connectNg('gui', $scope, function(data) {
-    // Check on gui balance updates to recalculate pocket balance so it shows properly
-    if (data.type == 'balance') {
-        if ($history.isCurrentPocket(data.pocketId)) {
-            $scope.historyRows = $history.onBalanceUpdate();
-        }
-    }
+      // Check on gui balance updates to recalculate pocket balance so it shows properly
+      if (data.type == 'balance') {
+          if ($history.isCurrentPocket(data.pocketId)) {
+              $scope.historyRows = $history.onBalanceUpdate();
+          }
+      }
   });
  
   /**
-   * Ports: Wallet
+   * Wallet port
    */
   Port.connectNg('wallet', $scope, function(data) {
-    if (data.type == 'ready') {
-        identityLoaded();
+      if (data.type == 'ready') {
+          identityLoaded();
 
-        // update history rows shown
-        $scope.historyRows = $history.onBalanceUpdate();
-    }
+          // update history rows shown
+          $scope.historyRows = $history.onBalanceUpdate();
+      }
   });
 
 
@@ -110,7 +111,7 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
    * Start creating a new multisig
    */
   $scope.newMultiSig = function() {
-    $scope.selectedPocket = 'newMultisig';
+      $scope.selectedPocket = 'newMultisig';
   };
 
 

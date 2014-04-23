@@ -1,10 +1,10 @@
 /**
- * @fileOverview HistoryCtrl angular controller
+ * @fileOverview HistoryProvider angular provider
  */
 'use strict';
 
-define(['./module', 'bitcoinjs-lib', 'util/btc', 'darkwallet', 'dwutil/multisig', 'frontend/port'],
-function (providers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
+define(['./module', 'util/btc', 'darkwallet', 'dwutil/multisig'],
+function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   // Get date 30 days ago
   var prevmonth = new Date();
@@ -15,6 +15,9 @@ function (providers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
   prevweek.setDate(prevweek.getDate()-7);
 
 
+  /**
+   * History provider class
+   */ 
   function HistoryProvider($scope, $wallet) {
       this.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $wallet.allAddresses, changeAddresses: [], isAll: true};
       this.txFilter = 'last10';
@@ -157,63 +160,63 @@ function (providers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
 
   // Filters
   HistoryProvider.prototype.fillRowContact = function(contacts, row) {
-    if (!row.contact) {
-        var contact = contacts.findByAddress(row.address);
-        if (contact) {
-            row.contact = contact;
-        }
-    }
+      if (!row.contact) {
+          var contact = contacts.findByAddress(row.address);
+          if (contact) {
+              row.contact = contact;
+          }
+      }
   }
  
   // Filter the rows we want to show
   HistoryProvider.prototype.chooseRows = function(i) {
-    var self = this;
-    var identity =  DarkWallet.getIdentity();
-    var history = identity.history.history;
-    var rows = history.filter(this.pocketFilter, this);
-    rows = rows.sort(function(a, b) {
-       if (!a.height) {
-          return -10000000;
-       }
-       if (!b.height) {
-          return 10000000;
-       }
-       return b.height - a.height;
-    });
-    var shownRows = [];
-    rows = rows.filter(function(row) { return self.historyFilter(row, shownRows) } );
-    if (!rows.length) {
-        return [];
-    }
-    // Now calculate balances
-    var prevRow = rows[0];
-    prevRow.confirmed = this.pocket.balance.confirmed;
-    prevRow.unconfirmed = this.pocket.balance.unconfirmed;
+      var self = this;
+      var identity =  DarkWallet.getIdentity();
+      var history = identity.history.history;
+      var rows = history.filter(this.pocketFilter, this);
+      rows = rows.sort(function(a, b) {
+         if (!a.height) {
+            return -10000000;
+         }
+         if (!b.height) {
+            return 10000000;
+         }
+         return b.height - a.height;
+      });
+      var shownRows = [];
+      rows = rows.filter(function(row) { return self.historyFilter(row, shownRows) } );
+      if (!rows.length) {
+          return [];
+      }
+      // Now calculate balances
+      var prevRow = rows[0];
+      prevRow.confirmed = this.pocket.balance.confirmed;
+      prevRow.unconfirmed = this.pocket.balance.unconfirmed;
 
-    var contacts = identity.contacts;
-    this.fillRowContact(contacts, prevRow);
-    var idx = 1;
-    while(idx<rows.length) {
-        var row = rows[idx];
-        this.fillRowContact(contacts, row);
-        var value = prevRow.total;
+      var contacts = identity.contacts;
+      this.fillRowContact(contacts, prevRow);
+      var idx = 1;
+      while(idx<rows.length) {
+          var row = rows[idx];
+          this.fillRowContact(contacts, row);
+          var value = prevRow.total;
 
-        if (prevRow.height) {
-            row.confirmed = prevRow.confirmed-value;
-            row.unconfirmed = prevRow.unconfirmed;
-        } else {
-            row.confirmed = prevRow.confirmed;
-            // Outgoing unconfirmed are credited straight away
-            if (value < 0) {
-                row.confirmed -= value;
-            }
-            row.unconfirmed = prevRow.unconfirmed-value;
-        }
-        prevRow = row;
-        idx++;
-    }
-    this.rows = rows;
-    return rows;
+          if (prevRow.height) {
+              row.confirmed = prevRow.confirmed-value;
+              row.unconfirmed = prevRow.unconfirmed;
+          } else {
+              row.confirmed = prevRow.confirmed;
+              // Outgoing unconfirmed are credited straight away
+              if (value < 0) {
+                  row.confirmed -= value;
+              }
+              row.unconfirmed = prevRow.unconfirmed-value;
+          }
+          prevRow = row;
+          idx++;
+      }
+      this.rows = rows;
+      return rows;
   }
 
 
