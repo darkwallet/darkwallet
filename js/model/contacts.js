@@ -13,6 +13,11 @@ function Contacts(store, identity) {
   this.store = store;
   this.identity = identity
   this.contacts = this.store.init('contacts', []);
+  this.validAddresses = [
+      identity.wallet.versions.address,
+      identity.wallet.versions.stealth.address,
+      identity.wallet.versions.p2sh
+  ]
   this.initContacts();
 }
 
@@ -60,7 +65,7 @@ Contacts.prototype.prepareAddress = function(data) {
   }
   var newKey = {data: data, pubKey: pubKey, type: 'address'};
 
-  if (BtcUtils.isAddress(data)) {
+  if (BtcUtils.isAddress(data, this.validAddresses)) {
       newKey.address = data;
       if (data[0] == '6') {
           newKey.type = 'stealth';

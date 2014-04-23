@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'util/btc'], function (directives, BtcUtils) {
+define(['./module', 'util/btc', 'darkwallet'], function (directives, BtcUtils, DarkWallet) {
 
 directives.directive('btcAddress', function() {
   return {
@@ -8,7 +8,14 @@ directives.directive('btcAddress', function() {
     link: function(scope, elm, attrs, ctrl) {
       ctrl.$parsers.unshift(function(viewValue) {
         if (viewValue) {
-          var res = BtcUtils.validateAddress(viewValue);
+          var identity = DarkWallet.getIdentity();
+          var validAddresses = [
+              identity.wallet.versions.address,
+              identity.wallet.versions.stealth.address,
+              identity.wallet.versions.p2sh
+          ]
+ 
+          var res = BtcUtils.validateAddress(viewValue, validAddresses);
           ctrl.$setValidity('address', res);
         }
         return viewValue;

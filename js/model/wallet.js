@@ -44,7 +44,7 @@ Wallet.prototype.initVersions = function(network) {
         hd: Bitcoin.network[network].hdVersions
     };
     switch(network) {
-        case 'bitcoin':
+        case 'mainnet':
             this.versions.stealth = {address: Stealth.version, nonce: Stealth.nonceVersion};
             break;
         case 'testnet':

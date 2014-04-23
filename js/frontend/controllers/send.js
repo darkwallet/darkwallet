@@ -58,14 +58,19 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       }
   };
 
-  var initialized;
+  var initialized, validAddresses;
   var initIdentity = function(identity) {
       if (!identity || initialized == identity.name) {
           return;
       }
 
       initialized = identity.name;
-
+      validAddresses = [
+          identity.wallet.versions.address,
+          identity.wallet.versions.stealth.address,
+          identity.wallet.versions.p2sh
+      ]
+ 
       // Set the dust threshold
       dustThreshold = identity.wallet.wallet.dustThreshold;
 
@@ -158,7 +163,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           if (!recipient.amount || !recipient.address) {
               return;
           }
-          if (!BtcUtils.validateAddress(recipient.address)) {
+          if (!BtcUtils.validateAddress(recipient.address, validAddresses)) {
               return;
           }
           var amount = parseInt(BigInteger.valueOf(recipient.amount * satoshis).toString());

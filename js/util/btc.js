@@ -91,7 +91,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
        if (!allowed) allowed = allowedVersions;
        if (address) {
           // Check for base58 encoded addresses
-          if (Bitcoin.Address.validate(address) && allowedVersions.indexOf(Bitcoin.Address.getVersion(address)) != -1) {
+          if (Bitcoin.Address.validate(address) && allowed.indexOf(Bitcoin.Address.getVersion(address)) != -1) {
             return true;
           }
         }
