@@ -4,12 +4,38 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
   var convert = Bitcoin.convert;
 
   var genesisTime = 1231006505;
-  var block296405 = 1397780085;
-  var blockDiff = ((block296405-genesisTime) / 296405);
+  var tzOffset = (new Date()).getTimezoneOffset()*60;
 
   var allowedVersions = [Bitcoin.network.mainnet.addressVersion, Bitcoin.network.mainnet.p2shVersion, Stealth.version];
 
   var BtcUtils = {
+    lastBlock: 296405,
+    lastTimestamp: 1397780085,
+    blockDiff: 562.65,
+    /*
+     * Set timestamp for the last block to adjust timestamp heuristics
+     */
+    setLastTimestamp: function(block, timestamp) {
+        BtcUtils.lastBlock = block;
+        BtcUtils.lastTimestamp = timestamp;
+        BtcUtils.blockDiff = ((timestamp-genesisTime) / block);
+    },
+    /*
+     * Decode a block header
+     */
+    decodeBlockHeader: function(headerHex) {
+        // Don't really need all of these at the moment
+        var header = convert.hexToBytes(headerHex);
+        var version = convert.bytesToNum(header.splice(4));
+        var prevBlock = header.splice(32);
+        var merkleRoot = header.splice(32);
+        var timestamp = convert.bytesToNum(header.splice(4));
+        var difficulty = header.splice(4);
+        var nonce = convert.bytesToNum(header.splice(4));
+        var difficultyNum = convert.bytesToNum(header.splice(4));
+
+        return {version: version, prevBlock: prevBlock, merkleRoot: merkleRoot, timestamp: timestamp, difficulty: difficulty, nonce: nonce};
+    },
     /*
      * Start a multisig structure out of participant public keys and m
      */
@@ -133,7 +159,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     },
     // Convert height to js timestamp
     heightToTimestamp: function(height) {
-        return (genesisTime+(height*blockDiff))*1000;
+        return (tzOffset+genesisTime+(height*BtcUtils.blockDiff))*1000;
     }
   };
 

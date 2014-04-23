@@ -3,8 +3,8 @@
  */
 'use strict';
 
-define(['model/keyring', 'backend/port', 'dwutil/currencyformat', 'dwutil/tasks/transaction', 'bitcoinjs-lib'],
-function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
+define(['model/keyring', 'backend/port', 'dwutil/currencyformat', 'dwutil/tasks/transaction', 'bitcoinjs-lib', 'util/btc'],
+function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, BtcUtils) {
 
   function WalletService(core) {
     var keyRing = new IdentityKeyRing();
@@ -186,7 +186,14 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
         client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
     };
 
-    // Handle initial connection to obelisk
+    // Handle a block header arriving from obelisk
+    function handleBlockHeader(height, headerHex) {
+        var header = BtcUtils.decodeBlockHeader(headerHex);
+
+        BtcUtils.setLastTimestamp(height, header.timestamp);
+    }
+
+    // Handle height arriving from obelisk
     function handleHeight(err, height) {
         if (height != self.currentHeight) {
             self.currentHeight = height;
@@ -195,6 +202,12 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin) {
             core.service.badge.setItems();
             Port.post('wallet', {type: 'height', value: height});
             Port.post('gui', {type: 'height', value: height});
+            var client = core.getClient();
+            client.fetch_block_header(height, function(err, data) {
+                if (!err) {
+                    handleBlockHeader(height, data)
+                }
+            });
         }
     }
 
