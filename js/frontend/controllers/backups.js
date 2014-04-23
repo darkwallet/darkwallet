@@ -121,7 +121,7 @@ define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], fun
                 var commsKey = new Bitcoin.ECKey(identity.commsKey);
                 var pubKey = commsKey.getPub().toBytes(true);
                 var hash = Bitcoin.convert.bytesToHex(pubKey);
-                var nPubKeys = Object.keys(identity.contacts).length;
+                var nPubKeys = Object.keys(identity.pubkeys).length;
                 var nContacts = identity.contacts.length;
                 
                 $scope.toLoad.push({name: key.substr(12), hash: hash, pubKeys: nPubKeys, contacts: nContacts, version: identity.version});
