@@ -6,6 +6,7 @@ define([
     './clipboard',
     './modals',
     './wallet',
+    './history',
     './notify',
     './sounds'
 ], function () {});

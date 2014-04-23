@@ -1,4 +1,4 @@
-<div class="panel" ng-hide="isAll || isFund">
+<div class="panel" ng-hide="pocket.isAll || pocket.isFund">
     <div class="row collapse">
         <div class="medium-2 columns">
             <span class="prefix radius">Stealth Address</span>
@@ -89,7 +89,7 @@
     </div>
   
 </div>
-<div ng-hide="isFund">
+<div ng-hide="pocket.isFund">
     <a class="button small" ng-click="generateAddress(pocket.index)">New address</a>
     <a class="button small" ng-click="generateAddress(pocket.index+1)">New change address</a>
 </div>

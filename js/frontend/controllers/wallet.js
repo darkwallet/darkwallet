@@ -15,6 +15,9 @@ function (controllers, DarkWallet, Port) {
   ['$scope', '$location', 'notify', 'clipboard', 'modals', '$timeout', '$wallet',
    function($scope, $location, notify, clipboard, modals, $timeout, $wallet) {
 
+  // tabs store
+  $scope.tabs = {};
+
   // Scope variables
   $scope.rates = {};
   $scope.allAddresses = [];
@@ -72,6 +75,10 @@ function (controllers, DarkWallet, Port) {
       // Clear addresses arrays
       $scope.addresses = $wallet.addresses;
       $scope.allAddresses = $wallet.allAddresses;
+
+      // Link pockets and funds
+      $scope.hdPockets = identity.wallet.pockets.hdPockets;
+      $scope.allFunds = identity.wallet.multisig.funds;
 
       // set some links
       $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
