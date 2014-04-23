@@ -164,7 +164,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     // Convert height to js timestamp
     heightToTimestamp: function(height, diff) {
         diff = diff || BtcUtils.blockDiff;
-        return (tzOffset+genesisTime+(height*diff))*1000;
+        return (genesisTime+(height*diff))*1000;
     }
   };
 
