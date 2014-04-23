@@ -3,7 +3,7 @@
 define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc'],
 function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   var BigInteger = Bitcoin.BigInteger;
-  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', function($scope, $window, notify) {
+  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', '$wallet', function($scope, $window, notify, $wallet) {
   $scope.send = { mixing: true, sending: false };
   $scope.autoAddEnabled = false;
   $scope.sendPocket = 0;
@@ -201,7 +201,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   $scope.sendBitcoins = function() {
 
       // get a free change address
-      var changeAddress = $scope.getChangeAddress($scope.pocketIndex);
+      var changeAddress = $wallet.getChangeAddress($scope.pocketIndex);
 
       // prepare amounts
       var satoshis = getSatoshis();

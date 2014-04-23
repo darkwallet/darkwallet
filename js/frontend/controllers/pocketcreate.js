@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('PocketCreateCtrl', ['$scope', function($scope) {
+  controllers.controller('PocketCreateCtrl', ['$scope', '$wallet', function($scope, $wallet) {
 
     /**
      * Scope variables
@@ -25,10 +25,10 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
             var pocketIndex = identity.wallet.pockets.hdPockets.length-1;
 
             // initialize pocket on angular
-            $scope.initPocket(pocketIndex);
+            $wallet.initPocket(pocketIndex);
 
             // generate an address
-            $scope.generateAddress(pocketIndex*2, 0);
+            $wallet.generateAddress(pocketIndex*2, 0);
 
             // select the pocket
             $scope.selectPocket($scope.newPocket.name, pocketIndex);
@@ -49,7 +49,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         } else {
             var identity = DarkWallet.getIdentity();
             identity.store.save();
-            $scope.pocket.name = pocket.name;
+            $wallet.pocket.name = pocket.name;
         }
     };
 

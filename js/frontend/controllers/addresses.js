@@ -11,6 +11,13 @@ function (controllers, Bitcoin, DarkWallet) {
   $scope.addrFilter = $history.addrFilter;
 
   /**
+   * Generate an address
+   */
+  $scope.generateAddress = function(branchId, n) {
+      return $wallet.generateAddress(branchId, n);
+  }
+
+  /**
    * Address filter
    */
   $scope.setAddressFilter = function(name) {

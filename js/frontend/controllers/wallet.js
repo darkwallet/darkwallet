@@ -42,24 +42,6 @@ function (controllers, DarkWallet, Port) {
       }
   });
 
-  // Initialize pocket structures.
-  $scope.initPocket = function(pocketId) {
-      $wallet.initPocket(pocketId);
-  };
-
-  // Add a wallet address to scope
-  $scope.addToScope = function(walletAddress) {
-      $wallet.addToScope(walletAddress);
-  };
-
-  $scope.generateAddress = function(branchId, n) {
-      return $wallet.generateAddress(branchId, n);
-  }
-
-  $scope.getChangeAddress = function(pocketId) {
-      return $wallet.getChangeAddress(pocketId);
-  }
-
   // Check if a route is active
   $scope.isActive = function(route) {
     return route === $location.path();

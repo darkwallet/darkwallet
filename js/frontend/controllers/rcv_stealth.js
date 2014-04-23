@@ -1,7 +1,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ReceiveStealthCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('ReceiveStealthCtrl', ['$scope', 'notify', '$wallet', function($scope, notify, $wallet) {
   // function to receive stealth information
   $scope.receiveStealth = function() {
       notify.note("stealth", "initializing");
@@ -28,7 +28,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
               var walletService = DarkWallet.service.wallet;
               addresses.forEach(function(walletAddress) {
                   // TODO: should be added to scope in response to some event
-                  $scope.addToScope(walletAddress);
+                  $wallet.addToScope(walletAddress);
                   walletService.initAddress(walletAddress);
               })
               notify.success("stealth ok", addresses.length + " payments detected");
