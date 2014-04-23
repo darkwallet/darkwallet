@@ -163,7 +163,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         identity.wallet.processHistory(walletAddress, history);
 
         // start filling history
-        //identity.history.fillHistory(walletAddress, history);
+        identity.history.fillHistory(walletAddress, history);
 
         if (TransactionTasks.processHistory(history, self.currentHeight)) {
             // some task was updated
