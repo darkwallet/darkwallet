@@ -30,10 +30,25 @@ function (controllers, DarkWallet, Port) {
           var mainAddress = identity.wallet.getAddress([0]);
           $scope.pocket.mainAddress = mainAddress.stealth;
       }
+      if ($history.previousIdentity != identity.name) {
+          if ($history.previousIdentity) {
+              $scope.historyRows = $history.selectAll();
+              // Set the selected pocket
+              $scope.selectedPocket = $history.selectedPocket;
+
+              // Update tabs
+              $scope.tabs.updateTabs($scope.pocket.isAll, $scope.pocket.isFund, $scope.pocket.tasks);
+          }
+
+          $history.previousIdentity = identity.name;
+          if (!$scope.$$phase) {
+              $scope.$apply();
+          }
+      }
   }
 
   var identity = DarkWallet.getIdentity();
-  if (identity && $scope.pocket.isAll) {
+  if (identity) {
       identityLoaded(identity);
   }
 
