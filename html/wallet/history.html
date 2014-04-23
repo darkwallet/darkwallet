@@ -1,6 +1,9 @@
 <div class="row">
     <div class="small-12 columns">
-        <div class="row collapse panel radius transactions">
+        <div class="row collapse panel radius transactions" ng-show="!historyRows.length">
+            You have no history in this pocket.
+        </div>
+        <div class="row collapse panel radius transactions" ng-show="historyRows.length">
             <dl class="sub-nav">
                 <dt>Filter:</dt>
                 <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
@@ -58,7 +61,7 @@
         </div>
     </div>
 </div>
-<div class="pagination-centered">
+<div class="pagination-centered" ng-show="historyRows.length">
     <ul class="pagination">
         <li class="arrow unavailable"><a href="">&laquo;</a></li>
         <li class="current"><a href="">1</a></li>
