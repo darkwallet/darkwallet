@@ -1,19 +1,18 @@
 /**
- * @fileOverview Wallet classes.
+ * @fileOverview WalletCtrl angular controller
  */
 'use strict';
 
-/**
- * Wallet constructor class.
- * @param {Object} $scope Angular scope.
- * @constructor
- */
 define(['./module', 'darkwallet', 'frontend/port'],
 function (controllers, DarkWallet, Port) {
   'use strict';
+
+  /**
+   * Controller
+   */
   controllers.controller('WalletCtrl',
-  ['$scope', '$location', 'notify', 'clipboard', 'modals', '$timeout', '$wallet',
-   function($scope, $location, notify, clipboard, modals, $timeout, $wallet) {
+  ['$scope', '$location', 'clipboard', 'modals', '$wallet',
+      function($scope, $location, clipboard, modals, $wallet) {
 
   // Scope variables
   $scope.rates = {};
@@ -22,11 +21,16 @@ function (controllers, DarkWallet, Port) {
   $scope.forms = {};
   $scope.identityName = false;
 
+
   // Global scope utils
   modals.registerScope($scope);
   clipboard.registerScope($scope);
 
-  // Wallet service, connect to get notified about identity getting loaded.
+
+  /**
+   * Wallet Port
+   * Sends notifications about wallet state and identity change
+   */
   Port.connectNg('wallet', $scope, function(data) {
       if (data.type == 'ready') {
           var updated = identityLoaded(DarkWallet.getIdentity());
@@ -42,16 +46,20 @@ function (controllers, DarkWallet, Port) {
       }
   });
 
-  // Check if a route is active
+
+  /**
+   * Check if a route is active
+   */
   $scope.isActive = function(route) {
     return route === $location.path();
   };
+
 
   /**
    * Link given identity to the scope
    */
   function linkIdentity(identity) {
-      // Clear addresses arrays
+      // Link address arrays
       $scope.addresses = $wallet.addresses;
       $scope.allAddresses = $wallet.allAddresses;
 
@@ -70,8 +78,10 @@ function (controllers, DarkWallet, Port) {
       $scope.selectedCurrency = identity.settings.currency;
       $scope.selectedFiat = identity.settings.fiatCurrency;
       $scope.defaultFee = identity.wallet.fee / 100000000;
+
       $scope.identityName = identity.name;
   }
+
 
   /**
    * Identity loaded, called when a new identity is loaded
