@@ -16,6 +16,7 @@
     </div>
   </div>
   <div ng-show="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 columns">
+      <span ng-controller="GuiNotifyCtrl"></span>
       <ng-include src="'wallet/new_fund.html'">
       </ng-include>
   </div>
