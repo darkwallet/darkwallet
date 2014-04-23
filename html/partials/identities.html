@@ -1,9 +1,10 @@
+<div ng-controller="BackupsCtrl">
 <div class="row">
   <div class="small-12 columns">
     <h3>My identities</h3>
     <h6>You can have different identities in your Dark Wallet. Identities aren't linked to each other, can use different passwords and be backed up separately.</h6>
     <a href="#new_wallet" class="button radius">Create a new identity</a>
-    <button class="radius">Import a wallet</button>
+    <button class="radius" ng-click="restoreBackup()">Import a wallet</button>
     <button ng-click="backupIdentity()" class="radius">Backup all wallets</button>
   </div>
 </div>
@@ -20,4 +21,5 @@
       </li>
     </ul>
   </div>
+</div>
 </div>
