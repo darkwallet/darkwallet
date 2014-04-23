@@ -1,6 +1,6 @@
 Immediate:
- - Review and stabilize gateway
- - Send:
+ + Review and stabilize gateway
+ + Send:
    + Review sending
  - Lobby system
    + then finish CoinJoin STARTED
@@ -15,16 +15,16 @@ Immediate:
 Style:
  - 'Dashboard' for all pockets
  + 'Dashboard' for pockets/funds
- - Contacts
+ + Contacts
    - Web of trust controls
    * Review contact edit form (needs to be able to add more fields)
    * Contact view with more fields
  - Settings
    - Add sections (or something)
- - Utils
+ + Utils
    + Controls for sign message / check signed
- - Identities
-   - Modals or something for restore and backup
+ + Identities
+   + Modals or something for restore and backup
 
 Other:
  - Cache address history and resume
