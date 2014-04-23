@@ -150,7 +150,7 @@ Wallet.prototype.loadPubKeys = function() {
             // Check pockets (those with index length == 1)
             if (!walletAddress.mpk) {
                 // precalculate mpk for pockets that dont have it
-                walletAddress.mpk = BtcUtils.deriveMpk(this.mpk);
+                walletAddress.mpk = BtcUtils.deriveMpk(this.mpk, walletAddress.index[0]);
                 updated = true;
             }
         }
@@ -274,7 +274,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
         var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [pubKey], this.versions.stealth.address);
         walletAddress['stealth'] = stealthAddress;
         // Mpk
-        walletAddress['mpk'] = BtcUtils.deriveMpk(this.mpk)
+        walletAddress['mpk'] = BtcUtils.deriveMpk(this.mpk, seq[0])
     }
 
     // add to internal bitcoinjs-lib wallet
