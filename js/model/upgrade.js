@@ -12,12 +12,6 @@ var DW_NS = 'dw:identity:';
  */
 
 function Upgrade1To2(store) {
-    // If no scankeys need to regenerate
-    if (store.scankeys.length == 0) {
-        console.log('You need to reseed the wallet to generate stealth scanning keys!');
-        store.reseed = true;
-        return false;
-    }
     if (!store.mpk) {
         console.log("Wallet without mpk!", this.mpk);
         // throw Error("No mpk!");
@@ -66,11 +60,19 @@ function Upgrade1To2(store) {
             store.pockets[i] = {'name': store.pockets[i]};
         };
     }
+    // If no scankeys need to regenerate
+    if (store.scankeys.length == 0) {
+        // Can't finish the upgrade, need user to regenerate keys
+        console.log('[upgrade] You need to reseed the wallet to generate stealth scanning keys!');
+        store.reseed = true;
+        return false;
+    }
     return true;
 }
 
 /**
  * Upgrade a given store
+ * @return true of false if the store was changed and should be saved
  */
 function Upgrade(store) {
     if (store.version == 2) {
@@ -82,8 +84,8 @@ function Upgrade(store) {
     if (Upgrade1To2(store)) {
         store.version = 2;
         console.log("[upgrade] Upgraded to version 2")
-        return true;
     }
+    return true;
 }
 
 return Upgrade;
