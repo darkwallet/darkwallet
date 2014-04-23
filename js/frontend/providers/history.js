@@ -77,7 +77,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
       this.pocket.changeAddresses = [];
       this.pocket.addresses = [address];
-      this.pocket.mainAddress = address;
+      this.pocket.mainAddress = address.address;
       this.pocket.fund = new MultisigFund(fund);
       this.pocket.tasks = this.pocket.fund.tasks;
 
