@@ -27,7 +27,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
         var participant = { address: data };
 
         // Generate an identifying hash
-        participant.hash = identity.contacts.generateContactHash(participant);
+        participant.hash = identity.contacts.generateContactHash(data);
 
         // Add to scope participants
         vars.participants.push(participant);
@@ -50,7 +50,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
                                 fixed: true };
 
             // Generate an identifying hash
-            participant.hash = identity.contacts.generateContactHash(participant);
+            participant.hash = identity.contacts.generateContactHash(participant.address);
 
             // Add to scope participants
             $scope.multisig.participants.push(participant);
