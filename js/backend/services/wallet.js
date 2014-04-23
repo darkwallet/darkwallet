@@ -47,6 +47,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         identity.history.update = function() { Port.post('gui', {name: 'update'}); };
         if (lastTimestamp) {
             BtcUtils.setLastTimestamp(lastTimestamp.height, lastTimestamp.timestamp);
+            Port.post('gui', {type: 'timestamps', height: lastTimestamp.height, timestamp: lastTimestamp.timestamp});
         }
         self.blockDiff = BtcUtils.blockDiff;
 
@@ -162,7 +163,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         identity.wallet.processHistory(walletAddress, history);
 
         // start filling history
-        identity.history.fillHistory(walletAddress, history);
+        //identity.history.fillHistory(walletAddress, history);
 
         if (TransactionTasks.processHistory(history, self.currentHeight)) {
             // some task was updated
@@ -171,7 +172,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         // now subscribe the address for notifications
         client.subscribe(walletAddress.address, function(err, res) {
             // fill history after subscribing to ensure we got all histories already (for now).
-            identity.history.fillHistory(walletAddress, history);
+            //identity.history.fillHistory(walletAddress, history);
             var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
             Port.post('gui', {type: 'balance', pocketId: pocketId});
         }, function(addressUpdate) {
