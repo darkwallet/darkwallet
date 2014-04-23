@@ -27,13 +27,9 @@ function Contacts(store, identity) {
  */
 Contacts.prototype.initContacts = function() {
   var self = this;
-  // TODO Remove when Darkwallet 1.0 release
-  if (!Array.isArray(this.contacts)) {
-    this.contacts = [];
-    this.store.set('contacts', this.contacts);
-    this.store.save();
-  }
   var updated;
+
+  // TODO Remove when Darkwallet 1.0 release
   this.contacts.forEach(function(contact) {
       if (!contact) {
           return;

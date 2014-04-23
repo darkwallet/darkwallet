@@ -128,14 +128,9 @@ Wallet.prototype.getBalance = function(pocketIndex) {
  */
 Wallet.prototype.loadPubKeys = function() {
     var self = this;
-    var updated = false;
-    var toRemove = [];
     Object.keys(this.pubKeys).forEach(function(index) {
         var walletAddress = self.pubKeys[index];
-        if (walletAddress == null || walletAddress.index == null) {
-            toRemove.push(index)
-            return;
-        }
+
         // Add all to the wallet
         self.wallet.addresses.push(walletAddress.address);
         if (walletAddress.index.length > 1) {
@@ -145,26 +140,9 @@ Wallet.prototype.loadPubKeys = function() {
             // properly later
             //if (walletAddress.history)
             //    self.processHistory(walletAddress, walletAddress.history);
-        } else {
-            // TODO: change to store upgrade area
-            // Check pockets (those with index length == 1)
-            if (!walletAddress.mpk) {
-                // precalculate mpk for pockets that dont have it
-                walletAddress.mpk = BtcUtils.deriveMpk(this.mpk, walletAddress.index[0]);
-                updated = true;
-            }
         }
     });
-    // Cleanup malformed addresses
-    toRemove.forEach(function(index) {
-        console.log("[model] Deleting", self.pubKeys[index]);
-        delete self.pubKeys[index];
-        updated = true;
-    });
-    if (updated) {
-        this.store.save();
-    }
-    return updated;
+    return false; // updated
 };
 
 Wallet.prototype.deriveHDPrivateKey = function(seq, masterKey) {

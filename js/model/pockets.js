@@ -24,12 +24,6 @@ function Pockets(store, identity, wallet) {
 Pockets.prototype.initPockets = function(store) {
     var pockets = store.init('pockets', [{name:'default'}, {name: 'savings'}]);
 
-    // Upgrade pocket store to new format
-    if (typeof pockets[0] == 'string') {
-        for(var i=0; i< pockets.length; i++) {
-            pockets[i] = {'name': pockets[i]};
-        };
-    }
     // Init pocket wallets (temporary cache for pockets)
     this.pocketWallets = {};
     for(var i=0; i< pockets.length; i++) {

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['model/identity', 'model/store'], function(Identity, Store) {
+define(['model/identity', 'model/store', 'model/upgrade'], function(Identity, Store, Upgrade) {
 // DarkWallet namespace for the local storage.
 var DW_NS = 'dw:identity:';
 
@@ -26,7 +26,7 @@ IdentityKeyRing.prototype.get = function(name, callback) {
     } else if (this.availableIdentities.indexOf(name) != -1) {
         this.load(name, callback);
     } else {
-        throw "Identity doesn't exist";
+        throw Error("Identity doesn't exist");
     }
 };
 
@@ -103,12 +103,20 @@ IdentityKeyRing.prototype.loadIdentities = function(callback) {
  */
 IdentityKeyRing.prototype.load = function(name, callback) {
     var self = this;
-    var _name = name;
-    var _callback = callback;
     chrome.storage.local.get(DW_NS+name, function(obj) {
-        self.identities[_name] = new Identity(new Store(obj[DW_NS+_name], self));
-        if (_callback) {
-            _callback(self.identities[_name]);
+        var store = obj[DW_NS+name];
+        // Finish loading
+        var finishLoading = function() {
+            self.identities[name] = new Identity(new Store(store, self));
+            if (callback) {
+                callback(self.identities[name]);
+            }
+        }
+        // Check for upgrade
+        if (Upgrade(store)) {
+            self.save(name, store, finishLoading)
+        } else {
+            finishLoading()
         }
     });
 };
