@@ -3,8 +3,8 @@
  */
 'use strict';
 
-define(['./module', 'bitcoinjs-lib', 'darkwallet', 'frontend/port'],
-function (controllers, Bitcoin, DarkWallet, Port) {
+define(['./module', 'darkwallet', 'frontend/port'],
+function (controllers, DarkWallet, Port) {
   controllers.controller('HistoryCtrl', ['$scope', '$history', function($scope, $history) {
 
   // Scope variables
@@ -15,14 +15,11 @@ function (controllers, Bitcoin, DarkWallet, Port) {
 
   // Filters
   $scope.txFilter = $history.txFilter;
-  $scope.addrFilter = $history.addrFilter;
 
 
   /**
    * Identity Loading
    */
-  var identity = DarkWallet.getIdentity();
-
   var identityLoaded = function(identity) {
       // set stealth address on the general section
       if ($scope.pocket.isAll && !$scope.pocket.stealth) {
@@ -31,6 +28,8 @@ function (controllers, Bitcoin, DarkWallet, Port) {
           $scope.pocket.stealth = mainAddress.stealth;
       }
   }
+
+  var identity = DarkWallet.getIdentity();
   if (identity && $scope.pocket.isAll) {
       identityLoaded(identity);
   }
@@ -116,19 +115,6 @@ function (controllers, Bitcoin, DarkWallet, Port) {
 
 
   /**
-   * Address filter
-   */
-  $scope.setAddressFilter = function(name) {
-      $scope.addrFilter = name;
-      $scope.historyRows = $history.setAddressFilter(name);
-  };
-
-  $scope.addressFilter = function(row) {
-      return $history.addressFilter(row);
-  };
-
-
-  /**
    * History filter
    */
   $scope.pocketFilter = function(row) {
@@ -145,20 +131,6 @@ function (controllers, Bitcoin, DarkWallet, Port) {
       return $history.historyFilter(row, shownRows);
   };
 
-
-  /**
-   * Utility scope functions
-   */
-  $scope.copyClipboardPublic = function(walletAddress) {
-      var pubKey = new Bitcoin.ECPubKey(walletAddress.pubKey, true);
-      var publicHex = pubKey.toHex();
-      $scope.copyClipboard(publicHex, 'Copied public key to clipboard');
-  }
-
-  $scope.saveStore = function() {
-      var identity = DarkWallet.getIdentity();
-      identity.store.save();
-  }
 
 }]);
 });

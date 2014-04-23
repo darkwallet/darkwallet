@@ -7,6 +7,7 @@
 'use strict';
 
 define([
+    './addresses',
     './contacts',
     './dashboard',
     './history',
