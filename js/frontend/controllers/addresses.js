@@ -5,7 +5,7 @@
 
 define(['./module', 'bitcoinjs-lib', 'darkwallet'],
 function (controllers, Bitcoin, DarkWallet) {
-  controllers.controller('AddressesCtrl', ['$scope', '$history', function($scope, $history) {
+  controllers.controller('AddressesCtrl', ['$scope', '$history', '$wallet', function($scope, $history, $wallet) {
 
   // Filters
   $scope.addrFilter = $history.addrFilter;
