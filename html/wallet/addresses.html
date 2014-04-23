@@ -59,7 +59,7 @@
         </div>
     </div>
 
-    <div class="row collapse"  ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:addressFilter">
+    <div class="row collapse"  ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:addressFilter track by $index">
         <div class="small-1 columns">
                 <button class="fa square button fa-pencil-square" ng-click="textBtnForm.$show()" ng-disabled="textBtnForm.$visible"></button>
         </div>
