@@ -3,10 +3,10 @@
  */
 'use strict';
 
-define(['model/contacts'], function(Contacts) {
+define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
   describe('Contacts model', function() {
     
-    var contacts, satoshiForest, _store, satoshiForestNew;
+    var contacts, satoshiForest, _store, satoshiForestNew, satoshiForestAddress;
     var store = {
       init: function(key, value) {
         return value;
@@ -18,11 +18,22 @@ define(['model/contacts'], function(Contacts) {
         }
       }
     };
+    var identity = {
+      store: store,
+      wallet: {
+        versions: {
+          address: 0,
+          stealth: {address: Stealth.version},
+          p2sh: 5
+        }
+      }
+    };
     
     beforeEach(function() {
-      contacts = new Contacts(store);
-      satoshiForestNew = {name: 'Satoshi Forest', address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'},
-      satoshiForest = {name: 'Satoshi Forest', mainKey: 0, pubKeys: [{data: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd', type: 'address', address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'}]};
+      contacts = new Contacts(store, identity);
+      satoshiForestAddress = '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd';
+      satoshiForestNew = {name: 'Satoshi Forest', address: satoshiForestAddress},
+      satoshiForest = {name: 'Satoshi Forest', mainKey: 0, pubKeys: [{data: satoshiForestAddress, type: 'address', address: satoshiForestAddress}]};
       _store = [];
     });
 
@@ -31,54 +42,7 @@ define(['model/contacts'], function(Contacts) {
       expect(contacts.contacts).toEqual([]);
     });
 
-    it('adds contact', function() {
-      contacts.addContact(satoshiForestNew);
-      expect(contacts.contacts.length).toBe(1);
-      expect(satoshiForestNew.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
-      expect(_store).toContain('Satoshi Forest');
-    });
-
-     it('finds a contact', function() {
-      var libBitcoin =  {name: 'libbitcoin', address: '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b'};
-      var libBitcoin2 =  {name: 'libbitcoin2', address: '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b'};
-      var libBitcoinPub = [4,207,46,91,2,214,240,35,64,245,169,222,251,191,113,12,56,139,132,81,200,
-                           33,69,177,65,159,233,105,104,55,177,205,239,197,105,162,167,155,170,109,162,
-                           247,71,195,178,90,16,42,8,29,253,94,121,154,188,65,38,33,3,224,209,113,20,119,11];
-      contacts.addContact(libBitcoin2);
-      contacts.addContact(libBitcoin);
-      // this is to trigger an error that should not break the search
-      contacts.contacts[0].pubKeys[0].data = 'foo';
-      var libBitcoinShort = [3,207,46,91,2,214,240,35,64,245,169,222,251,191,113,12,56,139,132,81,200,33,69,177,65,159,233,105,104,55,177,205,239];
-
-      var contact = contacts.findByPubKey(libBitcoinPub);
-
-      expect(contact.name).toEqual(libBitcoin.name)
-      expect(contact.address).toEqual(libBitcoin.address)
-
-      contact = contacts.findByPubKey(libBitcoinShort);
-
-      expect(contact.name).toEqual(libBitcoin.name)
-      expect(contact.address).toEqual(libBitcoin.address)
-    });
-    
     // it('initializes contacts'); // TODO Delete it in DarkWallet 1.0
-
-    it('generates a contact hash', function() {
-      var data = '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b';
-      expect(contacts.generateContactHash(data)).toBe("8f22baa6aeb2005c90187e52bedbf2201872bf225d247dc1c09541de2c393de0");
-    });
-
-    it('throws updating a wrong index', function() {
-      contacts.addContact(satoshiForestNew);
-      contacts.contacts[0].pubKeys = [];
-      expect(function() {
-         contacts.updateKey(contacts.contacts[0], data, 3);
-      }).toThrow();
-    });
-    it('updates contact hash', function() {
-      contacts.updateContactHash(satoshiForest);
-      expect(satoshiForest.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
-    });
 
     it('prepares an address', function() {
       var data = '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b';
@@ -102,8 +66,66 @@ define(['model/contacts'], function(Contacts) {
       expect(key.type).toBe('stealth');
       
     });
+    
+    it('updates contact hash', function() {
+      contacts.updateContactHash(satoshiForest);
+      expect(satoshiForest.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
+    });
+    
+    it('generates and address hash', function() {
+      var hash = contacts.generateAddressHash(satoshiForest.pubKeys[0].address);
+      expect(hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
+    });
+    
+    it('generates a contact hash', function() {
+      var data = '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b';
+      expect(contacts.generateContactHash(data)).toBe("8f22baa6aeb2005c90187e52bedbf2201872bf225d247dc1c09541de2c393de0");
+    });
+    
+    it('finds a contact by pubkey', function() {
+      var libBitcoin =  {name: 'libbitcoin', address: '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b'};
+      var libBitcoin2 =  {name: 'libbitcoin2', address: '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b'};
+      var libBitcoinPub = [4,207,46,91,2,214,240,35,64,245,169,222,251,191,113,12,56,139,132,81,200,
+                           33,69,177,65,159,233,105,104,55,177,205,239,197,105,162,167,155,170,109,162,
+                           247,71,195,178,90,16,42,8,29,253,94,121,154,188,65,38,33,3,224,209,113,20,119,11];
+      contacts.addContact(libBitcoin2);
+      contacts.addContact(libBitcoin);
+      // this is to trigger an error that should not break the search
+      contacts.contacts[0].pubKeys[0].data = 'foo';
+      var libBitcoinShort = [3,207,46,91,2,214,240,35,64,245,169,222,251,191,113,12,56,139,132,81,200,33,69,177,65,159,233,105,104,55,177,205,239];
 
+      var contact = contacts.findByPubKey(libBitcoinPub);
 
+      expect(contact.name).toEqual(libBitcoin.name)
+      expect(contact.address).toEqual(libBitcoin.address)
+
+      contact = contacts.findByPubKey(libBitcoinShort);
+
+      expect(contact.name).toEqual(libBitcoin.name)
+      expect(contact.address).toEqual(libBitcoin.address)
+    });
+    
+    it('finds a contact by address');
+
+    it('adds contact', function() {
+      contacts.addContact(satoshiForestNew);
+      expect(contacts.contacts.length).toBe(1);
+      expect(satoshiForestNew.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
+      expect(_store).toContain('Satoshi Forest');
+    });
+    
+    it('adds a contact key');
+    
+    it('sets main key');
+
+    it('throws updating a wrong index', function() {
+      contacts.addContact(satoshiForestNew);
+      contacts.contacts[0].pubKeys = [];
+      expect(function() {
+         contacts.updateKey(contacts.contacts[0], data, 3);
+      }).toThrow();
+    });
+    
     it('updates contact', function() {
       contacts.addContact(satoshiForestNew);
       var forest = contacts.contacts[0];
@@ -136,7 +158,7 @@ define(['model/contacts'], function(Contacts) {
   /**
    * Model upgrade original version, just wipes out the store
    */
-  describe('Model upgrade 1', function() {
+  xdescribe('Model upgrade 1', function() {
     var contacts;
     var store = {
       init: function(key, value) {
@@ -150,9 +172,10 @@ define(['model/contacts'], function(Contacts) {
       set: function() {
       }
     };
+    var identity = {store: store, wallet: {versions: {stealth: ''}}};
  
     beforeEach(function() {
-      contacts = new Contacts(store);
+      contacts = new Contacts(store, identity);
     });
 
     it('it upgrades from array properly', function() {
@@ -167,12 +190,12 @@ define(['model/contacts'], function(Contacts) {
    */
   describe('Model upgrade 2', function() {
     var contacts;
-    var satoshiForestNew = {name: 'Satoshi Forest', address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'};
-    var satoshiForest = {name: 'Satoshi Forest', mainKey: 0, pubKeys: [{data: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd', type: 'address', address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'}]};
+    var satoshiForest = {name: 'Satoshi Forest', address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'};
+    var satoshiForestNew = {name: 'Satoshi Forest', mainKey: 0, pubKeys: [{data: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd', type: 'address', pubKey: undefined, address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'}]};
     var store = {
       init: function(key, value) {
         if (key == 'contacts') {
-            return [satoshiForestNew];
+            return [satoshiForest];
         }
         return value;
       },
@@ -181,9 +204,19 @@ define(['model/contacts'], function(Contacts) {
       set: function() {
       }
     };
+    var identity = {
+      store: store,
+      wallet: {
+        versions: {
+          address: 0,
+          stealth: {address: Stealth.version},
+          p2sh: 5
+        }
+      }
+    };
  
     beforeEach(function() {
-      contacts = new Contacts(store);
+      contacts = new Contacts(store, identity);
     });
 
     it('it upgrades from array properly', function() {

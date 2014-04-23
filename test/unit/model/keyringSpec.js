@@ -9,7 +9,7 @@ define(['testUtils'], function(testUtils) {
 
   describe('Identity keyring model', function() {
     
-    var keyring, chrome, IdentityKeyRing;
+    var keyring, chrome, IdentityKeyRing, storeToUpgrade;
     
     beforeEach(function(done) {
       
@@ -55,12 +55,18 @@ define(['testUtils'], function(testUtils) {
         this.keyring = keyring;
       });
       
+      testUtils.stub('model/upgrade', function(store) {
+        if (!store.version || store.version < 2) {
+          storeToUpgrade = store;
+        }
+      });
+      
       testUtils.loadWithCurrentStubs('model/keyring', function(_IdentityKeyRing) {
         //chrome = require('chrome');
         IdentityKeyRing = _IdentityKeyRing;
         chrome.storage.local.clear();
         var pars = {};
-        pars[DW_NS + 'Satoshi'] = {name: 'Satoshi'};
+        pars[DW_NS + 'Satoshi'] = {name: 'Satoshi', version: 2};
         pars[DW_NS + 'Dorian'] = {name: 'Dorian'};
         chrome.storage.local.set(pars, function() {
           keyring = new IdentityKeyRing();
@@ -154,6 +160,11 @@ define(['testUtils'], function(testUtils) {
     it('loads', function() { // private
       keyring.load('Satoshi', function(identity) {
         expect(identity.name).toBe('Satoshi');
+        expect(storeToUpgrade).toBeUndefined();
+      });
+      // Dorian is not updated
+      keyring.load('Dorian', function(identity) {
+        expect(storeToUpgrade).toEqual({name: 'Dorian'});
       });
     });
     

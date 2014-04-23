@@ -33,6 +33,10 @@ define(['util/btc'], function(BtcUtils) {
     // Pubkey hash
     var address5 = '13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd';
 
+    it('sets timestamp for the last block to adjust timestamp heuristics');
+    
+    it('decodes a block header');
+
     it('create multisig', function() {
       var multisig = BtcUtils.multiSig(3, pubkeys);
       expect(multisig.address).toEqual('3CQdsxAmuaC2kHvHwKxKJ4kXn1qELrc6iM');
@@ -40,6 +44,8 @@ define(['util/btc'], function(BtcUtils) {
       expect(multisig.m).toEqual(3);
       expect(multisig.pubKeys).toEqual(pubkeys);
     });
+    
+    it('derives mpk');
         
     it('import multisig', function() {
       
@@ -94,7 +100,8 @@ define(['util/btc'], function(BtcUtils) {
     });
 
     it('Convert height to js timestamp', function() {
-      expect(BtcUtils.heightToTimestamp(5000)).toEqual(1233819777043.3193);
+      expect(BtcUtils.heightToTimestamp(5000)).toEqual(1233819755000);
+      expect(BtcUtils.heightToTimestamp(5000, 600)).toEqual(1234006505000);
     });
 
     it('Validates addresses', function() {

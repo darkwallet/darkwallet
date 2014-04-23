@@ -13,8 +13,9 @@ function (mocks, testUtils) {
       testUtils.stub('darkwallet', {
         service: {
           wallet: {
-            createIdentity: function(name, secret, password, callback) {
+            createIdentity: function(name, network, secret, password, callback) {
                 pars.name = name;
+                pars.network = network;
                 pars.secret = secret;
                 pars.password = password;
                 callback();
@@ -42,6 +43,7 @@ function (mocks, testUtils) {
     it('is initialized properly', function() {
       expect(scope.activeForm).toBe('password');
       expect(scope.create_or_restore).toBe('create');
+      expect(scope.network).toBe('bitcoin');
     });
     
     it('shows mnemonic form on password one is submitted', function() {
@@ -94,6 +96,7 @@ function (mocks, testUtils) {
       expect(scope.message2).toBeUndefined();
 
       expect(pars.name).toBe(scope.name);
+      expect(pars.network).toBe(scope.network);
       expect(pars.secret).toBe('be21b135c24c58c0fd72182db940af8d');
       expect(pars.password).toBe(scope.passwd);
     });

@@ -12,7 +12,10 @@ define(['model/connections'], function(Connections) {
         init: function(key, value) {
           return value;
         },
-        save: function() {}
+        save: function() {},
+        get: function() {
+          return 'bitcoin';
+        }
       }
     };
     
@@ -33,6 +36,8 @@ define(['model/connections'], function(Connections) {
     it('adds a server', function() {
       connections.addServer('foo', 'bar', 'baz');
       expect(connections.servers[1]).toEqual({ name : 'foo', type : 'baz', address : 'bar' });
+      connections.addServer('qux', 'bar');
+      expect(connections.servers[2]).toEqual({ name : 'qux', type : 'gateway', address : 'bar' });
     });
 
     it('sets selected server', function() {
