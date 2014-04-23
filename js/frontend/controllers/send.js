@@ -4,55 +4,57 @@ define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc'],
 function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', '$wallet', function($scope, $window, notify, $wallet) {
-  $scope.send = { mixing: true, sending: false };
-  $scope.autoAddEnabled = false;
-  $scope.sendPocket = 0;
-  $scope.advanced = false;
+
+  var sendForm = $scope.forms.send;
+
   var dustThreshold = 5600;
-  
   $scope.quicksend = {};
 
   $scope.resetSendForm = function() {
-    $scope.send.sending = false;
-    $scope.send.title = '';
-    $scope.sendEnabled = false;
-    $scope.recipients = {
-      fields: [
-        { address: '', amount: '' }
-      ],
-      field_proto: { address: '', amount: '' }
-    };
+      sendForm.sending = false;
+      sendForm.title = '';
+      $scope.sendEnabled = false;
+      sendForm.recipients = {
+          fields: [
+              { address: '', amount: '' }
+          ],
+          field_proto: { address: '', amount: '' }
+      };
+      var identity = DarkWallet.getIdentity();
+      $scope.selectedCurrency = identity.settings.currency;
+      if ($scope.selectedCurrency == 'mBTC') {
+          sendForm.fee = $scope.defaultFee*1000;
+      } else {
+          sendForm.fee = $scope.defaultFee;
+      }
   };
 
-  $scope.resetSendForm();
-
-
   $scope.updateBtcFiat = function(field) {
-    var tickerService = DarkWallet.service.ticker;
-    var identity = DarkWallet.getIdentity();
-    var currency = identity.settings.currency;
-    var fiatCurrency = identity.settings.fiatCurrency;
-    if (field.isFiatShown) {
-      field.amount = tickerService.fiatToBtc(field.fiatAmount, currency, fiatCurrency);
-    } else {
-      field.fiatAmount = tickerService.btcToFiat(field.amount, currency, fiatCurrency);
-    }
+      var tickerService = DarkWallet.service.ticker;
+      var identity = DarkWallet.getIdentity();
+      var currency = identity.settings.currency;
+      var fiatCurrency = identity.settings.fiatCurrency;
+      if (field.isFiatShown) {
+          field.amount = tickerService.fiatToBtc(field.fiatAmount, currency, fiatCurrency);
+      } else {
+          field.fiatAmount = tickerService.btcToFiat(field.amount, currency, fiatCurrency);
+      }
   };
 
   $scope.setPocket = function(pocket) {
       var identity = DarkWallet.getIdentity();
       if (pocket == 'any') {
-          $scope.sendPocketName = 'Any';
+          sendForm.sendPocketName = 'Any';
           // TODO: Any is only using default pocket right now.
-          $scope.pocketIndex = 0;
+          sendForm.pocketIndex = 0;
       } else if (typeof pocket == 'number') {
-          $scope.sendPocketName = identity.wallet.pockets.hdPockets[pocket].name;
-          $scope.pocketIndex = pocket;
+          sendForm.sendPocketName = identity.wallet.pockets.hdPockets[pocket].name;
+          sendForm.pocketIndex = pocket;
       } else {
           var idx = parseInt(pocket.split(':')[1]);
           var fund = identity.wallet.multisig.funds[idx];
-          $scope.sendPocketName = fund.name;
-          $scope.pocketIndex = fund.address;
+          sendForm.sendPocketName = fund.name;
+          sendForm.pocketIndex = fund.address;
       }
   };
 
@@ -64,20 +66,23 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
 
       initialized = identity.name;
 
-      $scope.hdPockets = identity.wallet.pockets.hdPockets;
-      $scope.allFunds = identity.wallet.multisig.funds;
-
       // Set the dust threshold
       dustThreshold = identity.wallet.wallet.dustThreshold;
 
-      // init scope variables
-      $scope.setPocket($scope.sendPocket);
-      $scope.selectedCurrency = identity.settings.currency;
-      if ($scope.selectedCurrency == 'mBTC') {
-          $scope.send.fee = $scope.defaultFee*1000;
-      } else {
-          $scope.send.fee = $scope.defaultFee;
+      // Initialize the store and send form if it's the first time
+      if (!sendForm) {
+          $scope.forms.send = { mixing: true,
+                        sending: false,
+                        sendPocket: 0,
+                        autoAddEnabled: false,
+                        advanced: false };
+          // Need to set the form here
+          sendForm = $scope.forms.send;
+          $scope.resetSendForm();
       }
+
+      // init scope variables
+      $scope.setPocket(sendForm.pocketIndex||0);
       if (!$scope.$$phase) {
           $scope.$apply();
       }
@@ -102,6 +107,9 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       if (radar >= 0.75) {
           radar = 1;
           if (task.radar < 0.75) {
+              if (button && button.classList.contains('working')) {
+                  button.classList.remove('working');
+              }
               notify.success('Transaction finished propagating');
               $scope.resetSendForm();
           }
@@ -140,13 +148,13 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       var totalAmount = 0;
       
       if ($scope.quicksend.next) {
-        $scope.recipients.fields = [{
-          address: $scope.quicksend.address,
-          amount: $scope.quicksend.amount
-        }];
+          sendForm.recipients.fields = [{
+            address: $scope.quicksend.address,
+            amount: $scope.quicksend.amount
+          }];
       }
       
-      $scope.recipients.fields.forEach(function(recipient) {
+      sendForm.recipients.fields.forEach(function(recipient) {
           if (!recipient.amount || !recipient.address) {
               return;
           }
@@ -163,45 +171,44 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   $scope.validateSendForm = function() {
       var spend = prepareRecipients();
       if ((spend.recipients.length > 0) && (spend.amount > dustThreshold)) {
-         $scope.sendEnabled = true;
+          $scope.sendEnabled = true;
       } else {
-         $scope.sendEnabled = false;
+          $scope.sendEnabled = false;
       }
       if ($scope.sendEnabled) {
-         $scope.autoAddField();
+          $scope.autoAddField();
       }
   };
 
   $scope.finishSign = function(signTask, amountNote, password) {
-    // callback waiting for radar feedback
-    var isBroadcasted = false;
-    var radarCache = {radar: 0};
-    var onBroadcast = function(error, task) {
-        console.log("broadcast feedback", error, task);
-        if (error) {
-            var errorMessage = error.message || ''+error;
-            notify.error("Error broadcasting", errorMessage);
-            $scope.send.sending = false;
-        } else if (task && task.type == 'signatures') {
-            notify.note('Signatures pending', amountNote)
-        } else if (task && task.type == 'radar') {
-            updateRadar(task.radar || 0, radarCache);
-            if (!isBroadcasted) {
-                notify.success('Transaction sent', amountNote);
-                isBroadcasted = true;
-            }
-        }
-    };
+      // callback waiting for radar feedback
+      var isBroadcasted = false;
+      var radarCache = {radar: 0};
+      var onBroadcast = function(error, task) {
+          console.log("broadcast feedback", error, task);
+          if (error) {
+              var errorMessage = error.message || ''+error;
+              notify.error("Error broadcasting", errorMessage);
+              sendForm.sending = false;
+          } else if (task && task.type == 'signatures') {
+              notify.note('Signatures pending', amountNote)
+          } else if (task && task.type == 'radar') {
+              updateRadar(task.radar || 0, radarCache);
+              if (!isBroadcasted) {
+                  notify.success('Transaction sent', amountNote);
+                  isBroadcasted = true;
+              }
+          }
+      };
 
-    var walletService = DarkWallet.service.wallet;
-    walletService.signTransaction(signTask.tx, signTask, password, onBroadcast);
+      var walletService = DarkWallet.service.wallet;
+      walletService.signTransaction(signTask.tx, signTask, password, onBroadcast);
   };
 
 
   $scope.sendBitcoins = function() {
-
       // get a free change address
-      var changeAddress = $wallet.getChangeAddress($scope.pocketIndex);
+      var changeAddress = $wallet.getChangeAddress(sendForm.pocketIndex);
 
       // prepare amounts
       var satoshis = getSatoshis();
@@ -221,8 +228,8 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           return;
       }
 
-      $scope.send.sending = true;
-      var fee = parseInt(BigInteger.valueOf($scope.send.fee * satoshis).toString());
+      sendForm.sending = true;
+      var fee = parseInt(BigInteger.valueOf(sendForm.fee * satoshis).toString());
 
       // callback waiting for radar feedback
       var onSent = function(error, task) {
@@ -231,7 +238,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           if (error) {
               var errorMessage = error.message || ''+error;
               notify.error("Transaction failed", errorMessage);
-              $scope.send.sending = false;
+              sendForm.sending = false;
           } else if (task && task.type == 'sign') {
               // Need to sign so open modal
               $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(_password) {$scope.finishSign(task, amountNote, _password)});
@@ -250,54 +257,54 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       // prepare the transaction
       var walletService = DarkWallet.service.wallet;
 
-      walletService.send($scope.pocketIndex,
+      walletService.send(sendForm.pocketIndex,
                          recipients,
                          changeAddress,
                          fee,
-                         $scope.send.mixing,
+                         sendForm.mixing,
                          onSent);
   };
 
   $scope.addAddress = function(data, vars) {
-    vars.field.address = data;
-    $scope.validateSendForm();
+      vars.field.address = data;
+      $scope.validateSendForm();
   };
   
   $scope.onQrModalOkSend = function(data, vars) {
-    $scope.onQrModalOk(data, vars);
-    $scope.validateSendForm();
+      $scope.onQrModalOk(data, vars);
+      $scope.validateSendForm();
   };
 
   $scope.addField = function() {
-    // add the new option to the model
-    $scope.recipients.fields.push($scope.recipients.field_proto);
-    // clear the option.
-    $scope.recipients.field_proto = { address: '', amount: '' };
+      // add the new option to the model
+      sendForm.recipients.fields.push(sendForm.recipients.field_proto);
+      // clear the option.
+      sendForm.recipients.field_proto = { address: '', amount: '' };
   };
   
   $scope.autoAddField = function() {
-    if (!$scope.autoAddEnabled) {
-      return;
-    }
-    var fields = $scope.recipients.fields;
-    var lastFields = fields[fields.length - 1];
-    var field_keys = Object.keys($scope.recipients.field_proto);
-    var empty;
-    field_keys.forEach(function(key) {
-      empty = empty || lastFields[key];
-    });
-    if (empty) {
-      $scope.addField();
-    }
+      if (!sendForm.autoAddEnabled) {
+          return;
+      }
+      var fields = sendForm.recipients.fields;
+      var lastFields = fields[fields.length - 1];
+      var field_keys = Object.keys(sendForm.recipients.field_proto);
+      var empty;
+      field_keys.forEach(function(key) {
+          empty = empty || lastFields[key];
+      });
+      if (empty) {
+          $scope.addField();
+      }
   };
   
   $scope.toggleCoinJoin = function() {
-    $scope.send.mixing = !$scope.send.mixing;
+      sendForm.mixing = !sendForm.mixing;
   };
 
   $scope.enableAutoAddFields = function() {
-    $scope.addField();
-    $scope.autoAddEnabled = true;
+      $scope.addField();
+      sendForm.autoAddEnabled = true;
   };
 }]);
 });

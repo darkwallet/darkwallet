@@ -9,22 +9,22 @@
         <div class="row collapse">
               <div class="large-10 columns">
                 <h6>Description</h6>
-                <input type="text" class="prefix radius" ng-model="send.title" ng-disabled="send.sending" placeholder="Enter a short description for this transaction here." autofocus />
+                <input type="text" class="prefix radius" ng-model="forms.send.title" ng-disabled="forms.send.sending" placeholder="Enter a short description for this transaction here." autofocus />
               </div>
               <div class="large-2 columns">
                 <h6>Sending from</h6>
-                <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{sendPocketName}}</a>
+                <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{forms.send.sendPocketName}}</a>
               </div>
         </div>
       </div>
     </div>
 
-    <div class="row" ng-repeat="field in recipients.fields">
+    <div class="row" ng-repeat="field in forms.send.recipients.fields">
       <div class="small-12 columns">
         <div class="row collapse">
           <div class="small-2 columns">
-            <input ng-hide="field.isFiatShown" ng-disabled="send.sending" type="text" class="prefix radius" ng-model="field.amount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
-            <input ng-show="field.isFiatShown" ng-disabled="send.sending" type="text" class="prefix radius" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
+            <input ng-hide="field.isFiatShown" ng-disabled="forms.send.sending" type="text" class="prefix radius" ng-model="field.amount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
+            <input ng-show="field.isFiatShown" ng-disabled="forms.send.sending" type="text" class="prefix radius" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
           </div>
 
           <div class="small-1 columns">
@@ -37,7 +37,7 @@
 
           <div class="small-8 columns">
 
-                <input type="text" class="address-buttons" ng-disabled="send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
+                <input type="text" class="address-buttons" ng-disabled="forms.send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
 
                 <span class="input-status fa fa-check"></span>
 
@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <div class="send-advanced" ng-show="advanced">
+    <div class="send-advanced" ng-show="forms.send.advanced">
       <div class="row">
         <div class="small-12 columns">
           <a class="button small radius fa fa-plus" ng-click="enableAutoAddFields()"> Add another recipient</a>
@@ -58,21 +58,21 @@
       <div class="row panel">
           <div class="small-6 columns">
             <h6>Fee</h6>
-            <input ng-model="send.fee" type="text" class="radius" />
+            <input ng-model="forms.send.fee" type="text" class="radius" />
           </div>
           <div class="small-6 columns">
             <h6>Coin mixing</h6>
-            <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!send.mixing, 'fa-check-square-o': send.mixing}" class="fa button postfix">{{send.mixing?'Enabled':'Disabled'}}</a>
+            <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!forms.send.mixing, 'fa-check-square-o': forms.send.mixing}" class="fa button postfix">{{forms.send.mixing?'Enabled':'Disabled'}}</a>
           </div>
           <div class="small-6 columns">
             <h6>Escrow address</h6>
-            <input ng-model="send.escrow" type="text" class="radius"  btc-address />
+            <input ng-model="forms.send.escrow" type="text" class="radius"  btc-address />
           </div>
       </div>
     </div>
     <div class="row">
       <div class="medium-10 columns">
-        <a ng-click="advanced=!advanced" class="button tiny radius fa fa-eye"> Show advanced options</a>
+        <a ng-click="forms.send.advanced=!forms.send.advanced" class="button tiny radius fa fa-eye"> Show advanced options</a>
       </div>
       <div class="medium-2 columns aright">
         <button id="send-button" href="" ng-class="{'glow':sendEnabled}" ng-disabled="!sendEnabled" class="button radius expand"><span>Send</span><div id="send-progress" class="progbar"></div></button>
@@ -82,7 +82,7 @@
 
         <ul id="wallets" class="f-dropdown">
           <li class="colorhead"><h6>My pockets</h6></li>
-          <li ng-repeat="pocket in hdPockets track by $index">
+          <li ng-repeat="pocket in hdPockets track by $index" ng-show="pocket">
             <a ng-click="setPocket($index)">{{pocket.name}}</a>
           </li>
           <li><a ng-click="setPocket('any')">Any</a></li>
