@@ -9972,9 +9972,12 @@ module.exports = {
 
 }).call(this,_dereq_("buffer").Buffer)
 },{"./convert":57,"buffer":5,"crypto":9,"crypto-js":27}],59:[function(_dereq_,module,exports){
+(function (Buffer){
 var sec = _dereq_('./jsbn/sec')
 var rng = _dereq_('secure-random')
 var BigInteger = _dereq_('./jsbn/jsbn')
+var assert = _dereq_('assert')
+
 var convert = _dereq_('./convert')
 var HmacSHA256 = _dereq_('crypto-js/hmac-sha256')
 var ECPointFp = _dereq_('./jsbn/ec').ECPointFp
@@ -10007,7 +10010,10 @@ function implShamirsTrick(P, k, Q, l) {
   return R
 }
 
-function deterministicGenerateK(hash,key) {
+function deterministicGenerateK(hash, secret) {
+  assert(Array.isArray(hash))
+  assert(Array.isArray(secret))
+
   var vArr = []
   var kArr = []
   for (var i = 0;i < 32;i++) vArr.push(1)
@@ -10015,10 +10021,10 @@ function deterministicGenerateK(hash,key) {
   var v = convert.bytesToWordArray(vArr)
   var k = convert.bytesToWordArray(kArr)
 
-  k = HmacSHA256(convert.bytesToWordArray(vArr.concat([0]).concat(key).concat(hash)), k)
+  k = HmacSHA256(convert.bytesToWordArray(vArr.concat([0]).concat(secret).concat(hash)), k)
   v = HmacSHA256(v, k)
   vArr = convert.wordArrayToBytes(v)
-  k = HmacSHA256(convert.bytesToWordArray(vArr.concat([1]).concat(key).concat(hash)), k)
+  k = HmacSHA256(convert.bytesToWordArray(vArr.concat([1]).concat(secret).concat(hash)), k)
   v = HmacSHA256(v,k)
   v = HmacSHA256(v,k)
   vArr = convert.wordArrayToBytes(v)
@@ -10031,7 +10037,11 @@ var ecdsa = {
       mod(limit.subtract(BigInteger.ONE)).
       add(BigInteger.ONE)
   },
+  deterministicGenerateK: deterministicGenerateK,
   sign: function (hash, priv) {
+    if (Buffer.isBuffer(hash)) hash = Array.prototype.slice.call(hash)
+    if (Buffer.isBuffer(priv)) priv = Array.prototype.slice.call(priv)
+
     var d = priv
     var n = ecparams.getN()
     var e = BigInteger.fromByteArrayUnsigned(hash)
@@ -10272,7 +10282,8 @@ var ecdsa = {
 
 module.exports = ecdsa
 
-},{"./convert":57,"./jsbn/ec":63,"./jsbn/jsbn":64,"./jsbn/sec":65,"crypto-js/hmac-sha256":25,"secure-random":53}],60:[function(_dereq_,module,exports){
+}).call(this,_dereq_("buffer").Buffer)
+},{"./convert":57,"./jsbn/ec":63,"./jsbn/jsbn":64,"./jsbn/sec":65,"assert":1,"buffer":5,"crypto-js/hmac-sha256":25,"secure-random":53}],60:[function(_dereq_,module,exports){
 var Address = _dereq_('./address')
 var assert = _dereq_('assert')
 var base58check = _dereq_('./base58check')
@@ -13446,7 +13457,6 @@ Script.createInputScript = function(signature, pubKey) {
 Script.createMultiSigInputScript = function(signatures, script) {
   script = new Script(script)
   var k = 1+script.chunks[0]-Opcode.map.OP_1;
-  //var k = script.chunks[0][0]
 
   //Not enough sigs
   if (signatures.length < k) return false;
