@@ -46,6 +46,9 @@ function (controllers, DarkWallet, Port) {
       if (data.type == 'balance') {
           if ($history.isCurrentPocket(data.pocketId)) {
               $scope.historyRows = $history.onBalanceUpdate();
+              if (!$scope.$$phase) {
+                  $scope.$apply();
+              }
           }
       }
   });

@@ -23,7 +23,7 @@ define(['./module', 'frontend/port'], function (controllers, Port) {
       else if (data.type == 'warning') {
           notify.warning('gui', data.text);
       }
-      if (['height', 'update', 'balance'].indexOf(data.type) > -1) {
+      if (['height', 'update'].indexOf(data.type) > -1) {
           if (!$scope.$$phase) {
               $scope.$apply();
           }
