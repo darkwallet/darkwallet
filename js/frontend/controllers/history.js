@@ -5,13 +5,16 @@
 
 define(['./module', 'darkwallet', 'frontend/port'],
 function (controllers, DarkWallet, Port) {
-  controllers.controller('HistoryCtrl', ['$scope', '$history', function($scope, $history) {
+  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', function($scope, $history, $tabs) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
   $scope.selectedPocket = $history.selectedPocket;
 
   $scope.historyRows = $history.rows;
+
+  // Link tabs from service
+  $scope.tabs = $tabs;
 
   // Filters
   $scope.txFilter = $history.txFilter;

@@ -26,7 +26,6 @@ define([
     './gui_notify',
     './servers',
     './fund',
-    './tabs',
     './tools',
     './signing',
     './rcv_stealth'

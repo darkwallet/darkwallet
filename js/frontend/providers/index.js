@@ -8,5 +8,6 @@ define([
     './wallet',
     './history',
     './notify',
-    './sounds'
+    './sounds',
+    './tabs'
 ], function () {});

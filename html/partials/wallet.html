@@ -3,7 +3,7 @@
       <ng-include src="'wallet/pockets.html'">
       </ng-include>
   </div>
-  <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns wallet-view" ng-controller="TabsCtrl">
+  <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns wallet-view">
     <h4>{{pocket.name}} <small>{{((pocket.balance===undefined)?totalBalance:pocket.balance.confirmed) | currencyPresenter}}</small> <small ng-show="!(pocket.balance === undefined) && pocket.balance.unconfirmed">{{((pocket.balance===undefined||pocket.balance.unconfirmed===undefined)?totalUnconfirmed:pocket.balance.unconfirmed) | currencyPresenter}}</small></h4>
     <div class="tabbable">
         <dl class="tabs">
