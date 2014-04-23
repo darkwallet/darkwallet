@@ -134,12 +134,6 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     // Convert height to js timestamp
     heightToTimestamp: function(height) {
         return (genesisTime+(height*blockDiff))*1000;
-    },
-    // Convert height to date string
-    heightToDateString: function(height) {
-        var ts = BtcUtils.heightToTimestamp(height);
-        var date = new Date(ts);
-        return date.toLocaleDateString();
     }
   };
 

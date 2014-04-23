@@ -114,10 +114,5 @@ define(['util/btc'], function(BtcUtils) {
       expect(BtcUtils.validateAddress(address5)).toEqual(true);
       expect(BtcUtils.validateAddress('foo')).toBeUndefined();
     });
-
-    it('Convert height to date string', function() {
-      var date = new Date(1233823517352.9834);
-      expect(BtcUtils.heightToDateString(5000)).toEqual(date.toLocaleDateString());
-    });
   });
 });

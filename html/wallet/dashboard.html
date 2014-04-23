@@ -69,7 +69,7 @@
                </div>
              </div>
              <div ng-show="row.height" class="small-2 columns">
-               {{row.height | heightToDate}}
+               <span title="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
              </div>
              <div ng-show="!row.height" class="small-2 columns">
                unconfirmed

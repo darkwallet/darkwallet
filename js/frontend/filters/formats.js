@@ -1,13 +1,17 @@
 'use strict';
 
-define(['./module', 'bitcoinjs-lib', 'util/btc'], function (filters, Bitcoin, BtcUtils) {
+define(['./module', 'bitcoinjs-lib', 'util/btc', 'moment'], function (filters, Bitcoin, BtcUtils, moment) {
 
 var convert = Bitcoin.convert;
 
 // Filter for presenting a block height as date
 filters.filter('heightToDate', function() {
-  return function(input) {
-    return BtcUtils.heightToDateString(input);
+  return function(input, format) {
+    var m = moment(BtcUtils.heightToTimestamp(input));
+    if (format === 'calendar') {
+      return m.calendar();
+    }
+    return m.fromNow();
   };
 });
 
