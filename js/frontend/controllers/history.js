@@ -67,10 +67,6 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
       // Select the fund in history
       $scope.historyRows = $history.selectFund(fund, rowIndex);
 
-      // Set balance in the scope
-      $scope.balance = $history.pocket.balance.confirmed;
-      $scope.unconfirmed = $history.pocket.balance.unconfirmed;
-
       // Set the selected pocket
       $scope.selectedPocket = $history.selectedPocket;
 
@@ -101,10 +97,6 @@ function (controllers, Bitcoin, BtcUtils, DarkWallet, MultisigFund, Port) {
 
           $scope.forms.pocketLabelForm = form;
       }
-
-      // Set balance in the scope
-      $scope.balance = $scope.pocket.balance.confirmed;
-      $scope.unconfirmed = $scope.pocket.balance.unconfirmed;
 
       // Set the selected pocket
       $scope.selectedPocket = $history.selectedPocket;
