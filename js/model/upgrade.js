@@ -12,11 +12,20 @@ var DW_NS = 'dw:identity:';
  */
 
 function Upgrade1To2(store) {
+    // If no scankeys need to regenerate
+    if (store.scankeys.length == 0) {
+        console.log('You need to reseed the wallet to generate stealth scanning keys!');
+        store.reseed = true;
+        return false;
+    }
+    if (!store.mpk) {
+        console.log("Wallet without mpk!", this.mpk);
+        // throw Error("No mpk!");
+    }
+ 
     // Upgrade Public Keys
     var pubKeys = store.pubkeys;
-    if (!Object.keys(pubKeys).length) {
-        throw Error("No pubkeys!");
-    }
+
     var toRemove = [];
     Object.keys(pubKeys).forEach(function(index) {
         var walletAddress = pubKeys[index];
@@ -46,7 +55,7 @@ function Upgrade1To2(store) {
     // Cleanup empty keys
     contacts.forEach(function(contact) {
         if (!contact) {
-            console.log("[upgrade] delete contact", contact);
+            console.log("[upgrade] Delete contact", contact);
             contacts.splice(contacts.indexOf(contact), 1);
             return;
         }
@@ -57,6 +66,7 @@ function Upgrade1To2(store) {
             store.pockets[i] = {'name': store.pockets[i]};
         };
     }
+    return true;
 }
 
 /**
@@ -66,10 +76,14 @@ function Upgrade(store) {
     if (store.version == 2) {
         return false;
     }
+
     console.log("[upgrade] Upgrading to version 2")
-    Upgrade1To2(store);
-    store.version = 2;
-    return true;
+
+    if (Upgrade1To2(store)) {
+        store.version = 2;
+        console.log("[upgrade] Upgraded to version 2")
+        return true;
+    }
 }
 
 return Upgrade;

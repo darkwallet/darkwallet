@@ -18,13 +18,9 @@ function Wallet(store, identity) {
     this.pubKeys = store.init('pubkeys', {});
     this.scanKeys = store.init('scankeys', []);
     this.idKeys = store.init('idkeys', []);
-    if (this.scanKeys.length == 0) {
-        console.log('You need to reseed the wallet to generate stealth scanning keys!');
-    }
+
     this.mpk = store.get('mpk');
-    if (!this.mpk) {
-         console.log("Wallet without mpk!", this.mpk);
-    }
+
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
     this.pockets = new Pockets(store, identity, this)
     this.wallet = new Bitcoin.Wallet(this.mpk);
