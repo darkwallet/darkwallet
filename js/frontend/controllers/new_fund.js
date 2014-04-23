@@ -40,7 +40,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
     $scope.importMultisig = function() {
         var identity = DarkWallet.getIdentity();
         var data = $scope.pasteClipboard();
-        var multiSig = BtcUtils.importMultiSig(data);
+        var multiSig = BtcUtils.importMultiSig(data, identity.wallet.versions.p2sh);
 
         multiSig.pubKeys.forEach(function(participant) {
             var compressed = (participant.length == 33);
@@ -65,6 +65,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
      * Create a multisig
      */
     $scope.createMultisig = function() {
+        var identity = DarkWallet.getIdentity();
         var participants = [];
         var multisig;
         if ($scope.multisig.script) {
@@ -79,7 +80,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
                 participants.push(BtcUtils.extractPublicKey(participant.address, compressed));
             });
             // Create the multisig
-            multisig = BtcUtils.multiSig(parseInt($scope.multisig.m), participants);
+            multisig = BtcUtils.multiSig(parseInt($scope.multisig.m), participants, identity.wallet.versions.p2sh);
         }
         // Set some extra data on the fund
         multisig.name = $scope.multisig.name;
@@ -87,7 +88,6 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
 
         // If successfully created, add to the wallet
         if (multisig.name) {
-            var identity = DarkWallet.getIdentity();
             var walletAddress = identity.wallet.multisig.addFund(multisig);
             $scope.selectFund(multisig, identity.wallet.multisig.funds.length-1);
             DarkWallet.core.initAddress(walletAddress);

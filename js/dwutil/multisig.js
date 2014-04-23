@@ -30,7 +30,7 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes) {
 
     // Ensure we check the compressed version for my address
     var myPubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
-    var myAddress = myPubKey.getAddress();
+    var myAddress = myPubKey.getAddress(identity.wallet.versions.address);
 
     var participant = { pubKey: pubKeyBytes };
 
@@ -264,7 +264,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
 
     var script = convert.hexToBytes(multisig.script);
     var privKey = new Bitcoin.ECKey(foreignKey, true);
-    var signingAddress = privKey.getAddress().toString();
+    var signingAddress = privKey.getAddress(identity.wallet.versions.address).toString();
 
     var signed = false;
 
@@ -273,7 +273,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
         if (participant.type != 'me') {     // can't be me if we're importing the key
             var pubKey = new Bitcoin.ECPubKey(participant.pubKey, true);
 
-            if (pubKey.getAddress().toString() == signingAddress) {
+            if (pubKey.getAddress(identity.wallet.versions.address).toString() == signingAddress) {
                 // It's this position, so sign all inputs
                 inputs.forEach(function(input, i) {
                     var sig = spend.tx.p2shsign(input.index, script, privKey.toBytes(), 1);

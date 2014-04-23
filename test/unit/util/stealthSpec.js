@@ -56,7 +56,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       var scanBytes = scanKeyPubBytes;
       var spendBytes = spendKeyPubBytes;
 
-      var res = Stealth.initiateStealth(scanBytes, spendBytes, ephemKeyBytes);
+      var res = Stealth.initiateStealth(scanBytes, spendBytes, undefined, ephemKeyBytes);
       var address = res[0];
       var ephemKey = res[1];
 
@@ -163,7 +163,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
     it('adds stealth output to the given transaction and return destination address', function() {
       var recipient = testAddress;
       var newTx = new Bitcoin.Transaction();
-      var recipient = Stealth.addStealth(recipient, newTx, ephemKeyBytes, 1);
+      var recipient = Stealth.addStealth(recipient, newTx, undefined, ephemKeyBytes, 1);
 
       expect(recipient).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
       expect(newTx.outs.length).toBe(1);

@@ -9,8 +9,9 @@ var Crypto = Bitcoin.CryptoJS;
  * @param {Object} store Object store
  * @constructor
  */
-function Contacts(store) {
+function Contacts(store, identity) {
   this.store = store;
+  this.identity = identity
   this.contacts = this.store.init('contacts', []);
   this.initContacts();
 }
@@ -66,7 +67,7 @@ Contacts.prototype.prepareAddress = function(data) {
       }
   } else if (pubKey) {
       var pubKeyHash = Bitcoin.crypto.hash160(pubKey);
-      var address = new Bitcoin.Address(pubKeyHash).toString();
+      var address = new Bitcoin.Address(pubKeyHash, this.identity.wallet.versions.address).toString();
       newKey.address = address;
       newKey.type = 'pubkey';
   } else {

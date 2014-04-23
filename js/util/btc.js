@@ -39,13 +39,14 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     /*
      * Start a multisig structure out of participant public keys and m
      */
-    multiSig: function(m, participants){
+    multiSig: function(m, participants, version){
+        if (version === null || version == undefined) version = Bitcoin.network.mainnet.p2shVersion;
         // Create script
         var script = Bitcoin.Script.createMultiSigOutputScript(m, participants);
         // Hash for address
         var hashed = Bitcoin.crypto.hash160(script.buffer);
         // Encode in base58, v0x05 is multisig
-        var address = Bitcoin.base58check.encode(hashed, 0x05);
+        var address = Bitcoin.base58check.encode(hashed, version);
         // Encoded script
         var scriptHex = convert.bytesToHex(script.buffer);
         return {address: address, script: scriptHex, m: m, pubKeys: participants};
@@ -57,10 +58,11 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         return childKey.toBase58(false);
     },
 
-    importMultiSig: function(data){
+    importMultiSig: function(data, version){
+        if (version === null || version == undefined) version = Bitcoin.network.mainnet.p2shVersion;
         var script = new Bitcoin.Script(convert.hexToBytes(data));
         var hashed = Bitcoin.crypto.hash160(script.buffer);
-        var address = Bitcoin.base58check.encode(hashed, 0x05);
+        var address = Bitcoin.base58check.encode(hashed, version);
         var pubKeys = script.extractPubkeys();
         var m = script.chunks[0] - Bitcoin.Opcode.map.OP_1 + 1;
         return {address: address, script: data, m: m, pubKeys: pubKeys};
@@ -85,7 +87,8 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     /*
      * See if this is a valid address
      */
-    isAddress: function(address) {
+    isAddress: function(address, allowed) {
+       if (!allowed) allowed = allowedVersions;
        if (address) {
           // Check for base58 encoded addresses
           if (Bitcoin.Address.validate(address) && allowedVersions.indexOf(Bitcoin.Address.getVersion(address)) != -1) {
@@ -97,10 +100,11 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     /*
      * Validate an address
      */
-    validateAddress: function(address) {
+    validateAddress: function(address, allowed) {
+       if (!allowed) allowed = allowedVersions;
        if (address) {
           // Check for base58 encoded addresses
-          if (BtcUtils.isAddress(address)) {
+          if (BtcUtils.isAddress(address, allowed)) {
             return true;
           }
           // Check for public keys in different formats

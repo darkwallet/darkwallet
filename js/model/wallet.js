@@ -12,6 +12,7 @@ function Wallet(store, identity) {
     this.identity = identity;
     this.store = store;
     this.network = store.init('network', 'bitcoin');
+    this.initVersions(this.network);
     this.is_cold = store.get('is_cold');
     this.fee = store.init('fee', 10000); // 0.1 mBTC
     this.pubKeys = store.init('pubkeys', {});
@@ -34,6 +35,24 @@ function Wallet(store, identity) {
     // store balance
     this.balance = this.getBalance();
 };
+
+Wallet.prototype.initVersions = function(network) {
+    network = (network == 'bitcoin') ? 'mainnet' : network;
+    this.versions = {
+        address: Bitcoin.network[network].addressVersion,
+        p2sh: Bitcoin.network[network].p2shVersion,
+        hd: Bitcoin.network[network].hdVersions
+    };
+    switch(network) {
+        case 'bitcoin':
+            this.versions.stealth = {address: Stealth.version, nonce: Stealth.nonceVersion};
+            break;
+        case 'testnet':
+            // TODO: NON STANDARD!!
+            this.versions.stealth = {address: 42, nonce: Stealth.nonceVersion};
+            break;
+    }
+}
 
 /**
  * Initialize addresses for the wallet if empty
@@ -221,7 +240,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
     var pubKey = key.length ? key : key.toBytes();
 
     var pubKeyHash = Bitcoin.crypto.hash160(pubKey);
-    var address = new Bitcoin.Address(pubKeyHash);
+    var address = new Bitcoin.Address(pubKeyHash, this.versions.address);
 
     var label = 'unused';
     if (seq.length == 1) {
@@ -252,7 +271,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
     if ((seq.length == 1) && (seq[0]%2 == 0)) {
         // Stealth
         var scanKey = this.getScanKey();
-        var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [pubKey]);
+        var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [pubKey], this.versions.stealth.address);
         walletAddress['stealth'] = stealthAddress;
         // Mpk
         walletAddress['mpk'] = BtcUtils.deriveMpk(this.mpk)
@@ -472,7 +491,7 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
         // test for stealth
         if (address[0] == '6') {
             isStealth = true;
-            address = Stealth.addStealth(address, newTx);
+            address = Stealth.addStealth(address, newTx, self.versions.address, self.versions.stealth.nonce);
         }
         newTx.addOutput(address, recipient.amount);
     });
@@ -754,7 +773,7 @@ Wallet.prototype.processStealth = function(stealthArray) {
         var myKeyBytes = Stealth.uncoverPublic(scanKey.toBytes(), ephemKey, spendKey);
         // Turn to address
         var myKeyHash = Bitcoin.crypto.hash160(myKeyBytes);
-        var myAddress = new Bitcoin.Address(myKeyHash);
+        var myAddress = new Bitcoin.Address(myKeyHash, self.versions.address);
 
         if (address == myAddress.toString()) {
             var seq = [0, 's'].concat(ephemKey);

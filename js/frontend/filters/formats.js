@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'bitcoinjs-lib', 'util/btc', 'moment'], function (filters, Bitcoin, BtcUtils, moment) {
+define(['./module', 'bitcoinjs-lib', 'util/btc', 'moment', 'darkwallet'], function (filters, Bitcoin, BtcUtils, moment, DarkWallet) {
 
 var convert = Bitcoin.convert;
 
@@ -27,8 +27,9 @@ filters.filter('bytesToHex', function() {
 filters.filter('bytesToAddressHash', function() {
   return function(input) {
     if (input.length == 65 || input.length == 33) {
+        var identity = DarkWallet.getIdentity();
         var hashed = Bitcoin.crypto.hash160(input);
-        var address = Bitcoin.Address(hashed);
+        var address = Bitcoin.Address(hashed, identity.wallet.versions.address);
         return address.toString();
     } else {
         return convert.bytesToHex(input);

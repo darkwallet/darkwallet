@@ -19,12 +19,12 @@ function Identity(store, seed, password) {
     }
     this.store = store;
     if (seed && password) {
-        this.generate(seed, password);
+        this.generate(seed, password, store.get('network'));
     }
     this.wallet = new Wallet(store, this);
     this.txdb = new TransactionDatabase(store);
     this.history = new History(store, this);
-    this.contacts = new Contacts(store);
+    this.contacts = new Contacts(store, this);
     this.connections = new Connections(store, this);
     this.tasks = new Tasks(store, this);
 }
@@ -55,9 +55,10 @@ Identity.prototype.changePassword = function(oldPassword, newPassword) {
  * @param {String} password Password for the identity crypt.
  * @private
  */
-Identity.prototype.generate = function(seed, password) {
+Identity.prototype.generate = function(seed, password, network) {
+    var network = (network == 'bitcoin') ? 'mainnet' : network;
     // Don't use constructor directly since it doesn't manage hex seed properly.
-    var key = Bitcoin.HDWallet.fromSeedHex(seed);
+    var key = Bitcoin.HDWallet.fromSeedHex(seed, network);
     var identityKey = key.derivePrivate(0);
 
     var pubKey = identityKey.toBase58(false);
