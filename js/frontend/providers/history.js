@@ -267,6 +267,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   };
 
   HistoryProvider.prototype.historyFilter = function(row, shownRows) {
+      var blockDiff = DarkWallet.service.wallet.blockDiff;
       if (!row.height) {
           shownRows.push(row.hash);
           return true;
@@ -275,13 +276,13 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           case 'all':
               return true;
           case 'lastWeek':
-              var ts = BtcUtils.heightToTimestamp(row.height);
+              var ts = BtcUtils.heightToTimestamp(row.height, blockDiff);
               if (ts > prevweek.getTime()) {
                   return true;
               }
               break;
           case 'lastMonth':
-              var ts = BtcUtils.heightToTimestamp(row.height);
+              var ts = BtcUtils.heightToTimestamp(row.height, blockDiff);
               if (ts > prevmonth.getTime()) {
                   return true;
               }

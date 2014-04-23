@@ -11,6 +11,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
     var self = this;
     this.name = 'wallet';
     var heightTimeout;
+    var lastTimestamp;
 
     // Some scope variables
     var currentIdentity = false;
@@ -44,6 +45,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
         // Inform gui and other services
         identity.history.update = function() { Port.post('gui', {name: 'update'}); };
+        if (lastTimestamp) {
+            BtcUtils.setLastTimestamp(lastTimestamp.height, lastTimestamp.timestamp);
+        }
+        self.blockDiff = BtcUtils.blockDiff;
 
         Port.post('wallet', {'type': 'ready', 'identity': identity.name});
         Port.post('wallet', {'type': 'loaded', 'identity': identity.name});
@@ -191,6 +196,8 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         var header = BtcUtils.decodeBlockHeader(headerHex);
 
         BtcUtils.setLastTimestamp(height, header.timestamp);
+        self.blockDiff = BtcUtils.blockDiff;
+        lastTimestamp = {height: height, timestamp: header.timestamp};
     }
 
     // Handle height arriving from obelisk

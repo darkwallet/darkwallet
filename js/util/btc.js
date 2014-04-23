@@ -26,13 +26,13 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     decodeBlockHeader: function(headerHex) {
         // Don't really need all of these at the moment
         var header = convert.hexToBytes(headerHex);
-        var version = convert.bytesToNum(header.splice(4));
-        var prevBlock = header.splice(32);
-        var merkleRoot = header.splice(32);
-        var timestamp = convert.bytesToNum(header.splice(4));
-        var difficulty = header.splice(4);
-        var nonce = convert.bytesToNum(header.splice(4));
-        var difficultyNum = convert.bytesToNum(header.splice(4));
+        var version = convert.bytesToNum(header.splice(0,4));
+        var prevBlock = header.splice(0,32);
+        var merkleRoot = header.splice(0,32);
+        var timestamp = convert.bytesToNum(header.splice(0,4));
+        var difficulty = header.splice(0,4);
+        var nonce = convert.bytesToNum(header.splice(0,4));
+        var difficultyNum = convert.bytesToNum(header.splice(0,4));
 
         return {version: version, prevBlock: prevBlock, merkleRoot: merkleRoot, timestamp: timestamp, difficulty: difficulty, nonce: nonce};
     },
@@ -162,8 +162,9 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         return bytes;
     },
     // Convert height to js timestamp
-    heightToTimestamp: function(height) {
-        return (tzOffset+genesisTime+(height*BtcUtils.blockDiff))*1000;
+    heightToTimestamp: function(height, diff) {
+        diff = diff || BtcUtils.blockDiff;
+        return (tzOffset+genesisTime+(height*diff))*1000;
     }
   };
 

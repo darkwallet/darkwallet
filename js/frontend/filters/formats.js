@@ -7,7 +7,7 @@ var convert = Bitcoin.convert;
 // Filter for presenting a block height as date
 filters.filter('heightToDate', function() {
   return function(input, format) {
-    var m = moment(BtcUtils.heightToTimestamp(input));
+    var m = moment(BtcUtils.heightToTimestamp(input, DarkWallet.service.wallet.blockDiff));
     if (format === 'calendar') {
       return m.calendar();
     }
