@@ -24,11 +24,11 @@ function (controllers, DarkWallet, Port) {
    * Identity Loading
    */
   var identityLoaded = function(identity) {
-      // set stealth address on the general section
+      // set main address on the general section
       if ($scope.pocket.isAll && !$scope.pocket.stealth) {
           identity = identity || DarkWallet.getIdentity();
           var mainAddress = identity.wallet.getAddress([0]);
-          $scope.pocket.stealth = mainAddress.stealth;
+          $scope.pocket.mainAddress = mainAddress.stealth;
       }
   }
 
