@@ -15,9 +15,6 @@ function (controllers, DarkWallet, Port) {
   ['$scope', '$location', 'notify', 'clipboard', 'modals', '$timeout', '$wallet',
    function($scope, $location, notify, clipboard, modals, $timeout, $wallet) {
 
-  // tabs store
-  $scope.tabs = {};
-
   // Scope variables
   $scope.rates = {};
   $scope.allAddresses = [];
