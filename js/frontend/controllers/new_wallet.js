@@ -14,6 +14,7 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
 
   $scope.activeForm = 'password';
   $scope.create_or_restore = 'create';
+  $scope.network = 'bitcoin';
 
   $scope.passwordSubmit = function() {
 
@@ -49,7 +50,7 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
 
     var walletService = DarkWallet.service.wallet;
 
-    var identity = walletService.createIdentity($scope.name, mnemonic.toHex(), $scope.passwd, function() {
+    var identity = walletService.createIdentity($scope.name, $scope.network, mnemonic.toHex(), $scope.passwd, function() {
         $window.location = '#dashboard';
     });
   }

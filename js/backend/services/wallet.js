@@ -51,12 +51,12 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         callback ? callback(identity) : null;
     }
 
-    this.createIdentity = function(name, secret, password, callback) {
+    this.createIdentity = function(name, network, secret, password, callback) {
         console.log("[wallet] Create identity", name);
         if (currentIdentity) {
             Port.post('wallet', {'type': 'closing', 'identity': currentIdentity});
         }
-        var identity = keyRing.createIdentity(name, secret, password);
+        var identity = keyRing.createIdentity(name, network, secret, password);
         startIdentity(identity, callback);
     }
 

@@ -11,6 +11,7 @@ function(Stealth, Bitcoin, MultisigFunds, Pockets, BtcUtils) {
 function Wallet(store, identity) {
     this.identity = identity;
     this.store = store;
+    this.network = store.init('network', 'bitcoin');
     this.is_cold = store.get('is_cold');
     this.fee = store.init('fee', 10000); // 0.1 mBTC
     this.pubKeys = store.init('pubkeys', {});
@@ -41,7 +42,7 @@ Wallet.prototype.initIfEmpty = function() {
     var self = this;
     // If empty generate two addresses and one change for each initial pocket
     if (!Object.keys(this.pubKeys).length) {
-        this.pockets.pockets.forEach(function (pocket, i) {
+        this.pockets.hdPockets.forEach(function (pocket, i) {
             self.getAddress([i*2,0]);
             self.getAddress([i*2,1]);
             self.getAddress([(i*2)+1,0]);
