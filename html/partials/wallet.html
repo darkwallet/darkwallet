@@ -1,10 +1,18 @@
 <div class="row">
+  <!-- Left sidebar --!>
   <div class="large-2 columns panel pockets">
-      <ng-include src="'wallet/pockets.html'">
-      </ng-include>
+      <!-- Pockets sidebar -->
+      <ng-include src="'wallet/pockets.html'"></ng-include>
   </div>
+  <!-- Content area -->
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns wallet-view">
-    <h4>{{pocket.name}} <small>{{((pocket.balance===undefined)?totalBalance:pocket.balance.confirmed) | currencyPresenter}}</small> <small ng-show="!(pocket.balance === undefined) && pocket.balance.unconfirmed">{{((pocket.balance===undefined||pocket.balance.unconfirmed===undefined)?totalUnconfirmed:pocket.balance.unconfirmed) | currencyPresenter}}</small></h4>
+    <!-- Pocket name and balance -->
+    <h4>
+        {{pocket.name}}
+        <small>{{((pocket.balance===undefined)?totalBalance:pocket.balance.confirmed) | currencyPresenter}}</small>
+        <small ng-show="!(pocket.balance === undefined) && pocket.balance.unconfirmed">{{((pocket.balance===undefined||pocket.balance.unconfirmed===undefined)?totalUnconfirmed:pocket.balance.unconfirmed) | currencyPresenter}}</small>
+    </h4>
+    <!-- Tabs -->
     <div class="tabbable">
         <dl class="tabs">
           <dd ng-show="tab.visible" ng-class="{active: tab.active}" ng-repeat="tab in tabs.pages">
@@ -15,10 +23,12 @@
         </div>
     </div>
   </div>
+  <!-- New multisig dialog -->
   <div ng-show="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 columns">
-      <span ng-controller="GuiNotifyCtrl"></span>
-      <ng-include src="'wallet/new_fund.html'">
+      <ng-include src="(selectedPocket==='newMultisig')?'wallet/new_fund.html':false">
       </ng-include>
   </div>
 
+  <!-- Area catching backend gui update events -->
+  <span ng-controller="GuiNotifyCtrl"></span>
 </div>
