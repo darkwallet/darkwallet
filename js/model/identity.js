@@ -27,6 +27,7 @@ function Identity(store, seed, password) {
     this.contacts = new Contacts(store, this);
     this.connections = new Connections(store, this);
     this.tasks = new Tasks(store, this);
+    this.reseed = store.get('reseed');
 }
 
 /**

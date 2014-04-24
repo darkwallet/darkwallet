@@ -49,7 +49,15 @@
       </section>
     </nav>
     <div class="container">
-      <div class="scroller" ng-view></div>
+      <div ng-cloak ng-show="needsReseed && !isActive('/new_wallet')" class="alert-box warning">
+        <div class="row">You need to reseed your wallet to finish the upgrade</div>
+        <div class="row"><b>Please go to <a href="#new_wallet">create identity</a> and create a new one with the same seed.</b></div>
+        <div class="row">(remember you can lookup your seed in <a href="#settings">settings</a>)</div>
+        <div class="row topmargin"><em>sorry for the inconvenience, this will be fully automatic once the development is more complete.</em></div>
+        <a ng-click="needsReseed=false" class="close">&times;</a>
+      </div>
+      <div class="scroller" ng-view>
+      </div>
     </div>
     <!-- Notification Controllers -->
     <span ng-controller="ConnectionNotifyCtrl"></span>
