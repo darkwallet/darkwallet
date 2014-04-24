@@ -139,7 +139,7 @@ Wallet.prototype.loadPubKeys = function() {
                   walletAddress.balance = 0;
                   walletAddress.nOutputs = 0;
                   walletAddress.height = 0;
-                  self.processHistory(walletAddress, walletAddress.history);
+                  self.processHistory(walletAddress, walletAddress.history, true);
             }
         }
     });
@@ -683,7 +683,7 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
  * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
  * @param {Array} history
  */
-Wallet.prototype.processHistory = function(walletAddress, history) {
+Wallet.prototype.processHistory = function(walletAddress, history, initial) {
     var self = this;
 
     // only supported getting (and caching) all history for now
@@ -706,7 +706,9 @@ Wallet.prototype.processHistory = function(walletAddress, history) {
         // pass on to internal Bitcoin.Wallet
         self.processOutput(walletAddress, tx[0], tx[1], tx[3], outHeight, spend, tx[6]);
     });
-    this.store.save();
+    if (!initial) {
+        this.store.save();
+    }
 };
 
 /**
