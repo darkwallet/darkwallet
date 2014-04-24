@@ -41,7 +41,6 @@ Contacts.prototype.initContacts = function() {
           self.updateContactHash(contact);
           // delete address since now is contained inside contact.pubKeys
           delete contact.address;
-          delete contact.hash;
       }
   });
   if (updated) {
