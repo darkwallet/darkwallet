@@ -191,7 +191,14 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
   describe('Model upgrade 2', function() {
     var contacts;
     var satoshiForest = {name: 'Satoshi Forest', address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'};
-    var satoshiForestNew = {name: 'Satoshi Forest', mainKey: 0, pubKeys: [{data: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd', type: 'address', pubKey: undefined, address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'}]};
+    var satoshiForestNew = {
+      name: 'Satoshi Forest',
+      mainKey: 0,
+      hash : 'ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3',
+      pubKeys: [
+        {data: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd', type: 'address', pubKey: undefined, address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'}
+      ]
+    };
     var store = {
       init: function(key, value) {
         if (key == 'contacts') {
