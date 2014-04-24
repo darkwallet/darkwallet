@@ -63,7 +63,12 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       }
   }
 
-  // scope function to generate (or load from cache) a new address
+  /**
+   * Generates (or load from cache) a new address
+   * @param {Integer} branchId
+   * @param {Integer} n
+   * @returns {Object} Wallet address struct
+   */
   WalletProvider.prototype.generateAddress = function(branchId, n) {
       if (!branchId) {
           branchId = 0;
