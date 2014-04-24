@@ -61,10 +61,7 @@ define(['model/identity'], function(Identity) {
       expect(_store.idkeys[0].pub).toBe('xpub6BShZfzXJHmnv68RPbTKT1nCsCPtE2iBC6j3qCpfMYuy1KnnHJAhxqoCsPP2FVosrQJ4FEZPxSDdgR4vEDtwCULdwEANYwq7uDLqzK6UNuh');
       expect(_store.idkeys[0].priv).toBe('xprv9xTMAATdTvDVhc3xHZvK5sqUKAZPpZzKpsoT2pR3oDNz8XTdjkrTR3Uj26Rpy4CM46DDNb5Ae5Uf8ei1usbjK2qToDUFx97g8M2XduB7Cbe');
       expect(_store.mpk).toBe('xpub67xpMzHwYtH8zxnfFWMRNuHd43bJYtjBjtTfWeubZq16h75DrnUtCZchBmwLZUTKvcYiyGL5LW6MiwjnLAx3kwpAkytrjSCyqvTtJMX8GNW');
-      expect(_store.version).toBe(1);
       expect(_store.pubkeys).toEqual({});
-      expect(_store.contacts).toEqual({});
-      expect(_store.transactions).toEqual({});
     });
   });
 });
