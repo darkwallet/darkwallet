@@ -85,7 +85,6 @@ Identity.prototype.generate = function(seed, password, network) {
     this.store.set('idkeys', [{pub: idPubKey, priv: idPrivKey}]);
 
     this.store.set('mpk', pubKey);
-    this.store.set('version', 1);
     this.store.set('pubkeys', {});
     this.store.save();
 };
