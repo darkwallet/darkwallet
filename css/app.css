@@ -4369,9 +4369,9 @@ span.input-status {
   span.input-status:before {
     color: #27ae60; }
   span.input-status:not(:last-child) {
-    z-index: 5; }
+    right: 100px; }
 
-input.ng-valid:not(.ng-pristine) + span.input-status {
+input.ng-valid + span.input-status {
   opacity: 1; }
 
 input.address-buttons {
