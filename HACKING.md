@@ -12,6 +12,12 @@ backend/ and model/ files) you may need to restart the background page.
 
 The background process ties up the wallet behaviour for any number of open tabs.
 
+Debugging:
+-----------
+Check the following wiki page for information on getting to the debug consoles of the darkwallet:
+
+ https://wiki.unsystem.net/index.php/DarkWallet/Debug
+
 Code organization:
 -----------
 
