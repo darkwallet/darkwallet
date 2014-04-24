@@ -3,8 +3,8 @@
  */
 'use strict';
 
-define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controllers, Port, DarkWallet, Bitcoin) {
-  controllers.controller('BackupsCtrl', ['$scope', '$window', 'notify', function($scope, $window, notify) {
+define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controllers, DarkWallet, Bitcoin) {
+  controllers.controller('BackupsCtrl', ['$scope', '$window', 'notify', 'modals', function($scope, $window, notify, modals) {
 
     /**
      * Export
@@ -18,7 +18,7 @@ define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], fun
     }
 
     $scope.backupIdentity = function(identityName) {
-        $scope.openModal('ask-password', {text: 'Password for encrypting the backups', password: ''}, function(password) {
+        modals.openModal('ask-password', {text: 'Password for encrypting the backups', password: ''}, function(password) {
             var keyRing = DarkWallet.getKeyRing();
             keyRing.getRaw(identityName, function(obj) {
                 var fileName = identityName || 'all';
@@ -61,7 +61,7 @@ define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], fun
 
         reader.readAsText(file);
         $scope.$apply();
-    }
+    };
 
 
     /**
@@ -69,7 +69,7 @@ define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], fun
      */
     var loadBackup = function(identity) {
         console.log("Load backup!");
-    }
+    };
 
 
     /**
@@ -89,7 +89,7 @@ define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], fun
             // finish the modal
             $scope.ok();
         }
-    }
+    };
 
 
     /**
@@ -124,7 +124,13 @@ define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], fun
                 var nPubKeys = Object.keys(identity.pubkeys).length;
                 var nContacts = identity.contacts.length;
                 
-                $scope.toLoad.push({name: key.substr(12), hash: hash, pubKeys: nPubKeys, contacts: nContacts, version: identity.version});
+                $scope.toLoad.push({
+                    name: key.substr(12),
+                    hash: hash,
+                    pubKeys: nPubKeys,
+                    contacts: nContacts,
+                    version: identity.version
+                });
             }
         });
 
@@ -139,7 +145,7 @@ define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], fun
      * Call to start the import process
      */
     $scope.restoreBackup = function() {
-        $scope.openModal('import', {}, function(data) {
+        modals.openModal('import', {}, function(data) {
         });
     };
 

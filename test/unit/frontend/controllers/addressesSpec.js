@@ -2,7 +2,7 @@
 
 define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
 
-describe('Calculator controller', function() {
+describe('Addresses controller', function() {
     
     var addressesController, scope, wallet, history, identity, clipboard;
     
