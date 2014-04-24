@@ -9,14 +9,14 @@
       </div>
       <h3>Transaction:</h3>
       <div class="large-2 columns">
-        <button ng-click="copyClipboard(task.task.tx)" class="button-sm postfix fa fa-clipboard">Copy</button>
+        <button ng-click="clipboard.copy(task.task.tx)" class="button-sm postfix fa fa-clipboard">Copy</button>
       </div>
       <div class="large-2 columns">
         <button ng-click="showTx=!showTx" class="button-sm postfix fa fa-eye">Show</button>
       </div>
       <div class="medium-2 columns">
         <!-- Maybe too heavy -->
-        <button ng-click="openModal('show-qr', {address: task.task.tx})" class="button postfix radius fa fa-qrcode">QR</button>
+        <button ng-click="modals.showQr(task.task.tx)" class="button postfix radius fa fa-qrcode">QR</button>
       </div>
       <div ng-show="task.broadcasting">Broadcasting...</div>
       <div ng-show="task.broadcasted">Broadcasted ({{task.radar}}%)</div>

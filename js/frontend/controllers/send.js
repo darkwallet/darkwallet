@@ -3,7 +3,7 @@
 define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc'],
 function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   var BigInteger = Bitcoin.BigInteger;
-  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', '$wallet', function($scope, $window, notify, $wallet) {
+  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', function($scope, $window, notify, modals, $wallet) {
 
   var sendForm = $scope.forms.send;
 
@@ -246,7 +246,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
               sendForm.sending = false;
           } else if (task && task.type == 'sign') {
               // Need to sign so open modal
-              $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(_password) {$scope.finishSign(task, amountNote, _password)});
+              modals.password('Unlock password', function(_password) {$scope.finishSign(task, amountNote, _password)});
           } else if (task && task.type == 'mixer') {
               notify.note('Sent to mixer ('+task.task.state+')', amountNote);
               $scope.resetSendForm();

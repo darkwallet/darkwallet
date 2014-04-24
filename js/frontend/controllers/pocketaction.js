@@ -4,13 +4,13 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('PocketActionCtrl', ['$scope', function($scope) {
+  controllers.controller('PocketActionCtrl', ['$scope', 'modals', function($scope, modals) {
 
     /**
      * Delete pocket
      */
     $scope.deletePocket = function(pocket) {
-        $scope.openModal('confirm-delete', {name: pocket.name, object: pocket}, $scope.deletePocketFinish)
+        modals.open('confirm-delete', {name: pocket.name, object: pocket}, $scope.deletePocketFinish)
     };
 
     /**
@@ -61,8 +61,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
             to = $scope.availableIdentities[index];
             address = '';
         }
-        $scope.openModal('ask-password', {text: "Are you sure you want to move all " + $scope.pocket.name +
-        " funds to " + to + "?"}, function(password) {
+        var message = "Are you sure you want to move all ";
+        message += $scope.pocket.name + " funds to " + to + "?"
+        modals.password(message, function(password) {
             var fee = wallet.store.get('fee');
             var amount = wallet.getBalance($scope.pocket.index).confirmed - fee;
             walletService.send($scope.pocket.index, [{amount: amount, address: address}], null, fee, true, function() {

@@ -71,7 +71,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   };
 
   $scope.openContact = function(contact) {
-    // $scope.openModal('show-contact', {contact: contact});
+    // modals.open('show-contact', {contact: contact});
     var identity = DarkWallet.getIdentity();
     var contactIndex = identity.contacts.contacts.indexOf(contact);;
 

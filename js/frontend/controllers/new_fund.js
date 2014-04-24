@@ -2,7 +2,7 @@
 
 define(['./module', 'darkwallet', 'util/btc', 'bitcoinjs-lib'],
 function (controllers, DarkWallet, BtcUtils, Bitcoin) {
-  controllers.controller('NewFundCtrl', ['$scope', function($scope) {
+  controllers.controller('NewFundCtrl', ['$scope', 'clipboard', function($scope, clipboard) {
     /**
      * Reset the multisig fund
      */
@@ -39,7 +39,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
      */
     $scope.importMultisig = function() {
         var identity = DarkWallet.getIdentity();
-        var data = $scope.pasteClipboard();
+        var data = clipboard.paste();
         var multiSig = BtcUtils.importMultiSig(data, identity.wallet.versions.p2sh);
 
         multiSig.pubKeys.forEach(function(participant) {

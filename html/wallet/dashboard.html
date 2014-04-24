@@ -3,10 +3,10 @@
       <div class="row collapse panel radius" ng-hide="quicksend.next">
         <h5>Send</h5>
         <div class="small-1 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Select from contacts" ng-click="openModal('pick-contact', {field: quicksend}, addAddress)" class="fa button square prefix radius fa-users"></a>
+          <a href="" tooltip-append-to-body="true" tooltip="Select from contacts" ng-click="modals.open('pick-contact', {field: quicksend}, addAddress)" class="fa button square prefix radius fa-users"></a>
         </div>
         <div class="small-1 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Scan QR code" ng-click="openModal('scan-qr', {field: quicksend}, onQrModalOkSend, onQrModalCancel)" class="fa button square prefix fa-qrcode"></a>
+          <a href="" tooltip-append-to-body="true" tooltip="Scan QR code" ng-click="modals.scanQr(quicksend)" class="fa button square prefix fa-qrcode"></a>
         </div>
         <div class="small-6 columns">
           <input type="text" ng-model="quicksend.address" placeholder="Bitcoin address..." />
@@ -36,10 +36,10 @@
       <div class="row collapse panel radius">
         <h5>{{pocket.isFund?'Fund':'Stealth'}} address</h5>
         <div class="small-1 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="copyClipboard(pocket.mainAddress)" class="button prefix square radius fa fa-clipboard"></a>
+          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square radius fa fa-clipboard"></a>
         </div>
         <div class="small-1 columns">
-          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="openModal('show-qr', {address: pocket.mainAddress})"></a>
+          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showQr(pocket.mainAddress)"></a>
         </div>
         <div class="small-10 columns">
           <input type="text" class="postfix radius" readonly value="{{pocket.mainAddress}}" />

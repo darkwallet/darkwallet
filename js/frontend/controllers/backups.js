@@ -18,7 +18,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
     }
 
     $scope.backupIdentity = function(identityName) {
-        modals.openModal('ask-password', {text: 'Password for encrypting the backups', password: ''}, function(password) {
+        modals.password('Password for encrypting the backups', function(password) {
             var keyRing = DarkWallet.getKeyRing();
             keyRing.getRaw(identityName, function(obj) {
                 var fileName = identityName || 'all';
@@ -145,7 +145,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
      * Call to start the import process
      */
     $scope.restoreBackup = function() {
-        modals.openModal('import', {}, function(data) {
+        modals.open('import', {}, function(data) {
         });
     };
 

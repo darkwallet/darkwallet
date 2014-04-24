@@ -8,10 +8,10 @@
             <input type="text" disabled="true" value="{{pocket.stealth}}" />
         </div>
         <div class="medium-2 columns">
-            <button ng-click="copyClipboard(pocket.stealth)" class="button postfix fa fa-clipboard">Copy</button>
+            <button ng-click="clipboard.copy(pocket.stealth)" class="button postfix fa fa-clipboard">Copy</button>
         </div>
         <div class="medium-2 columns">
-            <button ng-click="openModal('show-qr', {address: pocket.stealth})" class="button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="modals.showQr(pocket.stealth})" class="button postfix radius fa fa-qrcode">QR</button>
         </div>
     </div>
     <div class="row collapse">
@@ -22,10 +22,10 @@
             <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.mpk}}" />
         </div>
         <div class="medium-2 columns">
-            <button ng-click="copyClipboard(pocket.mpk)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
+            <button ng-click="clipboard.copy(pocket.mpk)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
         </div>
         <div class="medium-2 columns">
-            <button ng-click="openModal('show-qr', {address: pocket.mpk, version: 7})" class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="modals.showQr(pocket.mpk, 7)" class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
         </div>
     </div>
 </div>
@@ -83,8 +83,8 @@
             {{address.balance | currencyFilter}}
         </div>
         <div class="small-2 columns text-right">
-            <button title="Scan a QR code" ng-click="openModal('show-qr', {address: address.address})" class="button square fa fa-qrcode"></button>
-            <button title="Copy address to clipboard" ng-click="copyClipboard(address.address)" class="button square fa fa-clipboard"></button>
+            <button title="Scan a QR code" ng-click="modals.showQr(address.address)" class="button square fa fa-qrcode"></button>
+            <button title="Copy address to clipboard" ng-click="clipboard.copy(address.address)" class="button square fa fa-clipboard"></button>
             <button title="Copy public key to clipboard" ng-click="copyClipboardPublic(address)" class="button square fa fa-key"></button>
         </div>
     </div>

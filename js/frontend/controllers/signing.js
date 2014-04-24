@@ -3,7 +3,7 @@
 define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkWallet, Bitcoin) {
 
   // Controller
-  controllers.controller('SigningCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('SigningCtrl', ['$scope', 'notify', 'modals', function($scope, notify, modals) {
 
   /**
    * Message formatting
@@ -129,7 +129,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
       if (!walletAddress) {
           notify.warning("Incorrect address for this wallet");
       } else {
-          $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(password) {
+          modals.password('Unlock password', function(password) {
               try {
                   identity.wallet.getPrivateKey(walletAddress.index, password, function(privKey) {
                       var signature = signText(privKey, walletAddress.address, text);

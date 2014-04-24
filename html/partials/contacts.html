@@ -20,8 +20,8 @@
           <input ng-model="newContact.address" class="prefix" type="text" placeholder="Enter a bitcoin address here or use the buttons on the right." required btc-address />
           <span class="input-status fa fa-check"></span>
         </div>
-        <div class="large-2 columns"><a href="" ng-click="newContact.address = pasteClipboard()" class="button postfix fa fa-clipboard">Paste</a></div>
-        <div class="large-2 columns"><a href="" ng-click="openModal('scan-qr', {field: newContact}, onQrModalOk, onQrModalCancel)" class="button radius postfix fa fa-qrcode">Scan QR</a></div> 
+        <div class="large-2 columns"><a href="" ng-click="newContact.address = clipboard.paste()" class="button postfix fa fa-clipboard">Paste</a></div>
+        <div class="large-2 columns"><a href="" ng-click="modals.scanQr(newContact)" class="button radius postfix fa fa-qrcode">Scan QR</a></div> 
       </div>
     </div>
   </div>

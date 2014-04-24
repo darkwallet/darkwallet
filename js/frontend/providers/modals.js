@@ -20,7 +20,7 @@ var modals = {
    * first parameter is the reason because the modal has been cancelled and the
    * second one the vars parameter passed to this function.
    */
-  openModal: function(tplName, vars, okCallback, cancelCallback) {
+  open: function(tplName, vars, okCallback, cancelCallback) {
 
     var ModalCtrl = function ($scope, $modalInstance, vars) {
       $scope.vars = vars;
@@ -66,7 +66,7 @@ var modals = {
     modal.result.then(ok, cancel);
   },
   
-  onQrModalOk: function(data, vars) {
+  onQrOk: function(data, vars) {
     var address, amount;
     sounds.play('keygenEnd');
     if (data.slice(0,8)) {
@@ -92,16 +92,26 @@ var modals = {
     }
   },
   
-  onQrModalCancel: function(data) {
+  onQrCancel: function(data) {
     if (data && data.name === 'PermissionDeniedError') {
       notify.error('Your camera is disabled');
     }
   },
-  
-  registerScope: function(scope) {
-    scope.openModal = modals.openModal;
-    scope.onQrModalOk = modals.onQrModalOk;
-    scope.onQrModalCancel = modals.onQrModalCancel;
+
+  scanQr: function(value) {
+    modals.open('scan-qr', {field: value}, modals.onQrOk, modals.onQrCancel);
+  },
+
+  showQr: function(value, version) {
+    var pars = {address: value};
+    if (version) {
+        pars.version = version;
+    }
+    modals.open('show-qr', pars);
+  },
+
+  password: function(text, callback) {
+    modals.open('ask-password', {text: text, password: ''}, callback);
   }
 };
 return modals;

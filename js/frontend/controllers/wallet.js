@@ -23,8 +23,8 @@ function (controllers, DarkWallet, Port) {
 
 
   // Global scope utils
-  modals.registerScope($scope);
-  clipboard.registerScope($scope);
+  $scope.modals = modals;
+  $scope.clipboard = clipboard;
 
 
   /**

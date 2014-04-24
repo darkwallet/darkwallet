@@ -3,7 +3,7 @@
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
 
   // Controller
-  controllers.controller('ToolsCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('ToolsCtrl', ['$scope', 'modals', 'notify', function($scope, modals, notify) {
 
   // General variable to coordinate tools
   $scope.tools = {status: 'OK'};
@@ -50,7 +50,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   }
 
   $scope.clearStorage = function() {
-      $scope.openModal('confirm-delete', {name: 'Your WHOLE storage', object: {}}, finishClearStorage)
+      modals.open('confirm-delete', {name: 'Your WHOLE storage', object: {}}, finishClearStorage)
   };
   
   // Clear all tasks

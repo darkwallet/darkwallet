@@ -7,10 +7,10 @@
             <input type="text" disabled="true" value="{{pocket.fund.multisig.address}}" />
         </div>
         <div class="medium-2 columns">
-            <button ng-click="copyClipboard(pocket.fund.multisig.address)" class="button postfix fa fa-clipboard">Copy</button>
+            <button ng-click="clipboard.copy(pocket.fund.multisig.address)" class="button postfix fa fa-clipboard">Copy</button>
         </div>
         <div class="medium-2 columns">
-            <button ng-click="openModal('show-qr', {address: pocket.fund.multisig.address})" class="button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="modals.showQr(pocket.fund.multisig.address)" class="button postfix radius fa fa-qrcode">QR</button>
         </div>
       </div>
       <div>{{pocket.fund.multisig.m}} of {{pocket.fund.multisig.pubKeys.length}} signatures are needed for spends</div>
@@ -26,14 +26,14 @@
     <h3>Script:</h3>
     <div class="row">
       <div class="large-4 columns">
-        <button ng-click="copyClipboard(pocket.fund.multisig.script)" class="button postfix fa fa-clipboard">Copy</button>
+        <button ng-click="clipboard.copy(pocket.fund.multisig.script)" class="button postfix fa fa-clipboard">Copy</button>
       </div>
       <div class="large-4 columns">
         <button ng-click="showFundScript=!showFundScript" class="button postfix fa fa-eye">Show</button>
       </div>
       <div class="medium-4 columns">
         <!-- Maybe too heavy -->
-        <button ng-click="openModal('show-qr', {address: pocket.fund.multisig.script})" class="button postfix radius fa fa-qrcode">QR</button>
+        <button ng-click="modals.showQr(pocket.fund.multisig.script)" class="button postfix radius fa fa-qrcode">QR</button>
       </div>
     </div>
     <div ng-show="showFundScript"><code>{{pocket.fund.multisig.script}}</code></div>

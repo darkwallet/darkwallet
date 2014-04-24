@@ -6,7 +6,7 @@
 define(['./module', 'darkwallet'],
 function (controllers, DarkWallet) {
 
-  controllers.controller('FundCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', function($scope, modals, notify) {
 
   $scope.Object = Object;
 
@@ -150,7 +150,7 @@ function (controllers, DarkWallet) {
       var inputs = fund.getValidInputs(task.tx);
 
       if (inputs.length) {
-          $scope.openModal('ask-password', {text: 'Unlock password', password: ''}, function(password) { finishSignFundTx(password, fund, task, inputs); } );
+          modals.password('Unlock password', function(password) { finishSignFundTx(password, fund, task, inputs); } );
       } else {
           notify.error('Error importing', 'Transaction is not for this multisig');
       }

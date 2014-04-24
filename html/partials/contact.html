@@ -43,10 +43,10 @@
       <div class="row collapse panel radius">
         <h5>The main address for this contact is:</h5>
         <div class="small-1 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="copyClipboard(vars.contact.pubKeys[vars.contact.mainKey].address)" class="button prefix square radius fa fa-clipboard"></a>
+          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(vars.contact.pubKeys[vars.contact.mainKey].address)" class="button prefix square radius fa fa-clipboard"></a>
         </div>
         <div class="small-1 columns">
-          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="openModal('show-qr', {address: vars.contact.pubKeys[vars.contact.mainKey].address})"></a>
+          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showQr(vars.contact.pubKeys[vars.contact.mainKey].address)"></a>
         </div>
         <div class="small-10 columns">
           <input type="text" class="postfix radius" readonly value="{{vars.contact.pubKeys[vars.contact.mainKey].address}}" />
@@ -92,11 +92,11 @@
 		</form>
 	</div>
 	<div class="medium-3 large-1 columns" ng-show="!creatingContact">
-		<button ng-click="openModal('show-qr', {address: pubKey.address})" class="button postfix fa fa-qrcode" title="Show QR Code">QR</button>
+		<button ng-click="modals.showQr(pubKey.address)" class="button postfix fa fa-qrcode" title="Show QR Code">QR</button>
 
 	</div>
 	<div class="medium-3 large-1 columns" ng-show="!creatingContact">
-		<a ng-click="copyClipboard(pubKey.address)" class="button postfix fa fa-clipboard">Copy</a>
+		<a ng-click="clipboard.copy(pubKey.address)" class="button postfix fa fa-clipboard">Copy</a>
 	</div>
 	<div ng-show="$index" class="icon medium-3 large-1 columns" ng-show="!creatingContact">
                 <!-- Delete address -->
@@ -132,7 +132,7 @@
             <a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button postfix small radius">Watch</a>
         </div>
 	<div class="small-2 medium-2 columns text-right">
-            <a href="" ng-click="openModal('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button radius alert fa fa-trash-o"> Delete contact</a>
+            <a href="" ng-click="modals.open('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button radius alert fa fa-trash-o"> Delete contact</a>
         </div>
 </div>
 

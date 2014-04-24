@@ -6,7 +6,7 @@ providers.factory('clipboard', ['notify', '$window', function(notify, $window) {
 
 var clipboard = {
 
-  copyClipboard: function(text, notification) {
+  copy: function(text, notification) {
     var copyDiv = $window.document.createElement('div');
     copyDiv.contentEditable = true;
     copyDiv.style="position: fixed;";
@@ -22,7 +22,7 @@ var clipboard = {
     notify.note(notification);
   },
   
-  pasteClipboard: function() {
+  paste: function() {
     var pasteDiv = $window.document.createElement('div');
     pasteDiv.contentEditable = true;
     $window.document.getElementById('fixed').appendChild(pasteDiv);
@@ -33,10 +33,6 @@ var clipboard = {
     var text = pasteDiv.innerText;
     $window.document.getElementById('fixed').removeChild(pasteDiv);
     return text;
-  },
-  registerScope: function(scope) {
-    scope.copyClipboard = clipboard.copyClipboard;
-    scope.pasteClipboard = clipboard.pasteClipboard;
   }
 
 };
