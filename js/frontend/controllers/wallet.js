@@ -91,7 +91,9 @@ function (controllers, DarkWallet, Port) {
           return false;
       }
 
-      $scope.needsReseed = identity.reseed;
+      if (identity.reseed) {
+          $scope.alert = 'reseed';
+      }
 
       // Inform the wallet service
       $wallet.onIdentityLoaded(identity);
