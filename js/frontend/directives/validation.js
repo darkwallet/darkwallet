@@ -6,7 +6,7 @@ directives.directive('btcAddress', function() {
   return {
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl) {
-      ctrl.$parsers.unshift(function(viewValue) {
+      var f = function(viewValue) {
         if (viewValue) {
           var identity = DarkWallet.getIdentity();
           var validAddresses = [
@@ -14,12 +14,14 @@ directives.directive('btcAddress', function() {
               identity.wallet.versions.stealth.address,
               identity.wallet.versions.p2sh
           ]
- 
+
           var res = BtcUtils.validateAddress(viewValue, validAddresses);
           ctrl.$setValidity('address', res);
         }
         return viewValue;
-      });
+      };
+      ctrl.$parsers.unshift(f);
+      ctrl.$formatters.unshift(f);
     }
   };
 });

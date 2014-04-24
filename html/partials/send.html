@@ -1,4 +1,4 @@
-  <form ng-submit="sendBitcoins()">
+  <form ng-submit="sendBitcoins()" novalidate>
     <div class="row">
       <div class="small-12 columns">
         <h3>Send</h3>
@@ -37,7 +37,7 @@
 
           <div class="small-8 columns">
 
-                <input type="text" class="address-buttons" ng-disabled="forms.send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
+                <input type="text" class="address-buttons" required btc-address ng-disabled="forms.send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
 
                 <span class="input-status fa fa-check"></span>
 
