@@ -9,7 +9,6 @@ define(['frontend/app'], function (app) {
   return app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/contact/:contactId', {templateUrl: 'partials/contact.html', controller: 'ContactsCtrl'});
     $routeProvider.when('/tools', {templateUrl: 'partials/tools.html', controller: 'ToolsCtrl'});
-    $routeProvider.when('/dashboard', {templateUrl: 'partials/dashboard.html', controller: 'DashboardCtrl'});
     $routeProvider.when('/wallet', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
     $routeProvider.when('/send', {templateUrl: 'partials/send.html', controller: 'WalletSendCtrl'});
     $routeProvider.when('/contacts', {templateUrl: 'partials/contacts.html', controller: 'ContactsCtrl'});
@@ -18,6 +17,6 @@ define(['frontend/app'], function (app) {
     $routeProvider.when('/identities', {templateUrl: 'partials/identities.html', controller: 'IdentitiesCtrl'});
     $routeProvider.when('/new_wallet', {templateUrl: 'partials/new_wallet.html', controller: 'NewWalletCtrl'});
     $routeProvider.when('/popup', {templateUrl: 'partials/popup.html', controller: 'PopupCtrl'});
-    $routeProvider.otherwise({redirectTo: '/dashboard'});
+    $routeProvider.otherwise({redirectTo: '/wallet'});
   }]);
 });

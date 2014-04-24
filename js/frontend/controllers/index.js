@@ -10,7 +10,6 @@ define([
     './addresses',
     './backups',
     './contacts',
-    './dashboard',
     './history',
     './identities',
     './lobby',
