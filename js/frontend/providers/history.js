@@ -251,7 +251,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           case 'unused':
               return !row.nOutputs;
           case 'top':
-              return row.balance>100000;
+              return row.balance>0;
           case 'labelled':
               return ['unused', 'change'].indexOf(row.label) == -1;
           default:
