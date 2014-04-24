@@ -68,6 +68,24 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         return {address: address, script: data, m: m, pubKeys: pubKeys};
     },
 
+    fixTxVersions: function(tx, identity) {
+        // XXX fix trouble with bitcoinjs..
+        if (identity.wallet.network == 'testnet') {
+            var versions = identity.wallet.versions;
+            tx.outs.forEach(function(txOut) {
+                switch(txOut.address.version) {
+                    case 0:
+                        txOut.address.version = versions.address;
+                        break;
+                    case 5:
+                        txOut.address.version = versions.p2sh;
+                        break;
+                }
+            });
+        }
+        return tx;
+    },
+
     /*
      *  Uncompress a public address
      */

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib'], function(Bitcoin) {
+define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
 /**
  * User oriented history view.
@@ -66,6 +66,8 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     var isStealth = false;
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
 
+    // XXX temporary while bitcoinjs-lib supports testnet better
+    txObj = BtcUtils.fixTxVersions(txObj, this.identity);
     // Check inputs
     for(var idx=0; idx<txObj.ins.length; idx++) {
         var anIn = txObj.ins[idx];
@@ -117,6 +119,8 @@ History.prototype.fillInput = function(transaction, data) {
     var index = data[0],
         newRow = data[1],
         txObj = new Bitcoin.Transaction(transaction);
+    // XXX temporary while bitcoinjs-lib supports testnet better
+    txObj = BtcUtils.fixTxVersions(txObj, this.identity);
     newRow.address = txObj.outs[index].address.toString();
     this.update();
 };

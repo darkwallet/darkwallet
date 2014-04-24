@@ -616,6 +616,9 @@ Wallet.prototype.txForAddress = function(walletAddress, tx) {
         var txHash = outpoint.hash;
          if (identity.txdb.transactions.hasOwnProperty(txHash)) {
             var prevTx = new Bitcoin.Transaction(identity.txdb.transactions[txHash]);
+            // XXX temporary while bitcoinjs-lib supports testnet better
+            prevTx = BtcUtils.fixTxVersions(prevTx, identity);
+
             if (prevTx.outs[outpoint.index].address == walletAddress.address) {
                 inputs.push({index: i, address: walletAddress.address, outpoint: outpoint});
             }
@@ -645,6 +648,9 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
         // store in our tx db
         this.identity.txdb.storeTransaction(txHash, serializedTx);
     }
+
+    // XXX temporary while bitcoinjs-lib supports testnet better
+    tx = BtcUtils.fixTxVersions(tx, this.identity);
 
     // Now parse inputs and outputs
     tx.outs.forEach(function(txOut, i){
