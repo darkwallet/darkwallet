@@ -1,0 +1,103 @@
+<div>
+<div class="row">
+  <div class="small-12 columns"><h3>Browser</h3></div>
+</div>
+<div class="row panel setback net">
+  <form ng-submit="search()">
+      <div class="large-10 columns">
+              <input type="text" placeholder="Input transaction hash or address" ng-model="txHash"></input>
+      </div>
+      <div class="large-2 columns">
+          <a class="button postfix fa fa-search" href="#browser">Search</a>
+      </div>
+  </form>
+</div>
+
+<div class="row panel" ng-show="txName">
+     <div class="large-2 columns">
+          Transaction
+     </div>
+     <div class="large-10 columns">
+          {{txName}}
+     </div>
+</div>
+<div class="row panel setback coins transactions" ng-show="txName">
+      <div class="large-6 columns">
+	  <h4>Inputs</h4>
+	  <div class="row" ng-repeat="anIn in tx.ins">
+	      <div class="large-12 columns">
+	          <div><a ng-click="openLink(anIn.outpoint.hash)">{{anIn.outpoint.hash}}</a>:{{anIn.outpoint.index}}</div>
+	          <a ng-click="openLink(anIn.address)">{{anIn.address}}</a>
+	      </div>
+	  </div>
+      </div>
+      <div class="large-6 columns">
+          <h4>Outputs</h4>
+          <div class="row" ng-repeat="anOut in tx.outs">
+	      <div class="large-8 columns">
+		      <a ng-click="openLink(anOut.address.toString())">{{anOut.address.toString()}}</a>
+	      </div>
+	      <div class="large-4 columns">
+		      <div>{{anOut.value|currencyPresenter}}</div>
+	      </div>
+          </div>
+      </div>
+
+</div>
+
+<div class="row panel" ng-show="history">
+     <div class="large-2 columns">
+          Address
+     </div>
+     <div class="large-8 columns">
+          {{address}}
+     </div>
+     <div class="large-2 columns">
+          {{balance.confirmed|currencyPresenter}} <span ng-show="balance.unconfirmed">unconfirmed: {{balance.unconfirmed|currencyPresenter}}</span>
+     </div>
+</div>
+<div class="row panel setback coins transactions" ng-show="history">
+      <div class="row">
+	  <div class="large-6 columns">
+             Ins
+	  </div>
+	  <div class="large-6 columns">
+             Outs
+	  </div>
+      </div>
+
+      <div class="row" ng-repeat="row in history">
+	  <div class="large-2 columns">
+             {{row[3]|currencyPresenter}}
+	  </div>
+	  <div class="large-3 columns">
+             <!-- Tx -->
+             <a ng-click="openLink(row[0])">{{row[0].slice(0,32)}}...</a>
+	  </div>
+	  <div class="large-1 columns">
+             <!-- Index -->
+             {{row[1]}}
+	  </div>
+	  <div class="large-1 columns">
+             <!-- Height -->
+             {{row[2]}}
+	  </div>
+	  <div class="large-3 columns">
+             <!-- Tx -->
+             <a ng-show="row[0].length" ng-click="openLink(row[0])">{{row[4].slice(0,32)}}...</a>
+             <a ng-show="!row[0].length">{{row[4].slice(0,32)}}...</a>
+	  </div>
+	  <div class="large-1 columns">
+             <!-- Index -->
+             {{row[5]}}
+	  </div>
+	  <div class="large-1 columns">
+             <!-- Height -->
+             {{row[6]}}
+	  </div>
+      </div>
+
+</div>
+
+
+</div>

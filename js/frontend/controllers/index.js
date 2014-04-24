@@ -9,6 +9,7 @@
 define([
     './addresses',
     './backups',
+    './browser',
     './contacts',
     './history',
     './identities',
