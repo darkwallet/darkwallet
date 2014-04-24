@@ -12,6 +12,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
   controllers.controller('PopupCtrl', ['$scope', function($scope) {
 
   $scope.currentIdentity = false;
+  $scope.connected = false;
 
   // Wallet service, connect to get notified about identity getting loaded.
   Port.connect('wallet', function(data) {
@@ -23,7 +24,13 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
         }
     }
   });
-
+  
+  Port.connect('obelisk', function(data) {
+    if (data.type == 'connected') {
+      $scope.connected = true;
+    }
+  });
+  
   Port.connect('gui', function(data) {
     if (['height', 'radar'].indexOf(data.type) > -1) {
         if(!$scope.$$phase) {
