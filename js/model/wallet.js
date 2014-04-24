@@ -134,8 +134,13 @@ Wallet.prototype.loadPubKeys = function() {
 
             // TODO: Don't process previous history so we can cache
             // properly later
-            //if (walletAddress.history)
-            //    self.processHistory(walletAddress, walletAddress.history);
+            if (walletAddress.history) {
+                  // Reload history
+                  walletAddress.balance = 0;
+                  walletAddress.nOutputs = 0;
+                  walletAddress.height = 0;
+                  self.processHistory(walletAddress, walletAddress.history);
+            }
         }
     });
     return false; // updated
@@ -230,6 +235,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
        'label': label,
        'balance': 0,
        'nOutputs': 0,
+       'height': 0,
        'pubKey': pubKey,
        'address': address.toString()
     };
@@ -572,6 +578,7 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
                    value: value,
                    address: walletAddress.address };
         wallet.outputs[outId] = output;
+        walletAddress.nOutputs += 1;
     }
     // If confirmed and not spent add balance
     if (height && !output.height && !spend) {
@@ -678,11 +685,10 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
  */
 Wallet.prototype.processHistory = function(walletAddress, history) {
     var self = this;
-    // reset some numbers for the address
-    walletAddress.balance = 0;
-    walletAddress.height = 0;
-    walletAddress.nOutputs = 0;
+
+    // only supported getting (and caching) all history for now
     walletAddress.history = history;
+
     // process history
     history.forEach(function(tx) {
         // sum unspent outputs for the address
@@ -690,7 +696,6 @@ Wallet.prototype.processHistory = function(walletAddress, history) {
         var inTxHash = tx[4];
         var outHeight = tx[2];
         var spend;
-        walletAddress.nOutputs += 1;
         if (inTxHash == null) {
             if (outHeight) {
                 walletAddress.height = Math.max(outHeight, walletAddress.height);

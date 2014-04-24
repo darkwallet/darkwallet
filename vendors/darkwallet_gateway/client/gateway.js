@@ -72,10 +72,11 @@ GatewayClient.prototype.fetch_transaction = function(tx_hash, handle_fetch) {
  * @param {Function} handle_fetch Callback to handle the JSON object
  * representing the history of the address
  */
-GatewayClient.prototype.fetch_history = function(address, handle_fetch) {
+GatewayClient.prototype.fetch_history = function(address, height, handle_fetch) {
+    height = height || 0;
     GatewayClient._check_function(handle_fetch);
 
-    this.make_request("fetch_history", [address], function(response) {
+    this.make_request("fetch_history", [address, height], function(response) {
         handle_fetch(response["error"], response["result"][0]);
     });
 };

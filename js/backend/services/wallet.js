@@ -172,7 +172,6 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         // now subscribe the address for notifications
         client.subscribe(walletAddress.address, function(err, res) {
             // fill history after subscribing to ensure we got all histories already (for now).
-            //identity.history.fillHistory(walletAddress, history);
             var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
             Port.post('gui', {type: 'balance', pocketId: pocketId});
         }, function(addressUpdate) {
@@ -189,7 +188,14 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             return;
         }
         var identity = self.getCurrentIdentity();
-        client.fetch_history(walletAddress.address, function(err, res) { historyFetched(err, walletAddress, res); });
+
+        // Load history cache
+        if (walletAddress.history) {
+            identity.history.fillHistory(walletAddress, walletAddress.history);
+        }
+
+        // Now fetch history
+        client.fetch_history(walletAddress.address, 0 /*walletAddress.height*/, function(err, res) { historyFetched(err, walletAddress, res); });
     };
 
     // Handle a block header arriving from obelisk
