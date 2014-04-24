@@ -39,9 +39,9 @@ describe('Addresses controller', function() {
           });
           spyOn(history, 'addressFilter');
           clipboard = {
-            copyClipboard: function() {}
+            copy: function() {}
           };
-          spyOn(clipboard, 'copyClipboard');
+          spyOn(clipboard, 'copy');
           addressesController = $controller('AddressesCtrl', {
             $scope: scope,
             $wallet: wallet,
@@ -84,7 +84,7 @@ describe('Addresses controller', function() {
         "pubKey": [3, 50, 218, 12, 146, 113, 33, 187, 22, 13, 255, 253, 179, 214, 231, 44, 106, 101, 42, 32, 131, 221, 191, 197, 41, 239, 222, 46, 25, 98, 164, 161, 135]
       };
       scope.copyClipboardPublic(walletAddress);
-      expect(clipboard.copyClipboard).toHaveBeenCalledWith('0332da0c927121bb160dfffdb3d6e72c6a652a2083ddbfc529efde2e1962a4a187', 'Copied public key to clipboard');
+      expect(clipboard.copy).toHaveBeenCalledWith('0332da0c927121bb160dfffdb3d6e72c6a652a2083ddbfc529efde2e1962a4a187', 'Copied public key to clipboard');
     });
     
     it('saves store', function() {
