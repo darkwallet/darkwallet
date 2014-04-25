@@ -3,7 +3,7 @@
 define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'], function (controllers, DarkWallet, Port, Bitcoin, BtcUtils) {
 
   // Controller
-  controllers.controller('BrowserCtrl', ['$scope', 'modals', 'notify', '$routeParams', '$window', function($scope, modals, notify, $routeParams, $window) {
+  controllers.controller('BrowserCtrl', ['$scope', 'modals', 'notify', '$routeParams', '$location', function($scope, modals, notify, $routeParams, $location) {
 
   $scope.bytesToHex = Bitcoin.convert.bytesToHex;
 
@@ -75,9 +75,16 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * Addresses
    */
 
+  $scope.filterHistoryRows = function(page) {
+      $scope.page=page;
+      $scope.history = $scope.allHistory.slice(page*10, (page*limit)+limit)
+  }
+
   /**
    * History received callback
    */
+  $scope.page = 0;
+  var limit = 50;
   var onFetchHistory = function(err, history) {
       if (err) {
           notify.warning("Address not found!", err.message);
@@ -85,7 +92,9 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       } else {
           $scope.txName = '';
           $scope.tx = false;
-          $scope.history = history;
+          $scope.allHistory = history;
+          $scope.nPages = Math.ceil(history.length / limit);
+          $scope.filterHistoryRows(0);
           var confirmed = 0;
           var unconfirmed = 0;
           history.forEach(function(row) {
@@ -120,13 +129,15 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * General search... search anything!
    */
   $scope.search = function(data) {
-      console.log("search", data)
+      data = data || $scope.txHash;
+      $location.path('/browser/'+data);
+  }
+
+  $scope.searchReally = function(data) {
       data = data || $scope.txHash;
       if (data.length < 40) {
-          console.log("search address", data)
           $scope.searchAddress(data);
       } else {
-          console.log("search tx", data)
           $scope.searchTransaction(data);
       }
   }
@@ -135,16 +146,20 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * Open a link. Currently searches but could go to some url
    */
   $scope.openLink = function(data) {
-      //$window.location = '#/browser/'+data;
       $scope.search(data);
   }
+
+  $scope.range = function(n) {
+      if (!n) return [];
+      return new Array(n);
+  };
 
   /**
    * Handle route parameters so we can receive url like #browser/<search>
    */
   if ($routeParams.search) {
       $scope.txHash = $routeParams.search;
-      $scope.search($routeParams.search);
+      $scope.searchReally($routeParams.search);
   }
 
 }]);

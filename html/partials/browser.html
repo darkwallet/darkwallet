@@ -14,7 +14,7 @@
   </form>
 </div>
 
-<div class="row panel" ng-show="txName">
+<div class="row panel" ng-if="txName">
      <div class="large-2 columns">
           Transaction
      </div>
@@ -22,7 +22,7 @@
           {{txName}}
      </div>
 </div>
-<div class="row panel setback coins transactions" ng-show="txName">
+<div class="row panel setback coins transactions" ng-if="txName">
       <div class="large-6 columns">
 	  <h4>Inputs</h4>
 	  <div class="row" ng-repeat="anIn in tx.ins">
@@ -46,7 +46,7 @@
 
 </div>
 
-<div class="row panel" ng-show="history">
+<div class="row panel" ng-if="address">
      <div class="large-2 columns">
           Address
      </div>
@@ -57,7 +57,7 @@
           {{balance.confirmed|currencyPresenter}} <span ng-show="balance.unconfirmed">unconfirmed: {{balance.unconfirmed|currencyPresenter}}</span>
      </div>
 </div>
-<div class="row panel setback coins transactions" ng-show="history">
+<div class="row panel setback coins transactions" ng-if="history">
       <div class="row">
 	  <div class="large-6 columns">
              Ins
@@ -66,6 +66,15 @@
              Outs
 	  </div>
       </div>
+
+<div ng-if="nPages" class="pagination-centered">
+    <ul class="pagination">
+        <li ng-click="filterHistoryRows(page-1)" ng-class="{unavailable:page==0}" class="arrow unavailable"><a href="">&laquo;</a></li>
+        <li ng-click="filterHistoryRows(index)" ng-repeat="n in range(nPages) track by $index" ng-class="{current: page==$index}"><a ng-click="selectPage($index)">{{$index+1}}</a></li>
+        <!--<li class="unavailable"><a href="">&hellip;</a></li>-->
+        <li ng-click="filterHistoryRows(page+1)" ng-class="{unavailable:page==nPages-1}" class="arrow"><a href="">&raquo;</a></li>
+    </ul>
+</div>
 
       <div class="row" ng-repeat="row in history">
 	  <div class="large-2 columns">
