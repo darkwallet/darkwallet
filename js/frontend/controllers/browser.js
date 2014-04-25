@@ -34,8 +34,9 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
           var multisig = BtcUtils.importMultiSig(Bitcoin.convert.bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]));
           result = multisig.address;
           notes = (anIn.script.chunks.length-2) + "/" + multisig.m + " sigs"
-      } else {
-          result = "Unknown " + pubKeys.length + " pubkeys";
+      } else if (anIn.outpoint.hash == '0000000000000000000000000000000000000000000000000000000000000000') {
+          result = '';
+          notes = "coinbase";
       }
       return {address: result, notes: notes};
   };

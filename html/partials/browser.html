@@ -27,7 +27,8 @@
 	  <h4>Inputs</h4>
 	  <div class="row" ng-repeat="anIn in tx.ins">
 	      <div class="large-12 columns">
-	          <div><a ng-click="openLink(anIn.outpoint.hash)">{{anIn.outpoint.hash}}</a>:{{anIn.outpoint.index}}</div>
+	          <div ng-show="anIn.address.notes!='coinbase'"><a ng-click="openLink(anIn.outpoint.hash)">{{anIn.outpoint.hash.slice(0,48)}}...</a>:{{anIn.outpoint.index}}</div>
+                  <span class="fa fa-btc" ng-show="anIn.address.notes=='coinbase'"></span>
 	          <a ng-click="openLink(anIn.address.address)">{{anIn.address.address}}</a> {{anIn.address.notes}}
 	      </div>
 	  </div>
