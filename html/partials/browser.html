@@ -5,7 +5,8 @@
 <div class="row panel setback net">
   <form ng-submit="search()">
       <div class="large-10 columns">
-              <input type="text" placeholder="Input transaction hash or address" ng-model="txHash"></input>
+                <input type="text" placeholder="Input transaction hash or address" ng-model="txHash"></input>
+		<a href="" tooltip="Select from contacts" ng-click="modals.open('pick-contact', {field: txHash}, search)" class="fa button square righted fa-users"></a>
       </div>
       <div class="large-2 columns">
           <a class="button postfix fa fa-search" href="#browser">Search</a>
