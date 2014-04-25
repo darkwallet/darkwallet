@@ -24,7 +24,8 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       var identity = DarkWallet.getIdentity();
       var pubKeys = anIn.script.extractPubkeys();
       if (pubKeys.length == 1) {
-          var pubKey = new Bitcoin.ECPubKey(pubKeys[0], identity.wallet.versions.address);
+          var pubKeyBytes = pubKeys[0];
+          var pubKey = new Bitcoin.ECPubKey(pubKeys[0], pubKeyBytes.length==33);
           var address = pubKey.getAddress(identity.wallet.versions.address);
           result = address.toString()
       } else {

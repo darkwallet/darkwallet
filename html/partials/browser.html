@@ -57,6 +57,9 @@
           {{balance.confirmed|currencyPresenter}} <span ng-show="balance.unconfirmed">unconfirmed: {{balance.unconfirmed|currencyPresenter}}</span>
      </div>
 </div>
+<div class="row panel" ng-if="address && (!history || !history.length)">
+    No history found for this address
+</div>
 <div class="row panel setback coins transactions" ng-if="history">
       <div class="row">
 	  <div class="large-6 columns">
