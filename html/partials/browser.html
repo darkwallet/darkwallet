@@ -50,11 +50,34 @@
      <div class="large-2 columns">
           Address
      </div>
-     <div class="large-8 columns">
+     <div class="large-7 columns">
           {{address}}
      </div>
-     <div class="large-2 columns">
-          {{balance.confirmed|currencyPresenter}} <span ng-show="balance.unconfirmed">unconfirmed: {{balance.unconfirmed|currencyPresenter}}</span>
+     <div class="large-3 columns transactions">
+        <div class="row">
+           <div class="columns small-3">
+              In:
+          </div>
+           <div class="columns small-9">
+              +{{balanceIn.confirmed|currencyPresenter}} <span ng-show="balanceIn.unconfirmed">unconfirmed: {{balanceIn.unconfirmed|currencyPresenter}}</span>
+          </div>
+        </div>
+        <div class="row">
+           <div class="columns small-3">
+              Out:
+          </div>
+           <div class="columns small-9">
+              -{{balanceOut.confirmed|currencyPresenter}} <span ng-show="balanceOut.unconfirmed">unconfirmed: {{balanceOut.unconfirmed|currencyPresenter}}</span>
+          </div>
+        </div>
+        <div class="row">
+           <div class="columns small-3">
+              Total:
+          </div>
+           <div class="columns small-9">
+              {{balance.confirmed|currencyPresenter}} <span ng-show="balance.unconfirmed">unconfirmed: {{balance.unconfirmed|currencyPresenter}}</span>
+          </div>
+        </div>
      </div>
 </div>
 <div ng-cloak class="row panel" ng-if="address && (!history || !history.length)">

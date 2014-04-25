@@ -96,21 +96,30 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
           $scope.allHistory = history;
           $scope.nPages = Math.ceil(history.length / limit);
           $scope.filterHistoryRows(0);
-          var confirmed = 0;
-          var unconfirmed = 0;
+          var inConfirmed = 0;
+          var inUnconfirmed = 0;
+          var outConfirmed = 0;
+          var outUnconfirmed = 0;
           history.forEach(function(row) {
               var value = row[3];
-              if (row[4]) { // spend tx
-                   if (!row[6]) // spend height
-                       unconfirmed-=value;
+              // Check spend
+              if (row[4]) {
+                   if (!row[6]) { // spend height
+                       outUnconfirmed+=value;
+                   } else {
+                       outConfirmed+=value;
+                   }
               }
-              else if (row[2]) {
-                  confirmed += value;
+              // Check input
+              if (row[2]) { // our height
+                  inConfirmed+=value;
               } else {
-                  unconfirmed += value;
+                  inUnconfirmed+=value;
               }
           });
-          $scope.balance = {confirmed: confirmed, unconfirmed: unconfirmed};
+          $scope.balance = {confirmed: inConfirmed-outConfirmed, unconfirmed: inUnconfirmed-outUnconfirmed};
+          $scope.balanceIn = {confirmed: inConfirmed, unconfirmed: inUnconfirmed};
+          $scope.balanceOut = {confirmed: outConfirmed, unconfirmed: outUnconfirmed};
       }
       $scope.$apply();
   };
