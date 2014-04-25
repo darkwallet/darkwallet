@@ -20,18 +20,24 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * Show an input (extracts the address sending)
    */
   $scope.showInput = function(anIn) {
-      var result;
+      var result, notes;
       var identity = DarkWallet.getIdentity();
       var pubKeys = anIn.script.extractPubkeys();
       if (pubKeys.length == 1) {
+          // pubkey hash
           var pubKeyBytes = pubKeys[0];
           var pubKey = new Bitcoin.ECPubKey(pubKeys[0], pubKeyBytes.length==33);
           var address = pubKey.getAddress(identity.wallet.versions.address);
-          result = address.toString()
+          result = address.toString();
+      } else if (anIn.script.chunks[0] == 0 && anIn.script.chunks[anIn.script.chunks.length-1][0]==82) {
+          // multisig
+          var multisig = BtcUtils.importMultiSig(Bitcoin.convert.bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]));
+          result = multisig.address;
+          notes = (anIn.script.chunks.length-2) + "/" + multisig.m + " sigs"
       } else {
           result = "Unknown " + pubKeys.length + " pubkeys";
       }
-      return result;
+      return {address: result, notes: notes};
   };
 
   /**
@@ -85,7 +91,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * History received callback
    */
   $scope.page = 0;
-  var limit = 50;
+  var limit = 25;
   var onFetchHistory = function(err, history) {
       if (err) {
           notify.warning("Address not found!", err.message);

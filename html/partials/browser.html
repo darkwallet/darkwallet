@@ -28,7 +28,7 @@
 	  <div class="row" ng-repeat="anIn in tx.ins">
 	      <div class="large-12 columns">
 	          <div><a ng-click="openLink(anIn.outpoint.hash)">{{anIn.outpoint.hash}}</a>:{{anIn.outpoint.index}}</div>
-	          <a ng-click="openLink(anIn.address)">{{anIn.address}}</a>
+	          <a ng-click="openLink(anIn.address.address)">{{anIn.address.address}}</a> {{anIn.address.notes}}
 	      </div>
 	  </div>
       </div>
@@ -96,7 +96,7 @@
 <div ng-if="nPages>1" class="pagination-centered">
     <ul class="pagination">
         <li ng-click="filterHistoryRows(page-1)" ng-class="{unavailable:page==0}" class="arrow unavailable"><a href="">&laquo;</a></li>
-        <li ng-click="filterHistoryRows(index)" ng-repeat="n in range(nPages) track by $index" ng-class="{current: page==$index}"><a ng-click="selectPage($index)">{{$index+1}}</a></li>
+        <li ng-click="filterHistoryRows($index)" ng-repeat="n in range(nPages) track by $index" ng-class="{current: page==$index}"><a ng-click="selectPage($index)">{{$index+1}}</a></li>
         <!--<li class="unavailable"><a href="">&hellip;</a></li>-->
         <li ng-click="filterHistoryRows(page+1)" ng-class="{unavailable:page==nPages-1}" class="arrow"><a href="">&raquo;</a></li>
     </ul>
