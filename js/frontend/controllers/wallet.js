@@ -21,7 +21,6 @@ function (controllers, DarkWallet, Port) {
   $scope.forms = {};
   $scope.identityName = false;
 
-
   // Global scope utils
   $scope.modals = modals;
   $scope.clipboard = clipboard;
@@ -94,6 +93,7 @@ function (controllers, DarkWallet, Port) {
       if (identity.reseed) {
           $scope.alert = 'reseed';
       }
+      $scope.status = DarkWallet.core.servicesStatus;
 
       // Inform the wallet service
       $wallet.onIdentityLoaded(identity);

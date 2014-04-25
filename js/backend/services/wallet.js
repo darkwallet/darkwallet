@@ -174,6 +174,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             // fill history after subscribing to ensure we got all histories already (for now).
             var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
             Port.post('gui', {type: 'balance', pocketId: pocketId});
+            core.servicesStatus.syncing -= 1;
         }, function(addressUpdate) {
             onAddressUpdate(walletAddress, addressUpdate);
         });
@@ -193,7 +194,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         if (walletAddress.history) {
             identity.history.fillHistory(walletAddress, walletAddress.history);
         }
-
+        if (!core.servicesStatus.syncing) {
+            core.servicesStatus.syncing = 0;
+        }
+        core.servicesStatus.syncing += 1;
         // Now fetch history
         client.fetch_history(walletAddress.address, 0 /*walletAddress.height*/, function(err, res) { historyFetched(err, walletAddress, res); });
     };
@@ -217,7 +221,9 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             Port.post('wallet', {type: 'height', value: height});
             Port.post('gui', {type: 'height', value: height});
             var client = core.getClient();
+            core.servicesStatus.syncing += 1;
             client.fetch_block_header(height, function(err, data) {
+                core.servicesStatus.syncing -= 1;
                 if (!err) {
                     handleBlockHeader(height, data)
                 }
