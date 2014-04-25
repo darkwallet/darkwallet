@@ -16,7 +16,17 @@
           <h4>{{identityName}}</h4>
           <h6 ng-show="identities.hasOwnProperty(identityName)">Balance: {{identities[identityName].wallet.balance.confirmed | currencyPresenter}}</h6>
           <button ng-click="selectIdentity(identityName)" ng-hide="identityName == currentIdentity" class="radius tiny expand">Use this identity</button>
-          <button ng-click="backupIdentity(identityName)" class="radius tiny expand">Backup</button>
+          <div class="row collapse">
+            <div class="small-4 columns">
+              <button ng-click="backupIdentity(identityName)" class="tiny expand">Backup</button>
+            </div>
+            <div class="small-4 columns">
+              <button class="tiny expand">Rename</button>
+            </div>
+            <div class="small-4 columns">
+              <button class="tiny expand">Delete</button>
+            </div>  
+          </div>
         </div>
       </li>
     </ul>

@@ -4459,7 +4459,7 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
     left: 50%;
     margin: -8px 0 0 -7px; }
 
-.button.postfix.fa:before, button.postfix.fa:before {
+.button.postfix.fa:not(.single):before, button.postfix.fa:not(.single):before {
   background: #1e8448;
   position: absolute;
   left: 0px;
@@ -4467,14 +4467,20 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
   width: 37px;
   height: 37px; }
 
+.button.postfix.fa.single {
+  margin: 0; }
+
 .button.postfix.fa.alert:before, button.postfix.fa.alert:before {
   background: #9e1c34; }
 
-.button.postfix.fa, button.postfix.fa {
+.button.postfix.fa:not(.single), button.postfix.fa:not(.single) {
   padding-left: 2em; }
 
 .button.topright {
   margin: 0.7em 0 0 0; }
+
+div.address-row button.tiny {
+  margin: 0; }
 
 @-webkit-keyframes glowpulse {
   from {
@@ -4513,6 +4519,13 @@ table tr:nth-child(odd) button {
 table.expand {
   width: 100%;
   text-overflow: ellipsis; }
+
+div.address {
+  overflow: hidden;
+  text-overflow: ellipsis; }
+
+div.address-row {
+  padding: 0; }
 
 .transactions div.row {
   padding: 0.5em; }
