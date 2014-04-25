@@ -67,7 +67,7 @@
 	  </div>
       </div>
 
-<div ng-if="nPages" class="pagination-centered">
+<div ng-if="nPages>1" class="pagination-centered">
     <ul class="pagination">
         <li ng-click="filterHistoryRows(page-1)" ng-class="{unavailable:page==0}" class="arrow unavailable"><a href="">&laquo;</a></li>
         <li ng-click="filterHistoryRows(index)" ng-repeat="n in range(nPages) track by $index" ng-class="{current: page==$index}"><a ng-click="selectPage($index)">{{$index+1}}</a></li>
