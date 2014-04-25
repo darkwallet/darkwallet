@@ -84,7 +84,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
 
   $scope.filterHistoryRows = function(page) {
       $scope.page=page;
-      $scope.history = $scope.allHistory.slice(page*10, (page*limit)+limit)
+      $scope.history = $scope.allHistory.slice(page*limit, (page*limit)+limit)
   }
 
   /**
