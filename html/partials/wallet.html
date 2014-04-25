@@ -24,8 +24,8 @@
     </div>
   </div>
   <!-- New multisig dialog -->
-  <div ng-show="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 columns">
-      <ng-include src="(selectedPocket==='newMultisig')?'wallet/new_fund.html':false">
+  <div ng-if="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 columns">
+      <ng-include src="'wallet/new_fund.html'">
       </ng-include>
   </div>
 
