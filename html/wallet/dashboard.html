@@ -1,6 +1,6 @@
   <div class="row">
     <div class="large-6 columns" ng-controller="WalletSendCtrl">
-    <form name="quickSendForm" ng-submit="quicksend.next=true" novalidate ng-hide="quicksend.next">
+    <form name="quickSendForm" ng-submit="quicksend.next=true;quickSendNext();" novalidate ng-hide="quicksend.next">
       <div class="row collapse panel radius">
         <h5>Send</h5>
         <div class="small-1 columns">
@@ -19,7 +19,10 @@
     </form>
     <form ng-submit="sendBitcoins()" ng-show="quicksend.next">
       <div class="row collapse panel radius">
-        <h5>Sending to {{quicksend.address}}</h5>
+        <h5>
+           <span ng-show="!quicksend.contact">Sending to {{quicksend.address}}</span>
+           <span ng-show="quicksend.contact">Sending to {{quicksend.contact.name}} <identicon icon-size="24" hash="quicksend.contact.hash"></identicon></span>
+        </h5>
         <div class="small-1 columns">
           <a ng-click="quicksend.next = false" class="button prefix radius fa fa-arrow-left"></a>
         </div>

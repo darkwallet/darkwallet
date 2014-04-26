@@ -37,8 +37,11 @@
 
           <div class="small-8 columns">
 
-                <input type="text" class="address-buttons" required btc-address ng-disabled="forms.send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
-
+                <input ng-show="!field.contact" type="text" class="address-buttons" required btc-address ng-disabled="forms.send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
+                <span class="postfix" ng-show="field.contact">
+                   <identicon icon-size="36" hash="field.contact.hash"></identicon>
+                   {{field.contact.name}}
+                </span>
                 <span class="input-status fa fa-check"></span>
 
                 <a href="" tooltip-placement="left" tooltip-append-to-body="true" tooltip="Scan QR code" ng-click="modals.scanQr(field)" class="fa button square righted fa-qrcode"></a>

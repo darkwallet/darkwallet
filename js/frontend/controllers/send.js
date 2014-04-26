@@ -131,7 +131,15 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormat) {
       }
   };
 
+  $scope.quickSendNext = function() {
+      var identity = DarkWallet.getIdentity();
+      var address = $scope.quicksend.address;
+
+      $scope.quicksend.contact = identity.contacts.findByAddress(address);
+  }
+
   var prepareRecipients = function() {
+      var identity = DarkWallet.getIdentity();
       var recipients = [];
       var totalAmount = 0;
       
@@ -143,10 +151,12 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormat) {
       }
       
       sendForm.recipients.fields.forEach(function(recipient) {
-          if (!recipient.amount || !recipient.address) {
+          if (!BtcUtils.validateAddress(recipient.address, validAddresses)) {
               return;
           }
-          if (!BtcUtils.validateAddress(recipient.address, validAddresses)) {
+          recipient.contact = identity.contacts.findByAddress(recipient.address);
+          
+          if (!recipient.amount || !recipient.address) {
               return;
           }
           var amount = CurrencyFormat.asSatoshis(recipient.amount);
