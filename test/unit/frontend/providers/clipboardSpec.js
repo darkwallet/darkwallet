@@ -3,7 +3,7 @@
 define(['angular-mocks', 'frontend/providers/clipboard'], function(mocks) {
   describe('Clipboard provider', function() {
 
-    var clipboard, $window, notify, _clipboardText;
+    var clipboard, $window, notify, _clipboardText, el;
     
     beforeEach(mocks.module("DarkWallet.providers"));
     beforeEach(function() {
@@ -20,7 +20,7 @@ define(['angular-mocks', 'frontend/providers/clipboard'], function(mocks) {
       notify.note = function() {};
       spyOn(notify, 'note');
       
-      var el = $window.document.createElement('div');
+      el = $window.document.createElement('div');
       el.setAttribute('id', 'fixed');
       $window.document.body.appendChild(el);
       
@@ -35,6 +35,10 @@ define(['angular-mocks', 'frontend/providers/clipboard'], function(mocks) {
         }
       };
     }]));
+
+    afterEach(function() {
+      $window.document.body.removeChild(el);
+    });
     
     it('copies', function() {
       clipboard.copy('text');
