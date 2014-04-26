@@ -277,14 +277,31 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
     /*
      * Send a transaction into the mixer
      */
-    var mixTransaction = function(newTx, metadata, callback) {
+    this.mixTransaction = function(newTx, metadata, password, callback) {
         var identity = self.getCurrentIdentity();
         var task = {tx: newTx.serializeHex(),
                     state: 'announce',
                     total: metadata.total,
                     fee: metadata.fee,
                     change: metadata.change,
+                    timeout: 60, // timeout in secs
+                    start: Date.now()/1000,
                     myamount: metadata.myamount};
+
+        // Gather private keys for this task
+        var privKeys = {};
+        metadata.utxo.forEach(function(utxo) {
+            var address = identity.wallet.getWalletAddress(utxo.address);
+            if (address && !privKeys.hasOwnProperty(address.index)) {
+                identity.wallet.getPrivateKey(address.index, password, function(privKey) {
+                    privKeys[address.index] = privKey.toBytes().slice(0);
+                });
+            } else if (!address) {
+                console.log("[wallet] No private keys for", address);
+            }
+        });
+
+        task.privKeys = privKeys;
 
         // Add the task to model
         identity.tasks.addTask('mixer', task);
@@ -294,7 +311,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         mixerService.startTask(task);
                 
         // Callback for calling process
-        callback(null, {task: task, tx: newTx, type: 'mixer'});
+        callback(null, {task: task, tx: newTx, type: 'mixer', privKeys: privKeys});
     };
 
     /*
@@ -320,30 +337,6 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 self.broadcastTx(newTx, task, callback);
             }
         });
-    };
-
-    /*
-     * Send bitcoins
-     */
-    this.send = function(pocketIdx, recipients, changeAddress, fee, mixing, callback) {
-        var identity = self.getCurrentIdentity();
-
-        // Prepare the transaction
-        try {
-            var prepared = identity.wallet.prepareTx(pocketIdx, recipients, changeAddress, fee);
-        } catch (e) {
-            callback(e);
-            return;
-        }
-
-        // Now process the new transaction
-        if (mixing) {
-            mixTransaction(prepared.tx, prepared, callback);
-        } else {
-            prepared.type = 'sign';
-            callback(null, prepared);
-            //signTransaction(prepared.tx, prepared, password, callback);
-        }
     };
 
     /*

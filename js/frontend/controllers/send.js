@@ -185,7 +185,21 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       }
   };
 
-  $scope.finishSign = function(signTask, amountNote, password) {
+  var finishMix = function(metadata, amountNote, password) {
+      var onMixing = function(err, mixingTask) {
+          if (err) {
+              notify.error('Error sending to mixer ('+mixingTask.task.state+')', amountNote);
+          } else {
+              notify.note('Sent to mixer ('+mixingTask.task.state+')', amountNote);
+          }
+      };
+
+      $scope.resetSendForm();
+      var walletService = DarkWallet.service.wallet;
+      walletService.mixTransaction(metadata.tx, metadata, password, onMixing);
+  };
+
+  var finishSign = function(metadata, amountNote, password) {
       // callback waiting for radar feedback
       var isBroadcasted = false;
       var radarCache = {radar: 0};
@@ -207,8 +221,17 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       };
 
       var walletService = DarkWallet.service.wallet;
-      walletService.signTransaction(signTask.tx, signTask, password, onBroadcast);
+      walletService.signTransaction(metadata.tx, metadata, password, onBroadcast);
   };
+
+  var gotPassword = function(metadata, amountNote, password) {
+      if (sendForm.mixing) {
+          finishMix(metadata, amountNote, password);
+      } else {
+          finishSign(metadata, amountNote, password);
+      }
+  };
+
 
 
   $scope.sendBitcoins = function() {
@@ -236,38 +259,27 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       sendForm.sending = true;
       var fee = parseInt(BigInteger.valueOf(sendForm.fee * satoshis).toString());
 
-      // callback waiting for radar feedback
-      var onSent = function(error, task) {
-          console.log("send feedback", error, task);
-          var amountNote = (fee + totalAmount) + ' satoshis';
-          if (error) {
-              var errorMessage = error.message || ''+error;
-              notify.error("Transaction failed", errorMessage);
-              sendForm.sending = false;
-          } else if (task && task.type == 'sign') {
-              // Need to sign so open modal
-              modals.password('Unlock password', function(_password) {$scope.finishSign(task, amountNote, _password)});
-          } else if (task && task.type == 'mixer') {
-              notify.note('Sent to mixer ('+task.task.state+')', amountNote);
-              $scope.resetSendForm();
-          } else if (task) {
-              notify.note('New task: ' + task.type, amountNote);
-              $scope.resetSendForm();
-          } else {
-              notify.success('Transaction created', amountNote);
-              $scope.resetSendForm();
-          }
-      };
-
       // prepare the transaction
-      var walletService = DarkWallet.service.wallet;
+      var metadata;
+      var identity = DarkWallet.getIdentity();
 
-      walletService.send(sendForm.pocketIndex,
-                         recipients,
-                         changeAddress,
-                         fee,
-                         sendForm.mixing,
-                         onSent);
+      try {
+          metadata = identity.wallet.prepareTx(sendForm.pocketIndex,
+                                               recipients,
+                                               changeAddress,
+                                               fee)
+      } catch (error) {
+          var errorMessage = error.message || ''+error;
+          notify.error("Failed preparing transaction", errorMessage);
+          sendForm.sending = false;
+          return;
+      }
+
+      // Now ask for the password before continuing with the next step   
+      modals.password('Unlock password', function(password) {
+          var amountNote = (fee + totalAmount) + ' satoshis';
+          gotPassword(metadata, amountNote, password);
+      });
   };
 
   $scope.addAddress = function(data, vars) {

@@ -66,9 +66,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         modals.password(message, function(password) {
             var fee = wallet.store.get('fee');
             var amount = wallet.getBalance($scope.pocket.index).confirmed - fee;
-            walletService.send($scope.pocket.index, [{amount: amount, address: address}], null, fee, true, function() {
+            /*walletService.send($scope.pocket.index, [{amount: amount, address: address}], null, fee, true, function() {
                 console.log('Not implemented yet.');
-            });
+            });*/
         });
     };
 
