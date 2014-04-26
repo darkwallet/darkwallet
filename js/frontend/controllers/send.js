@@ -108,25 +108,25 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormatting) 
       var progressBar = $window.document.getElementById('send-progress');
       var button = $window.document.getElementById('send-button');
 
+      task.radar = radar;
+
       // Check if we're finished
       if (radar >= 0.75) {
-          radar = 1;
-          if (task.radar < 1) {
-              if (button && button.classList.contains('working')) {
-                  button.classList.remove('working');
-              }
+          // if the controller is still here and button still active, reset
+          if (button && button.classList.contains('working')) {
               notify.success('Transaction finished propagating');
+              button.classList.remove('working');
               $scope.resetSendForm();
+              if (!$scope.$$phase) {
+                  $scope.$apply();
+              };
           }
+          return;
       }
 
-      // If task.radar is less than one keep updating
-      if (task.radar < 1) {
-          if (button && !button.classList.contains('working')) {
-              button.classList.add('working');
-          }
-
-          task.radar = radar;
+      // Proceed if radar is updating
+      if (button && !button.classList.contains('working')) {
+          button.classList.add('working');
       }
 
       // Progress bar must be updated at the end
