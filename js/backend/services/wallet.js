@@ -210,6 +210,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         BtcUtils.setLastTimestamp(height, header.timestamp);
         self.blockDiff = BtcUtils.blockDiff;
         lastTimestamp = {height: height, timestamp: header.timestamp};
+        Port.post('gui', {type: 'timestamps', value: lastTimestamp});
     }
 
     // Handle height arriving from obelisk
@@ -219,10 +220,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             console.log("[wallet] height fetched", height);
             TransactionTasks.processHeight(height);
             core.service.badge.setItems();
+            core.servicesStatus.syncing += 1;
             Port.post('wallet', {type: 'height', value: height});
             Port.post('gui', {type: 'height', value: height});
             var client = core.getClient();
-            core.servicesStatus.syncing += 1;
             client.fetch_block_header(height, function(err, data) {
                 core.servicesStatus.syncing -= 1;
                 if (!err) {
