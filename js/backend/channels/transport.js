@@ -1,7 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'mnemonicjs'],
-function (Bitcoin, Mnemonic) {
+define(['bitcoinjs-lib', 'backend/channels/peer'],
+function (Bitcoin, Peer) {
 
   var SHA256 = Bitcoin.CryptoJS.SHA256;
 
@@ -35,8 +35,8 @@ function (Bitcoin, Mnemonic) {
     this.getSessionKey = function() { return this.sessionKey; };
 
     // Initialize some own data
-    this.comms = this.initializePeer(this.sessionKey.getPub().toBytes(true));
-    this.myself = this.initializePeer(selfKey.getPub().toBytes(true));
+    this.comms = new Peer(this.sessionKey.getPub().toBytes(true));
+    this.myself = new Peer(selfKey.getPub().toBytes(true));
   }
 
   /*
@@ -63,40 +63,17 @@ function (Bitcoin, Mnemonic) {
       return Bitcoin.convert.bytesToHex(channelHash);
   };
 
-  // Get a simple mnemonic name
-  Transport.prototype.getMnemoname = function(dataBytes) {
-      var mnemonic = new Mnemonic(64);
-      mnemonic.random = [];
-      mnemonic.random[0] = Bitcoin.convert.bytesToNum(dataBytes.slice(0,4));
-      mnemonic.random[1] = Bitcoin.convert.bytesToNum(dataBytes.slice(8,16));
-      var mnemoName = mnemonic.toWords().slice(0,4).join(" ");
-      return mnemoName;
-
-  };
-
-  // Initialize peer structure
-  Transport.prototype.initializePeer = function(pubKeyBytes, fingerprint) {
-      var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
-      var mnemoname = this.getMnemoname(pubKeyBytes);
-      var newPeer = {pubKeyHex: pubKeyHex, name: mnemoname, pubKey: pubKeyBytes, fingerprint: fingerprint};
-      return newPeer;
-
-  };
-
   // Initialize and add peer to scope
-  Transport.prototype.addPeer = function(pubKeyBytes, fingerprint) {
+  Transport.prototype.addPeer = function(pubKey, fingerprint) {
       var peer;
-      var pubKeyHex = Bitcoin.convert.bytesToHex(pubKeyBytes);
-      var peerIndex = this.peerIds.indexOf(fingerprint);
-      if (peerIndex == -1) {
-          peer = this.initializePeer(pubKeyBytes, fingerprint);
+      var index = this.peerIds.indexOf(fingerprint);
+      if (index == -1) {
+          peer = new Peer(pubKey, fingerprint);
           this.peerIds.push(fingerprint);
           this.peers.push(peer);
-      } else {
-          peer = this.peers[this.peerIds.indexOf(fingerprint)];
-          peer.pubKey = pubKeyBytes;
-          peer.name = this.getMnemoname(pubKeyBytes);
-          peer.pubKeyHex = pubKeyHex;
+      } else if (pubKey) {
+          peer = this.peers[index];
+          peer.updateKey(pubKey);
       }
       return peer;
   };

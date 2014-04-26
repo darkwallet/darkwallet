@@ -1,7 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'sjcl'],
-function (Bitcoin, Curve25519, Encryption, Protocol) {
+define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'backend/channels/peer', 'sjcl'],
+function (Bitcoin, Curve25519, Encryption, Protocol, Peer) {
 
   var convert = Bitcoin.convert;
   var BigInteger = Bitcoin.BigInteger;
@@ -66,7 +66,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
     // Set some identity variables
     this.fingerprint = Encryption.genFingerprint(this.pub.toByteArrayUnsigned());
 
-    var newMe = this.transport.initializePeer(this.pub.toByteArrayUnsigned(), this.fingerprint);
+    var newMe = new Peer(this.pub.toByteArrayUnsigned());
     this.transport.comms.pubKeyHex = newMe.pubKeyHex;
     this.transport.comms.name = newMe.name;
   };
@@ -122,7 +122,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol) {
           this.requestPublicKey(fingerprint);
       }
       // create a dummy entry in the peers table, we can update it later
-      return this.transport.addPeer(Bitcoin.convert.hexToBytes('deadbeefdeadbeefdeadbeef'), fingerprint);
+      return this.transport.addPeer(null, fingerprint);
   };
 
   /**
