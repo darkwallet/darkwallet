@@ -33,10 +33,6 @@ define(['util/btc'], function(BtcUtils) {
     // Pubkey hash
     var address5 = '13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd';
 
-    it('sets timestamp for the last block to adjust timestamp heuristics');
-    
-    it('decodes a block header');
-
     it('create multisig', function() {
       var multisig = BtcUtils.multiSig(3, pubkeys);
       expect(multisig.address).toEqual('3CQdsxAmuaC2kHvHwKxKJ4kXn1qELrc6iM');
@@ -45,8 +41,6 @@ define(['util/btc'], function(BtcUtils) {
       expect(multisig.pubKeys).toEqual(pubkeys);
     });
     
-    it('derives mpk');
-        
     it('import multisig', function() {
       
       var multisig = BtcUtils.importMultiSig(script);
@@ -103,6 +97,46 @@ define(['util/btc'], function(BtcUtils) {
       expect(BtcUtils.heightToTimestamp(5000)).toEqual(1233819755000);
       expect(BtcUtils.heightToTimestamp(5000, 600)).toEqual(1234006505000);
     });
+
+    it('Sets the last timestamp', function() {
+      BtcUtils.setLastTimestamp(296406, 1397790085);
+      expect(BtcUtils.lastBlock).toEqual(296406);
+      expect(BtcUtils.lastTimestamp).toEqual(1397790085);
+      expect(BtcUtils.blockDiff).toEqual(562.6862479167088);
+    });
+
+    it('Fixes tx versions', function() {
+      var tx = {outs: [{address: {version: 0}}, {address: {version: 5}}]};
+      var identity = {wallet: {network: 'testnet', versions: {'address': 1, 'p2sh': 2}}};
+      var fixed = BtcUtils.fixTxVersions(tx, identity);
+      expect(fixed).toEqual({outs: [{address: {version: 1}}, {address: {version: 2}}]});
+    });
+
+    it('Does not fix versions', function() {
+      var tx = {outs: [{address: {version: 0}}, {address: {version: 5}}]};
+      var identity = {wallet: {network: 'bitcoin', versions: {'address': 1, 'p2sh': 2}}};
+      var fixed = BtcUtils.fixTxVersions(tx, identity);
+      expect(fixed).toEqual({outs: [{address: {version: 0}}, {address: {version: 5}}]});
+    });
+
+
+    it('Decodes a block header', function() {
+      var headerHex = "02000000d8aaf32c2bd344a921245b1e675381a5ccfccc397d68614300000000000000008c0e88fa16e068f881ad613f764e03018873e51a5e52c0db432b461365b7d77f4e565b538c9d001985c7aa6e";
+      var header = BtcUtils.decodeBlockHeader(headerHex);
+      expect(header.version).toEqual(2);
+      expect(header.prevBlock).toEqual([ 216, 170, 243, 44, 43, 211, 68, 169, 33, 36, 91, 30, 103, 83, 129, 165, 204, 252, 204, 57, 125, 104, 97, 67, 0, 0, 0, 0, 0, 0, 0, 0 ]);
+      expect(header.merkleRoot).toEqual([ 140, 14, 136, 250, 22, 224, 104, 248, 129, 173, 97, 63, 118, 78, 3, 1, 136, 115, 229, 26, 94, 82, 192, 219, 67, 43, 70, 19, 101, 183, 215, 127 ]);
+      expect(header.timestamp).toEqual(1398494798);
+      expect(header.difficulty).toEqual([ 140, 157, 0, 25 ]);
+      expect(header.nonce).toEqual(1856685957);
+    });
+
+    it('Derives from mpk', function() {
+      var mpk = "xpub6AANPpdT4JoeTLrgN159eHQXT4X1YiCtXnAJLV5zF48K2iDWWc1S7eYNFGe3oT2W5vDeFYHpWS8Y3Jr3xXeXFn18W6jMU9DhE3VG9mhyayG";
+      var derived = BtcUtils.deriveMpk(mpk, 2);
+      expect(derived).toEqual("xpub6BmQ54gaEjchEAjgdhtGcLm8fJMt6ksqcWsPacXzrL4vLK4qKsNnXouRHLXpkSBdQNjjvfefW334YzSzjL3uxLaXZWYsW8hVLZM7wwNqSxb");
+    });
+
 
     it('Validates addresses', function() {
       expect(BtcUtils.isAddress(address1)).toBeUndefined();
