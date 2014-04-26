@@ -4599,7 +4599,8 @@ li.colorhead h6 {
 
 .labels {
   position: absolute;
-  top: 0;
+  top: 50%;
+  margin-top: -11px;
   right: 0;
   z-index: 3; }
 
