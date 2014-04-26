@@ -1,7 +1,7 @@
 'use strict';
 
-define(['util/encryption', 'bitcoinjs-lib'],
-function (Encryption, Bitcoin) {
+define(['util/encryption', 'bitcoinjs-lib', 'backend/channels/utils'],
+function (Encryption, Bitcoin, ChannelUtils) {
 
   var CryptoJS = Bitcoin.CryptoJS;
   var SHA256 = Bitcoin.CryptoJS.SHA256;
@@ -12,7 +12,7 @@ function (Encryption, Bitcoin) {
   function Channel(transport, name) {
       var self = this;
       var client = transport.getClient();
-      var channelHash = transport.hashChannelName(name);
+      var channelHash = ChannelUtils.hashChannelName(name);
       this.transport = transport;
       this.name = name;
       this.channelHash = channelHash;

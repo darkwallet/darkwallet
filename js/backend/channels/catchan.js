@@ -1,7 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'backend/channels/peer', 'sjcl'],
-function (Bitcoin, Curve25519, Encryption, Protocol, Peer) {
+define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'backend/channels/peer', 'backend/channels/utils', 'sjcl'],
+function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
 
   var convert = Bitcoin.convert;
   var BigInteger = Bitcoin.BigInteger;
@@ -26,7 +26,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer) {
       this.name = name;
 
       // hash channel name
-      var channelHash = transport.hashChannelName(name);
+      var channelHash = ChannelUtils.hashChannelName(name);
       this.channelHash = channelHash;
 
       // Subscribe to channel updates
@@ -105,7 +105,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer) {
       }
       if (fingerprint.length != 40) {
           // bad peers
-          var pubKeyBytes = Bitcoin.convert.stringToBytes(fingerprint);
+          var pubKeyBytes = convert.stringToBytes(fingerprint);
           while(pubKeyBytes.length<32) { pubKeyBytes.push(6) };
           pubKeyBytes = pubKeyBytes.slice(32);
 
@@ -362,7 +362,6 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer) {
           }
           this.triggerCallbacks(decoded.type, decoded);
       }
-      transport.update();
   };
 
   Channel.prototype.onChatMessage = function(data) {

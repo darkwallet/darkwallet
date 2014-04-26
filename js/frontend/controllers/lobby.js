@@ -1,7 +1,7 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'frontend/port', 'frontend/channel_link', 'bitcoinjs-lib', 'util/protocol'],
-function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
+define(['./module', 'darkwallet', 'frontend/port', 'frontend/channel_link', 'bitcoinjs-lib', 'util/protocol', 'backend/channels/utils'],
+function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, ChannelUtils) {
 
   var selectedChannel;
 
@@ -82,7 +82,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
 
     // Initialize a channel
     var connectChannel = function(name) {
-        var pairCodeHash = transport.hashChannelName(name);
+        var pairCodeHash = ChannelUtils.hashChannelName(name);
 
         if (transport.getChannel(name)) {
             // Channel exists, relink
@@ -91,7 +91,6 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
             // Create if it doesn't exist
             ChannelLink.start(name, port);
         }
-        $scope.subscribed = pairCodeHash;
     };
 
     var availableChannels = Object.keys(transport.channels);
