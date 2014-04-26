@@ -15,8 +15,8 @@
     <!-- Tabs -->
     <div class="tabbable">
         <dl class="tabs">
-          <dd ng-show="tab.visible" ng-class="{active: tab.active}" ng-repeat="tab in tabs.pages">
-              <a ng-click="tabs.selectTab(tab, $index)">{{tab.heading}}</a>
+          <dd ng-show="tab.isVisible()" ng-class="{active: tab.isActive()}" ng-repeat="tab in tabs.pages">
+              <a ng-click="tab.select()">{{tab.heading}}</a>
           </dd>
         </dl>
         <div class="tab-scroller" ng-include="'wallet/' + tabs.pages[tabs.current].page + '.html'" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">

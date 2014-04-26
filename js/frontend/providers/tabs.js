@@ -13,49 +13,57 @@ define(['./module'], function (providers) {
   tabs.current = 0;
 
   tabs.previous = 0;
+  
+  var index = 0;
 
-  tabs.pages = [
-      {heading: 'Overview', page: 'dashboard', active: true, visible: true},
-      {heading: 'History', page: 'history', visible: true},
-      {heading: 'Fund', page: 'fund'},
-      {heading: 'Addresses', page: 'addresses', visible: true},
-      {heading: 'Tasks', page: 'tasks'},
-      {heading: 'Actions', page: 'actions'}
-  ];
-
-  tabs.selectTab = function(selected, index) {
-      tabs.previous = tabs.current;
-      tabs.current = index;
-      tabs.pages.forEach(function(tab) {
-          tab.active = tab.page == selected.page;
-      });
+  var Tab = function(heading, page) {
+    this.index = index++;
+    this.heading = heading;
+    this.page = page;
+  }
+  
+  Tab.prototype.isActive = function() {
+      return tabs.current == this.index;
   };
+  
+  Tab.prototype.isVisible = function() {
+      return tabs.visible.indexOf(this.index) > -1;
+  };
+  
+  Tab.prototype.select = function() {
+      tabs.previous = tabs.current;
+      tabs.current = this.index;
+  };
+  
+  tabs.pages = [
+    new Tab('Overview', 'dashboard'),
+    new Tab('History', 'history'),
+    new Tab('Fund', 'fund'),
+    new Tab('Addresses', 'addresses'),
+    new Tab('Tasks', 'tasks'),
+    new Tab('Actions', 'actions')
+  ];
+  
+  tabs.visible = [0, 1, 3]; // Overview, history and addresses
 
   tabs.updateTabs = function(isAll, isFund, tasks) {
       if (isFund) {
-          tabs.pages[2].visible = true;  // fund
-          tabs.pages[3].visible = false; // addresses
-          tabs.pages[5].visible = false; // actions
+          tabs.visible = [0, 1, 2]; // Overview, history and fund
       } else {
-          tabs.pages[2].visible = false; // fund
-          tabs.pages[3].visible = true; // addresses
-          tabs.pages[5].visible = !isAll;  // actions
+          tabs.visible = [0, 1, 3]; // Overview, history, addresses
       }
       if (tasks && tasks.length) {
-          tabs.pages[4].visible = true;
-      } else {
-          tabs.pages[4].visible = false;
+          tabs.visible.push(4); // Tasks
       }
-      if (tabs.pages[tabs.current].visible == false) {
-          tabs.pages[tabs.current].active = false;
-          tabs.current = 0;
-          tabs.pages[0].active = true;      
+      if (!isFund && !isAll) {
+          tabs.visible.push(5); // Actions
       }
-  }
+      if (!tabs.pages[tabs.current].isVisible()) {
+          tabs.current = 0;      
+      }
+  };
 
   providers.factory('$tabs', [function() {
       return tabs;
   }]);
-
-
 });
