@@ -68,6 +68,7 @@ function (controllers, DarkWallet, Port) {
 
       // set some links
       $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
+      $scope.settings = identity.settings;
 
       // get the balance for the wallet
       var balance = $wallet.getBalance();
