@@ -111,7 +111,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       // Check if we're finished
       if (radar >= 0.75) {
           radar = 1;
-          if (task.radar < 0.75) {
+          if (task.radar < 1) {
               if (button && button.classList.contains('working')) {
                   button.classList.remove('working');
               }
