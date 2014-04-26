@@ -2,7 +2,7 @@
 
 define(['./module'], function (providers) {
 
-providers.factory('modals', ['$modal', '$window', 'notify', 'sounds', function($modal, $window, notify, sounds) {
+providers.factory('modals', ['$modal', '$window', '$timeout', 'notify', 'sounds', function($modal, $window, $timeout, notify, sounds) {
 
 var modals = {
 
@@ -55,7 +55,7 @@ var modals = {
 
     // Fix autofocus in modals (broken because they have tabindex attribute set to -1)
     modal.opened.then(function() {
-      setTimeout(function() {
+      $timeout(function() {
         var element = $window.document.querySelectorAll(".modal-" + tplName + " [autofocus]")[0];
         if (element) {
           element.focus();
@@ -69,10 +69,10 @@ var modals = {
   onQrOk: function(data, vars) {
     var address, amount;
     sounds.play('keygenEnd');
-    if (data.slice(0,8)) {
+    if (data.slice(0,8) === 'bitcoin:') {
       data = data.slice(8);
     }
-    if (!data.indexOf('?')) {
+    if (data.indexOf('?') < 0) {
       address = data;
     } else {
       address = data.slice(0, data.indexOf('?'));
