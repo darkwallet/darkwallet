@@ -151,6 +151,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
      */
     function historyFetched(err, walletAddress, history) {
         if (err) {
+            core.servicesStatus.syncing -= 1;
             core.servicesStatus.obelisk = 'error';
             console.log("[wallet] Error fetching history for", walletAddress.address);
             return;
@@ -171,10 +172,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
         // now subscribe the address for notifications
         client.subscribe(walletAddress.address, function(err, res) {
+            core.servicesStatus.syncing -= 1;
             // fill history after subscribing to ensure we got all histories already (for now).
             var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
             Port.post('gui', {type: 'balance', pocketId: pocketId});
-            core.servicesStatus.syncing -= 1;
         }, function(addressUpdate) {
             onAddressUpdate(walletAddress, addressUpdate);
         });
@@ -226,6 +227,8 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 core.servicesStatus.syncing -= 1;
                 if (!err) {
                     handleBlockHeader(height, data)
+                } else {
+                   console.log("[wallet] error fetching block header", err, height)
                 }
             });
         }
