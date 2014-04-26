@@ -1,6 +1,6 @@
 'use strict';
 
-define(['util/protocol'], function(Protocol) {
+define(['util/protocol', 'bitcoinjs-lib'], function(Protocol, Bitcoin) {
 
   describe('Protocol format', function() {
     it('packs a message', function() {
@@ -55,6 +55,20 @@ define(['util/protocol'], function(Protocol) {
         expect(request.type).toBe('MultisigProposal');
         expect(request.body).toEqual({proposal: "deadbeef"});
     });
+
+    it('creates a pubkey', function() {
+        var request = Protocol.PublicKeyRequestMsg("deadbeef");
+        expect(request.type).toBe('publicKeyRequest');
+        expect(request.text).toEqual({"deadbeef":{}});
+    });
+
+    it('creates a pubkey request', function() {
+        var request = Protocol.PublicKeyMsg("deadbeef", Bitcoin.BigInteger("10"));
+        expect(request.type).toBe('publicKey');
+        expect(request.text).toEqual({"deadbeef":{message: 'Cg=='}});
+    });
+
+
   });
  
 });
