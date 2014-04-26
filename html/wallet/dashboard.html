@@ -1,6 +1,6 @@
   <div class="row">
     <div class="large-6 columns" ng-controller="WalletSendCtrl">
-    <form name="quickSendForm" ng-submit="quicksend.next=true;quickSendNext();" novalidate ng-hide="quicksend.next">
+    <form name="quickSendForm" ng-submit="quicksend.next=true;validateSendForm();" novalidate ng-hide="quicksend.next">
       <div class="row collapse panel radius">
         <h5>Send</h5>
         <div class="small-1 columns">
@@ -10,7 +10,7 @@
           <a href="" tooltip-append-to-body="true" tooltip="Scan QR code" ng-click="modals.scanQr(quicksend)" class="fa button square prefix fa-qrcode"></a>
         </div>
         <div class="small-6 columns">
-          <input type="text" ng-model="quicksend.address" required btc-address placeholder="Bitcoin address..." />
+          <input ng-change="validateSendForm()" type="text" ng-model="quicksend.address" required btc-address placeholder="Bitcoin address..." />
         </div>
         <div class="small-4 columns">
           <button type="submit" ng-disabled="!quickSendForm.$valid" ng-class="{glow:quickSendForm.$valid}" class="button postfix radius fa fa-arrow-right">Next</button>
@@ -21,7 +21,7 @@
       <div class="row collapse panel radius">
         <h5>
            <span ng-show="!quicksend.contact">Sending to {{quicksend.address}}</span>
-           <span ng-show="quicksend.contact">Sending to {{quicksend.contact.name}} <identicon icon-size="24" hash="quicksend.contact.hash"></identicon></span>
+           <span ng-show="quicksend.contact" title="{{quicksend.contact.pubKeys[quicksend.contact.mainKey].address}}">Sending to {{quicksend.contact.name}} <identicon icon-size="24" hash="quicksend.contact.hash"></identicon></span>
         </h5>
         <div class="small-1 columns">
           <a ng-click="quicksend.next = false" class="button prefix radius fa fa-arrow-left"></a>
