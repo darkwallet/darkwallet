@@ -4620,7 +4620,7 @@ span.meter {
 .transaction-icon.red {
   color: #c92441; }
 
-.contact-mosaic .panel:hover, .popupcontainer .panel:hover {
+.contact-mosaic .panel:hover, div.notifications .panel:hover {
   background: #27ae60;
   cursor: pointer; }
 

@@ -1,12 +1,12 @@
 <div ng-controller="CalculatorCtrl" class="row collapse panel radius">
   <h5>Calculator</h5>
-  <div class="small-1 columns">
+  <div class="small-2 columns">
     <span class="prefix radius">{{selectedCurrency}}</span>
   </div>
   <div class="small-4 columns">
     <input ng-focus="calculator.amountFocused = true" ng-blur="calculator.amountFocused = false" ng-model="calculator.amount" type="text" />
   </div>
-  <div class="small-2 columns">
+  <div class="small-1 columns">
     <span class="prefix">=</span>
   </div>
   <div class="small-4 columns">
@@ -15,5 +15,4 @@
   <div class="small-1 columns">
     <span id="currency-icon" class="postfix radius" title="{{selectedFiat}}">{{fiatSymbol}}</span>
   </div>
-  <a href="#settings">Settings...</a>
 </div>
