@@ -21,7 +21,11 @@ define(['model/upgrade'], function(Upgrade) {
       expect(res).toBe(false);
     });
 
-
+    it('runs with no mpk', function() {
+      store.mpk = undefined;
+      var res = Upgrade(store);
+      expect(res).toBe(true);
+    });
 
     it('it upgrades contacts from dict properly', function() {
       store.contacts = {1: 2};

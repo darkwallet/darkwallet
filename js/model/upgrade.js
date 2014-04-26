@@ -13,7 +13,7 @@ var DW_NS = 'dw:identity:';
 
 function Upgrade1To2(store) {
     if (!store.mpk) {
-        console.log("Wallet without mpk!", this.mpk);
+        console.log("Wallet without mpk!", store.mpk);
         // throw Error("No mpk!");
     }
  
