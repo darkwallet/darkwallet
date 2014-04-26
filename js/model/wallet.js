@@ -522,33 +522,42 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
 
 /*
  * Helper functions
- * @param {Object[]} inputs DOCME
- * @param {Object} newTx DOCME
- * @param {String} password Password to decrypt the private keys
+ * @param {Object[]} inputs Inputs we want signed
+ * @param {Object} newTx Transaction to sign
+ * @param {Object} privKeys Object with the private keys bytes indexed by seq
  * @return {Boolean} If signed or not
  */
-Wallet.prototype.signMyInputs = function(inputs, newTx, password) {
-    var identity = this.identity;
+Wallet.prototype.signMyInputs = function(inputs, newTx, privKeys) {
+    var txdb = this.identity.txdb;
     var signed = false;
     for(var i=0; i<newTx.ins; i++) {
         var anIn = newTx.ins[i];
-        if (identity.txdb.transactions.hasOwnProperty(anIn.outpoint.hash)) {
-            var prevTxHex = identity.txdb.transactions[anIn.outpoint.hash];
+        var found = inputs.filter(function(myIn) {
+            return (myIn.hash == newIn.hash) && (myIn.index == newIn.index);
+        });
+        if (found.length == 1) {
+            continue;
+        }
+        if (found.length != 1) {
+            throw Error("Duplicate input found!");
+        }
+        if (txdb.transactions.hasOwnProperty(anIn.outpoint.hash)) {
+            var prevTxHex = txdb.transactions[anIn.outpoint.hash];
             var prevTx = new Bitcoin.Transaction(prevTxHex);
             var output = prevTx.out[anIn.outpoint.index];
-            var walletAddress = identity.wallet.getWalletAddress(output.address);
 
-            var found = inputs.filter(function(myIn, i) {
-                return (myIn.hash == newIn.hash) && (myIn.index == newIn.index);
-            });
             if (found.length == 1) {
-                this.getPrivateKey(walletAddress.index, password, function(privKey) {
-                    newTx.sign(i, privKey);
-                    signed = true;
-                });
+                var walletAddress = this.getWalletAddress(output.address);
+                if (!walletAddress) {
+                    console.log("no wallet address for one of our inputs!", output.address);
+                    continue;
+                }
+                var privKey = new Bitcoin.ECKey(privKeys[walletAddress.index]);
+                newTx.sign(i, privKey);
+                signed = true;
             }
         } else {
-            console.log("No wallet address for one of our addresses!");
+            console.log("No tx for one of our inputs");
         }
     }
     return signed;
