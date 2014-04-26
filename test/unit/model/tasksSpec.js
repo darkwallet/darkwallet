@@ -54,6 +54,40 @@ define(['model/tasks'], function(Tasks) {
       expect(_store).toEqual({lol: []});
     });
 
+    it('removes tasks from a section', function() {
+      tasks.tasks = {section1: [{name: 'foo'}, {name: 'bar'}], section2: [{name: 'foo'}]};
+      tasks.store.save();
+      
+      tasks.removeTasks('section1', 'name', 'foo');
+
+      expect(tasks.tasks.section1).toEqual([{name: 'bar'}]);
+      expect(tasks.tasks.section2).toEqual([{name: 'foo'}]);
+      expect(_store).toEqual({section1: [{name: 'bar'}], section2: [{name: 'foo'}]});
+    });
+
+    it('removes tasks from an unexisting section', function() {
+      tasks.tasks = {section1: [{name: 'foo'}, {name: 'bar'}], section2: [{name: 'foo'}]};
+      tasks.store.save();
+      
+      tasks.removeTasks('section3', 'name', 'foo');
+
+      expect(tasks.tasks.section1).toEqual([{name: 'foo'}, {name: 'bar'}]);
+      expect(tasks.tasks.section2).toEqual([{name: 'foo'}]);
+      expect(_store).toEqual({section1: [{name: 'foo'}, {name: 'bar'}], section2: [{name: 'foo'}]});
+    });
+
+
+    it('removes tasks from all sections', function() {
+      tasks.tasks = {section1: [{name: 'foo'}, {name: 'bar'}], section2: [{name: 'foo'}]};
+      tasks.store.save();
+      
+      tasks.removeTasks(null, 'name', 'foo');
+
+      expect(tasks.tasks.section1).toEqual([{name: 'bar'}]);
+      expect(tasks.tasks.section2).toEqual([]);
+      expect(_store).toEqual({section1: [{name: 'bar'}], section2: []});
+    });
+
     it('searches for tasks', function() {
       tasks.addTask('multisig', {tx: 'mocktx'});
       tasks.addTask('multisig', {tx: 'mocktx'});
