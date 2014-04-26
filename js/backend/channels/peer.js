@@ -8,14 +8,14 @@ function (Bitcoin, Mnemonic, Encryption) {
    * @constructor
    */
   function Peer(pubKey, fingerprint) {
-      this.name = this.getMnemoname(pubKey);
       if (pubKey) {
           this.updateKey(pubKey);
       } else {
           // We don't have the pubkey yet, fill in some dummy values for now
           this.pubKeyHex = 'deadbeefdeadbeefdeadbeef';
-          this.pubKey = Bitcoin.convert.hexToBytes(pubKeyHex);
+          this.pubKey = Bitcoin.convert.hexToBytes(this.pubKeyHex);
           this.fingerprint = fingerprint;
+          this.name = this.getMnemoname(this.pubKey);
       }
   };
 
@@ -37,7 +37,7 @@ function (Bitcoin, Mnemonic, Encryption) {
    * Update this peer's public key
    */
   Peer.prototype.updateKey = function(pubKey) {
-      if (!pubKey) return;
+      if (!pubKey) throw Error("Update with no public key!");
 
       var fingerprint = Encryption.genFingerprint(pubKey);
       // Check this is the correct peer (it should be but to be sure..)
@@ -45,9 +45,11 @@ function (Bitcoin, Mnemonic, Encryption) {
           throw Error("Invalid update for peer!");
       }
 
+      this.fingerprint = fingerprint;
       this.pubKeyHex = Bitcoin.convert.bytesToHex(pubKey);
       this.pubKey = pubKey;
       this.trusted = true;
+      this.name = this.getMnemoname(pubKey);
   };
 
   return Peer;
