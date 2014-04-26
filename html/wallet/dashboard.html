@@ -25,7 +25,7 @@
           <input ng-show="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.fiatAmount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="Enter amount" />
         </div>
         <div class="small-2 columns">
-          <a class="button postfix" btn-checkbox tooltip="click to switch to {{selectedFiat}}" ng-model="quicksend.isFiatShown">{{quicksend.isFiatShown? selectedFiat : selectedCurrency}}</a>
+          <a class="button postfix" tooltip-append-to-body="true" btn-checkbox to tooltip="click to switch to {{selectedFiat}}" ng-model="quicksend.isFiatShown">{{quicksend.isFiatShown? selectedFiat : selectedCurrency}}</a>
         </div>
         <div class="small-4 columns">
         <button class="button postfix radius fa fa-rocket glow">Send</button>

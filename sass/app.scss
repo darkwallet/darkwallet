@@ -110,10 +110,14 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 	right: 0;
 	top: 0;
 	width: 37px;
-	&:first-of-type { right: 37px; }
+	&:first-of-type:not(:last-of-type) { right: 37px; }
 	&:last-of-type { border-radius: 0 $global-radius $global-radius 0; }
 	&:before { margin-top: -0.5em; }
 }
+
+.editable-wrap { width: 100%; }
+
+button.righted ~ form.editable-wrap input { padding-right: 37px; }
 
 .button.square.lefted {
 	z-index: 3; 
@@ -131,7 +135,7 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 	height: 37px;
 	}
 
-.button.postfix.fa.single { margin: 0; }
+.button.postfix.fa.single, .button.prefix.fa.single { margin: 0; }
 
 .button.postfix.fa.alert:before, button.postfix.fa.alert:before { background: darken($alert-color, 10%); }
 
@@ -164,13 +168,17 @@ table tr:nth-child(odd) button {
 
 table.expand { width: 100%; text-overflow: ellipsis; }
 
-div.address { overflow: hidden; text-overflow: ellipsis; }
+span.ellipsis { text-align: left; overflow: hidden; text-overflow: ellipsis; }
+
 div.address-row { padding: 0; }
+
+div.address-row button { opacity: 0; }
+
+div.address-row:hover button { opacity: 1; }
 
 .transactions div.row {
 	padding: 0.5em;
 }
-
 
 
 .transactions div.row:nth-child(odd) { 
@@ -220,7 +228,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .tabs dd.active > a { background: lighten($primary-color, 10%); color: black; }
 
-
+.labels { position: absolute; top: 0; right: 0; z-index: 3; }
 
 .top-bar { position: absolute; width: 100%; z-index: 3; }
 

@@ -1,11 +1,11 @@
 <div class="row">
-  <!-- Left sidebar --!>
-  <div class="large-2 columns panel pockets">
+  <!-- Left sidebar -->
+  <div class="large-2 medium-3 columns panel pockets">
       <!-- Pockets sidebar -->
       <ng-include src="'wallet/pockets.html'"></ng-include>
   </div>
   <!-- Content area -->
-  <div ng-hide="selectedPocket==='newMultisig'" class="large-10 columns wallet-view">
+  <div ng-hide="selectedPocket==='newMultisig'" class="large-10 medium-9 columns wallet-view">
     <!-- Pocket name and balance -->
     <h4>
         {{pocket.name}}

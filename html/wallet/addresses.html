@@ -29,7 +29,7 @@
         </div>
     </div>
 </div>
-<div class="row collapse panel radius transactions">
+<div class="row collapse panel radius">
     <dl class="sub-nav">
         <dt>Filter:</dt>
         <dd ng-class="{active: 'unused'===addrFilter}"><a ng-click="setAddressFilter('unused')">Unused</a></dd>
@@ -39,53 +39,51 @@
     </dl>
  
     <div class="row collapse">
-        <div class="small-1 columns">
-            Edit
-        </div>
-        <div class="small-2 columns">
+        <div class="small-3 columns">
             Name
         </div>
-        <div class="small-5 columns">
+        <div class="small-6 columns">
             Address
         </div>
-        <div class="small-1 columns">
-            Labels
-        </div>
-        <div class="small-1 columns text-right">
+        <div class="small-2 columns">
             Balance
-        </div>
-        <div class="small-2 columns text-right">
-            QR Code / Copy
         </div>
     </div>
 
-    <div class="row collapse"  ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:addressFilter track by $index">
-        <div class="small-1 columns">
-                <button class="fa square button fa-pencil-square" ng-click="textBtnForm.$show()" ng-disabled="textBtnForm.$visible"></button>
-        </div>
-        <div class="small-2 columns">
-            <div editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
+    <div class="row collapse address-row"  ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:addressFilter track by $index">
+        <div class="small-3 columns">
+            <button class="fa button square righted fa-pencil-square" ng-click="textBtnForm.$show()" ng-disabled="textBtnForm.$visible"></button>
+            <span class="postfix ellipsis" editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
                 {{address.label}}
+            </span>
+            
+        </div>
+        <div class="small-6 columns">
+            <span class="postfix ellipsis">{{address.address}}</span>
+            <div class="labels">
+                <span class="label radius" ng-show="address.type=='stealth'">
+                    <div class="fa fa-fighter-jet"></div> stealth
+                </span>
+                <span class="label radius" title="Number of times this address has been used" ng-show="address.nOutputs">
+                    {{address.nOutputs}}
+                </span>
             </div>
         </div>
-        <div class="small-5 columns">
-            {{address.address}}
+        <div class="small-1 large-2 columns text-right">
+            <span class="postfix">{{address.balance | currencyFilter}}</span>
         </div>
-        <div class="small-1 columns">
-            <span class="label radius" ng-show="address.type=='stealth'">
-                <div class="fa fa-fighter-jet"></div> stealth
-            </span>
-            <span class="label radius" title="Number of times this address has been used" ng-show="address.nOutputs">
-                {{address.nOutputs}}
-            </span>
-        </div>
-        <div class="small-1 columns text-right">
-            {{address.balance | currencyFilter}}
-        </div>
-        <div class="small-2 columns text-right">
-            <button title="Scan a QR code" ng-click="modals.showQr(address.address)" class="button square fa fa-qrcode"></button>
-            <button title="Copy address to clipboard" ng-click="clipboard.copy(address.address)" class="button square fa fa-clipboard"></button>
-            <button title="Copy public key to clipboard" ng-click="copyClipboardPublic(address)" class="button square fa fa-key"></button>
+        <div class="small-2 large-1 columns">
+            <div class="row collapse address-row">
+                <div class="small-4 columns">
+                    <button title="Scan a QR code" ng-click="modals.showQr(address.address)" class="button postfix single fa fa-qrcode"></button>
+                </div>
+                <div class="small-4 columns">
+                    <button title="Copy address to clipboard" ng-click="clipboard.copy(address.address)" class="button postfix single fa fa-clipboard"></button>
+                </div>
+                <div class="small-4 columns">
+                    <button title="Copy public key to clipboard" ng-click="copyClipboardPublic(address)" class="button postfix radius single fa fa-key"></button>
+                </div>
+            </div>
         </div>
     </div>
   
