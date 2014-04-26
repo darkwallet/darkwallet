@@ -1,7 +1,7 @@
 'use strict';
 
-define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc'],
-function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
+define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc', 'dwutil/currencyformat'],
+function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormatting) {
   var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', function($scope, $window, notify, modals, $wallet) {
 
@@ -104,7 +104,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
     }
   });
 
-  var updateRadar = function(radar, task) {
+  var onUpdateRadar = function(radar, task) {
       var progressBar = $window.document.getElementById('send-progress');
       var button = $window.document.getElementById('send-button');
 
@@ -135,20 +135,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       }
   };
 
-  var getSatoshis = function() {
-      var satoshis;
-      var identity = DarkWallet.getIdentity();
-      var currency = identity.settings.currency;
-      if (currency == 'mBTC') {
-          satoshis = 100000;
-      } else {
-          satoshis = 100000000;
-      }
-      return satoshis;
-  };
-
   var prepareRecipients = function() {
-      var satoshis = getSatoshis();
       var recipients = [];
       var totalAmount = 0;
       
@@ -166,7 +153,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           if (!BtcUtils.validateAddress(recipient.address, validAddresses)) {
               return;
           }
-          var amount = parseInt(BigInteger.valueOf(recipient.amount * satoshis).toString());
+          var amount = CurrencyFormatting.asSatoshis(recipient.amount);
           totalAmount += amount;
           recipients.push({address: recipient.address, amount: amount});
       });
@@ -212,7 +199,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
           } else if (task && task.type == 'signatures') {
               notify.note('Signatures pending', amountNote)
           } else if (task && task.type == 'radar') {
-              updateRadar(task.radar || 0, radarCache);
+              onUpdateRadar(task.radar || 0, radarCache);
               if (!isBroadcasted) {
                   notify.success('Transaction sent', amountNote);
                   isBroadcasted = true;
@@ -224,7 +211,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       walletService.signTransaction(metadata.tx, metadata, password, onBroadcast);
   };
 
-  var gotPassword = function(metadata, amountNote, password) {
+  var onPassword = function(metadata, amountNote, password) {
       if (sendForm.mixing) {
           finishMix(metadata, amountNote, password);
       } else {
@@ -237,9 +224,6 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
   $scope.sendBitcoins = function() {
       // get a free change address
       var changeAddress = $wallet.getChangeAddress(sendForm.pocketIndex);
-
-      // prepare amounts
-      var satoshis = getSatoshis();
 
       // Prepare recipients
       var spend = prepareRecipients();
@@ -257,7 +241,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       }
 
       sendForm.sending = true;
-      var fee = parseInt(BigInteger.valueOf(sendForm.fee * satoshis).toString());
+      var fee = CurrencyFormatting.asSatoshis(sendForm.fee);
 
       // prepare the transaction
       var metadata;
@@ -278,7 +262,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils) {
       // Now ask for the password before continuing with the next step   
       modals.password('Unlock password', function(password) {
           var amountNote = (fee + totalAmount) + ' satoshis';
-          gotPassword(metadata, amountNote, password);
+          onPassword(metadata, amountNote, password);
       });
   };
 

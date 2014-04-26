@@ -1,10 +1,29 @@
 'use strict';
 
-define(['darkwallet', 'util/fiat'], function(DarkWallet, FiatCurrencies) {
+define(['darkwallet', 'util/fiat', 'bitcoinjs-lib'],
+    function(DarkWallet, FiatCurrencies, Bitcoin) {
+
+var BigInteger = Bitcoin.BigInteger;
 
 function CurrencyFormatting() {
     
 }
+
+/**
+ * Convert user amount (from input) to satoshis
+ * TODO: we probably want a function that takes a string
+ * and parses it carefully.
+ */
+CurrencyFormatting.asSatoshis = function(amount, unit) {
+    if (!unit) unit = DarkWallet.getIdentity().settings.currency;
+    if (unit === 'mBTC') {
+        satoshis = 100000;
+    } else {
+        satoshis = 100000000;
+    }
+    return parseInt(BigInteger.valueOf(amount * satoshis).toString());
+}
+
 
 /**
  * Convert satoshis to user bitcoin unit
