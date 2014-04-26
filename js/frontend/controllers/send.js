@@ -71,11 +71,12 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormat) {
       dustThreshold = identity.wallet.wallet.dustThreshold;
 
       // Initialize the store and send form if it's the first time
-      if (!sendForm) {
+      if (!sendForm || (sendForm.identity != identity.name)) {
           $scope.forms.send = { mixing: true,
                         sending: false,
                         sendPocket: 0,
                         autoAddEnabled: false,
+                        identity: identity.name,
                         advanced: false };
           // Need to set the form here
           sendForm = $scope.forms.send;
