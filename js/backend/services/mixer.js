@@ -228,7 +228,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
     if (pocketIndex != -1) {
       // Prepare arguments for preparing the tx
       var changeAddress = identity.wallet.getChangeAddress(pocketIndex);
-      var destAddress = identity.wallet.getFreeAddress(pocketIndex);
+      var destAddress = identity.wallet.getFreeAddress(pocketIndex*2);
 
       var recipient = {address: destAddress.address, amount: opening.amount};
 
@@ -278,15 +278,14 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       return coinJoin;
   };
 
+  /*
+   * Sign inputs for a coinjoin
+   */
   MixerService.prototype.requestSignInputs = function(coinJoin) {
-      var password = '';
       var identity = this.core.getIdentity();
-      if (password) {
-          identity.wallet.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, password);
-          return true;
-      } else {
-          // XXX should add a task
-      }
+      var signed = identity.wallet.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, coinJoin.task.privKeys);
+      // TODO delete privKeys here
+      return signed;
   };
 
   /*
@@ -320,7 +319,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
                   updatedTx = coinJoin.addSignatures(signed);
               }
           }
-          if (updatedTx) {
+          if (updatedTx && coinJoin.state != 'sign') {
               this.sendTo(msg.peer, msg.id, updatedTx);
           }
           // copy coinjoin state to the store
