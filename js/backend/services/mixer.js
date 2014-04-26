@@ -199,7 +199,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
           continue;
       }
       if (pocket.mixing) {
-        var balance = identity.wallet.getBalance(i).balance;
+        var balance = identity.wallet.getBalance(i).confirmed;
         if (balance >= amount) {
             return i;
         }
@@ -323,7 +323,9 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
               this.sendTo(msg.peer, msg.id, updatedTx);
           }
           // copy coinjoin state to the store
-          coinJoin.task.state = coinJoin.state;
+          if (coinJoin.task) {
+              coinJoin.task.state = coinJoin.state;
+          }
           this.checkDelete(msg.id);
       }
     }
