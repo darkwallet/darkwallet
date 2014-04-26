@@ -4721,13 +4721,20 @@ div.tab-scroller.totheright.ng-enter-active, div.tab-scroller.totheleft.ng-enter
   position: absolute;
   width: 97%; }
 
-.transactions div.ng-leave-active, .transactions div.ng-enter, div.send-advanced.ng-hide-add, .ng-animate.ng-hide-remove {
+.transactions div.ng-leave-active, .transactions div.ng-enter, .ng-animate.ng-hide-remove {
   opacity: 0; }
 
-.transactions div.ng-enter.ng-enter-active, .transactions div.ng-leave, div.send-advanced.ng-hide-add-active, .ng-animate.ng-hide-remove.ng-hide-remove-active {
+.transactions div.ng-enter.ng-enter-active, .transactions div.ng-leave, .ng-animate.ng-hide-remove.ng-hide-remove-active {
   opacity: 1; }
 
+div.send-advanced.ng-leave.ng-leave-active, div.send-advanced.ng-enter {
+  -webkit-transform: scale3d(1, 0, 1);
+  -webkit-transform-origin: top;
+  opacity: 0; }
 
+div.send-advanced.ng-enter.ng-enter-active, div.send-advanced.ng-leave {
+  -webkit-transform: scale3d(1, 1, 1);
+  opacity: 1; }
 
 div.scroller.ng-enter {
   -webkit-animation: moveFromTopFade 0.7s ease both;

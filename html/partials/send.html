@@ -7,11 +7,11 @@
     <div class="row">
       <div class="small-12 columns">
         <div class="row collapse">
-              <div class="large-10 columns">
+              <div class="large-10 medium-9 columns">
                 <h6>Description</h6>
                 <input type="text" class="prefix radius" ng-model="forms.send.title" ng-disabled="forms.send.sending" placeholder="Enter a short description for this transaction here." autofocus />
               </div>
-              <div class="large-2 columns">
+              <div class="large-2 medium-3 columns">
                 <h6>Sending from</h6>
                 <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{forms.send.sendPocketName}}</a>
               </div>
@@ -49,33 +49,31 @@
         </div>
       </div>
     </div>
-    <div class="send-advanced" ng-if="forms.send.advanced">
-      <div class="row">
-        <div class="small-12 columns">
-          <a class="button small radius fa fa-plus" ng-click="enableAutoAddFields()"> Add another recipient</a>
-        </div>
-      </div>
-      <div class="row panel">
-          <div class="small-6 columns">
-            <h6>Fee</h6>
-            <input ng-model="forms.send.fee" type="text" class="radius" />
-          </div>
-          <div class="small-6 columns">
-            <h6>Coin mixing</h6>
-            <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!forms.send.mixing, 'fa-check-square-o': forms.send.mixing}" class="fa button postfix">{{forms.send.mixing?'Enabled':'Disabled'}}</a>
-          </div>
-          <div class="small-6 columns">
-            <h6>Escrow address</h6>
-            <input ng-model="forms.send.escrow" type="text" class="radius"  btc-address />
-          </div>
-      </div>
-    </div>
+
     <div class="row">
       <div class="medium-10 columns">
         <a ng-click="forms.send.advanced=!forms.send.advanced" class="button tiny radius fa fa-eye"> {{!forms.send.advanced ? 'Show advanced options' : 'Hide advanced options'}}</a>
       </div>
       <div class="medium-2 columns aright">
         <button id="send-button" href="" ng-class="{'glow':sendEnabled}" ng-disabled="!sendEnabled" class="button radius expand"><span>Send</span><div id="send-progress" class="progbar"></div></button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="small-12 columns send-advanced" ng-if="forms.send.advanced">
+        <div class="row panel">
+            <div class="small-4 columns">
+              <a class="button radius prefix fa fa-plus" ng-click="enableAutoAddFields()"> Add another recipient</a>
+              <h6>Fee</h6>
+              <input ng-model="forms.send.fee" type="text" class="radius" />
+            </div>
+            <div class="small-8 columns">
+              <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!forms.send.mixing, 'fa-check-square-o': forms.send.mixing}" class="fa button postfix radius">{{forms.send.mixing?'CoinJoin mixing enabled':'CoinJoin mixing disabled'}}</a>
+
+              <h6>Escrow address</h6>
+              <input ng-model="forms.send.escrow" type="text" class="radius"  btc-address />
+            </div>
+        </div>
       </div>
     </div>
 
