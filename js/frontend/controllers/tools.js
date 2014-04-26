@@ -60,6 +60,12 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       notify.note('Tasks cleared.');
   };
 
+  // Enable advanced mode
+  $scope.setAdvanced = function() {
+      var identity = DarkWallet.getIdentity();
+      identity.store.save();
+  };
+
 
 }]);
 });

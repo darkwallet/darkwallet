@@ -36,8 +36,13 @@
       <section class="top-bar-section">
         <!-- Right Nav Section -->
         <ul ng-cloak ng-show="identityName" class="right">
-          <li id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="fa fa-cog"></i> Settings</a></li>
-          <li ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="fa fa-user"></i> {{identityName}}</a></li>
+	  <li ng-show="settings.advanced" ng-show="currentHeight"><a><i> {{currentHeight}}</i></a></li>
+	  <li ng-show="settings.advanced" ng-show="status.syncing"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
+	  <li ng-show="settings.advanced" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i></a></li>
+	  <li ng-show="settings.advanced" title="tools" ng-class="{active:isActive('/tools')}"><a href="#tools"><i class="fa fa-flask"></i></a></li>
+          <li ng-show="settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="fa fa-cog"></i></a></li>
+          <li ng-show="!settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="fa fa-cog">Settings</i></a></li>
+          <li title="identities" ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="fa fa-user"></i> {{identityName}}</a></li>
         </ul>
         <!-- Left Nav Section -->
         <ul class="left">
