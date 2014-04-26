@@ -77,7 +77,6 @@ function (controllers, DarkWallet, Port) {
       $scope.totalUnconfirmed = balance.unconfirmed;
       $scope.selectedCurrency = identity.settings.currency;
       $scope.selectedFiat = identity.settings.fiatCurrency;
-      $scope.defaultFee = identity.wallet.fee / 100000000;
 
       $scope.identityName = identity.name;
   }

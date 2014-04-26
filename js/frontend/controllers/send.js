@@ -1,7 +1,7 @@
 'use strict';
 
 define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc', 'dwutil/currencyformat'],
-function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormatting) {
+function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormat) {
   var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', function($scope, $window, notify, modals, $wallet) {
 
@@ -22,11 +22,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormatting) 
       };
       var identity = DarkWallet.getIdentity();
       $scope.selectedCurrency = identity.settings.currency;
-      if ($scope.selectedCurrency == 'mBTC') {
-          sendForm.fee = $scope.defaultFee*1000;
-      } else {
-          sendForm.fee = $scope.defaultFee;
-      }
+      sendForm.fee = CurrencyFormat.asBtc(identity.wallet.fee);
   };
 
   $scope.updateBtcFiat = function(field) {
@@ -153,7 +149,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormatting) 
           if (!BtcUtils.validateAddress(recipient.address, validAddresses)) {
               return;
           }
-          var amount = CurrencyFormatting.asSatoshis(recipient.amount);
+          var amount = CurrencyFormat.asSatoshis(recipient.amount);
           totalAmount += amount;
           recipients.push({address: recipient.address, amount: amount});
       });
@@ -241,7 +237,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormatting) 
       }
 
       sendForm.sending = true;
-      var fee = CurrencyFormatting.asSatoshis(sendForm.fee);
+      var fee = CurrencyFormat.asSatoshis(sendForm.fee);
 
       // prepare the transaction
       var metadata;

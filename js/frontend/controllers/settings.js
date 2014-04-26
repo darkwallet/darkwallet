@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic) {
+define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyformat'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic, CurrencyFormat) {
 
   // Controller
   controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', function($scope, notify) {
@@ -10,6 +10,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
   $scope.fiatCurrencies = FiatCurrencies;
   $scope.selectedCurrency = identity.settings.currency;
   $scope.selectedFiat = identity.settings.fiatCurrency;
+  $scope.defaultFee = CurrencyFormat.asBtc(identity.wallet.fee);
 
   $scope.passwordChanged = function() {
       if ($scope.newPassword === $scope.newPasswordRepeat) {
@@ -31,6 +32,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
       var identity = DarkWallet.getIdentity();
       identity.settings.currency = $scope.selectedCurrency;
       identity.store.save();
+      $scope.defaultFee = CurrencyFormat.asBtc(identity.wallet.fee);
   };
   $scope.fiatCurrencyChanged = function() {
       var identity = DarkWallet.getIdentity();
@@ -40,9 +42,8 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs'], function (controll
       identity.store.save();
   };
   $scope.defaultFeeChanged = function() {
-      var identity = DarkWallet.getIdentity();
       if (!isNaN($scope.defaultFee)) {
-          identity.wallet.setDefaultFee($scope.defaultFee*100000000);
+          identity.wallet.setDefaultFee(CurrencyFormat.asSatoshis($scope.defaultFee));
       }
   };
   $scope.storeSettings = function() {
