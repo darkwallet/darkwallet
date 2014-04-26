@@ -61,7 +61,7 @@ function Upgrade1To2(store) {
         };
     }
     // If no scankeys need to regenerate
-    if (store.scankeys.length == 0) {
+    if (!store.scankeys || (store.scankeys.length == 0)) {
         // Can't finish the upgrade, need user to regenerate keys
         console.log('[upgrade] You need to reseed the wallet to generate stealth scanning keys!');
         store.reseed = true;
