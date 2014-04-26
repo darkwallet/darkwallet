@@ -15,6 +15,7 @@ function CurrencyFormatting() {
  * and parses it carefully.
  */
 CurrencyFormatting.asSatoshis = function(amount, unit) {
+    var satoshis;
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
     if (unit === 'mBTC') {
         satoshis = 100000;
