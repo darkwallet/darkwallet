@@ -228,7 +228,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .tabs dd.active > a { background: lighten($primary-color, 10%); color: black; }
 
-.labels { position: absolute; top: 0; right: 0; z-index: 3; }
+.labels { position: absolute; top: 50%; margin-top: -11px; right: 0; z-index: 3; }
 
 .top-bar { position: absolute; width: 100%; z-index: 3; }
 
