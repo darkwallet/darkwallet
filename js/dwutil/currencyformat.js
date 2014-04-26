@@ -45,10 +45,11 @@ CurrencyFormatting.asFiat = function(satoshis, fiatCurrency) {
     if (!fiatCurrency) fiatCurrency = DarkWallet.getIdentity().settings.fiatCurrency;
 
     var tickerService = DarkWallet.service.ticker;
+    var decimalDigits = FiatCurrencies[fiatCurrency].decimal_digits;
 
     var rate = tickerService.rates[fiatCurrency];
     if (rate) {
-      var converted = (satoshis * rate / 100000000).toFixed(2);
+      var converted = (satoshis * rate / 100000000).toFixed(decimalDigits);
       return converted;
     }
 }
@@ -71,7 +72,7 @@ CurrencyFormatting.formatFiat = function(satoshis, fiatCurrency) {
     var converted = this.asFiat(satoshis, fiatCurrency);
     if (!(converted === undefined)) {
         var currency = FiatCurrencies[fiatCurrency];
-        return converted+" "+currency.symbol
+        return converted+" "+currency.symbol_native;
     }
 }
 
