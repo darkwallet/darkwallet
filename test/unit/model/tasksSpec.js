@@ -54,6 +54,16 @@ define(['model/tasks'], function(Tasks) {
       expect(_store).toEqual({lol: []});
     });
 
+    it('removes task from an unexisting section', function() {
+      var task = {epic: 'fail'};
+      tasks.tasks.lol = [task];
+      tasks.store.save();
+      
+      tasks.removeTask('section1', task);
+      expect(tasks.tasks.lol).toEqual([task]);
+      expect(_store).toEqual({lol: [task]});
+    });
+
     it('removes tasks from a section', function() {
       tasks.tasks = {section1: [{name: 'foo'}, {name: 'bar'}], section2: [{name: 'foo'}]};
       tasks.store.save();
@@ -104,8 +114,19 @@ define(['model/tasks'], function(Tasks) {
     it('gets open tasks', function() {
       expect(tasks.getOpenTasks()).toEqual(0);
       tasks.tasks = tasksSample;
-      expect(tasks.getOpenTasks()).toEqual(3);
+      expect(tasks.getOpenTasks('multisig')).toEqual(2);
     });
+
+    it('gets open tasks from an unexisting section', function() {
+      tasks.tasks = tasksSample;
+      expect(tasks.getOpenTasks("unexisting")).toEqual(0);
+    });
+
+    it('gets open tasks from a section', function() {
+      tasks.tasks = tasksSample;
+      expect(tasks.getOpenTasks("unexisting")).toEqual(0);
+    });
+
 
     it('gets tasks for a section', function() {
       tasks.tasks = tasksSample;

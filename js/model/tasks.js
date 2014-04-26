@@ -126,7 +126,7 @@ Tasks.prototype.getTasks = function(section) {
  */
 Tasks.prototype.getOpenTasks = function(section) {
     if (section) {
-        return self.tasks[section] ? self.tasks[section].length : 0;
+        return this.tasks[section] ? this.tasks[section].length : 0;
     }
     var self = this;
     var nOpen = 0;
