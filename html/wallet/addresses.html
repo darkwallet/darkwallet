@@ -37,7 +37,7 @@
         <dd ng-class="{active: 'top'===addrFilter}"><a ng-click="setAddressFilter('top')">Top</a></dd>
         <dd ng-class="{active: 'all'===addrFilter}"><a ng-click="setAddressFilter('all')">All</a></dd>
     </dl>
- 
+
     <div class="row collapse">
         <div class="small-3 columns">
             Name
@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <div class="row collapse address-row"  ng-repeat="address in pocket.addresses.concat(pocket.changeAddresses) | filter:addressFilter track by $index">
+    <div class="row collapse address-row"  ng-repeat="address in addresses track by $index">
         <div class="small-3 columns">
             <button class="fa button square righted fa-pencil-square" ng-click="textBtnForm.$show()" ng-disabled="textBtnForm.$visible"></button>
             <span class="postfix ellipsis" editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
@@ -86,7 +86,17 @@
             </div>
         </div>
     </div>
-  
+   <div ng-if="nPages>1" class="pagination-centered">
+    <ul class="pagination">
+        <li ng-click="setPage(page-1)" ng-class="{unavailable:page==0}" class="arrow unavailable"><a href="">&laquo;</a></li>
+        <li ng-click="setPage($index)" ng-repeat="n in range(nPages) track by $index" ng-class="{current: page==$index}"><a>{{$index+1}}</a></li>
+        <!--<li class="unavailable"><a href="">&hellip;</a></li>-->
+        <li ng-click="setPage(page+1)" ng-class="{unavailable:page==nPages-1}" class="arrow"><a href="">&raquo;</a></li>
+    </ul>
+   </div>
+
+
+
 </div>
 <div ng-hide="pocket.isFund">
     <a class="button small" ng-click="generateAddress(pocket.index)">New address</a>

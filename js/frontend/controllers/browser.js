@@ -169,11 +169,6 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       $scope.search(data);
   }
 
-  $scope.range = function(n) {
-      if (!n) return [];
-      return new Array(n);
-  };
-
   /**
    * Handle route parameters so we can receive url like #browser/<search>
    */

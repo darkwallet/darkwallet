@@ -9,6 +9,9 @@ function (controllers, Bitcoin, DarkWallet) {
 
   // Filters
   $scope.addrFilter = $history.addrFilter;
+  $scope.nPages = 0;
+  $scope.page = 0;
+  var limit = 10;
 
   /**
    * Generate an address
@@ -25,8 +28,18 @@ function (controllers, Bitcoin, DarkWallet) {
    * @param {String} name Filter name
    */
   $scope.setAddressFilter = function(name) {
+      $history.setAddressFilter(name);
       $scope.addrFilter = name;
-      $scope.historyRows = $history.setAddressFilter(name);
+      $scope.allAddresses = $scope.pocket.addresses.concat($scope.pocket.changeAddresses).filter($scope.addressFilter);
+      $scope.nPages = Math.ceil($scope.allAddresses.length/limit);
+      $scope.page = 0;
+      $scope.addresses = $scope.allAddresses.slice($scope.page*limit, ($scope.page*limit) + limit);
+      
+  };
+
+  $scope.setPage = function(page) {
+      $scope.page = page;
+      $scope.addresses = $scope.allAddresses.slice($scope.page*limit, ($scope.page*limit) + limit);
   };
 
   /**
@@ -55,6 +68,13 @@ function (controllers, Bitcoin, DarkWallet) {
       var identity = DarkWallet.getIdentity();
       identity.store.save();
   };
+
+  /**
+   * Watch for pocket change
+   */
+  $scope.$watch('pocket.name', function() {
+      $scope.setAddressFilter($scope.addrFilter);
+  })
 
 }]);
 });

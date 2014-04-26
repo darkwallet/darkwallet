@@ -16,7 +16,6 @@ function (controllers, DarkWallet, Port) {
 
   // Scope variables
   $scope.rates = {};
-  $scope.allAddresses = [];
   $scope.totalBalance = 0;
   $scope.forms = {};
   $scope.identityName = false;
@@ -58,10 +57,6 @@ function (controllers, DarkWallet, Port) {
    * Link given identity to the scope
    */
   function linkIdentity(identity) {
-      // Link address arrays
-      $scope.addresses = $wallet.addresses;
-      $scope.allAddresses = $wallet.allAddresses;
-
       // Link pockets and funds
       $scope.hdPockets = identity.wallet.pockets.hdPockets;
       $scope.allFunds = identity.wallet.multisig.funds;
@@ -114,6 +109,14 @@ function (controllers, DarkWallet, Port) {
       console.log("[WalletCtrl] loadIdentity", identity.name);
       // apply scope changes
       return true;
+  };
+
+  /**
+   * Utility function to create iterators
+   */
+  $scope.range = function(n) {
+      if (!n) return [];
+      return new Array(n);
   };
 
 
