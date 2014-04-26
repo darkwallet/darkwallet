@@ -99,7 +99,6 @@ Wallet.prototype.getBalance = function(pocketIndex) {
         if (allAddresses.indexOf(out.address) != -1) {
             if (out.spend && out.spendheight == 0) {
                 unconfirmed -= out.value;
-                balance += out.value;
             } else if (out.spend) {
                 // spent so don't count it
             } else if (!out.height) {
