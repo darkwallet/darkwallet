@@ -30,7 +30,7 @@ var clipboard = {
     pasteDiv.unselectable = "off";
     pasteDiv.focus();
     $window.document.execCommand("paste");
-    var text = pasteDiv.innerText;
+    var text = pasteDiv.textContent;
     $window.document.getElementById('fixed').removeChild(pasteDiv);
     return text;
   }
