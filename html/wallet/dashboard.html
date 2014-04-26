@@ -13,7 +13,7 @@
           <input type="text" ng-model="quicksend.address" required btc-address placeholder="Bitcoin address..." />
         </div>
         <div class="small-4 columns">
-          <button type="submit" ng-class="{glow:quickSendForm.$valid}" class="button postfix radius fa fa-arrow-right">Next</button>
+          <button type="submit" ng-disabled="!quickSendForm.$valid" ng-class="{glow:quickSendForm.$valid}" class="button postfix radius fa fa-arrow-right">Next</button>
         </div>
       </div>
     </form>
