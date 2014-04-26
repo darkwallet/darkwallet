@@ -41,7 +41,7 @@ function (Bitcoin, Mnemonic, Encryption) {
 
       var fingerprint = Encryption.genFingerprint(pubKey);
       // Check this is the correct peer (it should be but to be sure..)
-      if (fingerprint != this.fingerprint) {
+      if (this.fingerprint && fingerprint != this.fingerprint) {
           throw Error("Invalid update for peer!");
       }
 
