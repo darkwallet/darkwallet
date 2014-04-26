@@ -85,6 +85,15 @@ var callbackCache = {};
             callback(canvas.toDataURL('image/png'));
           }); 
         }
+        
+        function generateAnonImage(callback) {
+          var anon = new Image();
+          anon.src = '../images/faces/anon'+canvasSize+'.png';
+          anon.addEventListener('load', function() {
+            ctx.drawImage(anon, 0, 0);
+            callback(canvas.toDataURL('image/png'));
+          }, false);
+        }
 
         // Create the identicon
         function createFromHex(dataHex) {
@@ -98,19 +107,24 @@ var callbackCache = {};
           } else if(callbackCache.hasOwnProperty(iconId)) {
             callbackCache[iconId].push(update);
           } else {
-            callbackCache[iconId] = [update];
-            generateImage(calcDataFromFingerprint(dataHex), function(data) {
+            var onImageGenerated = function(data) {
               callbackCache[iconId].forEach(function(callback) {
                 callback(data);
               });
-            });
+            };
+            
+            callbackCache[iconId] = [update];
+            if (dataHex) {
+              generateImage(calcDataFromFingerprint(dataHex), onImageGenerated);
+            } else {
+              generateAnonImage(onImageGenerated);
+            }
           }
         }
         // Watch for hash changes
         scope.$watch('hash', function() {
-          if (scope.hash) {
-            createFromHex(scope.hash.substr(16, 7));
-          }
+          var hex = scope.hash ? scope.hash.substr(16, 7) : null;
+          createFromHex(hex);
         });
       }
     };
