@@ -233,17 +233,18 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       var recipient = {address: destAddress.address, amount: opening.amount};
 
       // Build the tx
-      var tx = identity.wallet.prepareTx(pocketIndex, [recipient], changeAddress, fee);
-      this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', tx.clone(), opening.amount, fee);
+      var metadata = identity.wallet.prepareTx(pocketIndex, [recipient], changeAddress, fee);
+      this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', metadata.tx.clone(), opening.amount, fee);
+
       // Post using end to end channel capabilities
-      this.sendTo(peer, opening.id, tx.tx);
+      this.sendTo(peer, opening.id, metadata.tx);
     }
   };
 
   MixerService.prototype.sendTo = function(peer, id, tx, callback) {
       // Save the transaction with the ongoing task
       var coinJoin = this.ongoing[id];
-      coinJoin[id].peer = peer;
+      coinJoin.peer = peer;
 
       // Now create and send the message
       var msg = Protocol.CoinJoinMsg(id, tx.serializeHex());
@@ -267,7 +268,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
    * Get a running coinjoin from a message doing some tests
    */
   MixerService.prototype.getOngoing = function(msg) {
-      var coinJoin = this.ongoing[msg.id];
+      var coinJoin = this.ongoing[msg.body.id];
       if (!coinJoin) {
           console.log("[mixer] CoinJoin not found!");
       }
@@ -292,8 +293,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
    * Protocol messages arriving
    */
   MixerService.prototype.onCoinJoinOpen = function(msg) {
-    if (!msg.peer) {
-      console.log("[mixer] Peer not found " + msg.sender);
+    if (!msg.peer || !msg.peer.trusted) {
+      console.log("[mixer] Peer not found " + msg.sender, msg.peer);
       return;
     }
     if (msg.sender != this.channel.fingerprint) {
@@ -320,13 +321,13 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
               }
           }
           if (updatedTx && coinJoin.state != 'sign') {
-              this.sendTo(msg.peer, msg.id, updatedTx);
+              this.sendTo(msg.peer, msg.body.id, updatedTx);
           }
           // copy coinjoin state to the store
           if (coinJoin.task) {
               coinJoin.task.state = coinJoin.state;
           }
-          this.checkDelete(msg.id);
+          this.checkDelete(msg.body.id);
       }
     }
   };
@@ -336,7 +337,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       var coinJoin = this.getOngoing(msg);
       if (coinJoin) {
         coinJoin.kill(msg.body);
-        this.checkDelete(msg.id);
+        this.checkDelete(msg.body.id);
       }
     }
   };
