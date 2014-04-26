@@ -1,6 +1,7 @@
 'use strict';
 
-define(['backend/port', 'darkwallet', 'dwutil/tasks/transaction'], function(Port, DarkWallet, TransactionTasks) {
+define(['backend/port', 'darkwallet'], function(Port, DarkWallet) {
+
 
 /**
  * Service to manage updating all badges.
@@ -18,7 +19,8 @@ function BadgeService(core) {
             // Connected
         }, function(port) {
             // Disconnected
-            if (DarkWallet.getIdentity() && TransactionTasks.checkFinished()) {
+            var identity = DarkWallet.getIdentity();
+            if (identity && identity.tasks.removeTasks(null, 'state', 'finished')) {
                 self.setItems();
             }
     });

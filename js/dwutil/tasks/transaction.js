@@ -170,39 +170,6 @@ TransactionTasks.updateTaskHeight = function(task, height) {
     }
 };
 
-/**
- * Check for already finished tasks
- */
-TransactionTasks.checkFinished = function() {
-    var identity = DarkWallet.getIdentity();
-
-    var sendTasks = identity.tasks.getTasks('send');
-    var receiveTasks = identity.tasks.getTasks('receive');
-
-    var tasks = sendTasks.concat(receiveTasks);
-    var updated;
-    tasks.forEach(function(task) {
-        if (task.state == 'finished') {
-            TransactionTasks.removeTask(task)
-            updated = true;
-        }
-    })
-    return updated;
-}
-
-/**
- * Remove a task
- * @private
- */
-TransactionTasks.removeTask = function(task) {
-    var identity = DarkWallet.getIdentity();
-    var section = task.value > 0 ? 'receive' : 'send';
-
-    if (!identity.tasks.removeTask(section, task)) {
-        console.log("[TransactionTasks] could not remove task", task);
-    }
-}
-
 return TransactionTasks;
 
 });

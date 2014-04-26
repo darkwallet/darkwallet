@@ -15,7 +15,8 @@ function Tasks(store) {
 /**
  * Search for a task in the given section
  * @param {String} section Section name
- * @param {Object} search Array with search condition {name: value}
+ * @param {Object} name name of the property to evaluate
+ * @param {Object} value value to evaluate for equality
  */
 Tasks.prototype.search = function(section, name, value) {
     if (!this.tasks.hasOwnProperty(section)) {
@@ -61,6 +62,50 @@ Tasks.prototype.removeTask = function(section, task) {
         return true;
     }
 };
+
+/**
+ * Remove a tasks according to some criteria
+ * @param {String} section Section name
+ * @param {Object} task Task to remove
+ * @param {Object} name name of the property to evaluate
+ * @return true of false if any objects where deleted
+ */
+Tasks.prototype.removeTasks = function(section, name, value) {
+    if (section && !this.tasks.hasOwnProperty(section)) {
+        return;
+    }
+    var self = this;
+    var updated = false;
+    var toDelete = [];
+
+    // Callback tagging tasks for deletion
+    var processTask = function(section, task) {
+        if (task[name] == value) {
+            toDelete.push([section, task]);
+            updated = true;
+        }
+    }
+
+    // Look for tasks to delete
+    if (section) {
+        this.tasks[section].forEach(function(task) {processTask(section, task)});
+    } else {
+        Object.keys(this.tasks).forEach(function(section) {
+            self.tasks[section].forEach(function(task) {processTask(section, task)});
+        });
+    }
+
+    // Now delete the tasks
+    toDelete.forEach(function(item) {
+        self.removeTask(item[0], item[1]);
+    });
+ 
+    if (updated) {
+        this.store.save();
+    }
+    return updated;
+};
+
 
 /**
  * Get task objects for a section

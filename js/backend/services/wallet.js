@@ -283,6 +283,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                     state: 'announce',
                     total: metadata.total,
                     fee: metadata.fee,
+                    recipients: metadata.recipients,
                     change: metadata.change,
                     timeout: 60, // timeout in secs
                     start: Date.now()/1000,
@@ -309,15 +310,45 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         // Now start the task in the mixer service
         var mixerService = core.service.mixer;
         mixerService.startTask(task);
-                
-        // Callback for calling process
-        callback(null, {task: task, tx: newTx, type: 'mixer', privKeys: privKeys});
+
+        // Sign the transaction to have a fallback in case the mixing fails
+
+        this.signTransaction(newTx.clone(), metadata, password, function(err, signed) {
+            if (!err && signed.type == 'signed') {
+                task.fallback = signed.tx.serializeHex();
+                // Callback for calling process
+                callback(null, {task: task, tx: newTx, type: 'mixer', privKeys: privKeys});
+            } else {
+                callback(err);
+            }
+        });
     };
+
+    /*
+     * Perform fallback operations for a failed task
+     */
+    this.sendFallback = function(type, task) {
+        if (type == 'mixer') {
+            if (!task.fallback) {
+                console.log("no fallback for this task!!", task);
+                return;
+            }
+            var tx = new Bitcoin.Transaction(task.fallback);
+            task.state = 'finished';
+
+            var hash = Bitcoin.convert.bytesToHex(tx.getHash());
+            var spendTask = TransactionTasks.processSpend(hash, task.myamount, task.recipients);
+            core.service.badge.setItems(self.getCurrentIdentity());
+            self.broadcastTx(tx, spendTask, function(err, data) {console.log(err,data)});
+        } else {
+            console.log("[wallet] Calling fallback for unknown type", task);
+        }
+    }
 
     /*
      * Sign a transaction, then broadcast or add task to gather sigs
      */
-    this.signTransaction = function(newTx, metadata, password, callback) {
+    this.signTransaction = function(newTx, metadata, password, callback, broadcast) {
         var identity = self.getCurrentIdentity();
         // Otherwise just sign and lets go
         identity.wallet.signTransaction(newTx, metadata.utxo, password, function(err, pending) {
@@ -329,12 +360,15 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: metadata.stealth};
                 identity.tasks.addTask('multisig', task);
                 callback(null, {task: task, tx: newTx, type: 'signatures'});
-            } else {
-                // Else, broadcast and add task
+            } else if (broadcast) {
+                // Broadcast and add task
                 var txHash = Bitcoin.convert.bytesToHex(newTx.getHash());
                 var task = TransactionTasks.processSpend(txHash, metadata.myamount, metadata.recipients);
                 core.service.badge.setItems(identity);
                 self.broadcastTx(newTx, task, callback);
+            } else {
+                // Return the signed tx
+                callback(null, {tx: newTx, type: 'signed'});
             }
         });
     };

@@ -208,7 +208,7 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormatting) 
       };
 
       var walletService = DarkWallet.service.wallet;
-      walletService.signTransaction(metadata.tx, metadata, password, onBroadcast);
+      walletService.signTransaction(metadata.tx, metadata, password, onBroadcast, true);
   };
 
   var onPassword = function(metadata, amountNote, password) {

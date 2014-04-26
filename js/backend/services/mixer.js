@@ -91,6 +91,45 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
   }
 
   /*
+   * Check a running task to see if we have to resend or cancel
+   */
+  MixerService.prototype.checkTask = function(msg, state) {
+      var coinJoin = this.ongoing[msg.body.id];
+      // Check if the state is the same otherwise cancel
+      if (coinJoin && coinJoin.state == state) {
+          var start = coinJoin.task.start;
+          var timeout = coinJoin.task.timeout;
+          // Cancel task if it expired
+          if ((Date.now()/1000)-start > timeout) {
+              // do stuff
+              console.log("[mixer] Cancelling coinjoin!", id);
+              var walletService = this.core.service.wallet;
+              walletService.sendFallback('mixer', coinJoin.task);
+          } else {
+              // Otherwise resend
+              this.postRetry(msg, state);
+          }
+      }
+  }
+
+  /*
+   * Send a message on the channel and schedule a retry
+   */
+  MixerService.prototype.postRetry = function(msg, state) {
+      var self = this;
+      this.channel.postEncrypted(msg, function(err, data) {
+          if (err) {
+            console.log("[mixer] Error announcing join!");
+          } else {
+            console.log("[mixer] Join announced!");
+          }
+      });
+      setTimeout(function() {
+            self.checkTask(msg, state);
+      }, 10000);
+  }
+
+  /*
    * Start a task either internally or by external command
    */
   MixerService.prototype.startTask = function(task) {
@@ -104,19 +143,21 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
         var msg = Protocol.CoinJoinOpenMsg(id, task.myamount);
         console.log("[mixer] Announce join");
         var myTx = new Bitcoin.Transaction(task.tx);
+        if (!task.timeout) {
+           task.timeout = 60;
+        }
+        if (!task.start) {
+           task.start = Date.now()/1000;
+        }
         this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', myTx.clone(), task.myamount, task.fee);
         this.ongoing[id].task = task;
 
-        this.channel.postEncrypted(msg, function(err, data) {
-          if (err) {
-            console.log("[mixer] Error announcing join!");
-          } else {
-            console.log("[mixer] Join announced!");
-          }
-        });
+        // See if the task is expired otherwise send
+        this.checkTask(msg, task.state);
         break;
       case 'paired':
       case 'finish':
+      case 'finished':
       default:
         console.log('[mixer] start Task!', task.state, task);
         break;
@@ -282,6 +323,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
           if (updatedTx) {
               this.sendTo(msg.peer, msg.id, updatedTx);
           }
+          // copy coinjoin state to the store
+          coinJoin.task.state = coinJoin.state;
           this.checkDelete(msg.id);
       }
     }
