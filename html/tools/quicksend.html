@@ -16,7 +16,7 @@
       </div>
     </div>
   </form>
-  <form ng-submit="sendBitcoins()" ng-show="quicksend.next">
+  <form ng-submit="sendBitcoins()" ng-show="quicksend.next && !quicksend.password">
     <div class="row collapse panel radius">
       <h5>
         <span ng-show="!quicksend.contact">Sending to {{quicksend.address}}</span>
@@ -34,6 +34,17 @@
       </div>
       <div class="small-4 columns">
         <button class="button postfix radius fa fa-rocket" ng-disabled="!quicksend.amount||quicksend.amount==0" ng-class="{glow: quicksend.amount||quicksend.amount>0}">Send</button>
+      </div>
+    </div>
+  </form>
+  <form ng-submit="quicksend.onPassword(password)" ng-show="quicksend.password">
+    <div class="row collapse panel radius">
+      <h5>Password</h5>
+      <div class="small-9 columns">
+        <input type="password" ng-model="password" autofocus>
+      </div>
+      <div class="small-3 columns">
+        <button class="button postfix radius">Send</button>
       </div>
     </div>
   </form>

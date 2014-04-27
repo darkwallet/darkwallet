@@ -23,6 +23,9 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormat) {
       var identity = DarkWallet.getIdentity();
       $scope.selectedCurrency = identity.settings.currency;
       sendForm.fee = CurrencyFormat.asBtc(identity.wallet.fee);
+      
+      $scope.quicksend.next = false;
+      $scope.quicksend.password = false;
   };
 
   $scope.updateBtcFiat = function(field) {
@@ -267,11 +270,21 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormat) {
           return;
       }
 
+      var amountNote = (fee + totalAmount) + ' satoshis';
+
       // Now ask for the password before continuing with the next step   
-      modals.password('Unlock password', function(password) {
-          var amountNote = (fee + totalAmount) + ' satoshis';
+      if (modals.password) {
+        modals.password('Unlock password', function(password) {
           onPassword(metadata, amountNote, password);
-      });
+        });
+      } else {
+        $scope.quicksend.password = true;
+        $scope.quicksend.onPassword = function(password) {
+          onPassword(metadata, amountNote, password);
+        };
+      }
+      
+      
   };
 
   $scope.addAddress = function(data, vars) {

@@ -13,7 +13,8 @@ define([
     'frontend/controllers/notifications',
     'frontend/filters/currency',
     'frontend/providers/wallet',
-    'frontend/directives/identicon'
+    'frontend/directives/identicon',
+    'frontend/directives/validation'
 ], function (angular) {
     var app = angular.module('DarkWallet', [
       'mm.foundation',
