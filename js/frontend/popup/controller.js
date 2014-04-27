@@ -13,12 +13,17 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
 
   $scope.currentIdentity = false;
   $scope.connected = false;
+  
+  $scope.forms = {};
+  $scope.identityName = false;
 
   // Wallet service, connect to get notified about identity getting loaded.
   Port.connect('wallet', function(data) {
     if (data.type == 'ready') {
         // identity is ready here
         $scope.currentIdentity = data.identity;
+        $scope.identity = DarkWallet.getIdentity();
+        $scope.settings = $scope.identity.settings;
         if(!$scope.$$phase) {
             $scope.$apply();
         }

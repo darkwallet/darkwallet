@@ -4,7 +4,7 @@ define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc', 
 function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormat) {
   var BigInteger = Bitcoin.BigInteger;
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', function($scope, $window, notify, modals, $wallet) {
-
+  
   var sendForm = $scope.forms.send;
 
   var dustThreshold = 5600;
