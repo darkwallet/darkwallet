@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="../css/app.css">
   </head>
   <body class="popupbody" ng-controller="PopupCtrl">
-    <div class="popupcontainer">
  <div class="popupcontainer" ng-controller="NotificationsCtrl">
       <div ng-show="identities.length" ng-cloak class="row">
         <div class="small-6 columns text-center">
@@ -35,15 +34,23 @@
           </a>
         </div>
       </div>
+   <div>
+     <a ng-click="tab=0">Notifications</a>
+     <a ng-click="tab=1">Calculator</a>
+     <a ng-click="tab=2">Send</a>
+   </div>
+   <div ng-show="tab==0">
       <div class="panel notifications" ng-repeat="task in tasks" ng-include="'notifications/'+task.section+'.html'">
          <!--
            Content in  templates inside html/notifications/
          -->
       </div>
+      <div ng-show="tasks.length==0">Nothing new</div>
     </div>
-    <div ng-include src="connected ? 'tools/calculator.html' : false">
+    <div ng-include src="connected && tab==1 ? 'tools/calculator.html' : false">
     </div>
-    <div ng-include src="connected ? 'tools/quicksend.html' : false">
+    <div ng-include src="connected && tab==2 ? 'tools/quicksend.html' : false">
+    </div>
     </div>
     <script src="../vendors/requirejs/require.js" data-main="../js/frontend/popup/loader.js"></script>
   </body>

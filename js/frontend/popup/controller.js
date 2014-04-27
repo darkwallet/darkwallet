@@ -13,6 +13,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
 
   $scope.currentIdentity = false;
   $scope.connected = false;
+  $scope.tab = 0;
   
   $scope.forms = {};
   $scope.identityName = false;
