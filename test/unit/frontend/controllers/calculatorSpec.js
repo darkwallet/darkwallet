@@ -64,7 +64,7 @@ function (mocks, testUtils) {
         amountFocused: false,
         convertedFocused: false
       });
-      expect(scope.selectedCurrency).toBe('BTC');
+      expect(scope.settings.currency).toBe('BTC');
       expect(scope.fiatSymbol).toBe('€');
     });
     
