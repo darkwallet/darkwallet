@@ -25,19 +25,30 @@ describe('Addresses controller', function() {
         mocks.module("DarkWallet.controllers");
         mocks.inject(["$rootScope", "$controller", function ($rootScope, $controller) {
           scope = $rootScope.$new();
+          scope.pocket = {
+            name: 'default',
+            addresses: [
+              0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+            ],
+            changeAddresses: [
+              -1, -2, -3, -4
+            ]
+          };
           wallet = {
             generateAddress: function(){}
           };
           spyOn(wallet, 'generateAddress');
           history = {
-            addrFilter: 'all',
+            addrFilter: 'even',
             setAddressFilter: function(){},
             addressFilter: function() {}
           };
           spyOn(history, 'setAddressFilter').and.callFake(function(name) {
             return name;
           });
-          spyOn(history, 'addressFilter');
+          spyOn(history, 'addressFilter').and.callFake(function(row) {
+            return row % 2 == 0;
+          });
           clipboard = {
             copy: function() {}
           };
@@ -58,7 +69,7 @@ describe('Addresses controller', function() {
     });
     
     it('is created properly', function() {
-      expect(scope.addrFilter).toBe('all');
+      expect(scope.addrFilter).toBe('even');
     });
     
     it('generates an address', function() {
@@ -67,10 +78,20 @@ describe('Addresses controller', function() {
     });
     
     it('sets address filter', function() {
-      scope.setAddressFilter('unused');
-      expect(scope.addrFilter).toBe('unused');
-      expect(scope.historyRows).toBe('unused');
-      expect(history.setAddressFilter).toHaveBeenCalledWith('unused');
+      scope.setAddressFilter('even');
+      expect(history.setAddressFilter).toHaveBeenCalledWith('even');
+      expect(scope.addrFilter).toBe('even');
+      expect(scope.allAddresses).toEqual([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, -2, -4]);
+      expect(scope.nPages).toBe(2);
+      expect(scope.page).toBe(0);
+      expect(scope.addresses).toEqual([0, 2, 4, 6, 8, 10, 12, 14, 16, 18]);
+    });
+    
+    it('sets page', function() {
+      scope.setAddressFilter('even');
+      scope.setPage(1);
+      expect(scope.page).toBe(1);
+      expect(scope.addresses).toEqual([20, 22, -2, -4]);
     });
     
     it('applies filter', function() {
@@ -91,6 +112,13 @@ describe('Addresses controller', function() {
       scope.saveStore();
       expect(identity.store.save).toHaveBeenCalled();
     });
-  
+    
+    it('sets address filter on pocket name changes', function() {
+      spyOn(scope, 'setAddressFilter');
+      scope.$apply(function() {
+        scope.pocket.name = 'changed';
+      });
+      expect(scope.setAddressFilter).toHaveBeenCalledWith('even');
+    });
 });
 });
