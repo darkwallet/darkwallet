@@ -22,9 +22,11 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   CoinJoin.prototype.fullfill = function(msg) {
       // Check there is one output like we want to join
       var amount = this.myAmount;
-      var remoteTx = Bitcoin.Transaction.deserialize(msg.tx);
+      var remoteTx = new Bitcoin.Transaction(msg.tx);
+      console.log("fullfill", msg, remoteTx, amount);
       var isOk = false;
       remoteTx.outs.forEach(function(anOut) {
+          console.log("check", anOut.value, amount);
           if (anOut.value == amount) {
               isOk = true;
           }
@@ -55,7 +57,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
    * 1st message initiator -> [guest]
    */
   CoinJoin.prototype.sign = function(msg) {
-      var remoteTx = Bitcoin.Transaction.deserialize(msg.tx);
+      var remoteTx = new Bitcoin.Transaction(msg.tx);
 
       // Check the original inputs and outputs are there
       if (!this.checkMyInputsOutputs(this.myTx, remoteTx)) {
@@ -88,7 +90,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
    */
   CoinJoin.prototype.finishInitiator = function(msg) {
       var myTx = this.tx;
-      var remoteTx = Bitcoin.Transaction.deserialize(msg.tx);
+      var remoteTx = new Bitcoin.Transaction(msg.tx);
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(myTx, remoteTx)) {
@@ -106,7 +108,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
    * 2nd message initiator -> [guest]
    */
   CoinJoin.prototype.finishGuest = function(msg) {
-      var remoteTx = Bitcoin.Transaction.deserialize(msg.tx);
+      var remoteTx = new Bitcoin.Transaction(msg.tx);
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(this.tx, remoteTx)) {
