@@ -34,12 +34,22 @@
           </a>
         </div>
       </div>
-   <div>
-     <a ng-click="tab=0">Notifications</a>
-     <a ng-click="tab=1">Calculator</a>
-     <a ng-click="tab=2">Send</a>
-   </div>
+
+  <dl ng-cloak ng-show="identities.length" class="row tabs collapse">
+       <dd class="small-4 columns text-center" title="Notifications" ng-class="{active:tab==0}" ng-click="tab=0">
+           <a><span class="fa fa-rss"></span></a>
+       </dd>
+     <dd class="small-4 columns text-center" title="Calculator" ng-class="{active:tab==1}" ng-click="tab=1">
+       <a><span class="fa fa-superscript"></span></a>
+     </dd>
+     <dd class="small-4 columns text-center" title="Send" ng-class="{active:tab==2}" ng-click="tab=2">
+       <a><span class="fa fa-rocket"></span></a>
+     </dd>
+   </dl>
+
    <div ng-show="tab==0">
+
+
       <div class="panel notifications" ng-repeat="task in tasks" ng-include="'notifications/'+task.section+'.html'">
          <!--
            Content in  templates inside html/notifications/
@@ -47,10 +57,13 @@
       </div>
       <div ng-show="tasks.length==0">Nothing new</div>
     </div>
+ 
+
     <div ng-include src="connected && tab==1 ? 'tools/calculator.html' : false">
     </div>
     <div ng-include src="connected && tab==2 ? 'tools/quicksend.html' : false">
     </div>
+
     </div>
     <script src="../vendors/requirejs/require.js" data-main="../js/frontend/popup/loader.js"></script>
   </body>
