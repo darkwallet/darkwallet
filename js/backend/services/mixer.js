@@ -284,9 +284,13 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
    */
   MixerService.prototype.requestSignInputs = function(coinJoin) {
       var identity = this.core.getIdentity();
-      var signed = identity.wallet.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, coinJoin.task.privKeys);
-      // TODO delete privKeys here
-      return signed;
+      if (coinJoin.task) {
+          var signed = identity.wallet.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, coinJoin.task.privKeys);
+          // TODO delete privKeys here
+          return signed;
+      } else {
+          // XXX the guest doesn't have a task!
+      }
   };
 
   /*
@@ -311,7 +315,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       if (coinJoin) {
           console.log("[mixer] CoinJoin", msg);
 
-          var updatedTx = coinJoin.process(msg.peer, msg.body);
+          var updatedTx = coinJoin.process(msg.body);
           // if requested to sign, try to do it
           if (coinJoin.state == 'sign') {
               // Needs signing from user
@@ -322,6 +326,9 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
           }
           if (updatedTx && coinJoin.state != 'sign') {
               this.sendTo(msg.peer, msg.body.id, updatedTx);
+          }
+          if (coinJoin.state == 'sign') {
+              console.log("task requires signing from user!");
           }
           // copy coinjoin state to the store
           if (coinJoin.task) {
