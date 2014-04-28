@@ -60,6 +60,10 @@ Connections.prototype.setAlwaysConnect = function(alwaysConnect) {
     this.store.save();
 };
 
+Connections.prototype.getServer = function(idx) {
+  return this.servers[idx];
+}
+
 return Connections;
 
 });
