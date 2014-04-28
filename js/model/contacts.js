@@ -12,7 +12,9 @@ var Crypto = Bitcoin.CryptoJS;
 function Contacts(store, identity) {
   this.store = store;
   this.identity = identity
-  this.contacts = this.store.init('contacts', []);
+  this.contacts = this.store.init('contacts', [
+    { name: 'DarkWallet team', address: '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy' }
+  ]);
   this.validAddresses = [
       identity.wallet.versions.address,
       identity.wallet.versions.stealth.address,

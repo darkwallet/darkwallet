@@ -31,6 +31,7 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
     
     beforeEach(function() {
       contacts = new Contacts(store, identity);
+      contacts.contacts = []; // Delete darkwallet contact
       satoshiForestAddress = '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd';
       satoshiForestNew = {name: 'Satoshi Forest', address: satoshiForestAddress},
       satoshiForest = {name: 'Satoshi Forest', mainKey: 0, pubKeys: [{data: satoshiForestAddress, type: 'address', address: satoshiForestAddress}]};
@@ -38,8 +39,14 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
     });
 
     it('is created properly', function() {
+      contacts = new Contacts(store, identity);
       expect(contacts.store).toBe(store);
-      expect(contacts.contacts).toEqual([]);
+      expect(contacts.contacts).toEqual([{
+          name : 'DarkWallet team',
+          pubKeys : [ { data : '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy', pubKey : undefined, type : 'address', address : '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy' } ],
+          mainKey : 0,
+          hash : '97ff6614bac3eab9ee8afdf4e7ced9f790a776c77f5b8c7a1e1b74763f616cd3'
+        }]);
     });
 
     // it('initializes contacts'); // TODO Delete it in DarkWallet 1.0
