@@ -1,8 +1,7 @@
 'use strict';
 
-define(['./module', 'frontend/port', 'darkwallet', 'bitcoinjs-lib', 'util/btc', 'dwutil/currencyformat'],
-function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormat) {
-  var BigInteger = Bitcoin.BigInteger;
+define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat'],
+function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', function($scope, $window, notify, modals, $wallet) {
   
   var sendForm = $scope.forms.send;
@@ -21,7 +20,6 @@ function (controllers, Port, DarkWallet, Bitcoin, BtcUtils, CurrencyFormat) {
           field_proto: { address: '', amount: '' }
       };
       var identity = DarkWallet.getIdentity();
-      $scope.selectedCurrency = identity.settings.currency;
       sendForm.fee = CurrencyFormat.asBtc(identity.wallet.fee);
       
       $scope.quicksend.next = false;

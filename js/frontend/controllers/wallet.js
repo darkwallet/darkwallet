@@ -70,8 +70,6 @@ function (controllers, DarkWallet, Port) {
       
       $scope.totalBalance = balance.confirmed;
       $scope.totalUnconfirmed = balance.unconfirmed;
-      $scope.selectedCurrency = identity.settings.currency;
-      $scope.selectedFiat = identity.settings.fiatCurrency;
 
       $scope.identityName = identity.name;
   }
