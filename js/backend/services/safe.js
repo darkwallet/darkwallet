@@ -1,6 +1,6 @@
 'use strict';
 
-define(['backend/port', 'bitcoinjs-lib'], function(Port, Bitcoin) {
+define(['backend/port', 'crypto-js'], function(Port, CryptoJS) {
 
   /*
    * Service handling 'safe' temporary session passwords
@@ -19,7 +19,7 @@ define(['backend/port', 'bitcoinjs-lib'], function(Port, Bitcoin) {
     });
 
     this.hash = function(section, value) {
-        return Bitcoin.CryptoJS.SHA256(section+':'+core.getCurrentIdentity().name+value).toString();
+        return CryptoJS.SHA256(section+':'+core.getCurrentIdentity().name+value).toString();
     };
     this.set = function(section, name, value) {
         var result = this.hash(section, value);
