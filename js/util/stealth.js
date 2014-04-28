@@ -11,8 +11,9 @@ var convert = Bitcoin.convert;
 
 var Stealth = {};
  
-// Version for address format
-Stealth.version = 255;
+// Versions for address format
+Stealth.version = 42;
+Stealth.testnet = 43;
 
 // Can these be different in the future?
 Stealth.nonceVersion = 6;
