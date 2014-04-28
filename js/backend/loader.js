@@ -22,6 +22,8 @@ require.config({
     'qrcodejs': "../vendors/qrcodejs/qrcode",
     'jsqrcode': "../vendors/jsqrcode/jsqrcode",
     'async': "../vendors/async/lib/async",
+    'convert': "../vendors/wrappers/convert",
+    'crypto-js': "../vendors/wrappers/cryptojs",
     
     'bitcoinjs-lib': "../vendors/bitcoinjs-lib/bitcoinjs",
     'sjcl-real': "../vendors/sjcl/sjcl",
@@ -61,6 +63,14 @@ require.config({
     },
     'qrcodejs': {
       exports: 'QRCode'
+    },
+    'crypto-js': {
+      deps: ['bitcoinjs-lib'],
+      exports: 'CryptoJS'
+    },
+    'convert': {
+      deps: ['bitcoinjs-lib'],
+      exports: 'Convert'
     },
     'jsqrcode': {
       exports: 'qrcode'
