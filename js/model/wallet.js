@@ -175,6 +175,14 @@ Wallet.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
     return Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), spendKey.toBytes());
 };
 
+/**
+ * Get the master private key for a pocket
+ */
+Wallet.prototype.getPocketPrivate = function(index, password) {
+    var data = this.store.getPrivateData(password);
+    var masterKey = Bitcoin.HDWallet.fromBase58(data.privKey);
+    return masterKey.derive(index).toBase58(true);
+};
 
 /**
  * Get the private key for the given address index

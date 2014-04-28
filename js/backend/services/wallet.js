@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['model/keyring', 'backend/port', 'dwutil/currencyformat', 'dwutil/tasks/transaction', 'bitcoinjs-lib', 'util/btc'],
+define(['model/keyring', 'backend/port', 'dwutil/currencyformat', 'dwutil/tasks/transaction', 'bitcoinjs-lib', 'util/btc', 'sjcl'],
 function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, BtcUtils) {
 
   function WalletService(core) {
@@ -303,7 +303,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             }
         });
 
-        task.privKeys = privKeys;
+        // Store privkeys in the task encrypted for the session
+        var safe = core.service.safe;
+        var txHash = Bitcoin.convert.bytesToString(newTx.getHash());
+        var taskPassword = safe.set('send', txHash, password);
+        task.privKeys = sjcl.encrypt(taskPassword, JSON.stringify(privKeys));
 
         // Add the task to model
         identity.tasks.addTask('mixer', task);

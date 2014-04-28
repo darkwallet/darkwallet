@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
+define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controllers, DarkWallet, Bitcoin) {
   controllers.controller('PocketActionCtrl', ['$scope', 'modals', function($scope, modals) {
 
     /**
@@ -36,11 +36,41 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $scope.setMixing = function(pocket) {
         var identity = DarkWallet.getIdentity();
         var walletPocket = identity.wallet.pockets.getPocket(pocket.name);
-        walletPocket.mixing = !walletPocket.mixing;
-        pocket.mixing = walletPocket.mixing;
-        identity.wallet.store.save();
-        var mixerService = DarkWallet.service.mixer;
-        mixerService.checkMixing();
+        // Finish setting mixing in the pocket
+        // this can happen after requesting the password
+        var finishSetMixing = function() {
+            walletPocket.mixing = !walletPocket.mixing;
+            pocket.mixing = walletPocket.mixing;
+            identity.wallet.store.save();
+            var mixerService = DarkWallet.service.mixer;
+            mixerService.checkMixing();
+        }
+
+        // We're going to enable mixing so request the password to gather the key for the pocket
+        if (!walletPocket.mixing) {
+            var pocketIndex = identity.wallet.pockets.hdPockets.indexOf(walletPocket);
+            modals.password('Write the password for your pocket', function(password) {
+                var safe = DarkWallet.service.safe;
+                // get master private for the pockets since the mixer will need them
+                var privKey = identity.wallet.getPocketPrivate(pocketIndex*2, password);
+                var changeKey = identity.wallet.getPocketPrivate((pocketIndex*2)+1, password);
+
+                // Save some session passwords for the mixer
+                var pocketPassword = safe.set('mixer', 'pocket:'+pocketIndex, password);
+
+                // Save the keys encrypted with the pocket
+                walletPocket.privKey = sjcl.encrypt(pocketPassword, privKey, {ks: 256, ts: 128});
+                walletPocket.privChangeKey = sjcl.encrypt(pocketPassword, changeKey, {ks: 256, ts: 128});
+
+                // Finish setting the pocket mixing state
+                finishSetMixing();
+            });
+        } else {
+            // Otherwise ensure we delete any private data from the pocket
+            walletPocket.privKey = undefined;
+            walletPocket.privChangeKey = undefined;
+            finishSetMixing();
+        }
     };
 
     /**

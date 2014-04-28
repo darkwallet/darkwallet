@@ -1,6 +1,6 @@
 'use strict';
 
-define(['backend/port', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin'],
+define(['backend/port', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin', 'sjcl'],
 function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
 
   /*
@@ -235,6 +235,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       // Build the tx
       var metadata = identity.wallet.prepareTx(pocketIndex, [recipient], changeAddress, fee);
       this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', metadata.tx.clone(), opening.amount, fee);
+      this.ongoing[opening.id].pocket = pocketIndex;
 
       // Post using end to end channel capabilities
       this.sendTo(peer, opening.id, metadata.tx);
@@ -279,18 +280,79 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
       return coinJoin;
   };
 
+  /**
+   * Get the host private keys for a mix
+   */
+  MixerService.prototype.hostPrivateKeys = function(coinJoin) {
+      var safe = this.core.service.safe;
+      var txHash = Bitcoin.convert.bytesToString(coinJoin.myTx.getHash());
+
+      var password = safe.get('send', txHash);
+
+      return JSON.parse(sjcl.decrypt(password, coinJoin.task.privKeys));
+  };
+
+  /**
+   * Get the guest private keys for a mix
+   */
+  MixerService.prototype.guestPrivateKeys = function(coinJoin) {
+      var identity = this.core.getIdentity();
+      var safe = this.core.service.safe;
+      var pocketIndex = this.ongoing[opening.id].pocket;
+
+      // Get our password from the safe
+      var password = safe.get('mixer', 'pocket:'+pocketIndex);
+
+      // Load master keys for the pockets
+      var pocket = identity.wallet.pockets.hdPockets[pocketIndex];
+      var masterKey = Bitcoin.HDWallet.fromBase58(sjcl.decrypt(password, pocket.privKey));
+      var changeKey = Bitcoin.HDWallet.fromBase58(sjcl.decrypt(password, pocket.privChangeKey));
+
+      // Iterate over tx inputs and load private keys
+      var privKeys = {};
+      for(var i=0; i<coinJoin.myTx.ins; i++) {
+          var anIn = coinJoin.myTx.ins[i];
+          var pubKeys = anIn.script.extractPubkeys();
+          // we're only adding keyhash inputs for now
+          if (pubKeys.length != 1) {
+              throw Error("Invalid input in our join");
+          }
+          var pubKey = new Bitcoin.ECPubKey(pubKeys[0], pubKeys[0].length==33);
+          var address = pubKey.getAddress(identity.wallet.versions.address);
+          var walletAddress = identity.wallet.getWalletAddress(address.toString());
+
+          // only normal addresses supported for now
+          if (walletAddress.type) {
+              throw Error("Invalid input in our join");
+          }
+          // skip if we already got this key
+          if (privKeys[walletAddress.index]) {
+              continue;
+          }
+          if (Math.floor(walletAddress.index[0]/2) != pocketIndex) {
+              throw Error("Address from an invalid pocket");
+          }
+          // derive this key
+          var change  = walletAddress.index[0]%2 == 1;
+          privKeys[walletAddress.index] = identity.wallet.deriveHDPrivateKey(walletAddress.index.slice(1), change?changeKey:masterKey);
+      }
+      return privKeys;
+  };
+
   /*
    * Sign inputs for a coinjoin
    */
   MixerService.prototype.requestSignInputs = function(coinJoin) {
+      var privKeys;
       var identity = this.core.getIdentity();
       if (coinJoin.task) {
-          var signed = identity.wallet.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, coinJoin.task.privKeys);
-          // TODO delete privKeys here
-          return signed;
+          privKeys = this.hostPrivateKeys(coinJoin);
       } else {
-          // XXX the guest doesn't have a task!
+          privKeys = this.guestPrivateKeys(coinJoin);
+          
       }
+      var signed = identity.wallet.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, privKeys);
+      return signed;
   };
 
   /*
