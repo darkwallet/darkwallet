@@ -44,8 +44,7 @@ Wallet.prototype.initVersions = function(network) {
             this.versions.stealth = {address: Stealth.version, nonce: Stealth.nonceVersion};
             break;
         case 'testnet':
-            // TODO: NON STANDARD!!
-            this.versions.stealth = {address: 42, nonce: Stealth.nonceVersion};
+            this.versions.stealth = {address: Stealth.testnet, nonce: Stealth.nonceVersion};
             break;
     }
 }
@@ -142,6 +141,15 @@ Wallet.prototype.loadPubKeys = function() {
             }
         }
     });
+    // Upgrade stealth addresses
+    this.pockets.hdPockets.forEach(function(pocket, i) {
+        var walletAddress = self.pubKeys[[i*2]];
+        if (walletAddress) {
+            var scanKey = self.getScanKey(i*2);
+            var spendKey = walletAddress.pubKey;
+            walletAddress.stealth = Stealth.formatAddress(scanKey.getPub().toBytes(), [spendKey], self.versions.stealth.address);
+        }
+    });
     return false; // updated
 };
 
@@ -156,7 +164,7 @@ Wallet.prototype.deriveHDPrivateKey = function(seq, masterKey) {
 
 Wallet.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
     var spendKey;
-    var scanKey = this.getScanKey();
+    var scanKey = this.getScanKey(seq[0]);
     var privData = keyStore.privKeys[seq.slice(0,1)];
     if (privData) {
         spendKey = new Bitcoin.ECKey(privData, true);
@@ -249,7 +257,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
     // Precalculate stealth address and mpk for pockets (only main branch)
     if ((seq.length == 1) && (seq[0]%2 == 0)) {
         // Stealth
-        var scanKey = this.getScanKey();
+        var scanKey = this.getScanKey(seq[0]);
         var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [pubKey], this.versions.stealth.address);
         walletAddress['stealth'] = stealthAddress;
         // Mpk
@@ -727,12 +735,14 @@ Wallet.prototype.processHistory = function(walletAddress, history, initial) {
 
 /**
  * Get the stealth scanning ECKey
+ * @param {Number} n key index
  * @return {Object} The scanning key
  */
-Wallet.prototype.getScanKey = function() {
+Wallet.prototype.getScanKey = function(n) {
     var scanMaster = this.scanKeys[0];
     var scanMasterKey = Bitcoin.HDWallet.fromBase58(scanMaster.priv);
-    return scanMasterKey.priv;
+    var childKey = scanMasterKey.derive(n);
+    return childKey.priv;
 };
 
 /**
@@ -754,17 +764,18 @@ Wallet.prototype.getIdentityKey = function(n) {
  * The array comes 
  * @param {Object[]} stealthArray DOCME
  */
-Wallet.prototype.processStealth = function(stealthArray) {
+Wallet.prototype.processStealth = function(stealthArray, pocketId) {
     var self = this;
     var matches = [];
+    var pocketId = pocketId ? pocketId*2 : 0;
+    var scanKey = this.getScanKey(pocketId);
     stealthArray.forEach(function(stealthData) {
         var ephemKey = Bitcoin.convert.hexToBytes(stealthData[0]);
         var address = stealthData[1];
         var txId = stealthData[2];
-        var scanKey = self.getScanKey();
 
         // for now checking just the first stealth address derived from pocket 0 "default"
-        var spendKey = self.getAddress([0]).pubKey;
+        var spendKey = self.getAddress([pocketId]).pubKey;
         var myKeyBytes = Stealth.uncoverPublic(scanKey.toBytes(), ephemKey, spendKey);
         // Turn to address
         var myKeyHash = Bitcoin.crypto.hash160(myKeyBytes);
