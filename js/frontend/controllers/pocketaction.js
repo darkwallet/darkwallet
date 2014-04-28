@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controllers, DarkWallet, Bitcoin) {
+define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
   controllers.controller('PocketActionCtrl', ['$scope', 'modals', function($scope, modals) {
 
     /**
