@@ -102,7 +102,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
           // Cancel task if it expired
           if ((Date.now()/1000)-start > timeout) {
               // do stuff
-              console.log("[mixer] Cancelling coinjoin!", id);
+              console.log("[mixer] Cancelling coinjoin!", msg.body.id);
               var walletService = this.core.service.wallet;
               walletService.sendFallback('mixer', coinJoin.task);
           } else {

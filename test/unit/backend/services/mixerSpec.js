@@ -21,7 +21,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
   txGuest.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0"); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
   txGuest.addOutput("1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh", 99000000);
   var txGuestHex = txGuest.serializeHex();
-  var txFullfilledHex = '01000000014b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce62890000000000ffffffff01c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388ac00000000';
+  var txFullfilledHex = '01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce62890000000000ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc8271210000000000ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000';
 
  
   function MockChannel(name) {
@@ -41,7 +41,9 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
 
   describe('Mixer service', function() {
 
-    var core, mixer, Port, MixerClass, tasks, hdPockets, openingMsg, acceptMsg, fullfillMsg, primedGuestCoinJoin;
+    var core, mixer, Port, MixerClass, tasks, hdPockets;
+    var openingMsg, acceptMsg, fullfillMsg, signedMsg;
+    var primedGuestCoinJoin, primedHostCoinJoin;
     
     beforeEach(function(done) {
       
@@ -57,6 +59,10 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
 
       core = {
         service: {
+            wallet: {
+                fallbacks: [],
+                sendFallback: function(section, task) {core.service.wallet.fallbacks.push([section, task])}
+            },
             safe: {
                 get: function(section) { return 'foo'; },
                 set: function() {}
@@ -77,7 +83,8 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
               deriveHDPrivateKey: Wallet.prototype.deriveHDPrivateKey,
               getWalletAddress: function() {return {index: [0,0], address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}},
               wallet: {
-                outputs: {"8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}}
+                outputs: {"8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'},
+                          "217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}}
               },
               pockets: {
                 hdPockets: hdPockets
@@ -117,7 +124,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
     });
 
     it('starts mixing because a pocket is mixing', function() {
-      hdPockets = [{name: 'foo', mixing: true}];
+      hdPockets = [{name: 'foo', mixing: true},{name:'bar', mixing: false}];
       var mixer = new MixerClass(core);
       expect(mixer.name).toEqual('mixer');
       expect(mixer.ongoing).toEqual({});
@@ -129,21 +136,38 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
       });*/
     });
 
-    it('starts mixing because a there is a pending task', function() {
-      tasks = [{state: 'paired'}]
+    it('stops mixing', function() {
+      hdPockets = [{name: 'foo', mixing: true},{name:'bar', mixing: false}];
       var mixer = new MixerClass(core);
+      mixer.stopMixing();
       expect(mixer.name).toEqual('mixer');
       expect(mixer.ongoing).toEqual({});
+      expect(mixer.channel).toBe(null);
+      /*expect(Port.post).toHaveBeenCalledWith('obelisk', {
+        type: 'connected'
+      });*/
+    });
+
+
+    it('starts mixing because a there is a pending task', function() {
+      tasks = [{state: 'paired'}, {state: 'announce', start: 300}];
+      var mixer = new MixerClass(core);
+      expect(mixer.name).toEqual('mixer');
       expect(mixer.channel.callbacks[0][0]).toEqual('CoinJoinOpen');
       expect(mixer.channel.callbacks[1][0]).toEqual('CoinJoin');
       expect(mixer.channel.callbacks[2][0]).toEqual('CoinJoinFinish');
       /*expect(Port.post).toHaveBeenCalledWith('obelisk', {
         type: 'connected'
       });*/
+
+      expect(Object.keys(mixer.ongoing).length).toBe(1);
+
+      expect(core.service.wallet.fallbacks[0][0]).toBe('mixer')
+      expect(core.service.wallet.fallbacks[0][1]).toEqual({ state : 'announce', start : 300, timeout : 60 })
     });
 
     it('host starts announcing', function() {
-      tasks = [{state: 'announce', myamount: BTC, tx: txInitiator.serialize(), timeout: 0, fee: mBTC}]
+      tasks = [{state: 'announce', myamount: BTC, tx: txInitiatorHex, timeout: 0, fee: mBTC}]
       var mixer = new MixerClass(core);
       mixer.channel.fingerprint = 'host';
       expect(mixer.name).toEqual('mixer');
@@ -209,7 +233,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
     });
 
     it('host evaluates an accept', function() {
-      tasks = [{state: 'announce', myamount: BTC, tx: "foo", timeout: 0, fee: mBTC}]
+      tasks = [{state: 'announce', myamount: BTC, tx: txInitiatorHex, timeout: 0, fee: mBTC}]
       var hostMixer = new MixerClass(core);
       hostMixer.channel.fingerprint = 'host';
 
@@ -224,6 +248,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
 
       var coinJoin = hostMixer.ongoing[acceptMsg.body.id];
       expect(coinJoin.state).toBe('fullfilled');
+      expect(coinJoin.tx.ins.length).toBe(2);
 
       expect(hostMixer.channel.posted.length).toBe(1);
       expect(hostMixer.channel.dhposted.length).toBe(1);
@@ -236,6 +261,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
       expect(fullfillMsg.body.id).toBe(acceptMsg.body.id);
       expect(fullfillMsg.body.tx).toBe(txFullfilledHex);
 
+      primedHostCoinJoin = coinJoin;
     });
 
     it('guest evaluates a fullfill', function() {
@@ -256,19 +282,52 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
 
       var coinJoin = guestMixer.ongoing[acceptMsg.body.id];
       expect(coinJoin.state).toBe('signed');
+      expect(coinJoin.tx.ins.length).toBe(2);
 
       expect(guestMixer.channel.posted.length).toBe(0);
       expect(guestMixer.channel.dhposted.length).toBe(1);
 
       var pubKey = guestMixer.channel.dhposted[0][0];
-      fullfillMsg = guestMixer.channel.dhposted[0][1];
+      signedMsg = guestMixer.channel.dhposted[0][1];
 
       expect(pubKey).toBe("hostPubKey");
-      expect(fullfillMsg.type).toBe("CoinJoin");
-      expect(fullfillMsg.body.id).toBe(acceptMsg.body.id);
-      expect(fullfillMsg.body.tx).toBe('01000000014b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce6289000000008c493046022100b1a855fbdfa4b94b87cc1d6a098f382e7d0f8bb307acd246fe6ba4c4a47b8009022100f599f9303be10a018fbaad315e148161ad78f58f91a99b332a997dede81ca3e10141049601c77d65c91de169447fae2e39d6bcbc875a62e4bb3f8525e65f32af79b7e16027f6a44f9df527da837cdb6c71f7439c58a0a08896ff7ed408c053d7f35fa3ffffffff01c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388ac00000000');
+      expect(signedMsg.type).toBe("CoinJoin");
+      expect(signedMsg.body.id).toBe(fullfillMsg.body.id);
+      expect(signedMsg.body.tx).toBe('01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce6289000000008b4830450221008e37358eb00a61be147a053edec410a868918bec751e86b25fdfcea6bde2d58c022062d3ba65dc9eab99501db5ddeeac5968b56bc115cc7884592c1a9a06755eaccf0141049601c77d65c91de169447fae2e39d6bcbc875a62e4bb3f8525e65f32af79b7e16027f6a44f9df527da837cdb6c71f7439c58a0a08896ff7ed408c053d7f35fa3ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc827121000000008a47304402202b34997e37380ac9e064231d4a6b41cce406b795c4c10cd8c543b1ee7fadcc8202200483b8b57fe324aa22e33c776bf9d1fb82c2ee177fc30ba9ee9aa6144175fe4c0141049601c77d65c91de169447fae2e39d6bcbc875a62e4bb3f8525e65f32af79b7e16027f6a44f9df527da837cdb6c71f7439c58a0a08896ff7ed408c053d7f35fa3ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000');
 
     });
+
+    it('host evaluates a signed response', function() {
+      var privKeys = '{"iv":"zcT9u78R6UqwOGX2g/Da3g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"Zjv3lJOstugXP10T2DK0fQ==","ct":"pDC9p+GyTuFfoMb0CwvosjsBQAstAD43OZV2sO0F1Ic+NyalU2S6igdeI+D3CPn/CrHW1zEuEL4nI1FokmZQRc7t0cT0MqbZSrdBRjvhgTk8RIH4OEwQ0ESNweR+L3Jf5BBC5rLZx3tFtAa2zJELB3nqbYH6Ijtrpen+GWrWKhPkBH9sWprp"}';
+      tasks = [primedHostCoinJoin.task];
+      primedHostCoinJoin.task.privKeys = privKeys;
+      var hostMixer = new MixerClass(core);
+      hostMixer.channel.fingerprint = 'host';
+      hostMixer.ongoing = {};
+      hostMixer.ongoing[signedMsg.body.id] = primedHostCoinJoin;
+
+      signedMsg.peer = {trusted: true, pubKey: 'guestPubKey'};
+
+      // Accept the message
+      expect(hostMixer.channel.dhposted.length).toBe(0);
+      hostMixer.onCoinJoin(signedMsg);
+
+      // Perform checks
+      expect(Object.keys(hostMixer.ongoing).length).toBe(0);
+
+      expect(hostMixer.channel.posted.length).toBe(0);
+      expect(hostMixer.channel.dhposted.length).toBe(1);
+
+      var pubKey = hostMixer.channel.dhposted[0][0];
+      var finishedMsg = hostMixer.channel.dhposted[0][1];
+
+      expect(pubKey).toBe("guestPubKey");
+      expect(finishedMsg.type).toBe("CoinJoin");
+      expect(finishedMsg.body.id).toBe(signedMsg.body.id);
+      expect(finishedMsg.body.tx).toBe('01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce6289000000008b483045022100cc483ff972ee7c533032f2331328fa7baf386354b19597f3583aab940998ae2102205873ac28d397968af25306009749b4aaf944a587e288c010d0fe5147fad15312014104cacd99e85920821cd42a0c4369d941db3384f86a3888224d827fcac4e08d318091d0ac734420ad9e8d3d313f29c99241aa6f1b268d8b741411da73d37d52befaffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc827121000000008a473044022079996b473b98da6543346e364616a8fee61b8af2c1090403ef6f9ebc8488413502202d434bccad3a16a2d39d03243518927d78c364cfc045a550e0ae48822b3715a2014104cacd99e85920821cd42a0c4369d941db3384f86a3888224d827fcac4e08d318091d0ac734420ad9e8d3d313f29c99241aa6f1b268d8b741411da73d37d52befaffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000')
+
+    });
+    
     
   });
 
