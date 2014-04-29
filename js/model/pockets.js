@@ -64,7 +64,7 @@ Pockets.prototype.initPocketWallet = function(id) {
  */
 Pockets.prototype.getPocket = function(name) {
     for(var i=0; i<this.hdPockets.length; i++) {
-        if (this.hdPockets[i].name == name) {
+        if (this.hdPockets[i] && (this.hdPockets[i].name == name)) {
             return this.hdPockets[i];
         }
     }
@@ -77,7 +77,7 @@ Pockets.prototype.getPocket = function(name) {
  */
 Pockets.prototype.deletePocket = function(name) {
     for(var i=0; i<this.hdPockets.length; i++) {
-        if (this.hdPockets[i].name == name) {
+        if (this.hdPockets[i] && (this.hdPockets[i].name == name)) {
              this.hdPockets[i] = null;
              this.store.save();
              // TODO: Cleanup pocket addresses?
