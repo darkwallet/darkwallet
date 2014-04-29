@@ -200,7 +200,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           continue;
       }
       if (pocket.mixing) {
-        var balance = identity.wallet.getBalance(i).confirmed;
+        var balance = identity.wallet.getBalance(i*2).confirmed + identity.wallet.getBalance((i*2)+1).confirmed;
         if (balance >= amount) {
             return i;
         }
@@ -388,6 +388,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           if (updatedTx && coinJoin.state != 'sign') {
               this.sendTo(msg.peer, msg.body.id, updatedTx);
           }
+          Port.post('gui', {type: 'mixer', state: coinJoin.state});
           if (coinJoin.state == 'sign') {
               console.log("task requires signing from user!");
           }
