@@ -54,6 +54,18 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
         }]);
     });
 
+    it('is created properly with some empty contact', function() {
+      store.init = function(key, value) {
+          if (key == 'contacts') {
+              return [null]
+          } else {
+              return value;
+          }
+      }
+ 
+      contacts = new Contacts(store, identity);
+      expect(contacts.contacts.length).toBe(1);
+    });
     // it('initializes contacts'); // TODO Delete it in DarkWallet 1.0
 
     it('prepares an address', function() {
@@ -117,8 +129,6 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
       expect(contact.address).toEqual(libBitcoin.address)
     });
     
-    it('finds a contact by address');
-
     it('adds contact', function() {
       contacts.addContact(satoshiForestNew);
       expect(contacts.contacts.length).toBe(1);
@@ -126,10 +136,6 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
       expect(_store).toContain('Satoshi Forest');
     });
     
-    it('adds a contact key');
-    
-    it('sets main key');
-
     it('throws updating a wrong index', function() {
       contacts.addContact(satoshiForestNew);
       contacts.contacts[0].pubKeys = [];
@@ -151,6 +157,64 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
         contacts.updateContact({name: 'Dorian', address: 'unknown'});
       }).toThrow();
     });
+
+    it('finds a contact by address', function() {
+      contacts.addContact(satoshiForestNew);
+      var contact = contacts.findByAddress(satoshiForestAddress);
+      expect(contact.pubKeys[contact.mainKey].address).toBe(satoshiForestAddress);
+      expect(contact.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
+      
+    });
+
+    it('adds a contact key', function() {
+      contacts.addContact(satoshiForestNew);
+      var contact = contacts.findByAddress(satoshiForestAddress);
+      contacts.addContactKey(contact, 'PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
+      expect(contact.pubKeys.length).toBe(2);
+      
+    });
+
+    it('adds a contact with no pubKeys', function() {
+      contacts.addContact(satoshiForestNew);
+
+      var contact = contacts.findByAddress(satoshiForestAddress);
+      delete contact.pubKeys;
+
+      contacts.addContactKey(contact, 'PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
+
+      expect(contact.pubKeys.length).toBe(1);
+    });
+
+    it('update key with no pubkeys', function() {
+      contacts.addContact(satoshiForestNew);
+      var contact = contacts.findByAddress(satoshiForestAddress);
+
+      delete contact.pubKeys;
+
+      expect(function() {
+          contacts.updateKey(contact, 'PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW', 1);
+      }).toThrow();
+      
+    });
+
+
+
+    it('sets the main key', function() {
+      contacts.addContact(satoshiForestNew);
+      var contact = contacts.findByAddress(satoshiForestAddress);
+      expect(contact.hash).toBe("ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3");
+      contacts.addContactKey(contact, 'PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
+      contacts.addContactKey(contact, '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy');
+      contacts.setMainKey(contact, 1);
+      expect(contact.mainKey).toBe(1);
+      expect(contact.hash).toBe("c410cf311c6cda613d9b494164b304fa1dc413494dcc045477c65008361c47d8");
+
+      // key does not exist
+      expect(function() {
+          contacts.setMainKey(contact, 7);
+      }).toThrow();
+    });
+
 
     it('deletes contact', function() {
       contacts.addContact(satoshiForestNew);
