@@ -16,6 +16,7 @@ define([
     './lobby',
     './new_fund',
     './new_wallet',
+    './overview',
     './pocketaction',
     './pocketcreate',
     './send',
