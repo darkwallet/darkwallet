@@ -20,6 +20,9 @@ define(['./module', 'frontend/port'], function (controllers, Port) {
       else if (data.type == 'error') {
           notify.error(data.title || 'gui', data.text);
       }
+      else if (data.type == 'mixer') {
+          notify.note('mixing', data.state);
+      }
       else if (data.type == 'warning') {
           notify.warning('gui', data.text);
       }
