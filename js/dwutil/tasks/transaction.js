@@ -65,9 +65,12 @@ TransactionTasks.processHistory = function(history, height) {
 
         // check if we had some receive task for the outputs
         var taskOut = identity.tasks.search('receive', 'hash', outTxHash);
-        if (taskOut && !taskOut.height) {
-            taskOut.height = tx[2];
-            taskOut.state = tx[2] ? 'confirmed' : 'unconfirmed';
+        if (taskOut) {
+            if (!taskOut.height) {
+                taskOut.height = tx[2];
+                taskOut.state = tx[2] ? 'confirmed' : 'unconfirmed';
+                updated = true;
+            }
             if (TransactionTasks.updateTaskHeight(taskOut, height)) {
                 updated = true;
             }
@@ -75,16 +78,19 @@ TransactionTasks.processHistory = function(history, height) {
         // check if we had some send task for the spends
         if (inTxHash) {
             var taskIn = identity.tasks.search('send', 'hash', inTxHash);
-            if (taskIn && !taskIn.height) {
-                taskIn.height = tx[6];
-                taskIn.state = tx[6] ? 'confirmed' : 'unconfirmed';
+            if (taskIn) {
+                if (!taskIn.height) {
+                    taskIn.height = tx[6];
+                    taskIn.state = tx[6] ? 'confirmed' : 'unconfirmed';
+                    updated = true;
+                }
                 if (TransactionTasks.updateTaskHeight(taskIn, height)) {
                     updated = true;
                 }
             }
         }
     });
-    return true;
+    return updated;
 }
 
 /**
