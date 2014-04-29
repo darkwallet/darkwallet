@@ -1,12 +1,14 @@
 {
   "name": "Dark Wallet",
   "description": "Your keys. Your privacy. Your sovereignty.",
+  "homepage_url": "https://darkwallet.is",
   "version": "0.0.1",
   "manifest_version": 2,
   "icons": {
     "128": "images/icon_128.png"
   },
   "browser_action": {
+    "default_title": "Dark Wallet",
     "default_icon": "images/icon_128.png",
     "default_popup": "html/popup.html"
   },
@@ -21,5 +23,7 @@
       "matches": ["<all_urls>"],
       "js": ["js/frontend/scripts/inject.js"]
     }
-  ]
+  ],
+  "options_page": "html/index.html#/settings",
+  "minimum_chrome_version": "34.0"
 }
