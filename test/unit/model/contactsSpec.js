@@ -70,11 +70,11 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
     });
 
     it('prepares a stealth address', function() {
-      var data = 'vaeUL6NvtpdchLf3UWkWsyqQZR4mwCAephsUrp5nhLDAN2kRcUMVgjdettWEd5DgXWM6tUBHe5vpMfS5L5iu3ChxK3uthRceSobvxYa';
+      var data = 'vJmuN2YqducEXDVX9EAu5HFNfnfDv1fCBhKmhUPTcvaykpM1mvyRXhHFVsJwWa47kGiZU14JrsxgCPsW1bd3pT8arAiTYRd9zhRPAT';
       var key = contacts.prepareAddress(data);
       expect(key.data).toBe(data);
       expect(key.address).toBe(data);
-      expect(key.pubKey).toEqual([3,6,43,123,39,102,203,84,146,220,178,28,26,66,64,231,94,38,228,218,231,209,238,160,62,154,123,54,79,90,109,5,168]);
+      expect(key.pubKey).toEqual([2,159,232,217,203,3,194,39,63,147,143,84,79,107,13,189,71,126,12,131,188,2,154,242,76,126,37,119,160,45,224,171,125]);
       expect(key.type).toBe('stealth');
       
     });
