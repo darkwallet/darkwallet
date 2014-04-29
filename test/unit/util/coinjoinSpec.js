@@ -6,7 +6,12 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
   var initiator
 
   var core = {
-      'foo': 'bar'
+      'foo': 'bar',
+      getCurrentIdentity: function() {
+          return {
+              wallet: {versions: {}}
+          };
+      }
   }
   var myAmount = 99000000;
   var fee = 10000;
