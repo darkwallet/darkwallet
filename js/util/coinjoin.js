@@ -69,6 +69,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       // Needs signing of inputs
       this.tx = remoteTx;
       this.state = 'sign';
+      return remoteTx;
   };
 
   /*
@@ -105,6 +106,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       // Now sign our input(s) against the outputs
       this.tx = remoteTx;
       this.state = 'sign';
+      return remoteTx;
   };
 
   /*

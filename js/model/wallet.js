@@ -551,6 +551,9 @@ Wallet.prototype.signMyInputs = function(inputs, newTx, privKeys) {
         var found = inputs.filter(function(myIn) {
             return (myIn.hash == anIn.hash) && (myIn.index == anIn.index);
         });
+        if (found.length == 0) {
+            continue;
+        }
         if (found.length != 1) {
             throw Error("Duplicate input found!");
         }
@@ -562,7 +565,7 @@ Wallet.prototype.signMyInputs = function(inputs, newTx, privKeys) {
                 console.log("no wallet address for one of our inputs!", output.address);
                 continue;
             }
-            var privKey = new Bitcoin.ECKey(privKeys[walletAddress.index]);
+            var privKey = new Bitcoin.ECKey(privKeys[walletAddress.index], true);
             newTx.sign(i, privKey);
             signed = true;
         } else {

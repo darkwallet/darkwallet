@@ -140,7 +140,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     switch(task.state) {
       case 'announce':
         var id = Bitcoin.CryptoJS.SHA256(Math.random()+'').toString();
-        var msg = Protocol.CoinJoinOpenMsg(id, task.myamount);
+        var msg = Protocol.CoinJoinOpenMsg(id, task.total);
         console.log("[mixer] Announce join");
         var myTx = new Bitcoin.Transaction(task.tx);
         myTx = BtcUtils.fixTxVersions(myTx, this.core.getCurrentIdentity());
@@ -150,7 +150,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         if (!task.start) {
            task.start = Date.now()/1000;
         }
-        this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', BtcUtils.fixTxVersions(myTx.clone(), this.core.getCurrentIdentity()), task.myamount, task.fee);
+        this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', BtcUtils.fixTxVersions(myTx.clone(), this.core.getCurrentIdentity()), task.total, task.fee);
         this.ongoing[id].task = task;
 
         // See if the task is expired otherwise send
@@ -394,6 +394,16 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           // copy coinjoin state to the store
           if (coinJoin.task) {
               coinJoin.task.state = coinJoin.state;
+          }
+          if (coinJoin.state == 'finished') {
+              var onBroadcast = function(_error, _data) {
+                  console.log("broadcasting!", _error, _data);
+              }
+              var walletService = this.core.service.wallet;
+              if (coinJoin.task) {
+                  coinJoin.task.tx = coinJoin.tx.serializeHex();
+                  walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
+              }
           }
           this.checkDelete(msg.body.id);
       }
