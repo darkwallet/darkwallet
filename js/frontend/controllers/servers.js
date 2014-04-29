@@ -6,7 +6,6 @@
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
   controllers.controller('ServersCtrl', ['$scope', function($scope) {
 
-  $scope.servers = [];
   $scope.newServer = {address: '', name: ''};
   $scope.addServerError = '';
   $scope.connectionStatus = 'Disconnected';
@@ -19,17 +18,26 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       }
   };
 
-  // Track wallet status
-  Port.connectNg('wallet', $scope, function(data) {
-    if (data.type == 'ready') {
-      var identity = DarkWallet.getIdentity();
+  var identityLoaded = function(identity) {
       $scope.servers = identity.connections.servers;
       $scope.servicesStatus = DarkWallet.core.servicesStatus;
       $scope.selectedServerIdx = identity.connections.selectedServer;
       $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
+  }
+
+  // Track wallet status
+  Port.connectNg('wallet', $scope, function(data) {
+    if (data.type == 'ready') {
+      var identity = DarkWallet.getIdentity();
+      identityLoaded(identity);
       applyScope();
+
     }
   });
+  var identity = DarkWallet.getIdentity();
+  if (identity) {
+      identityLoaded(identity);
+  }
 
   // Track obelisk status
   Port.connectNg('obelisk', $scope, function(data) {
