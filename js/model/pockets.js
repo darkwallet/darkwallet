@@ -22,8 +22,7 @@ function Pockets(store, identity, wallet) {
  * @private
  */
 Pockets.prototype.initPockets = function(store) {
-    var pockets = store.init('pockets', [
-        {name:'spending'}, {name: 'savings'}, {name: 'business'}]);
+    var pockets = store.init('pockets', [{name:'spending'}, {name: 'savings'}]);
 
     // Init pocket wallets (temporary cache for pockets)
     this.pocketWallets = {};
