@@ -546,32 +546,25 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
 Wallet.prototype.signMyInputs = function(inputs, newTx, privKeys) {
     var txdb = this.identity.txdb;
     var signed = false;
-    for(var i=0; i<newTx.ins; i++) {
+    for(var i=0; i<newTx.ins.length; i++) {
         var anIn = newTx.ins[i];
         var found = inputs.filter(function(myIn) {
-            return (myIn.hash == newIn.hash) && (myIn.index == newIn.index);
+            return (myIn.hash == anIn.hash) && (myIn.index == anIn.index);
         });
-        if (found.length == 1) {
-            continue;
-        }
         if (found.length != 1) {
             throw Error("Duplicate input found!");
         }
-        if (txdb.transactions.hasOwnProperty(anIn.outpoint.hash)) {
-            var prevTxHex = txdb.transactions[anIn.outpoint.hash];
-            var prevTx = new Bitcoin.Transaction(prevTxHex);
-            var output = prevTx.out[anIn.outpoint.index];
+        if (this.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
+            var output = this.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index];
 
-            if (found.length == 1) {
-                var walletAddress = this.getWalletAddress(output.address);
-                if (!walletAddress) {
-                    console.log("no wallet address for one of our inputs!", output.address);
-                    continue;
-                }
-                var privKey = new Bitcoin.ECKey(privKeys[walletAddress.index]);
-                newTx.sign(i, privKey);
-                signed = true;
+            var walletAddress = this.getWalletAddress(output.address);
+            if (!walletAddress) {
+                console.log("no wallet address for one of our inputs!", output.address);
+                continue;
             }
+            var privKey = new Bitcoin.ECKey(privKeys[walletAddress.index]);
+            newTx.sign(i, privKey);
+            signed = true;
         } else {
             console.log("No tx for one of our inputs");
         }
