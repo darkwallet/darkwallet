@@ -71,7 +71,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
       identity.connections.setSelectedServer($scope.selectedServerIdx);
       // Trigger connection
-      var addr = identity.connections.getServer( $scope.selectedServerIdx);
+      var addr = identity.connections.getServer($scope.selectedServerIdx);
       DarkWallet.core.connect(addr);
   };
 
