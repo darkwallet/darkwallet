@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['model/wallet'], function(Wallet) {
+define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
   describe('Wallet model', function() {
     
     var identity, wallet, _store, _private;
@@ -110,6 +110,14 @@ define(['model/wallet'], function(Wallet) {
       });
     });
     
+    it('creates an empty wallet correctly', function() {
+      _store = {mpk: _store.mpk};
+      var myWallet = new Wallet(identity.store, identity);
+      myWallet.initIfEmpty();
+      expect(Object.keys(myWallet.pubKeys).length).toBe(6);
+      expect(Object.keys(myWallet.pubKeys)).toEqual(['0,0', '0,1', '1,0', '2,0', '2,1', '3,0']);
+    });
+
     it('is created properly', function() {
       expect(wallet.identity).toBe(identity);
       expect(wallet.store).toBe(identity.store);
@@ -262,7 +270,21 @@ define(['model/wallet'], function(Wallet) {
         expect(priv.version).toBe(0);
       });
     });
-    
+
+    it('gets a pocket private key', function() {
+      var priv = wallet.getPocketPrivate([0], 'p4ssw0rd');
+
+      expect(priv).toBe("xprv9xJCM5XyE7ZVcYR7MEVPSXXG2pWNtoqKKNiAc54d9hYt1thwKHgbwCqF3tr3kwNVQzyRND5PojJHaDTT62iXfU67m91ZUdYzMqm7uKSjb6J");
+    });
+
+    it('gets a stealth private key', function() {
+      var masterKey = Bitcoin.HDWallet.fromBase58(wallet.getPocketPrivate(0, 'p4ssw0rd'));
+
+      var ephemKey = [2, 41, 140, 192, 149, 205, 83, 114, 37, 106, 0, 164, 123, 46, 88, 38, 11, 252, 215, 149, 236, 188, 150, 165, 89, 64, 40, 218, 206, 26, 13, 49, 27];
+      var stealth = wallet.deriveStealthPrivateKey([0, 's'].concat(ephemKey), masterKey, {privKeys: {}});
+      expect(stealth.getAddress().toString()).toEqual("12qKy5XyAaRvqzgVnECDmAXjjY1ySPC7At");
+    });
+ 
     it('stores private key', function() {
       _store = {};
       _private = {privKeys: {}};
@@ -279,7 +301,7 @@ define(['model/wallet'], function(Wallet) {
       var key = [3, 230, 108, 78, 135, 206, 92, 61, 135, 181, 251, 31, 231, 198, 73, 21, 65, 11, 154, 52, 37, 14, 154, 215, 149, 56, 212, 154, 91, 187, 111, 254, 70];
       
       // unused
-      var walletAddress = wallet.storePublicKey([0,6], key);
+      var walletAddress = wallet.storePublicKey([0,6], key, {type: 'foo', foo: 'bar'});
       expect(walletAddress.index).toEqual([0,6]);
       expect(walletAddress.label).toEqual('unused');
       expect(walletAddress.balance).toEqual(0);
@@ -287,6 +309,8 @@ define(['model/wallet'], function(Wallet) {
       expect(walletAddress.pubKey).toEqual(key);
       expect(walletAddress.address).toEqual('16446XF652ofnwTDEMuEMGu1aNHkg6GrXH');
       expect(walletAddress.stealth).toBeUndefined();
+      expect(walletAddress.type).toBe('foo');
+      expect(walletAddress.foo).toBe('bar');
       expect(wallet.wallet.addresses).toContain('16446XF652ofnwTDEMuEMGu1aNHkg6GrXH');
       
       // change
