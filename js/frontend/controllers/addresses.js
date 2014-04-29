@@ -20,7 +20,10 @@ function (controllers, Bitcoin, DarkWallet) {
    * @return {Object} Wallet address struct
    */
   $scope.generateAddress = function(branchId, n) {
-      return $wallet.generateAddress(branchId, n);
+      var walletAddress = $wallet.generateAddress(branchId, n);
+      $scope.addresses.push(walletAddress);
+      $scope.allAddresses.push(walletAddress);
+      return walletAddress;
   };
 
   /**
