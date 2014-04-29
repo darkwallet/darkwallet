@@ -10,23 +10,17 @@
   </head>
   <body class="popupbody" ng-controller="PopupCtrl">
  <div class="popupcontainer" ng-controller="NotificationsCtrl">
-      <div ng-show="identities.length" ng-cloak class="row">
-        <div class="small-6 columns text-center">
-          <a href="" id="pop-identities"><h3><i class="fa fa-user"></i> {{currentIdentity}}</h3></a>
-        </div>
+      <div ng-show="identities.length" ng-cloak class="row collapse">
         <div class="small-6 columns">
-          <a href="index.html#identities" target="_blank" class="button tiny expand radius">
-            Change identity
-          </a>
-        </div>
-      </div>
-      <div ng-show="identities.length" ng-cloak class="row">
-        <div class="small-12 columns">
-          <a href="index.html#wallet" target="_blank" class="button small radius expand">
+          <a href="index.html#wallet" target="_blank" class="button prefix">
             Open wallet
           </a>
         </div>
+        <div class="small-6 columns">
+          <a href="" class="fa button postfix fa-chevron-circle-down">{{currentIdentity}}</a>
+        </div>
       </div>
+
       <div ng-show="!identities.length" ng-cloak class="row">
         <div class="small-12 columns">
           <a href="index.html#new_wallet" target="_blank" class="button expand">
