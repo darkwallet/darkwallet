@@ -73,8 +73,8 @@ describe('Addresses controller', function() {
     });
     
     it('generates an address', function() {
-      scope.address = [];
-      scope.allAddress = [];
+      scope.addresses = [];
+      scope.allAddresses = [];
       scope.generateAddress(1, 5);
       expect(wallet.generateAddress).toHaveBeenCalledWith(1, 5);
     });
