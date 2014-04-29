@@ -107,7 +107,9 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
           // Need to set the form here
           sendForm = $scope.forms.send;
           $scope.resetSendForm();
-          parseUri(location.hash.split('?')[1].split('=')[1]);
+          if (location.hash.split('?')[1]) {
+              parseUri(location.hash.split('?')[1].split('=')[1]);
+          }
       }
 
       // init scope variables

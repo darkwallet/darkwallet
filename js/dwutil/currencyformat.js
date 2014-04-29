@@ -18,9 +18,9 @@ CurrencyFormatting.asSatoshis = function(amount, unit) {
     var satoshis;
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
     if (unit === 'mBTC') {
-        satoshis = 100000;
+        satoshis = Math.pow(10, 5);
     } else {
-        satoshis = 100000000;
+        satoshis = Math.pow(10, 8);
     }
     return parseInt(BigInteger.valueOf(amount * satoshis).toString());
 }
@@ -32,9 +32,9 @@ CurrencyFormatting.asSatoshis = function(amount, unit) {
 CurrencyFormatting.asBtc = function(satoshis, unit) {
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
     if (unit === 'mBTC') {
-        return satoshis / 100000;
+        return satoshis / Math.pow(10, 5);
     } else {
-        return satoshis / 100000000;
+        return satoshis / Math.pow(10, 8);
     } 
 }
 
@@ -49,7 +49,7 @@ CurrencyFormatting.asFiat = function(satoshis, fiatCurrency) {
 
     var rate = tickerService.rates[fiatCurrency];
     if (rate) {
-      var converted = (satoshis * rate / 100000000).toFixed(decimalDigits);
+      var converted = (satoshis * rate / Math.pow(10, 8)).toFixed(decimalDigits);
       return converted;
     }
 }

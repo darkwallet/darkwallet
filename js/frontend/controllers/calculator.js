@@ -38,7 +38,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (contr
         return;
     }
     firstTime = false;
-    if (!tickerService.rates.hasOwnProperty($scope.settings.fiatCurrency)) {
+    if (!tickerService.rates.hasOwnProperty(fiatCurrency)) {
         $scope.calculator.converted = 'no rates';
         return;
     }
@@ -54,7 +54,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (contr
     if (!$scope.calculator.convertedFocused) {
         return;
     }
-    if (!tickerService.rates.hasOwnProperty($scope.settings.fiatCurrency)) {
+    if (!tickerService.rates.hasOwnProperty(fiatCurrency)) {
         return;
     }
     $scope.calculator.amount = tickerService.fiatToBtc($scope.calculator.converted, currency, fiatCurrency);

@@ -69,27 +69,13 @@ function(Port) {
         }
     };
     TickerService.prototype.btcToFiat = function(amount, currency, fiatCurrency) {
-      var self = this;
-      if (currency === 'mBTC') {
-        amount /= 1000;
-      }
-      var result = amount * self.rates[fiatCurrency];
-      if (!isNaN(result)) {
-        return result.toFixed(2); 
-      }
+      var satoshis = CurrencyFormat.asSatoshis(amount, currency);
+      return CurrencyFormat.asFiat(satoshis, fiatCurrency);
     };
     
     TickerService.prototype.fiatToBtc = function(amount, currency, fiatCurrency) {
-      var self = this;
-      var result = amount / self.rates[fiatCurrency];
-      var decimals = 8;
-      if (currency === 'mBTC') {
-        result *= 1000;
-        decimals = 5;
-      }
-      if (!isNaN(result)) {
-          return result.toFixed(decimals);
-      }
+      var satoshis = amount * CurrencyFormat.asSatoshis(tickerService.rates[fiatCurrency]);
+      return CurrencyFormat.asBtc(satoshis, currency);
     };
 
   return TickerService;
