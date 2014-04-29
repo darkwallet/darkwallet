@@ -484,7 +484,7 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
     recipients.forEach(function(recipient) {
         var address = recipient.address;
         // test for stealth
-        if (address[0] == '6') {
+        if (address[0] == 'v') {
             isStealth = true;
             address = Stealth.addStealth(address, newTx, self.versions.address, self.versions.stealth.nonce);
         }
