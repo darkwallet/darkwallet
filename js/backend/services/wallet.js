@@ -257,6 +257,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
     this.handleInitialConnect = function() {
         console.log("[wallet] initial connect");
         var identity = self.getCurrentIdentity();
+        core.servicesStatus.syncing = 0;
 
         var client = core.getClient();
 
