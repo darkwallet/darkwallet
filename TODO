@@ -1,10 +1,15 @@
 Immediate:
  + Review and stabilize gateway
- + Send:
+ + Wallet
+   - Review balances and unconfirmed change management
+   - Cache address history and resume
+   + Polish stealth support
    + Review sending
+   - Review coinjoin mechanics
  - Lobby system
-   + then finish CoinJoin STARTED
+   * then finish CoinJoin DONE
    - then automatize Multisig
+   - stablish trust and reputation
  - Pocket actions:
    - Move funds to another pocket
    - Move funds to another identity
@@ -13,7 +18,7 @@ Immediate:
    + Select server STARTED
 
 Style:
- - 'Dashboard' for all pockets
+ + 'Dashboard' for all pockets
  + 'Dashboard' for pockets/funds
  + Contacts
    - Web of trust controls
@@ -27,8 +32,6 @@ Style:
    + Modals or something for restore and backup
 
 Other:
- - Cache address history and resume
- + Polishing stealth support
  - Notifications
   * when receiving funds
   - new multisig
