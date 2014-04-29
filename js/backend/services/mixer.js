@@ -143,7 +143,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         var msg = Protocol.CoinJoinOpenMsg(id, task.myamount);
         console.log("[mixer] Announce join");
         var myTx = new Bitcoin.Transaction(task.tx);
-        myTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+        myTx = BtcUtils.fixTxVersions(myTx, this.core.getCurrentIdentity());
         if (!task.timeout) {
            task.timeout = 60;
         }
