@@ -41,7 +41,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
 
   describe('Mixer service', function() {
 
-    var core, mixer, Port, MixerClass, tasks, hdPockets;
+    var core, mixer, Port, MixerClass, tasks, hdPockets, broadcasted;
     var openingMsg, acceptMsg, fullfillMsg, signedMsg;
     var primedGuestCoinJoin, primedHostCoinJoin;
     
@@ -56,12 +56,14 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
 
       tasks = [];      
       hdPockets = [];      
+      broadcasted = [];
 
       core = {
         service: {
             wallet: {
                 fallbacks: [],
-                sendFallback: function(section, task) {core.service.wallet.fallbacks.push([section, task])}
+                sendFallback: function(section, task) {core.service.wallet.fallbacks.push([section, task])},
+                broadcastTx: function(tx, task, cb) {broadcasted.push([tx, task, cb])}
             },
             safe: {
                 get: function(section) { return 'foo'; },
@@ -167,7 +169,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
     });
 
     it('host starts announcing', function() {
-      tasks = [{state: 'announce', myamount: BTC, tx: txInitiatorHex, timeout: 0, fee: mBTC}]
+      tasks = [{state: 'announce', total: BTC, myamount: BTC, tx: txInitiatorHex, timeout: 0, fee: mBTC}]
       var mixer = new MixerClass(core);
       mixer.channel.fingerprint = 'host';
       expect(mixer.name).toEqual('mixer');
@@ -233,7 +235,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
     });
 
     it('host evaluates an accept', function() {
-      tasks = [{state: 'announce', myamount: BTC, tx: txInitiatorHex, timeout: 0, fee: mBTC}]
+      tasks = [{state: 'announce', total: BTC, myamount: BTC, tx: txInitiatorHex, timeout: 0, fee: mBTC}]
       var hostMixer = new MixerClass(core);
       hostMixer.channel.fingerprint = 'host';
 
@@ -293,7 +295,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
       expect(pubKey).toBe("hostPubKey");
       expect(signedMsg.type).toBe("CoinJoin");
       expect(signedMsg.body.id).toBe(fullfillMsg.body.id);
-      expect(signedMsg.body.tx).toBe('01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce6289000000008b4830450221008e37358eb00a61be147a053edec410a868918bec751e86b25fdfcea6bde2d58c022062d3ba65dc9eab99501db5ddeeac5968b56bc115cc7884592c1a9a06755eaccf0141049601c77d65c91de169447fae2e39d6bcbc875a62e4bb3f8525e65f32af79b7e16027f6a44f9df527da837cdb6c71f7439c58a0a08896ff7ed408c053d7f35fa3ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc827121000000008a47304402202b34997e37380ac9e064231d4a6b41cce406b795c4c10cd8c543b1ee7fadcc8202200483b8b57fe324aa22e33c776bf9d1fb82c2ee177fc30ba9ee9aa6144175fe4c0141049601c77d65c91de169447fae2e39d6bcbc875a62e4bb3f8525e65f32af79b7e16027f6a44f9df527da837cdb6c71f7439c58a0a08896ff7ed408c053d7f35fa3ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000');
+      expect(signedMsg.body.tx).toBe('01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce6289000000006b4830450220244a757b5d7c2a119620183a034a25663c7c2c0e93bba7dba6130b870c33c7330221009479856c061eddfd69f43bfd435379bcb6aa993e0d29344cdf278ed1e8e3a3db0121039601c77d65c91de169447fae2e39d6bcbc875a62e4bb3f8525e65f32af79b7e1ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc827121000000006c493046022100dbb4731dabe129986bae2ff7fb2c0bdf10fb2e7baa035bcf89ef0794b4361bb7022100849e00e53cb3057168c3a8d4e2683d6a915273910cafc2ed3bbfa5db221301ce0121039601c77d65c91de169447fae2e39d6bcbc875a62e4bb3f8525e65f32af79b7e1ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000');
 
     });
 
@@ -315,6 +317,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
       // Perform checks
       expect(Object.keys(hostMixer.ongoing).length).toBe(0);
 
+      expect(broadcasted.length).toBe(1);
       expect(hostMixer.channel.posted.length).toBe(0);
       expect(hostMixer.channel.dhposted.length).toBe(1);
 
@@ -324,7 +327,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet'], function(testUtils, Bitco
       expect(pubKey).toBe("guestPubKey");
       expect(finishedMsg.type).toBe("CoinJoin");
       expect(finishedMsg.body.id).toBe(signedMsg.body.id);
-      expect(finishedMsg.body.tx).toBe('01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce6289000000008b483045022100cc483ff972ee7c533032f2331328fa7baf386354b19597f3583aab940998ae2102205873ac28d397968af25306009749b4aaf944a587e288c010d0fe5147fad15312014104cacd99e85920821cd42a0c4369d941db3384f86a3888224d827fcac4e08d318091d0ac734420ad9e8d3d313f29c99241aa6f1b268d8b741411da73d37d52befaffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc827121000000008a473044022079996b473b98da6543346e364616a8fee61b8af2c1090403ef6f9ebc8488413502202d434bccad3a16a2d39d03243518927d78c364cfc045a550e0ae48822b3715a2014104cacd99e85920821cd42a0c4369d941db3384f86a3888224d827fcac4e08d318091d0ac734420ad9e8d3d313f29c99241aa6f1b268d8b741411da73d37d52befaffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000')
+      expect(finishedMsg.body.tx).toBe('01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce6289000000006c493046022100ca45dc488fced095c60c8db0d88d8ea0b4c0787997c13f8ca90a0adc66c5befc022100a769dcd6f56b0d5c1e94980219e23bffc6c03187f64d5674a3dd73020a5bbe27012102cacd99e85920821cd42a0c4369d941db3384f86a3888224d827fcac4e08d3180ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc827121000000006a47304402201e34374069b08cca747c087ef7d7c7e67cdf4c661e28161feeea86adca0402d002204430420b8a333c1c4690eae5ce3b6f1b90702be52aacb46ee07b6f2dd4fc4335012102cacd99e85920821cd42a0c4369d941db3384f86a3888224d827fcac4e08d3180ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000');
 
     });
     
