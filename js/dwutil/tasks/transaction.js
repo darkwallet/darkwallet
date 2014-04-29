@@ -152,6 +152,7 @@ TransactionTasks.processHeight = function(height) {
     if (updated) {
         identity.tasks.store.save();
     }
+    return updated;
 };
 
 
