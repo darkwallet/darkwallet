@@ -61,7 +61,7 @@ define(['testUtils'], function(testUtils) {
     })
 
     it('processes some output history and confirms the task', function() {
-        activeTasks = {receive: [{height:0}]};
+        activeTasks.receive = [{height:0}];
         var history = [["a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329", 0, 287813, 40000, null, null, null]];
 
         var updated = TransactionTasks.processHistory(history, 287814);
@@ -114,7 +114,7 @@ define(['testUtils'], function(testUtils) {
     })
 
     it('processes an incoming row and confirms the task', function() {
-        activeTasks.receive [{height:0, hash: 'foo'}];
+        activeTasks.receive = [{height:0, hash: 'foo'}];
         var row = {height: 300000, hash: 'foo'};
         var task = TransactionTasks.processRow(10, row, 300004);
         
@@ -129,7 +129,7 @@ define(['testUtils'], function(testUtils) {
 
 
     it('processes an incoming row', function() {
-        activeTasks.receive [{height:0, hash: 'foo'}];
+        activeTasks.receive = [{height:0, hash: 'foo'}];
         var row = {height: 0, hash: 'foo'};
         var task = TransactionTasks.processRow(10, row, 300004);
         
