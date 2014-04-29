@@ -17,7 +17,7 @@
       </div>
     </div>
   </div>
-  <div ng-if="pocket.isAll&&settings.advanced" class="row" ng-controller="OverviewCtrl">
+  <div ng-if="pocket.isAll" class="row" ng-controller="OverviewCtrl">
       <div ng-click="selectGridPocket(pocket)" class="small-4 columns topmargin" ng-repeat="pocket in allPockets">
            <div class="row panel radius collapse">
            <h4><a>{{pocket.name}}</a></h4>
