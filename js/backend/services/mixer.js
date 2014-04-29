@@ -143,13 +143,14 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
         var msg = Protocol.CoinJoinOpenMsg(id, task.myamount);
         console.log("[mixer] Announce join");
         var myTx = new Bitcoin.Transaction(task.tx);
+        myTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
         if (!task.timeout) {
            task.timeout = 60;
         }
         if (!task.start) {
            task.start = Date.now()/1000;
         }
-        this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', myTx.clone(), task.myamount, task.fee);
+        this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', BtcUtils.fixTxVersions(myTx.clone()), task.myamount, task.fee);
         this.ongoing[id].task = task;
 
         // See if the task is expired otherwise send

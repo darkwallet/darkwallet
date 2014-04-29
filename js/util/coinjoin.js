@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib'], function(Bitcoin) {
+define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
   /*
    * CoinJoin Class
@@ -23,6 +23,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       // Check there is one output like we want to join
       var amount = this.myAmount;
       var remoteTx = new Bitcoin.Transaction(msg.tx);
+      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
       console.log("fullfill", msg, remoteTx, amount);
       var isOk = false;
       remoteTx.outs.forEach(function(anOut) {
@@ -58,6 +59,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
    */
   CoinJoin.prototype.sign = function(msg) {
       var remoteTx = new Bitcoin.Transaction(msg.tx);
+      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
 
       // Check the original inputs and outputs are there
       if (!this.checkMyInputsOutputs(this.myTx, remoteTx)) {
@@ -91,6 +93,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   CoinJoin.prototype.finishInitiator = function(msg) {
       var myTx = this.tx;
       var remoteTx = new Bitcoin.Transaction(msg.tx);
+      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(myTx, remoteTx)) {
@@ -109,6 +112,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
    */
   CoinJoin.prototype.finishGuest = function(msg) {
       var remoteTx = new Bitcoin.Transaction(msg.tx);
+      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(this.tx, remoteTx)) {
@@ -118,7 +122,6 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       // Check our signatures are there
 
       // Check the inititator signed
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
 
       // We are done here...
 
