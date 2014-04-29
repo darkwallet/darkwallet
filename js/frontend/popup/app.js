@@ -5,6 +5,7 @@
 
 define([
     'angular',
+    'angular-animate',
     'mm.foundation',
     'frontend/popup/controller',
     'frontend/popup/providers',
@@ -18,6 +19,7 @@ define([
 ], function (angular) {
     var app = angular.module('DarkWallet', [
       'mm.foundation',
+      'ngAnimate',
       'DarkWallet.controllers',
       'DarkWallet.filters',
       'DarkWallet.providers',

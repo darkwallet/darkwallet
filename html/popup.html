@@ -35,7 +35,7 @@
         </div>
       </div>
 
-  <dl ng-cloak ng-show="identities.length" class="row tabs collapse">
+  <dl ng-cloak ng-show="connected && identities.length" class="row tabs collapse">
        <dd class="small-4 columns text-center" title="Notifications" ng-class="{active:tab==0}" ng-click="tab=0">
            <a><span class="fa fa-bell"></span></a>
        </dd>
@@ -47,7 +47,7 @@
      </dd>
    </dl>
 
-   <div ng-show="tab==0">
+   <div ng-if="connected && tab==0">
 
 
       <div class="panel notifications" ng-repeat="task in tasks" ng-include="'notifications/'+task.section+'.html'">
@@ -59,9 +59,9 @@
     </div>
  
 
-    <div ng-include src="connected && tab==1 ? 'tools/calculator.html' : false">
+    <div ng-if="connected && tab==1" ng-include src="connected && tab==1 ? 'tools/calculator.html' : false">
     </div>
-    <div ng-include src="connected && tab==2 ? 'tools/quicksend.html' : false">
+    <div ng-if="connected && tab==2" ng-include src="connected && tab==2 ? 'tools/quicksend.html' : false">
     </div>
 
     </div>
