@@ -61,6 +61,8 @@ function DarkWalletService(serviceClasses) {
     this.connect = function(connectUri) {
         var identity = services.wallet.getCurrentIdentity();
         connectUri = connectUri || identity.connections.servers[identity.connections.selectedServer].address || 'wss://gateway.unsystem.net';
+
+        console.log("[main] connecting", connectUri);
         servicesStatus.gateway = 'connecting';
         services.obelisk.connect(connectUri, function(err) {
             if (err) {
