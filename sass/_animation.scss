@@ -1,0 +1,127 @@
+div.tab-scroller { margin-top: 1em; }
+
+div.tab-scroller.totheright.ng-enter,
+div.tab-scroller.totheleft.ng-leave.ng-leave-active { 
+	opacity: 0; 
+	-webkit-transform: translate3d(25%,0,0) scale3d(0.3,1,1); 
+	-webkit-transform-origin: right;
+}
+
+div.tab-scroller.totheright.ng-leave.ng-leave-active,
+div.tab-scroller.totheleft.ng-enter { 
+	opacity: 0; 
+	-webkit-transform: translate3d(-25%,0,0) scale3d(0.3,1,1);
+	-webkit-transform-origin: left;
+}
+
+div.tab-scroller.totheright.ng-enter-active,
+div.tab-scroller.totheleft.ng-enter-active,
+div.tab-scroller.totheleft.ng-leave,
+div.tab-scroller.totheright.ng-leave { 
+	opacity: 1; 
+	-webkit-transform: translate3d(0,0,0) scale3d(1,1,1);
+	position: absolute;
+	width: 97%;
+}
+
+.transactions div.ng-leave-active,
+.transactions div.ng-enter,
+.ng-animate.ng-hide-remove {
+  opacity:0;
+}
+
+.transactions div.ng-enter.ng-enter-active,
+.transactions div.ng-leave,
+.ng-animate.ng-hide-remove.ng-hide-remove-active {
+  opacity:1;
+}
+
+div.scroller.ng-enter {
+	-webkit-animation: moveFromTopFade .7s ease both;
+	-moz-animation: moveFromTopFade .7s ease both;
+	animation: moveFromTopFade .7s ease both;
+}
+
+ 
+div.scroller.ng-enter.ng-enter-active {
+ /* The animation code itself */
+
+}
+div.popuptabs > div.ng-leave,
+div.scroller.ng-leave {
+	position: absolute;
+ 	width: 100%;
+	-webkit-animation: scaleDown .7s ease both;
+	-moz-animation: scaleDown .7s ease both;
+	animation: scaleDown .7s ease both;
+}
+
+div.send-advanced.ng-leave.ng-leave-active,
+div.send-advanced.ng-enter,
+div.popuptabs > div.ng-enter { 
+	-webkit-transform: scale3d(1,0,1); 
+	-webkit-transform-origin: top;
+	opacity: 0;
+}
+
+div.popuptabs { position: absolute; overflow: hidden; width: 100%; }
+
+div.popuptabs > div.ng-enter.ng-enter-active,
+div.send-advanced.ng-enter.ng-enter-active,
+div.send-advanced.ng-leave { -webkit-transform: scale3d(1,1,1); opacity: 1; }
+
+
+.ng-hide-add,
+div.send-advanced.ng-hide,
+span.tooltip.fade,
+.contact-mosaic-square,
+.contact-mosaic-square img, 
+.contact-mosaic-square .contact-label, 
+.contact-mosaic-square .contact-menu, 
+.top-bar a, 
+.tabs dd > a, 
+button.button, 
+a.button, 
+button.square, 
+div.ng-enter, 
+div.ng-leave { @include single-transition(); }
+
+@-webkit-keyframes rotateFoldBottom {
+	to { opacity: 0; -webkit-transform: translateY(100%) rotateX(-90deg); }
+}
+@-moz-keyframes rotateFoldBottom {
+	to { opacity: 0; -moz-transform: translateY(100%) rotateX(-90deg); }
+}
+@keyframes rotateFoldBottom {
+	to { opacity: 0; transform: translateY(100%) rotateX(-90deg); }
+}
+
+@-webkit-keyframes moveFromTopFade {
+	from { opacity: 0.3; -webkit-transform: translateY(-100%); }
+}
+@-moz-keyframes moveFromTopFade {
+	from { opacity: 0.3; -moz-transform: translateY(-100%); }
+}
+@keyframes moveFromTopFade {
+	from { opacity: 0.3; transform: translateY(-100%); }
+}
+
+@-webkit-keyframes rotatePushBottom {
+	to { opacity: 0; -webkit-transform: rotateX(90deg); }
+}
+@-moz-keyframes rotatePushBottom {
+	to { opacity: 0; -moz-transform: rotateX(90deg); }
+}
+@keyframes rotatePushBottom {
+	to { opacity: 0; transform: rotateX(90deg); }
+}
+
+@-webkit-keyframes scaleDown {
+	to { opacity: 0; -webkit-transform: scale(.8); }
+}
+@-moz-keyframes scaleDown {
+	to { opacity: 0; -moz-transform: scale(.8); }
+}
+@keyframes scaleDown {
+	to { opacity: 0; transform: scale(.8); }
+}

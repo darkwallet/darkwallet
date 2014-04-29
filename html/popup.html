@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-csp>
+<html class="popup" ng-csp>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,55 +9,42 @@
     <link rel="stylesheet" href="../css/app.css">
   </head>
   <body class="popupbody" ng-controller="PopupCtrl">
- <div class="popupcontainer" ng-controller="NotificationsCtrl">
-      <div ng-show="identities.length" ng-cloak class="row collapse">
-        <div class="small-6 columns">
-          <a href="index.html#wallet" target="_blank" class="button prefix">
+    <div class="popupcontainer" ng-controller="NotificationsCtrl">
+      <div class="row">
+        <div class="small-12 columns" ng-show="identities.length" ng-cloak>
+          <a href="" class="fa button postfix fa-chevron-circle-down">{{currentIdentity}}</a>
+          <a href="index.html#wallet" target="_blank" class="button small radius expand">
             Open wallet
           </a>
         </div>
-        <div class="small-6 columns">
-          <a href="" class="fa button postfix fa-chevron-circle-down">{{currentIdentity}}</a>
-        </div>
-      </div>
-
-      <div ng-show="!identities.length" ng-cloak class="row">
-        <div class="small-12 columns">
-          <a href="index.html#new_wallet" target="_blank" class="button expand">
+        <div ng-show="!identities.length" ng-cloak class="small-12 columns">
+          <a href="index.html#new_wallet" target="_blank" class="button small radius expand">
             Create wallet
           </a>
         </div>
       </div>
 
-  <dl ng-cloak ng-show="connected && identities.length" class="row tabs collapse">
-       <dd class="small-4 columns text-center" title="Notifications" ng-class="{active:tab==0}" ng-click="tab=0">
-           <a><span class="fa fa-bell"></span></a>
-       </dd>
-     <dd class="small-4 columns text-center" title="Calculator" ng-class="{active:tab==1}" ng-click="tab=1">
-       <a><span class="fa fa-btc"></span> <span class="fa fa-exchange"></span> <span class="fa fa-usd"></span></a>
-     </dd>
-     <dd class="small-4 columns text-center" title="Send" ng-class="{active:tab==2}" ng-click="tab=2">
-       <a><span class="fa fa-rocket"></span></a>
-     </dd>
-   </dl>
-
-   <div ng-if="connected && tab==0">
-
-
-      <div class="panel notifications" ng-repeat="task in tasks" ng-include="'notifications/'+task.section+'.html'">
+      <div class="row panel radius notifications" ng-repeat="task in tasks" ng-include="'notifications/'+task.section+'.html'">
          <!--
            Content in  templates inside html/notifications/
          -->
       </div>
-      <div ng-show="tasks.length==0">Nothing new</div>
-    </div>
- 
 
-    <div ng-if="connected && tab==1" ng-include src="connected && tab==1 ? 'tools/calculator.html' : false">
-    </div>
-    <div ng-if="connected && tab==2" ng-include src="connected && tab==2 ? 'tools/quicksend.html' : false">
-    </div>
+      <dl ng-cloak ng-show="connected && identities.length" class="row tabs collapse">
+       <dd class="" title="Calculator" ng-class="{active:tab==1}" ng-click="tab=1">
+         <a><span class="fa fa-exchange"></span></a>
+       </dd>
+       <dd class="" title="Send" ng-class="{active:tab==2}" ng-click="tab=2">
+         <a><span class="fa fa-rocket"></span></a>
+       </dd>
+      </dl>
+      <div class="popuptabs">
+        <div ng-if="connected && tab==1" ng-include src="connected && tab==1 ? 'tools/calculator.html' : false">
+        </div>
 
+        <div ng-if="connected && tab==2" class="row" ng-include src="connected && tab==2 ? 'tools/quicksendpopup.html' : false">
+        </div>
+      </div>
     </div>
     <script src="../vendors/requirejs/require.js" data-main="../js/frontend/popup/loader.js"></script>
   </body>
