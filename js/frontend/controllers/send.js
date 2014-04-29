@@ -25,6 +25,31 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       $scope.quicksend.next = false;
       $scope.quicksend.password = false;
   };
+  
+  var parseUri = function(uri, recipient) {
+    uri = decodeURIComponent(uri);
+    recipient = recipient || 0;
+    var pars = {};
+    var req; // BIP-0021
+    pars.address = uri.replace('bitcoin:', '').split('?')[0];
+    if (uri.split('?')[1]) {
+      uri.split('?')[1].split('&').forEach(function(parsed) {
+        if(parsed) {
+          pars[parsed.split('=')[0]] = parsed.split('=')[1];
+          if (parsed.split('=')[0].startsWith('req-')) {
+            req = true;
+          }
+        }
+      });
+    }
+    if (req) {
+      notify.warning('URI not supported');
+    } else {
+      sendForm.title = pars.message ? decodeURIComponent(pars.message) : '';
+      sendForm.recipients.fields[0].address = pars.address;
+      sendForm.recipients.fields[0].amount = pars.amount;
+    }
+  };
 
   $scope.updateBtcFiat = function(field) {
       var tickerService = DarkWallet.service.ticker;
@@ -82,6 +107,9 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
           // Need to set the form here
           sendForm = $scope.forms.send;
           $scope.resetSendForm();
+          if (location.hash.split('?')[1]) {
+              parseUri(location.hash.split('?')[1].split('=')[1]);
+          }
       }
 
       // init scope variables
@@ -92,7 +120,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
   };
 
   initIdentity(DarkWallet.getIdentity());
-
+  
   // Identity ready
   Port.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
