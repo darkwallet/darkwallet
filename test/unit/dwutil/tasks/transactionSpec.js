@@ -45,23 +45,31 @@ define(['testUtils'], function(testUtils) {
 
     it('processes a radar event', function() {
         var task = TransactionTasks.processSpend("foo", 10, [{address: 'bla'}]);
-
-        TransactionTasks.processRadar(task, 0.5);
-        expect(task.radar).toBe(0.5);
-        expect(task.progress).toBe(5);
+        
         TransactionTasks.processRadar(task, 0.25);
+        expect(task.state).toBe('sending');
         expect(task.radar).toBe(0.25);
         expect(task.progress).toBe(2.5);
+        TransactionTasks.processRadar(task, 0.5);
+        expect(task.state).toBe('sending');
+        expect(task.radar).toBe(0.5);
+        expect(task.progress).toBe(5);
+        TransactionTasks.processRadar(task, 0.8);
+        expect(task.state).toBe('unconfirmed');
+        expect(task.radar).toBe(0.8);
+        expect(task.progress).toBe(10);
     })
 
-    it('processes some output history', function() {
+    it('processes some output history and confirms the task', function() {
         activeTasks = {receive: [{height:0}]};
         var history = [["a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329", 0, 287813, 40000, null, null, null]];
 
-        var updated = TransactionTasks.processHistory(history, 0);
+        var updated = TransactionTasks.processHistory(history, 287814);
 
         expect(updated).toBe(true);
         expect(activeTasks.receive[0].height).toBe(287813);
+        expect(activeTasks.receive[0].state).toBe('confirmed');
+        expect(activeTasks.receive[0].confirmations).toBe(2);
     })
 
     it('processes some input history', function() {
@@ -105,15 +113,29 @@ define(['testUtils'], function(testUtils) {
         expect(activeTasks.receive[0].height).toBe(300813);
     })
 
-
-    it('processes an incoming row', function() {
-        activeTasks.receive [{height:300000, hash: 'foo'}];
+    it('processes an incoming row and confirms the task', function() {
+        activeTasks.receive [{height:0, hash: 'foo'}];
         var row = {height: 300000, hash: 'foo'};
         var task = TransactionTasks.processRow(10, row, 300004);
         
         expect(task.state).toBe('confirmed');
         expect(task.confirmations).toBe(5);
         expect(task.height).toBe(300000);
+        expect(task.hash).toBe('foo');
+
+        expect(activeTasks.receive.length).toBe(1)
+        expect(activeTasks.send.length).toBe(0)
+    })
+
+
+    it('processes an incoming row', function() {
+        activeTasks.receive [{height:0, hash: 'foo'}];
+        var row = {height: 0, hash: 'foo'};
+        var task = TransactionTasks.processRow(10, row, 300004);
+        
+        expect(task.state).toBe('unconfirmed');
+        expect(task.confirmations).toBe(0);
+        expect(task.height).toBe(0);
         expect(task.hash).toBe('foo');
 
         expect(activeTasks.receive.length).toBe(1)
