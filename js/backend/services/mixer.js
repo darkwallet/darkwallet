@@ -298,7 +298,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
   MixerService.prototype.guestPrivateKeys = function(coinJoin) {
       var identity = this.core.getIdentity();
       var safe = this.core.service.safe;
-      var pocketIndex = this.ongoing[opening.id].pocket;
+      var pocketIndex = coinJoin.pocket;
 
       // Get our password from the safe
       var password = safe.get('mixer', 'pocket:'+pocketIndex);
@@ -310,20 +310,18 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
 
       // Iterate over tx inputs and load private keys
       var privKeys = {};
-      for(var i=0; i<coinJoin.myTx.ins; i++) {
+      for(var i=0; i<coinJoin.myTx.ins.length; i++) {
           var anIn = coinJoin.myTx.ins[i];
-          var pubKeys = anIn.script.extractPubkeys();
+          var output = identity.wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index];
           // we're only adding keyhash inputs for now
-          if (pubKeys.length != 1) {
-              throw Error("Invalid input in our join");
+          if (!output) {
+              throw Error("Invalid input in our join (no output)");
           }
-          var pubKey = new Bitcoin.ECPubKey(pubKeys[0], pubKeys[0].length==33);
-          var address = pubKey.getAddress(identity.wallet.versions.address);
-          var walletAddress = identity.wallet.getWalletAddress(address.toString());
+          var walletAddress = identity.wallet.getWalletAddress(output.address);
 
           // only normal addresses supported for now
-          if (walletAddress.type) {
-              throw Error("Invalid input in our join");
+          if (!walletAddress || walletAddress.type) {
+              throw Error("Invalid input in our join (bad address)");
           }
           // skip if we already got this key
           if (privKeys[walletAddress.index]) {
@@ -334,7 +332,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
           }
           // derive this key
           var change  = walletAddress.index[0]%2 == 1;
-          privKeys[walletAddress.index] = identity.wallet.deriveHDPrivateKey(walletAddress.index.slice(1), change?changeKey:masterKey);
+          privKeys[walletAddress.index] = identity.wallet.deriveHDPrivateKey(walletAddress.index.slice(1), change?changeKey:masterKey).toBytes();
       }
       return privKeys;
   };
@@ -383,7 +381,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin) {
               // Needs signing from user
               var signed = this.requestSignInputs(coinJoin);
               if (signed) {
-                  updatedTx = coinJoin.addSignatures(signed);
+                  updatedTx = coinJoin.addSignatures(coinJoin.tx);
               }
           }
           if (updatedTx && coinJoin.state != 'sign') {
