@@ -27,7 +27,7 @@ define(['util/btc'], function(BtcUtils) {
     // Hex compressed address
     var address2 = '0378d430274f8c5ec1321338151e9f27f4c676a008bdf8638d07c0b6be9ab35c71';
     // Stealth address
-    var address3 = '6aeUMoVHfr47sXWvzVGhhuMHg3qpMZFE115smoBZe4Wi1KbqjmAaK6iatRUpTsgddQH9oTpEbwvtSvonvvx33kVLtJa3VLEG8yXgXwz';
+    var address3 = 'vJmuN2YqducEXDVX9EAu5HFNfnfDv1fCBhKmhUPTcvaykpM1mvyRXhHFVsJwWa47kGiZU14JrsxgCPsW1bd3pT8arAiTYRd9zhRPAT';
     // Master public key
     var address4 = 'xpub6BckLqjjDDbTBLH22dh73dJYDPV1HCyfTJL3TstPkPKLSK44Y7Ah49CjZ1rkRo5YU3zci6xVjd4pg187LUpL9SjUw6Pnk897B24LEwKStsQ';
     // Pubkey hash
@@ -51,25 +51,21 @@ define(['util/btc'], function(BtcUtils) {
       expect(multisig.pubKeys).toEqual(pubkeys); 
     });
     
-    it('Uncompress a public key', function() {
+    it('Uncompresses and compresses a public key', function() {
+      var _address1 = BtcUtils.compressPublicKey(pubkeys[0]);
+      var _address2 = BtcUtils.compressPublicKey(pubkeys[1]);
+      var _address3 = BtcUtils.compressPublicKey(pubkeys[2]);
+      var _address4 = BtcUtils.compressPublicKey(pubkeys[3]);
 
-      var _address1 = BtcUtils.uncompressPublicKey(address1);
-      var _address2 = BtcUtils.uncompressPublicKey(address2);
-      var _address3 = BtcUtils.uncompressPublicKey(address3);
-      var _address4 = BtcUtils.uncompressPublicKey(address4);
+      _address1 = BtcUtils.uncompressPublicKey(_address1);
+      _address2 = BtcUtils.uncompressPublicKey(_address2);
+      _address3 = BtcUtils.uncompressPublicKey(_address3);
+      _address4 = BtcUtils.uncompressPublicKey(_address4);
       
-      expect(_address1).toEqual([ 4, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
-        192, 182, 190, 154, 179, 92, 113, 161, 81, 128, 99, 36, 58, 205, 77, 254, 150, 182, 110, 63, 46, 200, 1, 60, 142, 7, 44, 208, 155, 56, 52,
-        161, 159, 129, 246, 89, 204, 52, 85 ]);
-      expect(_address2).toEqual([ 4, 120, 212, 48, 39, 79, 140, 94, 193, 50, 19, 56, 21, 30, 159, 39, 244, 198, 118, 160, 8, 189, 248, 99, 141, 7,
-        192, 182, 190, 154, 179, 92, 113, 161, 81, 128, 99, 36, 58, 205, 77, 254, 150, 182, 110, 63, 46, 200, 1, 60, 142, 7, 44, 208, 155, 56, 52,
-        161, 159, 129, 246, 89, 204, 52, 85 ]);
-      expect(_address3).toEqual([ 4, 11, 228, 0, 1, 11, 0, 170, 0, 0, 0, 14, 0, 0, 81, 181, 0, 58, 88, 247, 0, 0, 0, 0, 3, 254, 17, 171, 201, 172,
-        252, 21, 0, 24, 116, 126, 14, 56, 184, 191, 252, 43, 186, 86, 207, 16, 227, 250, 77, 247, 8, 151, 131, 107, 36, 209, 175, 112, 194, 229,
-        110, 220, 88, 118, 152 ]);
-      expect(_address4).toEqual([ 4, 0, 0, 68, 0, 10, 73, 12, 107, 12, 1, 158, 101, 215, 14, 75, 196, 41, 57, 50, 202, 232, 214, 49, 157, 0, 0, 151,
-        178, 4, 14, 0, 0, 89, 160, 140, 100, 68, 223, 84, 253, 235, 46, 42, 74, 57, 77, 43, 39, 103, 5, 86, 40, 146, 61, 74, 157, 79, 165, 78, 170,
-        85, 82, 28, 134 ]);
+      expect(_address1).toEqual(pubkeys[0])
+      expect(_address2).toEqual(pubkeys[1])
+      expect(_address3).toEqual(pubkeys[2])
+      expect(_address4).toEqual(pubkeys[3])
     });
     
     it('Decode an address from string to bytes', function() {

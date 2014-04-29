@@ -46,6 +46,11 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
           pubKeys : [ { data : '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy', pubKey : undefined, type : 'address', address : '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy' } ],
           mainKey : 0,
           hash : '97ff6614bac3eab9ee8afdf4e7ced9f790a776c77f5b8c7a1e1b74763f616cd3'
+        },{
+          name : 'libbitcoin team',
+          pubKeys : [ { data : '1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY', pubKey : undefined, type : 'address', address : '1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY' } ],
+          mainKey : 0,
+          hash : '8f22baa6aeb2005c90187e52bedbf2201872bf225d247dc1c09541de2c393de0'
         }]);
     });
 
@@ -65,7 +70,7 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
     });
 
     it('prepares a stealth address', function() {
-      var data = '6aeUL6NvtpdchLf3UWkWsyqQZR4mwCAephsUrp5nhLDAN2kRcUMVgjdettWEd5DgXWM6tUBHe5vpMfS5L5iu3ChxK3uthRceSobvxYa';
+      var data = 'vaeUL6NvtpdchLf3UWkWsyqQZR4mwCAephsUrp5nhLDAN2kRcUMVgjdettWEd5DgXWM6tUBHe5vpMfS5L5iu3ChxK3uthRceSobvxYa';
       var key = contacts.prepareAddress(data);
       expect(key.data).toBe(data);
       expect(key.address).toBe(data);

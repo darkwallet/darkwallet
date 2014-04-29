@@ -19,7 +19,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
   var spendKeyPubBytes = spendKey.getPub().toBytes();
 
   // Address created from the above keys
-  var testAddress = "6aeUQj9EHB2hFowamkWWxfPQRwqUkHwKqve4wYNpuueHfkhSu877zGWgqceDzfyk99q2vRSev8FQAit8797kna96v4rf4tx5KKfrtj7";
+  var testAddress = "vJmxHgVSxtBcoe9JQTz9qKN8ZnKcehm37FWwSfejU4AeBuxB8sX6hVPCh2iUJsAdVpbgRdUd3CUPzUCgDmLne6tccTL379SLKv15iK";
 
   describe('Stealth library', function() {
     it('imports a public component', function() {

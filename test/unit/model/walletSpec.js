@@ -20,7 +20,7 @@ define(['model/wallet'], function(Wallet) {
             "mpk": "xpub6BHYkb4s4V7nq2VaTG2PofTzarLsJGZAgbdmQTUEi35rth35rpzrV19iuBrK1jPjWFBvyoNEc2ib6DAtPuqSMm2MHAuKNRW8NXZgZKn5gir",
             "nOutputs": 0,
             "pubKey": [3, 123, 59, 225, 128, 197, 206, 249, 253, 237, 201, 130, 53, 141, 216, 232, 237, 37, 199, 173, 239, 231, 249, 208, 88, 211, 64, 129, 37, 195, 146, 73, 182],
-            "stealth": "6aeULeRnhpVvyEWt4beammQZURTHoQSuEJxujHmcD6NDMDgGtyA5YvURXrV4uoFYCvH6gmcPZVB66APdYimxhnjYhkpxxRLyfypyrj7"
+            "stealth": "vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyvUfMT7tvsZPS8xhGGfSmoDGQ8AKRyi7oRYhrhLQJRdvdYLh2z2j5k",
           },
           "2": {
             "address": "1Ga7oYeQGEqzv8eKdFs4TY16EErmLARoT",
@@ -30,7 +30,7 @@ define(['model/wallet'], function(Wallet) {
             "mpk": "xpub6BHYkb4s4V7ntMRdkpZeZMAgFBAhpayJuKWb6D8guAVYE7ZBUe2fFMwwYNEc3bCk9avs8yW5FxKohiFdCcaWUMpPuf6wESkpzMbFwxscLMk",
             "nOutputs": 0,
             "pubKey": [2, 35, 181, 36, 236, 224, 182, 149, 11, 178, 18, 146, 253, 173, 244, 241, 78, 198, 155, 254, 180, 33, 78, 31, 227, 88, 141, 36, 244, 42, 235, 171, 115],
-            "stealth": "6aeULeRnhpVvyEWt4beammQZURTHoQSuEJxujHmcD6NDMDgGty9CjXHWaEpCMtX1WVPUq8bmmE2QZdzWRJJapwbu5LkRhfuXFTpnJwL"
+            "stealth": "vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyubqxGCwKCgqXQRzqP3b8nbU8yUnuaazNxAq1ZgmtM6ft6tGWptnkx",
           },
           "0,0": {
             "address": "1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ",
@@ -119,7 +119,7 @@ define(['model/wallet'], function(Wallet) {
       expect(wallet.pubKeys['0,0']).toBeDefined();
       expect(wallet.scanKeys[0].priv).toBeDefined();
       expect(wallet.scanKeys[0].pub).toBeDefined();
-      expect(wallet.pockets.hdPockets).toEqual([{name: 'default'}, {name: 'savings'}]);
+      expect(wallet.pockets.hdPockets).toEqual([{name: 'spending'}, {name: 'savings'}]);
       expect(wallet.pockets.pocketWallets).toEqual({0: {addresses: ['1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ'], balance: 0}, 1: {addresses: ['1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs' ], balance: 0}});
       expect(wallet.mpk).toBe('xpub693Ab9Kv7vQjSJ9fZLKAWjqPUEjSyM7LidCCZW8wGosvZKi3Pf2ijiGe1MDTBmQnpXU795HNb4ebuW95tbLNuAzXndALZpRkRaRCbXDhafA');
       expect(wallet.wallet).toBeDefined();
@@ -134,7 +134,7 @@ define(['model/wallet'], function(Wallet) {
       expect(wallet.fee).toBe(10000); // 0.1 mBTC
       expect(wallet.pubKeys).toEqual({});
       expect(wallet.scanKeys).toEqual([]);
-      expect(wallet.pockets.hdPockets).toEqual([{name: 'default'}, {name: 'savings'}]);
+      expect(wallet.pockets.hdPockets).toEqual([{name: 'spending'}, {name: 'savings'}]);
       expect(wallet.pockets.pocketWallets).toEqual({0: {addresses: [], balance: 0}, 1: {addresses: [], balance: 0}});
       expect(wallet.mpk).toBeFalsy();
       expect(wallet.wallet).toBeDefined();
@@ -150,7 +150,7 @@ define(['model/wallet'], function(Wallet) {
     });
     
     it('creates a pocket', function() {
-      var pockets = [{name: 'default'}, {name: 'savings'}, {name: 'Spendings'}];
+      var pockets = [{name: 'spending'}, {name: 'savings'}, {name: 'Spendings'}];
       wallet.pockets.createPocket('Spendings');
       expect(wallet.pockets.hdPockets).toEqual(pockets);
       expect(_store.pockets).toEqual(pockets);
@@ -168,17 +168,17 @@ define(['model/wallet'], function(Wallet) {
     });
     
     it('gets a pocket', function() {
-      wallet.pockets.hdPockets = [{name: 'default'}, {name: 'savings'}, {name: 'Spendings'}];
+      wallet.pockets.hdPockets = [{name: 'spending'}, {name: 'savings'}, {name: 'Spendings'}];
       expect(wallet.pockets.getPocket('savings')).toBe(wallet.pockets.hdPockets[1]);
     });
     
     it('deletes a pocket', function() {
-      var pockets = [{name: 'default'}, {name: 'savings'}];
+      var pockets = [{name: 'spending'}, {name: 'savings'}];
       expect(function() {
         wallet.pockets.deletePocket('incorrect');
       }).toThrow();
       
-      wallet.pockets.deletePocket('default');
+      wallet.pockets.deletePocket('spending');
       expect(wallet.pockets.hdPockets).toEqual([null, {name: 'savings'}]);
       expect(_store.pockets).toEqual([null, {name: 'savings'}]);
       expect(Object.keys(wallet.pockets.pocketWallets).length).toBe(2);
@@ -297,7 +297,7 @@ define(['model/wallet'], function(Wallet) {
       // pocket
       walletAddress = wallet.storePublicKey([0], key);
       expect(walletAddress.label).toEqual('pocket');
-      expect(walletAddress.stealth).toBe('6aeULeRnhpVvyEWt4beammQZURTHoQSuEJxujHmcD6NDMDgGtyAMQb5MEFQEjC141B5kwducdtYHayJkQ2K1obGXXLQ4JP3uEbB3UPY');
+      expect(walletAddress.stealth).toBe('vJmyLmVSTiTQYdMnXGe1SasS5sbkUMEqNqbkCFdFWWB1NxvyxGN4Ku9D2mxy9VA9KGXuFNpz8idDrtpAGPeu5qzWbgHmrmdDAKnYZH');
     });
     
     it('gets address', function() {
@@ -449,7 +449,7 @@ define(['model/wallet'], function(Wallet) {
         var recipients = [{amount: 200000, address: juiceRapNews}];
         var tx = wallet.prepareTx(0, recipients, change, 10000);
         
-        var recipients = [{amount: 200000, address: '6aeULeRnhpVvyEWt4beammQZURTHoQSuEJxujHmcD6NDMDgGtyA5YvURXrV4uoFYCvH6gmcPZVB66APdYimxhnjYhkpxxRLyfypyrj7'}];
+        var recipients = [{amount: 200000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyvUfMT7tvsZPS8xhGGfSmoDGQ8AKRyi7oRYhrhLQJRdvdYLh2z2j5k'}];
         var tx2 = wallet.prepareTx(0, recipients, change, 10000);
 
         // Stealth addresses have the same values than a normal address
@@ -489,8 +489,8 @@ define(['model/wallet'], function(Wallet) {
         var tx = wallet.prepareTx(0, recipients, change, 10000);
         
         recipients = [
-          {amount: 100000, address: '6aeULeRnhpVvyEWt4beammQZURTHoQSuEJxujHmcD6NDMDgGtyA5YvURXrV4uoFYCvH6gmcPZVB66APdYimxhnjYhkpxxRLyfypyrj7'},
-          {amount: 100000, address: '6aeULeRnhpVvyEWt4beammQZURTHoQSuEJxujHmcD6NDMDgGty9CjXHWaEpCMtX1WVPUq8bmmE2QZdzWRJJapwbu5LkRhfuXFTpnJwL'}
+          {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyvUfMT7tvsZPS8xhGGfSmoDGQ8AKRyi7oRYhrhLQJRdvdYLh2z2j5k'},
+          {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyubqxGCwKCgqXQRzqP3b8nbU8yUnuaazNxAq1ZgmtM6ft6tGWptnkx'}
         ];
         var tx4 = wallet.prepareTx(0, recipients, change, 10000);
         
@@ -512,7 +512,7 @@ define(['model/wallet'], function(Wallet) {
         var tx = wallet.prepareTx(0, recipients, change, 10000);
         
         recipients = [
-          {amount: 100000, address: '6aeULeRnhpVvyEWt4beammQZURTHoQSuEJxujHmcD6NDMDgGtyA5YvURXrV4uoFYCvH6gmcPZVB66APdYimxhnjYhkpxxRLyfypyrj7'},
+          {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyubqxGCwKCgqXQRzqP3b8nbU8yUnuaazNxAq1ZgmtM6ft6tGWptnkx'},
           {amount: 100000, address: satoshiForest}
         ];
         var tx5 = wallet.prepareTx(0, recipients, change, 10000);
