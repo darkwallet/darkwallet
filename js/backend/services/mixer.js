@@ -150,7 +150,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         if (!task.start) {
            task.start = Date.now()/1000;
         }
-        this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', BtcUtils.fixTxVersions(myTx.clone()), task.myamount, task.fee);
+        this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', BtcUtils.fixTxVersions(myTx.clone(), this.core.getCurrentIdentity()), task.myamount, task.fee);
         this.ongoing[id].task = task;
 
         // See if the task is expired otherwise send
