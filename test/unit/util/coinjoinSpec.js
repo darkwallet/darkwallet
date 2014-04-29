@@ -164,7 +164,7 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
     it('guest starts to process', function() {
         console.log("guest starts process");
         var res = guest.process(msg2.body);
-        expect(res).toBeUndefined();
+        expect(res).toBeDefined();
         expect(guest.state).toBe('sign');
     });
 
@@ -187,7 +187,7 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
 
         // TODO: not yet checking signatures so it will pass
         var res = initiator.process(msg3.body);
-        expect(res).toBeUndefined();
+        expect(res).toBeDefined();
         expect(initiator.state).toBe('sign');
     });
 
