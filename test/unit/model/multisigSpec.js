@@ -58,5 +58,20 @@ define(['model/multisig'], function(Multisig) {
       expect(multisig.addFund(fund)).toEqual(walletAddress);
       expect(multisig.store.save).toHaveBeenCalled();
     });
+
+    it('adds an incorrect fund', function() {
+      expect(function() {
+          multisig.addFund({});
+      }).toThrow();
+    });
+
+    it('inits an incorrect wallet address', function() {
+      var res = multisig.initWalletAddress({name: 'foo'});
+      expect(res).toBeUndefined();
+
+      res = multisig.initWalletAddress({address: 'foo'});
+      expect(res).toBeUndefined();
+    });
+
   });
 });
