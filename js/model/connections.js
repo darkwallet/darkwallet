@@ -60,8 +60,11 @@ Connections.prototype.setAlwaysConnect = function(alwaysConnect) {
     this.store.save();
 };
 
-Connections.prototype.getServer = function(idx) {
-  return this.servers[idx];
+/**
+ * Get the currently selected server
+ */
+Connections.prototype.getSelectedServer = function() {
+  return this.servers[this.selectedServer];
 }
 
 return Connections;

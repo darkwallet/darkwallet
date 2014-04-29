@@ -55,7 +55,7 @@
           </div>
           <div class="row">
             <div class="small-12 columns">
-              <select class="select-list" size="50" ng-model="selectedServerIdx" ng-options="key as value.name for (key, value) in servers">
+              <select class="select-list" size="50" ng-model="selectedServerIdx" ng-options="key as value.name for (key, value) in servers track by $index">
               </select>
               <a ng-click="connectServer()" class="button small radius expand">Connect to selected server</a>
               <h6>{{connectionStatus}} to {{selectedServer.name}} @ {{selectedServer.address}}</h6>
