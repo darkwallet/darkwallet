@@ -20,6 +20,7 @@ define(['./module', 'jsqrcode'], function (directives) {
         var video = $window.document.createElement('video');
         video.setAttribute('width', width);
         video.setAttribute('height', height);
+        video.setAttribute('style', '-moz-transform:rotateY(-180deg);-webkit-transform:rotateY(-180deg);transform:rotateY(-180deg);');
         var canvas = $window.document.createElement('canvas');
         canvas.setAttribute('id', 'qr-canvas');
         canvas.setAttribute('width', width);
