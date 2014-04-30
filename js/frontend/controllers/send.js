@@ -252,12 +252,12 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       var onSendTimeout = function() {
           if (sendTimeout == 6) {
               timeoutId = undefined;
-              onUpdateRadar(radarCache.radar, radarCache, 'Timeout broadcasting, total: ' + radarCache.radar.toFixed(2) + '%');
+              onUpdateRadar(radarCache.radar, radarCache, 'Timeout broadcasting, total: ' + (radarCache.radar*100).toFixed(2) + '%');
           } else {
               timeoutId = $timeout(function(){onSendTimeout()}, 10000);
               sendTimeout+=1;
               if ([1, 3, 5].indexOf(sendTimeout) != -1) {
-                  notify.note('Broadcasting going slow', radarCache.radar.toFixed(2) + '%');
+                  notify.note('Broadcasting going slow', (radarCache.radar*100).toFixed(2) + '%');
               }
           }
       }
