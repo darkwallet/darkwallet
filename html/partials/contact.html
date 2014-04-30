@@ -22,7 +22,7 @@
         <a ng-click="contactSection='addresses'">Addresses</a>
     </div>
     <div class="small-2 columns">
-        <a ng-click="contactSection='trust'">Trust</a>
+        <a ng-show="settings.advanced" ng-click="contactSection='trust'">Trust</a>
     </div>
     <!--<div class="small-2 columns">
         <a ng-click="contactSection='history'">History</a>
@@ -55,7 +55,7 @@
       </div>
       <div class="row collapse">
           <p ng-show="vars.contact.pubKeys.length>1">This peer has <a ng-click="contactSection='addresses'">{{vars.contact.pubKeys.length}} keys</a>.</p>
-          <p>You have no <a ng-click="contactSection='trust'">trust defined</a> with this contact.</p>
+          <p ng-show="settings.advanced" >You have no <a ng-click="contactSection='trust'">trust defined</a> with this contact.</p>
       </div>
       <div class="row radius">
       </div>
@@ -129,7 +129,7 @@
 	    <a href="#contacts" class="fa fa-arrow-left button small radius"> Back</a>
         </div>
 	<div class="small-2 medium-2 columns text-right">
-            <a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button postfix small radius">Watch</a>
+            <a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button disabled postfix small radius">Watch</a>
         </div>
 	<div class="small-2 medium-2 columns text-right">
             <a href="" ng-click="modals.open('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button radius alert fa fa-trash-o"> Delete contact</a>

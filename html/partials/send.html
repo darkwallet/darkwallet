@@ -74,7 +74,7 @@
               <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!forms.send.mixing, 'fa-check-square-o': forms.send.mixing}" class="fa button postfix radius">{{forms.send.mixing?'CoinJoin mixing enabled':'CoinJoin mixing disabled'}}</a>
 
               <h6>Escrow address (arbitration)</h6>
-              <input ng-model="forms.send.escrow" type="text" class="radius"  btc-address />
+              <input ng-model="forms.send.escrow" type="text" class="radius" disabled  btc-address />
             </div>
         </div>
       </div>

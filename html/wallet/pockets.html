@@ -19,9 +19,9 @@
       <li>
       <a class="button small expand radius" ng-click="newMultiSig()">New Multisig fund</a>
       </li>
-      <li class="divider"></li>
-      <li>Watch-only pockets</li>
-      <li><a href="">My smartphone</a></li>
-      <li><a href="">My cold wallet</a></li>
-      <li><a class="button small expand radius">Add watch-only pocket</a></li>
+      <li ng-show="settings.advanced" class="divider"></li>
+      <li ng-show="settings.advanced">Watch-only pockets</li>
+      <li ng-show="settings.advanced"><a href="">My smartphone</a></li>
+      <li ng-show="settings.advanced"><a href="">My cold wallet</a></li>
+      <li ng-show="settings.advanced"><a class="button small expand radius">Add watch-only pocket</a></li>
     </ul>

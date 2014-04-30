@@ -38,6 +38,7 @@ define(function() {
           }
       */
       }
+      /*
       chrome.contextMenus.create({
           title: "Import identity",
           contexts: ["selection"],
@@ -48,6 +49,7 @@ define(function() {
           contexts: ["editable"],
           onclick: pasteIdentity
       });
+      */
   }
   return CtxMenusService;
 
