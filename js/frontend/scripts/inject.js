@@ -29,7 +29,7 @@ document.body.addEventListener('click', function(e) {
     elem = elem.parentNode;
   }
   if (elem && elem.tagName == 'A' && typeof elem.href == 'string' && elem.href.indexOf('bitcoin:') == 0) {
-    window.open(uri + encodeURIComponent(elem.href));
+    chrome.runtime.sendMessage({ type: 'newTab', url: uri + encodeURIComponent(elem.href) });
     e.preventDefault();
   }
 }, false);
