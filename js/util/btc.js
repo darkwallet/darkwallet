@@ -171,7 +171,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         } else if (address.length == 66) {
             // Hex compressed address
             bytes = convert.hexToBytes(address);
-        } else if (address.length >= 102 && address[0] == 'v') {
+        } else if (address.length >= 102 && (address[0] == 'v' || address[0] == 'w')) {
             // Stealth address
             var parsed = Stealth.parseAddress(address);
             // Take the first spendKey otherwise the scanKey

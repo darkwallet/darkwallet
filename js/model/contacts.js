@@ -68,7 +68,7 @@ Contacts.prototype.prepareAddress = function(data) {
 
   if (BtcUtils.isAddress(data, this.validAddresses)) {
       newKey.address = data;
-      if (data[0] == 'v') {
+      if (data[0] == this.identity.wallet.versions.stealth.prefix) {
           newKey.type = 'stealth';
       }
   } else if (pubKey) {

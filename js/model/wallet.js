@@ -41,10 +41,10 @@ Wallet.prototype.initVersions = function(network) {
     };
     switch(network) {
         case 'mainnet':
-            this.versions.stealth = {address: Stealth.version, nonce: Stealth.nonceVersion};
+            this.versions.stealth = {address: Stealth.version, nonce: Stealth.nonceVersion, prefix: 'v'};
             break;
         case 'testnet':
-            this.versions.stealth = {address: Stealth.testnet, nonce: Stealth.nonceVersion};
+            this.versions.stealth = {address: Stealth.testnet, nonce: Stealth.nonceVersion, prefix: 'w'};
             break;
     }
 }
@@ -484,7 +484,7 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
     recipients.forEach(function(recipient) {
         var address = recipient.address;
         // test for stealth
-        if (address[0] == 'v') {
+        if (address[0] == self.version.stealth.prefix) {
             isStealth = true;
             address = Stealth.addStealth(address, newTx, self.versions.address, self.versions.stealth.nonce);
         }
