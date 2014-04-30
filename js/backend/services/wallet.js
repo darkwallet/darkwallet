@@ -343,7 +343,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             task.state = 'finished';
 
             var hash = Bitcoin.convert.bytesToHex(tx.getHash());
-            var spendTask = TransactionTasks.processSpend(hash, task.myamount, task.recipients);
+            var spendTask = TransactionTasks.processSpend(hash, task.total, task.recipients);
             core.service.badge.setItems(self.getCurrentIdentity());
             self.broadcastTx(tx, spendTask, function(err, data) {console.log(err,data)});
         } else {
@@ -369,7 +369,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             } else if (broadcast) {
                 // Broadcast and add task
                 var txHash = Bitcoin.convert.bytesToHex(newTx.getHash());
-                var task = TransactionTasks.processSpend(txHash, metadata.myamount, metadata.recipients);
+                var task = TransactionTasks.processSpend(txHash, metadata.total, metadata.recipients);
                 core.service.badge.setItems(identity);
                 self.broadcastTx(newTx, task, callback);
             } else {
