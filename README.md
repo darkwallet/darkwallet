@@ -45,7 +45,7 @@ Contact:
 Use the following resources for communication with "the team"
 
 * [Mailing list](https://lists.unsystem.net/cgi-bin/mailman/listinfo/darkwallet)
-* Irc: freenode #darkwallet
+* IRC: #darkwallet (freenode)
 * [Wiki](https://wiki.unsystem.net)
 
 Support Us!
@@ -57,7 +57,8 @@ Support our development efforts by donating to the darkwallet multisig:
 
 --
 
-> I went to the store the other day to buy a bolt for our front door, for as I told the storekeeper, the governor was coming here. "Aye," said he, "and the Legislature too." "Then I will take two bolts," said I. He said that there had been a steady demand for bolts and locks of late, for our protectors were coming.``
+> I went to the store the other day to buy a bolt for our front door, for as I told the storekeeper, the governor was coming here. "Aye," said he, "and the Legislature too." "Then I will take two bolts," said I. He said that there had been a steady demand for bolts and locks of late, for our protectors were coming.
+>
 > -- <cite>Henry David Thoreau</cite>
 
 - - -
