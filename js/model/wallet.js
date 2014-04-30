@@ -773,13 +773,13 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
     var matches = [];
     var pocketId = pocketIndex*2;
     var scanKey = this.getScanKey(pocketId);
+    var spendKey = self.getAddress([pocketId]).pubKey;
     stealthArray.forEach(function(stealthData) {
         var ephemKey = Bitcoin.convert.hexToBytes(stealthData[0]);
         var address = stealthData[1];
         var txId = stealthData[2];
 
         // for now checking just the first stealth address derived from pocket 0 "default"
-        var spendKey = self.getAddress([pocketId]).pubKey;
         var myKeyBytes = Stealth.uncoverPublic(scanKey.toBytes(), ephemKey, spendKey);
         // Turn to address
         var myKeyHash = Bitcoin.crypto.hash160(myKeyBytes);
