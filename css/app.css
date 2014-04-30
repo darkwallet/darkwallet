@@ -4461,9 +4461,6 @@ th.hide-for-touch {
 #toast-container > div.ng-enter {
   -webkit-animation: moveFromTopFade 0.7s ease both; }
 
-div.tab-scroller {
-  margin-top: 1em; }
-
 div.tab-scroller.totheright.ng-enter, div.tab-scroller.totheleft.ng-leave.ng-leave-active {
   opacity: 0;
   -webkit-transform: translate3d(25%, 0, 0) scale3d(0.3, 1, 1);
@@ -4614,6 +4611,9 @@ span.tooltip.fade.in {
 div.container {
   padding-top: 45px;
   height: 100%; }
+
+div.tab-scroller {
+  padding-top: 1em; }
 
 div.scroller {
   background: black;
