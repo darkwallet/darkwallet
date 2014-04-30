@@ -2,7 +2,7 @@
 
 define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat'],
 function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
-  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', function($scope, $window, notify, modals, $wallet) {
+  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', function($scope, $window, notify, modals, $wallet, $timeout) {
   
   var sendForm = $scope.forms.send;
 
@@ -118,24 +118,28 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
     }
   });
 
-  var onUpdateRadar = function(radar, task) {
+  var onUpdateRadar = function(radar, task, warning) {
       var progressBar = $window.document.getElementById('send-progress');
       var button = $window.document.getElementById('send-button');
 
       task.radar = radar;
 
       // Check if we're finished
-      if (radar >= 0.75) {
+      if (radar >= 0.75 || warning) {
           // if the controller is still here and button still active, reset
           if (button && button.classList.contains('working')) {
-              notify.success('Transaction finished propagating');
+              if (warning) {
+                  notify.warning(warning);
+              } else {
+                  notify.success('Transaction finished propagating');
+              }
               button.classList.remove('working');
               $scope.resetSendForm();
               if (!$scope.$$phase) {
                   $scope.$apply();
               };
           }
-          return;
+          return true;
       }
 
       // Proceed if radar is updating
@@ -215,16 +219,29 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       // callback waiting for radar feedback
       var isBroadcasted = false;
       var radarCache = {radar: 0};
+      var sendTimeout = 0;
+      var timeoutId;
+
       var onBroadcast = function(error, task) {
           console.log("broadcast feedback", error, task);
+          if (sendTimeout==6) {
+              return;
+          }
           if (error) {
               var errorMessage = error.message || ''+error;
               notify.error("Error broadcasting", errorMessage);
               sendForm.sending = false;
+              if (timeoutId) {
+                  $timeout.cancel(timeoutId);
+                  timeoutId = undefined;
+              }
           } else if (task && task.type == 'signatures') {
               notify.note('Signatures pending', amountNote)
           } else if (task && task.type == 'radar') {
-              onUpdateRadar(task.radar || 0, radarCache);
+              if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {
+                  $timeout.cancel(timeoutId);
+                  timeoutId = undefined;
+              }
               if (!isBroadcasted) {
                   notify.success('Transaction sent', amountNote);
                   isBroadcasted = true;
@@ -232,6 +249,22 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
           }
       };
 
+      var onSendTimeout = function() {
+          if (sendTimeout == 6) {
+              timeoutId = undefined;
+              onUpdateRadar(radarCache.radar, radarCache, 'Timeout broadcasting, total: ' + radarCache.radar.toFixed(2) + '%');
+          } else {
+              timeoutId = $timeout(function(){onSendTimeout()}, 10000);
+              sendTimeout+=1;
+              if ([1, 3, 5].indexOf(sendTimeout) != -1) {
+                  notify.note('Broadcasting going slow', radarCache.radar.toFixed(2) + '%');
+              }
+          }
+      }
+      // Timeout to watch out over sending time
+      timeoutId = $timeout(function(){onSendTimeout()}, 10000);
+
+      // Sign and send if it worked out
       var walletService = DarkWallet.service.wallet;
       walletService.signTransaction(metadata.tx, metadata, password, onBroadcast, true);
   };
