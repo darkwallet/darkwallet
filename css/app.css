@@ -4612,6 +4612,10 @@ div.container {
   padding-top: 45px;
   height: 100%; }
 
+div.cardflipper {
+  margin-top: 4em;
+  -webkit-perspective: 800px; }
+
 div.tab-scroller {
   padding-top: 1em; }
 
@@ -4875,7 +4879,9 @@ span.meter {
   padding: 5px 0 0 5px; }
 
 .seed {
-  font-size: 120%; }
+  font-size: 120%;
+  overflow: visible;
+  text-align: center; }
 
 .transaction-icon.green {
   color: #27ae60; }
@@ -4988,6 +4994,14 @@ div.chat-text {
 .lobbyback {
   background: url(../images/virtual.svg) top/cover no-repeat;
   -webkit-box-shadow: inset -0 0px 130px black; }
+
+div.wizard {
+  background: #222;
+  border-radius: 3px;
+  padding: 2em; }
+
+form.send {
+  background: url(../images/send.svg) center/contain no-repeat; }
 
 .setback > * {
   opacity: 0.8; }
