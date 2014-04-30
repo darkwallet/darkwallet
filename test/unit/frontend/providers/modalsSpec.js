@@ -1,73 +1,92 @@
 'use strict';
 
-define(['angular-mocks', 'frontend/providers/modals'], function(mocks) {
+define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
   describe('Modals provider', function() {
 
-    var modals, $modal, $timeout, $window, notify, sounds, element, _params;
+    var modals, $modal, $timeout, $window, notify, sounds, element, _params, settings;
     
-    beforeEach(mocks.module("DarkWallet.providers"));
-    beforeEach(function() {
-      mocks.module(function($provide) {
-        // Override services
-        $provide.value('$modal', {});
-        $provide.value('$timeout', function(callback) {callback();});
-        $provide.value('notify', {});
-        $provide.value('sounds', {});
+    beforeEach(function(done) {
+      settings = {
+        currency: 'BTC'
+      };
+
+      testUtils.stub('darkwallet', {
+        getIdentity: function() {
+          return {settings: settings};
+        }
+      });
+    
+      testUtils.loadWithCurrentStubs('frontend/providers/modals', function() {
+        mocks.module("DarkWallet.providers");
+        
+        mocks.module(function($provide) {
+          // Override services
+          $provide.value('$modal', {});
+          $provide.value('$timeout', function(callback) {callback();});
+          $provide.value('notify', {});
+          $provide.value('sounds', {});
+        });
+        
+        mocks.inject(['modals', '$modal', '$timeout', '$window', 'notify', 'sounds',
+          function(_modals_, _$modal_, _$timeout_, _$window_, _notify_, _sounds_) {
+          modals = _modals_;
+          $modal = _$modal_;
+          $timeout = _$timeout_;
+          $window = _$window_;
+          notify = _notify_;
+          sounds = _sounds_;
+
+          $modal.open = function(params) {
+            _params = params;
+            var scope = {};
+            var modalInstance = {
+              close: function() {},
+              dismiss: function() {}
+            };
+            var vars = params.resolve.vars();
+            params.controller(scope, modalInstance, vars);
+            scope.ok();
+            scope.cancel();
+            scope.onError();
+            return {
+              opened: {
+                then: function(callback) {
+                  callback();
+                }
+              },
+              result: {
+                then: function(success, failed) {
+                  success('result ' + params.windowClass);
+                  failed('reason');
+                }
+              }
+            };
+          };
+
+          element = {focus: function() {}};
+          $window.document.querySelectorAll = function(selector) {
+            if (selector === ".modal-ask-password [autofocus]") {
+              return [element];
+            }
+            return [];
+          };
+
+          sounds.play = function() {};
+          spyOn(sounds, 'play');
+
+          notify.error = function() {};
+          notify.warning = function() {};
+          spyOn(notify, 'error');
+          spyOn(notify, 'warning');
+
+          done();
+        }]);
       });
     });
-    beforeEach(mocks.inject(['modals', '$modal', '$timeout', '$window', 'notify', 'sounds',
-      function(_modals_, _$modal_, _$timeout_, _$window_, _notify_, _sounds_) {
-      modals = _modals_;
-      $modal = _$modal_;
-      $timeout = _$timeout_;
-      $window = _$window_;
-      notify = _notify_;
-      sounds = _sounds_;
-      
-      $modal.open = function(params) {
-        _params = params;
-        var scope = {};
-        var modalInstance = {
-          close: function() {},
-          dismiss: function() {}
-        };
-        var vars = params.resolve.vars();
-        params.controller(scope, modalInstance, vars);
-        scope.ok();
-        scope.cancel();
-        scope.onError();
-        return {
-          opened: {
-            then: function(callback) {
-              callback();
-            }
-          },
-          result: {
-            then: function(success, failed) {
-              success('result ' + params.windowClass);
-              failed('reason');
-            }
-          }
-        };
-      };
-      
-      element = {focus: function() {}};
-      $window.document.querySelectorAll = function(selector) {
-        if (selector === ".modal-ask-password [autofocus]") {
-          return [element];
-        }
-        return [];
-      };
-      
-      sounds.play = function() {};
-      spyOn(sounds, 'play');
-      
-      notify.error = function() {};
-      notify.warning = function() {};
-      spyOn(notify, 'error');
-      spyOn(notify, 'warning');
-      
-    }]));
+    
+    afterEach(function() {
+      testUtils.reset();
+    })
     
     it('opens a modal', function() {
       modals.open('template');
@@ -106,6 +125,16 @@ define(['angular-mocks', 'frontend/providers/modals'], function(mocks) {
         expect(vars.field.amount).toBeUndefined();
         modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?foo=bar&amount=1', vars);
         expect(vars.field.amount).toBe('1');
+      });
+      
+      it('scans an address and the amount in millibitcoins', function() {
+        settings.currency = 'mBTC';
+        modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?amount=1', vars);
+        expect(vars.field.amount).toBe('1000');
+        modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?foo=bar', vars);
+        expect(vars.field.amount).toBeUndefined();
+        modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?foo=bar&amount=1', vars);
+        expect(vars.field.amount).toBe('1000');
       });
     });
     

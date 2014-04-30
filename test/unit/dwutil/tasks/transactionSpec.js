@@ -31,6 +31,10 @@ define(['testUtils'], function(testUtils) {
       });
 
     });
+    
+    afterEach(function() {
+      testUtils.reset();
+    });
 
     it('processes a spend', function() {
         var task = TransactionTasks.processSpend("foo", 10, [{address: 'bla'}]);

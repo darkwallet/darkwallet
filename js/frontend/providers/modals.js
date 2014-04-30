@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'util/btc'], function (providers, BtcUtils) {
+define(['./module', 'util/btc', 'darkwallet'], function (providers, BtcUtils, DarkWallet) {
 
 providers.factory('modals', ['$modal', '$window', '$timeout', 'notify', 'sounds', function($modal, $window, $timeout, notify, sounds) {
 
@@ -72,6 +72,9 @@ var modals = {
     if (pars === null) {
       notify.warning('URI not supported');
       return;
+    }
+    if (pars.amount && DarkWallet.getIdentity().settings.currency == 'mBTC') {
+      pars.amount = String(pars.amount * 1000);
     }
     if (Array.isArray(vars.field)) {
       vars.field.push({address: pars.address, amount: pars.amount});
