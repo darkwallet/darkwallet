@@ -5,38 +5,34 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   // function to receive stealth information
   $scope.receiveStealth = function() {
       notify.note("stealth", "initializing");
-      notify.progress.start();
-      
-      var client = DarkWallet.getClient();
-      var stealth_fetched = function(error, results) {
+
+      // Reset last fetched stealth so we get stealth history from the beginning.
+      var identity = DarkWallet.getIdentity();
+      identity.wallet.store.set('lastStealth', 0);
+
+
+      // Callback for detected addresses
+      var onStealth = function(error, addresses) {
           if (error) {
-              console.log("error on stealth");
-              notify.error("stealth", error);
+              notify.error("Error fetching stealth", error.message||error);
               //write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
               return;
           }
-          console.log("fetching stealth", results);
-          var addresses;
+          // Add all addresses to scope
           var identity = DarkWallet.getIdentity();
-          try {
-              addresses = identity.wallet.processStealth(results);
-          } catch (e) {
-              notify.error("stealth", e.message);
-              return;
-          }
           if (addresses && addresses.length) {
-              var walletService = DarkWallet.service.wallet;
               addresses.forEach(function(walletAddress) {
                   // TODO: should be added to scope in response to some event
                   $wallet.addToScope(walletAddress);
-                  walletService.initAddress(walletAddress);
               })
               notify.success("stealth ok", addresses.length + " payments detected");
           } else {
               notify.success("stealth ok");
           }
       }
-      client.fetch_stealth([0,0], stealth_fetched, 0);
+
+      // Fetch stealth using the wallet service
+      DarkWallet.service.wallet.fetchStealth(DarkWallet.service.wallet.currentHeight, onStealth);
   };
 
 }]);

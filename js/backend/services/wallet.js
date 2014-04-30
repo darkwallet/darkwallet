@@ -232,6 +232,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                    console.log("[wallet] error fetching block header", err, height)
                 }
             });
+            self.fetchStealth(height);
         }
     }
 
@@ -328,6 +329,52 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 callback(err);
             }
         });
+    };
+
+    /*
+     * Fetch stealth
+     */
+    this.fetchStealth = function(height, cb) {
+        var identity = core.getIdentity();
+
+        // Callback
+        var onStealthReceived = function(error, results) {
+            if (error) {
+                console.log("[wallet] Error retrieving stealth data", error);
+                cb ? cb(error, null) : null;
+                return;
+            }
+            console.log("[wallet] Processing stealth");
+            // process stealth information
+            var addresses;
+            try {
+                addresses = identity.wallet.processStealth(results);
+            } catch (e) {
+                console.log("[wallet] Error processing stealth data", e);
+                cb ? cb(e, null) : null;
+                return;
+            }
+            console.log("[wallet] Stealth detected " + addresses.length + ' addresses from ' + results.length + ' results');
+
+            // Everything went all right, set lastStealth and initialize on the network
+            identity.wallet.store.set('lastStealth', height);
+            identity.wallet.store.save();
+
+            // Initialize addresses on the wallet
+            addresses.forEach(self.initAddress);
+
+            // Run the callback with results
+            cb ? cb(null, addresses) : null;
+        }
+
+        // Request fetching the stealth using the client
+        var client = core.getClient();
+        var fromHeight = identity.wallet.store.get('lastStealth') || 0;
+
+        if (height > fromHeight) {
+            console.log("Requesting stealth from block " + fromHeight);
+            client.fetch_stealth([0,0], onStealthReceived, fromHeight);
+        }
     };
 
     /*
