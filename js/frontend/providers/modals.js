@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'util/btc', 'darkwallet'], function (providers, BtcUtils, DarkWallet) {
+define(['./module', 'util/btc', 'darkwallet', 'dwutil/currencyformat'], function (providers, BtcUtils, DarkWallet, CurrencyFormat) {
 
 providers.factory('modals', ['$modal', '$window', '$timeout', 'notify', 'sounds', function($modal, $window, $timeout, notify, sounds) {
 
@@ -74,7 +74,8 @@ var modals = {
       return;
     }
     if (pars.amount && DarkWallet.getIdentity().settings.currency == 'mBTC') {
-      pars.amount = String(pars.amount * 1000);
+      pars.amount = CurrencyFormat.asSatoshis(pars.amount, 'BTC');
+      pars.amount = CurrencyFormat.asBtc(pars.amount, 'mBTC').toString();
     }
     if (Array.isArray(vars.field)) {
       vars.field.push({address: pars.address, amount: pars.amount});

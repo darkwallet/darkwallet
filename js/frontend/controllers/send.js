@@ -32,9 +32,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
     if (!pars) {
       notify.warning('URI not supported');
     } else {
-      if ($scope.settings.currency === 'mBTC') {
-        pars.amount *= 1000;
-      } 
+      pars.amount = CurrencyFormat.asSatoshis(pars.amount, 'BTC');
+      pars.amount = CurrencyFormat.asBtc(pars.amount);
       sendForm.title = pars.message ? decodeURIComponent(pars.message) : '';
       sendForm.recipients.fields[recipient].address = pars.address;
       sendForm.recipients.fields[recipient].amount = pars.amount;
