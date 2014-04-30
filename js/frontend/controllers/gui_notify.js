@@ -22,6 +22,9 @@ define(['./module', 'frontend/port'], function (controllers, Port) {
       }
       else if (data.type == 'mixer') {
           notify.note('mixing', data.state);
+          if (!$scope.$$phase) {
+              $scope.$apply();
+          }
       }
       else if (data.type == 'warning') {
           notify.warning('gui', data.text);
