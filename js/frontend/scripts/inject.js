@@ -24,7 +24,7 @@ document.body.appendChild(btn);
  */
 document.body.addEventListener('click', function(e) {
   var elem = e.target;
-  if (elem.tagName == 'A' && typeof elem.href == 'string' && elem.href.startsWith('bitcoin:')) {
+  if (elem.tagName == 'A' && typeof elem.href == 'string' && elem.href.indexOf('bitcoin:') == 0) {
     window.open('chrome-extension://' + chrome.runtime.id + "/html/index.html#/send?uri=" + encodeURIComponent(elem.href));
     e.preventDefault();
   }
