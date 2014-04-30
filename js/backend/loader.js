@@ -24,7 +24,8 @@ require.config({
     'async': "../vendors/async/lib/async",
     'convert': "../vendors/wrappers/convert",
     'crypto-js': "../vendors/wrappers/cryptojs",
-    
+    'big': "../vendors/big.js/big.min",
+
     'bitcoinjs-lib': "../vendors/bitcoinjs-lib/bitcoinjs",
     'sjcl-real': "../vendors/sjcl/sjcl",
     'darkwallet_gateway': "../vendors/darkwallet_gateway/client/gateway",

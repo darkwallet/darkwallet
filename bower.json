@@ -41,6 +41,7 @@
     "identicon": "https://github.com/stewartlord/identicon.js.git",
     "angular-xeditable": "~0.1.8",
     "async": "~0.7.0",
-    "angular-moment": "~0.7.0"
+    "angular-moment": "~0.7.0",
+    "big.js": "~2.5.0"
   }
 }

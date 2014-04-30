@@ -79,6 +79,8 @@ Desktop.ini
 !/vendors/moment/min/
 /vendors/moment/min/*
 !/vendors/moment/min/moment-with-langs.min.js
+/vendors/big.js/*
+!/vendors/big.js/big.min.js
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*
