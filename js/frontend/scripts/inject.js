@@ -22,10 +22,14 @@ document.body.appendChild(btn);
  * 
  * Instead, we listen the click event on links that have bitcoin uris.
  */
+var uri = 'chrome-extension://' + chrome.runtime.id + "/html/index.html#/send?uri=";
 document.body.addEventListener('click', function(e) {
   var elem = e.target;
-  if (elem.tagName == 'A' && typeof elem.href == 'string' && elem.href.startsWith('bitcoin:')) {
-    window.open('chrome-extension://' + chrome.runtime.id + "/html/index.html#/send?uri=" + encodeURIComponent(elem.href));
+  while (elem && elem.tagName != 'A') {
+    elem = elem.parentNode;
+  }
+  if (elem && elem.tagName == 'A' && typeof elem.href == 'string' && elem.href.indexOf('bitcoin:') == 0) {
+    chrome.runtime.sendMessage({ type: 'newTab', url: uri + encodeURIComponent(elem.href) });
     e.preventDefault();
   }
 }, false);

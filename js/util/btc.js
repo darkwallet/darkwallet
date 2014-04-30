@@ -143,7 +143,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         uri.split('?')[1].split('&').forEach(function(parsed) {
           if(parsed) {
             pars[parsed.split('=')[0]] = parsed.split('=')[1];
-            if (parsed.split('=')[0].startsWith('req-')) {
+            if (parsed.split('=')[0].indexOf('req-') == 0) {
               req = true;
             }
           }

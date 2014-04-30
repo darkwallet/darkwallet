@@ -13,6 +13,7 @@ require(['backend/port',
          'backend/services/safe',
          'backend/services/badge',
          'backend/services/notifier',
+         'backend/services/content',
          'backend/services/ctxmenus'],
 function(Port) {
 
