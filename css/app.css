@@ -4959,7 +4959,9 @@ span.meter {
   padding: 0; }
 
 .qr-address {
-  word-wrap: break-word; }
+  word-wrap: break-word;
+  color: black;
+  margin: 1em 2em 2em 2em; }
 
 #logo {
   margin: -2px 5px 0 -5px; }
