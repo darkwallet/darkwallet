@@ -1,7 +1,7 @@
 'use strict';
 
-define(['backend/port', 'dwutil/currencyformat'],
-function(Port, CurrencyFormat) {
+define(['backend/port'],
+function(Port) {
     function TickerService(core) {
       var self = this;
       // Some scope variables
