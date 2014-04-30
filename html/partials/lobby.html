@@ -52,12 +52,12 @@
           <div class="row">
             <div class="small-12 columns">
               <face title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></face> {{comms.name}}
-              <a class="fa fa-refresh" title="New" ng-click="newTempIdentity()"></a>
+              <a class="fa fa-refresh" title="Change cloack" ng-click="newTempIdentity()"></a>
             </div>
           </div>
           <h5>Peers</h5>
           <div ng-repeat="peer in peers track by $index">
-            <span ng-click="selectPeer(peer)"><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.name}}</span> <a class="fa fa-link" ng-click="pairPeer(peer)" title="pair"></a>
+            <span ng-click="selectPeer(peer)"><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.name}}</span> <a class="fa fa-link" ng-click="pairPeer(peer)" title="Send identity information"></a>
           </div>
       </div>
 
