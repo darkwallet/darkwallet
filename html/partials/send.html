@@ -23,12 +23,12 @@
       <div class="small-12 columns">
         <div class="row collapse">
           <div class="small-2 columns">
-            <input ng-hide="field.isFiatShown" ng-disabled="forms.send.sending" type="text" class="prefix radius" ng-model="field.amount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
+            <input ng-hide="field.isFiatShown" ng-disabled="forms.send.sending" type="text" class="prefix radius" ng-model="field.amount" ng-change="validateSendForm();" placeholder="Enter amount" />
             <input ng-show="field.isFiatShown" ng-disabled="forms.send.sending" type="text" class="prefix radius" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="Enter amount" />
           </div>
 
           <div class="small-1 columns">
-            <a class="button postfix" tooltip-append-to-body="true" btn-checkbox tooltip="click to switch to {{!field.isFiatShown? settings.fiatCurrency : settings.currency}}" ng-model="field.isFiatShown">{{field.isFiatShown? settings.fiatCurrency : settings.currency}}</a>
+            <a class="button postfix" tooltip-append-to-body="true" tooltip="click to switch to {{!field.isFiatShown? settings.fiatCurrency : settings.currency}}" ng-click="updateBtcFiat(field); field.isFiatShown =! field.isFiatShown">{{field.isFiatShown? settings.fiatCurrency : settings.currency}}</a>
           </div>
 
           <div class="small-1 columns">
