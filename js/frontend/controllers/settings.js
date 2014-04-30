@@ -44,6 +44,9 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
   $scope.defaultFeeChanged = function() {
       if (!isNaN($scope.defaultFee)) {
           identity.wallet.setDefaultFee(CurrencyFormat.asSatoshis($scope.defaultFee));
+          if ($scope.forms.send) {
+              $scope.forms.send.fee = $scope.defaultFee;
+          }
       }
   };
   $scope.storeSettings = function() {
