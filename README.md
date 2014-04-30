@@ -5,7 +5,7 @@ We love Bitcoin, and the power it gives for trade and social connections. There 
 
 We want to start with a simple premise: Bitcoin in your browser. We want a beautiful experience with privacy features built in by default.
 
-This wallet will serve as a platform or a starting codebase to deliver a high quality Bitcoin that serves you, the users.
+This wallet will serve as a platform or a starting codebase to deliver a high quality Bitcoin that serves the people.
 
 Running
 -----------
@@ -53,7 +53,7 @@ Support Us!
 
 Support our development efforts by donating to the darkwallet multisig:
 
- [31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy](bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?message=DarkWallet%20team%20donation)
+ 31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy
 
 --
 
