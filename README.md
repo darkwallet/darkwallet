@@ -10,7 +10,7 @@ This wallet will serve as a platform or a starting codebase to deliver a high qu
 Running
 -----------
 
-You can load the extension into chrome by going to extensions, enabling development mode and clicking the "Load uncompressed extension" button.
+You can load the extension into Chrome by going to _Extensions_, enabling _Development mode_ and clicking the _Load uncompressed extension_ button.
 
 Pre-Alpha!!!
 -----------
@@ -26,7 +26,7 @@ You are *very welcome* to test, just remember the following:
 
 We have been following this procedure since the wallet is under development without problems.
 
-Remember: Your funds are safe as long as you *don't lose your seed* to restore later.
+*Remember*: Your funds are safe as long as you *don't lose your seed* to restore later.
 
 Other than that we're not making many guarantees.
 
@@ -35,32 +35,31 @@ Development
 -----------
 You are welcome to participate in the development by contributing or forking the code at:
 
-https://github.com/darkwallet/darkwallet
+<https://github.com/darkwallet/darkwallet>
 
-More info about how to develop on the HACKING.md document.
+More info about how to develop on the [HACKING.md](HACKING.md) document.
 
 Contact:
 -----------
 
 Use the following resources for communication with "the team"
 
-* Mailing list: https://lists.unsystem.net/cgi-bin/mailman/listinfo/darkwallet
+* [Mailing list](https://lists.unsystem.net/cgi-bin/mailman/listinfo/darkwallet)
 * Irc: freenode #darkwallet
-* Wiki: wiki.unsystem.net
+* [Wiki](https://wiki.unsystem.net)
 
 Support Us!
 ------------
 
 Support our development efforts by donating to the darkwallet multisig:
 
- 31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy
+ [31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy](bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?message=DarkWallet%20team%20donation)
 
 --
 
-I went to the store the other day to buy a bolt for our front door, for as I told the storekeeper, the governor was coming here. "Aye," said he, "and the Legislature too." "Then I will take two bolts," said I. He said that there had been a steady demand for bolts and locks of late, for our protectors were coming.
-
- - Henry David Thoreau
+> I went to the store the other day to buy a bolt for our front door, for as I told the storekeeper, the governor was coming here. "Aye," said he, "and the Legislature too." "Then I will take two bolts," said I. He said that there had been a steady demand for bolts and locks of late, for our protectors were coming.``
+> -- <cite>Henry David Thoreau</cite>
 
 - - -
 
-- unsystem dev
+DarkWallet Team
