@@ -23,7 +23,7 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
       wallet: {
         versions: {
           address: 0,
-          stealth: {address: Stealth.version},
+          stealth: {address: Stealth.version, prefix: "v"},
           p2sh: 5
         }
       }
