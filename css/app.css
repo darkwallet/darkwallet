@@ -4883,6 +4883,9 @@ span.meter {
 .transaction-icon.red {
   color: #c92441; }
 
+.pocket-square {
+  min-height: 120px; }
+
 .contact-mosaic .panel:hover, div.notifications .panel:hover {
   background: #27ae60;
   cursor: pointer; }
@@ -4955,8 +4958,8 @@ span.meter {
   overflow: hidden;
   padding: 0; }
 
-.modal-show-qr h3, .modal-show-qr h6 {
-  color: black; }
+.qr-address {
+  word-wrap: break-word; }
 
 #logo {
   margin: -2px 5px 0 -5px; }
