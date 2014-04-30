@@ -764,14 +764,14 @@ Wallet.prototype.getIdentityKey = function(n) {
 
 
 /**
- * Process stealth array from obelisk.
+ * Process stealth array from obelisk, on one pocket.
  * The array comes 
  * @param {Object[]} stealthArray DOCME
  */
-Wallet.prototype.processStealth = function(stealthArray, pocketId) {
+Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
     var self = this;
     var matches = [];
-    var pocketId = pocketId ? pocketId*2 : 0;
+    var pocketId = pocketIndex*2;
     var scanKey = this.getScanKey(pocketId);
     stealthArray.forEach(function(stealthData) {
         var ephemKey = Bitcoin.convert.hexToBytes(stealthData[0]);
@@ -802,6 +802,22 @@ Wallet.prototype.processStealth = function(stealthArray, pocketId) {
         }
     });
     return matches;
+};
+
+/**
+ * Process stealth array from obelisk for all pockets.
+ * The array comes 
+ * @param {Object[]} stealthArray DOCME
+ */
+Wallet.prototype.processStealth = function(stealthArray) {
+    var self = this;
+    var results = [];
+    this.pockets.hdPockets.forEach(function(pocket, i) {
+        if (pocket) {
+            results = results.concat(self.processPocketStealth(stealthArray, i));
+        }
+    });
+    return results;
 };
 
 return Wallet;
