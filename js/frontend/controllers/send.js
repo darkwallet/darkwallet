@@ -27,27 +27,14 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
   };
   
   var parseUri = function(uri, recipient) {
-    uri = decodeURIComponent(uri);
     recipient = recipient || 0;
-    var pars = {};
-    var req; // BIP-0021
-    pars.address = uri.replace('bitcoin:', '').split('?')[0];
-    if (uri.split('?')[1]) {
-      uri.split('?')[1].split('&').forEach(function(parsed) {
-        if(parsed) {
-          pars[parsed.split('=')[0]] = parsed.split('=')[1];
-          if (parsed.split('=')[0].startsWith('req-')) {
-            req = true;
-          }
-        }
-      });
-    }
-    if (req) {
+    var pars = BtcUtils.parseURI(uri);
+    if (!pars) {
       notify.warning('URI not supported');
     } else {
       sendForm.title = pars.message ? decodeURIComponent(pars.message) : '';
-      sendForm.recipients.fields[0].address = pars.address;
-      sendForm.recipients.fields[0].amount = pars.amount;
+      sendForm.recipients.fields[recipient].address = pars.address;
+      sendForm.recipients.fields[recipient].amount = pars.amount;
     }
   };
 

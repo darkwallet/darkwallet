@@ -63,7 +63,9 @@ define(['angular-mocks', 'frontend/providers/modals'], function(mocks) {
       spyOn(sounds, 'play');
       
       notify.error = function() {};
+      notify.warning = function() {};
       spyOn(notify, 'error');
+      spyOn(notify, 'warning');
       
     }]));
     
@@ -113,6 +115,14 @@ define(['angular-mocks', 'frontend/providers/modals'], function(mocks) {
       modals.onQrOk('13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd', vars);
       expect(vars.field.length).toBe(2);
       expect(vars.field[1].address).toBe('13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd');
+    });
+    
+    it('does not fill when there is a req- field', function() {
+      var vars = {field: []};
+      modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?amount=9&req-some=thing');
+      expect(vars.field.address).toBeUndefined();
+      expect(vars.field.amount).toBeUndefined();
+      expect(notify.warning).toHaveBeenCalled();
     });
     
     it('manages qr cancel', function() {

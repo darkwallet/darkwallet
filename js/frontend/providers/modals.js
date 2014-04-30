@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module'], function (providers) {
+define(['./module', 'util/btc'], function (providers, BtcUtils) {
 
 providers.factory('modals', ['$modal', '$window', '$timeout', 'notify', 'sounds', function($modal, $window, $timeout, notify, sounds) {
 
@@ -67,28 +67,17 @@ var modals = {
   },
   
   onQrOk: function(data, vars) {
-    var address, amount;
     sounds.play('keygenEnd');
-    if (data.slice(0,8) === 'bitcoin:') {
-      data = data.slice(8);
-    }
-    if (data.indexOf('?') < 0) {
-      address = data;
-    } else {
-      address = data.slice(0, data.indexOf('?'));
-      data = data.slice(data.indexOf('?') + 1).split('&');
-      data.forEach(function(keyvalue) {
-        keyvalue = keyvalue.split('=');
-        if(keyvalue[0] === 'amount') {
-          amount = keyvalue[1];
-        }
-      });
+    var pars = BtcUtils.parseURI(data);
+    if (pars === null) {
+      notify.warning('URI not supported');
+      return;
     }
     if (Array.isArray(vars.field)) {
-      vars.field.push({address: address, amount: amount});
+      vars.field.push({address: pars.address, amount: pars.amount});
     } else {
-      vars.field.address = address;
-      vars.field.amount = amount;
+      vars.field.address = pars.address;
+      vars.field.amount = pars.amount;
     }
   },
   
