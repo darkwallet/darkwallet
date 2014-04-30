@@ -83,19 +83,6 @@ define(['testUtils'], function(testUtils) {
       });
     });
     
-    it('converts btc to fiat', function() {
-      expect(ticker.btcToFiat(100, 'BTC', 'EUR')).toBe('36000.00');
-      expect(ticker.btcToFiat(100, 'mBTC', 'EUR')).toBe('36.00');
-      
-      expect(ticker.btcToFiat(100, 'BTC', 'USD')).toBeUndefined();
-    });
-    
-    it('converts fiat to btc', function() {
-      expect(ticker.fiatToBtc(100, 'BTC', 'EUR')).toBe('0.27777778');
-      expect(ticker.fiatToBtc(100, 'mBTC', 'EUR')).toBe('277.77778');
-      
-      expect(ticker.fiatToBtc(100, 'BTC', 'USD')).toBeUndefined();
-    });
   });
 });
 

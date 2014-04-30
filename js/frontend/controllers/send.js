@@ -52,14 +52,13 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
   };
 
   $scope.updateBtcFiat = function(field) {
-      var tickerService = DarkWallet.service.ticker;
       var identity = DarkWallet.getIdentity();
       var currency = identity.settings.currency;
       var fiatCurrency = identity.settings.fiatCurrency;
       if (field.isFiatShown) {
-          field.amount = tickerService.fiatToBtc(field.fiatAmount, currency, fiatCurrency);
+          field.amount = CurrencyFormat.fiatToBtc(field.fiatAmount, currency, fiatCurrency);
       } else {
-          field.fiatAmount = tickerService.btcToFiat(field.amount, currency, fiatCurrency);
+          field.fiatAmount = CurrencyFormat.btcToFiat(field.amount, currency, fiatCurrency);
       }
   };
 

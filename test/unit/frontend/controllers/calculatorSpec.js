@@ -28,7 +28,7 @@ function (mocks, testUtils) {
         service: {
           ticker: {
             rates: {
-              EUR: 90
+              EUR: 80
             },
             btcToFiat: function(amount, currency, fiatCurrency) {
               if (currency == 'USD') {
@@ -72,7 +72,7 @@ function (mocks, testUtils) {
       scope.$apply(function() {
         scope.calculator.amount = 40;
       });
-      expect(scope.calculator.converted).toBe(3200);
+      expect(scope.calculator.converted).toBe('3200.00');
     });
     
     it('converts fiat to crypto', function() {
@@ -81,7 +81,7 @@ function (mocks, testUtils) {
         scope.calculator.converted = 40;
         scope.calculator.convertedFocused = true;
       });
-      expect(scope.calculator.amount).toBe(0.5);
+      expect(scope.calculator.amount).toBe('0.50000000');
     });
   });
 });

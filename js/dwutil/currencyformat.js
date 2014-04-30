@@ -54,6 +54,35 @@ CurrencyFormatting.asFiat = function(satoshis, fiatCurrency) {
     }
 }
 
+CurrencyFormatting.btcToFiat = function(amount, currency, fiatCurrency) {
+    if (FiatCurrencies[fiatCurrency] === undefined) {
+      return;
+    }
+    var tickerService = DarkWallet.service.ticker;
+    var decimalDigits = FiatCurrencies[fiatCurrency].decimal_digits;
+
+    if (currency === 'mBTC') {
+      amount /= 1000;
+    }
+    var result = amount * tickerService.rates[fiatCurrency];
+    if (!isNaN(result)) {
+      return result.toFixed(decimalDigits); 
+    }
+};
+
+CurrencyFormatting.fiatToBtc = function(amount, currency, fiatCurrency) {
+    var tickerService = DarkWallet.service.ticker;
+    var result = amount / tickerService.rates[fiatCurrency];
+    var decimals = 8;
+    if (currency === 'mBTC') {
+      result *= 1000;
+      decimals = 5;
+    }
+    if (!isNaN(result)) {
+        return result.toFixed(decimals);
+    }
+};
+
 /**
  * Format satoshis into user unit
  */

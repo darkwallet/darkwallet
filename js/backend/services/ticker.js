@@ -68,15 +68,6 @@ function(Port, CurrencyFormat) {
             });
         }
     };
-    TickerService.prototype.btcToFiat = function(amount, currency, fiatCurrency) {
-      var satoshis = CurrencyFormat.asSatoshis(amount, currency);
-      return CurrencyFormat.asFiat(satoshis, fiatCurrency);
-    };
-    
-    TickerService.prototype.fiatToBtc = function(amount, currency, fiatCurrency) {
-      var satoshis = amount * CurrencyFormat.asSatoshis(tickerService.rates[fiatCurrency]);
-      return CurrencyFormat.asBtc(satoshis, currency);
-    };
 
   return TickerService;
 

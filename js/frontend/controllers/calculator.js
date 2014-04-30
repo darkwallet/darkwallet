@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (controllers, DarkWallet, Port, FiatCurrencies) {
+define(['./module', 'darkwallet', 'frontend/port', 'util/fiat', 'dwutil/currencyformat'], function (controllers, DarkWallet, Port, FiatCurrencies, CurrencyFormat) {
   controllers.controller('CalculatorCtrl', ['$scope', function($scope) {
   var firstTime = true;
   $scope.calculator = {
@@ -42,7 +42,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (contr
         $scope.calculator.converted = 'no rates';
         return;
     }
-    $scope.calculator.converted = tickerService.btcToFiat($scope.calculator.amount, currency, fiatCurrency);
+    $scope.calculator.converted = CurrencyFormat.btcToFiat($scope.calculator.amount, currency, fiatCurrency);
   });
 
   // Convert FIAT to CRYPTO
@@ -57,7 +57,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'], function (contr
     if (!tickerService.rates.hasOwnProperty(fiatCurrency)) {
         return;
     }
-    $scope.calculator.amount = tickerService.fiatToBtc($scope.calculator.converted, currency, fiatCurrency);
+    $scope.calculator.amount = CurrencyFormat.fiatToBtc($scope.calculator.converted, currency, fiatCurrency);
   });
 
 }]);
