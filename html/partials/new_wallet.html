@@ -1,6 +1,6 @@
 <div class="row cardflipper">
-  <div ng-if="step==1">
-    <form class="medium-8 medium-centered columns wizard text-center" ng-submit="nextStep()">
+  <div ng-if="step==1" class="medium-8 medium-centered columns wizard text-center">
+    <form ng-submit="nextStep()">
       <img src="../images/logo.svg" style="width:60%; height:60%" />
       <div class="row">
         <h6>Thanks for testing Dark Wallet! Keep in mind this is alpha software. Use at your own risk!</h6>
@@ -13,8 +13,8 @@
       </div>
     </form>
   </div>
-  <div ng-if="step==2">
-    <form class="medium-8 medium-centered columns wizard text-center" ng-submit="nextStep()">
+  <div ng-if="step==2" class="medium-8 medium-centered columns wizard text-center">
+    <form ng-submit="nextStep()">
       <img src="../images/wallet.svg" style="width:50%; height:50%" />
       <div class="row topmargin">
         <div class="small-6 columns">
@@ -26,8 +26,8 @@
       </div>
     </form>
   </div>
-  <div ng-if="step==3">
-    <form class="medium-8 medium-centered columns wizard text-center" ng-submit="passwordSubmit()">
+  <div ng-if="step==3" class="medium-8 medium-centered columns wizard text-center">
+    <form ng-submit="passwordSubmit()">
         <input type="text" ng-model="form.name" placeholder="Name for this wallet" autofocus ng-required="true" />
         <div class="row">
           <div class="small-6 columns"><input type="password" ng-model="form.passwd" placeholder="Password" ng-required="true" /></div>
@@ -38,7 +38,7 @@
         </div>
     </form>
   </div>
-  <div ng-if="step==4">
+  <div ng-if="step==4" class="medium-8 medium-centered columns wizard">
     <form ng-submit="nextStep()">
       <div class="row">
         <div class="medium-8 medium-centered columns wizard">
@@ -51,7 +51,7 @@
       </div>
     </form>
   </div>
-  <div ng-if="step==5">
+  <div ng-if="step==5" class="medium-8 medium-centered columns wizard">
     <form ng-submit="mnemonicSubmit()">
       <div class="row">
         <div class="small-12 columns">
