@@ -367,7 +367,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 identity.wallet.store.save();
 
                 // Initialize addresses on the wallet
-                addresses.forEach(self.initAddress);
+                addresses.forEach(function(address) {
+                    self.initAddress(address);
+                    Port.post('wallet', {'type': 'address', 'address': address.address, 'index': address.index});
+                });
+
 
                 // Run the callback with results
                 cb ? cb(null, addresses) : null;

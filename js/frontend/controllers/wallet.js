@@ -42,6 +42,13 @@ function (controllers, DarkWallet, Port) {
       else if (data.type == 'ticker') {
           $scope.rates[data.currency] = data.rate;
       }
+      else if (data.type == 'address') {
+          var identity = DarkWallet.getIdentity();
+          var walletAddress = identity.wallet.getAddress(data.index);
+          if (walletAddress) {
+              $wallet.addToScope(walletAddress);
+          }
+      }
   });
 
 
