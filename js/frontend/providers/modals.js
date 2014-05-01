@@ -81,7 +81,7 @@ var modals = {
       vars.field.push({address: pars.address, amount: pars.amount});
     } else {
       vars.field.address = pars.address;
-      vars.field.amount = pars.amount || vars.field.amount;
+      vars.field.amount = pars.amount !== undefined ? pars.amount : vars.field.amount;
     }
   },
   

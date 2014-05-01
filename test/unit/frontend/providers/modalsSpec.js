@@ -121,6 +121,10 @@ define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
       it('scans an address and the amount', function() {
         modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?amount=1', vars);
         expect(vars.field.amount).toBe('1');
+        // Doesn't override amount
+        modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?foo=bar', vars);
+        expect(vars.field.amount).toBe('1');
+        vars.field.amount = undefined;
         modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?foo=bar', vars);
         expect(vars.field.amount).toBeUndefined();
         modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?foo=bar&amount=1', vars);
@@ -131,6 +135,10 @@ define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
         settings.currency = 'mBTC';
         modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?amount=1', vars);
         expect(vars.field.amount).toBe('1000');
+        // Doesn't override amount
+        modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?foo=bar', vars);
+        expect(vars.field.amount).toBe('1000');
+        vars.field.amount = undefined;
         modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?foo=bar', vars);
         expect(vars.field.amount).toBeUndefined();
         modals.onQrOk('bitcoin:31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy?foo=bar&amount=1', vars);
