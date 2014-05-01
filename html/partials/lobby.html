@@ -1,7 +1,7 @@
   <div class="lobbyback">
     <div class="row">
       <!-- Channel list -->
-      <div class="large-2 columns panel">
+      <div class="medium-2 columns panel">
           <h4>Channels</h4>
           <div ng-show="lobbyChannels">
               <select class="select-list" size="10">
@@ -19,17 +19,17 @@
       </div>
 
       <!-- Channel window -->
-      <div class="large-7 columns">
+      <div class="medium-7 columns">
         <div ng-show="!subscribed" class="panel">
           Join a channel on the left to start!
         </div>
         <div ng-show="subscribed">
           <form>
             <div class="row collapse panel radius">
-              <div class="large-9 columns">
+              <div class="small-9 columns">
                 <input ng-model="shoutbox" type="text" value="" />
               </div>
-              <div class="large-3 columns">
+              <div class="small-3 columns">
                 <button class="button postfix radius fa fa-comments" ng-click="sendText();">Shout!</button>
               </div>
             </div>
@@ -41,7 +41,7 @@
       </div>
 
       <!-- Peers area -->
-      <div class="large-3 columns" ng-show="!newContact">
+      <div class="medium-3 columns" ng-show="!newContact">
           <div ng-show="subscribed">
             <h5>Channel</h5>
             <span class="label">{{subscribed.slice(0, 8)}}</span>
@@ -62,7 +62,7 @@
       </div>
 
       <!-- Requests area -->
-      <div class="large-2 columns" ng-show="newContact">
+      <div class="medium-3 columns" ng-show="newContact">
           <h2>{{newContact.name}}</h2>
           <div title="{{newContact.stealth}}">{{newContact.stealth.slice(0,8)}}...</div>
           <div class="wrapper"><face title="{{newContact.pubKeyHex}}" hash="newContact.pubKeyHex" icon-size="64"></face></div>
