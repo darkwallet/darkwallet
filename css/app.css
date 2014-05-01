@@ -4898,11 +4898,11 @@ span.meter {
 
 textarea.seed {
   font-size: 125%;
-  overflow: visible;
   text-align: center;
-  padding: 2em 0;
-  min-height: 5em;
-  color: white; }
+  padding: 4em 0;
+  min-height: 10em;
+  color: white;
+  resize: none; }
 
 .transaction-icon.green {
   color: #27ae60; }

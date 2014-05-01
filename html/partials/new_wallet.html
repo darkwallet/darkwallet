@@ -28,8 +28,9 @@
       </form>
     </div>
     <div ng-if="step==3" class="wizard text-center">
+      <img src="../images/encrypt.svg" style="width:50%; height:50%" />
       <form ng-submit="passwordSubmit()">
-          <div class="row">
+          <div class="row topmargin">
             <div class="small-12 columns">
               <input type="text" ng-model="form.name" placeholder="Name for this wallet" autofocus ng-required="true" />
             </div>
@@ -47,12 +48,11 @@
     </div>
     <div ng-if="step==4" class="wizard">
       <form ng-submit="nextStep()">
-              <p>These 12 words are a key that will unlock complete access to your bitcoin wallet even if you can't access your computer anymore. Please write them down on a piece of paper before continuing.</p>
+              <p>These 12 words are your wallet seed. It will unlock complete access to your bitcoin funds even if you can't access your computer anymore. Please write them down on a piece of paper before continuing.</p>
             <textarea readonly ng-model="form.mnemonic" class="seed"></textarea>
             <div class="text-right">
               <input type="submit" value="I'm ready, continue!" class="button small radius glow nomarginbottom">
             </div>
-
       </form>
     </div>
     <div ng-if="step==5" class="wizard">
@@ -60,7 +60,7 @@
             <h6>To confirm you've written down your seed correctly, please type it here:</h6>
             <input type="text" class="seed" placeholder="Write the 12 words here..." ng-model="form.mnemonic2" />
             <p>{{message2}}</p>
-            <h6>After typing your seed, please store the piece of paper in a safe place, and never type it on a computer unless you need to recover your lost wallet!</h6>
+            <h6>After you finish, please store the piece of paper in a safe place, and never type it on a computer unless you need to recover your lost wallet!</h6>
             <div class="text-right">
               <input type="submit" value="Finish" class="button small radius glow">
             </div>

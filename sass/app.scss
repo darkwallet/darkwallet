@@ -251,12 +251,12 @@ li.colorhead h6 { color: white; margin: 0; }
 span.meter { padding: 5px 0 0 5px; }
 
 textarea.seed { 
-	font-size: 125%; 
-	overflow: visible; 
+	font-size: 125%;  
 	text-align: center;
-	padding: 2em 0;
-	min-height: 5em;
+	padding: 4em 0;
+	min-height: 10em;
 	color: white;
+	resize: none;
  }
 
 .transaction-icon.green { color: $primary-color; }
