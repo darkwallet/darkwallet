@@ -245,7 +245,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 span.meter { padding: 5px 0 0 5px; }
 
-.seed { font-size: 120%; overflow: visible; text-align: center; }
+textarea.seed { font-size: 120%; overflow: visible; text-align: center; }
 
 .transaction-icon.green { color: $primary-color; }
 .transaction-icon.red { color: $alert-color; }

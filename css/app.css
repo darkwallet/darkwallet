@@ -4878,7 +4878,7 @@ li.colorhead h6 {
 span.meter {
   padding: 5px 0 0 5px; }
 
-.seed {
+textarea.seed {
   font-size: 120%;
   overflow: visible;
   text-align: center; }
