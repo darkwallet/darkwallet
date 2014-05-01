@@ -12,9 +12,10 @@ Running
 
 You can load the extension into Chrome by going to _Extensions_, enabling _Development mode_ and clicking the _Load uncompressed extension_ button.
 
-Pre-Alpha!!!
+Alpha!!!
 -----------
-We're still in pre-alpha state, that means we don't upgrade the application in backwards compatible way, and can still be upgraded often.
+We're still in alpha state, that means we're still changing things a lot and it's not safe at all to use the wallet.
+More information at: https://wiki.unsystem.net/index.php/DarkWallet/Alpha
 
 You are *very welcome* to test, just remember the following:
  * Write down your seed and be always ready to use it to restore the identity.
