@@ -29,14 +29,16 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
   var parseUri = function(uri, recipient) {
     recipient = recipient || 0;
     var pars = BtcUtils.parseURI(uri);
-    if (!pars) {
+    if (!pars || !pars.address) {
       notify.warning('URI not supported');
     } else {
-      pars.amount = CurrencyFormat.asSatoshis(pars.amount, 'BTC');
-      pars.amount = CurrencyFormat.asBtc(pars.amount);
       sendForm.title = pars.message ? decodeURIComponent(pars.message) : '';
       sendForm.recipients.fields[recipient].address = pars.address;
-      sendForm.recipients.fields[recipient].amount = pars.amount;
+      if (pars.amount) {
+        pars.amount = CurrencyFormat.asSatoshis(pars.amount, 'BTC');
+        pars.amount = CurrencyFormat.asBtc(pars.amount);
+        sendForm.recipients.fields[recipient].amount = pars.amount;
+      }
     }
   };
 

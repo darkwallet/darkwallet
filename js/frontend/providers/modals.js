@@ -69,11 +69,11 @@ var modals = {
   onQrOk: function(data, vars) {
     sounds.play('keygenEnd');
     var pars = BtcUtils.parseURI(data);
-    if (pars === null) {
+    if (!pars || !pars.address) {
       notify.warning('URI not supported');
       return;
     }
-    if (pars.amount && DarkWallet.getIdentity().settings.currency == 'mBTC') {
+    if (pars.amount !== undefined && DarkWallet.getIdentity().settings.currency == 'mBTC') {
       pars.amount = CurrencyFormat.asSatoshis(pars.amount, 'BTC');
       pars.amount = CurrencyFormat.asBtc(pars.amount, 'mBTC').toString();
     }
@@ -81,7 +81,9 @@ var modals = {
       vars.field.push({address: pars.address, amount: pars.amount});
     } else {
       vars.field.address = pars.address;
-      vars.field.amount = pars.amount !== undefined ? pars.amount : vars.field.amount;
+      if (pars.amount !== undefined) {
+        vars.field.amount = pars.amount;
+      }
     }
   },
   
