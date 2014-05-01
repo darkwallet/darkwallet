@@ -21,6 +21,10 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
   $scope.nextStep = function() {
     $scope.step++;
   };
+  
+  $scope.previousStep = function() {
+    $scope.step--;
+  };
 
   $scope.passwordSubmit = function() {
     // Check that passwords match.
