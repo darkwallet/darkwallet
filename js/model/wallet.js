@@ -814,7 +814,7 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
                 walletAddress = self.storePublicKey(seq, myKeyBytes, {'type': 'stealth', 'ephemKey': ephemKey, 'address': address});
             }
             console.log('stealth detected', walletAddress);
-            if (!walletAddress.ephemKey) {
+            if (!walletAddress.ephemKey || walletAddress.address != address) {
                 walletAddress.ephemKey = ephemKey;
                 walletAddress.type = 'stealth';
                 walletAddress.address = address;
