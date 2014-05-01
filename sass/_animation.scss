@@ -20,6 +20,7 @@ div.cardflipper > div.wizard.ng-enter.ng-enter-active {
 	opacity: 1;
 }
 
+
 div.tab-scroller.totheright.ng-enter,
 div.tab-scroller.totheleft.ng-leave.ng-leave-active { 
 	opacity: 0; 
@@ -56,6 +57,7 @@ div.tab-scroller.totheright.ng-leave {
   opacity:1;
 }
 
+
 div.scroller.ng-enter {
 	-webkit-animation: moveFromTopFade .7s ease both;
 	-moz-animation: moveFromTopFade .7s ease both;
@@ -90,6 +92,10 @@ div.popuptabs > div.ng-enter.ng-enter-active,
 div.send-advanced.ng-enter.ng-enter-active,
 div.send-advanced.ng-leave { -webkit-transform: scale3d(1,1,1); opacity: 1; }
 
+div.tab-scroller.ng-animate,
+.transactions div.ng-animate,
+div.popuptabs > div.ng-animate,
+div.send-advanced.ng-animate  { @include single-transition(all, 450ms, ease-in-out); }
 
 .ng-hide-add,
 div.send-advanced.ng-hide,
