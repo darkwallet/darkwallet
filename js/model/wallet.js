@@ -144,7 +144,7 @@ Wallet.prototype.loadPubKeys = function() {
     // Upgrade stealth addresses
     this.pockets.hdPockets.forEach(function(pocket, i) {
         var walletAddress = self.pubKeys[[i*2]];
-        if (walletAddress && !pocket) {
+        if (walletAddress && pocket) {
             var scanKey = self.getScanKey(i*2);
             var spendKey = walletAddress.pubKey;
             walletAddress.stealth = Stealth.formatAddress(scanKey.getPub().toBytes(), [spendKey], self.versions.stealth.address);
