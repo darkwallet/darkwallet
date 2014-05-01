@@ -81,7 +81,7 @@ var modals = {
       vars.field.push({address: pars.address, amount: pars.amount});
     } else {
       vars.field.address = pars.address;
-      vars.field.amount = pars.amount;
+      vars.field.amount = pars.amount || vars.field.amount;
     }
   },
   
@@ -91,8 +91,12 @@ var modals = {
     }
   },
 
-  scanQr: function(value) {
-    modals.open('scan-qr', {field: value}, modals.onQrOk, modals.onQrCancel);
+  scanQr: function(value, callback) {
+    var cb = function(data, vars) {
+      modals.onQrOk(data, vars);
+      if (callback) callback();
+    };
+    modals.open('scan-qr', {field: value}, cb, modals.onQrCancel);
   },
 
   showQr: function(value, version) {
