@@ -359,25 +359,19 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             }
             console.log("[wallet] Processing stealth");
             // process stealth information
-            var addresses;
-            try {
-                addresses = identity.wallet.processStealth(results);
-            } catch (e) {
-                console.log("[wallet] Error processing stealth data", e);
-                cb ? cb(e, null) : null;
-                return;
-            }
-            console.log("[wallet] Stealth detected " + addresses.length + ' addresses from ' + results.length + ' results');
+            identity.wallet.processStealth(results, function(addresses) {
+                console.log("[wallet] Stealth detected " + addresses.length + ' addresses from ' + results.length + ' results');
 
-            // Everything went all right, set lastStealth and initialize on the network
-            identity.wallet.store.set('lastStealth', height);
-            identity.wallet.store.save();
+                // Everything went all right, set lastStealth and initialize on the network
+                identity.wallet.store.set('lastStealth', height);
+                identity.wallet.store.save();
 
-            // Initialize addresses on the wallet
-            addresses.forEach(self.initAddress);
+                // Initialize addresses on the wallet
+                addresses.forEach(self.initAddress);
 
-            // Run the callback with results
-            cb ? cb(null, addresses) : null;
+                // Run the callback with results
+                cb ? cb(null, addresses) : null;
+            });
         }
 
         // Request fetching the stealth using the client

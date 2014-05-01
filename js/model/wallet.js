@@ -831,15 +831,27 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
  * The array comes 
  * @param {Object[]} stealthArray DOCME
  */
-Wallet.prototype.processStealth = function(stealthArray) {
+Wallet.prototype.processStealth = function(stealthArray, callback, index, results) {
     var self = this;
-    var results = [];
-    this.pockets.hdPockets.forEach(function(pocket, i) {
-        if (pocket) {
-            results = results.concat(self.processPocketStealth(stealthArray, i));
-        }
-    });
-    return results;
+
+    // If this is running from outside set starting parameters
+    if (index == undefined) {
+        index = 0;
+        results = [];
+    }
+
+    // Process the first pocket
+    if (this.pockets.hdPockets[index]) {
+        results = results.concat(this.processPocketStealth(stealthArray, index));
+    }
+
+    // Schedule continuing
+    if (index < this.pockets.hdPockets.length-1) {
+        // Run with timeout to let the app some time to breathe
+        setTimeout(function() {self.processStealth(stealthArray, callback, index+1, results) }, 10);
+    } else {
+        callback(results);
+    }
 };
 
 return Wallet;
