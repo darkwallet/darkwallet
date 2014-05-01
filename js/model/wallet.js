@@ -438,6 +438,7 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
  * @param {Object[]} recipients DOCME
  * @param {Object} changeAddress DOCME
  * @param {Number} fee Fee for that transaction 
+ * @param {Bool} reserveOutputs Whether to mark involved outputs as spent
  * @return {Object} The transaction object with the following fields:
  *   - tx
  *   - utxo
@@ -447,7 +448,7 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
  *   - myamount
  *   - stealth
  */
-Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) {
+Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee, reserveOutputs) {
     var self = this;
     var totalAmount = 0;
     recipients.forEach(function(recipient) {
@@ -496,9 +497,26 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
     if (change) {
         newTx.addOutput(changeAddress.address, change);
     }
+    if (reserveOutputs) {
+        var hash = Bitcoin.convert.bytesToHex(newTx.getHash());
+        txUtxo.forEach(function(output, i) {
+            self.markOutput(output, hash + ':' + i);
+        });
+    }
     // Return the transaction and some metadata
     return {tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth, recipients: recipients};
 };
+
+
+/**
+ * Mark an output as spent
+ */
+Wallet.prototype.markOutput = function(output, index) {
+    output.spend = index;
+    output.spendpending = true;
+    output.spendheight = 0;
+};
+
 
 /**
  * Sign given transaction outputs
@@ -510,10 +528,15 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee) 
 Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
     var pending = [];
 
+    var hash = Bitcoin.convert.bytesToHex(newTx.getHash());
+
     // Signing
     for(var idx=0; idx<txUtxo.length; idx++) {
         var seq;
         var utxo = txUtxo[idx];
+
+        this.markOutput(utxo, hash + ":" + idx);
+
         var outAddress = this.getWalletAddress(utxo.address);
         if (outAddress) {
             seq = outAddress.index;
