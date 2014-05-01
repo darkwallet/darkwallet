@@ -4527,6 +4527,9 @@ div.popuptabs > div.ng-enter.ng-enter-active, div.send-advanced.ng-enter.ng-ente
   -webkit-transform: scale3d(1, 1, 1);
   opacity: 1; }
 
+div.tab-scroller.ng-animate, .transactions div.ng-animate, div.popuptabs > div.ng-animate, div.send-advanced.ng-animate {
+  transition: all 450ms ease-in-out; }
+
 .ng-hide-add, div.send-advanced.ng-hide, span.tooltip.fade, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
   transition: all 300ms ease-out; }
 
