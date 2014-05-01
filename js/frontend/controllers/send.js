@@ -2,7 +2,7 @@
 
 define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat'],
 function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
-  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', function($scope, $window, notify, modals, $wallet, $timeout) {
+  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', '$history', function($scope, $window, notify, modals, $wallet, $timeout, $history) {
   
   var sendForm = $scope.forms.send;
 
