@@ -19,10 +19,10 @@
         <img src="../images/wallet.svg" style="width:50%; height:50%" />
         <div class="row topmargin">
           <div class="small-6 columns">
-              <button ng-click="form.crete_or_restore='restore'" class="button radius expand nomarginbottom">Restore from a seed</button>
+              <button ng-click="form.create_or_restore='restore'" class="button radius expand nomarginbottom">Restore from a seed</button>
           </div>
           <div class="small-6 columns">
-              <button ng-click="form.crete_or_restore='create'" class="button glow radius expand nomarginbottom">Create a new wallet!</button>
+              <button ng-click="form.create_or_restore='create'" class="button glow radius expand nomarginbottom">Create a new wallet!</button>
           </div>
         </div>
       </form>
@@ -62,7 +62,7 @@
             <p>{{message2}}</p>
             <h6>After you finish, please store the piece of paper in a safe place, and never type it on a computer unless you need to recover your lost wallet!</h6>
             <div class="text-right">
-              <a href="" ng-click="previousStep()" class="button small radius">Back</a>
+              <a href="" ng-show="form.mnemonic" ng-click="previousStep()" class="button small radius">Back</a>
               <input type="submit" value="Finish" class="button small radius glow">
             </div>
       </form>
