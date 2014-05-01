@@ -370,9 +370,8 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         // Request fetching the stealth using the client
         var client = core.getClient();
         var fromHeight = identity.wallet.store.get('lastStealth') || 0;
-
         if (height > fromHeight) {
-            console.log("Requesting stealth from block " + fromHeight);
+            console.log("Requesting stealth from block " + fromHeight + " for " + height);
             client.fetch_stealth([0,0], onStealthReceived, fromHeight);
         }
     };
@@ -388,6 +387,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             }
             var tx = new Bitcoin.Transaction(task.fallback);
             task.state = 'finished';
+            task.progress = 100;
 
             var hash = Bitcoin.convert.bytesToHex(tx.getHash());
             var spendTask = TransactionTasks.processSpend(hash, task.total, task.recipients);
