@@ -15,7 +15,7 @@
     </div>
     <a href="" ng-click="modals.open('pick-contact', {participants: multisig.participants}, addParticipant)" class="button small radius">Select from contacts</a>
     <a href="" ng-click="modals.scanQr(multisig.participants)" class="button small radius">Scan a QR code</a>
-    <a href="" ng-click="addParticipant(clipboard.paste(), multisig)" class="button small radius">Paste a Master/Stealth address</a>
+    <a href="" ng-click="addParticipant(clipboard.paste(), multisig)" class="button small radius" title="Paste a public key or stealth address">Paste</a>
   </div>
     <ul>
       <li ng-repeat="participant in multisig.participants">{{participant.address}}</li>
