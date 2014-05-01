@@ -2,7 +2,7 @@
 
 define(['./module', 'darkwallet', 'util/btc', 'bitcoinjs-lib'],
 function (controllers, DarkWallet, BtcUtils, Bitcoin) {
-  controllers.controller('NewFundCtrl', ['$scope', 'clipboard', function($scope, clipboard) {
+  controllers.controller('NewFundCtrl', ['$scope', 'clipboard', 'notify', function($scope, clipboard, notify) {
     /**
      * Reset the multisig fund
      */
@@ -24,6 +24,14 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
     $scope.addParticipant = function(data, vars) {
         var identity = DarkWallet.getIdentity();
         vars = vars || $scope.multisig;
+
+        try {
+            BtcUtils.extractPublicKey(data);
+        } catch (e) {
+            notify.warning('Invalid address', 'You need a public key or stealth address')
+            return;
+        }
+
         var participant = { address: data };
 
         // Generate an identifying hash
