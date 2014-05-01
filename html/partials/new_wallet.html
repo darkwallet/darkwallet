@@ -1,90 +1,69 @@
-<form ng-show="activeForm=='password'" ng-submit="passwordSubmit()">
 <div class="row cardflipper">
-  <div class="medium-8 medium-centered columns wizard text-center">
-    <img src="../images/logo.svg" width="60%" height="60%" />
-    <div class="row">
-      <h6>Thanks for testing Dark Wallet! Keep in mind this is alpha software. Use at your own risk!</h6>
-      <div class="small-6 columns">
-          <a class="button radius expand nomarginbottom">Use real Bitcoins!</a>
-      </div>
-      <div class="small-6 columns">
-          <a class="button glow radius expand nomarginbottom">Use Testnet</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row cardflipper">
-  <div class="medium-8 medium-centered columns wizard text-center">
-    <img src="../images/wallet.svg" width="50%" height="50%" />
-    <div class="row topmargin">
-      <div class="small-6 columns">
-          <a class="button radius expand nomarginbottom">Restore from a seed</a>
-      </div>
-      <div class="small-6 columns">
-          <a class="button glow radius expand nomarginbottom">Create a new wallet!</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row cardflipper">
-  <div class="medium-8 medium-centered columns wizard text-center">
-      <input type="text" ng-model="name" placeholder="Name for this wallet" autofocus ng-required="true" />
+  <div ng-if="step==1">
+    <form class="medium-8 medium-centered columns wizard text-center" ng-submit="nextStep()">
+      <img src="../images/logo.svg" style="width:60%; height:60%" />
       <div class="row">
-        <div class="small-6 columns"><input type="password" ng-model="passwd" placeholder="Password" ng-required="true" /></div>
-        <div class="small-6 columns"><input type="password" ng-model="passwd2" placeholder="Repeat password" ng-required="true" /></div>
-      </div>
-      <div class="text-right">
-        <input type="submit" value="Continue" class="button small radius nomarginbottom" />
-      </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="large-12 columns">
-      <h5>Do you want a new wallet or want to restore a previous one from a seed?</h5>
-      <div class="panel">
-        <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="create" value="create" /><label for="create">Create</label>
-        <input type="radio" name="create_or_restore" ng-model="create_or_restore" id="restore" value="restore" /><label for="restore">Restore</label>
-      </div>
-
-      <h5>This is alpha software! Use real Bitcoins or testnet?</h5>
-      <div class="panel">
-        <input type="radio" name="network" ng-model="network" id="network-bitcoin" value="bitcoin" /><label for="bitcoin">Bitcoin</label>
-        <input type="radio" name="network" ng-model="network" id="network-testnet" value="testnet" /><label for="network-testnet">Testnet</label>
-      </div>
- 
-      <div class="text-right">
-        <input type="submit" value="Continue" class="button small radius" />
-      </div>
-       
-  </div>
-</div>
-</form> 
-
-<form ng-show="activeForm=='mnemonic'" ng-submit="mnemonicSubmit()">
-    <div class="row">
-      <div class="medium-8 medium-centered columns wizard">
-          This is your seed. It will help you recover your wallet in case of computer failure, theft or loss. You need to write it down in a piece of paper. These 12 words will unlock complete access to your bitcoins even if you can't access your computer anymore. NEVER TYPE YOUR SEED IN A COMPUTER unless you are recovering your wallet or you will risk losing your bitcoins.
-        <textarea type="text" readonly ng-model="mnemonicWords" class="seed"></textarea>
-        <div class="text-right">
-          <input type="submit" value="I'm ready, continue!" class="button small radius glow nomarginbottom">
+        <h6>Thanks for testing Dark Wallet! Keep in mind this is alpha software. Use at your own risk!</h6>
+        <div class="small-6 columns">
+            <button ng-click="form.network='bitcoin'" class="button radius expand nomarginbottom">Use real Bitcoins!</button>
+        </div>
+        <div class="small-6 columns">
+            <button ng-click="form.network='testnet'" class="button glow radius expand nomarginbottom">Use Testnet</button>
         </div>
       </div>
-    </div>
-</form>
-
-<form ng-show="activeForm=='mnemonic2'" ng-submit="mnemonic2Submit()">
-  <div class="row">
-    <div class="small-12 columns">
-      <h5>To confirm you've written down your seed correctly, please type it here:</h5>
-      <textarea type="text" class="seed" placeholder="Write the 12 words here..." ng-model="mnemonic2Words"></textarea>
-      <p>{{message2}}</p>
-      <h6>After typing your seed, please store the piece of paper in the safest place you can think of!</h6>
-      <div class="text-right">
-        <input type="submit" value="Finish" class="button small radius glow">
-      </div>
-    </div>
+    </form>
   </div>
-</form>
+  <div ng-if="step==2">
+    <form class="medium-8 medium-centered columns wizard text-center" ng-submit="nextStep()">
+      <img src="../images/wallet.svg" style="width:50%; height:50%" />
+      <div class="row topmargin">
+        <div class="small-6 columns">
+            <button ng-click="form.crete_or_restore='restore'" class="button radius expand nomarginbottom">Restore from a seed</button>
+        </div>
+        <div class="small-6 columns">
+            <button ng-click="form.crete_or_restore='create'" class="button glow radius expand nomarginbottom">Create a new wallet!</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div ng-if="step==3">
+    <form class="medium-8 medium-centered columns wizard text-center" ng-submit="passwordSubmit()">
+        <input type="text" ng-model="form.name" placeholder="Name for this wallet" autofocus ng-required="true" />
+        <div class="row">
+          <div class="small-6 columns"><input type="password" ng-model="form.passwd" placeholder="Password" ng-required="true" /></div>
+          <div class="small-6 columns"><input type="password" ng-model="form.passwd2" placeholder="Repeat password" ng-required="true" /></div>
+        </div>
+        <div class="text-right">
+          <input type="submit" value="Continue" class="button small radius nomarginbottom" />
+        </div>
+    </form>
+  </div>
+  <div ng-if="step==4">
+    <form ng-submit="nextStep()">
+      <div class="row">
+        <div class="medium-8 medium-centered columns wizard">
+            This is your seed. It will help you recover your wallet in case of computer failure, theft or loss. You need to write it down in a piece of paper. These 12 words will unlock complete access to your bitcoins even if you can't access your computer anymore. NEVER TYPE YOUR SEED IN A COMPUTER unless you are recovering your wallet or you will risk losing your bitcoins.
+          <textarea readonly ng-model="form.mnemonic" class="seed"></textarea>
+          <div class="text-right">
+            <input type="submit" value="I'm ready, continue!" class="button small radius glow nomarginbottom">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div ng-if="step==5">
+    <form ng-submit="mnemonicSubmit()">
+      <div class="row">
+        <div class="small-12 columns">
+          <h5>To confirm you've written down your seed correctly, please type it here:</h5>
+          <input type="text" class="seed" placeholder="Write the 12 words here..." ng-model="form.mnemonic2" />
+          <p>{{message2}}</p>
+          <h6>After typing your seed, please store the piece of paper in the safest place you can think of!</h6>
+          <div class="text-right">
+            <input type="submit" value="Finish" class="button small radius glow">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

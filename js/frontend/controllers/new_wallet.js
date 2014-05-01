@@ -10,48 +10,47 @@
  * @constructor
  */
 define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWallet, Mnemonic) {
-  controllers.controller('NewWalletCtrl', ['$scope', '$window', function($scope, $window) {
+  controllers.controller('NewWalletCtrl', ['$scope', '$location', function($scope, $location) {
 
-  $scope.activeForm = 'password';
-  $scope.create_or_restore = 'create';
-  $scope.network = 'bitcoin';
+  $scope.step = 1;
+  $scope.form = {
+    create_or_restore: 'create',
+    network: 'bitcoin'
+  };
+
+  $scope.nextStep = function() {
+    $scope.step++;
+  };
 
   $scope.passwordSubmit = function() {
-
     // Check that passwords match.
-    if ($scope.passwd != $scope.passwd2) {
+    if ($scope.form.passwd != $scope.form.passwd2) {
       $scope.message = 'Passwords are not the same';
-      $scope.pubKey = '';
-      $scope.privKey = '';
       return;
     }
 
-    if ($scope.create_or_restore == 'create') {
+    if ($scope.form.create_or_restore == 'create') {
       var mnemonic = new Mnemonic(128);
-      $scope.mnemonicWords = mnemonic.toWords().join(' ');
-      $scope.activeForm = 'mnemonic';
+      $scope.form.mnemonic = mnemonic.toWords().join(' ');
+      $scope.step++;
     } else {
-      $scope.activeForm = 'mnemonic2';
+      $scope.step += 2;
     }
   };
-  
-  $scope.mnemonicSubmit = function() {
-    $scope.activeForm = 'mnemonic2';
-  };
 
-  $scope.mnemonic2Submit = function() {
-    if ($scope.mnemonicWords && $scope.mnemonicWords != $scope.mnemonic2Words) {
+  $scope.mnemonicSubmit = function() {
+    if ($scope.form.mnemonic && $scope.form.mnemonic != $scope.form.mnemonic2) {
       $scope.message2 = 'Mnemonics are not the same';
       return;
     }
     
-    var words = $scope.mnemonic2Words.split(' ');
+    var words = $scope.form.mnemonic2.split(' ');
     var mnemonic = new Mnemonic(words);
 
     var walletService = DarkWallet.service.wallet;
 
-    var identity = walletService.createIdentity($scope.name, $scope.network, mnemonic.toHex(), $scope.passwd, function() {
-        $window.location = '#dashboard';
+    walletService.createIdentity($scope.form.name, $scope.form.network, mnemonic.toHex(), $scope.form.passwd, function() {
+        $location.path('#dashboard');
     });
   }
 }]);
