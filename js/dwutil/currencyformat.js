@@ -1,7 +1,7 @@
 'use strict';
 
-define(['darkwallet', 'util/fiat', 'bitcoinjs-lib'],
-    function(DarkWallet, FiatCurrencies, Bitcoin) {
+define(['darkwallet', 'util/fiat', 'bitcoinjs-lib', 'big'],
+    function(DarkWallet, FiatCurrencies, Bitcoin, Big) {
 
 var BigInteger = Bitcoin.BigInteger;
 
@@ -22,7 +22,8 @@ CurrencyFormatting.asSatoshis = function(amount, unit) {
     } else {
         satoshis = Math.pow(10, 8);
     }
-    return parseInt(BigInteger.valueOf(amount * satoshis).toString());
+    amount = new Big(amount);
+    return amount.times(satoshis).toFixed(0);
 }
 
 
