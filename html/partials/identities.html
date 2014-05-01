@@ -1,35 +1,33 @@
 <div ng-controller="BackupsCtrl">
-<div class="row">
-  <div class="small-12 columns">
-    <h3>My identities</h3>
-    <h6>You can have different identities in your Dark Wallet. Identities aren't linked to each other, can use different passwords and be backed up separately.</h6>
-    <a href="#new_wallet" class="button radius">Create a new identity</a>
-    <button class="radius" ng-click="restoreBackup()">Import a wallet</button>
-    <button ng-click="backupIdentity()" class="radius">Backup all wallets</button>
+  <div class="row topmargin">
+    <div class="small-12 columns">
+      <a href="#new_wallet" class="button small radius fa fa-plus"> New wallet (or restore from seed)</a>
+      <a class="button radius small fa fa-download" ng-click="restoreBackup()"> Restore a backup</a>
+      <a ng-click="backupIdentity()" class="button radius small fa fa-upload"> Backup all wallets</a>
+    </div>
   </div>
-</div>
-<div class="row">
-  <div class="small-12 columns">
-    <ul class="large-block-grid-5 medium-block-grid-4 small-block-grid-2">
-      <li ng-repeat="identityName in availableIdentities">
-        <div class="panel radius">
-          <h4>{{identityName}}</h4>
-          <h6 ng-show="identities.hasOwnProperty(identityName)">Balance: {{identities[identityName].wallet.balance.confirmed | currencyPresenter}}</h6>
-          <button ng-click="selectIdentity(identityName)" ng-hide="identityName == currentIdentity" class="radius tiny expand">Use this identity</button>
-          <div class="row collapse">
-            <div class="small-4 columns">
-              <button ng-click="backupIdentity(identityName)" class="tiny expand">Backup</button>
+  <div class="row">
+    <div class="small-12 columns">
+      <ul class="large-block-grid-5 medium-block-grid-4 small-block-grid-2">
+        <li ng-repeat="identityName in availableIdentities">
+          <div class="panel radius">
+            <h4>{{identityName}}</h4>
+            <h6 ng-show="identities.hasOwnProperty(identityName)">Balance: {{identities[identityName].wallet.balance.confirmed | currencyPresenter}}</h6>
+            <button ng-click="selectIdentity(identityName)" ng-hide="identityName == currentIdentity" class="radius tiny expand">Use this identity</button>
+            <div class="row collapse">
+              <div class="small-4 columns">
+                <button ng-click="backupIdentity(identityName)" class="tiny expand">Backup</button>
+              </div>
+              <div class="small-4 columns">
+                <button class="tiny expand disabled">Rename</button>
+              </div>
+              <div class="small-4 columns">
+                <button class="tiny expand disabled">Delete</button>
+              </div>  
             </div>
-            <div class="small-4 columns">
-              <button class="tiny expand disabled">Rename</button>
-            </div>
-            <div class="small-4 columns">
-              <button class="tiny expand disabled">Delete</button>
-            </div>  
           </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
 </div>

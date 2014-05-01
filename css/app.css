@@ -4461,6 +4461,23 @@ th.hide-for-touch {
 #toast-container > div.ng-enter {
   -webkit-animation: moveFromTopFade 0.7s ease both; }
 
+div.cardflipper > div.wizard.ng-animate {
+  position: absolute;
+  width: 100%;
+  transition: all 800ms linear; }
+
+div.cardflipper > div.wizard.ng-enter {
+  -webkit-transform: rotateY(-180deg);
+  opacity: 0.3; }
+
+div.cardflipper > div.wizard.ng-leave.ng-leave-active {
+  -webkit-transform: rotateY(180deg);
+  opacity: 0.3; }
+
+div.cardflipper > div.wizard.ng-leave, div.cardflipper > div.wizard.ng-enter.ng-enter-active {
+  -webkit-transform: rotateY(0deg);
+  opacity: 1; }
+
 div.tab-scroller.totheright.ng-enter, div.tab-scroller.totheleft.ng-leave.ng-leave-active {
   opacity: 0;
   -webkit-transform: translate3d(25%, 0, 0) scale3d(0.3, 1, 1);
@@ -4510,7 +4527,7 @@ div.popuptabs > div.ng-enter.ng-enter-active, div.send-advanced.ng-enter.ng-ente
   -webkit-transform: scale3d(1, 1, 1);
   opacity: 1; }
 
-.ng-hide-add, div.send-advanced.ng-hide, span.tooltip.fade, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square, div.ng-enter, div.ng-leave {
+.ng-hide-add, div.send-advanced.ng-hide, span.tooltip.fade, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
   transition: all 300ms ease-out; }
 
 @-webkit-keyframes rotateFoldBottom {
@@ -4612,6 +4629,10 @@ div.container {
   padding-top: 45px;
   height: 100%; }
 
+div.cardflipper {
+  margin-top: 2em;
+  -webkit-perspective: 800px; }
+
 div.tab-scroller {
   padding-top: 1em; }
 
@@ -4639,7 +4660,8 @@ input.ng-valid + span.input-status {
 input.address-buttons {
   padding-right: 5.3em; }
 
-input[type=range] {
+
+input[type="range"] {
   -webkit-appearance: none;
   background-color: silver;
   width: 200px;
@@ -4874,8 +4896,13 @@ li.colorhead h6 {
 span.meter {
   padding: 5px 0 0 5px; }
 
-.seed {
-  font-size: 120%; }
+textarea.seed {
+  font-size: 125%;
+  text-align: center;
+  padding: 4em 0;
+  min-height: 10em;
+  color: white;
+  resize: none; }
 
 .transaction-icon.green {
   color: #27ae60; }
@@ -4989,10 +5016,19 @@ div.chat-text {
   background: url(../images/virtual.svg) top/cover no-repeat;
   -webkit-box-shadow: inset -0 0px 130px black; }
 
+div.wizard {
+  background: #222;
+  border-radius: 3px;
+  padding: 1.5em;
+  -webkit-backface-visibility: hidden; }
+
+form.send {
+  background: url(../images/send.svg) center/contain no-repeat; }
+
 .setback > * {
   opacity: 0.8; }
 
-.setback.seed {
+.seed {
   background: url(../images/seed.svg) center/cover no-repeat; }
 
 /* Scrollbars ---------------------  */

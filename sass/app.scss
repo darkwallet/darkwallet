@@ -32,6 +32,11 @@ div.container {
 	padding-top: 45px; height: 100%;
 }
 
+div.cardflipper { 
+	margin-top: 2em;
+	-webkit-perspective: 800px;
+}
+
 div.tab-scroller { padding-top: 1em; }
 
 div.scroller { 
@@ -56,7 +61,11 @@ input.ng-valid + span.input-status { opacity: 1; }
 
 input.address-buttons { padding-right: 5.3em; }
 
-input[type=range] {
+input[type="text"] {
+
+}
+
+input[type="range"] {
     -webkit-appearance: none;
     background-color: silver;
     width: 200px;
@@ -241,7 +250,14 @@ li.colorhead h6 { color: white; margin: 0; }
 
 span.meter { padding: 5px 0 0 5px; }
 
-.seed { font-size: 120%; }
+textarea.seed { 
+	font-size: 125%;  
+	text-align: center;
+	padding: 4em 0;
+	min-height: 10em;
+	color: white;
+	resize: none;
+ }
 
 .transaction-icon.green { color: $primary-color; }
 .transaction-icon.red { color: $alert-color; }
@@ -313,9 +329,18 @@ div.chat-text {
 	-webkit-box-shadow: inset -0 0px 130px black;	
  }
 
+div.wizard { 
+	background: $body-bg;
+	border-radius: $global-radius;
+	padding: 1.5em;
+	-webkit-backface-visibility: hidden;
+}
+
+form.send { background: url(../images/send.svg) center/contain no-repeat; }
+
 .setback > * { opacity: 0.8; }
 
-.setback.seed { background: url(../images/seed.svg) center/cover no-repeat; }
+.seed { background: url(../images/seed.svg) center/cover no-repeat; }
 
 
 
