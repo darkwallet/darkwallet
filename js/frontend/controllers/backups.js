@@ -63,12 +63,23 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
         $scope.$apply();
     };
 
+    var unlockedData = {};
 
     /**
      * Load a backup, called once for each identity.
      */
     var loadBackup = function(identity) {
-        console.log("Load backup!");
+        var running = DarkWallet.getIdentity();
+        var keyRing = DarkWallet.getKeyRing();
+        if (identity.name == running.name) {
+            var walletService = DarkWallet.service.wallet;
+            walletService.reloadIdentity(identity, function() {
+                DarkWallet.core.connect();
+            });
+        } else {
+            keyRing.save(identity.name, identity, function(){ });
+               // identity reloaded
+        }
     };
 
 
@@ -76,16 +87,18 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
      * Load a backup, with no arguments loads all available backups.
      */
     $scope.loadBackup = function(identity) {
-        notify.success("Not loading yet!!")
         if ($scope.toLoad.length > 1 && identity) {
             // Load one identity
             $scope.step='loaded';
-            loadBackup(identity);
+            loadBackup(unlockedData[identity.name]);
+            notify.success("Identity loaded " + identity.name)
         } else {
             // Load all identities
             $scope.toLoad.forEach(function(identity) {
-                loadBackup(identity);
+                loadBackup(unlockedData[identity.name]);
             });
+            notify.success("Identities loaded");
+            unlockedData = {};
             // finish the modal
             $scope.ok();
         }
@@ -113,6 +126,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
         }
         $scope.step = 'select';
         $scope.toLoad = [];
+        unlockedData = {};
 
         // Stage 3: Parse some  information from each identity
         Object.keys(data).forEach(function(key) {
@@ -123,6 +137,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
                 var hash = Bitcoin.convert.bytesToHex(pubKey);
                 var nPubKeys = Object.keys(identity.pubkeys).length;
                 var nContacts = identity.contacts.length;
+                unlockedData[identity.name] = identity;
                 
                 $scope.toLoad.push({
                     name: key.substr(12),

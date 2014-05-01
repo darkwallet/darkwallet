@@ -66,6 +66,19 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         startIdentity(identity, callback);
     }
 
+    this.reloadIdentity = function(store, callback) {
+        if (store.name != currentIdentity) {
+            throw Error("This is not the running identity!");
+        }
+        Port.post('wallet', {'type': 'closing', 'identity': currentIdentity});
+        keyRing.close(store.name);
+        keyRing.save(store.name, store, function() {
+            keyRing.get(store.name, function(identity) {
+                startIdentity(identity, callback);
+            });
+        });
+    }
+
     this.loadIdentity = function(idx, callback) {
         var name = keyRing.availableIdentities[idx];
         if (currentIdentity != name) {

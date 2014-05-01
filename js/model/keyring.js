@@ -132,6 +132,10 @@ IdentityKeyRing.prototype.save = function(name, data, callback) {
     var pars = {};
     pars[DW_NS+name] = data;
     chrome.storage.local.set(pars, callback);
+    // If this is a new identity add it to the available identities list.
+    if (this.availableIdentities.indexOf(name) == -1) {
+        this.availableIdentities.push(name);
+    }
 };
 
 /**
