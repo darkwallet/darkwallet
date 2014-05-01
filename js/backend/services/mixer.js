@@ -20,7 +20,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         self.stopTasks();
       }
       else if (data.type == 'connected') {
-        self.checkMixing(data);
+        self.checkMixing();
         // resume tasks
         self.resumeTasks();
       }
@@ -33,11 +33,22 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
    */
   MixerService.prototype.checkMixing = function() {
     var identity = this.core.getCurrentIdentity();
+    var safe = this.core.service.safe;
 
     // Check to see we have anything to mix
     var anyMixing = false;
-    identity.wallet.pockets.hdPockets.forEach(function(pocket) {
+    identity.wallet.pockets.hdPockets.forEach(function(pocket, i) {
       if (pocket && pocket.mixing) {
+        if (pocket.privKey || pocket.privChangeKey) {
+            // do we still have access to the password?
+            var password = safe.get('mixer', 'pocket:'+i);
+            if (!password) {
+                console.log("[mixer] Disabling pocket because security context expired");
+                pocket.privKey = undefined;
+                pocket.privChangeKey = undefined;
+                pocket.mixing = false;
+            }
+        }
         anyMixing = true;
       }
     });
@@ -170,7 +181,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
    */
   MixerService.prototype.pendingTasks = function() {
     var identity = this.core.getCurrentIdentity();
-    console.log('[mixer] check Tasks!', identity);
+    console.log('[mixer] check Tasks!');
 
     return identity.tasks.getTasks('mixer').length;
   };
