@@ -1,8 +1,8 @@
 <div class="row collapse">
-  <div class="medium-8 medium-centered cardflipper columns">
+  <div class="medium-9 medium-centered cardflipper columns">
     <div ng-if="step==1"  class="wizard text-center">
       <form ng-submit="nextStep()">
-        <img src="../images/logo.svg" style="width:60%; height:60%" />
+        <img src="../images/logo.svg" style="width:50%; height:50%" />
         <div class="row">
           <h6>Thanks for testing Dark Wallet! Keep in mind this is alpha software. Use at your own risk!</h6>
           <div class="small-6 columns">
@@ -16,7 +16,7 @@
     </div>
     <div ng-if="step==2" class="wizard text-center">
       <form ng-submit="nextStep()">
-        <img src="../images/wallet.svg" style="width:50%; height:50%" />
+        <img src="../images/wallet.svg" style="width:40%; height:40%" />
         <div class="row topmargin">
           <div class="small-6 columns">
               <button ng-click="form.create_or_restore='restore'" class="button radius expand nomarginbottom">Restore from a seed</button>
@@ -28,7 +28,7 @@
       </form>
     </div>
     <div ng-if="step==3" class="wizard text-center">
-      <img src="../images/encrypt.svg" style="width:50%; height:50%" />
+      <img src="../images/encrypt.svg" style="width:35%; height:35%" />
       <form ng-submit="passwordSubmit()">
           <div class="row topmargin">
             <div class="small-12 columns">
