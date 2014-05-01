@@ -305,8 +305,19 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       var metadata;
       var identity = DarkWallet.getIdentity();
 
+      var pocketIndex = sendForm.pocketIndex;
+
+      // on quick send the local pocket index overrides selected index
+      if ($scope.quicksend && $scope.quicksend.next && $scope.quicksend.address) {
+          if ($history.pocket.isAll) {
+              pocketIndex = 0;
+          } else {
+              pocketIndex = $history.pocket.index;
+          }
+      }
+
       try {
-          metadata = identity.wallet.prepareTx(sendForm.pocketIndex,
+          metadata = identity.wallet.prepareTx(pocketIndex,
                                                recipients,
                                                changeAddress,
                                                fee)
@@ -319,12 +330,13 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
 
       var amountNote = (fee + totalAmount) + ' satoshis';
 
-      // Now ask for the password before continuing with the next step   
       if (modals.password) {
+        // Now ask for the password before continuing with the next step   
         modals.password('Unlock password', function(password) {
           onPassword(metadata, amountNote, password);
         });
       } else {
+        // the popup doesn't have modals defined
         $scope.quicksend.password = true;
         $scope.quicksend.onPassword = function(password) {
           onPassword(metadata, amountNote, password);
