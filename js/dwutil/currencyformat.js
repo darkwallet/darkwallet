@@ -22,8 +22,8 @@ CurrencyFormatting.asSatoshis = function(amount, unit) {
     } else {
         satoshis = Math.pow(10, 8);
     }
-    amount = new Big(amount);
-    return amount.times(satoshis).toFixed(0);
+    var biAmount = new Big(amount);
+    return parseInt(biAmount.times(satoshis).toFixed(0));
 }
 
 
