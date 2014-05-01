@@ -1,3 +1,24 @@
+div.cardflipper > div.wizard.ng-animate { 
+	position: absolute; 
+	width: 100%;
+	@include single-transition(all,800ms,linear);
+}
+
+div.cardflipper > div.wizard.ng-enter { 
+	-webkit-transform: rotateY(-180deg);
+	opacity:0.3;
+}
+
+div.cardflipper > div.wizard.ng-leave.ng-leave-active { 
+	-webkit-transform: rotateY(180deg);
+	opacity: 0.3;
+}
+
+div.cardflipper > div.wizard.ng-leave,
+div.cardflipper > div.wizard.ng-enter.ng-enter-active { 
+	-webkit-transform: rotateY(0deg);
+	opacity: 1;
+}
 
 div.tab-scroller.totheright.ng-enter,
 div.tab-scroller.totheleft.ng-leave.ng-leave-active { 
@@ -81,9 +102,7 @@ span.tooltip.fade,
 .tabs dd > a, 
 button.button, 
 a.button, 
-button.square, 
-div.ng-enter, 
-div.ng-leave { @include single-transition(); }
+button.square { @include single-transition(); }
 
 @-webkit-keyframes rotateFoldBottom {
 	to { opacity: 0; -webkit-transform: translateY(100%) rotateX(-90deg); }
