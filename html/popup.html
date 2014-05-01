@@ -12,7 +12,7 @@
     <div class="popupcontainer" ng-controller="NotificationsCtrl">
       <div class="row">
         <div class="small-12 columns" ng-show="identities.length" ng-cloak>
-          <a href="" class="fa button postfix fa-chevron-circle-down">{{currentIdentity}}</a>
+          <a href="index.html#identities" target="_blank" class="fa button postfix fa-user">{{currentIdentity}}</a>
           <a href="index.html#wallet" target="_blank" class="button small radius expand">
             Open wallet
           </a>
@@ -30,7 +30,7 @@
          -->
       </div>
 
-      <dl ng-cloak ng-show="connected && identities.length" class="row tabs collapse">
+      <dl ng-show="settings.advanced" ng-cloak ng-show="connected && identities.length" class="row tabs collapse">
        <dd class="" title="Calculator" ng-class="{active:tab==1}" ng-click="tab=1">
          <a><span class="fa fa-exchange"></span></a>
        </dd>
@@ -42,8 +42,10 @@
         <div ng-if="connected && tab==1" ng-include src="connected && tab==1 ? 'tools/calculator.html' : false">
         </div>
 
+        <!--
         <div ng-if="connected && tab==2" class="row" ng-include src="connected && tab==2 ? 'tools/quicksendpopup.html' : false">
         </div>
+        -->
       </div>
     </div>
     <script src="../vendors/requirejs/require.js" data-main="../js/frontend/popup/loader.js"></script>
