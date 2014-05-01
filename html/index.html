@@ -37,6 +37,7 @@
       <section class="top-bar-section">
         <!-- Right Nav Section -->
         <ul ng-cloak ng-show="identityName" class="right">
+	  <li title="Gateway: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i></a></li>
 	  <li ng-show="settings.advanced && status.syncing"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
 	  <li ng-show="settings.advanced"><a><i> {{currentHeight}}</i></a></li>
 	  <li ng-show="settings.advanced" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i></a></li>

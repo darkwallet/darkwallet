@@ -10,6 +10,7 @@ function(Port) {
   function ObeliskService(core) {
       var self = this;
       this.name = 'obelisk';
+      this.core = core;
       this.client = null;
       this.connected = false;
       this.connecting = false;
@@ -40,7 +41,7 @@ function(Port) {
       } else {
           console.log("[obelisk] Connecting");
           Port.post('obelisk', {'type': 'connecting'});
-          self.connecting = true;
+          this.connecting = true;
           this.connectClient(connectUri, function(err) {
               // Connected
               if (!err) {
@@ -57,6 +58,8 @@ function(Port) {
               }
           }, function(err, evt) {
               // Disconnected
+              self.core.servicesStatus.obelisk = 'offline';
+              self.core.servicesStatus.gateway = 'offline';
               console.log("[obelisk] Disconnected", evt);
               Port.post('obelisk', {'type': 'disconnected'});
               self.connected = false;
@@ -74,6 +77,8 @@ function(Port) {
   ObeliskService.prototype.disconnect = function() {
       Port.post('obelisk', {'type': 'disconnect'});
       console.log("[obelisk] Disconnect");
+      this.core.servicesStatus.gateway = 'offline';
+      this.core.servicesStatus.obelisk = 'offline';
       if (this.client && this.connected) {
           this.connected = false;
           this.client.websocket.close();
