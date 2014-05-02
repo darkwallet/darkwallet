@@ -812,7 +812,6 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
 
         // Check if we've already seen this tx+address combination
         if (self.stealthCache.indexOf(txId+address) > -1) {
-            console.log("[Wallet] Skipping stealth because already seen!");
             return;
         }
         self.stealthCache.push(txId+address);
