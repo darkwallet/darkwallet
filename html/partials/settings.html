@@ -48,11 +48,12 @@
           </div>
           <div class="row collapse">
             <div class="small-8 columns">
-              <input ng-model="newServer.address" type="text" placeholder="Enter IP address (e.g: 80.34.132.23:2534)" />
-              <input ng-show="newServer.address" ng-model="newServer.name" type="text" placeholder="Enter name" />
+              <input ng-hide="newServer.next" ng-model="newServer.address" type="text" ng-pattern="validIPPort" placeholder="Enter IP address (e.g: 80.34.132.23:2534)" />
+              <input ng-show="newServer.next" ng-model="newServer.name" type="text" placeholder="Enter name" autofocus />
             </div>
             <div class="small-4 columns">
-              <a ng-click="addServer()" class="fa button postfix radius fa-plus">Add</a>
+              <a ng-hide="newServer.next" ng-disabled="!newServer.address" ng-click="newServer.next = true" class="fa button postfix radius fa-plus">Next</a>
+              <a ng-show="newServer.next" ng-click="addServer()" class="fa button postfix radius fa-plus">Add</a>
             </div>
           </div>
           <div class="row">

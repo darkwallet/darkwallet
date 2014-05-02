@@ -6,11 +6,12 @@
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
   controllers.controller('ServersCtrl', ['$scope', function($scope) {
 
-  $scope.newServer = {address: '', name: ''};
+  $scope.newServer = {address: '', name: '', next: false};
   $scope.addServerError = '';
   $scope.connectionStatus = 'Disconnected';
   $scope.servicesStatus = {gateway: 'unknown', obelisk: 'unknown'};
-
+  $scope.validIPPort = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/i;
+  
   // Apply scope
   var applyScope = function() {
       if (!$scope.$$phase) {
