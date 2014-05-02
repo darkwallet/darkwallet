@@ -1,9 +1,7 @@
 'use strict';
 
-define(['darkwallet', 'util/fiat', 'bitcoinjs-lib', 'big'],
-    function(DarkWallet, FiatCurrencies, Bitcoin, Big) {
-
-var BigInteger = Bitcoin.BigInteger;
+define(['darkwallet', 'util/fiat', 'big'],
+    function(DarkWallet, FiatCurrencies, Big) {
 
 function CurrencyFormatting() {
     
