@@ -20,8 +20,12 @@ function BadgeService(core) {
         }, function(port) {
             // Disconnected
             var identity = DarkWallet.getIdentity();
-            if (identity && identity.tasks.removeTasks(null, 'state', 'finished')) {
-                self.setItems();
+            if (identity) {
+                var anyFinished = identity.tasks.removeTasks(null, 'state', 'finished');
+                var anyCancelled = identity.tasks.removeTasks(null, 'state', 'cancelled');
+                if (anyFinished || anyCancelled) {
+                    self.setItems();
+                }
             }
     });
 };
