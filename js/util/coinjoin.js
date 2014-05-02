@@ -24,10 +24,8 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       var amount = this.myAmount;
       var remoteTx = new Bitcoin.Transaction(msg.tx);
       remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
-      console.log("fullfill", msg, remoteTx, amount);
       var isOk = false;
       remoteTx.outs.forEach(function(anOut) {
-          console.log("check", anOut.value, amount);
           if (anOut.value == amount) {
               isOk = true;
           }
@@ -63,6 +61,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
       // Check the original inputs and outputs are there
       if (!this.checkMyInputsOutputs(this.myTx, remoteTx)) {
+          this.cancel();
           return;
       }
 
@@ -98,6 +97,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(myTx, remoteTx)) {
+          this.cancel();
           return;
       }
 
@@ -118,6 +118,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(this.tx, remoteTx)) {
+          this.cancel();
           return;
       }
 

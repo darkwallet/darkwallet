@@ -140,6 +140,14 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       }, 10000);
   }
 
+  /**
+   * Announce a coinjoin.
+   */
+  MixerService.prototype.announce = function(coinJoin) {
+      var msg = Protocol.CoinJoinOpenMsg(coinJoin.id, coinJoin.task.total);
+      this.checkTask(msg, 'announce');
+  };
+
   /*
    * Start a task either internally or by external command
    */
@@ -151,7 +159,6 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     switch(task.state) {
       case 'announce':
         var id = Bitcoin.CryptoJS.SHA256(Math.random()+'').toString();
-        var msg = Protocol.CoinJoinOpenMsg(id, task.total);
         console.log("[mixer] Announce join");
         var myTx = new Bitcoin.Transaction(task.tx);
         myTx = BtcUtils.fixTxVersions(myTx, this.core.getCurrentIdentity());
@@ -165,7 +172,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         this.ongoing[id].task = task;
 
         // See if the task is expired otherwise send
-        this.checkTask(msg, task.state);
+        this.announce(this.ongoing[id]);
         break;
       case 'paired':
       case 'finish':
@@ -407,17 +414,22 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           if (coinJoin.task) {
               coinJoin.task.state = coinJoin.state;
           }
-          if (coinJoin.state == 'finished') {
+          // Check state and perform appropriate tasks
+          if (coinJoin.state == 'finished' && coinJoin.task) {
               var onBroadcast = function(_error, _data) {
                   console.log("broadcasting!", _error, _data);
               }
               var walletService = this.core.service.wallet;
-              if (coinJoin.task) {
-                  coinJoin.task.tx = coinJoin.tx.serializeHex();
-                  walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
-              }
+              coinJoin.task.tx = coinJoin.tx.serializeHex();
+              walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
+          } else if (coinJoin.state == 'announce') {
+              // announce again
+              this.announce(coinJoin);
           }
           this.checkDelete(msg.body.id);
+
+          // See if we should desactivate mixing
+          this.checkMixing();
       }
     }
   };
