@@ -811,10 +811,11 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
         var txId = stealthData[2];
 
         // Check if we've already seen this tx+address combination
-        if (self.stealthCache.indexOf([txId, address]) > -1) {
+        if (self.stealthCache.indexOf(txId+address) > -1) {
+            console.log("[Wallet] Skipping stealth because already seen!");
             return;
         }
-        self.stealthCache.push([txId, address]);
+        self.stealthCache.push(txId+address);
 
         // Try out the stealth row
         var myKeyBytes = Stealth.uncoverPublic(scanKey.toBytes(), ephemKey, spendKey);
