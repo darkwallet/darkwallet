@@ -20,20 +20,16 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * Show an input (extracts the address sending)
    */
   $scope.showInput = function(anIn) {
-      var result, notes;
       var identity = DarkWallet.getIdentity();
-      var pubKeys = anIn.script.extractPubkeys();
+
+      var address = BtcUtils.getInputAddress(anIn, identity.wallet.versions);
+
       var lastScriptByte = anIn.script.buffer[anIn.script.buffer.length-1];
-      if (pubKeys.length == 1) {
-          // pubkey hash
-          var pubKeyBytes = pubKeys[0];
-          var pubKey = new Bitcoin.ECPubKey(pubKeys[0], pubKeyBytes.length==33);
-          var address = pubKey.getAddress(identity.wallet.versions.address);
-          result = address.toString();
-      } else if (anIn.script.chunks[0] == 0 && lastScriptByte == Bitcoin.Opcode.map.OP_CHECKMULTISIG) {
+
+      if (anIn.script.chunks[0] == 0 && lastScriptByte == Bitcoin.Opcode.map.OP_CHECKMULTISIG) {
           // multisig
-          var multisig = BtcUtils.importMultiSig(Bitcoin.convert.bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]));
-          result = multisig.address;
+          var fundScript = bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]);
+          var multisig = BtcUtils.importMultiSig(fundScript);
           notes = (anIn.script.chunks.length-2) + "/" + multisig.pubKeys.length + " sigs"
       } else if (anIn.outpoint.hash == '0000000000000000000000000000000000000000000000000000000000000000') {
           result = '';
@@ -41,7 +37,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       } else {
           console.log('unknown', anIn);
       }
-      return {address: result, notes: notes};
+      return {address: address, notes: notes};
   };
 
   /**

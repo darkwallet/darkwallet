@@ -68,6 +68,9 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
 
     // XXX temporary while bitcoinjs-lib supports testnet better
     txObj = BtcUtils.fixTxVersions(txObj, this.identity);
+
+    var inAddress;
+
     // Check inputs
     for(var idx=0; idx<txObj.ins.length; idx++) {
         var anIn = txObj.ins[idx];
@@ -76,10 +79,12 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
             inMine += 1;
             var output = btcWallet.outputs[outIdx];
             myInValue += output.value;
+        } else {
+            inAddress = BtcUtils.getInputAddress(anIn, this.identity.wallet.versions) || inAddress;
         }
     }
     if (!inMine) {
-        txAddr = 'unknown';
+        txAddr = inAddress || 'unknown';
     }
     // Check outputs
     for(var idx=0; idx<txObj.outs.length; idx++) {

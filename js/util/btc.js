@@ -12,6 +12,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     lastBlock: 296405,
     lastTimestamp: 1397780085,
     blockDiff: 562.65,
+
     /*
      * Set timestamp for the last block to adjust timestamp heuristics
      */
@@ -20,6 +21,25 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         BtcUtils.lastTimestamp = timestamp;
         BtcUtils.blockDiff = ((timestamp-genesisTime) / block);
     },
+
+    /**
+     * Get the address for an input
+     */
+    getInputAddress: function(anIn, versions) {
+        if (!versions) throw Error("No versions!");
+        var ops = Bitcoin.Opcode.map;
+        var buffer = anIn.script.buffer;
+        var lastByte = buffer[buffer.length-1];
+        if (lastByte == ops.OP_CHECKMULTISIG) {
+            var multisig = BtcUtils.importMultiSig(convert.bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]), versions.p2sh);
+            return multisig.address;
+        } else if (buffer[0] == ops.OP_HASH160 && lastByte == ops.OP_EQUAL) {
+            var pubKeys = anIn.script.extractPubkeys();
+            var pubKey = new Bitcoin.ECPubKey(pubKeys[0], pubKeyBytes.length==33);
+            return pubKey.getAddress(versions.address).toString();
+        }
+    },
+
     /*
      * Decode a block header
      */
