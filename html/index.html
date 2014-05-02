@@ -15,7 +15,7 @@
     <div id="fixed" style="position: fixed"></div>  
     <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
     <div class="off-canvas-wrap show-for-small">
-      <div class="inner-wrap">
+      <div class="inner-wrap" ng-cloak ng-show="identityName">
           <button id="menu-mobile">Menu</button> 
           <a href="#/wallet"><img src="../images/logo.svg" width="32" height="32" />Dark Wallet</a>
           <!-- Off Canvas Menu -->
@@ -28,15 +28,15 @@
       </div>
     </div>
     <nav class="top-bar hide-for-small">
-      <ul class="title-area">
+      <ul class="title-area" ng-cloak ng-show="identityName">
         <li class="name">
           <h1><a href="#/wallet" style="cursor: default"><img id="logo" src="../images/logo.svg" width="32" height="32" />Dark Wallet</a></h1>
         </li>
         <li class="toggle-topbar menu-icon"><a href="">Menu</a></li>
       </ul>
-      <section class="top-bar-section">
+      <section class="top-bar-section" ng-cloak ng-show="identityName">
         <!-- Right Nav Section -->
-        <ul ng-cloak ng-show="identityName" class="right">
+        <ul class="right">
 	  <li title="Gateway: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i></a></li>
 	  <li ng-show="settings.advanced && status.syncing"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
 	  <li ng-show="settings.advanced"><a><i> {{currentHeight}}</i></a></li>
