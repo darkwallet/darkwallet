@@ -10,7 +10,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   $scope.addServerError = '';
   $scope.connectionStatus = 'Disconnected';
   $scope.servicesStatus = {gateway: 'unknown', obelisk: 'unknown'};
-  $scope.validIPPort = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/i;
+  $scope.validIPPort = /^((ws|wss):\/\/)(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/i;
   
   // Apply scope
   var applyScope = function() {
@@ -60,6 +60,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   // Add a server from html form
   $scope.addServer = function() {
       var newServer = $scope.newServer;
+      console.log("[front] newServer", newServer.name, newServer.address);
       if (!newServer.name || !newServer.address) {
           $scope.addServerError = 'Missing name or address';
           return;
