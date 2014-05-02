@@ -60,6 +60,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * Transaction received callback
    */
   var onFetchTransaction = function(err, data) {
+      $scope.fetching = false;
       if (err) {
           notify.warning("Transaction not found", err.message);
           return;
@@ -78,6 +79,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    */
   $scope.searchTransaction = function(txHash) {
       var client = DarkWallet.getClient();
+      $scope.fetching = true;
       client.fetch_transaction(txHash||$scope.txHash, onFetchTransaction);
   }
 
@@ -97,6 +99,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
   $scope.page = 0;
   var limit = 25;
   var onFetchHistory = function(err, history) {
+      $scope.fetching = false;
       if (err) {
           notify.warning("Address not found!", err.message);
           return;
@@ -141,6 +144,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
   $scope.searchAddress = function(address) {
       var client = DarkWallet.getClient();
       $scope.address = address;
+      $scope.fetching = true;
       client.fetch_history(address, 0, onFetchHistory);
   }
 

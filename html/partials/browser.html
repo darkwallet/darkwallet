@@ -54,7 +54,7 @@
      <div class="large-7 columns">
           {{address}}
      </div>
-     <div class="large-3 columns transactions">
+     <div class="large-3 columns transactions" ng-show="!fetching">
         <div class="row">
            <div class="columns small-3">
               In:
@@ -81,8 +81,11 @@
         </div>
      </div>
 </div>
-<div ng-cloak class="row panel" ng-if="address && (!history || !history.length)">
+<div ng-cloak class="row panel" ng-if="address && !fetching">
     No history found for this address
+</div>
+<div ng-cloak class="row panel" ng-if="fetching">
+    Requesting information from the server... please wait
 </div>
 <div class="row panel setback coins transactions" ng-if="history">
       <div class="row">
