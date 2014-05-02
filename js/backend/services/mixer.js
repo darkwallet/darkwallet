@@ -143,8 +143,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   /**
    * Announce a coinjoin.
    */
-  MixerService.prototype.announce = function(coinJoin) {
-      var msg = Protocol.CoinJoinOpenMsg(coinJoin.id, coinJoin.task.total);
+  MixerService.prototype.announce = function(id, coinJoin) {
+      var msg = Protocol.CoinJoinOpenMsg(id, coinJoin.task.total);
       this.checkTask(msg, 'announce');
   };
 
@@ -172,7 +172,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         this.ongoing[id].task = task;
 
         // See if the task is expired otherwise send
-        this.announce(this.ongoing[id]);
+        this.announce(id, this.ongoing[id]);
         break;
       case 'paired':
       case 'finish':
@@ -424,7 +424,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
               walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
           } else if (coinJoin.state == 'announce') {
               // announce again
-              this.announce(coinJoin);
+              this.announce(msg.body.id, coinJoin);
           }
           this.checkDelete(msg.body.id);
 
