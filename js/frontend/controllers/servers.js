@@ -60,7 +60,6 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   // Add a server from html form
   $scope.addServer = function() {
       var newServer = $scope.newServer;
-      console.log("[front] newServer", newServer.name, newServer.address);
       if (!newServer.name || !newServer.address) {
           $scope.addServerError = 'Missing name or address';
           return;
