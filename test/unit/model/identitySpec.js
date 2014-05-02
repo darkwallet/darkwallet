@@ -38,7 +38,19 @@ define(['model/identity'], function(Identity) {
 
     it('is created properly', function() {
       expect(identity.name).toBe("Sean's Outpost");
-      expect(identity.settings).toEqual({currency: 'BTC', fiatCurrency: 'EUR', notifications: {popup: true, send: true, receive: true, multisig: true}});
+      expect(identity.settings).toEqual({
+        currency: 'BTC',
+        fiatCurrency: 'EUR',
+        animations: {
+          enabled: true
+        },
+        notifications: {
+          popup: true,
+          send: true,
+          receive: true,
+          multisig: true
+        }
+      });
       expect(identity.store).toBeDefined();
       expect(identity.wallet).toBeDefined();
       expect(identity.txdb).toBeDefined();

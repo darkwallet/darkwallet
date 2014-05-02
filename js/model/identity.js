@@ -11,11 +11,26 @@ function(Wallet, TransactionDatabase, History, Tasks, Contacts, Connections, Bit
  */
 function Identity(store, seed, password) {
     this.name = store.get('name');
-    this.settings = store.init('settings', {currency: 'BTC', fiatCurrency: 'EUR', notifications: {popup: true, send: true, receive: true, multisig: true}});
+    this.settings = store.init('settings', {
+      currency: 'BTC',
+      fiatCurrency: 'EUR',
+      animations: {
+        enabled: true
+      },
+      notifications: {
+        popup: true,
+        send: true,
+        receive: true,
+        multisig: true
+      }
+    });
     // Temporary upgrade store to adapt wallets, we will
     // remove this for release and add a proper mechanism.
     if (!this.settings.hasOwnProperty('notifications')) {
         this.settings.notifications = { popup: true };
+    }
+    if (!this.settings.hasOwnProperty('animations')) {
+        this.settings.animations = { enabled: true };
     }
     this.store = store;
     if (seed && password) {

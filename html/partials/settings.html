@@ -31,6 +31,8 @@
       </div>
       <div class="large-5 columns">
         <div class="panel setback notifications">
+          <h5>Interface</h5>
+          <input id="checkbox-animations" ng-model="settings.animations.enabled" type="checkbox" ng-change="animationsChanged()"><label for="checkbox-animations">Enable animations</label><br>
           <h5>Notifications</h5>
           <input id="checkbox-outtx" ng-model="settings.notifications.send" type="checkbox"><label for="checkbox-outtx">For outgoing transactions</label><br>
           <input id="checkbox-intx" ng-model="settings.notifications.receive" type="checkbox"><label for="checkbox-intx">For incoming transactions</label><br>

@@ -3,7 +3,7 @@
 define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyformat'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic, CurrencyFormat) {
 
   // Controller
-  controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', '$animate', function($scope, notify, $animate) {
   var identity = DarkWallet.getIdentity();
 
   // Available fiat currencies
@@ -48,6 +48,10 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
               $scope.forms.send.fee = $scope.defaultFee;
           }
       }
+  };
+  $scope.animationsChanged = function() {
+      $animate.enabled($scope.settings.animations.enabled);
+      $scope.storeSettings();
   };
   $scope.storeSettings = function() {
       var identity = DarkWallet.getIdentity();

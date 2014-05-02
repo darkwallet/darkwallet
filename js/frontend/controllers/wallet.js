@@ -11,8 +11,8 @@ function (controllers, DarkWallet, Port) {
    * Controller
    */
   controllers.controller('WalletCtrl',
-  ['$scope', '$location', 'clipboard', 'modals', '$wallet',
-      function($scope, $location, clipboard, modals, $wallet) {
+  ['$scope', '$location', 'clipboard', 'modals', '$wallet', '$animate',
+      function($scope, $location, clipboard, modals, $wallet, $animate) {
 
   // Scope variables
   $scope.rates = {};
@@ -23,7 +23,8 @@ function (controllers, DarkWallet, Port) {
   // Global scope utils
   $scope.modals = modals;
   $scope.clipboard = clipboard;
-
+  
+  $animate.enabled(false);
 
   /**
    * Wallet Port
@@ -79,6 +80,8 @@ function (controllers, DarkWallet, Port) {
       $scope.totalUnconfirmed = balance.unconfirmed;
 
       $scope.identityName = identity.name;
+      
+      $animate.enabled(identity.settings.animations.enabled);
   }
 
 
