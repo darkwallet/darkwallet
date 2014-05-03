@@ -24,7 +24,11 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
                   if (task.progress === undefined) {
                       task.progress = 33;
                   }
-                  tasks.push({section: section, store: task});
+                  var outPocket;
+                  if (!(task.outPocket === undefined)) {
+                      outPocket = identity.wallet.getPocket(task.outPocket);
+                  }
+                  tasks.push({section: section, store: task, outPocket: outPocket});
               }
           });
       });

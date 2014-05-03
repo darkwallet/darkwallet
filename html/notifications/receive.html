@@ -1,3 +1,4 @@
-Receiving transaction ({{task.store.value|currencyPresenter}})<br>
-<small>{{task.store.address}} ({{task.store.confirmations}} confirmations)</small>
+Receiving transaction<br>
+<div><small>{{task.store.value|currencyPresenter}} ({{task.store.confirmations}} confirmations)</small></div>
+<div><small>From: <b>{{task.store.recipients[0].address}}</b> To: <b ng-show="task.outPocket">{{task.outPocket.name||task.outPocket.label}}</b></small></div>
 <progressbar value="task.store.progress">{{task.store.progress}}%</progressbar>
