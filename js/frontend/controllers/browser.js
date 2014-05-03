@@ -25,6 +25,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       var address = BtcUtils.getInputAddress(anIn, identity.wallet.versions);
 
       var lastScriptByte = anIn.script.buffer[anIn.script.buffer.length-1];
+      var notes;
 
       if (anIn.script.chunks[0] == 0 && lastScriptByte == Bitcoin.Opcode.map.OP_CHECKMULTISIG) {
           // multisig
@@ -36,6 +37,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
           notes = "coinbase";
       } else {
           console.log('unknown', anIn);
+          notes = '';
       }
       return {address: address, notes: notes};
   };
