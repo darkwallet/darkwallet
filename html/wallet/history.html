@@ -31,8 +31,8 @@
             </div>
              <div class="row collapse"  ng-repeat="row in historyRows">
              <div class="small-2 columns">
-                <div ng-class="{'fa-sign-in': row.total>0 , 'fa-sign-out': row.total<0, 'red': row.total<0, 'green': row.total>0}" class="fa transaction-icon"></div>
-             {{(row.total) | amountFilter}}
+                <div ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></div>
+             {{(row.partial) | amountFilter}}
              </div>
              <div class="small-5 columns">
                <div ng-hide="row.contact">

@@ -37,8 +37,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       } else if (pocket.isAll) {
           balance = wallet.getBalance();
       } else {
-          var mainBalance = wallet.getBalance(pocket.index);
-          var changeBalance = wallet.getBalance(pocket.index+1);
+          var mainBalance = wallet.getBalance(pocket.index*2);
+          var changeBalance = wallet.getBalance((pocket.index*2)+1);
 
           var confirmed = mainBalance.confirmed + changeBalance.confirmed;
           var unconfirmed = mainBalance.unconfirmed + changeBalance.unconfirmed;
@@ -53,9 +53,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   HistoryProvider.prototype.isCurrentPocket = function(pocketId) {
       if (this.pocket.isAll) {
           return true;
-      } else if (this.pocket.isFund && this.pocket.index == pocketId) {
+      } else if (this.pocket.index == pocketId) {
           return true;
-      } else if (typeof this.pocket.index == 'number' && pocketId == this.pocket.index/2) {
       }
   }
 
@@ -129,7 +128,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       }
       var pocketIndex = rowIndex*2;
 
-      this.pocket.index = pocketIndex;
+      this.pocket.index = rowIndex;
       this.pocket.name = pocketName;
       this.pocket.fund = null;
       var walletAddress = identity.wallet.getAddress([this.pocket.index]);
@@ -173,6 +172,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var self = this;
       var identity =  DarkWallet.getIdentity();
       var history = identity.history.history;
+      var pocketId = this.pocket.index;
       var rows = history.filter(this.pocketFilter, this);
       rows = rows.sort(function(a, b) {
          if (!a.height) {
@@ -189,9 +189,17 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           return [];
       }
       // Now calculate balances
+      var getImpact = function(row) {
+          if (pocketId === undefined) {
+              return row.total;
+          } else {
+              return row.impact[pocketId];
+          }
+      }
       var prevRow = rows[0];
       prevRow.confirmed = this.pocket.balance.confirmed;
       prevRow.unconfirmed = this.pocket.balance.unconfirmed;
+      prevRow.partial = getImpact(prevRow);
 
       var contacts = identity.contacts;
       this.fillRowContact(contacts, prevRow);
@@ -199,7 +207,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       while(idx<rows.length) {
           var row = rows[idx];
           this.fillRowContact(contacts, row);
-          var value = prevRow.total;
+          
+          var value = prevRow.partial;
+
+          row.partial = getImpact(row);
 
           if (prevRow.height) {
               row.confirmed = prevRow.confirmed-value;

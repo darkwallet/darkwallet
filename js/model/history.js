@@ -66,6 +66,14 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     var isStealth = false;
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
 
+    var pocketImpact = {};
+    var addPocketImpact = function(pocketId, amount) {
+        if (!pocketImpact.hasOwnProperty(pocketId)) {
+            pocketImpact[pocketId] = 0.0;
+        }
+        pocketImpact[pocketId] += amount;
+    };
+
     // XXX temporary while bitcoinjs-lib supports testnet better
     txObj = BtcUtils.fixTxVersions(txObj, this.identity);
 
@@ -76,12 +84,14 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
         var anIn = txObj.ins[idx];
         var outIdx = anIn.outpoint.hash+":"+anIn.outpoint.index;
         if (btcWallet.outputs[outIdx]) {
-            inMine += 1;
             var output = btcWallet.outputs[outIdx];
-            myInValue += output.value;
             // save in pocket
             var inWalletAddress = identity.wallet.getWalletAddress(output.address);
             inPocket = identity.wallet.pockets.getAddressPocketId(inWalletAddress);
+            // counters
+            inMine += 1;
+            myInValue += output.value;
+            addPocketImpact(inPocket, -output.value);
         } else {
             var address = BtcUtils.getInputAddress(anIn, this.identity.wallet.versions);
             inAddress = address || inAddress;
@@ -102,8 +112,12 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
             }
             outMine += 1;
             myOutValue += anOut.value;
-            // save out pocket
-            outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
+            var _outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
+            // save out pocket (don't set if it's change)
+            if (!((typeof outWalletAddress.index[0] === 'number') && (outWalletAddress.index[0]%2 == 1))) {
+                outPocket = _outPocket;
+            }
+            addPocketImpact(_outPocket, anOut.value);
         } else {
             if (inMine) {
                 txAddr = anOut.address.toString();
@@ -116,7 +130,7 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     // Create a row representing this change (if already referenced will
     // be replaced)
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
-    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket};
+    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket, impact: pocketImpact};
     return newRow;
 };
 
@@ -158,8 +172,6 @@ History.prototype.txFetched = function(walletAddress, transaction, height) {
         else
             console.log("No input!", newRow.tx);
      }
-    newRow.addressIndex = walletAddress.index.slice(0);
-    newRow.pocket = walletAddress.index[0];
     if (this.addHistoryRow(newRow) < 2) {
         // It's a relevant event so return the row (initial unspent or initial confirm)
         return newRow;
