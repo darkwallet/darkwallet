@@ -224,17 +224,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       // Making sure shownRows is reset before historyFilter stage is reached.
       if (this.pocket.isAll) {
           // only add pocket transactions for now
-          return typeof row.pocket === 'number';
+          return ((typeof row.inPocket === 'number') || (typeof row.outPocket === 'number'));
       }
       else {
-          // row pocket here is just 1st element in index, pocket can be pocket/2
-          if (typeof row.pocket === 'number') {
-              // row.pocket here is the branch id, pocket.index is 2*pocketId
-              var pocketBranch = (row.pocket%2) ? row.pocket-1 : row.pocket;
-              return pocketBranch == this.pocket.index;
-          } else {
-              return row.pocket == this.pocket.index;
-          }
+          return (row.inPocket == this.pocket.index || row.outPocket == this.pocket.index);
       }
   };
 
