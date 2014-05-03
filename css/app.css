@@ -5030,7 +5030,13 @@ div.wizard {
 
 form.send {
   background: url(../images/send.svg) center/contain no-repeat; }
+	
+.quicksend-no-contact {
+  word-break: break-all; }
 
+.quicksend-address {
+	font-size:80%; }
+	
 .setback > * {
   opacity: 0.8; }
 
