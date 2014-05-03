@@ -4999,10 +4999,13 @@ textarea.seed {
 div.pockets {
   z-index: 2; }
 
-
 div.chat-text {
-  word-wrap: break-word; }
-
+  word-wrap: break-word;
+  background-color: rgb(60,60,60); }
+	
+div.chat-text>div {
+  border-bottom: 1px solid black; }	
+	
 .setback.net {
   background: url(../images/net.svg) center/contain no-repeat; }
 
