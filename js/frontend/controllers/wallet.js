@@ -24,8 +24,6 @@ function (controllers, DarkWallet, Port) {
   $scope.modals = modals;
   $scope.clipboard = clipboard;
   
-  $animate.enabled(false);
-
   /**
    * Wallet Port
    * Sends notifications about wallet state and identity change
