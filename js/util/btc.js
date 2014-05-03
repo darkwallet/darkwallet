@@ -30,12 +30,12 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         var ops = Bitcoin.Opcode.map;
         var buffer = anIn.script.buffer;
         var lastByte = buffer[buffer.length-1];
+        var pubKeys = anIn.script.extractPubkeys();
         if (lastByte == ops.OP_CHECKMULTISIG) {
             var multisig = BtcUtils.importMultiSig(convert.bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]), versions.p2sh);
             return multisig.address;
-        } else if (buffer[0] == ops.OP_HASH160 && lastByte == ops.OP_EQUAL) {
-            var pubKeys = anIn.script.extractPubkeys();
-            var pubKey = new Bitcoin.ECPubKey(pubKeys[0], pubKeyBytes.length==33);
+        } else if (pubKeys && pubKeys.length) {
+            var pubKey = new Bitcoin.ECPubKey(pubKeys[0], pubKeys[0].length==33);
             return pubKey.getAddress(versions.address).toString();
         }
     },
