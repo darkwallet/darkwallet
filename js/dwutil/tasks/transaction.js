@@ -106,11 +106,14 @@ TransactionTasks.processRow = function(value, row, height) {
         task = { hash: row.hash, height: row.height, value: value, progress: 10 };
         created = true;
     }
-
     // save initial height when confirmed
     if (row.height && !task.height) {
         task.height = row.height;
     }
+
+    task.inPocket = row.inPocket;
+    task.outPocket = row.outPocket;
+
     if (!task.address && !(task.recipients && task.recipients.length)) {
         task.address = row.address;
         task.recipients = [{address: row.address, amount: value}]

@@ -69,7 +69,7 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     // XXX temporary while bitcoinjs-lib supports testnet better
     txObj = BtcUtils.fixTxVersions(txObj, this.identity);
 
-    var inAddress;
+    var inAddress, inPocket, outPocket;
 
     // Check inputs
     for(var idx=0; idx<txObj.ins.length; idx++) {
@@ -79,8 +79,12 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
             inMine += 1;
             var output = btcWallet.outputs[outIdx];
             myInValue += output.value;
+            // save in pocket
+            var inWalletAddress = identity.wallet.getWalletAddress(output.address);
+            inPocket = identity.wallet.pockets.getAddressPocketId(inWalletAddress);
         } else {
-            inAddress = BtcUtils.getInputAddress(anIn, this.identity.wallet.versions) || inAddress;
+            var address = BtcUtils.getInputAddress(anIn, this.identity.wallet.versions);
+            inAddress = address || inAddress;
         }
     }
     if (!inMine) {
@@ -89,7 +93,8 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     // Check outputs
     for(var idx=0; idx<txObj.outs.length; idx++) {
         var anOut = txObj.outs[idx];
-        if (btcWallet.addresses.indexOf(anOut.address.toString())>-1) {
+        var outWalletAddress = identity.wallet.getWalletAddress(anOut.address.toString());
+        if (outWalletAddress) {
             var output = btcWallet.outputs[txHash+":"+idx];
             // TODO: mark also when input is mine and output not
             if (output && output.stealth) {
@@ -97,6 +102,8 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
             }
             outMine += 1;
             myOutValue += anOut.value;
+            // save out pocket
+            outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
         } else {
             if (inMine) {
                 txAddr = anOut.address.toString();
@@ -109,7 +116,7 @@ History.prototype.buildHistoryRow = function(walletAddress, transaction, height)
     // Create a row representing this change (if already referenced will
     // be replaced)
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
-    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue};
+    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket};
     return newRow;
 };
 
