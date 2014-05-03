@@ -86,6 +86,7 @@ Wallet.prototype.initIfEmpty = function() {
 Wallet.prototype.getBalance = function(pocketIndex) {
     var balance = 0;
     var unconfirmed = 0;
+    var hot = 0;
     var allAddresses = [];
     var keys = Object.keys(this.pubKeys);
     if (pocketIndex === undefined) {
@@ -114,14 +115,25 @@ Wallet.prototype.getBalance = function(pocketIndex) {
             } else if (out.spend) {
                 // spent so don't count it
             } else if (!out.height) {
-                unconfirmed += out.value;
+                // check if this is coming from my balance
+                if (out.change === undefined) {
+                    var txHash = out.receive.split(':');
+                    out.change = this.txInputsMine(txHash);
+                }
+                // add to balance
+                if (out.change) {
+                    balance += out.value;
+                    hot += out.value;
+                } else {
+                    unconfirmed += out.value;
+                }
             }
             else {
                 balance += out.value;
             }
         }
     };
-    var balances = {confirmed: balance, unconfirmed: unconfirmed};
+    var balances = {confirmed: balance, unconfirmed: unconfirmed, hot: hot};
     
     if (pocketIndex === undefined) {
         this.balance = balances;
@@ -417,14 +429,14 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
         tmpWallet = this.pockets.getPocketWallet(pocketId);
     }
 
-    var getCandidateOutputs = function(w, value) {
+    var getCandidateOutputs = function(w, value, hot) {
         var h = []
         for (var out in w.outputs) h.push(w.outputs[out])
         // remove spent
         var utxo = h.filter(function(x) { return !x.spend });
 
-        // remove unconfirmed
-        utxo = utxo.filter(function(x) { return x.height });
+        // remove unconfirmed (leave hot change if 'hot' is true)
+        utxo = utxo.filter(function(x) { return (x.height || (hot&&x.change)) });
 
         // organize and select
         var valuecompare = function(a,b) { return a.value > b.value; }
@@ -436,6 +448,10 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
         for (var i = 0; i < utxo.length; i++) {
             totalval += utxo[i].value;
             if (totalval >= value) return utxo.slice(0,i+1);
+        }
+        // if looking without hot and didn't find any, look for hot also
+        if (!hot) {
+            return getCandidateOutputs(w, value, true);
         }
         throw ("Not enough money to send funds including transaction fee. Have: "
                      + (totalval / 100000000) + ", needed: " + (value / 100000000));
@@ -654,6 +670,26 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
         output.spendheight = spendheight;
     }
 };
+
+/**
+ * Tell whether any of the transactions inputs are ours
+ * @param {String} txHash Transaction Hash
+ */
+Wallet.prototype.txInputsMine = function(txHash) {
+    var txdb = this.identity.txdb;
+    // if we don't have the transaction the inputs can't be ours
+    if (!txdb.transactions.hasOwnProperty(txHash)) {
+        return false;
+    }
+    var tx = new Bitcoin.Transaction(txdb.transactions[txHash]);
+    for (var i=0; idx<tx.ins.length; i++) {
+        var anIn = tx.ins[i];
+        if (outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
+            return true;
+        }
+    };
+    return false;
+}
 
 /*
  * Check if transaction involves given address.

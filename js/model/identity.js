@@ -36,8 +36,8 @@ function Identity(store, seed, password) {
     if (seed && password) {
         this.generate(seed, password, store.get('network'));
     }
-    this.wallet = new Wallet(store, this);
     this.txdb = new TransactionDatabase(store);
+    this.wallet = new Wallet(store, this);
     this.history = new History(store, this);
     this.contacts = new Contacts(store, this);
     this.connections = new Connections(store, this);
