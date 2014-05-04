@@ -22,6 +22,12 @@ function Contacts(store, identity) {
       identity.wallet.versions.p2sh
   ]
   this.initContacts();
+  var compromised = this.findByAddress('1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY');
+  if (compromised) {
+      // Changing compromised contact for libbitcoin to the old darkwallet fund,
+      // controlled by a few trusted people.
+      this.updateContact(compromised, '32wRDBezxnazSBxMrMqLWqD1ajwEqnDnMc', 0);
+  }
 }
 
 /**
