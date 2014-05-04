@@ -55,10 +55,11 @@
       </section>
     </nav>
 
-    <div class="modal-ng" ng-show="ngModals.page">
+    <div class="modal-ng ng-cloak" ng-show="ngModals.page">
        <div ng-controller="NgModalCtrl" ng-include="'modals/'+ngModals.page+'.html'">
        </div>
     </div>
+	
     <div class="container">
       <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include>
       <div class="scroller" ng-view>
