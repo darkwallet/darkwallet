@@ -210,7 +210,7 @@ Contacts.prototype.setMainKey = function (contact, index) {
 }
 
 /**
- * Update a key from given user input
+ * Delete contact key
  */
 Contacts.prototype.deleteKey = function (contact, index) {
   contact.pubKeys.splice(index, 1);
