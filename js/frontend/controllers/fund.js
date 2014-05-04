@@ -156,5 +156,14 @@ function (controllers, DarkWallet) {
       }
   };
 
+  var finishDelete = function(fund) {
+      var identity = DarkWallet.getIdentity();
+      identity.wallet.multisig.deleteFund(fund.multisig);
+      $scope.selectPocket();
+  };
+  $scope.deleteFund = function(fund) {
+      modals.open('confirm-delete', {name: fund.name, object: fund}, finishDelete);
+  };
+
 }]);
 });
