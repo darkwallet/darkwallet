@@ -20,6 +20,8 @@ function (controllers, DarkWallet, Port) {
   $scope.forms = {};
   $scope.identityName = false;
 
+  $scope.ngModals = {page: false};
+
   // Global scope utils
   $scope.modals = modals;
   $scope.clipboard = clipboard;

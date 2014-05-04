@@ -60,6 +60,10 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       notify.note('Tasks cleared.');
   };
 
+  $scope.newModal = function(name) {
+      $scope.ngModals.page = name;
+  }
+
   // Enable advanced mode
   $scope.setAdvanced = function() {
       var identity = DarkWallet.getIdentity();

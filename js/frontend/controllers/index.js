@@ -14,6 +14,7 @@ define([
     './history',
     './identities',
     './lobby',
+    './ngmodal',
     './new_fund',
     './new_wallet',
     './overview',
