@@ -228,6 +228,10 @@ li.colorhead h6 { color: white; margin: 0; }
 	border-radius: 4px;
 	 }
 
+
+	 /* ----------------------- */
+
+
 .address-postfix { margin-top: 2.1em; }
 
 .panel .side-nav { padding-top: 0; }
@@ -261,6 +265,11 @@ textarea.seed {
 	color: white;
 	resize: none;
  }
+
+textarea.script {
+	min-height: 9em;
+	resize: none;
+}
 
 .transaction-icon.green { color: $primary-color; }
 .transaction-icon.red { color: $alert-color; }
@@ -319,7 +328,7 @@ div.chat-text {
 	word-wrap: break-word;
 }
 
-
+/* ----------- Backgrounds ---------------- */
 
 .setback.net { background: url(../images/net.svg) center/contain no-repeat; }
 

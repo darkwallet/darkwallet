@@ -4865,6 +4865,7 @@ li.colorhead h6 {
   border: 2px solid #444;
   border-radius: 4px; }
 
+/* ----------------------- */
 .address-postfix {
   margin-top: 2.1em; }
 
@@ -4911,6 +4912,10 @@ textarea.seed {
   padding: 4em 0;
   min-height: 10em;
   color: white;
+  resize: none; }
+
+textarea.script {
+  min-height: 9em;
   resize: none; }
 
 .transaction-icon.green {
@@ -5013,6 +5018,7 @@ div.pockets {
 div.chat-text {
   word-wrap: break-word; }
 
+/* ----------- Backgrounds ---------------- */
 .setback.net {
   background: url(../images/net.svg) center/contain no-repeat; }
 

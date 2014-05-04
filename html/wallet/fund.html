@@ -17,15 +17,18 @@
       <div>{{pocket.fund.multisig.m}} of {{pocket.fund.multisig.pubKeys.length}} signatures are needed for spends</div>
     </div>
   <div class="row">
-  <div class="columns large-4">
-    <h3>Participants:</h3>
+  <div class="columns medium-6">
+	  <div class="panel radius">
+    <h5>Fund managers</h5>
     <div ng-repeat="participant in pocket.fund.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
-        <identicon icon-size="38" hash="participant.hash" title="{{contact.hash}}"></identicon> {{participant.name}} <span ng-show="participant.type=='me'">(me)</span>
+        <identicon icon-size="38" hash="participant.hash" title="{{contact.hash}}"></identicon> <div class="ellipsis">{{participant.name}}</div> <span ng-show="participant.type=='me'">(me)</span>
     </div>
+	</div>
   </div>
-  <div class="columns large-8">
-    <h3>Script:</h3>
-    <div class="row">
+  <div class="columns medium-6">
+	<div class="panel radius">
+    <h5>Script</h5>
+    <div class="row collapse">
       <div class="large-4 columns">
         <button ng-click="clipboard.copy(pocket.fund.multisig.script)" class="button postfix fa fa-clipboard">Copy</button>
       </div>
@@ -37,16 +40,31 @@
         <button ng-click="modals.showQr(pocket.fund.multisig.script)" class="button postfix radius fa fa-qrcode">QR</button>
       </div>
     </div>
-    <div ng-show="showFundScript"><code>{{pocket.fund.multisig.script}}</code></div>
-
-    <h3>Tools:</h3>
-    <button class="button postfix fa large-6 fa-cloud-download" ng-show="!importingFundTransaction" ng-click="importingFundTransaction=true">Import Spend</button>
+    <textarea class="script" ng-show="showFundScript">{{pocket.fund.multisig.script}}</textarea>
+</div>
+<div class="panel radius">
+    <h3>Tools</h3>
+	<div class="row" ng-show="!importingFundTransaction">
+		<div class="small-6 columns">
+    		<button class="button postfix fa fa-cloud-download" ng-click="importingFundTransaction=true">Import Spend</button>
+		</div>
+		<div class="small-6 columns">
+    		<button class="button postfix alert fa fa-trash-o" ng-click="deleteFund(pocket.fund)">Delete</button>
+		</div>
+	</div>
     <form name="fundTxForm" novalidate ng-submit="importFundTx(fundTxForm)" ng-show="importingFundTransaction">
         <input required ng-model="fundTxForm.newTx" type="text" placeholder="Paste the transaction hex here"></input>
-        <button class="button postfix fa large-6 fa-cloud-download" type="submit">Import</button>
-        <button class="alert button postfix large-6 fa fa-times" ng-click="importingFundTransaction=false">Cancel</button>
+		<div class="row">
+			<div class="small-6 columns">
+        		<button class="button postfix fa fa-cloud-download" type="submit">Import</button>
+			</div>
+			<div class="small-6 columns">
+        		<button class="alert button postfix fa fa-times" ng-click="importingFundTransaction=false">Cancel</button>
+			</div>
+		</div>
     </form>
-    <button class="button postfix alert fa fa-trash-o large-6" ng-click="deleteFund(pocket.fund)">Delete</button>
+
+</div>
   </div> <!-- columns -->
   </div> <!-- row -->
 </div>
