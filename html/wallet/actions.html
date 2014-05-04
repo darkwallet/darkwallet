@@ -1,34 +1,52 @@
-        <div class="row" ng-controller="PocketActionCtrl">
-          <div class="large-6 columns">
-            <a href="" dropdown-toggle="#pockets" class="fa button postfix fa-share">Move funds to another pocket</a>
-            <ul id="pockets" class="f-dropdown">
-              <li class="colorhead"><h6>My pockets</h6></li>
-              <li ng-show="aPocket && $index != pocket.index" ng-repeat="aPocket in hdPockets track by $index">
-                <a ng-click="moveFunds('pocket', $index)">{{aPocket.name}}</a>
-              </li>
-              <li class="colorhead"><h6>Multisig funds</h6></li>
-              <li ng-repeat="fund in allFunds track by $index">
-                <a ng-click="moveFunds('multisig', $index)">{{fund.name}}</a>
-              </li>
-            </ul>
-            <a ng-click="setMixing(pocket)" ng-class="{'fa-square-o':!pocket.mixing, 'fa-check-square-o': pocket.mixing}" class="fa button postfix">Automatically mix funds on this pocket with CoinJoin</a>
-          </div>
-          <div class="large-6 columns">
-            <a href="" dropdown-toggle="#identities" class="fa button disabled postfix fa-reply-all">Move funds to another identity</a>
-            <ul id="identities" class="f-dropdown">
-              <li class="colorhead"><h6>Identities</h6></li>
-              <li ng-repeat="identity in availableIdentities track by $index">
-                <a ng-click="moveFunds('identity', $index)">{{identity}}</a>
-              </li>
-            </ul>
-            <div class="row">
-              <div class="small-6 columns">
-                <a href="" ng-click="renamePocket()" class="fa button postfix fa-terminal">Rename pocket</a>
-              </div>
-              <div class="small-6 columns">
-                <a class="fa button alert postfix fa-trash-o" ng-click="deletePocket(pocket)" ng-show="pocket.index !== 0">Delete pocket</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
+<div class="row" ng-controller="PocketActionCtrl">
+  <div class="medium-4 columns">
+	  <div class="panel radius">
+		  <h5>Pocket</h5>
+	<!--	  <div class="row collapse">
+			<div class="small-3 columns">
+				<a class="button prefix radius">Up</a>
+			</div>
+			<div class="small-6 columns">
+				<span class="prefix">Move in list</span>
+			</div>
+			<div class="small-3 columns">
+				<a class="button postfix radius">Down</a>
+			</div>
+		  </div> -->
+		  <div class="row collapse">
+	        <a href="" ng-click="renamePocket()" class="fa button postfix fa-terminal">Rename</a>
+	        <a class="fa button alert postfix fa-trash-o" ng-click="deletePocket(pocket)" ng-show="pocket.index !== 0">Delete</a>
+		  </div>
+  	</div>
+  </div>
+  <div class="medium-4 columns">
+	  <div class="panel radius">
+		<h5>Mix funds</h5>
+	  	<a ng-click="setMixing(pocket)" ng-class="{'fa-square-o':!pocket.mixing, 'fa-check-square-o': pocket.mixing}" class="fa button postfix">Mix funds on this pocket (CoinJoin)</a>
+	  </div>
+  </div>
+  <div class="medium-4 columns">
+	<div class="panel radius">
+		<h5>Move funds</h5>
+	    <a href="" dropdown-toggle="#pockets" class="fa button postfix fa-share">To another pocket</a>
+	    <ul id="pockets" class="f-dropdown">
+	      <li class="colorhead"><h6>My pockets</h6></li>
+          <li ng-show="aPocket && $index != pocket.index" ng-repeat="aPocket in hdPockets track by $index">
+            <a ng-click="moveFunds('pocket', $index)">{{aPocket.name}}</a>
+	      </li>
+	      <li class="colorhead"><h6>Multisig funds</h6></li>
+	      <li ng-repeat="fund in allFunds track by $index">
+	        <a ng-click="moveFunds('multisig', $index)">{{fund.name}}</a>
+	      </li>
+	    </ul>
+	  
+	    <a href="" dropdown-toggle="#identities" class="fa button nomarginbottom disabled postfix fa-reply-all">To another identity</a>
+	    <ul id="identities" class="f-dropdown">
+	      <li class="colorhead"><h6>Identities</h6></li>
+	      <li ng-repeat="identity in availableIdentities track by $index">
+	        <a ng-click="moveFunds('identity', $index)">{{identity}}</a>
+	      </li>
+	    </ul>
+	</div>
+  </div>
+</div>
