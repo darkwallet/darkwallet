@@ -8,6 +8,11 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
 
   var allowedVersions = [Bitcoin.network.mainnet.addressVersion, Bitcoin.network.mainnet.p2shVersion, Stealth.version];
 
+  function isSmallIntOp(opcode) {
+    return ((opcode == Bitcoin.Opcode.map.OP_0) ||
+    ((opcode >= Bitcoin.Opcode.map.OP_1) && (opcode <= Bitcoin.Opcode.map.OP_16)))
+  }
+
   var BtcUtils = {
     lastBlock: 296405,
     lastTimestamp: 1397780085,
@@ -31,7 +36,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
         var buffer = anIn.script.buffer;
         var lastByte = buffer[buffer.length-1];
         var pubKeys = anIn.script.extractPubkeys();
-        if (lastByte == ops.OP_CHECKMULTISIG) {
+        if (isSmallIntOp(buffer[0]) && lastByte == ops.OP_CHECKMULTISIG) {
             var multisig = BtcUtils.importMultiSig(convert.bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]), versions.p2sh);
             return multisig.address;
         } else if (pubKeys && pubKeys.length) {
