@@ -780,7 +780,7 @@ Wallet.prototype.processTx = function(serializedTx, height) {
         o.spendheight = height;
         if (height) {
             if (o.spendpending) {
-                var inputAddress = this.getWalletAddress(o.address);
+                var inputAddress = self.getWalletAddress(o.address);
                 o.spendpending = false;
                 inputAddress.balance -= o.value;
             } 
