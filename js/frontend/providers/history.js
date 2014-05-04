@@ -193,7 +193,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           if (pocketId === undefined) {
               return row.total;
           } else {
-              return row.impact[pocketId];
+              return row.impact[pocketId].total;
           }
       }
       var prevRow = rows[0];
@@ -216,6 +216,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
               row.confirmed = prevRow.confirmed-value;
               row.unconfirmed = prevRow.unconfirmed;
               if (!prevRow.height) {
+                 // outgoing
                  row.unconfirmed -= value;
               }
           } else {

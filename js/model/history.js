@@ -68,9 +68,14 @@ History.prototype.buildHistoryRow = function(transaction, height) {
     var pocketImpact = {};
     var addPocketImpact = function(pocketId, amount) {
         if (!pocketImpact.hasOwnProperty(pocketId)) {
-            pocketImpact[pocketId] = 0.0;
+            pocketImpact[pocketId] = {ins: 0, outs: 0, total: 0};
         }
-        pocketImpact[pocketId] += amount;
+        if (amount > 0) {
+            pocketImpact[pocketId].outs += amount;
+        } else {
+            pocketImpact[pocketId].ins -= amount;
+        }
+        pocketImpact[pocketId].total += amount;
     };
 
     // XXX temporary while bitcoinjs-lib supports testnet better
