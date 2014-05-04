@@ -131,12 +131,12 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       this.pocket.index = rowIndex;
       this.pocket.name = pocketName;
       this.pocket.fund = null;
-      var walletAddress = identity.wallet.getAddress([this.pocket.index]);
+      var walletAddress = identity.wallet.getAddress([pocketIndex]);
       this.pocket.mpk = walletAddress.mpk;
       this.pocket.stealth = walletAddress.stealth;
       this.pocket.mainAddress = walletAddress.stealth;
-      this.pocket.addresses = this.$wallet.addresses[this.pocket.index];
-      this.pocket.changeAddresses = this.$wallet.addresses[this.pocket.index+1];
+      this.pocket.addresses = this.$wallet.addresses[pocketIndex];
+      this.pocket.changeAddresses = this.$wallet.addresses[pocketIndex+1];
 
       var walletPocket = identity.wallet.pockets.getPocket(pocketName);
 
