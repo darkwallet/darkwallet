@@ -29,7 +29,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
 
       if (anIn.script.chunks[0] == 0 && lastScriptByte == Bitcoin.Opcode.map.OP_CHECKMULTISIG) {
           // multisig
-          var fundScript = bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]);
+          var fundScript = $scope.bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]);
           var multisig = BtcUtils.importMultiSig(fundScript);
           notes = (anIn.script.chunks.length-2) + "/" + multisig.pubKeys.length + " sigs"
       } else if (anIn.outpoint.hash == '0000000000000000000000000000000000000000000000000000000000000000') {
