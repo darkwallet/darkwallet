@@ -22,11 +22,13 @@ function Contacts(store, identity) {
       identity.wallet.versions.p2sh
   ]
   this.initContacts();
+  // revoke the libbitcoin old address
   var compromised = this.findByAddress('1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY');
-  if (compromised) {
+  if (compromised && compromised.pubKeys.length == 1) {
       // Changing compromised contact for libbitcoin to the old darkwallet fund,
       // controlled by a few trusted people.
-      this.updateContact(compromised, '32wRDBezxnazSBxMrMqLWqD1ajwEqnDnMc', 0);
+      compromised.pubKeys[0].type = 'revoked';
+      this.addContactKey(compromised, '32wRDBezxnazSBxMrMqLWqD1ajwEqnDnMc', true);
   }
 }
 
@@ -179,13 +181,16 @@ Contacts.prototype.addContact = function (contact) {
 /**
  * Add key
  */
-Contacts.prototype.addContactKey = function (contact, data) {
+Contacts.prototype.addContactKey = function (contact, data, main) {
   var newKey = this.prepareAddress(data);
 
   if (!contact.pubKeys) {
       contact.pubKeys = [];
   }
   contact.pubKeys.push(newKey);
+  if (main) {
+      contact.mainKey = contact.pubKeys.length-1;
+  }
   this.store.save();
   // delete address since now is contained inside contact.pubKeys
 };
