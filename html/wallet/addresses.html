@@ -99,7 +99,7 @@
 
 </div>
 <div ng-hide="pocket.isFund">
-    <a class="button small" ng-click="generateAddress(pocket.index)">New address</a>
-    <a class="button small" ng-click="generateAddress(pocket.index+1)">New change address</a>
+    <a class="button small" ng-click="generateAddress(pocket.index*2)">New address</a>
+    <a class="button small" ng-click="generateAddress((pocket.index*2)+1)">New change address</a>
   </div>
 </div>
