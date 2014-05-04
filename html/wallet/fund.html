@@ -1,4 +1,5 @@
-    <div class="panel">
+<div ng-controller="FundCtrl"> 
+   <div class="panel">
       <div class="row collapse">
         <div class="medium-2 columns">
             <span class="prefix radius">Fund Address</span>
@@ -45,5 +46,7 @@
         <button class="button postfix fa large-6 fa-cloud-download" type="submit">Import</button>
         <button class="alert button postfix large-6 fa fa-times" ng-click="importingFundTransaction=false">Cancel</button>
     </form>
+    <button class="button postfix alert fa fa-trash-o large-6" ng-click="deleteFund(pocket.fund)">Delete</button>
   </div> <!-- columns -->
   </div> <!-- row -->
+</div>
