@@ -442,8 +442,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
      */
      this.broadcastTx = function(newTx, task, callback) {
          // Broadcasting
-         console.log("send tx", newTx);
-         console.log("send tx", newTx.serializeHex());
+         var serialized = newTx.serializeHex();
          var notifyTx = function(error, count) {
              if (error) {
                  console.log("Error sending tx: " + error);
@@ -458,6 +457,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                  console.log("tx radar: " + count);
              }
          };
+         console.log("send tx", newTx);
+         console.log("send tx", serialized);
+         var identity = self.getCurrentIdentity();
+         identity.wallet.processTx(serialized, 0);
          core.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx);
      };
   }
