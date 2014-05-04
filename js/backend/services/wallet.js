@@ -151,7 +151,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         }
 
         // Process
-        var row = identity.wallet.processTx(walletAddress, tx, height);
+        var row = identity.wallet.processTx(tx, height);
 
         // Show a notification for incoming transactions
         if (row) {
@@ -177,7 +177,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         identity.wallet.processHistory(walletAddress, history);
 
         // start filling history
-        identity.history.fillHistory(walletAddress, history);
+        identity.history.fillHistory(history);
 
         if (TransactionTasks.processHistory(history, self.currentHeight)) {
             // some task was updated
@@ -206,7 +206,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
         // Load history cache
         if (walletAddress.history) {
-            identity.history.fillHistory(walletAddress, walletAddress.history);
+            identity.history.fillHistory(walletAddress.history);
         }
         if (!core.servicesStatus.syncing) {
             core.servicesStatus.syncing = 0;

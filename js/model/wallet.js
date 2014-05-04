@@ -115,18 +115,13 @@ Wallet.prototype.getBalance = function(pocketIndex) {
             } else if (out.spend) {
                 // spent so don't count it
             } else if (!out.height) {
-                // check if this is coming from my balance
-                if (out.change === undefined) {
-                    var txHash = out.receive.split(':');
-                    out.change = this.txInputsMine(txHash);
-                }
                 // add to balance
                 if (out.change) {
                     balance += out.value;
                     hot += out.value;
-                } else {
-                    unconfirmed += out.value;
                 }
+                // hot change also gets added to cancel unconfirmed from the spend
+                unconfirmed += out.value;
             }
             else {
                 balance += out.value;
@@ -638,7 +633,9 @@ Wallet.prototype.signMyInputs = function(inputs, newTx, privKeys) {
  * @param {Number} height
  * @param {Object} spend
  */
-Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, height, spend, spendheight) {
+Wallet.prototype.processOutput = function(walletAddress, txData, index, value, height, spend, spendheight) {
+    var txHash = txData[0];
+    var tx = txData[1];
     // Wallet wide
     var output;
     var wallet = this.wallet;
@@ -648,13 +645,22 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
     if (!output) {
         output = { receive: outId,
                    value: value,
+                   counted: false,
                    address: walletAddress.address };
         wallet.outputs[outId] = output;
         walletAddress.nOutputs += 1;
     }
-    // If confirmed and not spent add balance
-    if (height && !output.height && !spend) {
-        walletAddress.balance += value;
+    // Set as change
+    if (!height && output.change == undefined) {
+        output.change = this.txInputsMine(txHash, tx);
+    }
+    // If confirmed or inputs are mine and not spent add balance
+    if ((output.change || height) && !output.height && !spend) {
+        // Add if we didn't add it yet
+        if (!output.counted) {
+            walletAddress.balance += value;
+            output.counted = true;
+        }
     }
     if (walletAddress.type == 'stealth') {
         output.stealth = true;
@@ -665,9 +671,10 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
     }
 
     // If it's a spend save the next output and spend height
-    if (spend) {
+    if (spend && !output.spend) {
         output.spend = spend;
         output.spendheight = spendheight;
+        output.spendpending = true;
     }
 };
 
@@ -675,16 +682,25 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
  * Tell whether any of the transactions inputs are ours
  * @param {String} txHash Transaction Hash
  */
-Wallet.prototype.txInputsMine = function(txHash) {
+Wallet.prototype.txInputsMine = function(txHash, txObj) {
     var txdb = this.identity.txdb;
     // if we don't have the transaction the inputs can't be ours
-    if (!txdb.transactions.hasOwnProperty(txHash)) {
-        return false;
+    if (!txObj && !txdb.transactions.hasOwnProperty(txHash)) {
+        var keys = Object.keys(this.wallet.outputs);
+        console.log("txInputsMine resorting to slow search");
+        for(var i=0; i<keys.length; i++) {
+            var output = this.wallet.outputs[keys[i]];
+            if (output.spend && (txHash == output.spend.split(":")[0])) {
+                return true;
+            }
+        }
+        // we don't really know here :P
+        return;
     }
-    var tx = new Bitcoin.Transaction(txdb.transactions[txHash]);
-    for (var i=0; idx<tx.ins.length; i++) {
+    var tx = txObj || new Bitcoin.Transaction(txdb.transactions[txHash]);
+    for (var i=0; i<tx.ins.length; i++) {
         var anIn = tx.ins[i];
-        if (outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
+        if (this.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
             return true;
         }
     };
@@ -722,12 +738,11 @@ Wallet.prototype.txForAddress = function(walletAddress, tx) {
 
 /**
  * Process incoming transaction
- * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
  * @param {String} serializedTx  Transaction in hexadecimal
  * @param {Number} height        Height of the block that the transaction was mined
  * @return {Object} DOCME
  */
-Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
+Wallet.prototype.processTx = function(serializedTx, height) {
     var self = this;
     var tx = new Bitcoin.Transaction(serializedTx);
     var txHash = Bitcoin.convert.bytesToHex(tx.getHash());
@@ -750,7 +765,7 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
       var outputAddress = self.getWalletAddress(address);
       // already exists
       if (outputAddress) {
-          self.processOutput(outputAddress, txHash, i, txOut.value, height);
+          self.processOutput(outputAddress, [txHash, tx], i, txOut.value, height);
       }
     });
 
@@ -758,22 +773,24 @@ Wallet.prototype.processTx = function(walletAddress, serializedTx, height) {
       var op = txIn.outpoint
       var o = self.wallet.outputs[op.hash+':'+op.index];
       if (o) {
-        o.spend = txHash+':'+i;
+        if (!o.spend) {
+            o.spend = txHash+':'+i;
+            o.spendpending = true;
+        }
         o.spendheight = height;
         if (height) {
-            if (o.spendpending && walletAddress.address == o.address) {
+            if (o.spendpending) {
+                var inputAddress = this.getWalletAddress(o.address);
                 o.spendpending = false;
-                walletAddress.balance -= o.value;
+                inputAddress.balance -= o.value;
             } 
-        } else {
-            o.spendpending = true;
         }
       }
     });
 
 
     // process in history (updates history rows)
-    return this.identity.history.txFetched(walletAddress, serializedTx, height)
+    return this.identity.history.txFetched(serializedTx, height)
 };
 
 /**
@@ -802,7 +819,7 @@ Wallet.prototype.processHistory = function(walletAddress, history, initial) {
             spend = inTxHash + ":" + tx[5];
         }
         // pass on to internal Bitcoin.Wallet
-        self.processOutput(walletAddress, tx[0], tx[1], tx[3], outHeight, spend, tx[6]);
+        self.processOutput(walletAddress, [tx[0], null], tx[1], tx[3], outHeight, spend, tx[6]);
     });
     if (!initial) {
         this.store.save();

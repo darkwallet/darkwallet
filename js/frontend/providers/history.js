@@ -212,15 +212,14 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
           row.partial = getImpact(row);
 
-          if (prevRow.height) {
+          if (prevRow.height || prevRow.inMine) {
               row.confirmed = prevRow.confirmed-value;
               row.unconfirmed = prevRow.unconfirmed;
+              if (!prevRow.height) {
+                 row.unconfirmed -= value;
+              }
           } else {
               row.confirmed = prevRow.confirmed;
-              // Outgoing unconfirmed are credited straight away
-              if (value < 0) {
-                  row.confirmed -= value;
-              }
               row.unconfirmed = prevRow.unconfirmed-value;
           }
           prevRow = row;

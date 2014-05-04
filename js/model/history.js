@@ -49,12 +49,11 @@ History.prototype.addHistoryRow = function(newRow) {
 /**
  * Build a history row from a transaction.
  * Will find out which inputs and outputs correspond to the identity wallet and calculate impact.
- * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
  * @param {String} transaction Transaction in serialized form
  * @param {Number} height Height for the transaction
  * @return {Object} The new row
  */
-History.prototype.buildHistoryRow = function(walletAddress, transaction, height) {
+History.prototype.buildHistoryRow = function(transaction, height) {
     var identity = this.identity,
         btcWallet = identity.wallet.wallet,
         inMine = 0,
@@ -153,15 +152,14 @@ History.prototype.fillInput = function(transaction, data) {
 
 /**
  * Callback for fetching a transaction
- * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
  * @param {Object} transaction   Transaction in serialized form.
  * @param {Number} height        Height of the block.
  * @return {Object|null}         DOCME
  * @private
  */
-History.prototype.txFetched = function(walletAddress, transaction, height) {
+History.prototype.txFetched = function(transaction, height) {
     var self = this,
-        newRow = this.buildHistoryRow(walletAddress, transaction, height);
+        newRow = this.buildHistoryRow(transaction, height);
 
     // unknown for now means we need to fill in some extra inputs for now get 1st one
     if (newRow.address == 'unknown') {
@@ -180,10 +178,9 @@ History.prototype.txFetched = function(walletAddress, transaction, height) {
 
 /**
  * Look for transactions from given history records
- * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}
  * @param {Object} history History array as returned by obelisk
  */
-History.prototype.fillHistory = function(walletAddress, history) {
+History.prototype.fillHistory = function(history) {
     var self = this,
         txdb = this.identity.txdb;
     history.forEach(function(tx) {
@@ -191,10 +188,10 @@ History.prototype.fillHistory = function(walletAddress, history) {
             inTxHash = tx[4];
         if (inTxHash) {
             // fetch a row for the spend
-            txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b);}, tx[6]);
+            txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(_a, _b);}, tx[6]);
         }
         // fetch a row for the incoming tx
-        txdb.fetchTransaction(outTxHash, function(_a, _b) {self.txFetched(walletAddress, _a, _b);}, tx[2]);
+        txdb.fetchTransaction(outTxHash, function(_a, _b) {self.txFetched(_a, _b);}, tx[2]);
     });
 };
 

@@ -173,13 +173,13 @@ c09fd9179e635bcfd95a2b989fc16b1e88ac00000000";
     
     // TODO: Complete it
     xit('on transaction fetched', function() { // private
-      var newRow = history.txFetched(walletAddress, transaction, height);
+      var newRow = history.txFetched(transaction, height);
       expect(newRow).toBeUndefined();
       history.history = [];
-      newRow = history.txFetched(walletAddress, transaction, height);
+      newRow = history.txFetched(transaction, height);
       expect(newRow.address).toBe('32wRDBezxnazSBxMrMqLWqD1ajwEqnDnMc');
       expect(newRow.addressIndex).toEqual([ '32wRDBezxnazSBxMrMqLWqD1ajwEqnDnMc', 'm' ]);
-      expect(newRow.pocket).toBe('32wRDBezxnazSBxMrMqLWqD1ajwEqnDnMc');
+      expect(newRow.inPocket).toBe('32wRDBezxnazSBxMrMqLWqD1ajwEqnDnMc');
     });
 
     // TODO: Compelte it
@@ -188,7 +188,7 @@ c09fd9179e635bcfd95a2b989fc16b1e88ac00000000";
       var historyRows = [
         ["acab6a978681fab0dcbbd0969b2995644ff1b222f793927eb2179e638c4bce38", 0, 287813, 886650, null, null, null]
       ];
-      history.fillHistory(walletAddress, historyRows);
+      history.fillHistory(historyRows);
       expect(history.history.length).toBe(1);
       expect(history.history[0].hash).toEqual('d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43');
     });
