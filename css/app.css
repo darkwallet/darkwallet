@@ -4669,6 +4669,9 @@ input.ng-valid + span.input-status {
 input.address-buttons {
   padding-right: 5.3em; }
 
+input[type="text"].postfix.radius {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px; }
 
 input[type="range"] {
   -webkit-appearance: none;
@@ -4816,7 +4819,7 @@ table.expand {
   width: 100%;
   text-overflow: ellipsis; }
 
-span.ellipsis {
+span.ellipsis, div.ellipsis {
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis; }
@@ -4868,7 +4871,7 @@ li.colorhead h6 {
 .panel .side-nav {
   padding-top: 0; }
 
-.side-nav a.button {
+.side-nav a.button, .ellipsis.contact-address {
   color: white;
   margin-bottom: 0.6em; }
 
@@ -4919,7 +4922,7 @@ textarea.seed {
 .pocket-square {
   min-height: 120px; }
 
-.contact-mosaic .panel:hover, div.notifications .panel:hover {
+.contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover {
   background: #27ae60;
   cursor: pointer; }
 

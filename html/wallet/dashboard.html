@@ -11,7 +11,7 @@
           <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showQr(pocket.mainAddress)"></a>
         </div>
         <div class="small-10 columns">
-          <input type="text" class="postfix radius" readonly value="{{pocket.mainAddress}}" />
+          <input type="text" class="postfix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
         </div>
       </div>
     </div>
@@ -21,7 +21,7 @@
     <ul class="topmargin large-block-grid-4 medium-block-grid-2 small-block-grid-1">
 		<li ng-repeat="pocket in allPockets" ng-click="selectGridPocket(pocket)">
 			<div class="panel radius pocket-square">
-           		<h5><a>{{pocket.name}} </a><small ng-show="pocket.type=='fund'">{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</small></h5>
+           		<h5>{{pocket.name}} <small ng-show="pocket.type=='fund'">{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</small></h5>
         
            		<span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed|currencyPresenter}}</span>
            		<span ng-show="!pocket.balance.confirmed">No coins</span>

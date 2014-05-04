@@ -67,8 +67,9 @@ input.ng-valid + span.input-status { opacity: 1; }
 
 input.address-buttons { padding-right: 5.3em; }
 
-input[type="text"] {
-
+input[type="text"].postfix.radius {
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
 }
 
 input[type="range"] {
@@ -185,7 +186,7 @@ table tr:nth-child(odd) button {
 
 table.expand { width: 100%; text-overflow: ellipsis; }
 
-span.ellipsis { text-align: left; overflow: hidden; text-overflow: ellipsis; }
+span.ellipsis, div.ellipsis { text-align: left; overflow: hidden; text-overflow: ellipsis; }
 
 div.address-row { padding: 0; }
 
@@ -231,7 +232,7 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .panel .side-nav { padding-top: 0; }
 
-.side-nav a.button { color: white; margin-bottom: 0.6em; }
+.side-nav a.button, .ellipsis.contact-address { color: white; margin-bottom: 0.6em; }
 
 .tabs { border-bottom: 1px solid scale-color($primary-color, $lightness: -46%); }
 
@@ -266,7 +267,7 @@ textarea.seed {
 
 .pocket-square { min-height: 120px; }
 
-.contact-mosaic .panel:hover, div.notifications .panel:hover { background: $primary-color; cursor: pointer; }
+.contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover { background: $primary-color; cursor: pointer; }
 
 .contact-mosaic { max-height: 500px; overflow-y: scroll; overflow-x: hidden; }
 
