@@ -1,76 +1,64 @@
 <!-- Header -->
 <div class="row panel radius topmargin">
-  <!-- Contact info -->
+	<div class="small-12 columns">
+   <!-- Contact info -->
   <div class="row">
-	<div class="small-1 columns text-center">
-        	<identicon icon-size="64" hash="vars.contact.hash" title="{{vars.contact.hash}}"></identicon>
-	</div>
-	<div class="small-10 columns">
-		<h1>{{vars.contact.name}}</h1>
-	</div>
-	<div class="small-1 columns">
-        	<face icon-size="64" hash="vars.contact.hash" title="{{vars.contact.hash}}"></face>
-	</div>
+        	<identicon icon-size="48" hash="vars.contact.hash" title="{{vars.contact.hash}}"></identicon>
+			<face icon-size="48" hash="vars.contact.hash" title="{{vars.contact.hash}}"></face>
+			<span class="contact-name">{{vars.contact.name}}</span>
   </div>
 
   <!-- Options -->
-  <div class="row collapse topmargin">
-    <div class="small-2 columns">
-        <a ng-click="contactSection='overview'">Overview</a>
-    </div>
-    <div class="small-2 columns">
-        <a ng-click="contactSection='addresses'">Addresses</a>
-    </div>
-    <div class="small-2 columns">
-        <a ng-show="settings.advanced" ng-click="contactSection='trust'">Trust</a>
-    </div>
-    <!--<div class="small-2 columns">
-        <a ng-click="contactSection='history'">History</a>
-    </div>-->
-    <div class="small-8 columns">
-        
-    </div>
+  <div class="row topmargin">
+        <dl class="tabs">
+          <dd>
+              <a ng-click="contactSection='overview'">Overview</a>
+          </dd>
+		  <dd>
+			  <a ng-click="contactSection='addresses'">Addresses</a>
+		  </dd>
+		  <dd ng-show="settings.advanced">
+		  	  <a ng-click="contactSection='trust'">Trust</a>
+		  </dd>
+	  <!--<dd>
+			  <a ng-click="contactSection='history'">History</a>
+		  </dd> -->
+        </dl>
   </div>
-<div class="row panel radius topmargin" ng-show="contactSection=='trust'">
+  
+<div class="row topmargin" ng-show="contactSection=='trust'">
     <p>You have no trust on this peer</p>
     <a class="button fa fa-flask postfix" ng-click="">Set trust</a>
 </div>
-<div class="row panel radius topmargin" ng-show="contactSection=='history'">
+
+<div class="row topmargin" ng-show="contactSection=='history'">
     <p>You have no history with this peer</p>
 </div>
-<div class="row panel radius topmargin" ng-show="contactSection=='overview' || !contactSection">
-    <div class="columns large-10">
-      <div class="row collapse panel radius">
-        <h5>The main address for this contact is:</h5>
-        <div class="small-1 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(vars.contact.pubKeys[vars.contact.mainKey].address)" class="button prefix square radius fa fa-clipboard"></a>
-        </div>
-        <div class="small-1 columns">
-          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showQr(vars.contact.pubKeys[vars.contact.mainKey].address)"></a>
-        </div>
-        <div class="small-10 columns">
-          <input type="text" class="postfix radius" readonly value="{{vars.contact.pubKeys[vars.contact.mainKey].address}}" />
 
+<div class="row topmargin" ng-show="contactSection=='overview' || !contactSection">
+	<label>The main address for this contact is</label>	
+      <div class="row collapse">
+		<div class="medium-1 columns">
+			<span class="prefix radius fa" title="Type of address" ng-class="{'fa-btc': vars.contact.pubKeys[vars.contact.mainKey].type=='address', 'fa-key': vars.contact.pubKeys[vars.contact.mainKey].type=='pubkey', 'fa-fighter-jet': vars.contact.pubKeys[vars.contact.mainKey].type=='stealth'}"> {{vars.contact.pubKeys[vars.contact.mainKey].type}}</span>
+		</div>
+        <div class="large-9 medium-7 columns">
+          <input type="text" readonly value="{{vars.contact.pubKeys[vars.contact.mainKey].address}}" />
+        </div>
+        <div class="large-1 medium-2 small-6 columns">
+          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(vars.contact.pubKeys[vars.contact.mainKey].address)" class="button postfix fa fa-clipboard">Copy</a>
+        </div>
+        <div class="large-1 medium-2 small-6 columns">
+          <a class="button postfix radius fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showQr(vars.contact.pubKeys[vars.contact.mainKey].address)">QR</a>
         </div>
       </div>
       <div class="row collapse">
-          <p ng-show="vars.contact.pubKeys.length>1">This peer has <a ng-click="contactSection='addresses'">{{vars.contact.pubKeys.length}} keys</a>.</p>
-          <p ng-show="settings.advanced" >You have no <a ng-click="contactSection='trust'">trust defined</a> with this contact.</p>
+          <p ng-show="vars.contact.pubKeys.length>1">This contact has <a ng-click="contactSection='addresses'">{{vars.contact.pubKeys.length}} keys</a><span ng-show="settings.advanced" > and no <a ng-click="contactSection='trust'">trust defined</a></span>.</p>
+          
       </div>
-      <div class="row radius">
-      </div>
-    </div>
-    <div class="columns large-2 collapse">
-          <!-- badge -->
-          <span class="label radius" title="Type of address"> <span class="fa" 
-                 ng-class="{'fa-btc': vars.contact.pubKeys[vars.contact.mainKey].type=='address', 'fa-key': vars.contact.pubKeys[vars.contact.mainKey].type=='pubkey', 'fa-fighter-jet': vars.contact.pubKeys[vars.contact.mainKey].type=='stealth'}"></span> {{vars.contact.pubKeys[vars.contact.mainKey].type}} </span>
-
-    </div>
-
+    
 </div>
 <!-- Addresses for the user -->
-<div class="row panel radius topmargin" ng-show="contactSection=='addresses'">
-  <h4>Addresses</h4>
+<div class="row topmargin" ng-show="contactSection=='addresses'">
   <div class="row collapse" ng-repeat="pubKey in vars.contact.pubKeys">
 	<div class="medium-1 large-2 columns">
             <!-- Show a star for main address -->
@@ -125,14 +113,13 @@
 </div> <!-- panel -->
 <!-- Bottom row -->
 <div ng-show="!creatingContact" class="row collapse">
-	<div class="small-8 medium-8 columns">
-	    <a href="#contacts" class="fa fa-arrow-left button small radius"> Back</a>
-        </div>
-	<div class="small-2 medium-2 columns text-right">
-            <a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button disabled postfix small radius">Watch</a>
-        </div>
-	<div class="small-2 medium-2 columns text-right">
-            <a href="" ng-click="modals.open('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button radius alert fa fa-trash-o"> Delete contact</a>
-        </div>
+	<div class="small-4 columns">
+	    <a href="#contacts" class="fa fa-arrow-left nomarginbottom button small radius"> Back</a>
+    </div>
+	<div class="small-8 columns text-right">
+    	<a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button disabled small nomarginbottom radius"> Watch</a>
+    	<a href="" ng-click="modals.open('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button nomarginbottom radius alert fa fa-trash-o"> Delete</a>
+    </div>
+</div>
 </div>
 
