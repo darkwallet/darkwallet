@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
-  controllers.controller('PocketActionCtrl', ['$scope', 'modals', function($scope, modals) {
+  controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', function($scope, modals, notify) {
 
     /**
      * Delete pocket
@@ -78,27 +78,46 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
      */
     $scope.moveFunds = function(type, index) {
         var wallet = DarkWallet.getIdentity().wallet;
-        var walletService = DarkWallet.service.wallet;
         var to;
         var address;
         if (type === 'pocket') {
             to = wallet.pockets.hdPockets[index].name;
-            address = wallet.getFreeAddress(index).address;
+            address = wallet.getFreeAddress(index*2).address;
         } else if (type === 'multisig') {
             to = wallet.multisig.funds[index].name;
             address = wallet.getFreeAddress(index).address;
         } else {
-            to = $scope.availableIdentities[index];
-            address = '';
+            throw Error('Invalid type while moving funds!');
         }
+
+        // Prepare transaction
+
+        var fee = wallet.fee;
+        var amount = $scope.pocket.balance.confirmed - fee;
+
+        var recipients = [{amount: amount, address: address}];
+        var metadata = wallet.prepareTx($scope.pocket.index, recipients, null, fee);
+ 
+        // Request password for signing
         var message = "Are you sure you want to move all ";
-        message += $scope.pocket.name + " funds to " + to + "?"
+        message += $scope.pocket.name + " funds to " + to + "?";
         modals.password(message, function(password) {
-            var fee = wallet.store.get('fee');
-            var amount = wallet.getBalance($scope.pocket.index).confirmed - fee;
-            /*walletService.send($scope.pocket.index, [{amount: amount, address: address}], null, fee, true, function() {
-                console.log('Not implemented yet.');
-            });*/
+           // Sign and broadcast
+           var walletService = DarkWallet.service.wallet;
+           var sent = false;
+           walletService.signTransaction(metadata.tx, metadata, password, function(err, count) {
+               if (err) {
+                   notify.error(err.message || ""+err);
+               }
+               if (count>0.2 && !sent) {
+                   sent = true;
+                   notify.success('Funds sent to ' + to);
+                   if (!$scope.$$phase) {
+                       $scope.apply();
+                   }
+               }
+               console.log("broadcast", count);
+           }, true);
         });
     };
 

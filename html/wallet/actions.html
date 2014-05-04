@@ -1,10 +1,10 @@
         <div class="row" ng-controller="PocketActionCtrl">
           <div class="large-6 columns">
-            <a href="" dropdown-toggle="#pockets" class="fa button disabled postfix fa-share">Move funds to another pocket</a>
+            <a href="" dropdown-toggle="#pockets" class="fa button postfix fa-share">Move funds to another pocket</a>
             <ul id="pockets" class="f-dropdown">
               <li class="colorhead"><h6>My pockets</h6></li>
-              <li ng-repeat="pocket in hdPockets track by $index">
-                <a ng-click="moveFunds('pocket', $index)">{{pocket.name}}</a>
+              <li ng-show="aPocket && $index != pocket.index" ng-repeat="aPocket in hdPockets track by $index">
+                <a ng-click="moveFunds('pocket', $index)">{{aPocket.name}}</a>
               </li>
               <li class="colorhead"><h6>Multisig funds</h6></li>
               <li ng-repeat="fund in allFunds track by $index">
