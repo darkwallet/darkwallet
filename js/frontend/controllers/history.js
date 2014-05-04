@@ -5,7 +5,7 @@
 
 define(['./module', 'darkwallet', 'frontend/port'],
 function (controllers, DarkWallet, Port) {
-  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', function($scope, $history, $tabs) {
+  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', '$location', function($scope, $history, $tabs, $location) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
@@ -134,6 +134,12 @@ function (controllers, DarkWallet, Port) {
       $scope.selectedPocket = 'newMultisig';
   };
 
+  /**
+   * Open transaction in the browser
+   */
+  $scope.openTransaction = function(hash) {
+      $location.path('/browser/'+hash);
+  };
 
   /**
    * History filter

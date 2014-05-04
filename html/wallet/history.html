@@ -52,6 +52,7 @@
                unconfirmed
              </div>
              <div class="small-2 columns">
+               <a ng-click="openTransaction(row.hash)"><div title="See the transaction in the block explorer" class="fa fa-sitemap"></div></a>
                {{row.height?1+currentHeight-row.height:0}}
              </div>
              <div class="small-1 columns text-right">
