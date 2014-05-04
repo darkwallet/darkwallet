@@ -94,6 +94,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     identity.contacts.setMainKey(contact, index);
   }
 
+  $scope.deleteKey = function(contact, index) {
+    var identity = DarkWallet.getIdentity();
+    identity.contacts.deleteKey(contact, index);
+  }
+
   $scope.deleteContact = function(contact) {
     var identity = DarkWallet.getIdentity();
     identity.contacts.deleteContact(contact);

@@ -62,8 +62,9 @@
   <div class="row collapse" ng-repeat="pubKey in vars.contact.pubKeys">
 	<div class="medium-1 large-2 columns">
             <!-- Show a star for main address -->
-            <div ng-show="$index===vars.contact.mainKey" class="fa fa-star"></div>
-            <div ng-click="setMainKey(vars.contact, $index)"  ng-show="$index!=vars.contact.mainKey" class="fa fa-star-o"></div>
+            <div ng-show="pubKey.type=='revoked'" class="fa fa-exclamation" title="This key was revoked by its owner"></div>
+            <div ng-show="pubKey.type!='revoked'&&$index===vars.contact.mainKey" class="fa fa-star"></div>
+            <div ng-click="setMainKey(vars.contact, $index)"  ng-show="pubKey.type!='revoked'&&$index!=vars.contact.mainKey" class="fa fa-star-o"></div>
             <!-- Badge for type of address -->
             <span class="label radius" title="Type of address">
                <div class="fa" 
@@ -86,9 +87,9 @@
 	<div class="medium-3 large-1 columns" ng-show="!creatingContact">
 		<a ng-click="clipboard.copy(pubKey.address)" class="button postfix fa fa-clipboard">Copy</a>
 	</div>
-	<div ng-show="$index" class="icon medium-3 large-1 columns" ng-show="!creatingContact">
+	<div ng-show="$index!=vars.contact.mainKey" class="icon medium-3 large-1 columns" ng-show="!creatingContact">
                 <!-- Delete address -->
-		<a class="button postfix alert fa fa-trash-o">Delete</a>
+		<a class="button postfix alert fa fa-trash-o" ng-click="deleteKey(vars.contact, $index)">Delete</a>
 	</div>
   </div>
   <!-- Create contact form -->
@@ -118,7 +119,7 @@
     </div>
 	<div class="small-8 columns text-right">
     	<a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button disabled small nomarginbottom radius"> Watch</a>
-    	<a href="" ng-click="modals.open('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button nomarginbottom radius alert fa fa-trash-o"> Delete</a>
+    	<a ng-click="modals.open('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button nomarginbottom radius alert fa fa-trash-o"> Delete</a>
     </div>
 </div>
 </div>

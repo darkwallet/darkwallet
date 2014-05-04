@@ -190,6 +190,7 @@ Contacts.prototype.addContactKey = function (contact, data, main) {
   contact.pubKeys.push(newKey);
   if (main) {
       contact.mainKey = contact.pubKeys.length-1;
+      this.updateContactHash(contact);
   }
   this.store.save();
   // delete address since now is contained inside contact.pubKeys
@@ -206,6 +207,18 @@ Contacts.prototype.setMainKey = function (contact, index) {
     contact.mainKey = index;
     this.updateContactHash(contact);
     this.store.save();
+}
+
+/**
+ * Update a key from given user input
+ */
+Contacts.prototype.deleteKey = function (contact, index) {
+  contact.pubKeys.splice(index, 1);
+  if (contact.mainKey > contact.pubKeys.length) {
+      contact.mainKey = contact.pubKeys.length-1;
+  }
+  this.updateContactHash(contact);
+  this.store.save();
 }
  
 
