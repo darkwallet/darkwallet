@@ -5040,7 +5040,10 @@ form.send {
 
 .seed {
   background: url(../images/seed.svg) center/cover no-repeat; }
-
+  
+.wordwrap{
+word-wrap:break-word;
+}
 /* Scrollbars ---------------------  */
 ::-webkit-scrollbar {
   width: 8px; }
@@ -5051,3 +5054,4 @@ form.send {
 ::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background: #27ae60; }
+
