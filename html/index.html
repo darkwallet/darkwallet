@@ -56,7 +56,7 @@
     </nav>
 
     <div class="modal-ng ng-cloak" ng-show="ngModals.page">
-       <div ng-controller="NgModalCtrl" ng-include="'modals/'+ngModals.page+'.html'">
+       <div ng-controller="NgModalCtrl" ng-include="ngModals.page?'modals/'+ngModals.page+'.html':false">
        </div>
     </div>
 	
