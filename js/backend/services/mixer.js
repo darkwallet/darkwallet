@@ -168,7 +168,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         if (!task.start) {
            task.start = Date.now()/1000;
         }
-        var amount = Math.random() < 0.5 ? task.total : task.change;
+        var amount = (task.change && (Math.random() < 0.5)) ? task.change : task.total;
         this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', myTx, amount, task.fee);
         this.ongoing[id].task = task;
 
