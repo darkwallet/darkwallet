@@ -61,7 +61,11 @@ function DarkWalletService(serviceClasses) {
 
     this.connect = function(connectUri) {
         var identity = services.wallet.getCurrentIdentity();
-        connectUri = connectUri || identity.connections.getSelectedServer().address || 'wss://gateway.unsystem.net';
+        connectUri = connectUri || identity.connections.getSelectedServer().address;
+        if (!connectUri) {
+           console.log("no uri disconnecting!");
+           return;
+        }
 
         console.log("[main] connecting", connectUri);
         servicesStatus.gateway = 'connecting';
