@@ -512,10 +512,6 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee, 
     // Create an empty transaction
     var newTx = new Bitcoin.Transaction();
 
-    // Calculate change
-    var change = outAmount - (totalAmount + fee);
-    var changeInto = Math.floor(Math.random()*(recipients.length+1));
-
     // Add Inputs
     // and compute total utxo value for this tx
     var outAmount = 0;
@@ -523,6 +519,10 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee, 
         outAmount += utxo.value;
         newTx.addInput(utxo.receive);
     });
+
+    // Calculate change
+    var change = outAmount - (totalAmount + fee);
+    var changeInto = Math.floor(Math.random()*(recipients.length+1));
 
     // Add Outputs
     recipients.forEach(function(recipient, i) {
