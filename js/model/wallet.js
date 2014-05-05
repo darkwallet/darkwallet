@@ -512,6 +512,10 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee, 
     // Create an empty transaction
     var newTx = new Bitcoin.Transaction();
 
+    // Calculate change
+    var change = outAmount - (totalAmount + fee);
+    var changeInto = Math.floor(Math.random()*(recipients.length+1));
+
     // Add Inputs
     // and compute total utxo value for this tx
     var outAmount = 0;
@@ -521,7 +525,10 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee, 
     });
 
     // Add Outputs
-    recipients.forEach(function(recipient) {
+    recipients.forEach(function(recipient, i) {
+        if (change && (i == changeInto)) {
+            newTx.addOutput(changeAddress.address, change);
+        }
         var address = recipient.address;
         // test for stealth
         if (address[0] == self.versions.stealth.prefix) {
@@ -531,9 +538,7 @@ Wallet.prototype.prepareTx = function(pocketId, recipients, changeAddress, fee, 
         newTx.addOutput(address, recipient.amount);
     });
 
-    // Calculate change
-    var change = outAmount - (totalAmount + fee);
-    if (change) {
+    if (change && (changeInto >= recipients.length)) {
         newTx.addOutput(changeAddress.address, change);
     }
     if (reserveOutputs) {
