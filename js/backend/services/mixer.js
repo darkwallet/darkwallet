@@ -144,7 +144,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
    * Announce a coinjoin.
    */
   MixerService.prototype.announce = function(id, coinJoin) {
-      var msg = Protocol.CoinJoinOpenMsg(id, coinJoin.task.total);
+      var msg = Protocol.CoinJoinOpenMsg(id, coinJoin.myAmount);
       this.checkTask(msg, 'announce');
   };
 
@@ -168,7 +168,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         if (!task.start) {
            task.start = Date.now()/1000;
         }
-        this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', BtcUtils.fixTxVersions(myTx.clone(), this.core.getCurrentIdentity()), task.total, task.fee);
+        var amount = Math.random() < 0.5 ? task.total : task.change;
+        this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', myTx, amount, task.fee);
         this.ongoing[id].task = task;
 
         // See if the task is expired otherwise send
