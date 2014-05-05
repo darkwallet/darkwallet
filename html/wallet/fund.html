@@ -17,15 +17,22 @@
       <div>{{pocket.fund.multisig.m}} of {{pocket.fund.multisig.pubKeys.length}} signatures are needed for spends</div>
     </div>
   <div class="row">
-  <div class="columns medium-6">
+  <div class="columns large-6">
 	  <div class="panel radius">
     <h5>Fund managers</h5>
-    <div ng-repeat="participant in pocket.fund.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
-        <identicon icon-size="38" hash="participant.hash" title="{{contact.hash}}"></identicon> <div class="ellipsis">{{participant.name}}</div> <span ng-show="participant.type=='me'">(me)</span>
+    <div class="row collapse" ng-repeat="participant in pocket.fund.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
+		<div class="small-1 columns">
+			<span class="label" ng-show="participant.type=='me'">me</span>
+        	<identicon icon-size="38" hash="participant.hash" ng-show="participant.type!='me'" title="{{contact.hash}}"></identicon>
+		</div>
+		<div class="small-11 columns">
+			<input type="text" value="{{participant.name}}" readonly />
+		</div>
+		
     </div>
 	</div>
   </div>
-  <div class="columns medium-6">
+  <div class="columns large-6">
 	<div class="panel radius">
     <h5>Script</h5>
     <div class="row collapse">
@@ -43,7 +50,7 @@
     <textarea class="script" ng-show="showFundScript">{{pocket.fund.multisig.script}}</textarea>
 </div>
 <div class="panel radius">
-    <h3>Tools</h3>
+    <h5>Tools</h5>
 	<div class="row" ng-show="!importingFundTransaction">
 		<div class="small-6 columns">
     		<button class="button postfix fa fa-cloud-download" ng-click="importingFundTransaction=true">Import Spend</button>
@@ -54,7 +61,7 @@
 	</div>
     <form name="fundTxForm" novalidate ng-submit="importFundTx(fundTxForm)" ng-show="importingFundTransaction">
         <input required ng-model="fundTxForm.newTx" type="text" placeholder="Paste the transaction hex here"></input>
-		<div class="row">
+		<div class="row collapse">
 			<div class="small-6 columns">
         		<button class="button postfix fa fa-cloud-download" type="submit">Import</button>
 			</div>

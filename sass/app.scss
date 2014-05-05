@@ -13,6 +13,20 @@ html.popup { width: auto; height: auto; max-height: 100%; overflow: hidden; }
 	font-family: FontAwesome;
 }
 
+div.modal-ng { 
+	z-index: 20; 
+	position: absolute; 
+	width: 100%; 
+	height: 100%; 
+	background: rgba(0,0,0,0.7);
+}
+
+div.modal-ng.ng-animate.ng-hide-remove { -webkit-transform: translate3d(0,100%,0); opacity: 0.8; }
+div.modal-ng.ng-animate.ng-hide-remove-active { -webkit-transform: translate3d(0,0,0); }
+
+div.modal-ng:not(.ng-hide) + div.container { -webkit-transform: scale(0.8); }
+div.modal-ng.ng-cloak + div.container, div.modal-ng.ng-hide + div.container { -webkit-transform: scale(1); }
+
 .nomarginbottom { margin-bottom: 0 !important; }
 
 .topmargin { margin-top: 1.6em !important; }

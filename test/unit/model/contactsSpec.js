@@ -30,6 +30,9 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
     };
     
     beforeEach(function() {
+      store.init = function(key, value) {
+        return value;
+      };
       contacts = new Contacts(store, identity);
       contacts.contacts = []; // Delete darkwallet contact
       satoshiForestAddress = '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd';

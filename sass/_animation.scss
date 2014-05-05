@@ -97,6 +97,10 @@ div.tab-scroller.ng-animate,
 div.popuptabs > div.ng-animate,
 div.send-advanced.ng-animate  { @include single-transition(all, 450ms, ease-in-out); }
 
+div.container { @include single-transition(all, 450ms, ease-out); }
+div.modal-ng.ng-animate { @include single-transition(all, 450ms, ease-in); }
+
+
 .ng-hide-add,
 div.send-advanced.ng-hide,
 span.tooltip.fade,
