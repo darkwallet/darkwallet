@@ -14,6 +14,7 @@ function(Port) {
       this.client = null;
       this.connected = false;
       this.connecting = false;
+      this.reconnectTimeout;
     
       // Port for communication with the frontend
       Port.listen('obelisk', function() {
@@ -48,7 +49,6 @@ function(Port) {
                   console.log("[obelisk] Connected");
                   self.connected = true;
               }
-              self.connecting = false;
               handleConnect ? handleConnect(err) : null;
               if (err) {
                   console.log("[obelisk] Error connecting");
@@ -60,8 +60,14 @@ function(Port) {
               // Disconnected
               self.core.servicesStatus.obelisk = 'offline';
               self.core.servicesStatus.gateway = 'offline';
-              console.log("[obelisk] Disconnected", evt);
+              console.log("[obelisk] Disconnected");
               Port.post('obelisk', {'type': 'disconnected'});
+              if (self.connecting) {
+                  self.reconnectTimeout = setTimeout(function() {
+                      self.reconnectTimeout = false;
+                      self.connect(connectUri, handleConnect);
+                  }, 10000);
+              }
               self.connected = false;
           }, function(evt) {
               // Error
@@ -79,8 +85,13 @@ function(Port) {
       console.log("[obelisk] Disconnect");
       this.core.servicesStatus.gateway = 'offline';
       this.core.servicesStatus.obelisk = 'offline';
-      if (this.client && this.connected) {
+      if (this.client && (this.connected || this.connecting)) {
+          if (this.reconnectTimeout) {
+              clearTimeout(this.reconnectTimeout);
+              this.reconnectTimeout = false;
+          }
           this.connected = false;
+          this.connecting = false;
           this.client.websocket.close();
           this.client = null;
       }
@@ -90,9 +101,9 @@ function(Port) {
   /**
    * Start the gateway client
    */
-  ObeliskService.prototype.connectClient = function(connectUri, handleConnect, handleDisconnect) {
+  ObeliskService.prototype.connectClient = function(connectUri, handleConnect, handleDisconnect, handleError) {
       this.connecting = true;
-      this.client = new GatewayClient(connectUri, handleConnect, handleDisconnect);
+      this.client = new GatewayClient(connectUri, handleConnect, handleDisconnect, handleError);
   };
 
 
