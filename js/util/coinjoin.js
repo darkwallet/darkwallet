@@ -1,5 +1,19 @@
 'use strict';
 
+/**
+ * Randomize array element order in-place.
+ * Using Fisher-Yates shuffle algorithm.
+ */
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
 define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
   /*
@@ -13,6 +27,44 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
     this.myTx = tx;
     this.myAmount = myAmount;
     this.fee = fee;
+  }
+
+  /*
+   * Randomize join outputs and inputs
+   * Happens on the first fullfill by the initiator, and first sign by the guest.
+   */
+  CoinJoin.prototype.randomize = function(tx) {
+      tx = tx.clone();
+      var newTx = new Bitcoin.Transaction();
+      var stealth = [];
+
+      // Add non stealth outputs, and keep a matrix of where to put them after
+      outs.forEach(function(anOut, idx) {
+          // Value must be 0, size 38, first byte OP_RETURN and there must be an output after this one
+          if (nOut.value == 0 && anOut.script.buffer.length == 38 && anOut.script.buffer[0] == Bitcoin.Opmap.map.OP_RETURN && outs.length > idx) {
+              // Save an array with the nonce output and then the related output
+              stealth.push([anOut, tx.outs[idx+1]]);
+          } else {
+              // this will just push the same output into newTx.outs
+              newTx.addOutput(tx.outs[idx]);
+          }
+      });
+
+      // Copy inputs since no need to keep any order
+      newTx.ins = tx.ins.slice(0);
+
+      // Now shuffle the transaction
+      shuffleArray(newTx.ins);
+      shuffleArray(newTx.outs);
+
+      // Now re-insert (possibly) stealth information
+      stealth.forEach(function(nonces) {
+          var index = newTx.outs.indexOf(nonces[1]);
+          newTx.outs.splice(index, 0, nonces[0]);
+      });
+
+      // Return while applying a temporal testnet fix for address versions on bitcoinjs-lib (not really affecting the tx itself)
+      return BtcUtils.fixTxVersions(newTx, this.core.getCurrentIdentity());
   }
 
   /*
@@ -46,6 +98,9 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
           remoteTx.addOutput(anOut.clone());
       });
 
+      // Randomize inputs and outputs
+      remoteTx = this.randomize(remoteTx);
+
       // Save tx
       this.tx = remoteTx;
       this.state = 'fullfilled';
@@ -58,6 +113,9 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   CoinJoin.prototype.sign = function(msg) {
       var remoteTx = new Bitcoin.Transaction(msg.tx);
       remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+
+      // Randomize inputs and outputs
+      remoteTx = this.randomize(remoteTx);
 
       // Check the original inputs and outputs are there
       if (!this.checkMyInputsOutputs(this.myTx, remoteTx)) {
