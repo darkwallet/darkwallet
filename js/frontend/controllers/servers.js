@@ -82,8 +82,10 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       var identity = DarkWallet.getIdentity();
       $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
       identity.connections.setSelectedServer($scope.selectedServerIdx);
-      // Trigger connection
-      DarkWallet.core.connect();
+      // Check if connected or connecting
+      DarkWallet.service.obelisk.disconnect(function() {
+          DarkWallet.core.connect();
+      });
   };
 
 }]);
