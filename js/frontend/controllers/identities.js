@@ -17,7 +17,9 @@ define(['./module', 'frontend/port', 'darkwallet', 'sjcl'], function (controller
 
     $scope.selectIdentity = function(identityName) {
         var identityIdx = $scope.availableIdentities.indexOf(identityName);
-        DarkWallet.core.loadIdentity(identityIdx);
+        DarkWallet.service.obelisk.disconnect(function() {
+            DarkWallet.core.loadIdentity(identityIdx);
+        });
     };
 
   }]);

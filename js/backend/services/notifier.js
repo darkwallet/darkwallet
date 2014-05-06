@@ -17,7 +17,7 @@ define(['backend/port', 'backend/channels/catchan', 'darkwallet'], function(Port
       if (data.type == 'connected') {
         self.connectTo('Trollbox');
       }
-      else if (data.type == 'disconnect') {
+      else if (data.type == 'disconnect' || data.type == 'disconnected') {
         self.channel = null;
       }
     });

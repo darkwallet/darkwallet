@@ -13,6 +13,7 @@ function(Port) {
       this.core = core;
       this.client = null;
       this.connected = false;
+      this.shouldConnect = false;
       this.connecting = false;
       this.reconnectTimeout;
     
@@ -37,14 +38,22 @@ function(Port) {
    */
   ObeliskService.prototype.connect = function(connectUri, handleConnect) {
       var self = this;
+      var retryConnect = function() {
+          self.reconnectTimeout = setTimeout(function() {
+              self.reconnectTimeout = false;
+              self.connect(connectUri, handleConnect);
+          }, 10000);
+      }
       if (this.connected || this.connecting) {
           // wait for connection
       } else {
           console.log("[obelisk] Connecting");
           Port.post('obelisk', {'type': 'connecting'});
+          this.shouldConnect = true;
           this.connecting = true;
           this.connectClient(connectUri, function(err) {
               // Connected
+              self.connecting = false;
               if (!err) {
                   console.log("[obelisk] Connected");
                   self.connected = true;
@@ -53,6 +62,9 @@ function(Port) {
               if (err) {
                   console.log("[obelisk] Error connecting");
                   Port.post('obelisk', {'type': 'connectionError', 'error': 'Error connecting'});
+                  if (self.shouldConnect) {
+                      retryConnect();
+                  }
               } else {
                   Port.post('obelisk', {'type': 'connected'});
               }
@@ -62,11 +74,8 @@ function(Port) {
               self.core.servicesStatus.gateway = 'offline';
               console.log("[obelisk] Disconnected");
               Port.post('obelisk', {'type': 'disconnected'});
-              if (self.connecting) {
-                  self.reconnectTimeout = setTimeout(function() {
-                      self.reconnectTimeout = false;
-                      self.connect(connectUri, handleConnect);
-                  }, 10000);
+              if (self.shouldConnect && !self.connecting) {
+                  retryConnect();
               }
               self.connected = false;
           }, function(evt) {
@@ -80,11 +89,12 @@ function(Port) {
   /**
    * Disconnect from obelisk
    */
-  ObeliskService.prototype.disconnect = function() {
+  ObeliskService.prototype.disconnect = function(cb) {
       Port.post('obelisk', {'type': 'disconnect'});
       console.log("[obelisk] Disconnect");
       this.core.servicesStatus.gateway = 'offline';
       this.core.servicesStatus.obelisk = 'offline';
+      this.shouldConnect = false;
       if (this.client && (this.connected || this.connecting)) {
           if (this.reconnectTimeout) {
               clearTimeout(this.reconnectTimeout);
@@ -92,9 +102,12 @@ function(Port) {
           }
           this.connected = false;
           this.connecting = false;
-          this.client.websocket.close();
+          this.client.close(cb);
           this.client = null;
+      } else {
+          cb ? cb() : null;
       }
+      
   };
 
 

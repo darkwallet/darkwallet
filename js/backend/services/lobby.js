@@ -25,7 +25,7 @@ function(Port, Transport, Channel) {
     });
 
     Port.connect('obelisk', function(data) {
-        if (data.type == 'disconnect') {
+        if (data.type == 'disconnect' || data.type == 'disconnected') {
             console.log("[lobby] disconnect");
             // obelisk being instructed to disconnect
             if (lobbyTransport) {

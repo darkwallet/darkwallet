@@ -16,7 +16,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     // Port for communication with other services
     Port.connect('obelisk', function(data) {
       // WakeUp when connected to obelisk
-      if (data.type == 'disconnect') {
+      if (data.type == 'disconnect' || data.type == 'disconnected') {
         self.stopTasks();
       }
       else if (data.type == 'connected') {

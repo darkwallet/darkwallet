@@ -193,14 +193,18 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
   // Unsubscribe from the channel
   Channel.prototype.channelUnsubscribe = function(callback, update_cb) {
       var client = this.transport.getClient();
-      client.chan_unsubscribe("b", this.channelHash, callback, update_cb);
+      if (client.connected) {
+          client.chan_unsubscribe("b", this.channelHash, callback, update_cb);
+      }
   };
 
   // Post to given channel
   Channel.prototype.post = function(data, callback) {
       var client = this.transport.getClient();
       data.sender = this.fingerprint;
-      client.chan_post("b", this.channelHash, data, callback);
+      if (client.connected) {
+          client.chan_post("b", this.channelHash, data, callback);
+      }
   };
 
   /**
