@@ -1366,7 +1366,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   font-family: inherit;
   border: 1px none #cccccc;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  color: rgba(200, 200, 200, 0.75);
+  color: white;
   display: block;
   font-size: 0.875rem;
   margin: 0 0 1rem 0;
