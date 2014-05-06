@@ -10,7 +10,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   $scope.addServerError = '';
   $scope.connectionStatus = 'Disconnected';
   $scope.servicesStatus = {gateway: 'unknown', obelisk: 'unknown'};
-  $scope.validIPPort = /^(ws[s]?:\/\/)?(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/i;
+  $scope.validIPPort = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/i;
   
   // Apply scope
   var applyScope = function() {
@@ -24,6 +24,9 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       $scope.servicesStatus = DarkWallet.core.servicesStatus;
       $scope.selectedServerIdx = identity.connections.selectedServer;
       $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
+      if (identity.wallet.network == 'testnet') {
+          $scope.validIPPort = /^(ws[s]?:\/\/)?(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/i;
+      }
   }
 
   // Track wallet status
