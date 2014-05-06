@@ -7,10 +7,10 @@
   <!-- Content area -->
   <div ng-hide="selectedPocket==='newMultisig'" class="large-10 medium-9 columns wallet-view">
     <!-- Pocket name and balance -->
-    <h4>
+    <h4 ng-show="!(pocket.balance===undefined)">
         {{pocket.name}}
-        <small>{{((pocket.balance===undefined)?totalBalance:pocket.balance.confirmed) | currencyPresenter}}</small>
-        <small ng-show="!(pocket.balance === undefined) && pocket.balance.unconfirmed">{{((pocket.balance===undefined||pocket.balance.unconfirmed===undefined)?totalUnconfirmed:pocket.balance.unconfirmed) | currencyPresenter}}</small>
+        <small>{{pocket.balance.confirmed | asBtc}} {{symbols.btc}} ({{pocket.balance.confirmed | asFiat}} {{symbols.fiat}})</small>
+        <small ng-show="pocket.balance.unconfirmed">({{pocket.balance.unconfirmed | asBtc}} {{symbols.btc}} {{pocket.balance.unconfirmed | asFiat}} {{symbols.fiat}})</small>
     </h4>
     <!-- Tabs -->
     <div class="tabbable">

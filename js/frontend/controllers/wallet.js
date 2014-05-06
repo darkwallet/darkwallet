@@ -3,8 +3,8 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet', 'frontend/port'],
-function (controllers, DarkWallet, Port) {
+define(['./module', 'darkwallet', 'frontend/port', 'util/fiat'],
+function (controllers, DarkWallet, Port, FiatCurrencies) {
   'use strict';
 
   /**
@@ -19,6 +19,7 @@ function (controllers, DarkWallet, Port) {
   $scope.totalBalance = 0;
   $scope.forms = {};
   $scope.identityName = false;
+  $scope.symbols = {fiat: '☮', btc: 'Ƀ'};
 
   $scope.ngModals = {page: false};
 
@@ -72,6 +73,15 @@ function (controllers, DarkWallet, Port) {
       // set some links
       $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
       $scope.settings = identity.settings;
+
+      // set fiat symbol
+      var fiat = identity.settings.fiatCurrency;
+      $scope.symbols.fiat = FiatCurrencies[fiat].symbol_native;
+      if (identity.settings.currency == 'mBTC') {
+          $scope.symbols.btc = 'm฿';
+      } else {
+          $scope.symbols.btc = '฿';
+      }
 
       // get the balance for the wallet
       var balance = $wallet.getBalance();

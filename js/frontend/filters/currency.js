@@ -13,7 +13,15 @@ filters.filter('amountFilter', function() {
 });
 
 // Filter for presenting a satoshi amount into selected btc unit
-filters.filter('currencyFilter', function() {
+filters.filter('asFiat', function() {
+  return function(input) {
+    return CurrencyFormatting.asFiat(input);
+  };
+});
+
+
+// Filter for presenting a satoshi amount into selected btc unit
+filters.filter('asBtc', function() {
   return function(input) {
     return CurrencyFormatting.asBtc(input);
   };
