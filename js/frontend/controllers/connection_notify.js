@@ -10,13 +10,21 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   var closingConnection = false;
   console.log("connection notify");
 
+  var seenConnecting = false;
+
   // Obelisk service, connect to get notified on events and connection.
   Port.connectNg('obelisk', $scope, function(data) {
       switch(data.type) {
+          case 'connecting':
+              seenConnecting = true;
+              break;
           case 'connected':
               closingConnection = false;
-              var connections = DarkWallet.getIdentity().connections;
-              notify.success('connected', connections.servers[connections.selectedServer].name);
+              if (seenConnecting) {
+                  var connections = DarkWallet.getIdentity().connections;
+                  notify.success('connected', connections.servers[connections.selectedServer].name);
+                  seenConnecting = false;
+              }
               break;
           case 'disconnect':
               closingConnection = true;
