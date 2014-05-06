@@ -15,6 +15,7 @@ filters.filter('heightToDate', function() {
   };
 });
 
+
 moment.lang('en', {
     relativeTime : {
         future: "in %s",
@@ -26,6 +27,10 @@ moment.lang('en', {
         hh: "%d h",
         d:  "1 day",
         dd: "%d days",
+        M : "a month",
+        MM : "%d months",
+        y : "a year",
+        yy : "%d years"
     }
 });
 
