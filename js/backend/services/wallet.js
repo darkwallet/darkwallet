@@ -45,7 +45,9 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
         // Inform gui and other services
         identity.history.update = function() { Port.post('gui', {name: 'update'}); };
-        if (lastTimestamp) {
+        var ts = identity.store.get('lastTimestamp');
+        if (ts) {
+            lastTimestamp = ts;
             BtcUtils.setLastTimestamp(lastTimestamp.height, lastTimestamp.timestamp);
             Port.post('gui', {type: 'timestamps', height: lastTimestamp.height, timestamp: lastTimestamp.timestamp});
         }
@@ -223,6 +225,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         BtcUtils.setLastTimestamp(height, header.timestamp);
         self.blockDiff = BtcUtils.blockDiff;
         lastTimestamp = {height: height, timestamp: header.timestamp};
+        core.getCurrentIdentity().store.set('lastTimestamp', lastTimestamp);
         Port.post('gui', {type: 'timestamps', value: lastTimestamp});
     }
 
