@@ -13,6 +13,13 @@ function GatewayClient(connect_uri, handle_connect, handle_disconnect, handle_er
     this.handler_map = {};
     this.connected = false;
     this.websocket = new WebSocket(connect_uri);
+    var closingCb;
+    this.close = function(_cb) {
+        self.connected = false;
+        self.handler_map = {};
+        closingCb = _cb;
+        self.websocket.close();
+    };
     this.websocket.onopen = function(evt) {
         self.connected = true;
         handle_connect();
@@ -22,6 +29,10 @@ function GatewayClient(connect_uri, handle_connect, handle_disconnect, handle_er
         self.on_close(evt);
         if (handle_disconnect) {
             handle_disconnect(null, evt)
+        }
+        if (closingCb) {
+            closingCb();
+            closingCb = false;
         }
     };
     this.websocket.onerror = function(evt) {
