@@ -200,7 +200,12 @@ table tr:nth-child(odd) button {
 
 table.expand { width: 100%; text-overflow: ellipsis; }
 
-span.ellipsis, div.ellipsis { text-align: left; overflow: hidden; text-overflow: ellipsis; }
+span.ellipsis, div.ellipsis { 
+	text-align: left; 
+	overflow: hidden; 
+	text-overflow: ellipsis;
+	white-space: nowrap;
+ }
 
 div.address-row { padding: 0; }
 

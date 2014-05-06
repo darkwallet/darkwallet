@@ -12,30 +12,27 @@
                 <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
             </dl>
 
-            <div class="row collapse">
-             <div class="small-2 columns">
-               Value
-             </div>
-             <div class="small-5 columns">
+            <div class="row collapse hide-for-small">
+             <div class="medium-4 large-5 columns">
                Address
              </div>
-             <div class="small-2 columns">
+             <div class="medium-2 columns">
                Date
              </div>
-             <div class="small-2 columns">
+             <div class="medium-1 columns">
                Confirmations
              </div>
-             <div class="small-1 columns text-right">
+             <div class="medium-2 columns">
+               Amount
+             </div>
+             <div class="medium-3 large-2 columns text-right">
                Total
              </div>
             </div>
              <div class="row collapse"  ng-repeat="row in historyRows">
-             <div class="small-2 columns">
-                <div ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></div>
-             {{(row.partial) | amountFilter}}
-             </div>
-             <div class="small-5 columns">
-               <div ng-hide="row.contact">
+             <div class="medium-4 columns large-5">
+               <div class="ellipsis" ng-hide="row.contact">
+				<div ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></div>
                 {{row.address}}
                 <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                </div>
@@ -45,17 +42,20 @@
                 <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                </div>
              </div>
-             <div ng-show="row.height" class="small-2 columns">
+             <div ng-show="row.height" class="small-4 medium-2 columns ellipsis">
                <span title="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
              </div>
-             <div ng-show="!row.height" class="small-2 columns">
-               unconfirmed
+             <div ng-show="!row.height" class="small-4 medium-2 columns ellipsis">
+               none
              </div>
-             <div class="small-2 columns">
-               <a ng-click="openTransaction(row.hash)"><div title="See the transaction in the block explorer" class="fa fa-sitemap"></div></a>
-               {{row.height?1+currentHeight-row.height:0}}
+             <div tooltip-placement="left" tooltip="See the transaction in the block explorer" ng-click="openTransaction(row.hash)" class="small-4 medium-1 columns ellipsis">
+               <a ng-click="openTransaction(row.hash)"><i class="fa fa-sitemap hide-for-medium"></i> {{row.height?1+currentHeight-row.height:0}}</a>
+               
              </div>
-             <div class="small-1 columns text-right">
+             <div class="small-4 medium-2 columns">
+             {{(row.partial) | amountFilter}}
+             </div>
+             <div class="hide-for-small medium-3 large-2 columns text-right">
               {{row.confirmed | currencyFilter}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span>
              </div>
             </div>

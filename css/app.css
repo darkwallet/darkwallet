@@ -4848,7 +4848,8 @@ table.expand {
 span.ellipsis, div.ellipsis {
   text-align: left;
   overflow: hidden;
-  text-overflow: ellipsis; }
+  text-overflow: ellipsis;
+  white-space: nowrap; }
 
 div.address-row {
   padding: 0; }
