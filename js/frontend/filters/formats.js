@@ -15,6 +15,19 @@ filters.filter('heightToDate', function() {
   };
 });
 
+moment.lang('en', {
+    relativeTime : {
+        future: "in %s",
+        past:   "%s ago",
+        s:  "s",
+        m:  "1 min",
+        mm: "%d min",
+        h:  "1 h",
+        hh: "%d h",
+        d:  "1 day",
+        dd: "%d days",
+    }
+});
 
 // Filter for presenting a byte array as hex
 filters.filter('bytesToHex', function() {
