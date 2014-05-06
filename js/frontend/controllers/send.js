@@ -224,6 +224,17 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       var sendTimeout = 0;
       var timeoutId;
 
+      // Enable sending again
+      var enableSending = function() {
+          sendForm.sending = false;
+          $scope.sendEnabled = true;
+          if (timeoutId) {
+              $timeout.cancel(timeoutId);
+              timeoutId = undefined;
+          }
+      }
+
+      // Callback for broadcasting or signing
       var onBroadcast = function(error, task) {
           console.log("broadcast feedback", error, task);
           if (sendTimeout==6) {
@@ -232,15 +243,13 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
           if (error) {
               var errorMessage = error.message || ''+error;
               notify.error("Error broadcasting", errorMessage);
-              sendForm.sending = false;
-              if (timeoutId) {
-                  $timeout.cancel(timeoutId);
-                  timeoutId = undefined;
-              }
+              enableSending();
           } else if (task && task.type == 'signatures') {
               notify.note('Signatures pending', amountNote)
+              enableSending();
           } else if (task && task.type == 'radar') {
               if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {
+                  // cancel watchdog timer
                   $timeout.cancel(timeoutId);
                   timeoutId = undefined;
               }
@@ -251,10 +260,13 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
           }
       };
 
+      // Watchdog timeout checking every 10 sec for the radar
       var onSendTimeout = function() {
           if (sendTimeout == 6) {
               timeoutId = undefined;
               onUpdateRadar(radarCache.radar, radarCache, 'Timeout broadcasting, total: ' + (radarCache.radar*100).toFixed(2) + '%');
+              $scope.sendEnabled = true;
+              sendForm.sending = true;
           } else {
               timeoutId = $timeout(function(){onSendTimeout()}, 10000);
               sendTimeout+=1;
