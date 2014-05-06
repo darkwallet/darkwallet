@@ -136,10 +136,6 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
                   notify.success('Transaction finished propagating');
               }
               button.classList.remove('working');
-              $scope.resetSendForm();
-              if (!$scope.$$phase) {
-                  $scope.$apply();
-              };
           }
           return true;
       }
@@ -225,12 +221,15 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       var timeoutId;
 
       // Enable sending again
-      var enableSending = function() {
+      var enableSending = function(formReset) {
           sendForm.sending = false;
           $scope.sendEnabled = true;
           if (timeoutId) {
               $timeout.cancel(timeoutId);
               timeoutId = undefined;
+          }
+          if (formReset) {
+              $scope.resetSendForm();
           }
       }
 
@@ -249,9 +248,10 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
               enableSending();
           } else if (task && task.type == 'radar') {
               if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {
-                  // cancel watchdog timer
-                  $timeout.cancel(timeoutId);
-                  timeoutId = undefined;
+                  enableSending(true);
+                  if (!$scope.$$phase) {
+                      $scope.$apply();
+                  };
               }
               if (!isBroadcasted) {
                   notify.success('Transaction sent', amountNote);
@@ -265,8 +265,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
           if (sendTimeout == 6) {
               timeoutId = undefined;
               onUpdateRadar(radarCache.radar, radarCache, 'Timeout broadcasting, total: ' + (radarCache.radar*100).toFixed(2) + '%');
-              $scope.sendEnabled = true;
-              sendForm.sending = true;
+              enableSending(radarCache.radar>0.0);
           } else {
               timeoutId = $timeout(function(){onSendTimeout()}, 10000);
               sendTimeout+=1;
