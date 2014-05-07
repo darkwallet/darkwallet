@@ -132,6 +132,7 @@ function (controllers, DarkWallet, Port) {
    */
   $scope.newMultiSig = function() {
       $scope.selectedPocket = 'newMultisig';
+      $scope.pocket.isAll = false;
   };
 
   /**
