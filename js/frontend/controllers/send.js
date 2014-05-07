@@ -308,8 +308,6 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
 
 
   $scope.sendBitcoins = function() {
-      // get a free change address
-      var changeAddress = $wallet.getChangeAddress(sendForm.pocketIndex);
 
       // Prepare recipients
       var spend = prepareRecipients();
@@ -343,6 +341,9 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
               pocketIndex = $history.pocket.index;
           }
       }
+
+      // get a free change address
+      var changeAddress = $wallet.getChangeAddress(pocketIndex);
 
       try {
           metadata = identity.wallet.prepareTx(pocketIndex,
