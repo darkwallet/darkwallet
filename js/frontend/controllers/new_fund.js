@@ -2,17 +2,17 @@
 
 define(['./module', 'darkwallet', 'util/btc', 'bitcoinjs-lib'],
 function (controllers, DarkWallet, BtcUtils, Bitcoin) {
-  controllers.controller('NewFundCtrl', ['$scope', 'clipboard', 'notify', function($scope, clipboard, notify) {
+  controllers.controller('NewFundCtrl', ['$scope', 'notify', function($scope, notify) {
 
     /**
      * Reset the multisig fund
      */
     $scope.resetMultisigForm = function() {
-        $scope.page = 'multisig-start';
         $scope.multisig = {
           name: '',
           participants: [],
-          m: 1
+          m: 1,
+          page: 'multisig-start'
         };
     };
 
@@ -72,7 +72,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
 
         $scope.multisig.script = multiSig;
         $scope.multisig.m = multiSig.m;
-        return 'multisig-final';
+        $scope.createMultisig();
     };
 
 
