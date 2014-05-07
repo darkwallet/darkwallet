@@ -310,16 +310,24 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
         // Gather private keys for this task
         var privKeys = {};
-        metadata.utxo.forEach(function(utxo) {
+        var failed = metadata.utxo.some(function(utxo) {
             var address = identity.wallet.getWalletAddress(utxo.address);
             if (address && !privKeys.hasOwnProperty(address.index)) {
-                identity.wallet.getPrivateKey(address.index, password, function(privKey) {
-                    privKeys[address.index] = privKey.toBytes().slice(0);
-                });
+                try {
+                    identity.wallet.getPrivateKey(address.index, password, function(privKey) {
+                        privKeys[address.index] = privKey.toBytes().slice(0);
+                    });
+                } catch (e) {
+                    callback({data: e, message: 'Password incorrect!', type: 'password'});
+                    return true; // to break out of the some loop
+                }
             } else if (!address) {
                 console.log("[wallet] No private keys for", address);
             }
         });
+        if (failed) {
+            return;
+        }
 
         // Store privkeys in the task encrypted for the session
         var safe = core.service.safe;

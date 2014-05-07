@@ -202,13 +202,17 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
   var finishMix = function(metadata, amountNote, password) {
       var onMixing = function(err, mixingTask) {
           if (err) {
-              notify.error('Error sending to mixer ('+mixingTask.task.state+')', amountNote);
+              if (err.type == 'password') {
+                  notify.warning(err.message);
+              } else {
+                  notify.error('Error sending to mixer ('+mixingTask.task.state+')', amountNote);
+              }
           } else {
+              $scope.resetSendForm();
               notify.note('Sent to mixer ('+mixingTask.task.state+')', amountNote);
           }
       };
 
-      $scope.resetSendForm();
       var walletService = DarkWallet.service.wallet;
       walletService.mixTransaction(metadata.tx, metadata, password, onMixing);
   };
@@ -239,9 +243,13 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
           if (sendTimeout==6) {
               return;
           }
-          if (error) {
-              var errorMessage = error.message || ''+error;
-              notify.error("Error broadcasting", errorMessage);
+          if (error) { 
+              if (error.type == 'password') {
+                  notify.warning(error.message);
+              } else {
+                  var errorMessage = error.message || ''+error;
+                  notify.error("Error broadcasting", errorMessage);
+              }
               enableSending();
           } else if (task && task.type == 'signatures') {
               notify.note('Signatures pending', amountNote)

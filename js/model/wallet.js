@@ -570,6 +570,7 @@ Wallet.prototype.markOutput = function(output, index) {
  * @param {Function} callback DOCME
  */
 Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
+    var self = this;
     var pending = [];
 
     var hash = Bitcoin.convert.bytesToHex(newTx.getHash());
@@ -579,7 +580,6 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
         var seq;
         var utxo = txUtxo[idx];
 
-        this.markOutput(utxo, hash + ":" + idx);
 
         var outAddress = this.getWalletAddress(utxo.address);
         if (outAddress) {
@@ -594,11 +594,14 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
                 newTx.sign(idx, outKey);
             });
           } catch (e) {
-            callback({data: e, message: "Password incorrect!"});
+            callback({data: e, message: "Password incorrect!", type: 'password'});
             return;
           }
         }
     };
+    txUtxo.forEach(function(utxo, i) {
+        self.markOutput(utxo, hash + ":" + i);
+    });
     // No error so callback with success
     callback(null, pending);
 };
