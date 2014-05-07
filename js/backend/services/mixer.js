@@ -72,7 +72,12 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     console.log("[mixer] Check mixing...");
     var lobbyTransport = this.core.getLobbyTransport();
     if (!this.channel) {
-      this.channel = lobbyTransport.initChannel('CoinJoin', Channel);
+      var network = this.core.getIdentity().wallet.network;
+      if (network == 'bitcoin') {
+          this.channel = lobbyTransport.initChannel('CoinJoin', Channel);
+      } else {
+          this.channel = lobbyTransport.initChannel('CoinJoin:'+network, Channel);
+      }
       this.channel.addCallback('CoinJoinOpen', function(_d) {self.onCoinJoinOpen(_d);});
       this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d);});
       this.channel.addCallback('CoinJoinFinish', function(_d) {self.onCoinJoinFinish(_d);});
