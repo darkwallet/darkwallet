@@ -14,7 +14,7 @@
             <button ng-click="modals.showQr(pocket.stealth)" class="button postfix radius fa fa-qrcode">QR</button>
         </div>
     </div>
-    <div class="row collapse">
+    <div class="row collapse" ng-cloak ng-show="settings.advanced">
         <div class="medium-2 columns">
             <span class="prefix radius">Master Address</span>
         </div>
