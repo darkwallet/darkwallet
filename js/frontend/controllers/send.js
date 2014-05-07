@@ -199,6 +199,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       }
   };
 
+
   var finishMix = function(metadata, amountNote, password) {
       var onMixing = function(err, mixingTask) {
           if (err) {
@@ -216,6 +217,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       var walletService = DarkWallet.service.wallet;
       walletService.mixTransaction(metadata.tx, metadata, password, onMixing);
   };
+
 
   var finishSign = function(metadata, amountNote, password) {
       // callback waiting for radar feedback
@@ -274,6 +276,11 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
               timeoutId = undefined;
               onUpdateRadar(radarCache.radar, radarCache, 'Timeout broadcasting, total: ' + (radarCache.radar*100).toFixed(2) + '%');
               enableSending(radarCache.radar>0.0);
+
+              // Since it didn't go out at all, let's undo the transaction.
+              if (!radarCache.radar) {
+                  DarkWallet.getIdentity().wallet.undoTransaction(metadata.tx);
+              }
           } else {
               timeoutId = $timeout(function(){onSendTimeout()}, 10000);
               sendTimeout+=1;
