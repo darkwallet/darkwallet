@@ -52,7 +52,7 @@
               <input ng-show="newServer.next" ng-model="newServer.name" type="text" placeholder="Enter name" autofocus />
             </div>
             <div class="small-4 columns">
-              <a ng-hide="newServer.next" ng-disabled="!newServer.address" ng-click="newServer.next = true" class="fa button postfix radius fa-plus">Next</a>
+              <a ng-hide="newServer.next" ng-disabled="!newServer.address" ng-click="newServer.address && (newServer.next = true)" class="fa button postfix radius fa-plus">Next</a>
               <a ng-show="newServer.next" ng-click="addServer()" class="fa button postfix radius fa-plus">Add</a>
             </div>
           </div>
