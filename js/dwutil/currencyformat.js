@@ -7,6 +7,11 @@ function CurrencyFormatting() {
     
 }
 
+var symbol = {
+  'BTC': '฿',
+  'mBTC': 'm฿'
+}
+
 /**
  * Convert user amount (from input) to satoshis
  * TODO: we probably want a function that takes a string
@@ -88,7 +93,7 @@ CurrencyFormatting.fiatToBtc = function(amount, currency, fiatCurrency) {
 CurrencyFormatting.formatBtc = function(satoshis, unit) {
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
 
-    return this.asBtc(satoshis, unit) + " " + unit;
+    return this.asBtc(satoshis, unit) + " " + symbol[unit];
 }
 
 /**

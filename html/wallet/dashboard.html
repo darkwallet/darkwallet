@@ -23,8 +23,8 @@
 			<div class="panel radius pocket-square">
            		<h5>{{pocket.name}} <small ng-show="pocket.type=='fund'">{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</small></h5>
         
-           		<span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed | asBtc}} {{symbols.btc}} ({{pocket.balance.confirmed | asFiat}} {{symbols.fiat}})</span>
-           		<span ng-show="pocket.balance.unconfirmed">{{pocket.balance.unconfirmed | asBtc}} {{symbols.btc}} ({{pocket.balance.unconfirmed | asFiat}} {{symbols.fiat}})</span>
+           		<span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed | formatBtc}} ({{pocket.balance.confirmed | formatFiat}})</span>
+           		<span ng-show="pocket.balance.unconfirmed">{{pocket.balance.unconfirmed | formatBtc}} ({{pocket.balance.unconfirmed | formatFiat}})</span>
            		<span ng-show="!pocket.balance.confirmed && !pocket.balance.unconfirmed">No coins</span>
            	</div>
   		</li>

@@ -33,13 +33,6 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
       identity.settings.currency = $scope.selectedCurrency;
       identity.store.save();
       $scope.defaultFee = CurrencyFormat.asBtc(identity.wallet.fee);
-      if (identity.settings.currency == 'mBTC') {
-          $scope.symbols.btc = 'm฿';
-      } else {
-          $scope.symbols.btc = '฿';
-      }
-
-
   };
   $scope.fiatCurrencyChanged = function() {
       var identity = DarkWallet.getIdentity();
@@ -47,7 +40,6 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
       identity.settings.fiatCurrency = $scope.selectedFiat;
       tickerService.setFiatCurrency($scope.selectedFiat);
       identity.store.save();
-      $scope.symbols.fiat = FiatCurrencies[$scope.selectedFiat].symbol_native;
   };
   $scope.defaultFeeChanged = function() {
       if (!isNaN($scope.defaultFee)) {

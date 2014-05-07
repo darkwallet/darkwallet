@@ -9,8 +9,8 @@
     <!-- Pocket name and balance -->
     <h4 ng-show="!(pocket.balance===undefined)">
         {{pocket.name}}
-        <small>{{pocket.balance.confirmed | asBtc}} {{symbols.btc}} ({{pocket.balance.confirmed | asFiat}} {{symbols.fiat}})</small>
-        <small ng-show="pocket.balance.unconfirmed">({{pocket.balance.unconfirmed | asBtc}} {{symbols.btc}} {{pocket.balance.unconfirmed | asFiat}} {{symbols.fiat}})</small>
+        <small>{{pocket.balance.confirmed | formatBtc}} ({{pocket.balance.confirmed | formatFiat}})</small>
+        <small ng-show="pocket.balance.unconfirmed">({{pocket.balance.unconfirmed | formatBtc}} {{pocket.balance.unconfirmed | formatFiat}})</small>
     </h4>
     <!-- Tabs -->
     <div class="tabbable">

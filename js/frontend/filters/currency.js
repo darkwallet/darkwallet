@@ -27,6 +27,18 @@ filters.filter('asBtc', function() {
   };
 });
 
+filters.filter('formatBtc', function() {
+  return function(input) {
+    return CurrencyFormatting.formatBtc(input);
+  };
+});
+
+filters.filter('formatFiat', function() {
+  return function(input) {
+    return CurrencyFormatting.formatFiat(input);
+  };
+});
+
 // Filter for presenting a satoshi amount into selected btc unit with unit label
 filters.filter('currencyPresenter', function() {
   return function(input) {
