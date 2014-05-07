@@ -36,13 +36,15 @@ function(Port) {
   /**
    * Connect to obelisk
    */
-  ObeliskService.prototype.connect = function(connectUri, handleConnect) {
+  ObeliskService.prototype.connect = function(connectUri, handleConnect, quiet) {
       var self = this;
       var retryConnect = function() {
+        if (!self.reconnectTimeout) {
           self.reconnectTimeout = setTimeout(function() {
               self.reconnectTimeout = false;
-              self.connect(connectUri, handleConnect);
+              self.connect(connectUri, handleConnect, true);
           }, 10000);
+        }
       }
       if (this.connected || this.connecting) {
           // wait for connection
@@ -61,7 +63,9 @@ function(Port) {
               handleConnect ? handleConnect(err) : null;
               if (err) {
                   console.log("[obelisk] Error connecting");
-                  Port.post('obelisk', {'type': 'connectionError', 'error': 'Error connecting'});
+                  if (!quiet) {
+                    Port.post('obelisk', {'type': 'connectionError', 'error': 'Error connecting'});
+                  }
                   if (self.shouldConnect) {
                       retryConnect();
                   }
