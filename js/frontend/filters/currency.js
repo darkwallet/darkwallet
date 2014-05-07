@@ -29,7 +29,7 @@ filters.filter('asBtc', function() {
 
 filters.filter('formatBtc', function() {
   return function(input) {
-    return CurrencyFormatting.formatBtc(input);
+    return CurrencyFormatting.formatBtc(input, 'smart');
   };
 });
 

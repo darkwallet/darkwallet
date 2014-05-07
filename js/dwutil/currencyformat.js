@@ -91,8 +91,15 @@ CurrencyFormatting.fiatToBtc = function(amount, currency, fiatCurrency) {
  * Format satoshis into user unit
  */
 CurrencyFormatting.formatBtc = function(satoshis, unit) {
+    if (unit === 'smart') {
+      if (String(satoshis).length > 8) {
+        unit = 'BTC';
+      } else {
+        unit = 'mBTC';
+      }
+    }
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
-
+    
     return this.asBtc(satoshis, unit) + " " + symbol[unit];
 }
 
