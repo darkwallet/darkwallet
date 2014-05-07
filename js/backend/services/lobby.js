@@ -28,7 +28,12 @@ function(Port, Transport, Channel, DarkWallet) {
     Port.connect('obelisk', function(data) {
         // WakeUp when connected to obelisk
         if (data.type == 'connected') {
-            self.connectTo('Trollbox');
+            var network = DarkWallet.getIdentity().wallet.network;
+            if (network == 'testnet') {
+              self.connectTo('Trolltest');
+            } else {
+              self.connectTo('Trollbox');
+            }
         }
         else if (data.type == 'disconnect' || data.type == 'disconnected') {
             console.log("[lobby] disconnect");
