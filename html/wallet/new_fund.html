@@ -1,40 +1,6 @@
-  <form ng-submit="createMultisig()">
-  <h3>Start a Multisig fund</h3>
-  
-  <h4>Name</h4>
-  <input ng-model="multisig.name" type="text" placeholder="Name your multisig fund..." autofocus required />
-  <h4>Who will manage this fund?</h4>
-  <div ng-show="!multisig.script">
-    <div class="row collapse">
-      <div class="large-10 columns">
-        <input type="text" ng-model="newAddress">
-      </div>
-      <div class="large-2 columns">
-        <a href="" ng-click="addParticipant(newAddress); newAddress = ''" class="button small radius postfix">Add</a>
-      </div>
-    </div>
-    <a href="" ng-click="modals.open('pick-contact', {participants: multisig.participants}, addParticipant)" class="button small radius">Select from contacts</a>
-    <a href="" ng-click="modals.scanQr(multisig.participants)" class="button small radius">Scan a QR code</a>
-    <a href="" ng-click="addParticipant(clipboard.paste(), multisig)" class="button small radius" title="Paste a public key or stealth address">Paste</a>
-  </div>
-    <ul>
-      <li ng-repeat="participant in multisig.participants">{{participant.address}}</li>
-    </ul>
-    <h4>How many signatures will be needed in order to spend?</h4>
-    <div class="row collapse">
-        <div ng-show="!multisig.script" class="small-6 columns">
-          <slider min="1" value="multisig.m" max="multisig.participants.length || 1" ></slider>
-        </div>
-        <div class="small-6 columns">
-          <span class="postfix radius">({{multisig.m}} of {{multisig.participants.length}} signatures)</span>
-        </div>
-    </div>
-    <input type="submit" class="button glow radius" value="Start multisig" />
-    <a ng-show="!multisig.script" class="button" ng-click="importMultisig()"> Import a multisig</a>
-    </form>
 <div class="row collapse">
 	<div class="large-10 large-centered columns">
-		<div class="wizard">
+		<div class="wizard" ng-show="page=='multisig-start'">
 			<div class="row">
 				<div class="small-12 columns">
 					<h6>Multisig funds require approval from multiple wallets in order to spend the coins in them. They are very useful when you need to manage a fund between multiple people or when you want multiple factors of authentication to prevent theft if your wallet is compromised.</h6>
@@ -42,40 +8,38 @@
 			</div>
 			<div class="row">
 				<div class="small-6 columns">
-					<a class="button radius expand nomarginbottom fa fa-download" ng-click="importMultisig()"> Import</a>
+					<a class="button radius expand nomarginbottom fa fa-download" ng-click="page='multisig-create';createType='import'"> Import</a>
 				</div>
 				<div class="small-6 columns">
-					<a class="button radius expand nomarginbottom fa fa-plus"> Create new</a>
+					<a class="button radius expand nomarginbottom fa fa-plus" ng-click="page='multisig-create';createType='new'";> Create new</a>
 				</div>
 			</div>
 		
 		</div>
-		<div class="wizard">
+		<div class="wizard" ng-show="page=='multisig-create'&&createType=='import'">
 			<div class="row">
 				<div class="small-12 columns">
 					<h5>Paste the multisig code here</h5>
-					<textarea class="script"></textarea>
-					<h5>Name for the pocket</h5>
-					<input type="text" class="radius" placeholder="Enter the pocket name for your fund...">
+					<textarea ng-model="scriptData" class="script"></textarea>
 				</div>
 			</div>
 			<div class="row">
 				<div class="small-4 columns">
-					<a class="button radius expand nomarginbottom fa fa-arrow-left"> Back</a>
+					<a class="button radius expand nomarginbottom fa fa-arrow-left" ng-click="page='multisig-start'"> Back</a>
 				</div>
 				<div class="small-4 columns">
-					<a class="button radius expand nomarginbottom fa fa-clipboard"> Paste</a>
+					<a class="button radius expand nomarginbottom fa fa-clipboard" ng-click="scriptData=clipboard.paste()"> Paste</a>
 				</div>
 				<div class="small-4 columns">
-					<a class="disabled button radius expand nomarginbottom fa fa-download"> Import</a>
+					<a class="button radius expand nomarginbottom fa fa-download" ng-disabled="!scriptData" ng-class="{glow: scriptData}" ng-click="page=importMultisig(scriptData)"> Import</a>
 				</div>
 			</div>
 		
 		</div>
-		<div class="wizard">
+		<div class="wizard" ng-show="page=='multisig-create'&&createType=='new'">
 			<div class="small-12 columns">
 				<h5>Select fund managers</h5>
-				<div ng-repeat="participant in multisig.participants" class="row collapse">
+				<div ng-repeat="participant in multisig.participants track by $index" class="row collapse">
 					<div class="small-1 columns text-center">
 						<span class="label" ng-show="participant.type=='me'">me</span>
 			        	<identicon icon-size="38" hash="participant.hash"></identicon>
@@ -84,7 +48,7 @@
 						<input type="text" value="{{participant.address}}" readonly />
 					</div>
 					<div class="small-4 large-2 columns">
-						<button type="submit" class="button postfix radius fa fa-times">Remove</button>
+						<button class="button postfix radius fa fa-times" ng-click="removeParticipant($index)">Remove</button>
 					</div>
 				</div>
 				<div class="row collapse">
@@ -98,31 +62,30 @@
 			        <input type="text" ng-model="newAddress" placeholder="Paste stealth or master address here..." />
 			      </div>
 			      <div class="small-4 large-2 columns">
-			        <button type="submit" ng-click="addParticipant(newAddress); newAddress = ''" class="button postfix radius fa fa-plus">Add</button>
+			        <button ng-click="addParticipant(newAddress); newAddress = ''" class="button postfix radius fa fa-plus">Add</button>
 			      </div>
 			   	</div>
-				<input id="include-me" type="checkbox"><label for="include-me">Add this wallet ({{identityName}}) as a manager</label>
+				<input id="include-me" type="checkbox" ng-disabled="true"><label for="include-me">Add this wallet ({{identityName}}) as a manager</label>
 			</div>
 				
 				<div class="row">
 					<div class="small-4 columns">
-						<a class="button radius expand nomarginbottom fa fa-arrow-left"> Back</a>
+						<a class="button radius expand nomarginbottom fa fa-arrow-left" ng-click="page='multisig-start'"> Back</a>
 					</div>
 					<div class="small-4 columns">
-						<a class="button radius expand nomarginbottom fa fa-clipboard"> Paste</a>
+						<a class="button radius expand nomarginbottom fa fa-clipboard" ng-click="addParticipant(clipboard.paste())"> Paste</a>
 					</div>
 					<div class="small-4 columns">
-						<a class="disabled button radius expand nomarginbottom fa fa-arrow-right"> Next</a>
+						<a class="button radius expand nomarginbottom fa fa-arrow-right" ng-disabled="multisig.participants.length<2" ng-click="page='multisig-final'" ng-class="{glow: multisig.participants.length>1}"> Next</a>
 					</div>
 				</div>
 			</div>
-			<div class="wizard">
+		        <div class="wizard" ng-show="page=='multisig-final'">
 				<h5>Required signatures</h5>
 
 					<div class="row collapse">
 						<div class="small-3 columns">
-							<input type="number" value="2" autofocus="autofocus" min="1" max="{{multisig.participants.length}}" class="prefix radius">
-						
+							<input name="multisig-m" ng-disabled="createType=='import'" type="number" ng-model="multisig.m" value="{{multisig.m}}" autofocus="autofocus" min="1" max="{{multisig.participants.length}}" class="prefix radius">
 						</div>
 						<div class="small-9 columns">
 							<span class="postfix radius">of {{multisig.participants.length}} signatures will be required to spend</span>
@@ -131,16 +94,16 @@
 					</div>
 
 				<h5>Name for the pocket</h5>
-				<input type="text" class="radius" placeholder="Enter the pocket name for your fund...">
+				<input ng-model="multisig.name"  type="text" class="radius" placeholder="Enter the pocket name for your fund...">
 				<div class="row collapse">
 					<div class="small-4 columns">
-						<a class="button radius expand nomarginbottom fa fa-arrow-left"> Back</a>
+						<a class="button radius expand nomarginbottom fa fa-arrow-left" ng-click="page='multisig-create'"> Back</a>
 					</div>
 					<div class="small-4 columns">
 						
 					</div>
 					<div class="small-4 columns">
-						<a class="disabled button radius expand nomarginbottom fa fa-plus"> Create</a>
+						<a class="button radius expand nomarginbottom fa fa-plus" ng-click="createMultisig()" ng-class="{glow: multisig.name}" ng-disabled="!multisig.name"> Create</a>
 					</div>
 				</div>
 			</div>

@@ -3,10 +3,12 @@
 define(['./module', 'darkwallet', 'util/btc', 'bitcoinjs-lib'],
 function (controllers, DarkWallet, BtcUtils, Bitcoin) {
   controllers.controller('NewFundCtrl', ['$scope', 'clipboard', 'notify', function($scope, clipboard, notify) {
+
     /**
      * Reset the multisig fund
      */
     $scope.resetMultisigForm = function() {
+        $scope.page = 'multisig-start';
         $scope.multisig = {
           name: '',
           participants: [],
@@ -21,9 +23,8 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
     /**
      * Add a participant from contacts or input
      */
-    $scope.addParticipant = function(data, vars) {
+    $scope.addParticipant = function(data) {
         var identity = DarkWallet.getIdentity();
-        vars = vars || $scope.multisig;
 
         try {
             BtcUtils.extractPublicKey(data);
@@ -38,18 +39,23 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
         participant.hash = identity.contacts.generateContactHash(data);
 
         // Add to scope participants
-        vars.participants.push(participant);
+        $scope.multisig.participants.push(participant);
+        $scope.multisig.m = $scope.multisig.participants.length-1;
     };
 
+    $scope.removeParticipant = function(i) {
+        $scope.multisig.participants.splice(i,1);
+        $scope.multisig.m = $scope.multisig.participants.length-1;
+    }
 
     /**
      * Import a multisig
      */
-    $scope.importMultisig = function() {
+    $scope.importMultisig = function(data) {
         var identity = DarkWallet.getIdentity();
-        var data = clipboard.paste();
         var multiSig = BtcUtils.importMultiSig(data, identity.wallet.versions.p2sh);
 
+        $scope.multisig.participants = [];
         multiSig.pubKeys.forEach(function(participant) {
             var compressed = (participant.length == 33);
 
@@ -66,6 +72,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
 
         $scope.multisig.script = multiSig;
         $scope.multisig.m = multiSig.m;
+        return 'multisig-final';
     };
 
 
