@@ -15,8 +15,7 @@ function(Port, Transport, Channel, DarkWallet) {
          // onMessage
          switch(data.type) {
              case 'initChannel':
-               console.log("[lobby] InitChannel", data.name);
-               self.lobbyTransport.initChannel(data.name, Channel);
+               self.connectTo(data.name);
                Port.post('lobby', data);
                break;
        }
@@ -58,12 +57,9 @@ function(Port, Transport, Channel, DarkWallet) {
 
   LobbyService.prototype.connectTo = function(channel) {
     var self = this;
+    var ch = this.lobbyTransport.initChannel(channel, Channel);
     console.log("[lobby] Connecting to "+channel+"...");
-    var lobbyTransport = this.getLobbyTransport();
-    if (!this.channel) {
-      this.channel = lobbyTransport.initChannel(channel, Channel);
-      this.channel.addCallback('Shout', function(_d) {self.onShout(channel, _d)});
-    }
+    ch.addCallback('Shout', function(_d) {self.onShout(channel, _d)});
   };
  
   LobbyService.prototype.onShout = function(channel, msg) {
