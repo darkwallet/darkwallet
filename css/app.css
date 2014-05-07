@@ -1256,7 +1256,7 @@ form .row input.column, form .row input.columns, form .row textarea.column, form
 /* Label Styles */
 label {
   font-size: 0.875rem;
-  color: #4d4d4d;
+  color: #fff;
   cursor: pointer;
   display: block;
   font-weight: normal;
@@ -1271,7 +1271,7 @@ label {
     padding: 0.5625rem 0; }
   label small {
     text-transform: capitalize;
-    color: #676767; }
+    color: white; }
 
 select::-ms-expand {
   display: none; }
@@ -1480,7 +1480,7 @@ span.error, small.error {
   background: #c92441;
   color: #fff; }
 .error > label > small {
-  color: #676767;
+  color: white;
   background: transparent;
   padding: 0;
   text-transform: capitalize;
@@ -4536,7 +4536,7 @@ div.container {
 div.modal-ng.ng-animate {
   transition: all 450ms ease-in; }
 
-.ng-hide-add, div.send-advanced.ng-hide, span.tooltip.fade, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
+.ng-hide-add, div.send-advanced.ng-hide, span.tooltip.fade, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
   transition: all 300ms ease-out; }
 
 @-webkit-keyframes rotateFoldBottom {
@@ -4695,9 +4695,14 @@ input.ng-valid + span.input-status {
 input.address-buttons {
   padding-right: 5.3em; }
 
-input[type="text"].postfix.radius {
+input[type="text"].postfix.radius, input[type="number"].postfix.radius {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px; }
+
+input[type="text"].prefix.radius, input[type="number"].prefix.radius {
+  line-height: normal;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px; }
 
 input[type="range"] {
   -webkit-appearance: none;

@@ -81,9 +81,15 @@ input.ng-valid + span.input-status { opacity: 1; }
 
 input.address-buttons { padding-right: 5.3em; }
 
-input[type="text"].postfix.radius {
+input[type="text"].postfix.radius, input[type="number"].postfix.radius {
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
+}
+
+input[type="text"].prefix.radius, input[type="number"].prefix.radius {
+	line-height: normal;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
 
 input[type="range"] {
