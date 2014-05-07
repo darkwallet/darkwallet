@@ -84,8 +84,9 @@ Wallet.prototype.initIfEmpty = function() {
  * @param {Number} Balance in satoshis
  */
 Wallet.prototype.getBalance = function(pocketIndex) {
-    var balance = 0;
+    var confirmed = 0;
     var unconfirmed = 0;
+    var current = 0;
     var hot = 0;
     var allAddresses = [];
     var keys = Object.keys(this.pubKeys);
@@ -116,19 +117,21 @@ Wallet.prototype.getBalance = function(pocketIndex) {
                 // spent so don't count it
             } else if (!out.height) {
                 // add to balance
-                if (out.change) {
-                    balance += out.value;
+                if (out.change) { // hot change not allowed atm
+                    confirmed += out.value;
                     hot += out.value;
                 }
+                current += out.value;
                 // hot change also gets added to cancel unconfirmed from the spend
                 unconfirmed += out.value;
             }
             else {
-                balance += out.value;
+                confirmed += out.value;
+                current += out.value;
             }
         }
     };
-    var balances = {confirmed: balance, unconfirmed: unconfirmed, hot: hot};
+    var balances = {confirmed: confirmed, unconfirmed: unconfirmed, current: current};
     
     if (pocketIndex === undefined) {
         this.balance = balances;
@@ -675,7 +678,8 @@ Wallet.prototype.processOutput = function(walletAddress, txData, index, value, h
     }
     // Set as change
     if (!height && output.change == undefined) {
-        output.change = this.txInputsMine(txHash, tx);
+        // no 0 confirm spends for now
+        // output.change = this.txInputsMine(txHash, tx);
     }
     // If confirmed or inputs are mine and not spent add balance
     if ((output.change || height) && !output.height && !spend) {

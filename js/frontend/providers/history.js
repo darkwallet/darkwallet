@@ -199,6 +199,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var prevRow = rows[0];
       prevRow.confirmed = this.pocket.balance.confirmed;
       prevRow.unconfirmed = this.pocket.balance.unconfirmed;
+      prevRow.current = this.pocket.balance.current;
       prevRow.partial = getImpact(prevRow);
 
       var contacts = identity.contacts;
@@ -211,6 +212,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           var value = prevRow.partial;
 
           row.partial = getImpact(row);
+
+          row.current = prevRow.current-value;
 
           if (prevRow.height || prevRow.inMine) {
               row.confirmed = prevRow.confirmed-value;
