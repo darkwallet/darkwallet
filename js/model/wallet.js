@@ -758,6 +758,38 @@ Wallet.prototype.txForAddress = function(walletAddress, tx) {
     return inputs;
 };
 
+/**
+ * Undo the effects of the transaction on the wallet
+ */
+Wallet.prototype.undoTransaction = function(tx) {
+    var self = this;
+    var txHash = Bitcoin.convert.bytesToHex(tx.getHash());
+    tx.ins.forEach(function(anIn, i) {
+        var index = anIn.outpoint.hash + ':' + anIn.outpoint.index;
+        var output = self.wallet.outputs[index];
+        if (output && output.spend) {
+            if (!output.spendpending) {
+                var walletAddress = self.getWalletAddress(output.address);
+                walletAddress += output.value;
+            }
+            delete output.spend;
+            delete output.spendheight;
+            delete output.spendpending;
+        }
+    });
+    tx.outs.forEach(function(anOut, i) {
+        var index = txHash + ':' + i;
+        var output = self.wallet.outputs[index];
+        if (output) {
+            delete self.wallet.outputs[index];
+            if (output.counted) {
+                var walletAddress = self.getWalletAddress(output.address);
+                walletAddress.balance -= output.value;
+            }
+        }
+    });
+};
+
 
 /**
  * Process incoming transaction
