@@ -57,7 +57,7 @@ function(Port, Transport, Channel, DarkWallet) {
 
   LobbyService.prototype.connectTo = function(channel) {
     var self = this;
-    var ch = this.lobbyTransport.initChannel(channel, Channel);
+    var ch = this.getLobbyTransport().initChannel(channel, Channel);
     console.log("[lobby] Connecting to "+channel+"...");
     ch.addCallback('Shout', function(_d) {self.onShout(channel, _d)});
   };
