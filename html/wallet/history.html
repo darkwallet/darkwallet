@@ -31,14 +31,10 @@
             </div>
              <div class="row collapse"  ng-repeat="row in historyRows">
              <div class="medium-4 columns large-5">
-               <div class="ellipsis" ng-hide="row.contact">
-				<div ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></div>
-                {{row.address}}
-                <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
-               </div>
-               <div title="{{row.address}}" ng-show="row.contact">
-                <identicon icon-size="24" hash="row.contact.hash"></identicon>
-                {{row.contact.name}}
+               <div title="{{row.address}}" ng-class="{ellipsis: row.contact}">
+                <i ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
+                <identicon ng-show="row.contact" icon-size="24" hash="row.contact.hash"></identicon>
+                {{row.contact ? row.contact.name : row.address}}
                 <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                </div>
              </div>

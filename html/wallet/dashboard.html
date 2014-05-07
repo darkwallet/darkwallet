@@ -37,15 +37,11 @@
         <div class="row collapse panel radius transactions">
             <h5>Latest transactions</h5>
             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
-             <div class="small-6 medium-4 large-7 columns">
-               <div class="ellipsis" ng-hide="row.contact">
-				   	<i ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
-					<span class="label radius fa fa-fighter-jet" ng-show="row.isStealth"> stealth</span>
-                	{{row.address}}
-               </div>
-               <div title="{{row.address}}" ng-show="row.contact">
-                <identicon icon-size="24" hash="row.contact.hash"></identicon>
-                {{row.contact.name}}
+             <div class="small-5 medium-3 large-6 columns">
+               <div title="{{row.address}}" ng-class="{ellipsis: row.contact}">
+                <i ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
+                <identicon ng-show="row.contact" icon-size="24" hash="row.contact.hash"></identicon>
+                {{row.contact ? row.contact.name : row.address}}
                 <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                </div>
              </div>
