@@ -8,11 +8,11 @@
               <option ng-click="selectChannel(channel)" ng-selected="channel.channelHash == subscribed" ng-repeat="channel in lobbyChannels">{{channel.name}} {{channel.channelHash.slice(0,8)}}...</option>
               </select>
           </div>
-          <form>
+          <form ng-submit="joinChannel();">
             <label>
               <input ng-model="pairCode" type="password" class="password" value="" placeholder="Enter channel name" />
             </label>
-            <button class="button small radius expand" ng-click="joinChannel();">
+            <button class="button small radius expand">
               <div><i class="icon-large icon-qrcode"></i></div>Join
             </button>
           </form>

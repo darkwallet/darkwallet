@@ -136,6 +136,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
     // Action to start announcements and reception
     $scope.joinChannel = function() {
         connectChannel($scope.pairCode);
+        $scope.pairCode = '';
     };
     $scope.selectPeer = function(peer) {
         $scope.selectedPeer = peer;
