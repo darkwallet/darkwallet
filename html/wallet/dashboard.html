@@ -38,11 +38,13 @@
             <h5>Latest transactions</h5>
             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
              <div class="small-5 medium-3 large-6 columns">
-               <div title="{{row.address}}" ng-class="{ellipsis: row.contact}">
+               <div tooltip-append-to-body="true" tooltip="{{row.address}}" class="ellipsis">
                 <i ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
                 <identicon ng-show="row.contact" icon-size="24" hash="row.contact.hash"></identicon>
+				<identicon ng-hide="row.contact" icon-size="24" hash="row.address"></identicon>
+				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                 {{row.contact ? row.contact.name : row.address}}
-                <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
+                
                </div>
              </div>
              <div ng-show="row.height" class="small-3 medium-2 columns ellipsis">
