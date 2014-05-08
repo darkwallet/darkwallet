@@ -1,6 +1,10 @@
-<div class="text-center showqr">
-	<qr data="{{vars.address}}" level="L" width="80%" height="80%"></qr>
-	<div class="qr-address">{{vars.address}}</div>
+<div class="row collapse topmargin">
+	<div class="large-6 medium-7 columns showqr">
+		<div qr data="{{vars.address}}" level="L"></div>
+	</div>
+	<div class="large-6 medium-5 columns">
+		<h5 class="qr-address">{{vars.address}}</h5>
+	</div>
 </div>
 <div class="qractions">
 	<a class="fa fa-times button" ng-click="cancel()"></a>
