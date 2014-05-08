@@ -10,7 +10,7 @@
     <h4 ng-show="!(pocket.balance===undefined)">
         {{pocket.name}}
         <small title="Total funds in the wallet including unconfirmed." ng-show="pocket.balance.current!=pocket.balance.confirmed">Current: {{pocket.balance.current | formatBtc}} ({{pocket.balance.current | formatFiat}})</small>
-        <small title="Funds available for spending"><span ng-show="pocket.balance.current!=pocket.balance.confirmed">Available</span>: {{pocket.balance.confirmed | formatBtc}} ({{pocket.balance.confirmed | formatFiat}})</small>
+        <small title="Funds available for spending"><span ng-show="pocket.balance.current!=pocket.balance.confirmed">Spendable</span>: {{pocket.balance.confirmed | formatBtc}} ({{pocket.balance.confirmed | formatFiat}})</small>
         <small title="Total funds unconfirmed, including incoming and outgoing balances" ng-show="pocket.balance.unconfirmed">Unconfirmed: ({{pocket.balance.unconfirmed | formatBtc}} {{pocket.balance.unconfirmed | formatFiat}})</small>
     </h4>
     <!-- Tabs -->
