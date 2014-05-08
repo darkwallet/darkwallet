@@ -41,8 +41,14 @@ function (Bitcoin, Peer) {
    * Initialize a new discardable session key
    */
   Transport.prototype.newSession = function() {
+    var self = this;
     this.sessionKey = new Bitcoin.ECKey();
     this.sessionKey.compressed = true;
+
+
+    Object.keys(this.channels).forEach(function(name) {
+        self.channels[name].prepareSession();
+    });
   };
 
   /**

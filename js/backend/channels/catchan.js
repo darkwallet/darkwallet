@@ -63,20 +63,26 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
     this.pub = Curve25519.ecDH(ecPriv);
     this.priv = ecPriv;
 
-    // Set some identity variables
-    this.fingerprint = Encryption.genFingerprint(this.pub.toByteArrayUnsigned());
-
+    // Setup peer details
     var newMe = new Peer(this.pub.toByteArrayUnsigned());
+
+    // Just relink so interface can be updated
     this.transport.comms.pubKeyHex = newMe.pubKeyHex;
+    this.transport.comms.fingerprint = newMe.fingerprint;
     this.transport.comms.name = newMe.name;
+    this.transport.comms.pubKey = newMe.pubKey;
+
+    // Set some identity variables
+    this.fingerprint = newMe.fingerprint;
   };
 
   /**
    * Initialize a new session with a new cloak
    */
   Channel.prototype.newSession = function() {
+    // For now this will get changed in transport
+    // and propagated back to all channels
     this.transport.newSession();
-    this.prepareSession();
   };
 
   /**
