@@ -3,7 +3,7 @@
 define(['./module', 'qrcodejs'], function (directives, QRCode) {
   directives.directive('qr', ['$window', function($window) {
     return {
-      restrict: 'E',
+      restrict: 'A',
       link: function(scope, element, attrs) {
         var qrcode = new QRCode(element[0], {
           width : 1000,
