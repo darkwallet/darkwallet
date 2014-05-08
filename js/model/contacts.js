@@ -13,8 +13,8 @@ function Contacts(store, identity) {
   this.store = store;
   this.identity = identity
   this.contacts = this.store.init('contacts', [
-    { name: 'DarkWallet team', address: '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy' }
- //   { name: 'libbitcoin team', address: '1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY' }
+    { name: 'DarkWallet team', address: '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy' },
+    { name: 'libbitcoin team', address: '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP' }
   ]);
   this.validAddresses = [
       identity.wallet.versions.address,
@@ -28,7 +28,7 @@ function Contacts(store, identity) {
       // Changing compromised contact for libbitcoin to the old darkwallet fund,
       // controlled by a few trusted people.
       compromised.pubKeys[0].type = 'revoked';
-      this.addContactKey(compromised, '32wRDBezxnazSBxMrMqLWqD1ajwEqnDnMc', true);
+      this.addContactKey(compromised, '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP', true);
   }
 }
 
