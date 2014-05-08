@@ -49,7 +49,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         } else {
             var identity = DarkWallet.getIdentity();
             identity.store.save();
-            $wallet.pocket.name = pocket.name;
+            $scope.pocket.name = pocket.name;
         }
     };
 
