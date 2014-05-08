@@ -29,7 +29,7 @@ function(Port, Transport, Channel, DarkWallet) {
         if (data.type == 'connected') {
             var network = DarkWallet.getIdentity().wallet.network;
             if (network == 'testnet') {
-              self.connectTo('Trolltest');
+              self.connectTo('Trollnet');
             } else {
               self.connectTo('Trollbox');
             }
