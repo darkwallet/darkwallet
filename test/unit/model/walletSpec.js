@@ -522,11 +522,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         // change
         expect(tx4.stealth).toBe(true);
         expect(tx4.tx.outs.length).toBe(5);
-        expect(tx4.tx.outs[0].value).toBe(0);
-        expect(tx4.tx.outs[1].value).toBe(100000);
-        expect(tx4.tx.outs[2].value).toBe(0);
-        expect(tx4.tx.outs[3].value).toBe(100000);
-        expect(tx4.tx.outs[4].value).toBe(2790000);
+        expect(tx4.tx.outs[0].value+tx4.tx.outs[1].value+tx4.tx.outs[2].value+tx4.tx.outs[3].value+tx4.tx.outs[4].value).toBe(0+100000+0+100000+2790000);
       });
       
       it('to multiple addresses', function() {
@@ -577,11 +573,10 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         
         expect(tx7.fee).toBe(20000);
         expect(tx7.change).toBe(3000000 - 200000 - 20000);
-        expect(tx7.tx.outs[1].value+tx7.tx.outs[0].value).toBe(3000000 - 200000 - 20000);
+        expect(tx7.tx.outs[1].value+tx7.tx.outs[0].value).toBe(3000000 - 20000);
       });
     });
     
-    it('signs given transaction outputs');
     
     it('processes an output for an external source');
     

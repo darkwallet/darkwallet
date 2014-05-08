@@ -42,7 +42,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       // Add non stealth outputs, and keep a matrix of where to put them after
       tx.outs.forEach(function(anOut, idx) {
           // Value must be 0, size 38, first byte OP_RETURN and there must be an output after this one
-          if (nOut.value == 0 && anOut.script.buffer.length == 38 && anOut.script.buffer[0] == Bitcoin.Opmap.map.OP_RETURN && outs.length > idx) {
+          if (anOut.value == 0 && anOut.script.buffer.length == 38 && anOut.script.buffer[0] == Bitcoin.Opmap.map.OP_RETURN && tx.outs.length > idx) {
               // Save an array with the nonce output and then the related output
               stealth.push([anOut, tx.outs[idx+1]]);
           } else {
