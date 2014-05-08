@@ -1,7 +1,7 @@
   <div class="row">
-    <div ng-include="'tools/quicksend.html'" class="large-6 columns">
+    <div ng-include="'tools/quicksend.html'" ng-hide="pocket.isAll" class="large-6 columns">
     </div>
-    <div class="large-6 columns">
+    <div class="large-6 columns" ng-hide="pocket.isAll">
       <div class="row collapse panel radius">
         <h5>{{pocket.isFund?'Fund':'Stealth'}} address</h5>
         <div class="small-1 columns">
