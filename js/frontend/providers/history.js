@@ -150,7 +150,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var changeBalance = identity.wallet.getBalance(pocketIndex+1);
 
       this.pocket.balance = {confirmed:   mainBalance.confirmed + changeBalance.confirmed, 
-                             unconfirmed: mainBalance.unconfirmed + changeBalance.unconfirmed};
+                             unconfirmed: mainBalance.unconfirmed + changeBalance.unconfirmed,
+                             current: mainBalance.current + changeBalance.current}
 
       this.selectedPocket = 'pocket:' + rowIndex;
       return this.chooseRows();
