@@ -42,7 +42,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
           var confirmed = mainBalance.confirmed + changeBalance.confirmed;
           var unconfirmed = mainBalance.unconfirmed + changeBalance.unconfirmed;
-          balance = {confirmed: confirmed, unconfirmed: unconfirmed};
+          var current = mainBalance.current + changeBalance.current;
+          balance = {confirmed: confirmed, unconfirmed: unconfirmed, current: current};
       }
       return balance;
   }
@@ -145,13 +146,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       this.pocket.isAll = false;
       this.pocket.isFund = false;
 
-      // balance is sum of public and change branches
-      var mainBalance = identity.wallet.getBalance(pocketIndex);
-      var changeBalance = identity.wallet.getBalance(pocketIndex+1);
-
-      this.pocket.balance = {confirmed:   mainBalance.confirmed + changeBalance.confirmed, 
-                             unconfirmed: mainBalance.unconfirmed + changeBalance.unconfirmed,
-                             current: mainBalance.current + changeBalance.current}
+      this.pocket.balance = this.calculateBalance(this.pocket);
 
       this.selectedPocket = 'pocket:' + rowIndex;
       return this.chooseRows();
