@@ -52,7 +52,16 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
             modals.password('Write the password for your pocket', function(password) {
                 var safe = DarkWallet.service.safe;
                 // get master private for the pockets since the mixer will need them
-                var privKey = identity.wallet.getPocketPrivate(pocketIndex*2, password);
+                try {
+                    var privKey = identity.wallet.getPocketPrivate(pocketIndex*2, password);
+                } catch(e) {
+                    if ($scope.settings.advanced) {
+                        notify.warning("Invalid password", e.message || ""+e)
+                    } else {
+                        notify.warning("Invalid Password")
+                    }
+                    return;
+                }
                 var changeKey = identity.wallet.getPocketPrivate((pocketIndex*2)+1, password);
 
                 // Save some session passwords for the mixer
