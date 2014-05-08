@@ -1,7 +1,7 @@
 div.cardflipper > div.wizard.ng-animate { 
 	position: absolute; 
 	width: 100%;
-	@include single-transition(all,800ms,linear);
+	@include single-transition(all,500ms,linear);
 }
 
 div.cardflipper > div.wizard.ng-enter { 
