@@ -26,7 +26,7 @@ function Wallet(store, identity) {
     this.wallet = new Bitcoin.Wallet(this.mpk);
     this.multisig = new MultisigFunds(store, identity, this);
 
-    this.stealthCache = [];
+    this.stealthCache = {};
 
     this.loadPubKeys();
 
@@ -924,8 +924,8 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
     var spendKey = self.getAddress([branchId]).pubKey;
     // Stealth cache can't have less items than stealth array otherwise is invalid
     // This is because stealth array is accumulating items till it refreshes after 100 blocks (obelisk quirk)
-    if (self.stealthCache.length > stealthArray.length) {
-        self.stealthCache = [];
+    if (!self.stealthCache[pocketIndex] || (self.stealthCache[pocketIndex].length > stealthArray.length)) {
+        self.stealthCache[pocketIndex] = [];
     }
     // Check the array
     stealthArray.forEach(function(stealthData) {
@@ -934,10 +934,10 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
         var txId = stealthData[2];
 
         // Check if we've already seen this tx+address combination
-        if (self.stealthCache.indexOf(txId+address) > -1) {
+        if (self.stealthCache[pocketIndex].indexOf(txId+address) > -1) {
             return;
         }
-        self.stealthCache.push(txId+address);
+        self.stealthCache[pocketIndex].push(txId+address);
 
         // Try out the stealth row
         var myKeyBytes = Stealth.uncoverPublic(scanKey.toBytes(), ephemKey, spendKey);
