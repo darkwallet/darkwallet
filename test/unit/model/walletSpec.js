@@ -153,8 +153,8 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       var balance = wallet.getBalance();
       expect(balance.confirmed).toBe(8040000);
       
-      expect(wallet.getBalance('0')).toEqual({ confirmed : 3040000, unconfirmed : 0 });
-      expect(wallet.getBalance('2')).toEqual({ confirmed : 5000000, unconfirmed : 0 });
+      expect(wallet.getBalance('0')).toEqual({ confirmed : 3040000, unconfirmed : 0, current: 3040000 });
+      expect(wallet.getBalance('2')).toEqual({ confirmed : 5000000, unconfirmed : 0, current: 5000000 });
     });
     
     it('creates a pocket', function() {
@@ -383,18 +383,21 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       var history00 = {
         receive: 'a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329:0',
         value: 40000, 
+        counted: true,
         address: '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ',
         height: 287813
       };
       var history01 = {
         receive: '64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6:1',
         value : 3000000,
+        counted: true,
         address : '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ',
         height: 287583
       };
       var history20 = {
         receive: 'c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c:0',
         value: 5000000,
+        counted: true,
         address: '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs',
         height: 269614
       };
@@ -465,8 +468,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         // One output for the recipient and the other for the change
         expect(tx.stealth).toBe(false);
         expect(tx.tx.outs.length).toBe(2);
-        expect(tx.tx.outs[0].value).toBe(200000);
-        expect(tx.tx.outs[1].value).toBe(2790000);
+        expect(tx.tx.outs[0].value+tx.tx.outs[1].value).toBe(200000+2790000);
       });
       
       it('to an stealth address', function() {
@@ -483,9 +485,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         // and other for the change
         expect(tx2.stealth).toBe(true);
         expect(tx2.tx.outs.length).toBe(3);
-        expect(tx2.tx.outs[0].value).toBe(0);
-        expect(tx2.tx.outs[1].value).toBe(tx.tx.outs[0].value);
-        expect(tx2.tx.outs[2].value).toBe(tx.tx.outs[1].value);
+        expect(tx2.tx.outs[0].value+tx2.tx.outs[1].value+tx2.tx.outs[2].value).toBe(tx.tx.outs[0].value+tx.tx.outs[1].value);
       });
       
       it('to multiple normal addresses', function() {
@@ -503,9 +503,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         // Two outputs for the recipients and one for the change
         expect(tx3.stealth).toBe(false);
         expect(tx3.tx.outs.length).toBe(3);
-        expect(tx3.tx.outs[0].value).toBe(100000);
-        expect(tx3.tx.outs[1].value).toBe(100000);
-        expect(tx3.tx.outs[2].value).toBe(2790000);
+        expect(tx3.tx.outs[0].value+tx3.tx.outs[1].value+tx3.tx.outs[2].value).toBe(100000+100000+2790000);
       });
       
       it('to multiple stealth addresses', function() {
@@ -546,10 +544,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         // One output for stealth data, two for recipients and another for change
         expect(tx5.stealth).toBe(true);
         expect(tx5.tx.outs.length).toBe(4);
-        expect(tx5.tx.outs[0].value).toBe(0);
-        expect(tx5.tx.outs[1].value).toBe(100000);
-        expect(tx5.tx.outs[2].value).toBe(100000);
-        expect(tx5.tx.outs[3].value).toBe(2790000);
+        expect(tx5.tx.outs[0].value+tx5.tx.outs[1].value+tx5.tx.outs[2].value+tx5.tx.outs[3].value).toBe(100000+100000+2790000);
       });
       
       it('from a different pocket', function() {
@@ -582,7 +577,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         
         expect(tx7.fee).toBe(20000);
         expect(tx7.change).toBe(3000000 - 200000 - 20000);
-        expect(tx7.tx.outs[1].value).toBe(3000000 - 200000 - 20000);
+        expect(tx7.tx.outs[1].value+tx7.tx.outs[0].value).toBe(3000000 - 200000 - 20000);
       });
     });
     

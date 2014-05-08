@@ -60,8 +60,8 @@ define(['testUtils'], function (testUtils) {
     });
      
     it('formats satoshis into user unit', function() {
-      expect(CurrencyFormatting.formatBtc(400000)).toBe('0.004 BTC');
-      expect(CurrencyFormatting.formatBtc(400000, 'mBTC')).toBe('4 mBTC');
+      expect(CurrencyFormatting.formatBtc(400000)).toBe('0.004 ฿');
+      expect(CurrencyFormatting.formatBtc(400000, 'mBTC')).toBe('4 m฿');
     });
      
     it('formats satoshis to user fiat', function() {
@@ -70,10 +70,10 @@ define(['testUtils'], function (testUtils) {
     });
      
     it('formats satoshis to full crypto and fiat string', function() {
-      expect(CurrencyFormatting.format(400000)).toBe('0.004 BTC (1.40 €)');
-      expect(CurrencyFormatting.format(400000, 'mBTC')).toBe('4 mBTC (1.40 €)');
-      expect(CurrencyFormatting.format(400000, null, 'USD')).toBe('0.004 BTC (1.93 $)');
-      expect(CurrencyFormatting.format(400000, 'mBTC', 'USD')).toBe('4 mBTC (1.93 $)');
+      expect(CurrencyFormatting.format(400000)).toBe('0.004 ฿ (1.40 €)');
+      expect(CurrencyFormatting.format(400000, 'mBTC')).toBe('4 m฿ (1.40 €)');
+      expect(CurrencyFormatting.format(400000, null, 'USD')).toBe('0.004 ฿ (1.93 $)');
+      expect(CurrencyFormatting.format(400000, 'mBTC', 'USD')).toBe('4 m฿ (1.93 $)');
     });
   });
 });

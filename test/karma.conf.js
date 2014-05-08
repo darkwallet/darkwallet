@@ -77,10 +77,10 @@ module.exports = function(config) {
 
 
     // If browser does not capture in given timeout [ms], kill it
-    captureTimeout: 60000,
+    captureTimeout: 400000,
 
     // Timeout for running tests, very important for slow machines
-    browserNoActivityTimeout: 100000,
+    browserNoActivityTimeout: 400000,
 
 
     // Continuous Integration mode

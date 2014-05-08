@@ -2,20 +2,6 @@
 
 define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
-  /**
-   * Randomize array element order in-place.
-   * Using Fisher-Yates shuffle algorithm.
-   */
-  function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = array[i];
-       array[i] = array[j];
-       array[j] = temp;
-    }
-    return array;
-  }
-
   /*
    * CoinJoin Class
    * @constructor
@@ -29,6 +15,21 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
     this.fee = fee;
   }
 
+  /**
+   * Randomize array element order in-place.
+   * Using Fisher-Yates shuffle algorithm.
+   */
+  CoinJoin.prototype.shuffleArray = function(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+       array[i] = array[j];
+       array[j] = temp;
+    }
+    return array;
+  }
+
+
   /*
    * Randomize join outputs and inputs
    * Happens on the first fullfill by the initiator, and first sign by the guest.
@@ -39,7 +40,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       var stealth = [];
 
       // Add non stealth outputs, and keep a matrix of where to put them after
-      outs.forEach(function(anOut, idx) {
+      tx.outs.forEach(function(anOut, idx) {
           // Value must be 0, size 38, first byte OP_RETURN and there must be an output after this one
           if (nOut.value == 0 && anOut.script.buffer.length == 38 && anOut.script.buffer[0] == Bitcoin.Opmap.map.OP_RETURN && outs.length > idx) {
               // Save an array with the nonce output and then the related output
@@ -54,8 +55,8 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       newTx.ins = tx.ins.slice(0);
 
       // Now shuffle the transaction
-      shuffleArray(newTx.ins);
-      shuffleArray(newTx.outs);
+      this.shuffleArray(newTx.ins);
+      this.shuffleArray(newTx.outs);
 
       // Now re-insert (possibly) stealth information
       stealth.forEach(function(nonces) {

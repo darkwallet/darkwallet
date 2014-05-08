@@ -66,6 +66,9 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
     beforeEach(function() {
       initiator = new CoinJoin(core, 'initiator', 'announce', txInitiator, myAmount, fee);
       guest = new CoinJoin(core, 'guest', 'accepted', txGuest, myAmount, fee);
+      // Disable randomizing in general for the tests
+      initiator.shuffleArray = function(array) {return array};
+      guest.shuffleArray = function(array) {return array};
     });
 
     it('creates a guest coinjoin', function() {
@@ -177,7 +180,7 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
     it('guest starts to process, bad message', function() {
         var res = guest.process(msg2bad.body);
         expect(res).toBeUndefined();
-        expect(guest.state).toBe('accepted');
+        expect(guest.state).toBe('cancelled');
     });
 
     // 3. Initiator 'signing' his inputs
@@ -197,7 +200,7 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
 
         var res = initiator.process(msg3bad.body);
         expect(res).toBeUndefined();
-        expect(initiator.state).toBe('fullfilled');
+        expect(initiator.state).toBe('announce');
     });
 
     it('initiator accepts user signatures', function() {
@@ -224,7 +227,7 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
 
         var res = guest.process(msg4bad.body);
         expect(res).toBeUndefined();
-        expect(guest.state).toBe('signed');
+        expect(guest.state).toBe('cancelled');
     });
 
 

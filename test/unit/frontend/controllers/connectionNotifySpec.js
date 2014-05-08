@@ -54,6 +54,7 @@ describe('Connection notify controller', function() {
     });
     
     it('notifies success on connect', function() {
+      callback({type: 'connecting'});
       callback({type: 'connected'});
       expect(notify.success).toHaveBeenCalledWith('connected', 'unsystem');
     });
