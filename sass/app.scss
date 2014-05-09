@@ -301,7 +301,10 @@ textarea.script {
 .transaction-icon.green { color: $primary-color; }
 .transaction-icon.red { color: $alert-color; }
 
-.pocket-square { min-height: 120px; }
+.pocket-square { 
+	min-height: 120px;
+	margin-bottom: 0;
+}
 
 .contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover { background: $primary-color; cursor: pointer; }
 
