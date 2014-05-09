@@ -4867,7 +4867,8 @@ div.address-row:hover button {
 
 .transactions div.row {
   padding: 0.5em;
-  font-size: 90%; }
+  font-size: 90%;
+  line-height: normal; }
 
 .transactions div.row:nth-child(odd) {
   background: #151515;
