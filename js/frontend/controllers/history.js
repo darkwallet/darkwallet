@@ -97,21 +97,10 @@ function (controllers, DarkWallet, Port) {
 
 
   /**
-   * Select overview as current pocket
-   */
-  $scope.selectOverview = function() {
-      $scope.historyRows = $scope.selectPocket('overview');
-
-      // Set the selected pocket
-      $scope.selectedPocket = $history.selectedPocket;
-  }
-
-
-  /**
    * Select an hd pocket
    */
   $scope.selectPocket = function(pocketName, rowIndex, form) {
-      if (pocketName === undefined || pocketName == 'overview') {
+      if (pocketName === undefined) {
           $scope.historyRows = $history.selectAll(pocketName, rowIndex);
       } else {
           $scope.historyRows = $history.selectPocket(pocketName, rowIndex);
