@@ -115,7 +115,7 @@ Contacts.prototype.generateAddressHash = function(address) {
  */
 Contacts.prototype.generateContactHash = function(data) {
     var newKey = this.prepareAddress(data);
-    return Crypto.SHA256(newKey.address).toString();
+    return this.generateAddressHash(newKey.address);
 };
 
 
