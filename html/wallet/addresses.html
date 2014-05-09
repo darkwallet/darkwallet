@@ -52,7 +52,7 @@
 
     <div class="row collapse address-row"  ng-repeat="address in addresses track by $index">
         <div class="small-3 columns">
-            <button class="fa button square righted fa-pencil-square" ng-click="textBtnForm.$show()" ng-disabled="textBtnForm.$visible"></button>
+            <button tooltip="Rename" tooltip-append-to-body="true" class="fa button square righted fa-pencil-square" ng-click="textBtnForm.$show()" ng-disabled="textBtnForm.$visible"></button>
             <span class="postfix ellipsis" editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
                 {{address.label}}
             </span>
@@ -75,13 +75,13 @@
         <div class="small-2 large-1 columns">
             <div class="row collapse address-row">
                 <div class="small-4 columns">
-                    <button title="Show QR code" ng-click="modals.showQr(address.address)" class="button postfix single fa fa-qrcode"></button>
+                    <button tooltip="Show QR code" tooltip-append-to-body="true" ng-click="modals.showQr(address.address)" class="button postfix single fa fa-qrcode"></button>
                 </div>
                 <div class="small-4 columns">
-                    <button title="Copy address to clipboard" ng-click="clipboard.copy(address.address)" class="button postfix single fa fa-clipboard"></button>
+                    <button tooltip="Copy address to clipboard" tooltip-append-to-body="true" ng-click="clipboard.copy(address.address)" class="button postfix single fa fa-clipboard"></button>
                 </div>
                 <div class="small-4 columns">
-                    <button title="Copy public key to clipboard" ng-click="copyClipboardPublic(address)" class="button postfix radius single fa fa-key"></button>
+                    <button tooltip="Copy public key to clipboard" tooltip-append-to-body="true" ng-click="copyClipboardPublic(address)" class="button postfix radius single fa fa-key"></button>
                 </div>
             </div>
         </div>
