@@ -2,11 +2,13 @@
 
 define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identicon, Bitcoin) {
   var iconCache = {};
+  var hashCache = {};
   directives.directive('identicon', function () {
     return {
       restrict: 'E', // element
       scope: {
         hash: '=',
+        data: '=',
         iconSize: '='
       },
       link: function(scope, element, attrs) {
@@ -30,6 +32,20 @@ define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identic
             // take 11 bytes: 22 hex - 60 bit shape, 28 bit color
             // skip first 8 bytes to avoid headers (the input can be arbitrary hex)
             createFromHex(scope.hash.substr(16, 38));
+          }
+        });
+        scope.$watch('data', function() {
+          if (scope.data) {
+            var hash;
+            if (hashCache.hasOwnProperty(scope.data)) {
+                hash = hashCache[scope.data];
+            } else {
+                hash = Bitcoin.CryptoJS.SHA256(scope.data).toString();
+                hashCache[scope.data] = hash;
+            }
+            // take 11 bytes: 22 hex - 60 bit shape, 28 bit color
+            // skip first 8 bytes to avoid headers (the input can be arbitrary hex)
+            createFromHex(hash.substr(16, 38));
           }
         });
       }
