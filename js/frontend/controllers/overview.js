@@ -41,7 +41,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   var calculateBalances = function() {
       var identity = DarkWallet.getIdentity();
 
-      var total = {confirmed: 0, unconfirmed: 0};
+      var total = {confirmed: 0, unconfirmed: 0, current: 0};
 
       identity.wallet.pockets.hdPockets.forEach(function(pocket, i) {
           if (!pocket) {
@@ -49,10 +49,18 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           }
           var balance = identity.wallet.getBalance(i*2);
           var balance2 = identity.wallet.getBalance((i*2)+1);
+
+          // Sum change and main balance for the pocket
           balance.confirmed += balance2.confirmed;
+          balance.current += balance2.current;
           balance.unconfirmed += balance2.unconfirmed;
+
+          // Update total
           total.confirmed += balance.confirmed;
+          total.current += balance.current;
           total.unconfirmed += balance.unconfirmed;
+
+          // Save the pocket information
           updatePocket({name: pocket.name, mixing: pocket.mixing, balance: balance, type: 'pocket', index: i});
       });
       identity.wallet.multisig.funds.forEach(function(fund, i) {
