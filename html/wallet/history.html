@@ -7,11 +7,51 @@
             <dl class="sub-nav">
                 <dt>Filter:</dt>
                 <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
-                <dd ng-class="{active: 'lastWeek'===txFilter}"><a ng-click="setHistoryFilter('lastWeek')">Last week</a></dd>
-                <dd ng-class="{active: 'lastMonth'===txFilter}"><a ng-click="setHistoryFilter('lastMonth')">Last month</a></dd>
+                <dd ng-class="{active: 'weekly'===txFilter}"><a ng-click="setHistoryFilter('weekly')">Weekly</a></dd>
+                <dd ng-class="{active: 'monthly'===txFilter}"><a ng-click="setHistoryFilter('monthly')">Monthly</a></dd>
+                <!--<dd ng-class="{active: 'lastWeek'===txFilter}"><a ng-click="setHistoryFilter('lastWeek')">Last week</a></dd>
+                <dd ng-class="{active: 'lastMonth'===txFilter}"><a ng-click="setHistoryFilter('lastMonth')">Last month</a></dd>-->
                 <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
             </dl>
 
+          <div ng-show="txFilter=='weekly' || txFilter=='monthly'">
+            <div class="row collapse hide-for-small">
+             <div class="large-3 columns">
+               Week
+             </div>
+             <div class="large-4 columns">
+               Incoming
+             </div>
+             <div class="large-4 columns ellipsis">
+               Outgoing
+             </div>
+             <div class="large-1 columns text-right">
+               Transactions
+             </div>
+            </div>
+
+            <div class="row collapse"  ng-repeat="row in historyRows">
+             <div class="large-3 columns">
+               <span ng-show="row.label">{{row.label}}</span>
+               <span ng-show="!row.label && txFilter=='weekly'">Curent week</span>
+               <span ng-show="!row.label && txFilter=='monthly'">Curent month</span>
+             </div>
+             <div class="large-4 columns">
+               <span ng-show="row.incoming">{{row.incoming | currencyPresenter}}</span>
+               <span ng-show="!row.incoming">-</span>
+             </div>
+             <div class="large-4 columns ellipsis">
+               <span ng-show="row.outgoing">{{row.outgoing | currencyPresenter}}</span>
+               <span ng-show="!row.outgoing">-</span>
+             </div>
+             <div class="large-1 columns text-right">
+               {{row.transactions}}
+             </div>
+
+            </div>
+          </div>
+
+          <div ng-show="txFilter!='weekly' && txFilter!='monthly'">
             <div class="row collapse hide-for-small">
              <div class="medium-4 large-5 columns">
                Address
@@ -55,6 +95,7 @@
               {{row.current | asBtc}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span>
              </div>
             </div>
+          </div>
         </div>
     </div>
 </div>

@@ -6,6 +6,9 @@
 define(['./module', 'util/btc', 'darkwallet', 'dwutil/multisig'],
 function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
+  var monthNames = [ "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December" ];
+
   // Get date 30 days ago
   var prevmonth = new Date();
   prevmonth.setDate(prevmonth.getDate()-30);
@@ -164,11 +167,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   }
  
   // Filter the rows we want to show
-  HistoryProvider.prototype.chooseRows = function(i) {
-      var self = this;
+  HistoryProvider.prototype.chooseRows = function() {
       var identity =  DarkWallet.getIdentity();
+      var self = this;
       var history = identity.history.history;
-      var pocketId = this.pocket.index;
       var rows = history.filter(this.pocketFilter, this);
       rows = rows.sort(function(a, b) {
          if (!a.height) {
@@ -184,6 +186,101 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       if (!rows.length) {
           return [];
       }
+      if (this.txFilter == 'weekly') {
+          this.rows = this.calculateWeekly(rows);
+      }
+      else if (this.txFilter == 'monthly') {
+          this.rows = this.calculateMonthly(rows);
+      } else {
+          this.rows = this.calculateHistory(rows);
+      }
+      return this.rows;
+  }
+
+  HistoryProvider.prototype.calculateMonthly = function(rows) {
+      var pocketId = this.pocket.index;
+      var now = new Date();
+      var d = now.getDate(); //get the current day
+      var monthStart = new Date(now.valueOf() - ((d==1?0:d-1)*86400000)); //rewind to start day
+      var monthEnd;
+      var getLabel = function(dateStart, dateEnd) {
+         return monthNames[dateEnd.getMonth()]+"/"+dateEnd.getFullYear();
+      }
+      var month = {index: 0, incoming: 0, outgoing: 0, transactions: 0, label: getLabel(monthStart, monthStart)};
+      var result = [month];
+
+      var monthIndex = 0;
+      var blockDiff = DarkWallet.service.wallet.blockDiff;
+      rows.forEach(function(row) {
+           if (row.height) {
+               var timestamp = BtcUtils.heightToTimestamp(row.height, blockDiff);
+               while (timestamp < monthStart) {
+                   monthEnd = new Date(monthStart.valueOf()-86400000);
+                   monthStart = new Date(monthStart.valueOf()-(monthEnd.getDate()*86400000));
+                   monthIndex -= 1;
+                   var label = getLabel(monthStart, monthEnd);
+                   month = {index: monthIndex, incoming: 0, outgoing: 0, transactions: 0, label: label};
+                   result.push(month);
+               }
+           }
+           month.transactions += 1;
+           if (row.total>0) {
+               month.incoming += row.total;
+           } else {
+               month.outgoing -= row.total;
+           }
+      });
+
+      return result;
+  }
+
+  HistoryProvider.prototype.calculateWeekly = function(rows) {
+      var pocketId = this.pocket.index;
+      var now = new Date();
+      var startDay = 1; //0=sunday, 1=monday etc.
+      var d = now.getDay(); //get the current day
+      var weekStart = new Date(now.valueOf() - (d<=0 ? 7-startDay:d-startDay)*86400000); //rewind to start day
+      var weekEnd = new Date(weekStart.valueOf() + 6*86400000); //add 6 days to get last day
+
+      var getLabel = function(dateStart, dateEnd) {
+         var start = dateStart.toLocaleDateString();
+         var end = weekEnd.toLocaleDateString()
+         //return monthNames[weekStart.getMonth()]+"-"+(Math.floor(weekStart.getDate()/7)+1);
+         return start + "-" + end;
+      }
+      var week = {index: 0, incoming: 0, outgoing: 0, transactions: 0};
+      var result = [week];
+
+      var weekIndex = 0;
+      var blockDiff = DarkWallet.service.wallet.blockDiff;
+
+      rows.forEach(function(row) {
+           if (row.height) {
+               var timestamp = BtcUtils.heightToTimestamp(row.height, blockDiff);
+               while (timestamp < weekStart) {
+                   weekEnd = new Date(weekStart.valueOf()-86400000);
+                   weekStart = new Date(weekStart.valueOf()-(7*86400000));
+                   weekIndex -= 1;
+                   var label = getLabel(weekStart, weekEnd);
+                   week = {index: weekIndex, incoming: 0, outgoing: 0, transactions: 0, label: label};
+                   result.push(week);
+               }
+           }
+           week.transactions += 1;
+           if (row.total>0) {
+               week.incoming += row.total;
+           } else {
+               week.outgoing -= row.total;
+           }
+      });
+
+      return result;
+  }
+
+  HistoryProvider.prototype.calculateHistory = function(rows) {
+      var identity =  DarkWallet.getIdentity();
+      var pocketId = this.pocket.index;
+
       // Now calculate balances
       var getImpact = function(row) {
           if (pocketId === undefined) {
@@ -225,7 +322,6 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           prevRow = row;
           idx++;
       }
-      this.rows = rows;
       return rows;
   }
 
@@ -277,6 +373,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       }
       switch(this.txFilter) {
           case 'all':
+          case 'weekly':
+          case 'monthly':
               return true;
           case 'lastWeek':
               var ts = BtcUtils.heightToTimestamp(row.height, blockDiff);
