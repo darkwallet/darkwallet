@@ -92,7 +92,10 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           $scope.currentHeight = data.value;
           calculateBalances();
       }
-      else if (data.type == 'balance') {
+  });
+
+  Port.connectNg('gui', $scope, function(data) {
+      if (data.type == 'balance') {
           // Balance event
           $scope.rates[data.currency] = data.rate;
           calculateBalances();
