@@ -3,8 +3,7 @@
  */
 'use strict';
 
-require.config({
-  deps: [
+require([
     'backend/port',
     'backend/services/lobby',
     'backend/services/obelisk',
@@ -16,9 +15,8 @@ require.config({
     'backend/services/badge',
     'backend/services/notifier',
     'backend/services/content',
-    'backend/services/ctxmenus'
-],
-callback: function(Port) {
+    'backend/services/ctxmenus'],
+    function(Port) {
 
 var serviceClasses = [].splice.call(arguments, 1);
 
@@ -172,4 +170,4 @@ window.initAddress = function(_w) {return service.initAddress(_w);};
 
 window.addListener = addListener;
 window.sendInternalMessage = sendInternalMessage;
-}});
+});
