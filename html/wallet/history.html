@@ -14,7 +14,7 @@
                 <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
             </dl>
 
-          <div ng-show="txFilter=='weekly' || txFilter=='monthly'">
+          <div ng-if="txFilter=='weekly' || txFilter=='monthly'">
             <div class="row collapse hide-for-small">
              <div class="large-3 columns">
                Week
@@ -51,7 +51,7 @@
             </div>
           </div>
 
-          <div ng-show="txFilter!='weekly' && txFilter!='monthly'">
+          <div ng-if="txFilter!='weekly' && txFilter!='monthly'">
             <div class="row collapse hide-for-small">
              <div class="medium-4 large-5 columns">
                Address

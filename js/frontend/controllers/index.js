@@ -13,6 +13,7 @@ define([
     './contacts',
     './history',
     './identities',
+    './latest',
     './lobby',
     './ngmodal',
     './new_fund',

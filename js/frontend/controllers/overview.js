@@ -8,10 +8,6 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
 
   $scope.allPockets = [];
 
-  if (['daily', 'weekly', 'monthly'].indexOf($history.txFilter) > -1) {
-     $scope.setHistoryFilter('last10');
-  }
-
   /**
    * Select a pocket from the grid
    */
