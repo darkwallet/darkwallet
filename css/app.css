@@ -5087,9 +5087,6 @@ div.wizard {
 form.send {
   background: url(../images/send.svg) center/contain no-repeat; }
 
-.setback > * {
-  opacity: 0.8; }
-
 .seed {
   background: url(../images/seed.svg) center/cover no-repeat; }
 
