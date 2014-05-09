@@ -198,6 +198,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   }
 
   HistoryProvider.prototype.calculateMonthly = function(rows) {
+      var self = this;
       var pocketId = this.pocket.index;
       var now = new Date();
       var d = now.getDate(); //get the current day
@@ -224,10 +225,11 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
                }
            }
            month.transactions += 1;
-           if (row.total>0) {
-               month.incoming += row.total;
+           var impact = self.getRowImpact(row);
+           if (impact>0) {
+               month.incoming += impact;
            } else {
-               month.outgoing -= row.total;
+               month.outgoing -= impact;
            }
       });
 
@@ -235,6 +237,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   }
 
   HistoryProvider.prototype.calculateWeekly = function(rows) {
+      var self = this;
       var pocketId = this.pocket.index;
       var now = new Date();
       var startDay = 1; //0=sunday, 1=monday etc.
@@ -267,14 +270,23 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
                }
            }
            week.transactions += 1;
-           if (row.total>0) {
-               week.incoming += row.total;
+           var impact = self.getRowImpact(row);
+           if (impact>0) {
+               week.incoming += impact;
            } else {
-               week.outgoing -= row.total;
+               week.outgoing -= impact;
            }
       });
 
       return result;
+  }
+
+  HistoryProvider.prototype.getRowImpact = function(row) {
+      if (this.pocket.index === undefined) {
+          return row.total;
+      } else {
+          return row.impact[this.pocket.index].total;
+      }
   }
 
   HistoryProvider.prototype.calculateHistory = function(rows) {
@@ -282,18 +294,11 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var pocketId = this.pocket.index;
 
       // Now calculate balances
-      var getImpact = function(row) {
-          if (pocketId === undefined) {
-              return row.total;
-          } else {
-              return row.impact[pocketId].total;
-          }
-      }
       var prevRow = rows[0];
       prevRow.confirmed = this.pocket.balance.confirmed;
       prevRow.unconfirmed = this.pocket.balance.unconfirmed;
       prevRow.current = this.pocket.balance.current;
-      prevRow.partial = getImpact(prevRow);
+      prevRow.partial = this.getRowImpact(prevRow);
 
       var contacts = identity.contacts;
       this.fillRowContact(contacts, prevRow);
@@ -304,7 +309,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           
           var value = prevRow.partial;
 
-          row.partial = getImpact(row);
+          row.partial = this.getRowImpact(row);
 
           row.current = prevRow.current-value;
 
