@@ -2,17 +2,19 @@
     <div ng-include="'tools/quicksend.html'" ng-hide="pocket.isAll" class="large-6 columns">
     </div>
     <div class="large-6 columns" ng-hide="pocket.isAll">
-      <div class="row collapse panel radius">
-        <h5>{{pocket.isFund?'Fund':'Stealth'}} address</h5>
-        <div class="small-1 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square radius fa fa-clipboard"></a>
-        </div>
-        <div class="small-1 columns">
-          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showQr(pocket.mainAddress)"></a>
-        </div>
-        <div class="small-10 columns">
-          <input type="text" class="postfix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
-        </div>
+      <div class="panel radius">
+		<div class="row collapse">
+	        <h5>{{pocket.isFund?'Fund':'Stealth'}} address</h5>
+	        <div class="small-1 columns">
+	          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square radius fa fa-clipboard"></a>
+	        </div>
+	        <div class="small-1 columns">
+	          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showQr(pocket.mainAddress)"></a>
+	        </div>
+	        <div class="small-10 columns">
+	          <input type="text" class="postfix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
+	        </div>
+		</div>
       </div>
     </div>
   </div>

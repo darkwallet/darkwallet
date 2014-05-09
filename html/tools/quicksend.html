@@ -1,6 +1,6 @@
-<div ng-controller="WalletSendCtrl">
+<div ng-controller="WalletSendCtrl" class="panel radius">
   <form name="quickSendForm" ng-submit="quicksend.next=true;validateSendForm();" novalidate ng-hide="quicksend.next">
-    <div class="row collapse panel radius">
+    <div class="row collapse">
       <h5>Send</h5>
       <div class="small-1 columns">
         <a href="" tooltip-append-to-body="true" tooltip="Select from contacts" ng-click="modals.open('pick-contact', {field: quicksend}, addAddress)" class="fa button square prefix radius fa-users"></a>
