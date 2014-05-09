@@ -68,6 +68,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
               return;
           }
           var balance = identity.wallet.getBalance(fund.address);
+          total.current += balance.current;
           total.confirmed += balance.confirmed;
           total.unconfirmed += balance.unconfirmed;
           updatePocket({name: fund.name, mixing: fund.mixing, balance: balance, type: 'fund', fund: fund, index: i});
