@@ -69,7 +69,7 @@
                Total
              </div>
             </div>
-             <div class="row collapse"  ng-repeat="row in historyRows">
+             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
              <div class="medium-4 columns large-5">
                <div title="{{row.address}}" ng-class="{ellipsis: row.contact}">
                 <i ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
