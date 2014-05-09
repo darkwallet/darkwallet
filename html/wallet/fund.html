@@ -21,7 +21,7 @@
 	  <div class="panel radius">
     <h5>Fund managers</h5>
     <div class="row collapse" ng-repeat="participant in pocket.fund.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
-		<div class="small-1 columns">
+		<div class="small-1 columns text-right">
 			<span class="label" ng-show="participant.type=='me'">me</span>
         	<identicon icon-size="38" hash="participant.hash" ng-show="participant.type!='me'" title="{{contact.hash}}"></identicon>
 		</div>
