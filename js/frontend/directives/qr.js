@@ -6,8 +6,8 @@ define(['./module', 'qrcodejs'], function (directives, QRCode) {
       restrict: 'A',
       link: function(scope, element, attrs) {
         var qrcode = new QRCode(element[0], {
-          width : 1000,
-          height : 1000,
+          width : 512,
+          height : 512,
           correctLevel : QRCode.CorrectLevel.H,
         });
         qrcode.makeCode(attrs.data);
