@@ -5,15 +5,13 @@
 'use strict';
 
 require.config({
-  baseUrl: '/js'
-});
-
-require([
+  deps: [
     'backend/loader',
     'require',
     'frontend/app',
     'frontend/routes'
-], function(loader, require, app, routes) {
+  ],
+  callback: function(app, routes) {
     app.initialize();
+  }
 });
-

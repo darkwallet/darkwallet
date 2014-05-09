@@ -3,19 +3,22 @@
  */
 'use strict';
 
-require(['backend/port',
-         'backend/services/lobby',
-         'backend/services/obelisk',
-         'backend/services/wallet',
-         'backend/services/gui',
-         'backend/services/ticker',
-         'backend/services/mixer',
-         'backend/services/safe',
-         'backend/services/badge',
-         'backend/services/notifier',
-         'backend/services/content',
-         'backend/services/ctxmenus'],
-function(Port) {
+require.config({
+  deps: [
+    'backend/port',
+    'backend/services/lobby',
+    'backend/services/obelisk',
+    'backend/services/wallet',
+    'backend/services/gui',
+    'backend/services/ticker',
+    'backend/services/mixer',
+    'backend/services/safe',
+    'backend/services/badge',
+    'backend/services/notifier',
+    'backend/services/content',
+    'backend/services/ctxmenus'
+],
+callback: function(Port) {
 
 var serviceClasses = [].splice.call(arguments, 1);
 
@@ -169,5 +172,4 @@ window.initAddress = function(_w) {return service.initAddress(_w);};
 
 window.addListener = addListener;
 window.sendInternalMessage = sendInternalMessage;
-});
-
+}});

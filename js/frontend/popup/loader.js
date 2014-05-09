@@ -5,13 +5,10 @@
 'use strict';
 
 require.config({
-  baseUrl: '/js',
-});
-
-require([
-    'backend/loader',
-    'frontend/popup/app',
-], function(loader, app) {
+  deps: [
+    'frontend/popup/app'
+  ],
+  callback: function(app) {
     app.initialize();
+  }
 });
-
