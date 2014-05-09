@@ -4959,7 +4959,7 @@ textarea.script {
   color: #c92441; }
 
 .pocket-square {
-  min-height: 120px; }
+  min-height: 120px; margin-bottom: -0.3rem; }
 
 .contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover {
   background: #27ae60;
