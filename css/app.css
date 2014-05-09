@@ -4866,7 +4866,8 @@ div.address-row:hover button {
   opacity: 1; }
 
 .transactions div.row {
-  padding: 0.5em; }
+  padding: 0.5em;
+  font-size: 90%; }
 
 .transactions div.row:nth-child(odd) {
   background: #151515;
@@ -5014,9 +5015,13 @@ span.contact-name {
 .showqr > div {
   text-align: center; }
 
+.showqr > div canvas {
+  display: none; }
+
 .showqr > div img {
   max-width: 86%;
-  margin-bottom: 1em; }
+  margin-bottom: 1em;
+  image-rendering: -webkit-optimize-contrast; }
 
 .qractions {
   position: absolute;

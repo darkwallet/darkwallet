@@ -221,6 +221,7 @@ div.address-row:hover button { opacity: 1; }
 
 .transactions div.row {
 	padding: 0.5em;
+	font-size: 90%;
 }
 
 
@@ -334,7 +335,13 @@ span.contact-name { font-size: 200%; vertical-align: middle; }
 
 .showqr > div { text-align: center; }
 
-.showqr > div img { max-width: 86%; margin-bottom: 1em; }
+.showqr > div canvas { display: none; }
+
+.showqr > div img { 
+	max-width: 86%; 
+	margin-bottom: 1em;
+	image-rendering: -webkit-optimize-contrast;
+ }
 
 .qractions { position: absolute; top: 0; right: 0; }
 .qractions a.button { position: absolute; top: 0; right: 0; width: 36px; padding: 8px 0; }
