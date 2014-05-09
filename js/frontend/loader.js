@@ -6,8 +6,6 @@
 
 require.config({
   deps: [
-    'backend/loader',
-    'require',
     'frontend/app',
     'frontend/routes'
   ],
