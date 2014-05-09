@@ -4,9 +4,13 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  controllers.controller('OverviewCtrl', ['$scope', function($scope) {
+  controllers.controller('OverviewCtrl', ['$scope', '$history', function($scope, $history) {
 
   $scope.allPockets = [];
+
+  if (['daily', 'weekly', 'monthly'].indexOf($history.txFilter) > -1) {
+     $scope.setHistoryFilter('last10');
+  }
 
   /**
    * Select a pocket from the grid
