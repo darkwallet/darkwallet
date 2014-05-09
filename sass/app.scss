@@ -301,10 +301,7 @@ textarea.script {
 .transaction-icon.green { color: $primary-color; }
 .transaction-icon.red { color: $alert-color; }
 
-.pocket-square { 
-	min-height: 120px;
-	margin-bottom: 0;
-}
+.pocket-square { min-height: 120px; margin-bottom: -0.3rem; }
 
 .contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover { background: $primary-color; cursor: pointer; }
 
@@ -390,6 +387,8 @@ div.wizard {
 }
 
 form.send { background: url(../images/send.svg) center/contain no-repeat; }
+
+.setback > * { opacity: 0.8; }
 
 .seed { background: url(../images/seed.svg) center/cover no-repeat; }
 
