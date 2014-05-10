@@ -30,9 +30,9 @@
             <p> <b>Signed: </b>
             <span ng-repeat="pending in task.task.pending" title="{{pending.output}}">
               [{{Object.keys(pending.signatures).length}}/{{pocket.fund.multisig.m}}]
+              <div ng-show="Object.keys(pending.signatures).length">Signatures: <div ng-repeat="(key, val) in pending.signatures track by $index">{{val}}</div></div>
             </span>
             </p>
-            <div ng-show="Object.keys(pending.signatures).length">Signatures: <div ng-repeat="(key, val) in pending.signatures track by $index">{{val}}</div></div>
             <!-- Sign -->
             <button ng-show="pocket.fund.canSign && !importingFundSig && !foreignFundSig" ng-click="signFundTx(task)" class="button-sm postfix fa large-6 fa-pencil" >Sign</button>
 
