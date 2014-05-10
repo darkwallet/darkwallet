@@ -112,9 +112,12 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
 
   // Add a wallet address to scope
   WalletProvider.prototype.addToScope = function(walletAddress) {
-    var branchId = walletAddress.index[0];
-    this.initPocket(parseInt(branchId/2));
-    var addressArray = this.addresses[branchId];
+    var identity = DarkWallet.getIdentity();
+    var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
+    if (walletAddress.type != 'multisig') {
+        this.initPocket(pocketId);
+    }
+    var addressArray = this.addresses[walletAddress.index[0]];
     if (this.allAddresses.indexOf(walletAddress) == -1) {
         addressArray.push(walletAddress);
         this.allAddresses.push(walletAddress);
