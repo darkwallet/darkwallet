@@ -295,7 +295,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
 MultisigFund.prototype.getValidInputs = function(tx) {
     // import transaction here
     var identity = DarkWallet.getIdentity();
-    var multisig = this.fund.multisig;
+    var multisig = this.multisig;
     var walletAddress = identity.wallet.getWalletAddress(multisig.address);
 
     if (walletAddress) {
