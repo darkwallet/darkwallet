@@ -81,7 +81,7 @@
           <h5>Default fee</h5>
           <input ng-model="defaultFee" ng-change="defaultFeeChanged()" type="text" />
         </div>
-        <div class="panel setback fiat">
+        <div class="panel setback fiat-background">
           <h5>Local currency</h5>
           <select ng-model="selectedFiat" ng-options="key as value.name for (key , value) in fiatCurrencies" ng-change="fiatCurrencyChanged()">
           </select>
