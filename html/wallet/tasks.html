@@ -30,7 +30,7 @@
             <p> <b>Signed: </b>
             <span ng-repeat="pending in task.task.pending" title="{{pending.output}}">
               [{{Object.keys(pending.signatures).length}}/{{pocket.fund.multisig.m}}]
-              <div ng-show="Object.keys(pending.signatures).length">Signatures: <div ng-repeat="(key, val) in pending.signatures track by $index">{{val}}</div></div>
+              <div>{{pending.signatures}}</div>
             </span>
             </p>
             <!-- Sign -->
