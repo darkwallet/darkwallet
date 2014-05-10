@@ -10,7 +10,10 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   $scope.addServerError = '';
   $scope.connectionStatus = 'Disconnected';
   $scope.servicesStatus = {gateway: 'unknown', obelisk: 'unknown'};
-  $scope.validIPPort = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/i;
+
+  // not very strict about ip, but allows domain names too:
+  $scope.validIPPort = /^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*(:\d{1,5})?$/i;
+
   
   // Apply scope
   var applyScope = function() {
@@ -25,7 +28,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       $scope.selectedServerIdx = identity.connections.selectedServer;
       $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
       if (identity.wallet.network == 'testnet') {
-          $scope.validIPPort = /^(ws[s]?:\/\/)?(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(:\d{1,5})?$/i;
+          $scope.validIPPort = /^(ws[s]?:\/\/)?([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*(:\d{1,5})?$/i;
       }
   }
 
