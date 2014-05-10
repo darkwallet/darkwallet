@@ -259,6 +259,11 @@ li.colorhead h6 { color: white; margin: 0; }
 	 /* ----------------------- */
 
 
+.fiat:not(:empty) {
+  &::before { content: '('; }
+  &::after { content: ')'; }
+}
+
 .address-postfix { margin-top: 2.1em; }
 
 .panel .side-nav { padding-top: 0; }
