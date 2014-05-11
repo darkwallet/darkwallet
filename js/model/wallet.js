@@ -948,11 +948,11 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
 
         if (address == myAddress.toString()) {
             var seq = [branchId, 's'].concat(ephemKey);
-            var walletAddress = self.getAddress(seq);
+            var walletAddress = self.pubKeys[seq];
             // Check for bad addresses and put them in the right pocket if found.
             if (!walletAddress && branchId > 0) {
                 var badIndex = [0, 's'].concat(ephemKey);
-                var badAddress = self.getAddress(badIndex);
+                var badAddress = self.pubKeys[badIndex];
                 if (badAddress) {
                     // The address was originally placed in the wrong pocket. need to relink it.
                     delete self.pubKeys[badIndex];
@@ -966,12 +966,6 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
                 walletAddress = self.storePublicKey(seq, myKeyBytes, {'type': 'stealth', 'ephemKey': ephemKey, 'address': address});
             }
             console.log('stealth detected', walletAddress);
-            if (!walletAddress.ephemKey || walletAddress.address != address) {
-                walletAddress.ephemKey = ephemKey;
-                walletAddress.type = 'stealth';
-                walletAddress.address = address;
-                self.store.save();
-            }
             matches.push(walletAddress);
         }
     });
