@@ -117,12 +117,12 @@ function (controllers, DarkWallet) {
   /**
    * Sign a transaction with our keys
    */
-  $scope.signFundTxForeign = function(form, task) {
+  $scope.signFundTxForeign = function(foreignKey, task) {
       var fund = $scope.pocket.fund;
       var signed;
      
       try {
-          signed = fund.signTxForeign(form.foreignKey, task);
+          signed = fund.signTxForeign(foreignKey, task);
       } catch (e) {
           notify.error('Error importing', e.message);
       }
