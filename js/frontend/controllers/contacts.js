@@ -10,6 +10,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.contactToEdit = {};
   $scope.contactFormShown = false;
   $scope.editingContact = false;
+  $scope.contactSection = 'overview';
 
   // Check the route to see if we have to connect some contact
   var initRouteContact = function(identity) {
