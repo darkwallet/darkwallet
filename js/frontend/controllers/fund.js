@@ -92,7 +92,6 @@ function (controllers, DarkWallet) {
       }
 
       // Add to tasks
-      $scope.pocket.tasks.push(frontTask);
       notify.success('Added transaction');
   };
 

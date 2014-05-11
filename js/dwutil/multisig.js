@@ -214,8 +214,11 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
     });
     var task = {tx: serializedTx, 'pending': pending, stealth: false};
     var spend = {tx: tx, task: task};
+
+    // add as task in the store
+    identity.tasks.addTask('multisig', task);
     // Maybe should be imported here but now it's done on the angular controller..
-    // this.tasks.push(spend)
+    this.tasks.push(spend)
     return spend;
 };
 
