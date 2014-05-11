@@ -124,7 +124,13 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 title = "Sending (unconfirmed)";
             }
         }
-        TransactionTasks.processRow(value, row, height);
+        var task = TransactionTasks.processRow(value, row, height);
+        // task.outPocket can be a number so we need to check for undefined
+        if (!(task.outPocket === undefined)) {
+            var identity = core.getCurrentIdentity();
+            var outPocket = identity.wallet.getPocket(task.outPocket);
+            title = (outPocket.name || outPocket.label) + ': ' + title;
+        }
         core.service.badge.setItems();
         var formattedValue = CurrencyFormatting.format(value);
 
