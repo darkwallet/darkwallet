@@ -922,7 +922,7 @@ Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
     var branchId = pocketIndex*2;
     var scanKey = this.getScanKey(branchId);
     var spendKey = self.getAddress([branchId]).pubKey;
-    // Stealth cache can't have less items than stealth array otherwise is invalid
+    // Stealth cache can't have more items than stealth array otherwise is invalid
     // This is because stealth array is accumulating items till it refreshes after 100 blocks (obelisk quirk)
     if (!self.stealthCache[pocketIndex] || (self.stealthCache[pocketIndex].length > stealthArray.length)) {
         self.stealthCache[pocketIndex] = [];
