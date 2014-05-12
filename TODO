@@ -18,6 +18,17 @@ Immediate:
  * Settings
    * Select server DONE
 
+Architecture/api:
+- Backend
+ - Unify pocket/multisig interface
+ - Unify task/notification mechanics
+ - Worker for communications encryption
+ - New modules to split model/wallet
+- Frontend
+ - Send provider
+ - Review and improve angular usage
+ - Better way to manage gui updates
+
 Style:
  + 'Dashboard' for all pockets
  + 'Dashboard' for pockets/funds
