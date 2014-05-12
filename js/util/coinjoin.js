@@ -6,13 +6,15 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
    * CoinJoin Class
    * @constructor
    */
-  function CoinJoin(core, role, state, tx, myAmount, fee) {
+  function CoinJoin(core, role, state, tx, myAmount, fee, peer) {
     this.core = core;
     this.state = state;
     this.role = role;
     this.myTx = tx;
     this.myAmount = myAmount;
     this.fee = fee;
+    // Peer set initially for guest
+    this.peer = peer;
   }
 
   /**
@@ -72,7 +74,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
    * CoinJoin State machine once paired
    * 1st message guest -> [initiator]
    */
-  CoinJoin.prototype.fullfill = function(msg) {
+  CoinJoin.prototype.fullfill = function(msg, peer) {
       // Check there is one output like we want to join
       var amount = this.myAmount;
       var remoteTx = new Bitcoin.Transaction(msg.tx);
@@ -105,13 +107,19 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       // Save tx
       this.tx = remoteTx;
       this.state = 'fullfilled';
+
+      // Lock peer
+      this.peer = peer;
       return remoteTx;
   };
 
   /*
    * 1st message initiator -> [guest]
    */
-  CoinJoin.prototype.sign = function(msg) {
+  CoinJoin.prototype.sign = function(msg, peer) {
+      if (peer != this.peer) {
+          return;
+      }
       var remoteTx = new Bitcoin.Transaction(msg.tx);
       remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
 
@@ -149,7 +157,10 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   /*
    * 2nd message guest -> [initiator]
    */
-  CoinJoin.prototype.finishInitiator = function(msg) {
+  CoinJoin.prototype.finishInitiator = function(msg, peer) {
+      if (peer != this.peer) {
+          return;
+      }
       var myTx = this.tx;
       var remoteTx = new Bitcoin.Transaction(msg.tx);
       remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
@@ -171,7 +182,10 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   /*
    * 2nd message initiator -> [guest]
    */
-  CoinJoin.prototype.finishGuest = function(msg) {
+  CoinJoin.prototype.finishGuest = function(msg, peer) {
+      if (peer != this.peer) {
+          return;
+      }
       var remoteTx = new Bitcoin.Transaction(msg.tx);
       remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
 
@@ -196,20 +210,20 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   /*
    * Process a message for an ongoing CoinJoin
    */
-  CoinJoin.prototype.process = function(msg) {
+  CoinJoin.prototype.process = function(msg, peer) {
       switch (this.state) {
           case 'announce':
               // 1. If initiator, comes with new input and outputs from guest
-              return this.fullfill(msg);
+              return this.fullfill(msg, peer);
           case 'accepted':
               // 2. If guest, comes with full tx, check and sign
-              return this.sign(msg);
+              return this.sign(msg, peer);
           case 'fullfilled':
               // 3. Initiator finally signs his part
-              return this.finishInitiator(msg);
+              return this.finishInitiator(msg, peer);
           case 'signed':
               // 4. Guest getting the final transaction
-              return this.finishGuest(msg);
+              return this.finishGuest(msg, peer);
       }
   };
 
@@ -226,8 +240,11 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   /*
    * Process a message finishing a coinjoin conversation
    */
-  CoinJoin.prototype.kill = function() {
-
+  CoinJoin.prototype.kill = function(body, peer) {
+     // Only allow finish messages from our peer
+     if (peer != this.peer) {
+        return;
+     }
      switch(this.state) {
          case 'accepted':
          case 'fullfilled':

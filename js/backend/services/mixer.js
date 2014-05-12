@@ -259,7 +259,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
 
       // Build the tx
       var metadata = identity.wallet.prepareTx(pocketIndex, [recipient], changeAddress, fee);
-      this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', metadata.tx.clone(), opening.amount, fee);
+      this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', metadata.tx.clone(), opening.amount, fee, peer);
       this.ongoing[opening.id].pocket = pocketIndex;
 
       // Post using end to end channel capabilities
@@ -270,7 +270,6 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   MixerService.prototype.sendTo = function(peer, id, tx, callback) {
       // Save the transaction with the ongoing task
       var coinJoin = this.ongoing[id];
-      coinJoin.peer = peer;
 
       // Now create and send the message
       var msg = Protocol.CoinJoinMsg(id, tx.serializeHex());
@@ -297,10 +296,6 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       var coinJoin = this.ongoing[msg.body.id];
       if (!coinJoin) {
           console.log("[mixer] CoinJoin not found!");
-      }
-      else if (coinJoin.state != 'announce' && msg.peer.fingerprint != coinJoin.peer.fingerprint) {
-          console.log("[mixer] CoinJoin message from the wrong peer!", msg);
-          return;
       }
       return coinJoin;
   };
@@ -400,7 +395,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       if (coinJoin) {
           console.log("[mixer] CoinJoin", msg);
 
-          var updatedTx = coinJoin.process(msg.body);
+          var updatedTx = coinJoin.process(msg.body, msg.peer);
           // if requested to sign, try to do it
           if (coinJoin.state == 'sign') {
               // Needs signing from user
@@ -412,7 +407,9 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           if (updatedTx && coinJoin.state != 'sign') {
               this.sendTo(msg.peer, msg.body.id, updatedTx);
           }
-          Port.post('gui', {type: 'mixer', state: coinJoin.state});
+          if (updatedTx) {
+              Port.post('gui', {type: 'mixer', state: coinJoin.state});
+          }
           if (coinJoin.state == 'sign') {
               console.log("task requires signing from user!");
           }
@@ -428,10 +425,11 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
               var walletService = this.core.service.wallet;
               coinJoin.task.tx = coinJoin.tx.serializeHex();
               walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
-          } else if (coinJoin.state == 'announce') {
+          }/* else if (coinJoin.state == 'announce') {
+              Shouldn't be needed here...
               // announce again
               this.announce(msg.body.id, coinJoin);
-          }
+          }*/
           this.checkDelete(msg.body.id);
 
           // See if we should desactivate mixing
@@ -444,7 +442,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       console.log("[mixer] CoinJoinFinish", msg);
       var coinJoin = this.getOngoing(msg);
       if (coinJoin) {
-        coinJoin.kill(msg.body);
+        coinJoin.kill(msg.body, msg.peer);
         this.checkDelete(msg.body.id);
       }
     }
