@@ -6,11 +6,6 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.receiveStealth = function() {
       notify.note("stealth", "initializing");
 
-      // Reset last fetched stealth so we get stealth history from the beginning.
-      var identity = DarkWallet.getIdentity();
-      identity.wallet.store.set('lastStealth', 0);
-
-
       // Callback for detected addresses
       var onStealth = function(error, addresses) {
           if (error) {
@@ -31,8 +26,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
           }
       }
 
-      // Fetch stealth using the wallet service
-      DarkWallet.service.wallet.fetchStealth(DarkWallet.service.wallet.currentHeight, onStealth);
+      // Fetch stealth using the wallet service, specify height as
+      // 0 will make it restart from the beginning
+      DarkWallet.service.stealth.fetch(0, onStealth);
   };
 
 }]);

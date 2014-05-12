@@ -254,7 +254,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                    console.log("[wallet] error fetching block header", err, height)
                 }
             });
-            self.fetchStealth(height);
+            core.service.stealth.fetch(height);
         }
     }
 
@@ -276,10 +276,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         }, 60000);
     }
 
-
     this.handleInitialConnect = function() {
         console.log("[wallet] initial connect");
         var identity = self.getCurrentIdentity();
+        core.service.stealth.initWorker(identity);
         core.servicesStatus.syncing = 0;
 
         var client = core.getClient();
@@ -361,48 +361,6 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         });
     };
 
-    /*
-     * Fetch stealth
-     */
-    this.fetchStealth = function(height, cb) {
-        var identity = core.getIdentity();
-
-        // Callback
-        var onStealthReceived = function(error, results) {
-            if (error) {
-                console.log("[wallet] Error retrieving stealth data", error);
-                cb ? cb(error, null) : null;
-                return;
-            }
-            console.log("[wallet] Processing stealth");
-            // process stealth information
-            identity.wallet.processStealth(results, function(addresses) {
-                console.log("[wallet] Stealth detected " + addresses.length + ' addresses from ' + results.length + ' results');
-
-                // Everything went all right, set lastStealth and initialize on the network
-                identity.wallet.store.set('lastStealth', height);
-                identity.wallet.store.save();
-
-                // Initialize addresses on the wallet
-                addresses.forEach(function(address) {
-                    self.initAddress(address);
-                    Port.post('wallet', {'type': 'address', 'address': address.address, 'index': address.index});
-                });
-
-
-                // Run the callback with results
-                cb ? cb(null, addresses) : null;
-            });
-        }
-
-        // Request fetching the stealth using the client
-        var client = core.getClient();
-        var fromHeight = identity.wallet.store.get('lastStealth') || 0;
-        if (height > fromHeight) {
-            console.log("Requesting stealth from block " + fromHeight + " for " + height);
-            client.fetch_stealth([0,0], onStealthReceived, fromHeight);
-        }
-    };
 
     /*
      * Perform fallback operations for a failed task

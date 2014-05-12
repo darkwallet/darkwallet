@@ -910,95 +910,36 @@ Wallet.prototype.getIdentityKey = function(n) {
     return childKey.priv;
 };
 
-
 /**
- * Process stealth array from obelisk, on one pocket.
+ * Process a stealth match by generating a wallet address
  * The array comes 
- * @param {Object[]} stealthArray DOCME
+ * @param {Number} pocketIndex The pocket index
+ * @param {Array} ephemKey Ephemeral key as bytes
+ * @param {Array} pubKey Public key as bytes
+ * @param {String} Address resulting address as string
  */
-Wallet.prototype.processPocketStealth = function(stealthArray, pocketIndex) {
-    var self = this;
-    var matches = [];
+Wallet.prototype.processStealthMatch = function(pocketIndex, ephemKey, pubKey, address) {
     var branchId = pocketIndex*2;
-    var scanKey = this.getScanKey(branchId);
-    var spendKey = self.getAddress([branchId]).pubKey;
-    // Stealth cache can't have more items than stealth array otherwise is invalid
-    // This is because stealth array is accumulating items till it refreshes after 100 blocks (obelisk quirk)
-    if (!self.stealthCache[pocketIndex] || (self.stealthCache[pocketIndex].length > stealthArray.length)) {
-        self.stealthCache[pocketIndex] = [];
-    }
-    // Check the array
-    stealthArray.forEach(function(stealthData) {
-        var ephemKey = Bitcoin.convert.hexToBytes(stealthData[0]);
-        var address = stealthData[1];
-        var txId = stealthData[2];
-
-        // Check if we've already seen this tx+address combination
-        if (self.stealthCache[pocketIndex].indexOf(txId+address) > -1) {
-            return;
+    var seq = [branchId, 's'].concat(ephemKey);
+    var walletAddress = this.pubKeys[seq];
+    // Check for bad addresses and put them in the right pocket if found.
+    if (!walletAddress && branchId > 0) {
+        var badIndex = [0, 's'].concat(ephemKey);
+        var badAddress = this.pubKeys[badIndex];
+        if (badAddress) {
+            // The address was originally placed in the wrong pocket. need to relink it.
+            delete this.pubKeys[badIndex];
+            badAddress.index = seq.slice(0);
+            this.pubKeys[seq] = badAddress;
+            walletAddress = badAddress;
         }
-        self.stealthCache[pocketIndex].push(txId+address);
-
-        // Try out the stealth row
-        var myKeyBytes = Stealth.uncoverPublic(scanKey.toBytes(), ephemKey, spendKey);
-
-        // Turn to address
-        var myKeyHash = Bitcoin.crypto.hash160(myKeyBytes);
-        var myAddress = new Bitcoin.Address(myKeyHash, self.versions.address);
-
-        if (address == myAddress.toString()) {
-            var seq = [branchId, 's'].concat(ephemKey);
-            var walletAddress = self.pubKeys[seq];
-            // Check for bad addresses and put them in the right pocket if found.
-            if (!walletAddress && branchId > 0) {
-                var badIndex = [0, 's'].concat(ephemKey);
-                var badAddress = self.pubKeys[badIndex];
-                if (badAddress) {
-                    // The address was originally placed in the wrong pocket. need to relink it.
-                    delete self.pubKeys[badIndex];
-                    badAddress.index = seq.slice(0);
-                    self.pubKeys[seq] = badAddress;
-                    walletAddress = badAddress;
-                }
-            }
-            // If we don't have an address, create it.
-            if (!walletAddress) {
-                walletAddress = self.storePublicKey(seq, myKeyBytes, {'type': 'stealth', 'ephemKey': ephemKey, 'address': address});
-            }
-            console.log('stealth detected', walletAddress);
-            matches.push(walletAddress);
-        }
-    });
-    return matches;
-};
-
-/**
- * Process stealth array from obelisk for all pockets.
- * The array comes 
- * @param {Object[]} stealthArray DOCME
- */
-Wallet.prototype.processStealth = function(stealthArray, callback, index, results) {
-    var self = this;
-
-    // If this is running from outside set starting parameters
-    if (index == undefined) {
-        index = 0;
-        results = [];
     }
-
-    // Process the first pocket
-    if (this.pockets.hdPockets[index]) {
-        results = results.concat(this.processPocketStealth(stealthArray, index));
+    // If we don't have an address, create it.
+    if (!walletAddress) {
+        walletAddress = this.storePublicKey(seq, pubKey, {'type': 'stealth', 'ephemKey': ephemKey, 'address': address});
     }
-
-    // Schedule continuing
-    if (index < this.pockets.hdPockets.length-1) {
-        // Run with timeout to let the app some time to breathe
-        setTimeout(function() {self.processStealth(stealthArray, callback, index+1, results) }, 10);
-    } else {
-        callback(results);
-    }
-};
+    return walletAddress;
+}
 
 return Wallet;
 });

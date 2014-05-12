@@ -8,6 +8,7 @@ require([
     'backend/services/lobby',
     'backend/services/obelisk',
     'backend/services/wallet',
+    'backend/services/stealth',
     'backend/services/gui',
     'backend/services/ticker',
     'backend/services/mixer',
