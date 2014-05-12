@@ -62,6 +62,19 @@ Multisig.prototype.addFund = function(fund) {
     return walletAddress;
 };
 
+/**
+ * Search for a fund
+ */
+Multisig.prototype.search = function(search) {
+    var label = Object.keys(search)[0];
+    var value = search[label];
+    for(var i=0; i<this.funds.length; i++) {
+        if (this.funds[i][label] == value) {
+            return this.funds[i];
+        }
+    }
+}
+
 Multisig.prototype.deleteFund = function(fund) {
     // Add a walletAddres to the wallet so we can keep track of the fund address
     var walletAddress = this.wallet.getWalletAddress(fund.address);

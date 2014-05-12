@@ -396,7 +396,9 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 callback(err);
             } else if (pending.length) {
                 // If pending signatures add task and callback with 2nd parameter
-                var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: metadata.stealth};
+                // TODO: only supporting one in pocket/multisig here
+                var inPocket = pending[0].address
+                var task = {tx: newTx.serializeHex(), 'pending': pending, stealth: metadata.stealth, inPocket: inPocket};
                 identity.tasks.addTask('multisig', task);
                 callback(null, {task: task, tx: newTx, type: 'signatures'});
             } else if (broadcast) {
