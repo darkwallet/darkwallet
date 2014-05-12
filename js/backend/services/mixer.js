@@ -109,21 +109,19 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   /*
    * Check a running task to see if we have to resend or cancel
    */
-  MixerService.prototype.checkTask = function(msg, state) {
+  MixerService.prototype.checkAnnounce = function(msg) {
       var coinJoin = this.ongoing[msg.body.id];
-      // Check if the state is the same otherwise cancel
-      if (coinJoin && coinJoin.state == state) {
+      if (coinJoin) {
           var start = coinJoin.task.start;
           var timeout = coinJoin.task.timeout;
-          // Cancel task if it expired
-          if ((Date.now()/1000)-start > timeout) {
-              // do stuff
+          if (coinJoin.state != 'finished' && (Date.now()/1000)-start > timeout) {
+              // Cancel task if it expired and not finished
               console.log("[mixer] Cancelling coinjoin!", msg.body.id);
               var walletService = this.core.service.wallet;
               walletService.sendFallback('mixer', coinJoin.task);
-          } else {
+          } else if (coinJoin.state == 'announce') {
               // Otherwise resend
-              this.postRetry(msg, state);
+              this.postRetry(msg);
           }
       }
   }
@@ -131,7 +129,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   /*
    * Send a message on the channel and schedule a retry
    */
-  MixerService.prototype.postRetry = function(msg, state) {
+  MixerService.prototype.postRetry = function(msg) {
       var self = this;
       this.channel.postEncrypted(msg, function(err, data) {
           if (err) {
@@ -141,7 +139,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           }
       });
       setTimeout(function() {
-            self.checkTask(msg, state);
+            self.checkAnnounce(msg);
       }, 10000);
   }
 
@@ -150,7 +148,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
    */
   MixerService.prototype.announce = function(id, coinJoin) {
       var msg = Protocol.CoinJoinOpenMsg(id, coinJoin.myAmount);
-      this.checkTask(msg, 'announce');
+      this.checkAnnounce(msg);
   };
 
   /*
