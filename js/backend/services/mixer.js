@@ -117,11 +117,13 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           if (coinJoin.state != 'finished' && (Date.now()/1000)-start > timeout) {
               // Cancel task if it expired and not finished
               console.log("[mixer] Cancelling coinjoin!", msg.body.id);
+              Port.post('gui', {type: 'mixer', state: 'Sending with no mixing'});
               var walletService = this.core.service.wallet;
               walletService.sendFallback('mixer', coinJoin.task);
           } else if (coinJoin.state == 'announce') {
               // Otherwise resend
               this.postRetry(msg);
+              Port.post('gui', {type: 'mixer', state: 'Announcing'});
           }
       }
   }
