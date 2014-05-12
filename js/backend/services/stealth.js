@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define([], function() {
+define(['backend/port'], function(Port) {
 
   function StealthService(core) {
     var self = this;
@@ -60,7 +60,7 @@ define([], function() {
 
         // Initialize addresses on the network
         addresses.forEach(function(address) {
-            self.initAddress(address);
+            core.service.wallet.initAddress(address);
             Port.post('wallet', {'type': 'address', 'address': address.address, 'index': address.index});
         });
 
@@ -86,7 +86,7 @@ define([], function() {
             self.initWorker(identity);
 
             // request for current height
-            height = self.currentHeight;
+            height = core.service.wallet.currentHeight;
         }
 
         // Results incoming, send them to worker
