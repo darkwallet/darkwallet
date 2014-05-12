@@ -1,11 +1,12 @@
 Immediate:
  + Review and stabilize gateway
  + Wallet
-   - Review balances and unconfirmed change management
    - Cache address history and resume
-   + Polish stealth support
    + Review sending
    - Review coinjoin mechanics
+   - Stealth multisig
+   * Review balances and unconfirmed change management DONE
+   * Polish stealth support DONE
  - Lobby system
    * then finish CoinJoin DONE
    - then automatize Multisig
@@ -14,8 +15,8 @@ Immediate:
    * Move funds to another pocket DONE
    - Move funds to another identity
    + Delete STARTED
- - Settings
-   + Select server STARTED
+ * Settings
+   * Select server DONE
 
 Style:
  + 'Dashboard' for all pockets
@@ -35,9 +36,9 @@ Other:
  - Notifications
   * when receiving funds
   - new multisig
-  - multisig spend
+  + multisig spend
   + radar when sending
- - Validate input fields, specially addresses (on contacts and send)
+ + Validate input fields, specially addresses (on contacts and send)
  - Watch only pockets
  - Blockchain.info compatible coinjoin
 
