@@ -34,7 +34,7 @@ define(['backend/port'], function(Port) {
             if (oEvent.data.type == 'stealth') {
                 onStealthResults(oEvent.data.id, oEvent.data.matches, oEvent.data.height);
             } else {
-                console.log("[worker] Invalid message from the stealth worker!");
+                console.log("[stealth] Invalid message from the worker!");
             }
         };
     };
@@ -46,7 +46,7 @@ define(['backend/port'], function(Port) {
         var identity = core.getIdentity();
         var job = stealthJobs[id];
 
-        console.log("[wallet] Stealth detected " + matches.length + ' addresses from ' + job.nResults + ' results');
+        console.log("[stealth] Detected " + matches.length + ' addresses from ' + job.nResults + ' results');
 
         // Check all matches and initialize wallet addresses
         var addresses = [];
@@ -98,11 +98,11 @@ define(['backend/port'], function(Port) {
             // clear the fetch job
             delete stealthJobs[fetchJobId];
             if (error) {
-                console.log("[wallet] Error retrieving stealth data", error);
+                console.log("[stealth] Error retrieving data", error);
                 cb ? cb(error, null) : null;
                 return;
             }
-            console.log("[wallet] Processing stealth");
+            console.log("[stealth] Processing");
 
             // prepare a requests for the worker
             identity.wallet.pockets.hdPockets.forEach(function(pocket, i) {
@@ -131,7 +131,7 @@ define(['backend/port'], function(Port) {
         var client = core.getClient();
         var fromHeight = lastStealthRequested || 0;
         if (height > fromHeight) {
-            console.log("Requesting stealth from block " + fromHeight + " for " + height);
+            console.log("[stealth] Requesting from block " + fromHeight + " for " + height);
             lastStealthRequested = height;
             client.fetch_stealth([0,0], onStealthReceived, fromHeight);
             // register the id so we can check later its not cancelled
