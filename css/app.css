@@ -5064,7 +5064,7 @@ div.pockets {
 
 
 div.chat-text {
-  word-wrap: break-word; }
+  word-break: break-all; }
 
 /* ----------- Backgrounds ---------------- */
 .setback.net {
