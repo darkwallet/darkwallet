@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib'], function(Bitcoin) {
+define(['bitcoinjs-lib', 'util/djbec'], function(Bitcoin, Curve25519) {
 
 var convert = Bitcoin.convert;
 
@@ -31,7 +31,7 @@ var Protocol = {
     return Protocol.packMessage('CoinJoinFinish', {id: id});
   },
 
-  // Contact Pairing
+  // Simple Contact
   ContactMsg: function(identity) {
     var data = {};
     var wallet = identity.wallet;
@@ -40,6 +40,29 @@ var Protocol = {
     data['name'] = identity.name;
     data['stealth'] = address.stealth;
     return Protocol.packMessage('Contact', data);
+  },
+  // Pairing message
+  PairMsg: function(name, signKey, scanKeyPub) {
+    var data = {};
+    data['nick'] = name;
+    data['pub'] = convert.bytesToString(signKey.pub);
+    data['beacon'] = convert.bytesToString(scanKeyPub.toByteArrayUnsigned());
+
+    var toSign = data['beacon']+data['nick']+data['pub'];
+    data['sig'] = Curve25519.signature(toSign, signKey.priv, signKey.pub);
+
+    return Protocol.packMessage('Pair', data);
+  },
+  // Encrypted for other's beacon key
+  BeaconMsg: function(ephemKey, signKey) {
+    var data = {};
+    data['pub'] = convert.bytesToString(signKey.pub);
+    data['ephem'] = convert.bytesToString(ephemKey.toByteArrayUnsigned());
+
+    var toSign = data['ephem']+data['pub'];
+    data['sig'] = Curve25519.signature(toSign, signKey.priv, signKey.pub);
+
+    return Protocol.packMessage('Beacon', data);
   },
   // Chatting
   ShoutMsg: function(text) {

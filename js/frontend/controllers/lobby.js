@@ -9,6 +9,39 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   var transport, currentChannel;
 
+  /**
+   * Peer Requests
+   */
+  $scope.peerRequests = [];
+  $scope.selectedRequest = false;
+
+  // Open a request from the request list
+  $scope.openRequest = function(request) {
+      $scope.selectedRequest = request;
+  }
+
+  // Cancel a request when already opened
+  $scope.cancelRequest = function() {
+      var reqIndex = $scope.peerRequests.indexOf($scope.selectedRequest);
+      if (reqIndex > -1) {
+          $scope.peerRequests.splice(reqIndex, 1);
+      }
+      $scope.selectedRequest = false;
+  }
+
+  $scope.sendPairing = function(peer) {
+      var identity = DarkWallet.getIdentity();
+      currentChannel.sendPairing(identity.name, peer, function() {
+          notify.success("lobby", "pairing sent");
+      });
+  };
+
+  // Accept a request when already opened
+  $scope.acceptRequest = function() {
+      // For now just cancel
+      $scope.cancelRequest();
+  }
+
   // Link a channel with this scope by name
   var channelLinks = {};
   var linkChannel = function(name) {
@@ -54,6 +87,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           });
       }
       $scope.shoutboxLog = channelLink.channel.chatLog;
+      $scope.peerRequests = channelLink.channel.peerRequests;
 
       selectedChannel = name;
       $scope.subscribed = channelLink.channel.channelHash;
@@ -141,7 +175,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
     $scope.selectPeer = function(peer) {
         $scope.selectedPeer = peer;
     };
-    $scope.pairPeer = function(peer) {
+    $scope.sendContact = function(peer) {
         $scope.selectedPeer = peer;
         var identity = DarkWallet.getIdentity();
         var msg = Protocol.ContactMsg(identity);

@@ -19,6 +19,9 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       // max messages in the log
       this.maxChatLog = 200;
 
+      // requests coming from peers
+      this.peerRequests = [];
+
       // Set transport session key
       this.transport = transport;
       this.prepareSession();
@@ -41,6 +44,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
                     self.subscribed = channelHash;
                     // Internal log only for shout messages for now
                     self.addCallback('Shout', function(_data) {self.onChatMessage(_data)})
+                    self.addCallback('Pair', function(_data) {self.onPairMessage(_data)})
                     self.addCallback('publicKeyRequest', function(_data) {self.onPublicKeyRequest(_data)})
 
                     // now tell listeners we'resubscribed
@@ -224,13 +228,11 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       shared = shared.toByteArrayUnsigned();
       shared = Curve25519.bytes2string(shared);
 
-      // First decrypt with given dh secret
+      // First decrypt with given dh secret for our cloak
       var decrypted;
       try {
           decrypted = sjcl.decrypt(shared, data.data);
       } catch(err) {
-          // message is not for us.. ignore     
-          console.log("[catchan] Encrypted message not for us!")
           return;
       }
       // Now decode json
@@ -252,6 +254,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
 
       // Notify listeners
       this.triggerCallbacks(decoded.type, decoded);
+      return true;
   };
 
   /**
@@ -366,7 +369,9 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
           }
           else if (decoded.type == 'personal') {
               console.log("[catchan] Decoding DH message");
-              this.onReceiveDH(decoded);
+              if (!this.onReceiveDH(decoded)) {
+                  this.onReceiveBeacon(decoded);
+              }
               // don't want to trigger normal callbacks here.
               return;
           }
@@ -381,6 +386,61 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       }
       this.chatLog.splice(0,0,data);
   };
+
+  /**
+   * Beacons and pairing
+   */
+  Channel.prototype.sendPairing = function(nick, peer, callback) {
+      var signKey = this.transport.getSignKey();
+
+      var priv = this.transport.getSelfKey().priv;
+      var scanPriv = Encryption.adaptPrivateKey(priv);
+      var scanKeyPub = Curve25519.ecDH(scanPriv);
+
+      var msg = Protocol.PairMsg(nick, signKey, scanKeyPub);
+      this.postDH(peer.pubKey, msg, callback);
+  }
+
+  Channel.prototype.onPairMessage = function(data) {
+      this.peerRequests.push(data);
+  }
+
+  Channel.prototype.sendBeacon = function(beaconKey, callback) {
+      var signKey = this.transport.getSignKey();
+
+      var msg = Protocol.BeaconMsg(this.pub, signKey);
+
+      this.postDH(beaconKey, msg, callback);
+  }
+
+  Channel.prototype.onReceiveBeacon = function(data) {
+      var pk2 = BigInteger.fromByteArrayUnsigned(data.pubKey);
+      // Decrypt for our scankey may be a beacon
+      try {
+          decrypted = this.decryptBeacon(data, pk2);
+      } catch (err) {
+          // message is not for us.. ignore     
+          console.log("[catchan] Encrypted message not for us")
+          return;
+      }
+      // Now decode json
+      var decoded;
+      try {
+          decoded = JSON.parse(decrypted);
+      } catch (e) {
+          console.log("[catchan] Invalid dh json! " + e.message);
+          return;
+      }
+      return decoded;
+  }
+
+  Channel.prototype.decryptBeacon = function(data, pk2) {
+      var scanPriv = Encryption.adaptPrivateKey(this.transport.getSelfKey().priv);
+      var shared = Curve25519.ecDH(scanPriv, pk2);
+      shared = shared.toByteArrayUnsigned();
+      shared = Curve25519.bytes2string(shared);
+      return sjcl.decrypt(shared, data.data);
+  }
 
   Channel.prototype.startPairing = function(fingerprint, pubKey) {
      console.log('[catchan] stored pubkey', fingerprint);
