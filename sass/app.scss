@@ -367,6 +367,20 @@ div.wallet-view {  }
 div.chat-text {
 	word-break: break-all;
 }
+div.chat-text .wrapper {
+	display: table-row;
+}
+div.chat-text .wrapper .shoutFace {
+	display: table-cell;
+	vertical-align: top;
+	width: 32px;
+}
+div.chat-text .wrapper .shoutText {
+	display: table-cell;
+	vertical-align: middle;
+	padding: 0 5px;
+}
+
 
 /* ----------- Backgrounds ---------------- */
 
