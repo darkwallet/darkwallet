@@ -1,7 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'backend/channels/peer'],
-function (Bitcoin, Peer) {
+define(['bitcoinjs-lib', 'backend/channels/peer', 'util/djbec'],
+function (Bitcoin, Peer, Curve25519) {
 
 
   /************************************
@@ -29,7 +29,16 @@ function (Bitcoin, Peer) {
         identity.store.set('commsKey', selfKey.toBytes());
         identity.store.save();
     }
+    var signKey = Bitcoin.convert.bytesToString(selfKey.toBytes());
+    var signPubKey = Curve25519.publickey(signKey);
+
+    // Scanning/Encryption
     this.getSelfKey = function() { return selfKey; };
+
+    // Signing
+    this.getSignKey = function() { return {pub: signPubKey, priv: signKey} };
+
+    // Session keys
     this.getSessionKey = function() { return this.sessionKey; };
 
     // Initialize some own data
