@@ -49,7 +49,7 @@
             </div>
           </form>
           <div class="chat-text">
-             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><face title="{{shoutLog.peer.name}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></face> {{shoutLog.body.text}}</div>
+             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><div class="shoutFace"><face title="{{shoutLog.peer.name}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></face></div> <div class="shoutText">{{shoutLog.body.text}}</div></div>
           </div>
         </div>
       </div>
