@@ -39,7 +39,7 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
     this.getSignKey = function() { return {pub: signPubKey, priv: signKey} };
 
     // Scanning
-    var scanPriv = Encryption.adaptPrivateKey(this.transport.getSelfKey().priv);
+    var scanPriv = Encryption.adaptPrivateKey(this.getSelfKey().priv);
     var scanKeyPub = Curve25519.ecDH(scanPriv);
     this.getScanKey = function() { return {priv: scanPriv, pub: scanKeyPub} };
 
