@@ -383,6 +383,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       var chatLog;
       if (data.metadata && data.metadata.whisper) {
           chatLog = data.peer.chatLog;
+          chatLog.dirty = true;
       } else {
           chatLog = this.chatLog;
       }

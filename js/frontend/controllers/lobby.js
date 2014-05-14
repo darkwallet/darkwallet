@@ -207,7 +207,11 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
         $scope.pairCode = '';
     };
     $scope.openPrivate = function(peer) {
+        if ($scope.selectedPeer) {
+            $scope.selectedPeer.chatLog.dirty = false;
+        }
         $scope.selectedPeer = peer;
+        $scope.selectedPeer.chatLog.dirty = false;
         $scope.shoutboxLog = peer.chatLog;
     };
     $scope.sendContact = function(peer) {
@@ -235,6 +239,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
             $scope.selectedPeer.channel.postDH($scope.selectedPeer.pubKey, msg, onSent);
             msg.peer = currentChannel.transport.comms;
             $scope.selectedPeer.chatLog.splice(0,0,msg);
+            $scope.selectedPeer.chatLog.dirty = false;
         } else {
             currentChannel.postEncrypted(msg, onSent);
         }
