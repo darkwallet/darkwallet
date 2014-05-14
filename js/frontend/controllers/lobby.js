@@ -3,6 +3,8 @@
 define(['./module', 'darkwallet', 'frontend/port', 'frontend/channel_link', 'bitcoinjs-lib', 'util/protocol', 'backend/channels/utils'],
 function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, ChannelUtils) {
 
+  var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0)};
+
   var selectedChannel;
 
   controllers.controller('LobbyCtrl', ['$scope', 'notify', function($scope, notify) {
@@ -51,6 +53,21 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       // For now just cancel
       $scope.cancelRequest();
+  }
+
+  $scope.sendBeacons = function() {
+      var identity = DarkWallet.getIdentity();
+      var sent = 0;
+      identity.contacts.contacts.forEach(function(contact) {
+          var idKey = identity.contacts.findIdentityKey(contact);
+          if (idKey) {
+              var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
+              var beaconKey = keys.slice(0, 32);
+              currentChannel.sendBeacon(beaconKey, function() {});
+              sent += 1;
+          }
+      });
+      notify.note("Sent " + sent + " beacons");
   }
 
   // Link a channel with this scope by name

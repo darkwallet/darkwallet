@@ -120,6 +120,13 @@ Contacts.prototype.generateContactHash = function(data) {
     return this.generateAddressHash(newKey.address);
 };
 
+Contacts.prototype.findIdentityKey = function (contact) {
+    for(var i=0; i<contact.pubKeys.length; i++) {
+        if (contact.pubKeys[i].type == 'id') {
+            return contact.pubKeys[i];
+        }
+    }
+}
 
 /**
  * Find Contact by pubkey

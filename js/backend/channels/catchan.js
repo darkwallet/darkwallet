@@ -435,6 +435,12 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
           console.log("[catchan] Invalid dh json! " + e.message);
           return;
       }
+
+      var fingerprint = Encryption.genFingerprint(data.pubKey);
+      decoded.peer = this.transport.addPeer(data.pubKey, fingerprint, this);
+
+      //this.triggerCallbacks('beacon', decoded)
+      this.peerRequests.push(decoded);
       return decoded;
   }
 
