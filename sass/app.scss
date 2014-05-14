@@ -9,6 +9,10 @@ html.popup { width: auto; height: auto; max-height: 100%; overflow: hidden; }
 
 *:focus { outline: 0; } /* Remove webkit's default outline */
 
+*.fa {
+	font-family: $body-font-family;
+}
+
 *.fa:before {
 	font-family: FontAwesome;
 }
@@ -304,6 +308,7 @@ textarea.script {
 }
 
 .transaction-icon.green { color: $primary-color; }
+
 .transaction-icon.red { color: $alert-color; }
 
 .pocket-square { min-height: 120px; margin-bottom: -0.3rem; }
@@ -365,8 +370,22 @@ div.wallet-view {  }
 
 
 div.chat-text {
-	word-wrap: break-word;
+	word-break: break-all;
 }
+div.chat-text .wrapper {
+	display: table-row;
+}
+div.chat-text .wrapper .shoutFace {
+	display: table-cell;
+	vertical-align: top;
+	width: 32px;
+}
+div.chat-text .wrapper .shoutText {
+	display: table-cell;
+	vertical-align: middle;
+	padding: 0 5px;
+}
+
 
 /* ----------- Backgrounds ---------------- */
 

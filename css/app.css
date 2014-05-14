@@ -4613,6 +4613,9 @@ html.popup {
   outline: 0; }
 
 /* Remove webkit's default outline */
+*.fa {
+  font-family: "Helvetica Neue", "Helvetica", Helvetica, "Segoe UI Light", "Open Sans", Arial, sans-serif; }
+
 *.fa:before {
   font-family: FontAwesome; }
 
@@ -5064,7 +5067,20 @@ div.pockets {
 
 
 div.chat-text {
-  word-wrap: break-word; }
+  word-break: break-all; }
+
+div.chat-text .wrapper {
+  display: table-row; }
+
+div.chat-text .wrapper .shoutFace {
+  display: table-cell;
+  vertical-align: top;
+  width: 32px; }
+
+div.chat-text .wrapper .shoutText {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 0 5px; }
 
 /* ----------- Backgrounds ---------------- */
 .setback.net {
