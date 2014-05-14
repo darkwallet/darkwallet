@@ -213,7 +213,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
         if ($scope.selectedPeer) {
             currentChannel.postDH($scope.selectedPeer.pubKey, msg, onSent);
             msg.peer = currentChannel.transport.comms;
-            $scope.selectedPeer.chatLog.push(msg);
+            $scope.selectedPeer.chatLog.splice(0,0,msg);
         } else {
             console.log("sendnormal");
             currentChannel.postEncrypted(msg, onSent);
