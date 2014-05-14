@@ -86,7 +86,7 @@
             </div>
           </div>
           <h5>Peers</h5>
-          <div ng-show="peer.pubKeyHex != comms.pubKeyHex" ng-repeat="peer in peers track by $index">
+          <div ng-repeat="peer in peers track by $index">
             <span><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.nick||peer.name}}</span>
             <a  class="fa fa-link" ng-click="sendPairing(peer)" title="Send identity information for long term pairing"></a>
             <a class="fa" ng-class="{'fa-comment-o': !peer.chatLog.dirty, 'fa-comment': peer.chatLog.dirty}" ng-click="openPrivate(peer)" title="Open a private chat with this peer"></a>

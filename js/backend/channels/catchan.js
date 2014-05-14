@@ -179,6 +179,9 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       var pubKey = convert.base64ToBytes(pubKeyB64);
 
       var fingerprint = Encryption.genFingerprint(pubKey);
+      if (fingerprint == this.fingerprint) {
+          return;
+      }
       this.transport.addPeer(pubKey, fingerprint, this);
       this.startPairing(fingerprint, pubKey);
   };
