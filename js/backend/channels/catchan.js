@@ -413,6 +413,15 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       this.peerRequests.push(data);
   }
 
+  Channel.prototype.checkPairMessage = function(decoded) {
+      var idKey = decoded.body.pub;
+      var keys = bufToArray(Bitcoin.base58check.decode(idKey.substr(3)).payload);
+      var data = decoded.body;
+      var toCheck = data['address']+data['nick']+data['pub'];
+
+      return Curve25519.checksig(decoded.body.sig, toCheck, keys.slice(32));
+  }
+
   Channel.prototype.sendBeacon = function(beaconKey, callback) {
       var signKey = this.transport.getSignKey();
 

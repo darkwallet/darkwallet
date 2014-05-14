@@ -44,12 +44,18 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       var identity = DarkWallet.getIdentity();
       var request = $scope.selectedRequest;
 
-      var newContact = {name: request.body.nick, address: request.body.address};
+      var peerChannel = $scope.selectedRequest.peer.channel;
+      if (peerChannel.checkPairMessage(request)) {
+          var newContact = {name: request.body.nick, address: request.body.address};
 
-      identity.contacts.addContact(newContact);
-      identity.contacts.addContactKey(newContact, request.body.pub);
+          identity.contacts.addContact(newContact);
+          identity.contacts.addContactKey(newContact, request.body.pub);
 
-      $scope.selectedRequest.peer.nick = request.body.nick;
+          $scope.selectedRequest.peer.nick = request.body.nick;
+          notify.success(request.body.nick + " added to contacts");
+      } else {
+          notify.warning("Scam attempt", "Oops seems the signature was wrong");
+      }
 
       // For now just cancel
       $scope.cancelRequest();
