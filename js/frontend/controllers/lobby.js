@@ -113,7 +113,6 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   // Lobby service port
   Port.connectNg('lobby', $scope, function(data) {
     // onMesssage callback
-    console.log("[LobbyCtrl] Message", data);
     if (data.type == 'initChannel') {
         linkChannel(data.name);
     }
@@ -215,7 +214,6 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
             msg.peer = currentChannel.transport.comms;
             $scope.selectedPeer.chatLog.splice(0,0,msg);
         } else {
-            console.log("sendnormal");
             currentChannel.postEncrypted(msg, onSent);
         }
     };
