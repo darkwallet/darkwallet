@@ -461,10 +461,10 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
                }
            }
       });
-      //this.triggerCallbacks('beacon', decoded)
       if (valid) {
           this.peerRequests.push(decoded);
       }
+      this.triggerCallbacks('Beacon', decoded)
       return decoded;
   }
 

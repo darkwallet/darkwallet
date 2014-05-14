@@ -7,7 +7,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   var selectedChannel;
 
-  controllers.controller('LobbyCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('LobbyCtrl', ['$scope', 'notify', '$timeout', function($scope, notify, $timeout) {
 
   var transport, currentChannel;
 
@@ -75,6 +75,14 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       notify.note("Sent " + sent + " beacons");
   }
 
+  var updateChat = function() {
+      $timeout(function() {
+          if (!$scope.$$phase) {
+              $scope.$apply();
+          }
+      });
+  }
+
   // Link a channel with this scope by name
   var channelLinks = {};
   var linkChannel = function(name) {
@@ -100,6 +108,12 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
               $scope.newContact.pubKeyHex = peer.pubKeyHex;
               $scope.newContact.fingerprint = peer.fingerprint;
           });
+          channelLink.addCallback('Beacon', function(data) {
+              updateChat();
+          });
+          channelLink.addCallback('Pair', function(data) {
+              updateChat();
+          });
           channelLink.addCallback('Shout', function(data) {
               var channel = channelLink.channel;
 
@@ -114,9 +128,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
               if (data.sender != channel.fingerprint) {
                   notify.note(data.peer.name, data.body.text);
               }
-              if (!$scope.$$phase) {
-                  $scope.$apply();
-              }
+              updateChat();
           });
       }
       $scope.shoutboxLog = channelLink.channel.chatLog;
