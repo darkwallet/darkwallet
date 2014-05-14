@@ -398,11 +398,9 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
   Channel.prototype.sendPairing = function(nick, peer, address, callback) {
       var signKey = this.transport.getSignKey();
 
-      var priv = this.transport.getSelfKey().priv;
-      var scanPriv = Encryption.adaptPrivateKey(priv);
-      var scanKeyPub = Curve25519.ecDH(scanPriv);
+      var scanKey = this.transport.getScanKey();
 
-      var msg = Protocol.PairMsg(nick, signKey, scanKeyPub, address);
+      var msg = Protocol.PairMsg(nick, signKey, scanKey.pub, address);
       this.postDH(peer.pubKey, msg, callback);
   }
 
@@ -425,7 +423,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
           decrypted = this.decryptBeacon(data, pk2);
       } catch (err) {
           // message is not for us.. ignore     
-          console.log("[catchan] Encrypted message not for us")
+          console.log("[catchan] Encrypted message not for us", err)
           return;
       }
       // Now decode json
@@ -440,8 +438,9 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
   }
 
   Channel.prototype.decryptBeacon = function(data, pk2) {
-      var scanPriv = Encryption.adaptPrivateKey(this.transport.getSelfKey().priv);
-      var shared = Curve25519.ecDH(scanPriv, pk2);
+      var scanKey = this.transport.getScanKey();
+
+      var shared = Curve25519.ecDH(scanKey.priv, pk2);
       shared = shared.toByteArrayUnsigned();
       shared = Curve25519.bytes2string(shared);
       return sjcl.decrypt(shared, data.data);

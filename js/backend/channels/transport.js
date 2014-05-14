@@ -1,7 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'backend/channels/peer', 'util/djbec'],
-function (Bitcoin, Peer, Curve25519) {
+define(['bitcoinjs-lib', 'backend/channels/peer', 'util/djbec', 'util/encryption'],
+function (Bitcoin, Peer, Curve25519, Encryption) {
 
 
   /************************************
@@ -37,6 +37,11 @@ function (Bitcoin, Peer, Curve25519) {
 
     // Signing
     this.getSignKey = function() { return {pub: signPubKey, priv: signKey} };
+
+    // Scanning
+    var scanPriv = Encryption.adaptPrivateKey(this.transport.getSelfKey().priv);
+    var scanKeyPub = Curve25519.ecDH(scanPriv);
+    this.getScanKey = function() { return {priv: scanPriv, pub: scanKeyPub} };
 
     // Session keys
     this.getSessionKey = function() { return this.sessionKey; };
