@@ -417,6 +417,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
   }
 
   Channel.prototype.onReceiveBeacon = function(data) {
+      var decrypted;
       var pk2 = BigInteger.fromByteArrayUnsigned(data.pubKey);
       // Decrypt for our scankey may be a beacon
       try {
