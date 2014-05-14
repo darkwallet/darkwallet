@@ -9,6 +9,7 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
    */
   function Transport(identity, obeliskService) {
     this.obelisk = obeliskService;
+    this.identity = identity;
     this.channels = {};
     this.sessionKey = {};
 

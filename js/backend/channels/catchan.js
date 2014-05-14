@@ -5,6 +5,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
 
   var convert = Bitcoin.convert;
   var BigInteger = Bitcoin.BigInteger;
+  var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0)};
 
   /************************************
    * Channel
@@ -439,8 +440,30 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       var fingerprint = Encryption.genFingerprint(data.pubKey);
       decoded.peer = this.transport.addPeer(data.pubKey, fingerprint, this);
 
+      // Find out which contact this is
+      var valid = false;
+      var identity = this.transport.identity;
+      identity.contacts.contacts.forEach(function(contact) {
+           var idKey = identity.contacts.findIdentityKey(contact);
+           if (idKey) {
+               var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
+               var signKey = Bitcoin.convert.bytesToString(keys.slice(32));
+               if (signKey == decoded.body.pub) {
+                   var toCheck = decoded.body['ephem']+decoded.body['pub'];
+                   if (Curve25519.checksig(decoded.body.sig, toCheck, keys.slice(32))) {
+                       decoded.body.nick = contact.name;
+                       decoded.peer.nick = contact.name;
+                       valid = true;
+                   } else {
+                       console.log("checking!");   
+                   }
+               }
+           }
+      });
       //this.triggerCallbacks('beacon', decoded)
-      this.peerRequests.push(decoded);
+      if (valid) {
+          this.peerRequests.push(decoded);
+      }
       return decoded;
   }
 

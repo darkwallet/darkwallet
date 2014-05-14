@@ -55,6 +55,11 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.cancelRequest();
   }
 
+  $scope.acceptBeacon = function() {
+      // Should send a beacon back
+      $scope.cancelRequest();
+  }
+
   $scope.sendBeacons = function() {
       var identity = DarkWallet.getIdentity();
       var sent = 0;
