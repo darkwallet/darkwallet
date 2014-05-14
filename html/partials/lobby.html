@@ -5,7 +5,7 @@
           <h4>Channels</h4>
           <div ng-show="lobbyChannels">
               <select class="select-list" size="10">
-              <option ng-click="selectChannel(channel)" ng-selected="channel.channelHash == subscribed" ng-repeat="channel in lobbyChannels">{{channel.name}} {{channel.channelHash.slice(0,8)}}...</option>
+              <option ng-click="selectChannel(channel)" ng-selected="!selectedPeer && channel.channelHash == subscribed" ng-repeat="channel in lobbyChannels">{{channel.name}} {{channel.channelHash.slice(0,8)}}...</option>
               </select>
           </div>
           <form ng-submit="joinChannel();">
@@ -40,14 +40,19 @@
         <div ng-show="!subscribed" class="panel">
           Join a channel on the left to start!
         </div>
-        <div ng-show="subscribed">
+        <div ng-show="subscribed||selectedPeer">
           <form>
             <div class="row collapse panel radius">
               <div class="small-9 columns">
+
                 <input ng-model="shoutbox" type="text" value="" />
               </div>
               <div class="small-3 columns">
                 <button class="button postfix radius fa fa-comments" ng-click="sendText();">Shout!</button>
+              </div>
+              <!-- Show contact face for private channels -->
+              <div class="row collapse">
+                <face ng-show="selectedPeer" title="{{shoutLog.peer.name}}" hash="selectedPeer.pubKeyHex" icon-size="32"></face> {{selectedPeer.nick||selectedPeer.name}}
               </div>
             </div>
           </form>
@@ -74,7 +79,9 @@
           </div>
           <h5>Peers</h5>
           <div ng-repeat="peer in peers track by $index">
-            <span ng-click="selectPeer(peer)"><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.name}}</span> <a  class="fa fa-link" ng-click="sendPairing(peer)" title="Send identity information for long term pairing"></a>
+            <span><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.nick||peer.name}}</span>
+            <a  class="fa fa-link" ng-click="sendPairing(peer)" title="Send identity information for long term pairing"></a>
+            <a class="fa" ng-class="{'fa-comment-o': !peer.chatLog.length, 'fa-comment': peer.chatLog.length}" ng-click="openPrivate(peer)" title="Open a private chat with this peer"></a>
           </div>
       </div>
 

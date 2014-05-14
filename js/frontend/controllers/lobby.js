@@ -166,6 +166,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
         $scope.$apply();
     }
     $scope.selectChannel = function(channel) {
+        $scope.selectedPeer = false;
         // Relink
         connectChannel(channel.name);
         if (currentChannel) {
@@ -180,14 +181,15 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
     // Action to start announcements and reception
     $scope.joinChannel = function() {
+        $scope.selectedPeer = false;
         connectChannel($scope.pairCode);
         $scope.pairCode = '';
     };
-    $scope.selectPeer = function(peer) {
+    $scope.openPrivate = function(peer) {
         $scope.selectedPeer = peer;
+        $scope.shoutboxLog = peer.chatLog;
     };
     $scope.sendContact = function(peer) {
-        $scope.selectedPeer = peer;
         var identity = DarkWallet.getIdentity();
         var msg = Protocol.ContactMsg(identity);
         currentChannel.postDH(peer.pubKey, msg, function() {
@@ -200,11 +202,22 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
         if (toSend == '')
           return;
         $scope.shoutbox = '';
-        currentChannel.postEncrypted(Protocol.ShoutMsg(toSend), function(err, data) {
+
+        var onSent = function(err, data) {
           if (err) {
               notify.error("error sending " + err);
           }
-        });
+        }
+
+        var msg = Protocol.ShoutMsg(toSend);
+        if ($scope.selectedPeer) {
+            currentChannel.postDH($scope.selectedPeer.pubKey, msg, onSent);
+            msg.peer = currentChannel.transport.comms;
+            $scope.selectedPeer.chatLog.push(msg);
+        } else {
+            console.log("sendnormal");
+            currentChannel.postEncrypted(msg, onSent);
+        }
     };
     $scope.addNewContact = function(contact) {
         var identity = DarkWallet.getIdentity();

@@ -250,8 +250,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       };
       // add the peer
       var fingerprint = Encryption.genFingerprint(otherKey);
-      this.transport.addPeer(otherKey, fingerprint, this);
-
+      decoded.peer = this.transport.addPeer(otherKey, fingerprint, this);
       // Notify listeners
       this.triggerCallbacks(decoded.type, decoded);
       return true;
@@ -381,7 +380,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
 
   Channel.prototype.onChatMessage = function(data) {
       var chatLog;
-      if (data.metadata.whisper) {
+      if (data.metadata && data.metadata.whisper) {
           chatLog = data.peer.chatLog;
       } else {
           chatLog = this.chatLog;
