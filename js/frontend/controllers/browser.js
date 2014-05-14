@@ -179,5 +179,19 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       $scope.searchReally($routeParams.search);
   }
 
-}]);
+}])
+
+/**
+ * Create Safe Browser links
+ */
+.directive('ngSafebrowser', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attributes) {
+            var safe_regex = /[^a-zA-Z0-9]+/g;
+            element.attr('href', '#/browser/' + attributes.ngSafebrowser.replace(safe_regex, ""));
+        }
+    };
+});
+
 });
