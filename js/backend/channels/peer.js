@@ -17,6 +17,7 @@ function (Bitcoin, Mnemonic, Encryption) {
           this.fingerprint = fingerprint;
           this.name = this.getMnemoname(this.pubKey);
       }
+      this.chatLog = [];
   };
 
   /**

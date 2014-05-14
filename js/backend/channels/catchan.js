@@ -380,11 +380,17 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
   };
 
   Channel.prototype.onChatMessage = function(data) {
-      // Insert new
-      if (this.chatLog.length > this.maxChatLog) {
-          this.chatLog.pop();
+      var chatLog;
+      if (data.metadata.whisper) {
+          chatLog = data.peer.chatLog;
+      } else {
+          chatLog = this.chatLog;
       }
-      this.chatLog.splice(0,0,data);
+      // Insert new
+      if (chatLog.length > this.maxChatLog) {
+          chatLog.pop();
+      }
+      chatLog.splice(0,0,data);
   };
 
   /**
