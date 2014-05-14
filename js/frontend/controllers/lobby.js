@@ -198,8 +198,14 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
     if (!$scope.$$phase) {
         $scope.$apply();
     }
+    var cleanPeer = function() {
+        if ($scope.selectedPeer) {
+            $scope.selectedPeer.chatLog.dirty = false;
+            $scope.selectedPeer = false;
+        }
+    }
     $scope.selectChannel = function(channel) {
-        $scope.selectedPeer = false;
+        cleanPeer();
         // Relink
         connectChannel(channel.name);
         if (currentChannel) {
@@ -214,14 +220,13 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
     // Action to start announcements and reception
     $scope.joinChannel = function() {
-        $scope.selectedPeer = false;
+        cleanPeer();
+        // Relink
         connectChannel($scope.pairCode);
         $scope.pairCode = '';
     };
     $scope.openPrivate = function(peer) {
-        if ($scope.selectedPeer) {
-            $scope.selectedPeer.chatLog.dirty = false;
-        }
+        cleanPeer();
         $scope.selectedPeer = peer;
         $scope.selectedPeer.chatLog.dirty = false;
         $scope.shoutboxLog = peer.chatLog;
