@@ -210,7 +210,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
         var msg = Protocol.ShoutMsg(toSend);
         if ($scope.selectedPeer) {
-            currentChannel.postDH($scope.selectedPeer.pubKey, msg, onSent);
+            $scope.selectedPeer.channel.postDH($scope.selectedPeer.pubKey, msg, onSent);
             msg.peer = currentChannel.transport.comms;
             $scope.selectedPeer.chatLog.splice(0,0,msg);
         } else {
