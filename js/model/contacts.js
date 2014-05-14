@@ -74,7 +74,9 @@ Contacts.prototype.prepareAddress = function(data) {
   }
   var newKey = {data: data, pubKey: pubKey, type: 'address'};
 
-  if (BtcUtils.isAddress(data, this.validAddresses)) {
+  if (data.slice(0,3) == 'PSI') {
+      newKey.type = 'id';
+  } else if (BtcUtils.isAddress(data, this.validAddresses)) {
       newKey.address = data;
       if (data[0] == this.identity.wallet.versions.stealth.prefix) {
           newKey.type = 'stealth';
@@ -177,6 +179,7 @@ Contacts.prototype.addContact = function (contact) {
   this.contacts.push(contact);
   this.store.save();
 };
+
 
 /**
  * Add key

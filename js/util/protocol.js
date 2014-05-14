@@ -42,13 +42,15 @@ var Protocol = {
     return Protocol.packMessage('Contact', data);
   },
   // Pairing message
-  PairMsg: function(name, signKey, scanKeyPub) {
+  PairMsg: function(name, signKey, scanKeyPub, address) {
+    var scanBytes = scanKeyPub.toByteArrayUnsigned();
+    var id = 'PSI'+Bitcoin.base58check.encode(scanBytes.concat(signKey.pub), 1);
     var data = {};
     data['nick'] = name;
-    data['pub'] = convert.bytesToString(signKey.pub);
-    data['beacon'] = convert.bytesToString(scanKeyPub.toByteArrayUnsigned());
+    data['pub'] = id;
+    data['address'] = address;
 
-    var toSign = data['beacon']+data['nick']+data['pub'];
+    var toSign = data['address']+data['nick']+data['pub'];
     data['sig'] = Curve25519.signature(toSign, signKey.priv, signKey.pub);
 
     return Protocol.packMessage('Pair', data);

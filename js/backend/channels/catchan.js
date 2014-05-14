@@ -390,14 +390,14 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
   /**
    * Beacons and pairing
    */
-  Channel.prototype.sendPairing = function(nick, peer, callback) {
+  Channel.prototype.sendPairing = function(nick, peer, address, callback) {
       var signKey = this.transport.getSignKey();
 
       var priv = this.transport.getSelfKey().priv;
       var scanPriv = Encryption.adaptPrivateKey(priv);
       var scanKeyPub = Curve25519.ecDH(scanPriv);
 
-      var msg = Protocol.PairMsg(nick, signKey, scanKeyPub);
+      var msg = Protocol.PairMsg(nick, signKey, scanKeyPub, address);
       this.postDH(peer.pubKey, msg, callback);
   }
 

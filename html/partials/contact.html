@@ -63,16 +63,17 @@
             <!-- Show a star for main address -->
             <div ng-show="pubKey.type=='revoked'" class="fa fa-exclamation" title="This key was revoked by its owner"></div>
             <div ng-show="pubKey.type!='revoked'&&$index===vars.contact.mainKey" class="fa fa-star"></div>
-            <div ng-click="setMainKey(vars.contact, $index)"  ng-show="pubKey.type!='revoked'&&$index!=vars.contact.mainKey" class="fa fa-star-o"></div>
+            <div ng-click="setMainKey(vars.contact, $index)"  ng-show="['revoked','id'].indexOf(pubKey.type)==-1&&$index!=vars.contact.mainKey" class="fa fa-star-o"></div>
             <!-- Badge for type of address -->
             <span class="label radius" title="Type of address">
                <div class="fa" 
-                 ng-class="{'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth'}">
+                 ng-class="{'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth', 'fa-user': pubKey.type=='id'}">
                  </div> {{pubKey.type}} </span>
 
 	</div>
 	<div class="medium-3 large-7 columns" title="{{pubKey.data}}" ng-show="!(editingContact===$index)" ng-click="openEditForm(vars.contact, $index)" >
-            {{pubKey.address.slice(0,48)}}{{pubKey.address.length>48?'...':''}}
+            <span ng-show="pubKey.address">{{pubKey.address.slice(0,48)}}{{pubKey.address.length>48?'...':''}}</span>
+            <span ng-show="!pubKey.address">{{pubKey.data.slice(0,48)}}{{pubKey.data.length>48?'...':''}}</span>
 	</div>
 	<div ng-show="editingContact===$index" class="medium-3 large-7 columns">
 		<form ng-submit="editContact(vars.contact, $index)">

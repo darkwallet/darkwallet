@@ -27,9 +27,12 @@
       <!-- Request window -->
       <div ng-show="selectedRequest" class="medium-7 columns">
           <h2>{{selectedRequest.type}} Request</h2>
-          <div class="wrapper"><face title="{{selectedRequest.peer.name}}" hash="selectedRequest.peer.pubKeyHex" icon-size="32"></face> {{selectedRequest.body.nick}}</div>
-          <div>Public Key: {{selectedRequest.body.pub}}</div>
-          <button ng-click="acceptRequest()">Accept</button>
+          <form>
+          <div class="wrapper"><face title="{{selectedRequest.peer.name}}" hash="selectedRequest.peer.pubKeyHex" icon-size="32"></face> <input type="text" ng-model="selectedRequest.body.nick"></input></div>
+          </form>
+          <div><h3>Identity:</h3> {{selectedRequest.body.pub.slice(0,32)}}...</div>
+          <div><h3>Address:</h3> {{selectedRequest.body.address.slice(0,32)}}...</div>
+          <button ng-click="acceptRequest()">Add to contacts</button>
           <button ng-click="cancelRequest()">Cancel</button>
       </div>
       <!-- Channel window -->

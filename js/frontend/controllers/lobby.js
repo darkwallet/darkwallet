@@ -31,13 +31,24 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   $scope.sendPairing = function(peer) {
       var identity = DarkWallet.getIdentity();
-      currentChannel.sendPairing(identity.name, peer, function() {
+      var address = identity.wallet.getAddress([0]);
+      currentChannel.sendPairing(identity.name, peer, address.stealth, function() {
           notify.success("lobby", "pairing sent");
       });
   };
 
   // Accept a request when already opened
   $scope.acceptRequest = function() {
+      var identity = DarkWallet.getIdentity();
+      var request = $scope.selectedRequest;
+
+      var newContact = {name: request.body.nick, address: request.body.address};
+
+      identity.contacts.addContact(newContact);
+      identity.contacts.addContactKey(newContact, request.body.pub);
+
+      $scope.selectedRequest.peer.nick = request.body.nick;
+
       // For now just cancel
       $scope.cancelRequest();
   }
