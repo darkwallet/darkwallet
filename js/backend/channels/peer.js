@@ -7,7 +7,7 @@ function (Bitcoin, Mnemonic, Encryption) {
    * Peer in the communications system
    * @constructor
    */
-  function Peer(pubKey, fingerprint) {
+  function Peer(pubKey, fingerprint, channel) {
       if (pubKey) {
           this.updateKey(pubKey);
       } else {
@@ -17,6 +17,7 @@ function (Bitcoin, Mnemonic, Encryption) {
           this.fingerprint = fingerprint;
           this.name = this.getMnemoname(this.pubKey);
       }
+      this.channel = channel;
       this.chatLog = [];
   };
 
@@ -32,6 +33,13 @@ function (Bitcoin, Mnemonic, Encryption) {
       var mnemoName = mnemonic.toWords().slice(0,4).join(" ");
       return mnemoName;
 
+  };
+
+  /**
+   * Update last channel for this peer
+   */
+  Peer.prototype.updateChannel = function(channel) {
+      this.channel = channel;
   };
 
   /**

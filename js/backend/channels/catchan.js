@@ -121,7 +121,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
 
           console.log("[catchan] bad peer detected, dropping lookup", fingerprint);
 
-          var newPeer = this.transport.addPeer(pubKeyBytes, fingerprint);
+          var newPeer = this.transport.addPeer(pubKeyBytes, fingerprint, this);
           newPeer.name = 'troll: ' + newPeer.name;
           newPeer.troll = true;
           return newPeer;
@@ -132,7 +132,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
           this.requestPublicKey(fingerprint);
       }
       // create a dummy entry in the peers table, we can update it later
-      return this.transport.addPeer(null, fingerprint);
+      return this.transport.addPeer(null, fingerprint, this);
   };
 
   /**
@@ -178,7 +178,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       var pubKey = convert.base64ToBytes(pubKeyB64);
 
       var fingerprint = Encryption.genFingerprint(pubKey);
-      this.transport.addPeer(pubKey, fingerprint);
+      this.transport.addPeer(pubKey, fingerprint, this);
       this.startPairing(fingerprint, pubKey);
   };
 
@@ -250,7 +250,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       };
       // add the peer
       var fingerprint = Encryption.genFingerprint(otherKey);
-      this.transport.addPeer(otherKey, fingerprint);
+      this.transport.addPeer(otherKey, fingerprint, this);
 
       // Notify listeners
       this.triggerCallbacks(decoded.type, decoded);

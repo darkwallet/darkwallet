@@ -70,16 +70,17 @@ function (Bitcoin, Peer, Curve25519) {
   /**
    * Initialize and add peer, or just return it if it just exists
    */
-  Transport.prototype.addPeer = function(pubKey, fingerprint) {
+  Transport.prototype.addPeer = function(pubKey, fingerprint, channel) {
       var peer;
       var index = this.peerIds.indexOf(fingerprint);
       if (index == -1) {
-          peer = new Peer(pubKey, fingerprint);
+          peer = new Peer(pubKey, fingerprint, channel);
           this.peerIds.push(fingerprint);
           this.peers.push(peer);
       } else if (pubKey) {
           peer = this.peers[index];
           peer.updateKey(pubKey);
+          peer.updateChannel(channel);
       }
       return peer;
   };
