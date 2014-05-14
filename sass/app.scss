@@ -9,6 +9,10 @@ html.popup { width: auto; height: auto; max-height: 100%; overflow: hidden; }
 
 *:focus { outline: 0; } /* Remove webkit's default outline */
 
+*.fa {
+	font-family: $body-font-family;
+}
+
 *.fa:before {
 	font-family: FontAwesome;
 }
@@ -304,6 +308,7 @@ textarea.script {
 }
 
 .transaction-icon.green { color: $primary-color; }
+
 .transaction-icon.red { color: $alert-color; }
 
 .pocket-square { min-height: 120px; margin-bottom: -0.3rem; }
