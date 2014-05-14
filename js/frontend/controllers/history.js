@@ -125,13 +125,6 @@ function (controllers, DarkWallet, Port) {
   };
 
   /**
-   * Open transaction in the browser
-   */
-  $scope.openTransaction = function(hash) {
-      $location.path('/browser/'+hash);
-  };
-
-  /**
    * History filter
    */
   $scope.pocketFilter = function(row) {

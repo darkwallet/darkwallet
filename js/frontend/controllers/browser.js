@@ -165,13 +165,6 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
   }
 
   /**
-   * Open a link. Currently searches but could go to some url
-   */
-  $scope.openLink = function(data) {
-      $scope.search(data);
-  }
-
-  /**
    * Handle route parameters so we can receive url like #browser/<search>
    */
   if ($routeParams.search) {
@@ -179,19 +172,6 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       $scope.searchReally($routeParams.search);
   }
 
-}])
-
-/**
- * Create Safe Browser links
- */
-.directive('ngSafebrowser', function() {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attributes) {
-            var safe_regex = /[^a-zA-Z0-9]+/g;
-            element.attr('href', '#/browser/' + attributes.ngSafebrowser.replace(safe_regex, ""));
-        }
-    };
-});
+}]);
 
 });

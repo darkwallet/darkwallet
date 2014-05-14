@@ -8,6 +8,7 @@ define([
     './qr',
     './qr-save-button',
     './qr-scanner',
-    './validation',
-    './slider'
+    './safebrowser',
+    './slider',
+    './validation'
 ], function () {});

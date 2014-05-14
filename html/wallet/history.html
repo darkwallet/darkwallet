@@ -85,7 +85,7 @@
                none
              </div>
              <div tooltip-placement="left" tooltip="See the transaction in the block explorer" ng-click="openTransaction(row.hash)" class="small-4 medium-1 columns ellipsis">
-               <a ng-click="openTransaction(row.hash)"><i class="fa fa-sitemap hide-for-medium"></i> {{row.height?1+currentHeight-row.height:0}}</a>
+               <a ng-safebrowser="{{row.hash}}"><i class="fa fa-sitemap hide-for-medium"></i> {{row.height?1+currentHeight-row.height:0}}</a>
                
              </div>
              <div class="small-4 medium-2 columns">
