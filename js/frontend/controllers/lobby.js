@@ -61,20 +61,38 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.cancelRequest();
   }
 
+  // Send a beacon for the given contact over given channel
+  var sendBeacon = function(channel, contact) {
+      var identity = DarkWallet.getIdentity();
+      var idKey = identity.contacts.findIdentityKey(contact);
+      if (idKey) {
+          var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
+          var beaconKey = keys.slice(0, 32);
+          channel.sendBeacon(beaconKey, function() {});
+          return true;
+      }
+  };
+
+  // Accept a beacon on the gui
   $scope.acceptBeacon = function() {
-      // Should send a beacon back
+      var peer = $scope.selectedRequest.peer;
+
+      // Send a beacon back to the contact
+      if (peer.channel && peer.contact) {
+          notify.note("Sent a beacon back to the contact");
+          sendBeacon(peer.channel, peer.contact);
+      }
+
+      // now clear the request
       $scope.cancelRequest();
   }
 
+  // Send beacons for all contacts
   $scope.sendBeacons = function() {
       var identity = DarkWallet.getIdentity();
       var sent = 0;
       identity.contacts.contacts.forEach(function(contact) {
-          var idKey = identity.contacts.findIdentityKey(contact);
-          if (idKey) {
-              var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
-              var beaconKey = keys.slice(0, 32);
-              currentChannel.sendBeacon(beaconKey, function() {});
+          if (sendBeacon(currentChannel, contact)) {
               sent += 1;
           }
       });
