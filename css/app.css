@@ -5048,7 +5048,7 @@ span.contact-name {
 .qractions a:last-child {
   top: 40px; }
 
-.modal-show-qr, .modal-show-btc-qr {
+.modal-show-qr {
   background: white;
   top: 10px;
   overflow: hidden;

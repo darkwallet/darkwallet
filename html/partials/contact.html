@@ -47,7 +47,7 @@
           <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(vars.contact.pubKeys[vars.contact.mainKey].address)" class="button postfix fa fa-clipboard">Copy</a>
         </div>
         <div class="large-1 medium-2 small-6 columns">
-          <a class="button postfix radius fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showQr(vars.contact.pubKeys[vars.contact.mainKey].address)">QR</a>
+          <a class="button postfix radius fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(vars.contact.pubKeys[vars.contact.mainKey].address)">QR</a>
         </div>
       </div>
       <div class="row collapse">
@@ -81,7 +81,7 @@
 		</form>
 	</div>
 	<div class="medium-3 large-1 columns" ng-show="!creatingContact">
-		<button ng-click="modals.showQr(pubKey.address)" class="button postfix fa fa-qrcode" title="Show QR Code">QR</button>
+		<button ng-click="modals.showBtcQr(pubKey.address)" class="button postfix fa fa-qrcode" title="Show QR Code">QR</button>
 
 	</div>
 	<div class="medium-3 large-1 columns" ng-show="!creatingContact">

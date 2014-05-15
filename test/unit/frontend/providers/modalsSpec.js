@@ -179,9 +179,13 @@ define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
     it('opens a qr show modal', function() {
       modals.showQr('data');
       expect(_params.templateUrl).toBe('modals/show-qr.html');
-      expect(_params.resolve.vars()).toEqual({address: 'data'});
-      modals.showQr('data', 'version');
-      expect(_params.resolve.vars()).toEqual({address: 'data', version: 'version'});
+      expect(_params.resolve.vars()).toEqual({value: 'data'});
+      modals.showBtcQr('data');
+      expect(_params.resolve.vars()).toEqual({value: 'data', btc: true});
+      modals.showQr({value: 'data', version: 'version'});
+      expect(_params.resolve.vars()).toEqual({value: 'data', version: 'version'});
+      modals.showBtcQr({value: 'data', version: 'version'});
+      expect(_params.resolve.vars()).toEqual({value: 'data', version: 'version', btc: true});
     });
     
     it('opens an enter password modal', function(done) {

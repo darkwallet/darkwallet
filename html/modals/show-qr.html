@@ -1,12 +1,12 @@
 <div class="row collapse topmargin">
 	<div class="large-6 medium-7 columns showqr">
-		<div qr data="{{vars.address}}" level="L"></div>
+		<div qr data="{{vars.btc?'bitcoin:':''}}{{vars.value}}" level="L"></div>
 	</div>
 	<div class="large-6 medium-5 columns">
-		<h5 class="qr-address">{{vars.address}}</h5>
+		<h5 class="qr-address">{{vars.btc?'bitcoin:':''}}{{vars.value}}</h5>
 	</div>
 </div>
 <div class="qractions">
 	<a class="fa fa-times button" ng-click="cancel()"></a>
-	<a class="fa fa-save button" qr-save-button data-data="{{vars.address}}" data-level="L"></a>
+	<a class="fa fa-save button" qr-save-button data-data="{{vars.btc?'bitcoin:':''}}{{vars.value}}" data-level="L"></a>
 </div>
