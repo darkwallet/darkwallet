@@ -1,7 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'mnemonicjs', 'util/encryption'],
-function (Bitcoin, Mnemonic, Encryption) {
+define(['bitcoinjs-lib', 'util/encryption'],
+function (Bitcoin, Encryption) {
 
   /**
    * Peer in the communications system
@@ -20,19 +20,46 @@ function (Bitcoin, Mnemonic, Encryption) {
       this.channel = channel;
       this.chatLog = [];
   };
+  
+  /**
+   * Generates a readable word from a number.
+   * @param {Number} data
+   * @returns {String}
+   * @private
+   */
+  Peer.prototype.generateWord = function(data) {
+      var vowels = 'aeiou'.split('');
+      var consonants = 'bcdfghjklmnpqrstvwxyz'.split('');
+      consonants = consonants.concat(["ch", "sh", "th", "zh"]);
+      
+      var name = '';
+      var i = 0 ;
+      
+      var capitaliseFirstLetter = function(string) {
+          return string.charAt(0).toUpperCase() + string.slice(1);
+      };
+
+      while(data > 1) {
+        if (i%2 === 1) {
+          name += vowels[data%vowels.length];
+          data = parseInt(data/vowels.length);
+        } else {
+          name += consonants[data%consonants.length];
+          data = parseInt(data/consonants.length);
+        }
+        i++;
+      }
+      return capitaliseFirstLetter(name);
+  };
 
   /**
    * Get a simple mnemonic name
    * @private
    */
   Peer.prototype.getMnemoname = function(dataBytes) {
-      var mnemonic = new Mnemonic(64);
-      mnemonic.random = [];
-      mnemonic.random[0] = Bitcoin.convert.bytesToNum(dataBytes.slice(0,4));
-      mnemonic.random[1] = Bitcoin.convert.bytesToNum(dataBytes.slice(8,16));
-      var mnemoName = mnemonic.toWords().slice(0,4).join(" ");
-      return mnemoName;
-
+      var data1 = Bitcoin.convert.bytesToNum(dataBytes.slice(0,2));
+      var data2 = Bitcoin.convert.bytesToNum(dataBytes.slice(8,11));
+      return this.generateWord(data1) + ' ' + this.generateWord(data2);
   };
 
   /**
