@@ -72,9 +72,10 @@
 
       <!-- Peers area -->
       <div class="medium-3 columns" ng-show="!newContact">
-          <div ng-click="sendBeacons()" ng-show="subscribed">
+          <div ng-show="subscribed">
             <h5>Channel</h5>
             <span class="label">{{subscribed.slice(0, 8)}}</span>
+            <a ng-click="sendBeacons()" title="Send beacons to unmask yourself to contacts" class="fa fa-magnet"></a>
           </div>
           <h5>Your permanent identity</h5>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>

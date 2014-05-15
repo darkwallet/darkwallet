@@ -16,6 +16,17 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
    */
   $scope.peerRequests = [];
   $scope.selectedRequest = false;
+  $scope.anyPaired = false;
+
+  var checkPaired = function(identity) {
+      var identity = DarkWallet.getIdentity();
+      var anyPaired = false;
+      $scope.anyPaired = identity.contacts.contacts.some(function(contact) {
+          if (identity.contacts.findIdentityKey(contact)) {
+              return true;
+          }
+      });
+  }
 
   // Open a request from the request list
   $scope.openRequest = function(request) {
@@ -55,6 +66,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           identity.contacts.addContact(newContact);
           identity.contacts.addContactKey(newContact, request.body.pub);
 
+          $scope.anyPaired = true;
           $scope.selectedRequest.peer.nick = request.body.nick;
           notify.success(request.body.nick + " added to contacts");
       } else {
@@ -192,6 +204,8 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   }, function(port) {
     // onCreate callback
     transport = DarkWallet.getLobbyTransport();
+
+    checkPaired(DarkWallet.getIdentity());
 
     $scope.lobbyChannels = transport.channels;
 
