@@ -81,7 +81,16 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       notify.note("Sent " + sent + " beacons");
   }
 
+  // hide peers after 4 mins
+  $scope.fadeTimeout = 240 * 1000;
+  $scope.lastTimestamp = Date.now();
+
+  $scope.refreshTimestamp = function(peer) {
+      peer.timestamp = Date.now();
+  }
+
   var updateChat = function() {
+      $scope.lastTimestamp = Date.now();
       $timeout(function() {
           if (!$scope.$$phase) {
               $scope.$apply();
@@ -102,6 +111,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           channelLinks[name] = channelLink;
           channelLink.addCallback('subscribed', function() {
               notify.success('channel', 'subscribed successfully');
+              $scope.lastTimestamp = Date.now();
               channelLink.channel.sendOpening();
               if(!$scope.$$phase) {
                   $scope.$apply();
@@ -144,6 +154,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.subscribed = channelLink.channel.channelHash;
       currentChannel = channelLink.channel;
 
+      $scope.lastTimestamp = Date.now();
       if (!$scope.$$phase) {
           $scope.$apply();
       }

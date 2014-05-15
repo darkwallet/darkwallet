@@ -65,7 +65,7 @@
             </div>
           </form>
           <div class="chat-text">
-             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><div class="shoutFace"><face title="{{shoutLog.peer.name}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></face></div> <div class="shoutText">{{shoutLog.body.text}}</div></div>
+             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><div ng-click="refreshTimestamp(shoutLog.peer)" class="shoutFace"><face title="{{shoutLog.peer.name}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></face></div> <div class="shoutText">{{shoutLog.body.text}}</div></div>
           </div>
         </div>
       </div>
@@ -86,7 +86,7 @@
             </div>
           </div>
           <h5>Peers</h5>
-          <div ng-repeat="peer in peers track by $index">
+          <div ng-show="peer.timestamp + fadeTimeout > lastTimestamp" ng-repeat="peer in peers track by $index">
             <span><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.nick||peer.name}}</span>
             <a ng-show="peer.trusted" class="fa fa-link" ng-click="sendPairing(peer)" title="Send identity information for long term pairing"></a>
             <a ng-show="peer.trusted" class="fa" ng-class="{'fa-comment-o': !peer.chatLog.dirty, 'fa-comment': peer.chatLog.dirty}" ng-click="openPrivate(peer)" title="Open a private chat with this peer"></a>

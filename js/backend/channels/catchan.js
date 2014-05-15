@@ -111,6 +111,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       for(var idx=0; idx<this.transport.peers.length; idx++) {
           var peer = this.transport.peers[idx];
           if (peer.fingerprint == fingerprint) {
+              peer.updateChannel(this);
               return peer;
           }
       }
