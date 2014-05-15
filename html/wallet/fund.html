@@ -44,7 +44,7 @@
       </div>
       <div class="medium-4 columns">
         <!-- Maybe too heavy -->
-        <button ng-click="modals.showQr(pocket.fund.multisig.script)" class="button postfix radius fa fa-qrcode">QR</button>
+        <button ng-click="modals.showQr(pocket.fund.multisig.script, false)" class="button postfix radius fa fa-qrcode">QR</button>
       </div>
     </div>
     <textarea class="script" ng-show="showFundScript">{{pocket.fund.multisig.script}}</textarea>
