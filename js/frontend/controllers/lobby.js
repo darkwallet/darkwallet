@@ -7,7 +7,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   var selectedChannel;
 
-  controllers.controller('LobbyCtrl', ['$scope', 'notify', '$timeout', function($scope, notify, $timeout) {
+  controllers.controller('LobbyCtrl', ['$scope', 'notify', '$timeout', 'modals', function($scope, notify, $timeout, modals) {
 
   var transport, currentChannel;
 
@@ -34,8 +34,12 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   $scope.sendPairing = function(peer) {
       var identity = DarkWallet.getIdentity();
       var address = identity.wallet.getAddress([0]);
-      currentChannel.sendPairing(identity.name, peer, address.stealth, function() {
-          notify.success("lobby", "pairing sent");
+      var message = "Send identity information";
+      var detail = "This will send long term pairing information and identity pubkeys, are you sure?";
+      modals.open('confirm', {message: message, detail: detail}, function() {
+          currentChannel.sendPairing(identity.name, peer, address.stealth, function() {
+              notify.success("lobby", "pairing sent");
+          });
       });
   };
 
