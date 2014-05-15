@@ -31,6 +31,11 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   // Open a request from the request list
   $scope.openRequest = function(request) {
       $scope.selectedRequest = request;
+      if ($scope.selectedRequest.type == 'Pair') {
+          // Copy the nick over so we can modify it without affecting the
+          // original body (so we can check the signature later).
+          $scope.selectedRequest.nick = $scope.selectedRequest.body.nick;
+      }
   }
 
   // Cancel a request when already opened
@@ -61,14 +66,14 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       var peerChannel = $scope.selectedRequest.peer.channel;
       if (peerChannel.checkPairMessage(request)) {
-          var newContact = {name: request.body.nick, address: request.body.address};
+          var newContact = {name: request.nick, address: request.body.address};
 
           identity.contacts.addContact(newContact);
           identity.contacts.addContactKey(newContact, request.body.pub);
 
           $scope.anyPaired = true;
-          $scope.selectedRequest.peer.nick = request.body.nick;
-          notify.success(request.body.nick + " added to contacts");
+          $scope.selectedRequest.peer.nick = request.nick;
+          notify.success(request.nick + " added to contacts");
       } else {
           notify.warning("Scam attempt", "Oops seems the signature was wrong");
       }
