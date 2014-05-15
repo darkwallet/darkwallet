@@ -2,7 +2,7 @@
   "name": "Dark Wallet",
   "description": "Your keys. Your privacy. Your sovereignty.",
   "homepage_url": "https://darkwallet.is",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "manifest_version": 2,
   "icons": {
     "128": "images/icon_128.png"
