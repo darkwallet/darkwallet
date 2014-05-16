@@ -89,7 +89,7 @@
           <li><a ng-click="setPocket('any')">Any</a></li>
           <li class="colorhead"><h6>Multisig funds</h6></li>
           <li ng-repeat="fund in allFunds track by $index">
-            <a ng-click="setPocket('multisig:'+$index)">{{fund.name}}</a>
+            <a ng-click="setPocket(fund.address)">{{fund.name}}</a>
           </li>
         </ul>
   </form>
