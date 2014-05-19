@@ -28,7 +28,7 @@
       <div ng-show="selectedRequest && (selectedRequest.type == 'Pair')" class="medium-7 columns">
           <h2>{{selectedRequest.type}} Request</h2>
           <form>
-          <div class="wrapper"><face title="{{selectedRequest.peer.name}}" hash="selectedRequest.peer.pubKeyHex" icon-size="32"></face> <input type="text" ng-model="selectedRequest.body.nick"></input></div>
+          <div class="wrapper"><face title="{{selectedRequest.peer.name}}" hash="selectedRequest.peer.pubKeyHex" icon-size="32"></face> <input type="text" ng-model="selectedRequest.nick"></input></div>
           </form>
           <div><h3>Identity:</h3> {{selectedRequest.body.pub.slice(0,32)}}...</div>
           <div><h3>Address:</h3> {{selectedRequest.body.address.slice(0,32)}}...</div>
@@ -65,16 +65,17 @@
             </div>
           </form>
           <div class="chat-text">
-             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><div class="shoutFace"><face title="{{shoutLog.peer.name}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></face></div> <div class="shoutText">{{shoutLog.body.text}}</div></div>
+             <div ng-repeat="shoutLog in shoutboxLog track by $index" class="wrapper"><div ng-click="refreshTimestamp(shoutLog.peer)" class="shoutFace"><face title="{{shoutLog.peer.name}}" hash="shoutLog.peer.pubKeyHex" icon-size="32"></face></div> <div class="shoutText">{{shoutLog.body.text}}</div></div>
           </div>
         </div>
       </div>
 
       <!-- Peers area -->
       <div class="medium-3 columns" ng-show="!newContact">
-          <div ng-click="sendBeacons()" ng-show="subscribed">
+          <div ng-show="subscribed">
             <h5>Channel</h5>
             <span class="label">{{subscribed.slice(0, 8)}}</span>
+            <a ng-click="sendBeacons()" title="Send beacons to unmask yourself to contacts" class="fa fa-magnet"></a>
           </div>
           <h5>Your permanent identity</h5>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
@@ -86,7 +87,7 @@
             </div>
           </div>
           <h5>Peers</h5>
-          <div ng-repeat="peer in peers track by $index">
+          <div ng-show="peer.timestamp + fadeTimeout > lastTimestamp" ng-repeat="peer in peers track by $index">
             <span><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.nick||peer.name}}</span>
             <a ng-show="peer.trusted" class="fa fa-link" ng-click="sendPairing(peer)" title="Send identity information for long term pairing"></a>
             <a ng-show="peer.trusted" class="fa" ng-class="{'fa-comment-o': !peer.chatLog.dirty, 'fa-comment': peer.chatLog.dirty}" ng-click="openPrivate(peer)" title="Open a private chat with this peer"></a>

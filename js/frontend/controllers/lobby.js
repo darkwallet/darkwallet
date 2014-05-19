@@ -7,7 +7,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   var selectedChannel;
 
-  controllers.controller('LobbyCtrl', ['$scope', 'notify', '$timeout', function($scope, notify, $timeout) {
+  controllers.controller('LobbyCtrl', ['$scope', 'notify', '$timeout', 'modals', function($scope, notify, $timeout, modals) {
 
   var transport, currentChannel;
 
@@ -16,10 +16,26 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
    */
   $scope.peerRequests = [];
   $scope.selectedRequest = false;
+  $scope.anyPaired = false;
+
+  var checkPaired = function(identity) {
+      var identity = DarkWallet.getIdentity();
+      var anyPaired = false;
+      $scope.anyPaired = identity.contacts.contacts.some(function(contact) {
+          if (identity.contacts.findIdentityKey(contact)) {
+              return true;
+          }
+      });
+  }
 
   // Open a request from the request list
   $scope.openRequest = function(request) {
       $scope.selectedRequest = request;
+      if ($scope.selectedRequest.type == 'Pair') {
+          // Copy the nick over so we can modify it without affecting the
+          // original body (so we can check the signature later).
+          $scope.selectedRequest.nick = $scope.selectedRequest.body.nick;
+      }
   }
 
   // Cancel a request when already opened
@@ -34,8 +50,12 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   $scope.sendPairing = function(peer) {
       var identity = DarkWallet.getIdentity();
       var address = identity.wallet.getAddress([0]);
-      currentChannel.sendPairing(identity.name, peer, address.stealth, function() {
-          notify.success("lobby", "pairing sent");
+      var message = "Send identity information";
+      var detail = "This will send long term pairing information and identity pubkeys, are you sure?";
+      modals.open('confirm', {message: message, detail: detail}, function() {
+          currentChannel.sendPairing(identity.name, peer, address.stealth, function() {
+              notify.success("lobby", "pairing sent");
+          });
       });
   };
 
@@ -46,13 +66,14 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       var peerChannel = $scope.selectedRequest.peer.channel;
       if (peerChannel.checkPairMessage(request)) {
-          var newContact = {name: request.body.nick, address: request.body.address};
+          var newContact = {name: request.nick, address: request.body.address};
 
           identity.contacts.addContact(newContact);
           identity.contacts.addContactKey(newContact, request.body.pub);
 
-          $scope.selectedRequest.peer.nick = request.body.nick;
-          notify.success(request.body.nick + " added to contacts");
+          $scope.anyPaired = true;
+          $scope.selectedRequest.peer.nick = request.nick;
+          notify.success(request.nick + " added to contacts");
       } else {
           notify.warning("Scam attempt", "Oops seems the signature was wrong");
       }
@@ -61,27 +82,54 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.cancelRequest();
   }
 
+  // Send a beacon for the given contact over given channel
+  var sendBeacon = function(channel, contact) {
+      var identity = DarkWallet.getIdentity();
+      var idKey = identity.contacts.findIdentityKey(contact);
+      if (idKey) {
+          var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
+          var beaconKey = keys.slice(0, 32);
+          channel.sendBeacon(beaconKey, function() {});
+          return true;
+      }
+  };
+
+  // Accept a beacon on the gui
   $scope.acceptBeacon = function() {
-      // Should send a beacon back
+      var peer = $scope.selectedRequest.peer;
+
+      // Send a beacon back to the contact
+      if (peer.channel && peer.contact) {
+          notify.note("Sent a beacon back to the contact");
+          sendBeacon(peer.channel, peer.contact);
+      }
+
+      // now clear the request
       $scope.cancelRequest();
   }
 
+  // Send beacons for all contacts
   $scope.sendBeacons = function() {
       var identity = DarkWallet.getIdentity();
       var sent = 0;
       identity.contacts.contacts.forEach(function(contact) {
-          var idKey = identity.contacts.findIdentityKey(contact);
-          if (idKey) {
-              var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
-              var beaconKey = keys.slice(0, 32);
-              currentChannel.sendBeacon(beaconKey, function() {});
+          if (sendBeacon(currentChannel, contact)) {
               sent += 1;
           }
       });
       notify.note("Sent " + sent + " beacons");
   }
 
+  // hide peers after 4 mins
+  $scope.fadeTimeout = 240 * 1000;
+  $scope.lastTimestamp = Date.now();
+
+  $scope.refreshTimestamp = function(peer) {
+      peer.timestamp = Date.now();
+  }
+
   var updateChat = function() {
+      $scope.lastTimestamp = Date.now();
       $timeout(function() {
           if (!$scope.$$phase) {
               $scope.$apply();
@@ -102,6 +150,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           channelLinks[name] = channelLink;
           channelLink.addCallback('subscribed', function() {
               notify.success('channel', 'subscribed successfully');
+              $scope.lastTimestamp = Date.now();
               channelLink.channel.sendOpening();
               if(!$scope.$$phase) {
                   $scope.$apply();
@@ -144,6 +193,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.subscribed = channelLink.channel.channelHash;
       currentChannel = channelLink.channel;
 
+      $scope.lastTimestamp = Date.now();
       if (!$scope.$$phase) {
           $scope.$apply();
       }
@@ -159,6 +209,8 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   }, function(port) {
     // onCreate callback
     transport = DarkWallet.getLobbyTransport();
+
+    checkPaired(DarkWallet.getIdentity());
 
     $scope.lobbyChannels = transport.channels;
 

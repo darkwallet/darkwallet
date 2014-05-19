@@ -9,7 +9,7 @@
 	          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square radius fa fa-clipboard"></a>
 	        </div>
 	        <div class="small-1 columns">
-	          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showQr(pocket.mainAddress)"></a>
+	          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
 	        </div>
 	        <div class="small-10 columns">
 	          <input type="text" class="postfix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />

@@ -101,12 +101,19 @@ var modals = {
     modals.open('scan-qr', {field: value}, cb, modals.onQrCancel);
   },
 
-  showQr: function(value, version) {
-    var pars = {address: value};
-    if (version) {
-        pars.version = version;
+  showQr: function(value) {
+    if (typeof value !== "object" || value === null) {
+      value = {value: value};
     }
-    modals.open('show-qr', pars);
+    modals.open('show-qr', value);
+  },
+  
+  showBtcQr: function(value) {
+    if (typeof value !== "object" || value === null) {
+      value = {value: value};
+    }
+    value.btc = true;
+    modals.showQr(value, value);
   },
 
   password: function(text, callback) {

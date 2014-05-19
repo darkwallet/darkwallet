@@ -63,8 +63,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
           sendForm.sendPocketName = identity.wallet.pockets.hdPockets[pocket].name;
           sendForm.pocketIndex = pocket;
       } else {
-          var idx = parseInt(pocket.split(':')[1]);
-          var fund = identity.wallet.multisig.funds[idx];
+          var fund = identity.wallet.multisig.search({address: pocket});
           sendForm.sendPocketName = fund.name;
           sendForm.pocketIndex = fund.address;
       }

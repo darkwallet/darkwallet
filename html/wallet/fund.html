@@ -11,7 +11,7 @@
             <button ng-click="clipboard.copy(pocket.fund.multisig.address)" class="button postfix fa fa-clipboard">Copy</button>
         </div>
         <div class="medium-2 columns">
-            <button ng-click="modals.showQr(pocket.fund.multisig.address)" class="button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="modals.showBtcQr(pocket.fund.multisig.address)" class="button postfix radius fa fa-qrcode">QR</button>
         </div>
       </div>
       <div>{{pocket.fund.multisig.m}} of {{pocket.fund.multisig.pubKeys.length}} signatures are needed for spends</div>

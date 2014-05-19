@@ -274,8 +274,9 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
       guestMixer.channel.fingerprint = 'guest';
       guestMixer.ongoing[fullfillMsg.body.id] = primedGuestCoinJoin;
 
-
       fullfillMsg.peer = {trusted: true, pubKey: 'hostPubKey'};
+      primedGuestCoinJoin.peer = fullfillMsg.peer;
+
 
       // Accept the message
       guestMixer.onCoinJoin(fullfillMsg);
@@ -311,6 +312,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
       hostMixer.ongoing[signedMsg.body.id] = primedHostCoinJoin;
 
       signedMsg.peer = {trusted: true, pubKey: 'guestPubKey'};
+      primedHostCoinJoin.peer = signedMsg.peer;
 
       // Accept the message
       expect(hostMixer.channel.dhposted.length).toBe(0);

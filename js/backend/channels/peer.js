@@ -19,6 +19,7 @@ function (Bitcoin, Mnemonic, Encryption) {
       }
       this.channel = channel;
       this.chatLog = [];
+      this.timestamp = Date.now();
   };
 
   /**
@@ -40,6 +41,7 @@ function (Bitcoin, Mnemonic, Encryption) {
    */
   Peer.prototype.updateChannel = function(channel) {
       this.channel = channel;
+      this.timestamp = Date.now();
   };
 
   /**

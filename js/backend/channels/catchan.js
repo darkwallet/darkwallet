@@ -111,6 +111,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       for(var idx=0; idx<this.transport.peers.length; idx++) {
           var peer = this.transport.peers[idx];
           if (peer.fingerprint == fingerprint) {
+              peer.updateChannel(this);
               return peer;
           }
       }
@@ -466,6 +467,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
                    if (Curve25519.checksig(decoded.body.sig, toCheck, keys.slice(32))) {
                        decoded.body.nick = contact.name;
                        decoded.peer.nick = contact.name;
+                       decoded.peer.contact = contact;
                        valid = true;
                    } else {
                        console.log("checking!");   
