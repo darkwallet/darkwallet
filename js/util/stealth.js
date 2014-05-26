@@ -40,7 +40,7 @@ Stealth.stealthDH = function(e, decKey) {
 
     // start the second stage
     var prefix = 2;
-    var parity = point.getX().toBigInteger.mod(2);
+    var parity = point.getY().toBigInteger.mod(2);
     var even = parity.compareTo(BigInteger.ZERO) === 0;
     if(even)
     {
