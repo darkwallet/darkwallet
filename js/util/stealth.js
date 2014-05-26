@@ -39,7 +39,14 @@ Stealth.stealthDH = function(e, decKey) {
     var point = decKey.pub.multiply(e);
 
     // start the second stage
-    var S1 = [3].concat(point.getX().toBigInteger().toByteArrayUnsigned());
+    var prefix = 2;
+    var parity = point.getX().toBigInteger.mod(2);
+    var even = parity.compareTo(BigInteger.ZERO) === 0;
+    if(even)
+    {
+    	prefix = 3;
+    }
+    var S1 = [prefix].concat(point.getX().toBigInteger().toByteArrayUnsigned());
     var c = convert.wordArrayToBytes(Bitcoin.CryptoJS.SHA256(convert.bytesToWordArray(S1)));
     return c;
 };
