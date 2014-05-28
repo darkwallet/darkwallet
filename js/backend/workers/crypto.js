@@ -23,7 +23,9 @@ require(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'sjc
     } else {
         console.log("Message not recognized", oEvent.data);
     }
-    postMessage({payload: msg, id: data.id});
+    if (msg) {
+        postMessage({payload: msg, id: data.id});
+    }
   };
 
   /**
