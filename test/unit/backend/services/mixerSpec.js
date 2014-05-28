@@ -24,7 +24,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
   var txGuestHex = txGuest.serializeHex();
   var txFullfilledHex = '01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce62890000000000ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc8271210000000000ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000';
 
- 
+
   function MockChannel(name) {
     this.callbacks = [];
     this.posted = [];
@@ -45,9 +45,9 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
     var core, mixer, Port, MixerClass, tasks, hdPockets, broadcasted;
     var openingMsg, acceptMsg, fullfillMsg, signedMsg;
     var primedGuestCoinJoin, primedHostCoinJoin;
-    
+
     beforeEach(function(done) {
-      
+
       testUtils.stub('backend/port', {
         connect: function(service, callback) {
           callback({type: 'connected'});
@@ -55,8 +55,8 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
         post: function(service, obj) {}
       });
 
-      tasks = [];      
-      hdPockets = [];      
+      tasks = [];
+      hdPockets = [];
       broadcasted = [];
 
       core = {
@@ -112,7 +112,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
         done();
       });
     });
-    
+
     afterEach(function() {
       testUtils.reset();
     });
@@ -202,7 +202,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
       expect(guestMixer.findMixingPocket(10*BTC)).toBe(-1);
       expect(guestMixer.findMixingPocket(BTC)).toBe(0);
     });
-    
+
     it('guest evaluates an opening', function() {
       hdPockets = [{name: 'foo', mixing: true}];
       var guestMixer = new MixerClass(core);
@@ -335,10 +335,9 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
       //expect(finishedMsg.body.tx).toBe('01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce6289000000006b483045022100eba1dcb6e6023bbd854391a76752bacf075b8b2f05eb65ed6c05ea27b3fa9a5f022067a12ff4f652fbd03b095298ca56daf7d3efae76648c4d2ed1208a95cd7b56ec012102cacd99e85920821cd42a0c4369d941db3384f86a3888224d827fcac4e08d3180ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc827121000000006c493046022100ad6578e5344541024756e421b52b9f89219a00502f7d4491bbe0a37e39f0bdcf022100eff8c6df21aaa6938a020ddb99ada7de9e1d6e6ccfe4cee84af78564ab2c8ee2012102cacd99e85920821cd42a0c4369d941db3384f86a3888224d827fcac4e08d3180ffffffff02c09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88acc09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388ac00000000');
 
     });
-    
-    
+
+
   });
 
 
 });
-

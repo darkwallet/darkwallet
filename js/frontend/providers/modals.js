@@ -8,7 +8,7 @@ var modals = {
 
   /**
    * Opens a modal
-   * 
+   *
    * @param {string} tplName Name of the template to be loaded
    * @param {object} vars Key-value pairs object that passes parameters from main
    * scope to the modal one. You can get the variables in the modal accessing to
@@ -65,7 +65,7 @@ var modals = {
 
     modal.result.then(ok, cancel);
   },
-  
+
   onQrOk: function(data, vars) {
     sounds.play('keygenEnd');
     var pars = BtcUtils.parseURI(data);
@@ -76,6 +76,9 @@ var modals = {
     if (pars.amount !== undefined && DarkWallet.getIdentity().settings.currency == 'mBTC') {
       pars.amount = CurrencyFormat.asSatoshis(pars.amount, 'BTC');
       pars.amount = CurrencyFormat.asBtc(pars.amount, 'mBTC').toString();
+    } else if (pars.amount !== undefined && DarkWallet.getIdentity().settings.currency == 'bits') {
+      pars.amount = CurrencyFormat.asSatoshis(pars.amount, 'BTC');
+      pars.amount = CurrencyFormat.asBtc(pars.amount, 'bits').toString();
     }
     if (Array.isArray(vars.field)) {
       vars.field.push({address: pars.address, amount: pars.amount});
@@ -86,7 +89,7 @@ var modals = {
       }
     }
   },
-  
+
   onQrCancel: function(data) {
     if (data && data.name === 'PermissionDeniedError') {
       notify.error('Your camera is disabled');
@@ -107,7 +110,7 @@ var modals = {
     }
     modals.open('show-qr', value);
   },
-  
+
   showBtcQr: function(value) {
     if (typeof value !== "object" || value === null) {
       value = {value: value};
