@@ -5,6 +5,7 @@
 
 require([
     'backend/port',
+    'backend/services/crypto',
     'backend/services/lobby',
     'backend/services/obelisk',
     'backend/services/wallet',

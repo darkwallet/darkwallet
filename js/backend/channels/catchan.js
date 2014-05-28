@@ -227,28 +227,46 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
    */
   Channel.prototype.postDH = function(otherKey, data, callback) {
       data.sender = this.fingerprint;
-      var pk2 = BigInteger.fromByteArrayUnsigned(otherKey);
-      var shared = Curve25519.ecDH(this.priv, pk2);
-      var myPub = this.pub.toByteArrayUnsigned();
-      data.pubKey = myPub;
-
-      shared = shared.toByteArrayUnsigned();
-      shared = Curve25519.bytes2string(shared);
-
-      // sjcl here will do pbkdf2 on the shared, so thats our real shared secret
-      var encrypted = sjcl.encrypt(shared, JSON.stringify(data), {ks: 256, ts: 128});
-      this.postEncrypted({'type': 'personal', 'data': encrypted, 'pubKey': myPub}, callback);
+      // prepare the message
+      var msg = {
+          type: 'postDH',
+          fingerprint: this.fingerprint, 
+          channelName: this.name,
+          otherKey: otherKey,
+          privKey: this.priv.toByteArrayUnsigned(),
+          pubKey: this.pub.toByteArrayUnsigned(),
+          data: data
+      };
+      // send
+      var self = this;
+      this.transport.crypto.post(msg, function(err, encrypted) {
+          if (!err) {
+              self.post(encrypted, callback);
+          }
+      });
   };
 
   /**
    * Post data encrypted for the channel
    */
   Channel.prototype.postEncrypted = function(data, callback, hiding) {
-      if (!hiding) {
-          data.sender = this.fingerprint;
-      }
-      var encrypted = sjcl.encrypt(this.name, JSON.stringify(data), {ks: 256, ts: 128});
-      this.post(encrypted, callback);
+      // prepare the message
+      var msg = {
+          type: 'postEncrypted',
+          fingerprint: this.fingerprint, 
+          channelName: this.name,
+          hiding: hiding,
+          data: data
+      };
+
+      // send
+      var self = this;
+      this.transport.crypto.post(msg, function(err, encrypted) {
+          if (!err) {
+              self.post(encrypted, callback);
+          }
+      });
+
   };
 
   // Callback for data received on channel
@@ -340,10 +358,12 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       var msg = {
           type: 'channelData',
           channelName: this.name,
-          channelPriv: this.priv,
+          channelPriv: this.priv.toByteArrayUnsigned(),
           scanKey: this.transport.getScanKey(),
           message: message
       }
+      // serialize private key
+      msg.scanKey.priv = msg.scanKey.priv.toByteArrayUnsigned();
 
       // Send to worker
       this.transport.channelWorker.postMessage(msg);
@@ -391,10 +411,13 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
 
   Channel.prototype.sendBeacon = function(beaconKey, callback) {
       var signKey = this.transport.getSignKey();
-
-      var msg = Protocol.BeaconMsg(this.pub, signKey);
-
-      this.postDH(beaconKey, msg, callback);
+      var work = {type: 'buildBeacon', pubKey: this.pub.toByteArrayUnsigned(), signKey: signKey};
+      var self = this;
+      this.transport.crypto.post(work, function(err, beacon) {
+          if (!err) {
+              self.postDH(beaconKey, beacon, callback);
+          }
+      });
   }
 
   Channel.prototype.onReceiveBeacon = function(decoded) {

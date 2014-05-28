@@ -50,7 +50,7 @@ function(Port, Transport, Channel, DarkWallet) {
     if (!this.lobbyTransport) {
       console.log('[lobby] init lobby transport');
       var identity = this.core.getCurrentIdentity();
-      this.lobbyTransport = new Transport(identity, this.core.service.obelisk);
+      this.lobbyTransport = new Transport(identity, this.core.service.obelisk, this.core.service.crypto);
     }
     return this.lobbyTransport;
   };
