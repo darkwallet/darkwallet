@@ -57,10 +57,11 @@
     </div>
     <div ng-if="step==5" class="wizard">
       <form ng-submit="mnemonicSubmit()">
-            <h6>To confirm you've written down your seed correctly, please type it here:</h6>
+            <h6 ng-show="form.create_or_restore=='create'">To confirm you've written down your seed correctly, please type it here:</h6>
+            <h6 ng-show="form.create_or_restore=='restore'">Write your seed then click finish:</h6>
             <input type="text" class="seed" placeholder="Write the 12 words here..." ng-model="form.mnemonic2" />
             <p>{{message2}}</p>
-            <h6>After you finish, please store the piece of paper in a safe place, and never type it on a computer unless you need to recover your lost wallet!</h6>
+            <h6 ng-show="form.create_or_restore=='create'">After you finish, please store the piece of paper in a safe place, and never type it on a computer unless you need to recover your lost wallet!</h6>
             <div class="text-right">
               <a href="" ng-show="form.mnemonic" ng-click="previousStep()" class="button small radius">Back</a>
               <input type="submit" value="Finish" class="button small radius glow">
