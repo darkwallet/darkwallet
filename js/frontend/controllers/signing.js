@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkWallet, Bitcoin) {
+define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (controllers, DarkWallet, Bitcoin, Stealth) {
 
   // Controller
   controllers.controller('SigningCtrl', ['$scope', 'notify', 'modals', function($scope, notify, modals) {
@@ -131,6 +131,8 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
       } else {
           modals.password('Unlock password', function(password) {
               try {
+                  // Stealth backwards comp workaround, 0.4.0
+                  Stealth.quirk = walletAddress.quirk;
                   identity.wallet.getPrivateKey(walletAddress.index, password, function(privKey) {
                       var signature = signText(privKey, walletAddress.address, text);
                       $scope.tools.output = formatText(text, address, signature);
@@ -139,7 +141,9 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
                       $scope.tools.open = false;
                       notify.success("Signed");
                   });
+                  Stealth.quirk = false;
               } catch (e) {
+                  Stealth.quirk = false;
                   notify.error('Incorrect password', e.message);
               }
           } );

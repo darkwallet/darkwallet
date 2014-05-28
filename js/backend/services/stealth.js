@@ -51,7 +51,7 @@ define(['backend/port'], function(Port) {
         // Check all matches and initialize wallet addresses
         var addresses = [];
         matches.forEach(function(match) {
-            addresses.push(identity.wallet.processStealthMatch(match.pocketIndex, match.ephemKey, match.pubKey, match.address));
+            addresses.push(identity.wallet.processStealthMatch(match.pocketIndex, match.ephemKey, match.pubKey, match.address, match.quirk));
         });
 
         // Everything went all right, save lastStealth and initialize on the network

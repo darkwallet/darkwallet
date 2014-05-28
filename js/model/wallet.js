@@ -592,11 +592,15 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
             pending.push({output: utxo.receive, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'});
         } else {
           // Get private keys and sign
+          // Stealth backwards comp workaround, 0.4.0
+          Stealth.quirk = outAddress.quirk;
           try {
             this.getPrivateKey(seq, password, function(outKey) {
                 newTx.sign(idx, outKey);
             });
+            Stealth.quirk = false;
           } catch (e) {
+            Stealth.quirk = false;
             callback({data: e, message: "Password incorrect!", type: 'password'});
             return;
           }
@@ -918,11 +922,11 @@ Wallet.prototype.getIdentityKey = function(n) {
  * @param {Array} pubKey Public key as bytes
  * @param {String} Address resulting address as string
  */
-Wallet.prototype.processStealthMatch = function(pocketIndex, ephemKey, pubKey, address) {
+Wallet.prototype.processStealthMatch = function(pocketIndex, ephemKey, pubKey, address, quirk) {
     var branchId = pocketIndex*2;
     var seq = [branchId, 's'].concat(ephemKey);
     var walletAddress = this.pubKeys[seq];
-    // Check for bad addresses and put them in the right pocket if found.
+    // Check for bad addresses and put them in the right pocket if found. (0.2.0)
     if (!walletAddress && branchId > 0) {
         var badIndex = [0, 's'].concat(ephemKey);
         var badAddress = this.pubKeys[badIndex];
@@ -936,7 +940,12 @@ Wallet.prototype.processStealthMatch = function(pocketIndex, ephemKey, pubKey, a
     }
     // If we don't have an address, create it.
     if (!walletAddress) {
-        walletAddress = this.storePublicKey(seq, pubKey, {'type': 'stealth', 'ephemKey': ephemKey, 'address': address});
+        walletAddress = this.storePublicKey(seq, pubKey, {'type': 'stealth', 'ephemKey': ephemKey, 'address': address, 'quirk': quirk});
+    }
+    // Quirk is a workaround for bad stealth secret introduced on 0.4.0
+    if (quirk && !walletAddress.quirk) {
+        walletAddress.quirk = quirk;
+        this.store.save();
     }
     return walletAddress;
 }

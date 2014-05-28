@@ -3,8 +3,8 @@
  */
 'use strict';
 
-define(['model/keyring', 'backend/port', 'dwutil/currencyformat', 'dwutil/tasks/transaction', 'bitcoinjs-lib', 'util/btc', 'sjcl'],
-function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, BtcUtils) {
+define(['model/keyring', 'backend/port', 'dwutil/currencyformat', 'dwutil/tasks/transaction', 'bitcoinjs-lib', 'util/btc', 'sjcl', 'util/stealth'],
+function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, BtcUtils, Stealth) {
 
   function WalletService(core) {
     var keyRing = new IdentityKeyRing();
@@ -320,10 +320,14 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             var address = identity.wallet.getWalletAddress(utxo.address);
             if (address && !privKeys.hasOwnProperty(address.index)) {
                 try {
+                    // Stealth backwards comp workaround, 0.4.0
+                    Stealth.quirk = address.quirk;
                     identity.wallet.getPrivateKey(address.index, password, function(privKey) {
                         privKeys[address.index] = privKey.toBytes().slice(0);
                     });
+                    Stealth.quirk = false;
                 } catch (e) {
+                    Stealth.quirk = false;
                     callback({data: e, message: 'Password incorrect!', type: 'password'});
                     return true; // to break out of the some loop
                 }

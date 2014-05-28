@@ -53,6 +53,19 @@ require(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
 
           if (address == myAddress.toString()) {
               matches.push({address: address, ephemKey: ephemKey, pocketIndex: pocketIndex, pubKey: myKeyBytes});
+          } else {
+              // Backwards compatibility introduced in 0.4.0, remove later...
+              // Try out the stealth row
+              Stealth.quirk = true;
+              var myKeyBytes2 = Stealth.uncoverPublic(scanKey, ephemKey, spendKey);
+              Stealth.quirk = false;
+
+              // Turn to address
+              var myKeyHash2 = Bitcoin.crypto.hash160(myKeyBytes2);
+              var myAddress2 = new Bitcoin.Address(myKeyHash2, versions.address);
+              if ((myAddress2.toString() != myAddress.toString()) && (address == myAddress2.toString())) {
+                  matches.push({address: address, ephemKey: ephemKey, pocketIndex: pocketIndex, pubKey: myKeyBytes, quirk: true});
+              }
           }
       });
       return matches;
