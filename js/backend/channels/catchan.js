@@ -223,45 +223,6 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
   };
 
   /**
-   * Callback for a public key being received
-   */
-  Channel.prototype.onReceiveDH = function(data) {
-      var otherKey = data.pubKey;
-      var pk2 = BigInteger.fromByteArrayUnsigned(otherKey);
-      var shared = Curve25519.ecDH(this.priv, pk2);
-
-      shared = shared.toByteArrayUnsigned();
-      shared = Curve25519.bytes2string(shared);
-
-      // First decrypt with given dh secret for our cloak
-      var decrypted;
-      try {
-          decrypted = sjcl.decrypt(shared, data.data);
-      } catch(err) {
-          return;
-      }
-      // Now decode json
-      var decoded;
-      try {
-          decoded = JSON.parse(decrypted);
-      } catch (e) {
-          console.log("[catchan] Invalid dh json! " + e.message);
-          return;
-      }
-      // Add some metadata
-      decoded.metadata = {
-         whisper: true,
-         pubKey: otherKey 
-      };
-      // add the peer
-      var fingerprint = Encryption.genFingerprint(otherKey);
-      decoded.peer = this.transport.addPeer(otherKey, fingerprint, this);
-      // Notify listeners
-      this.triggerCallbacks(decoded.type, decoded);
-      return true;
-  };
-
-  /**
    * Post data to a public key
    */
   Channel.prototype.postDH = function(otherKey, data, callback) {
@@ -342,45 +303,50 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
   };
 
   /**
+   * Channel worker data arriving
+   */
+  Channel.prototype.onWorkerData = function(message) {
+      if (message.peer) {
+          var pubKey = message.peer.pubKey;
+          var fingerprint = message.peer.fingerprint;
+          message.data.peer = this.transport.addPeer(pubKey, fingerprint, this);
+      }
+      switch(message.type) {
+          case 'beacon':
+              this.onReceiveBeacon(message.data);
+              break;
+          case 'publicKey':
+              this.onPublicKey(message.data);
+              // continue to trigger callbacks...
+          case 'personal':
+          case 'channel':
+              this.triggerCallbacks(message.data.type, message.data);
+              break;
+          default:
+              console.log("Unknown message type on channel! " + message.type);
+              break;
+      }
+  }
+
+  /**
    * Channel data arriving
    */
   Channel.prototype.onChannelData = function(message) {
-      var transport = this.transport;
-
-      var decrypted;
-      var decoded = JSON.parse(message.data);
-
-      // An encrypted message coming on the channel
-      if (decoded.cipher) {
-          // channel layer
-          try {
-              decrypted = sjcl.decrypt(this.name, message.data);
-          } catch (e) {
-              console.log("[catchan] Invalid channel message: " + e.message);
-              return;
-          }
-          try {
-              decoded = JSON.parse(decrypted);
-          } catch (e) {
-              console.log("[catchan] Invalid channel json: " + e.message);
-              return;
-          }
-
-          // protocol layer
-          var first;
-          if (decoded.type == 'publicKey') {
-              this.onPublicKey(decoded);
-          }
-          else if (decoded.type == 'personal') {
-              console.log("[catchan] Decoding DH message");
-              if (!this.onReceiveDH(decoded)) {
-                  this.onReceiveBeacon(decoded);
-              }
-              // don't want to trigger normal callbacks here.
-              return;
-          }
-          this.triggerCallbacks(decoded.type, decoded);
+      if (!this.transport.channelWorker) {
+          console.log("[catchan] Receiving data on dead transport!");
+          return;
       }
+      // Prepare the message
+      var msg = {
+          type: 'channelData',
+          channelName: this.name,
+          channelPriv: this.priv,
+          scanKey: this.transport.getScanKey(),
+          message: message
+      }
+
+      // Send to worker
+      this.transport.channelWorker.postMessage(msg);
   };
 
   Channel.prototype.onChatMessage = function(data) {
@@ -431,29 +397,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       this.postDH(beaconKey, msg, callback);
   }
 
-  Channel.prototype.onReceiveBeacon = function(data) {
-      var decrypted;
-      var pk2 = BigInteger.fromByteArrayUnsigned(data.pubKey);
-      // Decrypt for our scankey may be a beacon
-      try {
-          decrypted = this.decryptBeacon(data, pk2);
-      } catch (err) {
-          // message is not for us.. ignore     
-          console.log("[catchan] Encrypted message not for us", err)
-          return;
-      }
-      // Now decode json
-      var decoded;
-      try {
-          decoded = JSON.parse(decrypted);
-      } catch (e) {
-          console.log("[catchan] Invalid dh json! " + e.message);
-          return;
-      }
-
-      var fingerprint = Encryption.genFingerprint(data.pubKey);
-      decoded.peer = this.transport.addPeer(data.pubKey, fingerprint, this);
-
+  Channel.prototype.onReceiveBeacon = function(decoded) {
       // Find out which contact this is
       var valid = false;
       var identity = this.transport.identity;
@@ -480,15 +424,6 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       }
       this.triggerCallbacks('Beacon', decoded)
       return decoded;
-  }
-
-  Channel.prototype.decryptBeacon = function(data, pk2) {
-      var scanKey = this.transport.getScanKey();
-
-      var shared = Curve25519.ecDH(scanKey.priv, pk2);
-      shared = shared.toByteArrayUnsigned();
-      shared = Curve25519.bytes2string(shared);
-      return sjcl.decrypt(shared, data.data);
   }
 
   Channel.prototype.startPairing = function(fingerprint, pubKey) {

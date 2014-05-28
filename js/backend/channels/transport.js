@@ -50,8 +50,50 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
     // Initialize some own data
     this.comms = new Peer(this.sessionKey.getPub().toBytes(true));
     this.myself = new Peer(selfKey.getPub().toBytes(true));
+
+    this.initWorker();
   }
 
+  /**
+   * Initialize a worker thread for processing transport data
+   */
+  Transport.prototype.initWorker = function() {
+    var self = this;
+    this.killWorker();
+    this.channelWorker = new Worker('/js/backend/workers/channel.js');
+    this.channelWorker.onmessage = function(oEvent) {
+        if (oEvent.data.channelName) {
+            self.onWorkerChannelData(oEvent.data);
+        } else {
+            console.log("[transport] Invalid message from the worker!");
+        }
+    };
+  };
+
+  /**
+   * Data incoming from the worker
+   */
+  Transport.prototype.onWorkerChannelData = function(data) {
+      var channelName = data.channelName;
+      if (this.channels.hasOwnProperty(channelName)) {
+          var channel = this.channels[channelName];
+          channel.onWorkerData(data);
+      } else {
+          console.log("[transport] Message for unexisting worker!");
+      }
+  }
+
+  /**
+   * Kill the worker thread
+   */
+  Transport.prototype.killWorker = function() {
+    if (this.channelWorker) {
+       // kill the previous worker
+       this.channelWorker.terminate();
+       this.channelWorker = undefined;
+    }
+  }
+ 
   /**
    * Initialize a new discardable session key
    */
@@ -136,6 +178,7 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
       channelNames.forEach(function(name) {
           self.closeChannel(name);
       });
+      this.killWorker();
   };
   return Transport;
 });
