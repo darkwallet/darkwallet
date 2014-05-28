@@ -33,6 +33,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
       identity.settings.currency = $scope.selectedCurrency;
       identity.store.save();
       $scope.defaultFee = CurrencyFormat.asBtc(identity.wallet.fee);
+      $scope.defaultFeeChanged();
   };
   $scope.fiatCurrencyChanged = function() {
       var identity = DarkWallet.getIdentity();
