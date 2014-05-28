@@ -18,6 +18,9 @@ Stealth.testnet = 43;
 // Can these be different in the future?
 Stealth.nonceVersion = 6;
 
+// Backwards compatibility quirk (0.4.0)
+Stealth.quirk = false
+
 /*
  * Create a bitcoin key with just public component.
  * @param {Object} Q public key as bytes
@@ -39,7 +42,12 @@ Stealth.stealthDH = function(e, decKey) {
     var point = decKey.pub.multiply(e);
 
     // start the second stage
-    var S1 = [3].concat(point.getX().toBigInteger().toByteArrayUnsigned());
+    var S1;
+    if (Stealth.quirk) {
+        S1 = [3].concat(point.getX().toBigInteger().toByteArrayUnsigned());
+    } else {
+        S1 = point.getEncoded(true);
+    }
     var c = convert.wordArrayToBytes(Bitcoin.CryptoJS.SHA256(convert.bytesToWordArray(S1)));
     return c;
 };
