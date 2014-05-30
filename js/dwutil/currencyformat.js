@@ -10,7 +10,7 @@ function CurrencyFormatting() {
 var symbol = {
   'BTC': '฿',
   'mBTC': 'm฿',
-  'bits': 'µ'
+  'bits': 'bits'
 }
 
 /**
@@ -112,7 +112,7 @@ CurrencyFormatting.formatBtc = function(satoshis, unit) {
     }
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
 
-    return this.asBtc(satoshis, unit) + " " + symbol[unit];
+    return this.asBtc(satoshis, unit).toLocaleString() + " " + symbol[unit];
 }
 
 /**
@@ -123,8 +123,12 @@ CurrencyFormatting.formatFiat = function(satoshis, fiatCurrency) {
 
     var converted = this.asFiat(satoshis, fiatCurrency);
     if (!(converted === undefined)) {
-        var currency = FiatCurrencies[fiatCurrency];
-        return converted+" "+currency.symbol_native;
+        converted = parseFloat(converted).toLocaleString(undefined, {
+    		style: 'currency',
+    		currency: fiatCurrency,
+    		minimumFractionDigits: 2
+    	});
+        return converted;
     }
 }
 
