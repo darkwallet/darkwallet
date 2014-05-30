@@ -112,7 +112,10 @@ CurrencyFormatting.formatBtc = function(satoshis, unit) {
     }
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
 
-    return this.asBtc(satoshis, unit).toLocaleString() + " " + symbol[unit];
+	var btc_price = this.asBtc(satoshis, unit),
+	parts = btc_price.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	return parts.join(".") + " " + symbol[unit];
 }
 
 /**
