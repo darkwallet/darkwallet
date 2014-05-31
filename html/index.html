@@ -49,7 +49,7 @@
       </section>
     </nav>
 
-    <div class="modal-ng ng-cloak" ng-show="ngModals.page">
+    <div class="modal-ng" ng-if="ngModals.show">
        <div ng-controller="NgModalCtrl" ng-include="ngModals.page?'modals/'+ngModals.page+'.html':false">
        </div>
     </div>

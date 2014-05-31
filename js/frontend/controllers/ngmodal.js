@@ -8,10 +8,11 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
 
   $scope.ok = function() {
       $scope.ngModals.page = false;
+      $scope.ngModals.show = false;
   }
   $scope.cancel = function() {
       $scope.ngModals.page = false;
+      $scope.ngModals.show = false;
   }
-
   }]);
 });
