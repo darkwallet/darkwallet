@@ -75,13 +75,13 @@
         <div class="small-2 large-1 columns">
             <div class="row collapse address-row">
                 <div class="small-4 columns">
-                    <button tooltip="Show QR code" tooltip-append-to-body="true" ng-click="modals.showBtcQr(address.address)" class="button postfix single fa fa-qrcode"></button>
+                    <button tooltip="Show QR code" tooltip-placement="bottom" tooltip-append-to-body="true" ng-click="modals.showBtcQr(address.address)" class="button postfix square fa fa-qrcode"></button>
                 </div>
                 <div class="small-4 columns">
-                    <button tooltip="Copy address to clipboard" tooltip-append-to-body="true" ng-click="clipboard.copy(address.address)" class="button postfix single fa fa-clipboard"></button>
+                    <button tooltip="Copy address to clipboard" tooltip-placement="bottom" tooltip-append-to-body="true" ng-click="clipboard.copy(address.address)" class="button postfix square fa fa-clipboard"></button>
                 </div>
                 <div class="small-4 columns">
-                    <button tooltip="Copy public key to clipboard" tooltip-append-to-body="true" ng-click="copyClipboardPublic(address)" class="button postfix radius single fa fa-key"></button>
+                    <button tooltip="Copy public key to clipboard" tooltip-placement="bottom" tooltip-append-to-body="true" ng-click="copyClipboardPublic(address)" class="button postfix radius square fa fa-key"></button>
                 </div>
             </div>
         </div>
@@ -98,8 +98,8 @@
 
 
 </div>
-<div ng-hide="pocket.isFund">
-    <a class="button small" ng-click="generateAddress(pocket.index*2)">New address</a>
-    <a class="button small" ng-click="generateAddress((pocket.index*2)+1)">New change address</a>
-  </div>
+	<div class="text-right" ng-hide="pocket.isFund">
+    	<a class="button small radius" ng-click="generateAddress(pocket.index*2)">New address</a>
+    	<a class="button small radius" ng-click="generateAddress((pocket.index*2)+1)">New change address</a>
+  	</div>
 </div>
