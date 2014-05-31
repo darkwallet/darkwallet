@@ -5,14 +5,17 @@
       <div class="panel radius">
 		<div class="row collapse">
 	        <h5>{{pocket.isFund?'Fund':'Stealth'}} address</h5>
-	        <div class="small-1 columns">
-	          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square radius fa fa-clipboard"></a>
+			<div class="small-1 columns text-center">
+				<identicon ng-hide="row.contact" icon-size="38" hash="pocket.mainAddress"></identicon>
+			</div>
+	        <div class="small-9 columns">
+	          <input type="text" class="prefix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
 	        </div>
 	        <div class="small-1 columns">
-	          <a class="button prefix square fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
+	          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square fa fa-clipboard"></a>
 	        </div>
-	        <div class="small-10 columns">
-	          <input type="text" class="postfix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
+	        <div class="small-1 columns">
+	          <a class="button postfix square radius fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
 	        </div>
 		</div>
       </div>
