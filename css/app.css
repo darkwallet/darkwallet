@@ -4635,11 +4635,11 @@ div.modal-ng.ng-animate.ng-enter, div.modal-ng.ng-animate.ng-leave-active {
   opacity: 0.7; }
 
 div.modal-ng.ng-animate.ng-enter.ng-enter-active {
-  -webkit-transform: translate3d(0, 0, 0); }
+  -webkit-transform: translate3d(0, 0, 0);
+  opacity: 1; }
 
 div.modal-ng:not(.ng-hide) + div.container {
-  -webkit-transform: scale(0.8);
-  opacity: 1; }
+  -webkit-transform: scale(0.8); }
 
 div.modal-ng.ng-leave + div.container {
   -webkit-transform: scale(1); }
