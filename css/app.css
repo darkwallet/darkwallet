@@ -4494,17 +4494,16 @@ div.tab-scroller.totheright.ng-enter-active, div.tab-scroller.totheleft.ng-enter
   position: absolute;
   width: 97%; }
 
-.transactions div.ng-leave-active, .transactions div.ng-enter, .ng-animate.ng-hide-remove {
+.transactions div.ng-leave-active, .transactions div.ng-enter {
   opacity: 0; }
 
-.transactions div.ng-enter.ng-enter-active, .transactions div.ng-leave, .ng-animate.ng-hide-remove.ng-hide-remove-active {
+.transactions div.ng-enter.ng-enter-active, .transactions div.ng-leave {
   opacity: 1; }
 
 div.scroller.ng-enter {
-  -webkit-animation: moveFromTopFade 0.7s ease both;
-  -moz-animation: moveFromTopFade 0.7s ease both;
-  animation: moveFromTopFade 0.7s ease both; }
-
+  -webkit-animation: moveFromTopFade 0.5s ease both;
+  -moz-animation: moveFromTopFade 0.5s ease both;
+  animation: moveFromTopFade 0.5s ease both; }
 
 div.popuptabs > div.ng-leave, div.scroller.ng-leave {
   position: absolute;
@@ -4531,12 +4530,15 @@ div.tab-scroller.ng-animate, .transactions div.ng-animate, div.popuptabs > div.n
   transition: all 450ms ease-in-out; }
 
 div.container {
-  transition: all 450ms ease-out; }
+  transition: all 300ms ease-out; }
 
-div.modal-ng.ng-animate {
-  transition: all 450ms ease-in; }
+div.modal-ng.ng-animate.ng-leave {
+  transition: all 200ms ease-in; }
 
-.ng-hide-add, div.send-advanced.ng-hide, span.tooltip.fade, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
+div.modal-ng.ng-animate.ng-enter {
+  transition: all 300ms ease-out; }
+
+#maintitle img, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
   transition: all 300ms ease-out; }
 
 @-webkit-keyframes rotateFoldBottom {
@@ -4624,19 +4626,22 @@ div.modal-ng {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7); }
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-transform: translate3d(0, 0, 0);
+  opacity: 1; }
 
-div.modal-ng.ng-animate.ng-hide-remove {
+div.modal-ng.ng-animate.ng-enter, div.modal-ng.ng-animate.ng-leave-active {
   -webkit-transform: translate3d(0, 100%, 0);
-  opacity: 0.8; }
+  opacity: 0.7; }
 
-div.modal-ng.ng-animate.ng-hide-remove-active {
+div.modal-ng.ng-animate.ng-enter.ng-enter-active {
   -webkit-transform: translate3d(0, 0, 0); }
 
 div.modal-ng:not(.ng-hide) + div.container {
-  -webkit-transform: scale(0.8); }
+  -webkit-transform: scale(0.8);
+  opacity: 1; }
 
-div.modal-ng.ng-cloak + div.container, div.modal-ng.ng-hide + div.container {
+div.modal-ng.ng-leave + div.container {
   -webkit-transform: scale(1); }
 
 .nomarginbottom {
@@ -4792,7 +4797,7 @@ button.righted ~ form.editable-wrap input {
     left: 50%;
     margin: -8px 0 0 -7px; }
 
-.button.postfix.fa:not(.single):before, button.postfix.fa:not(.single):before {
+.button.postfix.fa:not(.square):before, button.postfix.fa:not(.square):before {
   background: #1e8448;
   position: absolute;
   left: 0px;
@@ -4800,13 +4805,10 @@ button.righted ~ form.editable-wrap input {
   width: 37px;
   height: 37px; }
 
-.button.postfix.fa.single, .button.prefix.fa.single {
-  margin: 0; }
-
 .button.postfix.fa.alert:before, button.postfix.fa.alert:before {
   background: #9e1c34; }
 
-.button.postfix.fa:not(.single), button.postfix.fa:not(.single) {
+.button.postfix.fa:not(.square), button.postfix.fa:not(.square) {
   padding-left: 2em; }
 
 .button.topright {
@@ -5061,6 +5063,9 @@ span.contact-name {
 
 #logo {
   margin: -2px 5px 0 -5px; }
+
+#maintitle:hover img {
+  -webkit-transform: rotateY(180deg); }
 
 div.pockets {
   z-index: 2; }

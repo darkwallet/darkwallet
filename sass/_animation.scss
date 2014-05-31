@@ -46,29 +46,22 @@ div.tab-scroller.totheright.ng-leave {
 }
 
 .transactions div.ng-leave-active,
-.transactions div.ng-enter,
-.ng-animate.ng-hide-remove {
+.transactions div.ng-enter {
   opacity:0;
 }
 
 .transactions div.ng-enter.ng-enter-active,
-.transactions div.ng-leave,
-.ng-animate.ng-hide-remove.ng-hide-remove-active {
+.transactions div.ng-leave {
   opacity:1;
 }
 
 
 div.scroller.ng-enter {
-	-webkit-animation: moveFromTopFade .7s ease both;
-	-moz-animation: moveFromTopFade .7s ease both;
-	animation: moveFromTopFade .7s ease both;
+	-webkit-animation: moveFromTopFade .5s ease both;
+	-moz-animation: moveFromTopFade .5s ease both;
+	animation: moveFromTopFade .5s ease both;
 }
 
- 
-div.scroller.ng-enter.ng-enter-active {
- /* The animation code itself */
-
-}
 div.popuptabs > div.ng-leave,
 div.scroller.ng-leave {
 	position: absolute;
@@ -97,13 +90,13 @@ div.tab-scroller.ng-animate,
 div.popuptabs > div.ng-animate,
 div.send-advanced.ng-animate  { @include single-transition(all, 450ms, ease-in-out); }
 
-div.container { @include single-transition(all, 450ms, ease-out); }
-div.modal-ng.ng-animate { @include single-transition(all, 450ms, ease-in); }
+div.container { @include single-transition(all, 300ms, ease-out); }
+div.modal-ng.ng-animate.ng-leave { @include single-transition(all, 200ms, ease-in); }
+div.modal-ng.ng-animate.ng-enter { @include single-transition(all, 300ms, ease-out); }
 
-
-.ng-hide-add,
+#maintitle img,
 div.send-advanced.ng-hide,
-span.tooltip.fade,
+span.tooltip.fade.ng-animate,
 .pocket-square,
 .contact-mosaic-square,
 .contact-mosaic-square img, 

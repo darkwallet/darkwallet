@@ -23,13 +23,17 @@ div.modal-ng {
 	width: 100%; 
 	height: 100%; 
 	background: rgba(0,0,0,0.7);
+	-webkit-transform: translate3d(0,0,0);
+	opacity: 1;
 }
 
-div.modal-ng.ng-animate.ng-hide-remove { -webkit-transform: translate3d(0,100%,0); opacity: 0.8; }
-div.modal-ng.ng-animate.ng-hide-remove-active { -webkit-transform: translate3d(0,0,0); }
+div.modal-ng.ng-animate.ng-enter,
+div.modal-ng.ng-animate.ng-leave-active { -webkit-transform: translate3d(0,100%,0); opacity: 0.7; }
 
-div.modal-ng:not(.ng-hide) + div.container { -webkit-transform: scale(0.8); }
-div.modal-ng.ng-cloak + div.container, div.modal-ng.ng-hide + div.container { -webkit-transform: scale(1); }
+div.modal-ng.ng-animate.ng-enter.ng-enter-active { -webkit-transform: translate3d(0,0,0); }
+
+div.modal-ng:not(.ng-hide) + div.container { -webkit-transform: scale(0.8); opacity: 1; }
+div.modal-ng.ng-leave + div.container { -webkit-transform: scale(1); }
 
 .nomarginbottom { margin-bottom: 0 !important; }
 
@@ -168,7 +172,7 @@ button.righted ~ form.editable-wrap input { padding-right: 37px; }
 	&:before { position: absolute; top: 50%; left: 50%; margin: -8px 0 0 -7px; }
 }
 
-.button.postfix.fa:not(.single):before, button.postfix.fa:not(.single):before { 
+.button.postfix.fa:not(.square):before, button.postfix.fa:not(.square):before { 
 
 	background: darken($primary-color, 10%); 
 	position: absolute; 
@@ -177,11 +181,9 @@ button.righted ~ form.editable-wrap input { padding-right: 37px; }
 	height: 37px;
 	}
 
-.button.postfix.fa.single, .button.prefix.fa.single { margin: 0; }
-
 .button.postfix.fa.alert:before, button.postfix.fa.alert:before { background: darken($alert-color, 10%); }
 
-.button.postfix.fa:not(.single), button.postfix.fa:not(.single) { padding-left: 2em; }
+.button.postfix.fa:not(.square), button.postfix.fa:not(.square) { padding-left: 2em; }
 
 .button.topright { margin: 0.7em 0 0 0; }
 
@@ -362,6 +364,9 @@ span.contact-name { font-size: 200%; vertical-align: middle; }
 .qr-address { word-wrap: break-word; color: black; margin-right: 3em; }
 
 #logo { margin: -2px 5px 0 -5px; }
+#maintitle:hover img {
+	-webkit-transform: rotateY(180deg);
+}
 
 div.pockets { z-index: 2; }
 
