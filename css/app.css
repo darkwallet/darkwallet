@@ -4638,7 +4638,7 @@ div.modal-ng.ng-animate.ng-enter.ng-enter-active {
   -webkit-transform: translate3d(0, 0, 0);
   opacity: 1; }
 
-div.modal-ng:not(.ng-cloak) + div.container {
+div.modal-ng:not([ng-cloak]) + div.container {
   -webkit-transform: scale(0.8); }
 
 div.modal-ng.ng-leave + div.container {
