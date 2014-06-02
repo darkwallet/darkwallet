@@ -1,7 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'backend/channels/peer', 'backend/channels/utils', 'sjcl'],
-function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
+define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'backend/channels/peer', 'backend/channels/utils', 'backend/port', 'sjcl'],
+function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
 
   var convert = Bitcoin.convert;
   var BigInteger = Bitcoin.BigInteger;
@@ -420,7 +420,16 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
       });
   }
 
+  /**
+   * Trigger callbacks for the peer and peer.contact
+   * @private
+   */
+  Channel.prototype.onContactAvailable = function(peer) {
+      Port.post('contacts', {type: 'contact', peer: peer});
+  }
+
   Channel.prototype.onReceiveBeacon = function(decoded) {
+      var self = this;
       // Find out which contact this is
       var valid = false;
       var identity = this.transport.identity;
@@ -435,6 +444,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils) {
                        decoded.body.nick = contact.name;
                        decoded.peer.nick = contact.name;
                        decoded.peer.contact = contact;
+                       self.onContactAvailable(decoded.peer, contact);
                        valid = true;
                    } else {
                        console.log("checking!");   

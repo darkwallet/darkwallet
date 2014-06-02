@@ -17,12 +17,15 @@ function(Port, Transport, Channel, DarkWallet) {
              case 'initChannel':
                self.connectTo(data.name);
                Port.post('lobby', data);
+               Port.post('channel', data);
                break;
        }
       }, function(port) {
          // Ensure the lobby transport is created
          self.getLobbyTransport();
     });
+    Port.listen('contacts');
+    Port.listen('channel');
 
     Port.connect('obelisk', function(data) {
         // WakeUp when connected to obelisk
