@@ -71,15 +71,16 @@ var Protocol = {
     return Protocol.packMessage('Shout', {"text": text});
   },
   // Multisig specific
-  MultisigAnnounceMsg: function(multisig) {
+  MultisigAnnounceMsg: function(script) {
     var data = {};
-    data['multisig'] = multisig;
+    data['script'] = script;
     return Protocol.packMessage('MultisigAnnounce', data);
   },
-  MultisigProposalMsg: function(proposal) {
+  MultisigSpendMsg: function(address, tx) {
     var data = {};
-    data['proposal'] = proposal;
-    return Protocol.packMessage('MultisigProposal', data);
+    data['address'] = address;
+    data['tx'] = tx;
+    return Protocol.packMessage('MultisigSpend', data);
   },
   // Key exchange
   PublicKeyRequestMsg: function(fingerprint) {

@@ -84,7 +84,6 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
         var participants = [];
         var multisig;
         if ($scope.multisig.script) {
-            // TODO: this won't pick up changes since the script was made, careful
             multisig = $scope.multisig.script;
         } else {
             $scope.multisig.participants.forEach(function(participant) {
@@ -104,6 +103,7 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
         // If successfully created, add to the wallet
         if (multisig.name) {
             var walletAddress = identity.wallet.multisig.addFund(multisig);
+            DarkWallet.service.multisigTrack.announce(multisig, walletAddress);
             $scope.selectFund(multisig, identity.wallet.multisig.funds.length-1);
             DarkWallet.core.initAddress(walletAddress);
             // clean up scope

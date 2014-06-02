@@ -13,6 +13,7 @@ require([
     'backend/services/gui',
     'backend/services/ticker',
     'backend/services/mixer',
+    'backend/services/multisig_track',
     'backend/services/safe',
     'backend/services/badge',
     'backend/services/notifier',
@@ -28,6 +29,7 @@ function DarkWalletService(serviceClasses) {
     // Backend services
     var services = this.initializeServices(serviceClasses);
     var servicesStatus = this.servicesStatus;
+
 
     /***************************************
     /* Hook up some utility functions

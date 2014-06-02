@@ -35,7 +35,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
                   if (section == 'multisig') {
                       // Get this here so we don't need Object in angular :-P
                       guiTask.signed = Object.keys(task.pending[0].signatures).length;
-                      guiTask.fund = identity.wallet.multisig.search({address: task.inPocket});
+                      guiTask.fund = identity.wallet.multisig.search({address: task.address});
                   }
                   tasks.push(guiTask);
               }

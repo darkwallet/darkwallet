@@ -47,13 +47,13 @@ define(['util/protocol', 'bitcoinjs-lib'], function(Protocol, Bitcoin) {
     it('creates a multisig announce message', function() {
         var request = Protocol.MultisigAnnounceMsg("deadbeef");
         expect(request.type).toBe('MultisigAnnounce');
-        expect(request.body).toEqual({multisig: "deadbeef"});
+        expect(request.body).toEqual({script: "deadbeef"});
     });
 
     it('creates a multisig proposal message', function() {
-        var request = Protocol.MultisigProposalMsg("deadbeef");
-        expect(request.type).toBe('MultisigProposal');
-        expect(request.body).toEqual({proposal: "deadbeef"});
+        var request = Protocol.MultisigSpendMsg("3abab", "deadbeef");
+        expect(request.type).toBe('MultisigSpend');
+        expect(request.body).toEqual({address: "3abab", tx: "deadbeef"});
     });
 
     it('creates a pubkey', function() {
