@@ -5,24 +5,19 @@ Immediate:
    + Review sending
    - Review coinjoin mechanics
    - Stealth multisig
-   * Review balances and unconfirmed change management DONE
-   * Polish stealth support DONE
  - Lobby system
-   * then finish CoinJoin DONE
-   - then automatize Multisig
-   - stablish trust and reputation
+   + Automatize multisig
+   - Establish trust and reputation
  - Pocket actions:
    * Move funds to another pocket DONE
    - Move funds to another identity
    + Delete STARTED
- * Settings
-   * Select server DONE
 
 Architecture/api:
 - Backend
  - Unify pocket/multisig interface
  - Unify task/notification mechanics
- - Worker for communications encryption
+ * Worker for communications encryption DONE
  - New modules to split model/wallet
 - Frontend
  - Send provider
@@ -58,7 +53,11 @@ Done:
  * QR show and scan support OK
    * Scan and show QRs OK
    * Implement svg library instead of canvas based OK
+ * Wallet
+   * Review balances and unconfirmed change management DONE
+   * Polish stealth support DONE
  * Lobby system
+   * then finish CoinJoin DONE
    * Implement multiParty from cryptocat (ed25519 curves) DONE
    * link contacts using lobby (sync stealth, mpk...) DONE
  * Currency support
@@ -87,3 +86,4 @@ Done:
    * Rename DONE
  * Settings
    * Change password DONE
+   * Select server DONE
