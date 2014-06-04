@@ -374,6 +374,13 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       
   };
 
+  $scope.removeAddress = function(field) {
+      sendForm.recipients.fields.splice(sendForm.recipients.fields.indexOf(field), 1);
+      if (!sendForm.recipients.fields.length) {
+          $scope.addField();
+      }
+  };
+
   $scope.addAddress = function(data, vars) {
       vars.field.address = data;
       $scope.validateSendForm();
