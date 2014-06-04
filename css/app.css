@@ -1364,7 +1364,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   -webkit-appearance: none;
   background-color: #3c3c3c;
   font-family: inherit;
-  border: 1px none #cccccc;
+  border: 1px solid transparent;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   color: white;
   display: block;
@@ -1379,7 +1379,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   transition: all 0.15s linear; }
   input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, textarea:focus {
     background: #282828;
-    border-color: #999999;
+    border-color: #565656;
     outline: none; }
   input[type="text"][disabled], fieldset[disabled] input[type="text"], input[type="password"][disabled], fieldset[disabled] input[type="password"], input[type="date"][disabled], fieldset[disabled] input[type="date"], input[type="datetime"][disabled], fieldset[disabled] input[type="datetime"], input[type="datetime-local"][disabled], fieldset[disabled] input[type="datetime-local"], input[type="month"][disabled], fieldset[disabled] input[type="month"], input[type="week"][disabled], fieldset[disabled] input[type="week"], input[type="email"][disabled], fieldset[disabled] input[type="email"], input[type="number"][disabled], fieldset[disabled] input[type="number"], input[type="search"][disabled], fieldset[disabled] input[type="search"], input[type="tel"][disabled], fieldset[disabled] input[type="tel"], input[type="time"][disabled], fieldset[disabled] input[type="time"], input[type="url"][disabled], fieldset[disabled] input[type="url"], textarea[disabled], fieldset[disabled] textarea {
     background-color: #888; }
@@ -1400,7 +1400,7 @@ select {
   background-image: url('data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI2cHgiIGhlaWdodD0iM3B4IiB2aWV3Qm94PSIwIDAgNiAzIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA2IDMiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwb2x5Z29uIHBvaW50cz0iNS45OTIsMCAyLjk5MiwzIC0wLjAwOCwwICIvPjwvc3ZnPg==');
   background-repeat: no-repeat;
   background-position: 97% center;
-  border: 1px none #cccccc;
+  border: 1px solid transparent;
   padding: 0.5rem;
   font-size: 0.875rem;
   border-radius: 0;
@@ -1409,7 +1409,7 @@ select {
     border-radius: 3px; }
   select:hover {
     background-color: #3a3a3a;
-    border-color: #999999; }
+    border-color: #565656; }
 
 /* Adjust margin for form elements below */
 input[type="file"], input[type="checkbox"], input[type="radio"], select {
