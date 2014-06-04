@@ -176,6 +176,19 @@ MultisigFund.prototype.importSignature = function(sigHex, spend) {
 
 
 /**
+ * Get a spend task from the given tx hash
+ */
+MultisigFund.prototype.getSpend = function(txHash) {
+    for(var i=0; i<this.tasks.length; i++) {
+        var spend = this.tasks[i];
+        var hash = convert.bytesToHex(spend.tx.getHash());
+        if (hash == txHash) {
+            return spend;
+        }
+    }
+};
+
+/**
  * Import a partial transaction into the fund
  */
 MultisigFund.prototype.importTransaction = function(serializedTx) {
