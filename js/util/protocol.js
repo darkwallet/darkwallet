@@ -76,10 +76,22 @@ var Protocol = {
     data['script'] = script;
     return Protocol.packMessage('MultisigAnnounce', data);
   },
+  MultisigAckMsg: function(id) {
+    var data = {};
+    data['id'] = id;
+    return Protocol.packMessage('MultisigAck', data);
+  },
   MultisigSpendMsg: function(address, tx) {
     var data = {};
     data['address'] = address;
     data['tx'] = tx;
+    return Protocol.packMessage('MultisigSpend', data);
+  },
+  MultisigSignMsg: function(address, txHash, sigs) {
+    var data = {};
+    data['address'] = address;
+    data['hash'] = txHash;
+    data['sig'] = sigs;
     return Protocol.packMessage('MultisigSpend', data);
   },
   // Key exchange
