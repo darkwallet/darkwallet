@@ -1,33 +1,20 @@
 <div ng-controller="AddressesCtrl">
-  <div class="panel" ng-hide="pocket.isAll || pocket.isFund">
+  <div class="panel radius" ng-hide="pocket.isAll || pocket.isFund">
     <div class="row collapse">
         <div class="medium-2 columns">
             <span class="prefix radius">Stealth Address</span>
         </div>
         <div class="medium-6 columns">
-            <input type="text" disabled="true" value="{{pocket.stealth}}" />
+            <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.stealth}}" />
         </div>
         <div class="medium-2 columns">
-            <button ng-click="clipboard.copy(pocket.stealth)" class="button postfix fa fa-clipboard">Copy</button>
+            <button ng-click="clipboard.copy(pocket.stealth)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
         </div>
         <div class="medium-2 columns">
-            <button ng-click="modals.showBtcQr(pocket.stealth)" class="button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="modals.showBtcQr(pocket.stealth)" class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
         </div>
     </div>
-    <div class="row collapse" ng-cloak ng-show="settings.advanced">
-        <div class="medium-2 columns">
-            <span class="prefix radius">Master Address</span>
-        </div>
-        <div class="medium-6 columns">
-            <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.mpk}}" />
-        </div>
-        <div class="medium-2 columns">
-            <button ng-click="clipboard.copy(pocket.mpk)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
-        </div>
-        <div class="medium-2 columns">
-            <button ng-click="modals.showQr({value: pocket.mpk, version: 7})" class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
-        </div>
-    </div>
+
 </div>
 <div class="row collapse panel radius">
     <dl class="sub-nav">
