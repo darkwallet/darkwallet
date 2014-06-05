@@ -52,6 +52,14 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
 
       // Iterate over tasks
       tasks.forEach(function(task) {
+          if (!task.participants) {
+              var multisig = identity.wallet.multisig.search({address: task.inPocket});
+              if (!multisig) {
+                  return
+              }
+              self.prepareTask(task, multisig);
+          }
+
           task.participants.forEach(function(participant) {
               participant.available = true;
               if (!participant.sent || (participant.peer != peer)) {
@@ -182,7 +190,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       var script = msg.body.script;
 
       // parse the multisig
-      var multisig = BtcUtils.importMultisig(script, identity.wallet.versions.p2sh);
+      var multisig = BtcUtils.importMultiSig(script, identity.wallet.versions.p2sh);
 
       // see if we already have this multisig
       var prevFund = identity.wallet.multisig.search({address: multisig.address});
