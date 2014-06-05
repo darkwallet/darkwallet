@@ -41,8 +41,8 @@
 
     <div class="row collapse address-row"  ng-repeat="address in addresses track by $index">
         <div class="small-4 columns ellipsis">
-            <a ng-click="setCurrentAddress(address, textBtnForm)" dropdown-toggle="#address-actions" class="fa fa-chevron-circle-down"></a>
-            <span editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
+            <a ng-click="setCurrentAddress(address, textBtnForm)" dropdown-toggle="#address-actions" class="fa button square lefted fa-chevron-circle-down"></a>
+            <span class="address-label" editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
                 {{address.label}}
             </span>
         </div>

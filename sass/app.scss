@@ -181,6 +181,8 @@ button.righted ~ form.editable-wrap input { padding-right: 37px; }
 	height: 37px;
 	}
 
+.address-row .button.square { width: 37px; }
+
 .button.postfix.fa.alert:before, button.postfix.fa.alert:before { background: darken($alert-color, 10%); }
 
 .button.postfix.fa:not(.square), button.postfix.fa:not(.square) { padding-left: 2em; }
@@ -220,11 +222,17 @@ span.ellipsis, div.ellipsis {
  }
 
 
-.transactions div.row, .address-row {
+.transactions div.row {
 	padding: 0.5em;
 	font-size: 90%;
 	line-height: normal;
 }
+
+.address-label { margin-left: 0.4em; }
+
+.address-row .columns:last-of-type { padding-right: 0.3em;}
+
+.address-row { line-height: 230%; }
 
 .address-row:nth-child(odd) a.button {
 	background: darken($primary-color, 5%);

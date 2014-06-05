@@ -4805,6 +4805,9 @@ button.righted ~ form.editable-wrap input {
   width: 37px;
   height: 37px; }
 
+.address-row .button.square {
+  width: 37px; }
+
 .button.postfix.fa.alert:before, button.postfix.fa.alert:before {
   background: #9e1c34; }
 
@@ -4861,10 +4864,19 @@ span.ellipsis, div.ellipsis {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
-.transactions div.row, .address-row {
+.transactions div.row {
   padding: 0.5em;
   font-size: 90%;
   line-height: normal; }
+
+.address-label {
+  margin-left: 0.4em; }
+
+.address-row .columns:last-of-type {
+  padding-right: 0.3em; }
+
+.address-row {
+  line-height: 230%; }
 
 .address-row:nth-child(odd) a.button {
   background: #229954; }
