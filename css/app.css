@@ -4923,7 +4923,8 @@ li.colorhead h6 {
   background: #333;
   color: white; }
   .tabs dd > a:hover {
-    background: #e7e7e7; }
+    background: #e7e7e7;
+    color: black; }
 
 .tabs dd.active > a {
   background: #bbb;

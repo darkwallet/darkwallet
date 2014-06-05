@@ -281,7 +281,7 @@ li.colorhead h6 { color: white; margin: 0; }
 	padding: 0.5em 1.1em;
 	background: $topbar-bg; 
 	color: white;
-	&:hover { background: $secondary-color; }
+	&:hover { background: $secondary-color; color: black; }
 }
 
 .tabs dd.active > a { background: $topbar-link-bg-active; color: black; }
