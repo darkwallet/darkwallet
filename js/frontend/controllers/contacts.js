@@ -79,6 +79,13 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $location.path('/contact/'+contactIndex);
   }
 
+  $scope.saveName = function(contact, name) {
+    var identity = DarkWallet.getIdentity();
+    contact.name = name;
+    identity.contacts.updateContact(contact);
+    $scope.editingContact = false;
+  }
+
   $scope.editContact = function(contact, index) {
     var identity = DarkWallet.getIdentity();
     contact.name = $scope.contactToEdit.name;

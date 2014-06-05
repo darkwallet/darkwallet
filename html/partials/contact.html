@@ -118,9 +118,11 @@
 	    <a href="#contacts" class="fa fa-arrow-left nomarginbottom button small radius"> Back</a>
     </div>
 	<div class="small-8 columns text-right">
-		<input type="text" autofocus value="{{vars.contact.name}}"><button class="button square righted fa fa-check"></button>
-    	<a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button disabled small nomarginbottom radius"> Watch</a>
-		<a class="fa button small nomarginbottom radius fa-terminal"> Rename</a>
+		<form name="contactEditForm" ng-show="!(editingContact===false)" ng-submit="saveName(vars.contact, contactToEdit.name)">
+                     <input type="text" autofocus ng-model="contactToEdit.name"><button class="button square righted fa fa-check" type="submit"></button>
+                </form>
+		<a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button disabled small nomarginbottom radius"> Watch</a>
+		<a ng-click="openEditForm(vars.contact, 0)" class="fa button small nomarginbottom radius fa-terminal"> Rename</a>
     	<a ng-click="modals.open('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button nomarginbottom radius alert fa fa-trash-o"> Delete</a>
     </div>
 </div>
