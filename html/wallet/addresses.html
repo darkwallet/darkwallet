@@ -38,28 +38,29 @@
         <dd ng-class="{active: 'all'===addrFilter}"><a ng-click="setAddressFilter('all')">All</a></dd>
     </dl>
 
-    <div class="row collapse">
-        <div class="small-3 columns">
-            Name
-        </div>
-        <div class="small-6 columns">
-            Address
-        </div>
-        <div class="small-2 columns">
-            Balance
-        </div>
-    </div>
-
     <div class="row collapse address-row"  ng-repeat="address in addresses track by $index">
-        <div class="small-3 columns">
-            <button tooltip="Rename" tooltip-append-to-body="true" class="fa button square righted fa-pencil-square" ng-click="textBtnForm.$show()" ng-disabled="textBtnForm.$visible"></button>
-            <span class="postfix ellipsis" editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
+	        <ul id="address-actions" class="f-dropdown">
+	          <li>
+	            <a ng-click="modals.showBtcQr(address.address)" class="fa fa-qrcode"> Show QR code</a>
+	          </li>
+			  <li>
+				  <a ng-click="textBtnForm.$show()" class="fa fa-pencil-square"> Edit name</a>
+			  </li>
+			  <li>
+				  <a ng-click="clipboard.copy(address.address)" class="fa fa-clipboard"> Copy address</a>
+			  </li>
+			  <li>
+				  <a ng-click="copyClipboardPublic(address)" class="fa fa-key"> Copy public key</a>
+			  </li>
+	        </ul>
+        <div class="small-4 columns ellipsis">
+            <a dropdown-toggle="#address-actions" class="fa fa-chevron-circle-down"></a>
+            <span editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
                 {{address.label}}
             </span>
-            
         </div>
-        <div class="small-6 columns">
-            <span class="postfix ellipsis">{{address.address}}</span>
+        <div class="small-6 columns ellipsis">
+            {{address.address}}
             <div class="labels">
                 <span class="label radius" ng-show="address.type=='stealth'">
                     <div class="fa fa-fighter-jet"></div> stealth
@@ -69,21 +70,8 @@
                 </span>
             </div>
         </div>
-        <div class="small-1 large-2 columns text-right">
-            <span class="postfix">{{address.balance | asBtc}}</span>
-        </div>
-        <div class="small-2 large-1 columns">
-            <div class="row collapse address-row">
-                <div class="small-4 columns">
-                    <button tooltip="Show QR code" tooltip-placement="bottom" tooltip-append-to-body="true" ng-click="modals.showBtcQr(address.address)" class="button postfix square fa fa-qrcode"></button>
-                </div>
-                <div class="small-4 columns">
-                    <button tooltip="Copy address to clipboard" tooltip-placement="bottom" tooltip-append-to-body="true" ng-click="clipboard.copy(address.address)" class="button postfix square fa fa-clipboard"></button>
-                </div>
-                <div class="small-4 columns">
-                    <button tooltip="Copy public key to clipboard" tooltip-placement="bottom" tooltip-append-to-body="true" ng-click="copyClipboardPublic(address)" class="button postfix radius square fa fa-key"></button>
-                </div>
-            </div>
+        <div class="small-2 columns text-right">
+           {{address.balance | asBtc}} {{settings.currency}}
         </div>
     </div>
    <div ng-if="nPages>1" class="pagination-centered">
@@ -94,12 +82,12 @@
         <li ng-click="setPage(page+1)" ng-class="{unavailable:page==nPages-1}" class="arrow"><a href="">&raquo;</a></li>
     </ul>
    </div>
-
+	<div class="text-right" ng-hide="pocket.isFund">
+    	<a class="button small radius nomarginbottom" ng-click="generateAddress(pocket.index*2)">New address</a>
+    	<a class="button small radius nomarginbottom" ng-click="generateAddress((pocket.index*2)+1)">New change address</a>
+  	</div>
 
 
 </div>
-	<div class="text-right" ng-hide="pocket.isFund">
-    	<a class="button small radius" ng-click="generateAddress(pocket.index*2)">New address</a>
-    	<a class="button small radius" ng-click="generateAddress((pocket.index*2)+1)">New change address</a>
-  	</div>
+	
 </div>

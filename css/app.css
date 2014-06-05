@@ -4861,21 +4861,15 @@ span.ellipsis, div.ellipsis {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
-div.address-row {
-  padding: 0; }
-
-div.address-row button {
-  opacity: 0; }
-
-div.address-row:hover button {
-  opacity: 1; }
-
-.transactions div.row {
+.transactions div.row, .address-row {
   padding: 0.5em;
   font-size: 90%;
   line-height: normal; }
 
-.transactions div.row:nth-child(odd) {
+.address-row:nth-child(odd) a.button {
+  background: #229954; }
+
+.transactions div.row:nth-child(odd), .address-row:nth-child(odd) {
   background: #151515;
   border-radius: 3px; }
 
