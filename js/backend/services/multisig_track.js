@@ -62,8 +62,8 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
 
           task.participants.forEach(function(participant) {
               participant.available = true;
-              if (!participant.sent || (participant.peer != peer)) {
-                  participant.peer = peer;
+              if (!participant.sent || (participant.peer != peer.fingerprint)) {
+                  participant.peer = peer.fingerprint;
                   var taskContact = identity.contacts.findByPubKey(participant.pubKey);
                   if (taskContact == contact) {
                       self.send(peer, section, task, participant);
