@@ -274,17 +274,17 @@ li.colorhead h6 { color: white; margin: 0; }
 
 .side-nav a.button, .ellipsis.contact-address { color: white; margin-bottom: 0.6em; }
 
-.tabs { border-bottom: 1px solid scale-color($primary-color, $lightness: -46%); }
+.tabs { border-bottom: 1px solid $topbar-link-bg-active; }
 
 .tabs dd > a { 
 	font-size: 90%;
 	padding: 0.5em 1.1em;
-	background: darken($primary-color, 10%); 
+	background: $topbar-bg; 
 	color: white;
-	&:hover { background: $primary-color; }
+	&:hover { background: $secondary-color; }
 }
 
-.tabs dd.active > a { background: lighten($primary-color, 10%); color: black; }
+.tabs dd.active > a { background: $topbar-link-bg-active; color: black; }
 
 .labels { position: absolute; top: 50%; margin-top: -11px; right: 0; z-index: 3; }
 

@@ -4915,18 +4915,18 @@ li.colorhead h6 {
   margin-bottom: 0.6em; }
 
 .tabs {
-  border-bottom: 1px solid #155e33; }
+  border-bottom: 1px solid #bbb; }
 
 .tabs dd > a {
   font-size: 90%;
   padding: 0.5em 1.1em;
-  background: #1e8448;
+  background: #333;
   color: white; }
   .tabs dd > a:hover {
-    background: #27ae60; }
+    background: #e7e7e7; }
 
 .tabs dd.active > a {
-  background: #36d277;
+  background: #bbb;
   color: black; }
 
 .labels {
