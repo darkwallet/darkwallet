@@ -9,7 +9,7 @@
  * @constructor
  */
 define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  controllers.controller('NotificationsCtrl', ['$scope', function($scope) {
+  controllers.controller('NotificationsCtrl', ['$scope', '$window', function($scope, $window) {
 
   $scope.tasks = [];
 
@@ -42,6 +42,13 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
           });
       });
       $scope.tasks = tasks;
+  }
+
+  $scope.acceptFund = function(guiTask) {
+      DarkWallet.service.multisigTrack.accept(guiTask.store);
+
+      // Should now go to the fund page
+      $window.open('index.html#wallet');
   }
 
   // Wallet service, connect to get notified about identity getting loaded.

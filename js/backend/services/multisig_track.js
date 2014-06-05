@@ -113,6 +113,23 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       return task;
   }
 
+  MultisigTrackService.prototype.accept = function(task) {
+      var identity = this.core.getCurrentIdentity();
+
+      task.state  = 'finished';
+
+      var exists = identity.wallet.multisig.search({address: task.fund.address});
+      if (!exists) {
+          var multisig = task.fund;
+          multisig.name = task.name;
+          multisig.participants = multisig.pubKeys.slice();
+          var walletAddress = identity.wallet.multisig.addFund(multisig);
+          this.core.initAddress(walletAddress);
+      }
+
+      // identity.tasks.removeTask('multisig-invite', task);
+  }
+
   /**
    * Create a task for sending the sign
    */
