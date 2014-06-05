@@ -24,28 +24,29 @@
         <dd ng-class="{active: 'top'===addrFilter}"><a ng-click="setAddressFilter('top')">Top</a></dd>
         <dd ng-class="{active: 'all'===addrFilter}"><a ng-click="setAddressFilter('all')">All</a></dd>
     </dl>
-
-    <div class="row collapse address-row"  ng-repeat="address in addresses track by $index">
 	        <ul id="address-actions" class="f-dropdown">
 	          <li>
-	            <a ng-click="modals.showBtcQr(address.address)" class="fa fa-qrcode"> Show QR code</a>
+	            <a ng-click="modals.showBtcQr(currentAddress.address)" class="fa fa-qrcode"> Show QR code</a>
 	          </li>
 			  <li>
-				  <a ng-click="textBtnForm.$show()" class="fa fa-pencil-square"> Edit name</a>
+				  <a ng-click="currentForm.$show()" class="fa fa-pencil-square"> Edit name</a>
 			  </li>
 			  <li>
-				  <a ng-click="clipboard.copy(address.address)" class="fa fa-clipboard"> Copy address</a>
+				  <a ng-click="clipboard.copy(currentAddress.address)" class="fa fa-clipboard"> Copy address</a>
 			  </li>
 			  <li>
-				  <a ng-click="copyClipboardPublic(address)" class="fa fa-key"> Copy public key</a>
+				  <a ng-click="copyClipboardPublic(currentAddress)" class="fa fa-key"> Copy public key</a>
 			  </li>
 	        </ul>
+
+    <div class="row collapse address-row"  ng-repeat="address in addresses track by $index">
         <div class="small-4 columns ellipsis">
-            <a dropdown-toggle="#address-actions" class="fa fa-chevron-circle-down"></a>
+            <a ng-click="setCurrentAddress(address, textBtnForm)" dropdown-toggle="#address-actions" class="fa fa-chevron-circle-down"></a>
             <span editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
                 {{address.label}}
             </span>
         </div>
+
         <div class="small-6 columns ellipsis">
             {{address.address}}
             <div class="labels">

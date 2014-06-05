@@ -13,6 +13,11 @@ function (controllers, Bitcoin, DarkWallet) {
   $scope.page = 0;
   var limit = 10;
 
+  $scope.setCurrentAddress = function(address, editForm) {
+      $scope.currentAddress = address;
+      $scope.currentForm = editForm;
+  };
+
   /**
    * Generate an address
    * @param {Integer} branchId
