@@ -205,15 +205,11 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
    * Send a task to a contact
    * @private
    */
-  MultisigTrackService.prototype.send = function(peer, section, task, ongoing) {
+  MultisigTrackService.prototype.send = function(peer, section, task, tracking) {
       var msg;
       if (section == 'multisig') {
           msg = Protocol.MultisigSpendMsg(task.address, task.tx);
           msg.body.pending = task.pending;
-          // keep track of sent until ack arrives
-          msg.body.id = Math.random();
-          ongoing.sent = msg.body.id;
-          this.ongoing[msg.body.id] = ongoing;
       } else if (section == 'multisig-announce') {
           var identity = this.core.getCurrentIdentity();
           var multisig = identity.wallet.multisig.search({address: task.address});
@@ -221,12 +217,15 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
           msg.body.name = multisig.name;
       } else if (section == 'multisig-sign') {
           msg = Protocol.MultisigSignMsg(task.address, task.hash, [task.signature]);
-          // keep track of sent until ack arrives
-          msg.body.id = Math.random();
-          ongoing.sent = msg.body.id;
-          this.ongoing[msg.body.id] = ongoing;
       }
  
+      if (msg) {
+          // keep track of sent until ack arrives
+          msg.body.id = Math.random();
+          tracking.sent = msg.body.id;
+          this.ongoing[msg.body.id] = tracking;
+      }
+
       peer.channel.postDH(peer.pubKey, msg, function() {});
   }
 
@@ -318,9 +317,9 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
   MultisigTrackService.prototype.onMultisigAck = function(msg) {
       var identity = this.core.getCurrentIdentity();
       var peer = msg.peer;
-      var ongoing = this.ongoing[msg.body.id];
-      if (ongoing) {
-          ongoing.ack = true;
+      var tracking = this.ongoing[msg.body.id];
+      if (tracking) {
+          tracking.ack = true;
           delete this.ongoing[msg.body.id];
       }
   }
