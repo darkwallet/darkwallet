@@ -240,6 +240,7 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
  * Continue signing after getting the password
  */
 MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
+    var self = this;
     var identity = DarkWallet.getIdentity();
     var script = convert.hexToBytes(this.multisig.script);
 
@@ -254,6 +255,8 @@ MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
                     var sig = spend.tx.p2shsign(input.index, script, privKey.toBytes(), 1);
                     var hexSig = convert.bytesToHex(sig);
                     spend.task.pending[i].signatures[pIdx] = hexSig
+                    // propagate transaction
+                    DarkWallet.service.multisigTrack.sign(self.multisig, spend.tx, sig);
                     signed = true;
                 });
                 spend.task.canSign = false;
