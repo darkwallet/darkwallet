@@ -168,7 +168,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
    */
   MultisigTrackService.prototype.sign = function(multisig, tx, signature) {
       var task = this.prepareTask({}, multisig);
-      task.hash = convert.bytesToHex(txHex.getHash());
+      task.hash = convert.bytesToHex(tx.getHash());
       task.signature = convert.bytesToHex(signature);
 
       // Add the task
@@ -264,9 +264,9 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
    */
   MultisigTrackService.prototype.onMultisigSign = function(msg) {
       var peer = msg.peer;
-      var txHash = msg.body.tx;
+      var txHash = msg.body.hash;
       var address = msg.body.address;
-      var sigHex = msg.body.sig;
+      var sigHex = msg.body.sig[0];
 
       // Ack
       this.sendAck(peer, msg.body);
