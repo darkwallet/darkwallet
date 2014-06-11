@@ -263,6 +263,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
    * A new spend arrived from a peer, queue for spending
    */
   MultisigTrackService.prototype.onMultisigSign = function(msg) {
+      var identity = this.core.getCurrentIdentity();
       var peer = msg.peer;
       var txHash = msg.body.hash;
       var address = msg.body.address;

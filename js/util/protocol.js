@@ -92,7 +92,7 @@ var Protocol = {
     data['address'] = address;
     data['hash'] = txHash;
     data['sig'] = sigs;
-    return Protocol.packMessage('MultisigSpend', data);
+    return Protocol.packMessage('MultisigSign', data);
   },
   // Key exchange
   PublicKeyRequestMsg: function(fingerprint) {
