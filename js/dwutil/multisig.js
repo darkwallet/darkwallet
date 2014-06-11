@@ -298,6 +298,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
                     var sig = spend.tx.p2shsign(input.index, script, privKey.toBytes(), 1);
                     var hexSig = convert.bytesToHex(sig);
                     spend.task.pending[i].signatures[pIdx] = hexSig;
+                    DarkWallet.service.multisigTrack.sign(multisig, spend.tx, sig);
                     signed = true;
                 });
             }
