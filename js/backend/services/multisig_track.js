@@ -30,6 +30,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
     });
     Port.connect('channel', function(data) {
         if (data.type == 'initChannel') {
+            console.log("[msTrack] connecting", data.name);
             var channel = core.getLobbyTransport().getChannel(data.name);
             channel.addCallback('MultisigAnnounce', function(msg) { self.onMultisigAnnounce(msg) });
             channel.addCallback('MultisigSpend', function(msg) { self.onMultisigSpend(msg) } );
@@ -41,36 +42,46 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
   }
 
   /**
+   * Check a peer task
+   */
+  MultisigTrackService.prototype.checkPeerTask = function(peer, section, task) {
+      var self = this;
+      var identity = this.core.getCurrentIdentity();
+      var contact = peer.contact;
+
+      if (!task.participants) {
+          var multisig = identity.wallet.multisig.search({address: task.inPocket});
+          if (!multisig) {
+              return
+          }
+          self.prepareTask(task, multisig);
+      }
+
+      task.participants.forEach(function(participant) {
+          participant.available = true;
+          if (!participant.sent || (participant.peer != peer.fingerprint)) {
+              var taskContact = identity.contacts.findByPubKey(participant.pubKey);
+              if (taskContact == contact) {
+                  participant.peer = peer.fingerprint;
+                  console.log("[msTrack]", section);
+                  self.send(peer, section, task, participant);
+              }
+          }
+      });
+  }
+
+  /**
    * Check for peer tasks
    */
   MultisigTrackService.prototype.checkPeerTasks = function(peer, section) {
       var self = this;
       var identity = this.core.getCurrentIdentity();
-      var contact = peer.contact;
 
       var tasks = identity.tasks.getTasks(section);
 
       // Iterate over tasks
       tasks.forEach(function(task) {
-          if (!task.participants) {
-              var multisig = identity.wallet.multisig.search({address: task.inPocket});
-              if (!multisig) {
-                  return
-              }
-              self.prepareTask(task, multisig);
-          }
-
-          task.participants.forEach(function(participant) {
-              participant.available = true;
-              if (!participant.sent || (participant.peer != peer.fingerprint)) {
-                  var taskContact = identity.contacts.findByPubKey(participant.pubKey);
-                  if (taskContact == contact) {
-                      participant.peer = peer.fingerprint;
-                      console.log("[msTrack]", section);
-                      self.send(peer, section, task, participant);
-                  }
-              }
-          });
+          self.checkPeerTask(peer, section, task);
       });
   }
 
@@ -87,6 +98,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
 
   /**
    * Start a task for a multisig with slots for every participant.
+   * @private
    */
   MultisigTrackService.prototype.prepareTask = function(task, multisig) {
       // Prepare the announce multisig task
@@ -102,15 +114,35 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
   }
 
   /**
+   * Add a task and check if we can send it to any peers
+   * @private
+   */
+  MultisigTrackService.prototype.addTask = function(section, task) {
+      var self = this;
+      var identity = this.core.getCurrentIdentity();
+
+      // Store the task so we can keep track of it
+      identity.tasks.addTask(section, task);
+
+      // Now see if we're connected and check contacts
+      var transport = this.core.service.lobby.lobbyTransport;
+      if (transport) {
+          transport.peers.forEach(function(peer) {
+              if (peer.contact) {
+                  self.checkPeerTask(peer, section, task);
+              }
+          });
+      }
+  }
+
+  /**
    * Queue announcing the multisig to all peers
    */
   MultisigTrackService.prototype.announce = function(multisig, walletAddress) {
-      var identity = this.core.getCurrentIdentity();
-
       var task = this.prepareTask({}, multisig);
 
       // Add the task
-      identity.tasks.addTask('multisig-announce', task);
+      this.addTask('multisig-announce', task);
       return task;
   }
 
@@ -135,14 +167,12 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
    * Create a task for sending the sign
    */
   MultisigTrackService.prototype.sign = function(multisig, tx, signature) {
-      var identity = this.core.getCurrentIdentity();
-
       var task = this.prepareTask({}, multisig);
       task.hash = convert.bytesToHex(txHex.getHash());
       task.signature = convert.bytesToHex(signature);
 
       // Add the task
-      identity.tasks.addTask('multisig-sign', task);
+      this.addTask('multisig-sign', task);
       return task;
   }
 
@@ -167,12 +197,13 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       task.inPocket = address;
 
       // Add the task
-      identity.tasks.addTask('multisig', task);
+      this.addTask('multisig', task);
       return task;
   }
 
   /**
    * Send a task to a contact
+   * @private
    */
   MultisigTrackService.prototype.send = function(peer, section, task, ongoing) {
       var msg;
@@ -214,12 +245,13 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       var prevFund = identity.wallet.multisig.search({address: multisig.address});
       if (!prevFund) {
           var task = { fund: multisig, name: msg.body.name };
-          identity.tasks.addTask('multisig-invite', task);
+          this.addTask('multisig-invite', task);
       }
   }
 
   /**
    * Acknowledge receiving a spend request
+   * @private
    */
   MultisigTrackService.prototype.sendAck = function(peer, spend) {
       // Add the task
