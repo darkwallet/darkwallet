@@ -303,11 +303,14 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
           return;
           // throw Error("The selected multisig does not exist");
       }
-      var fund = new MultisigFund(multisig);
-      var spend = fund.importTransaction(txHex);
-      if (spend) {
-          // add list of participants to contact
-          this.prepareTask(spend.task, multisig);
+      var prev = identity.tasks.search('multisig', 'tx', txHex);
+      if (!prev) {
+          var fund = new MultisigFund(multisig);
+          var spend = fund.importTransaction(txHex);
+          if (spend) {
+              // add list of participants to contact
+              this.prepareTask(spend.task, multisig);
+          }
       }
   }
 
