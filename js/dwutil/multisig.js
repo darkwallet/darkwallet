@@ -100,7 +100,7 @@ MultisigFund.prototype.detectTasks = function() {
                 if (self.me.length > 0) {
                     task.pending.forEach(function(p){
                         var signed = Object.keys(p.signatures);
-                        canSign = canSign.filter(function(i) {return (signed.indexOf(i) == -1)});
+                        canSign = canSign.filter(function(i) {return (signed.indexOf(""+i) == -1)});
                     });
                 }
 
