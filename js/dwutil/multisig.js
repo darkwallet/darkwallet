@@ -51,6 +51,9 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes, i) {
             participant.name = contact.name;
             participant.hash = contact.hash;
             participant.type = 'contact';
+            if (identity.contacts.findIdentityKey(contact)) {
+                participant.paired = true;
+            }
         } else {
             // Just set some values
             var compressed = (pubKeyBytes.length == 33);
