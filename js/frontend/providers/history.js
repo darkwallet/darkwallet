@@ -246,11 +246,12 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var startDay = 1; //0=sunday, 1=monday etc.
       var d = now.getDay(); //get the current day
       var weekStart = new Date(now.valueOf() - (d<=0 ? 7-startDay:d-startDay)*86400000); //rewind to start day
-      var weekEnd = new Date(weekStart.valueOf() + 6*86400000); //add 6 days to get last day
+      weekStart -= now.getHours()*3600000;
+      weekStart -= now.getMinutes()*60000;
 
       var getLabel = function(dateStart, dateEnd) {
          var start = dateStart.toLocaleDateString();
-         var end = weekEnd.toLocaleDateString()
+         var end = dateEnd.toLocaleDateString()
          //return monthNames[weekStart.getMonth()]+"-"+(Math.floor(weekStart.getDate()/7)+1);
          return start + "-" + end;
       }
@@ -264,8 +265,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
            if (row.height) {
                var timestamp = BtcUtils.heightToTimestamp(row.height, blockDiff);
                while (timestamp < weekStart) {
-                   weekEnd = new Date(weekStart.valueOf()-86400000);
-                   weekStart = new Date(weekStart.valueOf()-(7*86400000));
+                   var weekEnd = new Date(weekStart-86400000);
+                   weekStart = new Date(weekStart-(7*86400000));
                    weekIndex -= 1;
                    var label = getLabel(weekStart, weekEnd);
                    week = {index: weekIndex, incoming: 0, outgoing: 0, transactions: 0, label: label};
