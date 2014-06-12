@@ -55,17 +55,18 @@ div.tab-scroller.totheright.ng-leave {
   opacity:1;
 }
 
+div.scroller.ng-animate {
+	position: absolute;
+ 	width: 100%;	
+}
 
-div.scroller.ng-enter {
+div.scroller.ng-animate.ng-enter {
 	-webkit-animation: moveFromTopFade .5s ease both;
 	-moz-animation: moveFromTopFade .5s ease both;
 	animation: moveFromTopFade .5s ease both;
 }
 
-div.popuptabs > div.ng-leave,
-div.scroller.ng-leave {
-	position: absolute;
- 	width: 100%;
+div.scroller.ng-animate.ng-leave {
 	-webkit-animation: scaleDown .5s ease both;
 	-moz-animation: scaleDown .5s ease both;
 	animation: scaleDown .5s ease both;
