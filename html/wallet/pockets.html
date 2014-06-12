@@ -2,7 +2,7 @@
       <li>Pockets on my wallet</li>
       <li ng-class="{active: pocket.isAll}" ng-click="selectPocket()"><a>All</a></li>
       <li ng-class="{active: 'pocket:'+$index===selectedPocket}" ng-repeat="pocket in hdPockets track by $index">
-        <a href="" ng-click="selectPocket(pocket.name, $index, form)" editable-text="pocket.name" e-form="form" onaftersave="finalizeRenamePocket(pocket)" buttons="no">{{pocket.name}}</a>
+        <a href="" ng-click="selectPocket(pocket.name, $index, form)" editable-text="pocket.name" e-form="form" blur="submit" onaftersave="finalizeRenamePocket(pocket)" buttons="no">{{pocket.name}}</a>
       </li>
       <li ng-show="creatingPocket">
         <form ng-submit="createPocket()">
