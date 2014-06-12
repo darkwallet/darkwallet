@@ -20,16 +20,16 @@
   <div class="columns large-6">
 	  <div class="panel radius">
     <h5>Fund managers</h5>
-    <div class="row collapse" ng-repeat="participant in pocket.fund.participants track by $index" title="{{participant.pubKey | bytesToAddressHash}}">
+    <div class="row collapse" ng-repeat="participant in pocket.fund.participants track by $index">
 		<div class="small-1 columns text-right">
 			<span class="label" ng-show="participant.type=='me'">me</span>
         	<identicon icon-size="38" hash="participant.hash" ng-show="participant.type!='me'" title="{{contact.hash}}"></identicon>
 		</div>
-		<div class="small-10 columns">
+		<div class="small-10 columns" title="{{participant.pubKey | bytesToAddressHash}}">
 			<input type="text" value="{{participant.name}}" readonly></input>
 		</div>
 		<div class="small-1 columns">
-			<a tooltip="Identity paired" tooltip-append-to-body="true" ng-show="participant.paired" class="fa fa-chain button postfix square radius"></a>
+			<span tooltip="Identity paired" tooltip-append-to-body="true" ng-show="participant.paired" class="fa fa-chain postfix square radius"></span>
 		</div>
 		
     </div>
