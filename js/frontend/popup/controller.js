@@ -18,6 +18,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
   $scope.needsOpen = false;
   
   $scope.forms = {};
+  $scope.forms.identityDropdown = false;
   $scope.identityName = false;
 
   // Wallet service, connect to get notified about identity getting loaded.
@@ -27,6 +28,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
         $scope.identityLoaded = true;
         $scope.currentIdentity = data.identity;
         $scope.identity = DarkWallet.getIdentity();
+        $scope.forms.identityDropdown = false;
         $scope.settings = $scope.identity.settings;
         if ($scope.needsOpen) {
             $scope.needsOpen = false;

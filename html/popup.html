@@ -12,13 +12,13 @@
     <div class="popupcontainer" ng-controller="NotificationsCtrl">
       <div class="row">
         <div class="small-12 columns" ng-show="identities.length" ng-cloak>
-          <a ng-click="identityDropdown=!identityDropdown" target="_blank" class="fa nomarginbottom button postfix fa-chevron-circle-down">{{currentIdentity}}</a>
-		  <div ng-show="identityDropdown">
+          <a ng-click="forms.identityDropdown=!forms.identityDropdown" class="fa nomarginbottom button postfix fa-chevron-circle-down">{{currentIdentity}}</a>
+		  <div ng-show="forms.identityDropdown">
 			  <div ng-click="loadIdentity(anIdentity.id)" ng-repeat="anIdentity in identities" class="address-row identitylist">
 				  {{anIdentity.id}}
 			  </div>
 	  	  </div>
-          <a ng-show="!identityDropdown" href="index.html#wallet" target="_blank" class="button topmargin small radius expand">
+          <a ng-show="!forms.identityDropdown" href="index.html#wallet" target="_blank" class="button topmargin small radius expand">
             Open wallet
           </a>
         </div>
