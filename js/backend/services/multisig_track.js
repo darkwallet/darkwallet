@@ -17,7 +17,10 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
     // Connect to wallet port for identity cleanup and startup
     Port.connect('wallet', function(data) {
       // Cleanup on identity change;
-      if (data.type == 'closing') {
+      if (data.type == 'ready') {
+        self.checkFinishedTasks();
+      }
+      else if (data.type == 'closing') {
         self.ongoing = {};
       }
     });
@@ -82,6 +85,49 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       // Iterate over tasks
       tasks.forEach(function(task) {
           self.checkPeerTask(peer, section, task);
+      });
+  }
+
+  /**
+   * Process a transaction arriving to the wallet to see if we need
+   * to close any of the available tasks
+   */
+  MultisigTrackService.prototype.processTx = function(serializedTx) {
+      var identity = this.core.getCurrentIdentity();
+      var txHash = BtcUtils.hash256(serializedTx);
+
+      var tasks = identity.tasks.getTasks('multisig');
+      tasks = tasks.concat(identity.tasks.getTasks('multisig-sign'));
+
+      tasks.forEach(function(task) {
+            if ((task.tx == serializedTx) || (task.hash == txHash)) {
+                task.state = 'finished';
+            }
+      });
+  }
+
+  /**
+   * Check all tasks to see if any are finished
+   */
+  MultisigTrackService.prototype.checkFinishedTasks = function() {
+      var identity = this.core.getCurrentIdentity();
+
+      // Check spends in case relevant tx already propagated on the network
+      // then we can finish the task.
+      var tasks = identity.tasks.getTasks('multisig');
+      tasks = tasks.concat(identity.tasks.getTasks('multisig-sign'));
+
+      tasks.forEach(function(task) {
+          // Generate the tx hash to check or get it from the task if available
+          var hash = task.hash || BtcUtils.hash256(task.tx);
+
+          // Check if some row references this
+          identity.history.history.some(function(row) {
+              if (row.hash == hash) {
+                  task.state = 'finished';
+                  return true;
+              }
+          });
       });
   }
 
