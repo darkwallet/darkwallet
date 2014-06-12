@@ -4900,6 +4900,9 @@ span.ellipsis, div.ellipsis {
 div.identitylist {
   padding-left: 1em; }
 
+div.identitylist:last-child {
+  margin-bottom: 1em; }
+
 div.identitylist:hover {
   cursor: pointer;
   background: rgba(30, 170, 80, 0.9); }
