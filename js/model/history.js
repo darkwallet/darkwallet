@@ -151,7 +151,7 @@ History.prototype.fillInput = function(transaction, data) {
         txObj = new Bitcoin.Transaction(transaction);
     // XXX temporary while bitcoinjs-lib supports testnet better
     txObj = BtcUtils.fixTxVersions(txObj, this.identity);
-    if (Array.isArray(txObj.outs[index].hash)) {
+    if (Array.isArray(txObj.outs[index].address.hash)) {
         newRow.address = txObj.outs[index].address.toString();
         this.update();
     } else {
