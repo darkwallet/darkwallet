@@ -16,7 +16,7 @@ define(['model/upgrade'], function(Upgrade) {
     });
 
     it('checks for no upgrade', function() {
-      store.version = 2;
+      store.version = 3;
       var res = Upgrade(store);
       expect(res).toBe(false);
     });

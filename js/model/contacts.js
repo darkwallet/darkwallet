@@ -140,8 +140,8 @@ Contacts.prototype.updateIdKey = function(contact) {
     var idKey = this.findIdentityKey(contact);
     if (idKey) {
         contact.idKey = this.contacts.indexOf(idKey);
-    } else {
-        contact.idKey = undefined;
+    } else if (contact.idKey) {
+        delete contact.idKey;
     }
 };
 
