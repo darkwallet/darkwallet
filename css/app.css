@@ -1340,20 +1340,20 @@ select::-ms-expand {
 
 /* Separate prefix and postfix styles when on span or label so buttons keep their own */
 span.prefix, label.prefix {
-  background: #282828;
+  background: rgba(100, 100, 100, 0.2);
   border-right: none;
   color: #fff;
-  border-color: #888; }
+  border-color: #000; }
   span.prefix.radius, label.prefix.radius {
     border-radius: 0;
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px; }
 
 span.postfix, label.postfix {
-  background: #282828;
+  background: rgba(100, 100, 100, 0.2);
   border-left: none;
   color: #fff;
-  border-color: #888; }
+  border-color: #000; }
   span.postfix.radius, label.postfix.radius {
     border-radius: 0;
     border-bottom-right-radius: 3px;
@@ -4782,7 +4782,7 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
   .button.square.righted:before {
     margin-top: -0.5em; }
 
-.fa-star.button.square.righted {
+.fa-chain.button.square, .fa-star.button.square.righted {
   background: inherit; }
 
 .editable-wrap {
