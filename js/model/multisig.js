@@ -1,6 +1,6 @@
 'use strict';
 
-define(function() {
+define(['bitcoinjs-lib'], function(Bitcoin) {
 
 /**
  * Multisig, holds multisig funds.
@@ -60,6 +60,20 @@ Multisig.prototype.addFund = function(fund) {
     this.funds.push(fund);
     this.store.save();
     return walletAddress;
+};
+
+Multisig.prototype.canSign = function(fund) {
+    var identity = this.identity;
+    var me = [];
+    fund.pubKeys.forEach(function(pubKeyBytes, i) {
+        var myPubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
+        var myAddress = myPubKey.getAddress(identity.wallet.versions.address);
+        var walletAddress = identity.wallet.getWalletAddress(myAddress);
+        if (walletAddress) {
+            me.push(i);
+        }
+    });
+    return me;
 };
 
 /**

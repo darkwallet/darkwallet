@@ -1,3 +1,4 @@
 You have a spend approval request on the {{task.fund.name}} multisig fund<br>
-<small>{{task.fund.m-task.signed}} out of {{task.fund.participants.length}} signatures still needed</small>
-<small ng-show="task.store.signed">You have already signed this task</small>
+<small>{{task.fund.m-task.nSigs}} out of {{task.fund.participants.length}} signatures still needed</small>
+<small ng-show="task.canSign && task.signed">You have already signed this task</small>
+<!--<a ng-show="task.canSign && !task.signed" ng-click="signTask(task)" class='button small'>Sign</a>-->

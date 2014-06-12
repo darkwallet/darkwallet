@@ -9,7 +9,7 @@
  * @constructor
  */
 define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  controllers.controller('NotificationsCtrl', ['$scope', '$window', function($scope, $window) {
+  controllers.controller('NotificationsCtrl', ['$scope', '$window', 'modals', function($scope, $window, modals) {
 
   $scope.tasks = [];
 
@@ -34,12 +34,20 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
                   var guiTask = {section: section, store: task, outPocket: outPocket, inPocket: inPocket};
                   if (section == 'multisig') {
                       // Get this here so we don't need Object in angular :-P
-                      guiTask.signed = Object.keys(task.pending[0].signatures).length;
+                      guiTask.nSigs = Object.keys(task.pending[0].signatures).length;
                       guiTask.fund = identity.wallet.multisig.search({address: task.address});
+                      var canSign = identity.wallet.multisig.canSign(guiTask.fund);
                       // TODO: move setting the finished state to a better place
-                      if (guiTask.signed >= guiTask.fund.m) {
+                      if (guiTask.nSigs >= guiTask.fund.m) {
                           task.state = 'finished';
                       }
+                      canSign.some(function(myIdx) {
+                          guiTask.canSign = true;
+                          if (task.pending[0].signatures.hasOwnProperty(myIdx)) {
+                              guiTask.signed = true;
+                              return true;
+                          }
+                      });
                   }
                   tasks.push(guiTask);
               }
