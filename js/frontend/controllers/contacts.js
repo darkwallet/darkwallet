@@ -28,6 +28,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
       initRouteContact(identity);
   }
 
+  $scope.setCurrentPubKey = function(pubKey, i) {
+      $scope.currentPubKey = pubKey;
+      $scope.currentIndex = i;
+  }
+
   $scope.contacts = identity.contacts.contacts.slice(0);
   $scope.allContacts = identity.contacts.contacts;
 

@@ -60,27 +60,27 @@
 <div class="row topmargin" ng-show="contactSection=='addresses'">
 	
 	
-	
-    <div class="row collapse address-row" ng-repeat="pubKey in vars.contact.pubKeys">
-
 	        <ul id="contact-address-actions" class="f-dropdown">
 	          <li>
-	            <a ng-click="modals.showBtcQr(pubKey.address)" class="fa fa-qrcode"> Show QR code</a>
+	            <a ng-click="modals.showBtcQr(currentPubKey.address||currentPubKey.data)" class="fa fa-qrcode"> Show QR code</a>
 	          </li>
 			  <li>
-				  <a ng-click="clipboard.copy(pubKey.address)" class="fa fa-clipboard"> Copy to clipboard</a>
+				  <a ng-click="clipboard.copy(currentPubKey.address||currentPubKey.data)" class="fa fa-clipboard"> Copy to clipboard</a>
 			  </li>
 			  <li>
-				  <a ng-click="openEditForm(vars.contact, $index)" class="fa fa-pencil-square"> Edit</a>
+				  <a ng-click="openEditForm(vars.contact, currentIndex)" class="fa fa-pencil-square"> Edit</a>
 			  </li>
-			  <li>
-				  <a ng-click="deleteKey(vars.contact, $index)" class="fa fa-trash-o"> Delete</a>
+			  <li ng-show="currentIndex!=vars.contact.mainKey">
+				  <a ng-click="deleteKey(vars.contact, currentIndex)" class="fa fa-trash-o"> Delete</a>
 			  </li>
 	        </ul>
 
+
+    <div class="row collapse address-row" ng-repeat="pubKey in vars.contact.pubKeys">
+
 			<div class="small-11 columns ellipsis" ng-show="!(editingContact===$index)">
 					
-				<a ng-show="pubKey.address" dropdown-toggle="#contact-address-actions" class="fa button square lefted fa-chevron-circle-down"></a>
+				<a ng-click="setCurrentPubKey(pubKey, $index)" dropdown-toggle="#contact-address-actions" class="fa button square lefted fa-chevron-circle-down"></a>
 	            <span class="address-type" title="Type of address">
 	               <div class="fa" 
 	                 ng-class="{'fa-question-circle': pubKey.type=='unknown', 'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth', 'fa-user': pubKey.type=='id'}">
