@@ -5,8 +5,9 @@ Immediate:
    + Review sending
    - Review coinjoin mechanics
    - Stealth multisig
+   + Polish multisig mechanics
  - Lobby system
-   + Automatize multisig
+   * Automatize multisig DONE
    - Establish trust and reputation
  - Pocket actions:
    * Move funds to another pocket DONE
@@ -19,6 +20,7 @@ Architecture/api:
  - Unify task/notification mechanics
  * Worker for communications encryption DONE
  - New modules to split model/wallet
+ - Make a messenger service to manage delivery of messages to other contacts
 - Frontend
  - Send provider
  - Review and improve angular usage
