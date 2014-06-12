@@ -274,6 +274,7 @@ MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
                 });
                 // TODO: may want to remove just this participant here
                 spend.canSign = [];
+                spend.task.signed = true;
             });
         }
     });
