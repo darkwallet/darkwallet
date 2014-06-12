@@ -4894,8 +4894,14 @@ span.ellipsis, div.ellipsis {
 .address-row div a.button.square.lefted, .address-row div a.button.square.righted {
   border-radius: 0px; }
 
-.address-row:nth-child(odd) a.button:not(:hover) {
-  background: rgba(30, 170, 80, 0.9); }
+.address-row:nth-child(even) a.button:not(:hover) {
+  background: #002B29; }
+
+.address-row:nth-child(odd) a.button.lefted:not(:hover) {
+  background: inherit; }
+
+.address-row:nth-child(odd) a.button.righted:not(:hover) {
+  background: #005e59; }
 
 div.identitylist {
   padding-left: 1em; }

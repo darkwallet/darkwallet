@@ -1,6 +1,8 @@
 $primary-color: rgba(30, 190, 90,0.9) !default;
 $primary-color-dark: rgba(30, 170, 80,0.9);
 
+$alternative-color: #002B29;
+
 $dark-transparent: rgba(0,0,0,0.2);
 $darker-transparent: rgba(0,0,0,0.5);
 $light-transparent: rgba(100,100,100,0.2);
@@ -249,8 +251,16 @@ span.ellipsis, div.ellipsis {
 
 .address-row div a.button.square.lefted, .address-row div a.button.square.righted { border-radius: 0px; }
 
-.address-row:nth-child(odd) a.button:not(:hover) {
-	background: $primary-color-dark;
+.address-row:nth-child(even) a.button:not(:hover) {
+	background: $alternative-color;
+}
+
+.address-row:nth-child(odd) a.button.lefted:not(:hover) {
+	background: inherit;
+}
+
+.address-row:nth-child(odd) a.button.righted:not(:hover) {
+	background: lighten($alternative-color, 10%);
 }
 
 div.identitylist { padding-left: 1em; }
