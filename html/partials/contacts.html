@@ -43,7 +43,7 @@
         <div 
              class="contact-label">
             <div class="fa" 
-                 ng-class="{'fa-btc': contact.pubKeys[contact.mainKey].type=='address', 'fa-key': contact.pubKeys[contact.mainKey].type=='pubkey', 'fa-fighter-jet': contact.pubKeys[contact.mainKey].type=='stealth'}">
+                 ng-class="{'fa-btc': contact.idKey===undefined&&contact.pubKeys[contact.mainKey].type=='address', 'fa-key': contact.idKey===undefined&&contact.pubKeys[contact.mainKey].type=='pubkey', 'fa-fighter-jet': contact.idKey===undefined&&contact.pubKeys[contact.mainKey].type=='stealth', 'fa-user': !(contact.idKey===undefined)}">
             </div> {{contact.name}}</div>
       </li>
   </ul>

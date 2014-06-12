@@ -53,6 +53,8 @@ Contacts.prototype.initContacts = function() {
           // delete address since now is contained inside contact.pubKeys
           delete contact.address;
       }
+      // Set the idkey for this contact
+      self.updateIdKey(contact);
   });
   if (updated) {
     console.log("updated contacts", this.contacts);
@@ -120,6 +122,9 @@ Contacts.prototype.generateContactHash = function(data) {
     return this.generateAddressHash(newKey.address);
 };
 
+/**
+ * Find an idKey for the contact
+ */
 Contacts.prototype.findIdentityKey = function (contact) {
     for(var i=0; i<contact.pubKeys.length; i++) {
         if (contact.pubKeys[i].type == 'id') {
@@ -127,6 +132,18 @@ Contacts.prototype.findIdentityKey = function (contact) {
         }
     }
 }
+
+/**
+ * Update the internal reference to the current id key
+ */
+Contacts.prototype.updateIdKey = function(contact) {
+    var idKey = this.findIdentityKey(contact);
+    if (idKey) {
+        contact.idKey = this.contacts.indexOf(idKey);
+    } else {
+        contact.idKey = undefined;
+    }
+};
 
 /**
  * Find Contact by pubkey
@@ -182,6 +199,7 @@ Contacts.prototype.addContact = function (contact) {
   delete contact.address;
   contact.mainKey = 0;
 
+  this.updateIdKey(contact);
   this.updateContactHash(contact);
   this.contacts.push(contact);
   this.store.save();
@@ -202,6 +220,7 @@ Contacts.prototype.addContactKey = function (contact, data, main) {
       contact.mainKey = contact.pubKeys.length-1;
       this.updateContactHash(contact);
   }
+  this.updateIdKey(contact);
   this.store.save();
   // delete address since now is contained inside contact.pubKeys
 };
@@ -228,6 +247,8 @@ Contacts.prototype.deleteKey = function (contact, index) {
       contact.mainKey = contact.pubKeys.length-1;
   }
   this.updateContactHash(contact);
+  // Check if we have an idkey
+  this.updateIdKey(contact);
   this.store.save();
 }
  
