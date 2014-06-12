@@ -66,9 +66,9 @@ div.popuptabs > div.ng-leave,
 div.scroller.ng-leave {
 	position: absolute;
  	width: 100%;
-	-webkit-animation: scaleDown .7s ease both;
-	-moz-animation: scaleDown .7s ease both;
-	animation: scaleDown .7s ease both;
+	-webkit-animation: scaleDown .5s ease both;
+	-moz-animation: scaleDown .5s ease both;
+	animation: scaleDown .5s ease both;
 }
 
 div.send-advanced.ng-leave.ng-leave-active,

@@ -4508,9 +4508,9 @@ div.scroller.ng-enter {
 div.popuptabs > div.ng-leave, div.scroller.ng-leave {
   position: absolute;
   width: 100%;
-  -webkit-animation: scaleDown 0.7s ease both;
-  -moz-animation: scaleDown 0.7s ease both;
-  animation: scaleDown 0.7s ease both; }
+  -webkit-animation: scaleDown 0.5s ease both;
+  -moz-animation: scaleDown 0.5s ease both;
+  animation: scaleDown 0.5s ease both; }
 
 div.send-advanced.ng-leave.ng-leave-active, div.send-advanced.ng-enter, div.popuptabs > div.ng-enter {
   -webkit-transform: scale3d(1, 0, 1);
