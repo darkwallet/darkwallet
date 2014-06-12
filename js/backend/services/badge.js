@@ -40,6 +40,8 @@ BadgeService.prototype.setItems = function(identity) {
     // Only count send and receive tasks for now
     var openTasks = identity.tasks.getTasks('send');
     openTasks = openTasks.concat(identity.tasks.getTasks('receive'));
+    openTasks = openTasks.concat(identity.tasks.getTasks('multisig-invite'));
+    openTasks = openTasks.concat(identity.tasks.getTasks('multisig'));
 
     // Filter to see if there are any unfinished ones
     var unfinished = openTasks.filter(function(task) {return task.state != 'finished'});
