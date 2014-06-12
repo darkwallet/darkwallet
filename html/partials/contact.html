@@ -58,58 +58,73 @@
 </div>
 <!-- Addresses for the user -->
 <div class="row topmargin" ng-show="contactSection=='addresses'">
-  <div class="row collapse" ng-repeat="pubKey in vars.contact.pubKeys">
-	<div class="medium-1 large-2 columns">
-            <!-- Show a star for main address -->
-            <div ng-show="pubKey.type=='revoked'" class="fa fa-exclamation" title="This key was revoked by its owner"></div>
-            <div ng-show="pubKey.type!='revoked'&&$index===vars.contact.mainKey" class="fa fa-star"></div>
-            <div ng-click="setMainKey(vars.contact, $index)"  ng-show="['revoked','id'].indexOf(pubKey.type)==-1&&$index!=vars.contact.mainKey" class="fa fa-star-o"></div>
-            <!-- Badge for type of address -->
-            <span class="label radius" title="Type of address">
-               <div class="fa" 
-                 ng-class="{'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth', 'fa-user': pubKey.type=='id'}">
-                 </div> {{pubKey.type}} </span>
+	
+	
+	
+    <div class="row collapse address-row" ng-repeat="pubKey in vars.contact.pubKeys">
 
-	</div>
-	<div class="medium-3 large-7 columns" title="{{pubKey.data}}" ng-show="!(editingContact===$index)" ng-click="openEditForm(vars.contact, $index)" >
-            <span ng-show="pubKey.address">{{pubKey.address.slice(0,48)}}{{pubKey.address.length>48?'...':''}}</span>
-            <span ng-show="!pubKey.address">{{pubKey.data.slice(0,48)}}{{pubKey.data.length>48?'...':''}}</span>
-	</div>
-	<div ng-show="editingContact===$index" class="medium-3 large-7 columns">
-		<form ng-submit="editContact(vars.contact, $index)">
-			<input type="text" ng-model="contactToEdit.address">
-		</form>
-	</div>
-	<div class="medium-3 large-1 columns" ng-show="!creatingContact">
-		<button ng-click="modals.showBtcQr(pubKey.address)" class="button postfix fa fa-qrcode" title="Show QR Code">QR</button>
+	        <ul id="contact-address-actions" class="f-dropdown">
+	          <li>
+	            <a ng-click="modals.showBtcQr(pubKey.address)" class="fa fa-qrcode"> Show QR code</a>
+	          </li>
+			  <li>
+				  <a ng-click="clipboard.copy(pubKey.address)" class="fa fa-clipboard"> Copy to clipboard</a>
+			  </li>
+			  <li>
+				  <a ng-click="openEditForm(vars.contact, $index)" class="fa fa-pencil-square"> Edit</a>
+			  </li>
+			  <li>
+				  <a ng-click="deleteKey(vars.contact, $index)" class="fa fa-trash-o"> Delete</a>
+			  </li>
+	        </ul>
 
+			<div class="small-11 columns ellipsis" ng-show="!(editingContact===$index)">
+					
+				<a ng-show="pubKey.address" dropdown-toggle="#contact-address-actions" class="fa button square lefted fa-chevron-circle-down"></a>
+	            <span class="address-type" title="Type of address">
+	               <div class="fa" 
+	                 ng-class="{'fa-question-circle': pubKey.type=='unknown', 'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth', 'fa-user': pubKey.type=='id'}">
+	               </div>
+				   {{pubKey.type}} 
+				 </span>
+				 <identicon icon-size="32" data="pubKey.address"></identicon>
+            	<span ng-show="pubKey.address">{{pubKey.address}}</span>
+            	<span ng-show="!pubKey.address">{{pubKey.data}}</span>
+
+			</div>
+			<div class="small-1 columns" ng-if="pubKey.type!='revoked'&&$index===vars.contact.mainKey" ng-show="!(editingContact===$index)">
+				<div class="fa-star fa button square active righted"></div>
+			</div>
+			<div class="small-1 columns" ng-if="['revoked','id'].indexOf(pubKey.type)==-1&&$index!=vars.contact.mainKey" ng-show="!(editingContact===$index)">
+				<a ng-click="setMainKey(vars.contact, $index)" class="fa button square righted fa-star-o"></a>
+			</div>
+			<div ng-show="editingContact===$index" class="small-12 columns">
+				<form ng-submit="editContact(vars.contact, $index)">
+					<input type="text" class="prefix radius nomarginbottom" ng-model="contactToEdit.address">
+					<button class="button square righted fa fa-check" type="submit"></button>
+				</form>
+			</div>
+    </div>	
+	<div class="topmargin">
+  	  <!-- Create contact form -->
+  		<a ng-click="creatingContact=true" class="fa fa-plus button small radius" ng-show="!creatingContact"> Add another address</a>
+  	  	<form name="createContact" ng-show="creatingContact" ng-submit="creatingContact=false;addContactKey(vars.contact);" novalidate>
+    		<div class="row collapse">
+				<div class="small-10 columns">
+               	 	<input type="text" class="prefix radius" placeholder="Enter a bitcoin address here..." required btc-address ng-model="newContact.address"></input>
+        		</div>
+				<div class="small-2 columns">
+					<a class="button postfix radius fa fa-qrcode">Scan QR code</a>
+				</div>
+    		</div>
+			<div class="row">
+				<div class="small-12 columns text-right">
+					<a class="button small radius nomarginbottom alert fa fa-times" ng-click="creatingContact=false"> Cancel</a>
+					<button type="submit" class="button small radius nomarginbottom fa fa-check"> Confirm</button>
+				</div>
+			</div>
+  	  </form>
 	</div>
-	<div class="medium-3 large-1 columns" ng-show="!creatingContact">
-		<a ng-click="clipboard.copy(pubKey.address)" class="button postfix fa fa-clipboard">Copy</a>
-	</div>
-	<div ng-show="$index!=vars.contact.mainKey" class="icon medium-3 large-1 columns" ng-show="!creatingContact">
-                <!-- Delete address -->
-		<a class="button postfix alert fa fa-trash-o" ng-click="deleteKey(vars.contact, $index)">Delete</a>
-	</div>
-  </div>
-  <!-- Create contact form -->
-  <a ng-click="creatingContact=true" class="fa fa-plus button small radius" ng-show="!creatingContact"> Add another address</a>
-  <form name="createContact" ng-show="creatingContact" ng-submit="creatingContact=false;addContactKey(vars.contact);" novalidate>
-    <div class="row">
-	<div class="small-6 medium-3 columns">
-                <input type="text" placeholder="name" required ng-model="newContact.name"></input>
-        </div>
-	<div class="small-6 medium-3 columns">
-                <input type="text" placeholder="address" required btc-address ng-model="newContact.address"></input>
-        </div>
-	<div class="small-6 medium-3 columns">
-                <input type="submit" class="button postfix fa fa-check"></input>
-        </div>
-	<div class="small-6 medium-3 columns">
-                <a class="button postfix alert fa fa-times" ng-click="creatingContact=false">Cancel</a>
-        </div>
-    </div>
-  </form>
 </div>
 </div> <!-- panel -->
 <!-- Bottom row -->
@@ -118,9 +133,10 @@
 	    <a href="#contacts" class="fa fa-arrow-left nomarginbottom button small radius"> Back</a>
     </div>
 	<div class="small-8 columns text-right">
-		<form name="contactEditForm" ng-show="!(editingContact===false)" ng-submit="saveName(vars.contact, contactToEdit.name)">
-                     <input type="text" autofocus ng-model="contactToEdit.name"><button class="button square righted fa fa-check" type="submit"></button>
-                </form>
+		<form name="contactEditForm" ng-show="contactSection=='overview'&&!(editingContact===false)" ng-submit="saveName(vars.contact, contactToEdit.name)">
+          <input type="text" autofocus ng-model="contactToEdit.name"><button class="button square righted fa fa-check" type="submit"></button>
+        </form>
+		<div ng-show="contactSection=='overview'">
 		<a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button disabled small nomarginbottom radius"> Watch</a>
 		<a ng-click="openEditForm(vars.contact, 0)" class="fa button small nomarginbottom radius fa-terminal"> Rename</a>
     	<a ng-click="modals.open('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button nomarginbottom radius alert fa fa-trash-o"> Delete</a>

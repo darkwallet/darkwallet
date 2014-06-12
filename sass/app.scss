@@ -161,6 +161,8 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 	&:before { margin-top: -0.5em; }
 }
 
+.fa-star.button.square.righted { background: inherit; }
+
 .editable-wrap { width: 100%; }
 
 button.righted ~ form.editable-wrap input { padding-right: 37px; }
@@ -230,13 +232,19 @@ span.ellipsis, div.ellipsis {
 
 .address-label { margin-left: 0.4em; }
 
+.address-type { border-radius: $global-radius; margin: 0 0.6em; padding: 0.2em 0.5em; height: 100%; background: rgba(99,99,99,0.3); }
+
 .address-row .columns:last-of-type { padding-right: 0.3em;}
 
 .address-row { line-height: 230%; }
 
-.address-row:nth-child(odd) a.button {
-	background: darken($primary-color, 5%);
+.address-row a.button:not(:hover) { background: scale-color($primary-color, $lightness: -80%); }
+
+.address-row:nth-child(odd) a.button:not(:hover) {
+	background: scale-color($primary-color, $lightness: -70%);
 }
+
+
 
 .transactions div.row:nth-child(odd), .address-row:nth-child(odd) { 
 	background: darken($body-bg, 5%);
