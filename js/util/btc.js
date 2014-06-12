@@ -226,6 +226,13 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     heightToTimestamp: function(height, diff) {
         diff = diff || BtcUtils.blockDiff;
         return (genesisTime+(height*diff))*1000;
+    },
+    // Calculate hash for a raw hex transaction
+    hash256: function(txHex) {
+        var SHA256 = Bitcoin.CryptoJS.SHA256;
+        var buffer = convert.bytesToWordArray(convert.hexToBytes(txHex));
+        var hash = convert.wordArrayToBytes(SHA256(SHA256(buffer)));
+        return convert.bytesToHex(hash);
     }
   };
 
