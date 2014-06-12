@@ -253,6 +253,10 @@ span.ellipsis, div.ellipsis {
 	background: $primary-color-dark;
 }
 
+div.identitylist { padding-left: 1em; }
+
+div.identitylist:hover { cursor: pointer; background: $primary-color-dark; }
+
 .transactions div.row:nth-child(even), .address-row:nth-child(even) { 
 	background: $dark-transparent;
 	

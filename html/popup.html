@@ -12,12 +12,18 @@
     <div class="popupcontainer" ng-controller="NotificationsCtrl">
       <div class="row">
         <div class="small-12 columns" ng-show="identities.length" ng-cloak>
-          <a href="index.html#identities" target="_blank" class="fa button postfix fa-user">{{currentIdentity}}</a>
-          <a href="index.html#wallet" target="_blank" class="button small radius expand">
+          <a href="index.html#identities" target="_blank" class="fa nomarginbottom button postfix fa-chevron-circle-down">{{currentIdentity}}</a>
+		  <div>
+			  <div class="address-row identitylist">
+				  Identities
+			  </div>
+	  	  </div>
+          <a href="index.html#wallet" target="_blank" class="button topmargin small radius expand">
             Open wallet
           </a>
         </div>
         <div ng-show="!identities.length" ng-cloak class="small-12 columns">
+			<h6>Welcome to Dark Wallet! Let's get started:
           <a href="index.html#new_wallet" target="_blank" class="button small radius expand">
             Create wallet
           </a>
