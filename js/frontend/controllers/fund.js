@@ -101,7 +101,13 @@ function (controllers, DarkWallet) {
   function finishSignFundTx(password, fund, task, inputs) {
       var identity = DarkWallet.getIdentity();
 
-      var signed = fund.signTransaction(password, task, inputs);
+      var signed;
+      try {
+          signed = fund.signTransaction(password, task, inputs);
+      } catch (e) {
+          notify.warning("Invalid Password");
+          return;
+      }
 
       if (!signed) {
           notify.warning("Transaction was already signed by us");
