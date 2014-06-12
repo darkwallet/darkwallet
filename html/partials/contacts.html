@@ -14,14 +14,24 @@
 <form name="createContactForm" ng-show="contactFormShown === true" ng-submit="createContact()" novalidate>
   <div class="row">
     <div class="small-12 columns">
+		<div class="row collapse hide-for-small">
+			<div class="medium-2 columns">
+				<label>Name</label>
+			</div>
+			<div class="medium-10 columns">
+				<label>Address</label>
+			</div>
+		</div>
       <div class="row collapse">
-        <div class="large-3 columns"><input ng-model="newContact.name" type="text" class="radius prefix" placeholder="Write a new contact name" required autofocus /></div>
-        <div class="large-5 columns">
-          <input ng-model="newContact.address" class="prefix" type="text" placeholder="Enter a bitcoin address here or use the buttons on the right." required btc-address />
+        <div class="medium-2 columns">
+			<input ng-model="newContact.name" type="text" class="radius prefix" placeholder="Name for this contact..." required autofocus />
+		</div>
+        <div class="medium-6 columns">
+          <input ng-model="newContact.address" class="prefix" type="text" placeholder="Bitcoin address..." required btc-address />
           <span class="input-status fa fa-check"></span>
         </div>
-        <div class="large-2 columns"><a href="" ng-click="newContact.address = clipboard.paste()" class="button postfix fa fa-clipboard">Paste</a></div>
-        <div class="large-2 columns"><a href="" ng-click="modals.scanQr(newContact)" class="button radius postfix fa fa-qrcode">Scan QR</a></div> 
+        <div class="small-6 medium-2 columns"><a href="" ng-click="newContact.address = clipboard.paste()" class="button postfix fa fa-clipboard">Paste</a></div>
+        <div class="small-6 medium-2 columns"><a href="" ng-click="modals.scanQr(newContact)" class="button radius postfix fa fa-qrcode">Scan QR</a></div> 
       </div>
     </div>
   </div>

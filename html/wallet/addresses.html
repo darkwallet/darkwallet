@@ -62,7 +62,7 @@
            {{address.balance | asBtc}} {{settings.currency}}
         </div>
     </div>
-   <div ng-if="nPages>1" class="pagination-centered">
+   <div ng-if="nPages>1" class="pagination-centered topmargin">
     <ul class="pagination">
         <li ng-click="setPage(page-1)" ng-class="{unavailable:page==0}" class="arrow unavailable"><a href="">&laquo;</a></li>
         <li ng-click="setPage($index)" ng-repeat="n in range(nPages) track by $index" ng-class="{current: page==$index}"><a>{{$index+1}}</a></li>
@@ -71,8 +71,8 @@
     </ul>
    </div>
 	<div class="text-right topmargin" ng-hide="pocket.isFund">
-    	<a class="button small radius nomarginbottom" ng-click="generateAddress(pocket.index*2)">New address</a>
-    	<a class="button small radius nomarginbottom" ng-click="generateAddress((pocket.index*2)+1)">New change address</a>
+    	<a class="button small radius nomarginbottom fa fa-plus" ng-click="generateAddress((pocket.index*2)+1)"> New change address</a>
+    	<a class="button small radius glow nomarginbottom fa fa-plus" ng-click="generateAddress(pocket.index*2)"> New address</a>
   	</div>
 
 
