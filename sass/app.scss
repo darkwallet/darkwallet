@@ -1,8 +1,12 @@
+$primary-color: rgba(30, 190, 90,0.9) !default;
+$primary-color-dark: rgba(30, 170, 80,0.9);
+
 @import "normalize";
 @import "settings";
 @import "foundation";
 @import "toaster";
 @import "animation";
+
 
 html, body:not(.popupbody) { height: 100%; overflow-y: hidden; }
 html.popup { width: auto; height: auto; max-height: 100%; overflow: hidden; }
@@ -236,19 +240,21 @@ span.ellipsis, div.ellipsis {
 
 .address-row .columns:last-of-type { padding-right: 0.3em;}
 
-.address-row { line-height: 230%; }
+.address-row { line-height: 230%; overflow: hidden;}
 
-.address-row a.button:not(:hover) { background: scale-color($primary-color, $lightness: -80%); }
+.address-row div a.button.square.lefted, .address-row div a.button.square.righted { border-radius: 0px; }
 
 .address-row:nth-child(odd) a.button:not(:hover) {
-	background: scale-color($primary-color, $lightness: -70%);
+	background: $primary-color-dark;
 }
 
-
+.transactions div.row:nth-child(even), .address-row:nth-child(even) { 
+	background: rgba(0,0,0,0.2);
+	
+}
 
 .transactions div.row:nth-child(odd), .address-row:nth-child(odd) { 
-	background: darken($body-bg, 5%);
-	border-radius: $global-radius;
+	background: rgba(0,0,0,0.5);
 }
 
 /* Wallets dropdown ---------------------  */
