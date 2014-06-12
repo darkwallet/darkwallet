@@ -11,21 +11,21 @@ function MultisigFund(multisig) {
     // Multisig here is linked to the model store
     this.multisig = multisig;
 
+    // Indexes we control
+    this.me = [];
+
     // Participants is a list of detected contacts
     this.participants = this.detectParticipants();
 
     // Tasks is a list of tasks, each linked to the store.
     this.tasks = this.detectTasks();
-
-    // Whether the user can sign in this fund
-    this.canSign = this.participants.filter(function(participant) {return participant.type=='me';});
 }
 
 
 /**
  * Create a profile out of a public key by looking in contacts and wallet.
  */
-MultisigFund.prototype.detectParticipant = function(pubKeyBytes) {
+MultisigFund.prototype.detectParticipant = function(pubKeyBytes, i) {
     var identity = DarkWallet.getIdentity();
 
     // Ensure we check the compressed version for my address
@@ -38,6 +38,7 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes) {
     if (walletAddress) {
         // Current identity
         participant.type = 'me';
+        this.me.push(i);
         participant.name = identity.name;
         participant.address = walletAddress;
         // In some cases would not be the stealth identifier.
@@ -71,8 +72,8 @@ MultisigFund.prototype.detectParticipants = function() {
     var self = this;
     var participants = [];
 
-    this.multisig.pubKeys.forEach(function(pubKey) {
-        participants.push(self.detectParticipant(pubKey));
+    this.multisig.pubKeys.forEach(function(pubKey, i) {
+        participants.push(self.detectParticipant(pubKey, i));
     });
 
     return participants;
@@ -83,6 +84,7 @@ MultisigFund.prototype.detectParticipants = function() {
  * Check tasks and put some info in the pocket
  */
 MultisigFund.prototype.detectTasks = function() {
+    var self = this;
     var fund = this.multisig;
     var identity = DarkWallet.getIdentity();
     var res = [];
@@ -90,10 +92,21 @@ MultisigFund.prototype.detectTasks = function() {
     var tasks = identity.tasks.tasks.multisig;
     if (tasks) {
         tasks.forEach(function(task) {
-            var addresses = task.pending.map(function(p){return p.address});
+            var addresses = task.pending.map(function(p){ return p.address; });
+
             if (addresses.indexOf(fund.address) != -1) {
+                var canSign = self.me.slice();
+                // See if our indexes are signed
+                if (self.me.length > 0) {
+                    task.pending.forEach(function(p){
+                        var signed = Object.keys(p.signatures);
+                        canSign = canSign.filter(function(i) {return (signed.indexOf(i) == -1)});
+                    });
+                }
+
                 var tx = new Bitcoin.Transaction(task.tx);
-                res.push({tx: tx, task: task});
+                res.push({tx: tx, task: task, canSign: canSign});
+
             }
         });
     }
@@ -259,7 +272,8 @@ MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
                     DarkWallet.service.multisigTrack.sign(self.multisig, spend.tx, sig);
                     signed = true;
                 });
-                spend.task.canSign = false;
+                // TODO: may want to remove just this participant here
+                spend.canSign = [];
             });
         }
     });

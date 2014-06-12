@@ -34,7 +34,7 @@
             </span>
             </p>
             <!-- Sign -->
-            <button ng-show="pocket.fund.canSign && !importingFundSig && !foreignFundSig" ng-click="signFundTx(task)" class="button-sm postfix fa large-6 fa-pencil" >Sign</button>
+            <button ng-show="task.canSign.length && !importingFundSig && !foreignFundSig" ng-click="signFundTx(task)" class="button-sm postfix fa large-6 fa-pencil" >Sign</button>
 
             <!-- Import sig -->
             <button class="button-sm postfix fa large-6 fa-link" ng-show="!importingFundSig && !foreignFundSig" ng-click="importingFundSig=true">Import Signature</button>
