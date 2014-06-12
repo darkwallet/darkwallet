@@ -36,6 +36,10 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
                       // Get this here so we don't need Object in angular :-P
                       guiTask.signed = Object.keys(task.pending[0].signatures).length;
                       guiTask.fund = identity.wallet.multisig.search({address: task.address});
+                      // TODO: move setting the finished state to a better place
+                      if (guiTask.signed >= guiTask.fund.m) {
+                          task.state = 'finished';
+                      }
                   }
                   tasks.push(guiTask);
               }
