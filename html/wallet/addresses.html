@@ -11,7 +11,7 @@
             <button ng-click="clipboard.copy(pocket.stealth)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
         </div>
         <div class="medium-2 columns">
-            <button ng-click="modals.showBtcQr(pocket.stealth)" class="nomarginbottom button postfix radius fa fa-qrcode">QR</button>
+            <button ng-click="modals.showBtcQr(pocket.stealth)" class="nomarginbottom button postfix radius fa fa-qrcode">Show QR</button>
         </div>
     </div>
 
@@ -70,7 +70,7 @@
         <li ng-click="setPage(page+1)" ng-class="{unavailable:page==nPages-1}" class="arrow"><a href="">&raquo;</a></li>
     </ul>
    </div>
-	<div class="text-right" ng-hide="pocket.isFund">
+	<div class="text-right topmargin" ng-hide="pocket.isFund">
     	<a class="button small radius nomarginbottom" ng-click="generateAddress(pocket.index*2)">New address</a>
     	<a class="button small radius nomarginbottom" ng-click="generateAddress((pocket.index*2)+1)">New change address</a>
   	</div>
