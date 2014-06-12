@@ -4540,7 +4540,7 @@ div.modal-ng.ng-animate.ng-leave {
 div.modal-ng.ng-animate.ng-enter {
   transition: all 300ms ease-out; }
 
-#maintitle img, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
+#maintitle img, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
   transition: all 300ms ease-out; }
 
 @-webkit-keyframes rotateFoldBottom {
@@ -4895,6 +4895,13 @@ span.ellipsis, div.ellipsis {
   border-radius: 0px; }
 
 .address-row:nth-child(odd) a.button:not(:hover) {
+  background: rgba(30, 170, 80, 0.9); }
+
+div.identitylist {
+  padding-left: 1em; }
+
+div.identitylist:hover {
+  cursor: pointer;
   background: rgba(30, 170, 80, 0.9); }
 
 .transactions div.row:nth-child(even), .address-row:nth-child(even) {
