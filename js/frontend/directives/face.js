@@ -65,6 +65,14 @@ var callbackCache = {};
           return ret;
         }
 
+        function loadImage(onloads, piece) {
+            onloads.push(function(callback) {
+              piece.addEventListener('load', function() {
+                callback(null);
+              }, false);
+            });
+        }
+
         function generateImage(data, callback) {
           var gender = data[0];
           var onloads = [];
@@ -72,11 +80,7 @@ var callbackCache = {};
             var piece = new Image();
             piece.src = src(gender, i, data[i+1]);
             pieces.push(piece);
-            onloads.push(function(callback) {
-              piece.addEventListener('load', function() {
-                callback(null);
-              }, false);
-            });
+            loadImage(onloads, piece);
           }
           async.parallel(onloads, function() {
             for (var i=0; i < pieces.length; i++) {
