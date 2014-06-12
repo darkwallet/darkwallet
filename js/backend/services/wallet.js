@@ -163,6 +163,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
         // Show a notification for incoming transactions
         if (row) {
+            core.service.multisigTrack.processTx(tx);
             notifyRow(walletAddress, row, height);
         }
     }
