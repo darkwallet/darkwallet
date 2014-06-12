@@ -25,9 +25,11 @@
 			<span class="label" ng-show="participant.type=='me'">me</span>
         	<identicon icon-size="38" hash="participant.hash" ng-show="participant.type!='me'" title="{{contact.hash}}"></identicon>
 		</div>
-		<div class="small-11 columns">
-			<div ng-show="participant.type">{{participant.name}} <span ng-show="participant.paired" class="fa fa-chain"></span></div>
-			<input ng-show="!participant.type" type="text" value="{{participant.name}}" readonly></input>
+		<div class="small-10 columns">
+			<input type="text" value="{{participant.name}}" readonly></input>
+		</div>
+		<div class="small-1 columns">
+			<a tooltip="Identity paired" tooltip-append-to-body="true" ng-show="participant.paired" class="fa fa-chain button postfix square radius"></a>
 		</div>
 		
     </div>
