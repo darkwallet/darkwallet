@@ -34,7 +34,7 @@
 			  <li>
 				  <a ng-click="clipboard.copy(currentAddress.address)" class="fa fa-clipboard"> Copy address</a>
 			  </li>
-			  <li>
+			  <li ng-show="currentAddress.type!='multisig'">
 				  <a ng-click="copyClipboardPublic(currentAddress)" class="fa fa-key"> Copy public key</a>
 			  </li>
 	        </ul>
