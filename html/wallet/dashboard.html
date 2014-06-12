@@ -6,7 +6,7 @@
 		<div class="row collapse">
 	        <h5>{{pocket.isFund?'Fund':'Stealth'}} address</h5>
 			<div class="small-1 columns text-center">
-				<identicon ng-hide="row.contact" icon-size="38" hash="pocket.mainAddress"></identicon>
+				<identicon ng-hide="row.contact" icon-size="38" hash="pocket.mainHash"></identicon>
 			</div>
 	        <div class="small-9 columns">
 	          <input type="text" class="prefix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />

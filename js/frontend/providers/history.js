@@ -81,6 +81,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       this.pocket.changeAddresses = [];
       this.pocket.addresses = [address];
       this.pocket.mainAddress = address.address;
+      this.pocket.mainHash = identity.contacts.generateContactHash(this.pocket.mainAddress);
       this.pocket.fund = new MultisigFund(fund);
       this.pocket.tasks = this.pocket.fund.tasks;
 
@@ -109,6 +110,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var mainAddress = identity.wallet.getAddress([0]);
       this.pocket.stealth = mainAddress.stealth;
       this.pocket.mainAddress = mainAddress.stealth;
+      this.pocket.mainHash = identity.contacts.generateContactHash(this.pocket.mainAddress);
 
       this.pocket.fund = null;
       this.pocket.addresses = this.$wallet.allAddresses;
@@ -139,6 +141,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       this.pocket.mpk = walletAddress.mpk;
       this.pocket.stealth = walletAddress.stealth;
       this.pocket.mainAddress = walletAddress.stealth;
+      this.pocket.mainHash = identity.contacts.generateContactHash(this.pocket.mainAddress);
       this.pocket.addresses = this.$wallet.addresses[pocketIndex];
       this.pocket.changeAddresses = this.$wallet.addresses[pocketIndex+1];
 
