@@ -259,7 +259,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
 
       // Build the tx
       var metadata = identity.wallet.prepareTx(pocketIndex, [recipient], changeAddress, fee);
-      this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', metadata.tx.clone(), opening.amount, fee, peer);
+      var guestTx = BtcUtils.fixTxVersions(metadata.tx.clone(), identity);
+      this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', guestTx, opening.amount, fee, peer);
       this.ongoing[opening.id].pocket = pocketIndex;
 
       // Post using end to end channel capabilities
