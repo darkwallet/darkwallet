@@ -60,6 +60,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
 
 
   var keyRing = DarkWallet.getKeyRing();
+
   keyRing.loadIdentities(function(identityNames) {
     var identities = [];
     identityNames.forEach(function(item) {
@@ -67,7 +68,11 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
     });
     $scope.identities = identities;
     if (!$scope.currentIdentity) {
-        $scope.currentIdentity = identityNames[0];
+        try {
+            $scope.currentIdentity = DarkWallet.service.wallet.getCurrentIdentity().name;
+        } catch (e) {
+            $scope.currentIdentity = identityNames[0];
+        }
     }
     if (keyRing.identities.hasOwnProperty($scope.currentIdentity)) {
         $scope.identityLoaded = true;
