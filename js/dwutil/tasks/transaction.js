@@ -12,7 +12,7 @@ var TransactionTasks = {};
 /**
  * Create a task for a spend initiated by the wallet
  */
-TransactionTasks.processSpend = function(hash, total, recipients) {
+TransactionTasks.processSpend = function(hash, total, recipients, label) {
     var identity = DarkWallet.getIdentity();
     var oldTask = identity.tasks.search('send', 'hash', hash);
     if (oldTask) {

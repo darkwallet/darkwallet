@@ -364,11 +364,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
       // Now ask for the password before continuing with the next step   
       modals.password('Unlock password', function(password) {
-          // Set the label if the user entered any
-          if (title) {
-              var hash = Bitcoin.convert.bytesToHex(metadata.tx.getHash());
-              identity.txdb.setLabel(hash, title);
-          }
+          // Store the label for the tx
+          metadata.label = title;
           // Run the password callback
           onPassword(metadata, amountNote, password);
       });

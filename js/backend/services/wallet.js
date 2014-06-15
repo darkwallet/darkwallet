@@ -308,6 +308,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         var task = {tx: newTx.serializeHex(),
                     state: 'announce',
                     total: metadata.total,
+                    label: metadata.label,
                     fee: metadata.fee,
                     recipients: metadata.recipients,
                     change: metadata.change,
@@ -381,7 +382,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             task.progress = 100;
 
             var hash = Bitcoin.convert.bytesToHex(tx.getHash());
-            var spendTask = TransactionTasks.processSpend(hash, task.total, task.recipients);
+            var spendTask = TransactionTasks.processSpend(hash, task.total, task.recipients, task.label);
             core.service.badge.setItems(self.getCurrentIdentity());
             self.broadcastTx(tx, spendTask, function(err, data) {console.log(err,data)});
         } else {
@@ -406,7 +407,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             } else if (broadcast) {
                 // Broadcast and add task
                 var txHash = Bitcoin.convert.bytesToHex(newTx.getHash());
-                var task = TransactionTasks.processSpend(txHash, metadata.total, metadata.recipients);
+                if (metadata.label) {
+                    identity.txdb.setLabel(txHash, metadata.label);
+                }
+                var task = TransactionTasks.processSpend(txHash, metadata.total, metadata.recipients, metadata.label);
                 core.service.badge.setItems(identity);
                 self.broadcastTx(newTx, task, callback);
             } else {
@@ -422,6 +426,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
      this.broadcastTx = function(newTx, task, callback) {
          // Broadcasting
          var serialized = newTx.serializeHex();
+
+         if (task.label) {
+             var hash = Bitcoin.convert.bytesToHex(newTx.getHash());
+             core.getCurrentIdentity().txdb.setLabel(hash, label);
+         }
          var notifyTx = function(error, count) {
              if (error) {
                  console.log("Error sending tx: " + error);
