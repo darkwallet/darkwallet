@@ -50,7 +50,7 @@
     </nav>
 
     <div class="modal-ng" ng-cloak ng-if="modals.show">
-       <div id="modal-area" ng-controller="NgModalCtrl" ng-include="modals.page" ng-keydown="onKeyDown($event)" tabindex="6">
+       <div ng-controller="NgModalCtrl" ng-include="modals.page" ng-keydown="onKeyDown($event)" tabindex="6">
        </div>
     </div>
 	
