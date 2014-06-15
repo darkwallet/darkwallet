@@ -164,6 +164,10 @@ Wallet.prototype.loadPubKeys = function() {
             }
         }
     });
+
+    // Initialize if empty before creating pocket keys
+    this.initIfEmpty();
+
     // Upgrade stealth addresses
     this.pockets.hdPockets.forEach(function(pocket, i) {
         var walletAddress = self.pubKeys[[i*2]];

@@ -16,9 +16,6 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       this.addresses = {};
       this.allAddresses.splice(0, this.allAddresses.length);
 
-      // initialize wallet addresses if empty
-      identity.wallet.initIfEmpty();
-
       // load addresses for this identity
       this.loadAddresses(identity);
   }
