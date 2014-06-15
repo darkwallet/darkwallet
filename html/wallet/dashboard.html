@@ -48,7 +48,7 @@
                 <identicon ng-show="row.contact" icon-size="24" hash="row.contact.hash"></identicon>
 				<identicon ng-hide="row.contact" icon-size="24" data="row.address"></identicon>
 				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
-                {{row.contact ? row.contact.name : row.address}}
+                {{row.contact ? row.contact.name : (row.label || row.address)}}
                 
                </div>
              </div>

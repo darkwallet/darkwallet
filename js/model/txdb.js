@@ -71,5 +71,25 @@ TransactionDatabase.prototype.setLabel = function(txHash, name) {
     this.transactions[txHash][1] = name;
 };
 
+/**
+ * Get the label for a transaction
+ * @param {String} txHash Transaction hash
+ */
+TransactionDatabase.prototype.getLabel = function(txHash) {
+    if (this.transactions.hasOwnProperty(txHash)) {
+        return this.transactions[txHash][1];
+    }
+};
+
+/**
+ * Get the body for a transaction
+ * @param {String} txHash Transaction hash
+ */
+TransactionDatabase.prototype.getBody = function(txHash) {
+    if (this.transactions.hasOwnProperty(txHash)) {
+        return this.transactions[txHash][0];
+    }
+};
+
 return TransactionDatabase;
 });
