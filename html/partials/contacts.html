@@ -6,9 +6,9 @@
     <a id="newcontact" class="button tiny radius fa fa-plus topright" ng-show="!(contactFormShown===true)" ng-click="modals.focus('new-contact-name'); contactFormShown = true"> New contact</a>
   </div>
 </div>
-<div class="row" ng-if="!(contactFormShown === true) && allContacts.length>5">
+<div class="row" ng-show="!(contactFormShown === true) && allContacts.length>5">
   <div class="small-12 columns">
-        <input type="text" placeholder="Search..." class="radius" ng-change="filterContacts()" ng-model="contactSearch" auto-focus>
+        <input id="contact-search" type="text" placeholder="Search..." class="radius" ng-change="filterContacts()" ng-model="contactSearch" autofocus>
   </div>
 </div>
 <form name="createContactForm" ng-show="contactFormShown === true" ng-submit="createContact()" novalidate>
@@ -37,7 +37,7 @@
   </div>
   <div class="row text-right">
         <div class="small-12 columns">
-          <a href="" ng-click="contactFormShown = false" class="button alert small radius">Cancel</a>
+          <a href="" ng-click="modals.focus('contact-search'); contactFormShown = false" class="button alert small radius">Cancel</a>
           <input ng-disabled="createContactForm.$invalid" type="submit" class="button small radius" value="Save" />
         </div>
   </div>
