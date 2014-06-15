@@ -3,6 +3,7 @@
 'use strict';
 
 define([
+    './autofocus',
     './face',
     './identicon',
     './qr',
