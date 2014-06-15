@@ -8,7 +8,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'dwutil/multisig'], function (controllers, DarkWallet, Port, MultisigFund) {
+define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require'], function (controllers, DarkWallet, Port, require) {
   controllers.controller('NotificationsCtrl', ['$scope', '$window', 'modals', 'notify', '$brc', function($scope, $window, modals, notify, $brc) {
 
   $scope.tasks = [];
@@ -64,43 +64,42 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'dwutil/mu
       $window.open('index.html#wallet');
   }
 
-  function finishSigning(fund, fundTask) {
-      var tx = fund.finishTransaction(fundTask);
-      if (tx) {
-          return $brc.broadcast(tx, fundTask);
-      }
-      return tx;
-  }
-
   /**
    * Continue signing after getting the password
    */
   function finishSignFundTx(password, guiTask) {
-      var identity = DarkWallet.getIdentity();
+      require(['dwutil/multisig'], function(MultisigFund) {
+          var identity = DarkWallet.getIdentity();
 
-      var fund = new MultisigFund(guiTask.fund);
+          var fund = new MultisigFund(guiTask.fund);
 
-      var fundTask = fund.getFundTask(guiTask.store);
+          var fundTask = fund.getFundTask(guiTask.store);
 
-      var inputs = fund.getValidInputs(fundTask.tx);
+          var inputs = fund.getValidInputs(fundTask.tx);
 
-      var signed;
-      try {
-          signed = fund.signTransaction(password, fundTask, inputs);
-      } catch (e) {
-          notify.warning("Invalid Password");
-          return;
-      }
+          var signed;
+          try {
+              signed = fund.signTransaction(password, fundTask, inputs);
+          } catch (e) {
+              notify.warning("Invalid Password");
+              return;
+          }
 
-      if (!signed) {
-          notify.warning("Transaction was already signed by us");
-          return;
-      }
-      if (finishSigning(fund, fundTask)) {
-          notify.success('Signed transaction and ready to go!');
-      } else {
-          notify.success('Signed transaction');
-      }
+          if (!signed) {
+              notify.warning("Transaction was already signed by us");
+              return;
+          }
+          var tx = fund.finishTransaction(fundTask);
+          if (tx) {
+              $brc.broadcast(tx, fundTask);
+              notify.success('Signed transaction and broadcasted transaction!');
+          } else {
+              notify.success('Signed transaction');
+          }
+          if (!$scope.$$phase) {
+              $scope.$apply();
+          }
+      });
   };
 
 
