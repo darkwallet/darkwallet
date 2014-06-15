@@ -154,6 +154,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
   var prepareRecipients = function() {
       var identity = DarkWallet.getIdentity();
       var recipients = [];
+      var contacts = [];
       var totalAmount = 0;
       
       if ($scope.quicksend.next) {
@@ -177,8 +178,11 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           var amount = CurrencyFormat.asSatoshis(recipient.amount);
           totalAmount += amount;
           recipients.push({address: recipient.address, amount: amount});
+          // Contacts is like recipients with the extra contact reference, that we can't
+          // keep in recipients since it can be serialized into the store
+          contacts.push({address: recipient.address, amount: amount, contact: recipient.contact});
       });
-      return {amount: totalAmount, recipients: recipients};
+      return {amount: totalAmount, recipients: recipients, contacts: contacts};
   };
 
   $scope.validateSendForm = function() {
@@ -362,10 +366,11 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
       var amountNote = (fee + totalAmount) + ' satoshis';
 
+      // Store the label for the tx
+      metadata.label = title;
+
       // Now ask for the password before continuing with the next step   
-      modals.password('Unlock password', function(password) {
-          // Store the label for the tx
-          metadata.label = title;
+      modals.confirmSend('Unlock password', {pocket: identity.wallet.getPocket(pocketIndex), metadata: metadata}, spend.contacts, function(password) {
           // Run the password callback
           onPassword(metadata, amountNote, password);
       });

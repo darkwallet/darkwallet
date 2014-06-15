@@ -99,6 +99,10 @@ var modals = {
 
   password: function(text, callback) {
     modals.open('ask-password', {text: text, password: ''}, callback);
+  },
+
+  confirmSend: function(text, spend, recipients, callback) {
+    modals.open('confirm-send', {text: text, spend: spend, recipients: recipients, password: ''}, callback);
   }
 };
 return modals;
