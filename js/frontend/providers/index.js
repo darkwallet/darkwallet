@@ -5,6 +5,7 @@
 define([
     './clipboard',
     './modals',
+    './broadcast',
     './wallet',
     './history',
     './notify',

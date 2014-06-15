@@ -12,8 +12,12 @@ define([
     'frontend/controllers/calculator',
     'frontend/controllers/send',
     'frontend/controllers/notifications',
+    'frontend/controllers/ngmodal',
     'frontend/filters/currency',
     'frontend/providers/wallet',
+    'frontend/providers/sounds',
+    'frontend/providers/modals',
+    'frontend/providers/broadcast',
     'frontend/directives/identicon',
     'frontend/directives/validation'
 ], function (angular) {

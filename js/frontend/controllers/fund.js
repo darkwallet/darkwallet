@@ -6,7 +6,7 @@
 define(['./module', 'darkwallet'],
 function (controllers, DarkWallet) {
 
-  controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', function($scope, modals, notify) {
+  controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', '$brc', function($scope, modals, notify, $brc) {
 
   $scope.Object = Object;
 
@@ -15,34 +15,9 @@ function (controllers, DarkWallet) {
    */
   function finishSigning(fund, task) {
       var tx = fund.finishTransaction(task);
-
-      // Callback listening for radar events
-      var broadcastCallback = function(err, data) {
-          console.log("radar feedback", data);
-          if (err) {
-              task.error = "Failed: " + err;
-              notify.warning("Failed Broadcasting", "Imported but failed to broadcast " + err);
-          } else if (data.type == 'radar' && task.broadcasting) {
-              task.broadcasted = true;
-              task.radar = data.radar;
-              task.broadcasting = false;
-              notify.success('Imported', 'Signature imported and sent to broadcaster!');
-          } else if (data.type == 'radar') {
-              task.radar = data.radar;
-              notify.note('Broadcasting', 'Radar: ' + data.radar);
-          }
-          if (!$scope.$$phase) {
-              $scope.$apply();
-          }
-      };
-
-      // Broadcast
       if (tx) {
-          task.broadcasting = true;
-          var walletService = DarkWallet.service.wallet;
-          walletService.broadcastTx(task.tx, false, broadcastCallback);
+          $brc.broadcast(tx, task);
       }
-
       return tx;
   };
 

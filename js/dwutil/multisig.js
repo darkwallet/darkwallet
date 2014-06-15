@@ -116,6 +116,16 @@ MultisigFund.prototype.detectTasks = function() {
     return res;
 };
 
+/**
+ * Get the fundTask for a model task.
+ */
+MultisigFund.prototype.findFundTask = function(task) {
+    for(var i=0; i<this.tasks.length; i++) {
+        if (this.tasks[i].task == task) {
+            return this.tasks[i];
+        }
+    }
+}
 
 /**
  * Order signatures for this multisig

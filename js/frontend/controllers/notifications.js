@@ -8,8 +8,8 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  controllers.controller('NotificationsCtrl', ['$scope', '$window', 'modals', function($scope, $window, modals) {
+define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'dwutil/multisig'], function (controllers, DarkWallet, Port, MultisigFund) {
+  controllers.controller('NotificationsCtrl', ['$scope', '$window', 'modals', 'notify', '$brc', function($scope, $window, modals, notify, $brc) {
 
   $scope.tasks = [];
 
@@ -61,6 +61,53 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
 
       // Should now go to the fund page
       $window.open('index.html#wallet');
+  }
+
+  function finishSigning(fund, fundTask) {
+      var tx = fund.finishTransaction(fundTask);
+      if (tx) {
+          return $brc.broadcast(tx, fundTask);
+      }
+      return tx;
+  }
+
+  /**
+   * Continue signing after getting the password
+   */
+  function finishSignFundTx(password, guiTask) {
+      var identity = DarkWallet.getIdentity();
+
+      var fund = new MultisigFund(guiTask.fund);
+
+      var fundTask = fund.getFundTask(guiTask.store);
+
+      var inputs = fund.getValidInputs(fundTask.tx);
+
+      var signed;
+      try {
+          signed = fund.signTransaction(password, fundTask, inputs);
+      } catch (e) {
+          notify.warning("Invalid Password");
+          return;
+      }
+
+      if (!signed) {
+          notify.warning("Transaction was already signed by us");
+          return;
+      }
+      if (finishSigning(fund, fundTask)) {
+          notify.success('Signed transaction and ready to go!');
+      } else {
+          notify.success('Signed transaction');
+      }
+  };
+
+
+  $scope.signTask = function(guiTask) {
+      // import transaction here
+      modals.password('Unlock password', function(password) {
+          finishSignFundTx(password, guiTask);
+      });
   }
 
   // Wallet service, connect to get notified about identity getting loaded.

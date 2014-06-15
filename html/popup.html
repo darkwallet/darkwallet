@@ -10,6 +10,14 @@
   </head>
   <body class="popupbody" ng-controller="PopupCtrl">
     <div class="popupcontainer" ng-controller="NotificationsCtrl">
+      <!-- modals -->
+
+      <div class="modal-ng" ng-cloak ng-if="modals.show">
+       <div ng-controller="NgModalCtrl" ng-include="modals.page">
+       </div>
+      </div>
+
+      <!-- Identity selection / Creation -->
       <div class="row">
         <div class="small-12 columns" ng-show="identities.length" ng-cloak>
           <a ng-click="forms.identityDropdown=!forms.identityDropdown" class="fa nomarginbottom button postfix fa-chevron-circle-down">{{currentIdentity}}</a>
@@ -30,12 +38,14 @@
         </div>
       </div>
 
+      <!-- Notifications -->
       <div class="row panel radius notifications" ng-repeat="task in tasks" ng-include="'notifications/'+task.section+'.html'">
          <!--
            Content in  templates inside html/notifications/
          -->
       </div>
 
+      <!-- Tools -->
       <dl ng-show="settings.advanced" ng-cloak ng-show="connected && identities.length" class="row tabs collapse">
        <dd class="" title="Calculator" ng-class="{active:tab==1}" ng-click="tab=1">
          <a><span class="fa fa-exchange"></span></a>

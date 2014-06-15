@@ -8,5 +8,4 @@ define(['frontend/providers/module'], function (providers) {
     warning: function() {},
     success: function() {}
   });
-  providers.value('modals', {});
 });
