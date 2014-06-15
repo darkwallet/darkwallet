@@ -20,25 +20,24 @@ div.cardflipper > div.wizard.ng-enter.ng-enter-active {
 	opacity: 1;
 }
 
-
-div.tab-scroller.totheright.ng-enter,
-div.tab-scroller.totheleft.ng-leave.ng-leave-active { 
-	opacity: 0; 
+div.totheright div.tab-scroller.ng-enter,
+div.totheleft div.tab-scroller.ng-leave.ng-leave-active { 
+	opacity: 0;
 	-webkit-transform: translate3d(25%,0,0) scale3d(0.3,1,1); 
 	-webkit-transform-origin: right;
 }
 
-div.tab-scroller.totheright.ng-leave.ng-leave-active,
-div.tab-scroller.totheleft.ng-enter { 
+div.totheright div.tab-scroller.ng-leave.ng-leave-active,
+div.totheleft div.tab-scroller.ng-enter { 
 	opacity: 0; 
 	-webkit-transform: translate3d(-25%,0,0) scale3d(0.3,1,1);
 	-webkit-transform-origin: left;
 }
 
-div.tab-scroller.totheright.ng-enter-active,
-div.tab-scroller.totheleft.ng-enter-active,
-div.tab-scroller.totheleft.ng-leave,
-div.tab-scroller.totheright.ng-leave { 
+div.totheright div.tab-scroller.ng-enter-active,
+div.totheleft div.tab-scroller.ng-enter-active,
+div.totheleft div.tab-scroller.ng-leave,
+div.totheright div.tab-scroller.ng-leave { 
 	opacity: 1; 
 	-webkit-transform: translate3d(0,0,0) scale3d(1,1,1);
 	position: absolute;
