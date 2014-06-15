@@ -69,6 +69,7 @@ TransactionDatabase.prototype.setLabel = function(txHash, name) {
         this.transactions[txHash] = [];
     }
     this.transactions[txHash][1] = name;
+    this.store.save();
 };
 
 /**
