@@ -14,13 +14,13 @@
         <small title="Total funds unconfirmed, including incoming and outgoing balances" ng-show="pocket.balance.unconfirmed">Unconfirmed: {{pocket.balance.unconfirmed | formatBtc}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></small>
     </h4>
     <!-- Tabs -->
-    <div class="tabbable">
+    <div class="tabbable" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
         <dl class="tabs">
           <dd ng-show="tab.isVisible()" ng-class="{active: tab.isActive()}" ng-repeat="tab in tabs.pages">
               <a ng-click="tab.select()">{{tab.heading}}</a>
           </dd>
         </dl>
-        <div class="tab-scroller" ng-include="'wallet/' + tabs.pages[tabs.current].page + '.html'" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
+        <div class="tab-scroller" ng-include="tabs.pages[tabs.current].tplUrl" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
         </div>
     </div>
   </div>

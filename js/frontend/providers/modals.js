@@ -30,11 +30,10 @@ var modals = {
         modals.cancelCallback = cancelCallback;
         modals.show = true;
     }
-    console.log($templateCache.get(tplUrl));
     if ($templateCache.get(tplUrl)) {
         finish();
     } else {
-        $http.get(tplUrl, {cache:$templateCache}).success(function(data) {$templateCache.put(tplUrl, data); finish()});
+        $http.get(tplUrl, {cache:$templateCache}).success(function() {finish();});
     }
   },
 

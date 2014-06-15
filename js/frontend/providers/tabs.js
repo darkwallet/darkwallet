@@ -4,6 +4,7 @@
 'use strict';
 
 define(['./module'], function (providers) {
+  providers.factory('$tabs', ['$templateCache', '$http', function($templateCache, $http) {
 
   var tabs = {};
 
@@ -20,6 +21,7 @@ define(['./module'], function (providers) {
     this.index = index++;
     this.heading = heading;
     this.page = page;
+    this.tplUrl = 'wallet/'+page+'.html';
   }
   
   Tab.prototype.isActive = function() {
@@ -31,8 +33,20 @@ define(['./module'], function (providers) {
   };
   
   Tab.prototype.select = function() {
+    var self = this;
+    var tplUrl = this.tplUrl;
+    // Finish setting the tab
+    var finish = function() {
       tabs.previous = tabs.current;
-      tabs.current = this.index;
+      tabs.current = self.index;
+    }
+    // Load straight away or preload the template
+    if ($templateCache.get(tplUrl)) {
+        finish();
+    } else {
+        $http.get(tplUrl, {cache:$templateCache}).success(function() {finish();});
+    }
+
   };
   
   tabs.pages = [
@@ -63,7 +77,6 @@ define(['./module'], function (providers) {
       }
   };
 
-  providers.factory('$tabs', [function() {
-      return tabs;
+  return tabs;
   }]);
 });
