@@ -2,7 +2,7 @@
 
 define(['./module', 'util/btc', 'darkwallet', 'dwutil/currencyformat'], function (providers, BtcUtils, DarkWallet, CurrencyFormat) {
 
-providers.factory('modals', ['$window', '$timeout', 'notify', 'sounds', function($window, $timeout, notify, sounds) {
+providers.factory('modals', ['$window', 'notify', 'sounds', '$templateCache', '$http', function($window, notify, sounds, $templateCache, $http) {
 
 var modals = {
 
@@ -22,11 +22,20 @@ var modals = {
    * second one the vars parameter passed to this function.
    */
   open: function(tplName, vars, okCallback, cancelCallback) {
-    modals.show = true;
-    modals.page = tplName;
-    modals.vars = vars;
-    modals.okCallback = okCallback;
-    modals.cancelCallback = cancelCallback;
+    var tplUrl = 'modals/'+tplName+'.html';
+    var finish = function() {
+        modals.page = tplUrl;
+        modals.vars = vars;
+        modals.okCallback = okCallback;
+        modals.cancelCallback = cancelCallback;
+        modals.show = true;
+    }
+    console.log($templateCache.get(tplUrl));
+    if ($templateCache.get(tplUrl)) {
+        finish();
+    } else {
+        $http.get(tplUrl, {cache:$templateCache}).success(function(data) {$templateCache.put(tplUrl, data); finish()});
+    }
   },
 
   onQrOk: function(data, vars) {
