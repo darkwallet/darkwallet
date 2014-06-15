@@ -37,6 +37,11 @@ var modals = {
     }
   },
 
+  focus: function(id) {
+    var elmt = document.getElementById(id);
+    elmt.focus();
+  },
+
   onQrOk: function(data, vars) {
     sounds.play('keygenEnd');
     var pars = BtcUtils.parseURI(data);
