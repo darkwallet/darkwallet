@@ -7,6 +7,7 @@ providers.factory('clipboard', ['notify', '$window', function(notify, $window) {
 var clipboard = {
 
   copy: function(text, notification) {
+    text = text.replace(/\n/g, "<br />");
     var copyDiv = $window.document.createElement('div');
     copyDiv.contentEditable = true;
     copyDiv.style="position: fixed;";
