@@ -6,13 +6,21 @@
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
   controllers.controller('NgModalCtrl', ['$scope', function($scope) {
 
-  $scope.ok = function() {
-      $scope.ngModals.page = false;
-      $scope.ngModals.show = false;
+  $scope.vars = $scope.modals.vars;
+
+  $scope.ok = function(data) {
+      $scope.modals.page = false;
+      $scope.modals.show = false;
+      if ($scope.modals.okCallback) {
+          $scope.modals.okCallback(data, $scope.vars);
+      }
   }
-  $scope.cancel = function() {
-      $scope.ngModals.page = false;
-      $scope.ngModals.show = false;
+  $scope.cancel = function(reason) {
+      $scope.modals.page = false;
+      $scope.modals.show = false;
+      if ($scope.modals.cancelCallback) {
+          $scope.modals.cancelCallback(reason, $scope.vars);
+      }
   }
   }]);
 });

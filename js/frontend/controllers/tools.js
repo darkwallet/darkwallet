@@ -61,8 +61,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   };
 
   $scope.newModal = function(name) {
-      $scope.ngModals.show = true;
-      $scope.ngModals.page = name;
+      modals.open(name, {});
   }
 
   // Enable advanced mode

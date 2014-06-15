@@ -2,10 +2,11 @@
 
 define(['./module', 'util/btc', 'darkwallet', 'dwutil/currencyformat'], function (providers, BtcUtils, DarkWallet, CurrencyFormat) {
 
-providers.factory('modals', ['$modal', '$window', '$timeout', 'notify', 'sounds', function($modal, $window, $timeout, notify, sounds) {
+providers.factory('modals', ['$window', '$timeout', 'notify', 'sounds', function($window, $timeout, notify, sounds) {
 
 var modals = {
 
+  page: false,
   /**
    * Opens a modal
    *
@@ -21,49 +22,11 @@ var modals = {
    * second one the vars parameter passed to this function.
    */
   open: function(tplName, vars, okCallback, cancelCallback) {
-
-    var ModalCtrl = function ($scope, $modalInstance, vars) {
-      $scope.vars = vars;
-      $scope.ok = function (value) {
-        $modalInstance.close(value);
-      };
-      $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-      };
-      $scope.onError = function(e) {
-        $modalInstance.dismiss(e);
-      };
-    };
-
-    var ok = function(data) {
-      okCallback ? (vars ? okCallback(data, vars) : okCallback(data)) : null;
-    };
-    var cancel = function(reason) {
-      cancelCallback ? (vars ? cancelCallback(reason, vars) : cancelCallback(reason)) : null;
-    };
-
-    var modal = $modal.open({
-      templateUrl: 'modals/' + tplName + '.html',
-      controller: ModalCtrl,
-      windowClass: 'modal-' + tplName,
-      resolve: {
-        vars: function() {
-          return vars;
-        }
-      }
-    });
-
-    // Fix autofocus in modals (broken because they have tabindex attribute set to -1)
-    modal.opened.then(function() {
-      $timeout(function() {
-        var element = $window.document.querySelectorAll(".modal-" + tplName + " [autofocus]")[0];
-        if (element) {
-          element.focus();
-        }
-      }, 10);
-    });
-
-    modal.result.then(ok, cancel);
+    modals.show = true;
+    modals.page = tplName;
+    modals.vars = vars;
+    modals.okCallback = okCallback;
+    modals.cancelCallback = cancelCallback;
   },
 
   onQrOk: function(data, vars) {
