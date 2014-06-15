@@ -11,9 +11,8 @@
   <body class="popupbody" ng-controller="PopupCtrl">
     <div class="popupcontainer" ng-controller="NotificationsCtrl">
       <!-- modals -->
-
-      <div id="modal-area" class="modal-ng" ng-cloak ng-if="modals.show">
-        <div ng-controller="NgModalCtrl" ng-include="modals.page" ng-keydown="onKeyDown($event)">
+      <div class="modal-ng" ng-cloak ng-if="modals.show">
+        <div id="modal-area" ng-controller="NgModalCtrl" ng-include="modals.page" ng-keydown="onKeyDown($event)" tabindex="0">
         </div>
       </div>
 

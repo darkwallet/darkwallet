@@ -29,6 +29,7 @@ var modals = {
         modals.okCallback = okCallback;
         modals.cancelCallback = cancelCallback;
         modals.show = true;
+        modals.focus('modal-area');
     }
     if ($templateCache.get(tplUrl)) {
         finish();

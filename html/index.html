@@ -49,8 +49,8 @@
       </section>
     </nav>
 
-    <div id="modal-area" class="modal-ng" ng-cloak ng-if="modals.show">
-       <div ng-controller="NgModalCtrl" ng-include="modals.page" ng-keydown="onKeyDown($event)">
+    <div class="modal-ng" ng-cloak ng-if="modals.show">
+       <div id="modal-area" ng-controller="NgModalCtrl" ng-include="modals.page" ng-keydown="onKeyDown($event)" tabindex="6">
        </div>
     </div>
 	
