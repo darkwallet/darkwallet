@@ -20,7 +20,7 @@
               <a ng-click="tab.select()">{{tab.heading}}</a>
           </dd>
         </dl>
-        <div class="tab-scroller" ng-include="tabs.pages[tabs.current].tplUrl" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
+        <div class="tab-scroller" ng-include="tabs.pages[tabs.current].tplUrl">
         </div>
     </div>
   </div>
