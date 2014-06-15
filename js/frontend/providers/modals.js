@@ -2,7 +2,7 @@
 
 define(['./module', 'util/btc', 'darkwallet', 'dwutil/currencyformat'], function (providers, BtcUtils, DarkWallet, CurrencyFormat) {
 
-providers.factory('modals', ['$window', 'notify', 'sounds', '$templateCache', '$http', function($window, notify, sounds, $templateCache, $http) {
+providers.factory('modals', ['$window', 'notify', 'sounds', '$templateCache', '$http', '$timeout', function($window, notify, sounds, $templateCache, $http, $timeout) {
 
 var modals = {
 
@@ -38,8 +38,10 @@ var modals = {
   },
 
   focus: function(id) {
-    var elmt = document.getElementById(id);
-    elmt.focus();
+    $timeout(function() {
+        var elmt = document.getElementById(id);
+        elmt.focus();
+    });
   },
 
   onQrOk: function(data, vars) {

@@ -3,12 +3,12 @@
     <h3>Contacts</h3>
   </div>
   <div class="small-6 columns text-right">
-    <a id="newcontact" class="button tiny radius fa fa-plus topright" ng-show="!(contactFormShown===true)" ng-click="contactFormShown = true"> New contact</a>
+    <a id="newcontact" class="button tiny radius fa fa-plus topright" ng-show="!(contactFormShown===true)" ng-click="modals.focus('new-contact-name'); contactFormShown = true"> New contact</a>
   </div>
 </div>
 <div class="row" ng-show="!(contactFormShown === true) && allContacts.length>5">
   <div class="small-12 columns">
-        <input type="text" placeholder="Search..." class="radius" ng-change="filterContacts()" ng-model="contactSearch">
+        <input type="text" placeholder="Search..." class="radius" ng-change="filterContacts()" ng-model="contactSearch" id="contact-search" ng-init="modals.focus('contact-search')">
   </div>
 </div>
 <form name="createContactForm" ng-show="contactFormShown === true" ng-submit="createContact()" novalidate>
@@ -24,7 +24,7 @@
 		</div>
       <div class="row collapse">
         <div class="medium-2 columns">
-			<input ng-model="newContact.name" type="text" class="radius prefix" placeholder="Name for this contact..." required autofocus />
+			<input id="new-contact-name" ng-model="newContact.name" type="text" class="radius prefix" placeholder="Name for this contact..." required autofocus />
 		</div>
         <div class="medium-6 columns">
           <input ng-model="newContact.address" class="prefix" type="text" placeholder="Bitcoin address..." required btc-address />
@@ -37,7 +37,7 @@
   </div>
   <div class="row text-right">
         <div class="small-12 columns">
-          <a href="" ng-click="contactFormShown = false" class="button alert small radius">Cancel</a>
+          <a href="" ng-click="modals.focus('contact-search'); contactFormShown = false" class="button alert small radius">Cancel</a>
           <input ng-disabled="createContactForm.$invalid" type="submit" class="button small radius" value="Save" />
         </div>
   </div>
