@@ -3,10 +3,16 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
+define(['./module', 'darkwallet', 'frontend/port', 'angular'], function (controllers, DarkWallet, Port, Angular) {
   controllers.controller('NgModalCtrl', ['$scope', function($scope) {
 
   $scope.vars = $scope.modals.vars;
+
+  $scope.onKeyDown = function(evt) {
+      if (evt.keyCode == 27) {
+          $scope.cancel();
+      }
+  };
 
   $scope.ok = function(data) {
       $scope.modals.show = false;

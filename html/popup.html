@@ -12,9 +12,9 @@
     <div class="popupcontainer" ng-controller="NotificationsCtrl">
       <!-- modals -->
 
-      <div class="modal-ng" ng-cloak ng-if="modals.show">
-       <div ng-controller="NgModalCtrl" ng-include="modals.page">
-       </div>
+      <div id="modal-area" class="modal-ng" ng-cloak ng-if="modals.show">
+        <div ng-controller="NgModalCtrl" ng-include="modals.page" ng-keydown="onKeyDown($event)">
+        </div>
       </div>
 
       <!-- Identity selection / Creation -->
