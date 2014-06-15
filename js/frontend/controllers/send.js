@@ -1,7 +1,7 @@
 'use strict';
 
-define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat'],
-function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
+define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat', 'bitcoinjs-lib'],
+function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', '$history', function($scope, $window, notify, modals, $wallet, $timeout, $history) {
   
   var sendForm = $scope.forms.send;
@@ -314,6 +314,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
       var spend = prepareRecipients();
       var recipients = spend.recipients;
       var totalAmount = spend.amount;
+      var title = sendForm.title;
 
       if (!recipients.length) {
           notify.note('You need to fill in at least one recipient');
@@ -334,8 +335,9 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
 
       var pocketIndex = sendForm.pocketIndex;
 
-      // on quick send the local pocket index overrides selected index
+      // on quick send the local pocket index overrides selected index, also there is no title
       if ($scope.quicksend && $scope.quicksend.next && $scope.quicksend.address) {
+          title = false;
           if ($history.pocket.isAll) {
               pocketIndex = 0;
           } else {
@@ -360,20 +362,16 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat) {
 
       var amountNote = (fee + totalAmount) + ' satoshis';
 
-      if (modals.password) {
-        // Now ask for the password before continuing with the next step   
-        modals.password('Unlock password', function(password) {
+      // Now ask for the password before continuing with the next step   
+      modals.password('Unlock password', function(password) {
+          // Set the label if the user entered any
+          if (title) {
+              var hash = Bitcoin.convert.bytesToHex(metadata.tx.getHash());
+              identity.txdb.setLabel(hash, title);
+          }
+          // Run the password callback
           onPassword(metadata, amountNote, password);
-        });
-      } else {
-        // the popup doesn't have modals defined
-        $scope.quicksend.password = true;
-        $scope.quicksend.onPassword = function(password) {
-          onPassword(metadata, amountNote, password);
-        };
-      }
-      
-      
+      });
   };
 
   $scope.removeAddress = function(field) {

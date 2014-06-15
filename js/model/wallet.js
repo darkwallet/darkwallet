@@ -621,7 +621,6 @@ Wallet.prototype.signTransaction = function(newTx, txUtxo, password, callback) {
  * @return {Boolean} If signed or not
  */
 Wallet.prototype.signMyInputs = function(inputs, newTx, privKeys) {
-    var txdb = this.identity.txdb;
     var signed = false;
     for(var i=0; i<newTx.ins.length; i++) {
         var anIn = newTx.ins[i];
@@ -716,7 +715,7 @@ Wallet.prototype.processOutput = function(walletAddress, txData, index, value, h
 Wallet.prototype.txInputsMine = function(txHash, txObj) {
     var txdb = this.identity.txdb;
     // if we don't have the transaction the inputs can't be ours
-    if (!txObj && !txdb.transactions.hasOwnProperty(txHash)) {
+    if (!txObj && (!txdb.transactions.hasOwnProperty(txHash) || !txdb.transactions[txHash][0])) {
         var keys = Object.keys(this.wallet.outputs);
         console.log("txInputsMine resorting to slow search");
         for(var i=0; i<keys.length; i++) {
@@ -728,7 +727,7 @@ Wallet.prototype.txInputsMine = function(txHash, txObj) {
         // we don't really know here :P
         return;
     }
-    var tx = txObj || new Bitcoin.Transaction(txdb.transactions[txHash]);
+    var tx = txObj || new Bitcoin.Transaction(txdb.transactions[txHash][0]);
     for (var i=0; i<tx.ins.length; i++) {
         var anIn = tx.ins[i];
         if (this.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
@@ -753,8 +752,8 @@ Wallet.prototype.txForAddress = function(walletAddress, tx) {
     for(var i=0; i<tx.ins.length; i++) {
         var outpoint = tx.ins[i].outpoint;
         var txHash = outpoint.hash;
-         if (identity.txdb.transactions.hasOwnProperty(txHash)) {
-            var prevTx = new Bitcoin.Transaction(identity.txdb.transactions[txHash]);
+         if (identity.txdb.transactions.hasOwnProperty(txHash) && identity.txdb.transactions[txHash][0]) {
+            var prevTx = new Bitcoin.Transaction(identity.txdb.transactions[txHash][0]);
             // XXX temporary while bitcoinjs-lib supports testnet better
             prevTx = BtcUtils.fixTxVersions(prevTx, identity);
 
@@ -811,7 +810,7 @@ Wallet.prototype.processTx = function(serializedTx, height) {
     var txHash = Bitcoin.convert.bytesToHex(tx.getHash());
 
     // Allow the bitcoinjs wallet to process the tx
-    if (!this.identity.txdb.transactions.hasOwnProperty(txHash)) {
+    if (!this.identity.txdb.transactions.hasOwnProperty(txHash) || !this.identity.txdb.transactions[txHash][0]) {
         // don't run if we already processed the transaction since
         // otherwise bitcoinjs-lib will reset 'pending' attribute.
 

@@ -8,6 +8,22 @@ define(['util/btc'], function(BtcUtils) {
 var DW_NS = 'dw:identity:';
 
 /**
+ * Upgrade version 3 to version 4
+ */
+
+function Upgrade3To4(store) {
+    // We change txdb to contain an array so we can store several fields.
+    if (store.transactions && Object.keys(store.transactions).length && !Array.isArray(store.transactions[Object.keys(store.transactions)[0]])) {
+        Object.keys(store.transactions).forEach(function(txHash) {
+            if (!Array.isArray(store.transactions[txHash])) {
+                store.transactions[txHash] = [store.transactions[txHash]];
+            }
+        });
+    }
+    return true;
+}
+ 
+/**
  * Upgrade version 2 to version 3
  */
 
@@ -85,7 +101,7 @@ function Upgrade1To2(store) {
  * @return true of false if the store was changed and should be saved
  */
 function Upgrade(store) {
-    if (store.version == 3) {
+    if (store.version == 4) {
         return false;
     }
 
@@ -104,6 +120,11 @@ function Upgrade(store) {
     if ((store.version == 2) && Upgrade2To3(store)) {
         store.version = 3;
         console.log("[upgrade] Upgraded to version 3")
+    }
+    // 3 to 4
+    if ((store.version == 3) && Upgrade3To4(store)) {
+        store.version = 4;
+        console.log("[upgrade] Upgraded to version 4")
     }
     return true;
 }
