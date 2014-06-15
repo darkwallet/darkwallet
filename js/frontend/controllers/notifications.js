@@ -12,6 +12,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'dwutil/mu
   controllers.controller('NotificationsCtrl', ['$scope', '$window', 'modals', 'notify', '$brc', function($scope, $window, modals, notify, $brc) {
 
   $scope.tasks = [];
+  $scope.modals = modals;
 
   var linkTasks = function() {
       var identity = DarkWallet.getIdentity();
