@@ -3,6 +3,20 @@
 		<form ng-submit="ok(vars.password)">
 		<!--{tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth, recipients: recipients}-->
 			<div class="medium-6 columns">
+			    <!-- High Fee warning -->
+			    <div ng-show="(vars.spend.metadata.fee>=100000)||(vars.spend.metadata.fee>vars.spend.metadata.total)">
+				<h3>Warning: High Fee!</h3>
+			        <div ng-show="(vars.spend.metadata.fee>=100000)&&(vars.spend.metadata.fee<1000000)">
+					<p>Your fee is bigger than reasonable (greater than 1 mBTC), please <b>double check</b> before sending.</p>
+			        </div>
+			        <div ng-show="vars.spend.metadata.fee>=1000000">
+					<p>Your fee is insanely high (greater than 10 mBTC), please <b>triple check</b> before sending.</p>
+			        </div>
+			        <div ng-show="vars.spend.metadata.fee>vars.spend.metadata.total">
+					<p>Your fee is greater than your sent amount, please <b>triple check</b> before sending.</p>
+			        </div>
+			    </div>
+
 			    <h3>{{vars.text}}</h3>
 			    <input auto-focus ng-model="vars.password" type="password" placeholder="Write your password..." />
 			    <button class="button small fa fa-check radius glow" type="submit"> OK</button>
