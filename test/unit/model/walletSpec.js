@@ -163,8 +163,8 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       var balance = wallet.getBalance();
       expect(balance.confirmed).toBe(8040000);
       
-      expect(wallet.getBalance('0')).toEqual({ confirmed : 3040000, unconfirmed : 0, current: 3040000 });
-      expect(wallet.getBalance('2')).toEqual({ confirmed : 5000000, unconfirmed : 0, current: 5000000 });
+      expect(wallet.getBalance(0)).toEqual({ confirmed : 3040000, unconfirmed : 0, current: 3040000 });
+      expect(wallet.getBalance(2)).toEqual({ confirmed : 5000000, unconfirmed : 0, current: 5000000 });
     });
     
     it('creates a pocket', function() {
