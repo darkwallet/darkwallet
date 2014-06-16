@@ -801,6 +801,12 @@ Wallet.prototype.undoTransaction = function(tx) {
             }
         }
     });
+
+    // also remove the transaction from tasks
+    var task = self.identity.tasks.search('send', 'hash', txHash);
+    if (task) {
+        self.identity.tasks.removeTask('send', task);
+    }
 };
 
 
