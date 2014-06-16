@@ -319,7 +319,7 @@ Transaction.prototype.process = function(serializedTx, height) {
       var outputAddress = wallet.getWalletAddress(address);
       // already exists
       if (outputAddress) {
-          wallet.processOutput(outputAddress, [txHash, tx], i, txOut.value, height);
+          wallet.processOutput(outputAddress, txHash, i, txOut.value, height);
       }
     });
 

@@ -500,9 +500,7 @@ Wallet.prototype.markOutput = function(output, index) {
  * @param {Number} height
  * @param {Object} spend
  */
-Wallet.prototype.processOutput = function(walletAddress, txData, index, value, height, spend, spendheight) {
-    var txHash = txData[0];
-    var tx = txData[1];
+Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, height, spend, spendheight) {
     // Wallet wide
     var output;
     var wallet = this.wallet;
@@ -572,7 +570,7 @@ Wallet.prototype.processHistory = function(walletAddress, history, initial) {
             spend = inTxHash + ":" + tx[5];
         }
         // pass on to internal Bitcoin.Wallet
-        self.processOutput(walletAddress, [tx[0], null], tx[1], tx[3], outHeight, spend, tx[6]);
+        self.processOutput(walletAddress, tx[0], tx[1], tx[3], outHeight, spend, tx[6]);
     });
     if (!initial) {
         this.store.save();
