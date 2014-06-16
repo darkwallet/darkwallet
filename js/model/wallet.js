@@ -783,7 +783,7 @@ Wallet.prototype.undoTransaction = function(tx) {
         if (output && output.spend) {
             if (!output.spendpending) {
                 var walletAddress = self.getWalletAddress(output.address);
-                walletAddress += output.value;
+                walletAddress.balance += output.value;
             }
             delete output.spend;
             delete output.spendheight;
@@ -801,6 +801,12 @@ Wallet.prototype.undoTransaction = function(tx) {
             }
         }
     });
+
+    // also remove the transaction from tasks
+    var task = self.identity.tasks.search('send', 'hash', txHash);
+    if (task) {
+        self.identity.tasks.removeTask('send', task);
+    }
 };
 
 

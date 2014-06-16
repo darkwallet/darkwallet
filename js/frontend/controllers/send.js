@@ -285,6 +285,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               // Since it didn't go out at all, let's undo the transaction.
               if (!radarCache.radar) {
                   DarkWallet.getIdentity().wallet.undoTransaction(metadata.tx);
+                  DarkWallet.service.badge.setItems();
               }
           } else {
               timeoutId = $timeout(function(){onSendTimeout()}, 10000);
