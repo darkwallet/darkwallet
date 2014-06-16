@@ -10,7 +10,7 @@ function CurrencyFormatting() {
 var symbol = {
   'BTC': '฿',
   'mBTC': 'm฿',
-  'bits': 'bits'
+  'bits': 'µ'
 }
 
 /**
@@ -58,8 +58,8 @@ CurrencyFormatting.asFiat = function(satoshis, fiatCurrency) {
 
     var rate = tickerService.rates[fiatCurrency];
     if (rate) {
-      var converted = (satoshis * rate / Math.pow(10, 8)).toFixed(decimalDigits);
-      return converted;
+      var converted = (satoshis * rate / Math.pow(10, 8));
+      return CurrencyFormatting.addThousands(converted, converted.toFixed(decimalDigits));
     }
 }
 
@@ -98,6 +98,19 @@ CurrencyFormatting.fiatToBtc = function(amount, currency, fiatCurrency) {
 };
 
 /**
+ * Add dots for thousands if needed
+ */
+CurrencyFormatting.addThousands = function(value, formatted) {
+    if (value>=1000) {
+        var parts = (formatted || value.toString()).split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        value = parts.join(".");
+        return value;
+    }
+    return (formatted || value)
+}
+
+/**
  * Format satoshis into user unit
  */
 CurrencyFormatting.formatBtc = function(satoshis, unit) {
@@ -112,10 +125,8 @@ CurrencyFormatting.formatBtc = function(satoshis, unit) {
     }
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
 
-	var btc_price = this.asBtc(satoshis, unit),
-	parts = btc_price.toString().split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	return parts.join(".") + " " + symbol[unit];
+    var btcPrice = this.asBtc(satoshis, unit);
+    return CurrencyFormatting.addThousands(btcPrice) + " " + symbol[unit];
 }
 
 /**
@@ -126,15 +137,8 @@ CurrencyFormatting.formatFiat = function(satoshis, fiatCurrency) {
 
     var converted = this.asFiat(satoshis, fiatCurrency);
     if (!(converted === undefined)) {
-        var locale = navigator.language || navigator.userLanguage;
-        // es puts the symbol in the wrong place?
-        if (locale == 'es') locale = 'de';
-        converted = parseFloat(converted).toLocaleString(locale, {
-    		style: 'currency',
-    		currency: fiatCurrency,
-    		minimumFractionDigits: 2
-    	});
-        return converted;
+        var currency = FiatCurrencies[fiatCurrency];
+        return converted+" "+currency.symbol_native;
     }
 }
 
