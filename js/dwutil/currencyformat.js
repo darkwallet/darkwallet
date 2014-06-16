@@ -126,7 +126,10 @@ CurrencyFormatting.formatFiat = function(satoshis, fiatCurrency) {
 
     var converted = this.asFiat(satoshis, fiatCurrency);
     if (!(converted === undefined)) {
-        converted = parseFloat(converted).toLocaleString(undefined, {
+        var locale = navigator.language || navigator.userLanguage;
+        // es puts the symbol in the wrong place?
+        if (locale == 'es') locale = 'de';
+        converted = parseFloat(converted).toLocaleString(locale, {
     		style: 'currency',
     		currency: fiatCurrency,
     		minimumFractionDigits: 2
