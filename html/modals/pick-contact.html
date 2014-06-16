@@ -1,6 +1,6 @@
 <div class="row"><div ng-controller="ContactsCtrl" class="small-12 columns">
       
-<h6>Select a contact</h6>
+<h6>Select a contact <span ng-show="vars.type">({{vars.type}})</span></h6>
 
 <div class="row" ng-show="allContacts.length>5">
   <div class="small-12 columns">

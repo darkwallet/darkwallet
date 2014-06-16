@@ -56,7 +56,7 @@
 				</div>
 				<div class="row collapse">
 			      <div class="small-1 columns">
-			        <a href="" tooltip-append-to-body="true" tooltip="Select from contacts" ng-click="modals.open('pick-contact', {participants: multisig.participants}, addParticipant)" class="fa button square prefix radius fa-users"></a>
+			        <a href="" tooltip-append-to-body="true" tooltip="Select from contacts" ng-click="modals.open('pick-contact', {participants: multisig.participants, type: 'pubKey'}, addParticipant)" class="fa button square prefix radius fa-users"></a>
 			      </div>
 			      <div class="small-1 columns">
 			        <a href="" tooltip-append-to-body="true" tooltip="Scan QR code" ng-click="modals.scanQr(multisig.participants)" class="fa button square prefix fa-qrcode"></a>

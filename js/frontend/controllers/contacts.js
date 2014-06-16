@@ -41,10 +41,25 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.filterContacts = function() {
     var identity = DarkWallet.getIdentity();
     var search = $scope.contactSearch.toLowerCase();
+    var types = [];
+    if ($scope.vars && $scope.vars.type == 'pubKey') {
+        types = ['pubkey', 'stealth'];
+    } else if ($scope.vars && $scope.vars.type == 'idKey') {
+        types = ['id'];
+    } else {
+        types = ['address', 'stealth', 'pubkey'];
+    }
     $scope.contacts = identity.contacts.contacts.filter(function(contact) {
-        return contact.name.toLowerCase().search(search) != -1;
+        var hasType = contact.pubKeys.some(function(key) {
+             return (types.indexOf(key.type) > -1);
+        });
+        return hasType && contact.name.toLowerCase().search(search) != -1;
     });
   };
+
+  if (!$routeParams.contactId) {
+    $scope.filterContacts();
+  }
 
   $scope.createContact = function() {
     var identity = DarkWallet.getIdentity();
