@@ -23,7 +23,6 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       sendForm.fee = CurrencyFormat.asBtc(identity.wallet.fee);
       
       $scope.quicksend.next = false;
-      $scope.quicksend.password = false;
   };
   
   var parseUri = function(uri, recipient) {
