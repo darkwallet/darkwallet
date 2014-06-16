@@ -171,7 +171,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         }
 
         // Process
-        var row = identity.wallet.processTx(tx, height);
+        var row = identity.tx.process(tx, height);
 
         // Show a notification for incoming transactions
         if (row) {
@@ -408,7 +408,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
     this.signTransaction = function(newTx, metadata, password, callback, broadcast) {
         var identity = self.getCurrentIdentity();
         // Otherwise just sign and lets go
-        identity.wallet.signTransaction(newTx, metadata.utxo, password, function(err, pending) {
+        identity.tx.sign(newTx, metadata.utxo, password, function(err, pending) {
             if (err) {
                 // There was some error signing the transaction
                 callback(err);
@@ -460,7 +460,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
          console.log("send tx", newTx);
          console.log("send tx", serialized);
          var identity = self.getCurrentIdentity();
-         identity.wallet.processTx(serialized, 0);
+         identity.tx.process(serialized, 0);
          core.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx);
      };
   }

@@ -231,7 +231,7 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
         throw Error('Malformed transaction');
     }
     // Find our inputs
-    var inputs = identity.wallet.txForAddress(walletAddress, tx);
+    var inputs = identity.tx.forAddress(walletAddress, tx);
 
     if (inputs.length == 0) {
         throw Error('Transaction is not for this multisig');
@@ -303,7 +303,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
     var multisig = this.multisig;
     var walletAddress = identity.wallet.getWalletAddress(multisig.address);
 
-    var inputs = identity.wallet.txForAddress(walletAddress, spend.tx);
+    var inputs = identity.tx.forAddress(walletAddress, spend.tx);
     if (inputs.length == 0) {
          // Shouldn't happen
          throw Error('Transaction is not for this multisig');
@@ -348,7 +348,7 @@ MultisigFund.prototype.getValidInputs = function(tx) {
 
     if (walletAddress) {
         // we import the tx
-        var inputs = identity.wallet.txForAddress(walletAddress, tx);
+        var inputs = identity.tx.forAddress(walletAddress, tx);
         return inputs;
     }
     return [];

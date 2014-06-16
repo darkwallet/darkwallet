@@ -258,7 +258,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       var recipient = {address: destAddress.address, amount: opening.amount};
 
       // Build the tx
-      var metadata = identity.wallet.prepareTx(pocketIndex, [recipient], changeAddress, fee);
+      var metadata = identity.tx.prepare(pocketIndex, [recipient], changeAddress, fee);
       var guestTx = BtcUtils.fixTxVersions(metadata.tx.clone(), identity);
       this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', guestTx, opening.amount, fee, peer);
       this.ongoing[opening.id].pocket = pocketIndex;
@@ -370,7 +370,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           privKeys = this.guestPrivateKeys(coinJoin);
           
       }
-      var signed = identity.wallet.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, privKeys);
+      var signed = identity.tx.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, privKeys);
       return signed;
   };
 

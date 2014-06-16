@@ -1,7 +1,7 @@
 'use strict';
 
-define(['./wallet', './txdb', './history', './tasks', './contacts', './connections', 'bitcoinjs-lib', 'util/fiat'],
-function(Wallet, TransactionDatabase, History, Tasks, Contacts, Connections, Bitcoin, FiatCurrency) {
+define(['./wallet', './txdb', './history', './tasks', './contacts', './connections', 'bitcoinjs-lib', 'util/fiat', './tx'],
+function(Wallet, TransactionDatabase, History, Tasks, Contacts, Connections, Bitcoin, FiatCurrency, Transaction) {
 /**
  * Identity properties and data.
  * @param {Store} store Object store.
@@ -36,6 +36,7 @@ function Identity(store, seed, password) {
     if (seed && password) {
         this.generate(seed, password, store.get('network'));
     }
+    this.tx = new Transaction(store, this);
     this.txdb = new TransactionDatabase(store);
     this.wallet = new Wallet(store, this);
     this.history = new History(store, this);

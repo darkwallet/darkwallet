@@ -86,7 +86,8 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
      * Move funds to another pocket or identity
      */
     $scope.moveFunds = function(type, index) {
-        var wallet = DarkWallet.getIdentity().wallet;
+        var identity = DarkWallet.getIdentity();
+        var wallet = identity.wallet;
         var to;
         var address;
         if (type === 'pocket') {
@@ -105,7 +106,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
         var amount = $scope.pocket.balance.confirmed - fee;
 
         var recipients = [{amount: amount, address: address}];
-        var metadata = wallet.prepareTx($scope.pocket.index, recipients, null, fee);
+        var metadata = identity.tx.prepare($scope.pocket.index, recipients, null, fee);
  
         // Request password for signing
         var message = "Are you sure you want to move all ";

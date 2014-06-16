@@ -289,7 +289,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
               // Since it didn't go out at all, let's undo the transaction.
               if (!radarCache.radar) {
-                  DarkWallet.getIdentity().wallet.undoTransaction(metadata.tx);
+                  DarkWallet.getIdentity().tx.undo(metadata.tx);
                   DarkWallet.service.badge.setItems();
               }
           } else {
@@ -359,10 +359,10 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       var changeAddress = $wallet.getChangeAddress(pocketIndex);
 
       try {
-          metadata = identity.wallet.prepareTx(pocketIndex,
-                                               recipients,
-                                               changeAddress,
-                                               fee)
+          metadata = identity.tx.prepare(pocketIndex,
+                                         recipients,
+                                         changeAddress,
+                                         fee)
       } catch (error) {
           var errorMessage = error.message || ''+error;
           notify.error("Failed preparing transaction", errorMessage);
