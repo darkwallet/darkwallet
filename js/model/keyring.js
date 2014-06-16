@@ -31,6 +31,29 @@ IdentityKeyRing.prototype.get = function(name, callback) {
 };
 
 /**
+ * Delete an identity from the keyring
+ * @param {String} name Identity identifier.
+ * @param {Function} callback Callback providing results for the function.
+ */
+IdentityKeyRing.prototype.remove = function(name, callback) {
+    var self = this;
+    var idx = this.availableIdentities.indexOf(name);
+    if (idx == -1) {
+        throw Error("The identity doesn't exist!");
+    }
+    // Close the identity
+    if (this.identities[name]) {
+        this.close(name);
+    }
+    chrome.storage.local.remove(DW_NS+name, function() {
+        self.availableIdentities.splice(idx, 1);
+        callback ? callback() : null;
+    });
+
+};
+
+
+/**
  * Get names for all identities available.
  * @return {String[]} List of the available identities.
  */

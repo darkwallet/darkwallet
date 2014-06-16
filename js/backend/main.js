@@ -35,8 +35,8 @@ function DarkWalletService(serviceClasses) {
     /* Hook up some utility functions
      */
 
-    this.loadIdentity = function(idx) {
-        return services.wallet.loadIdentity(idx);
+    this.loadIdentity = function(idx, callback) {
+        return services.wallet.loadIdentity(idx, callback);
     };
 
     // Get an identity from the keyring
