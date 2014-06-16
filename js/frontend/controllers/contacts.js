@@ -38,17 +38,59 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   $scope.contactSearch = '';
 
+  var filterType = $scope.vars ? $scope.vars.type : false;
+
+  var getContactTypes = function() {
+    var types;
+    if (filterType == 'pubKey') {
+        types = ['pubkey', 'stealth'];
+    } else if (filterType == 'idKey') {
+        types = ['id'];
+    } else {
+        types = ['stealth', 'address', 'pubkey'];
+    }
+    return types;
+  };
+
+  var findKey = function(contact, type) {
+    var found;
+    contact.pubKeys.some(function(key) {
+        if (key.type == type) {
+            found = key;
+            return true;
+        }
+    });
+    return found;
+  }
+
+  $scope.pickContact = function(contact) {
+    var types = getContactTypes();
+    var key;
+    if (!filterType) {
+        // If looking for address get the main key
+        key = contact.pubKeys[contact.mainKey];
+    }
+    // If we don't have a key yet look for one of the right types
+    if (!key) {
+        types.some(function(type) {
+            var aKey = findKey(contact, type);
+            if (aKey) {
+                key = aKey;
+                return true;
+            }
+        });
+    }
+    // Get the 'address' field for address search, otherwise get the data field
+    var field = filterType ? 'data' : 'address';
+
+    // Run the modal ok method
+    $scope.ok(key[field]);
+  }
+
   $scope.filterContacts = function() {
     var identity = DarkWallet.getIdentity();
     var search = $scope.contactSearch.toLowerCase();
-    var types = [];
-    if ($scope.vars && $scope.vars.type == 'pubKey') {
-        types = ['pubkey', 'stealth'];
-    } else if ($scope.vars && $scope.vars.type == 'idKey') {
-        types = ['id'];
-    } else {
-        types = ['address', 'stealth', 'pubkey'];
-    }
+    var types = getContactTypes();
     $scope.contacts = identity.contacts.contacts.filter(function(contact) {
         var hasType = contact.pubKeys.some(function(key) {
              return (types.indexOf(key.type) > -1);
