@@ -4,8 +4,7 @@ define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'back
 function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
 
   var convert = Bitcoin.convert;
-  var BigInteger = Bitcoin.BigInteger;
-  var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0)};
+  var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0);};
 
   /************************************
    * Channel
@@ -34,7 +33,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       this.channelHash = channelHash;
 
       // Subscribe to channel updates
-      if (this.subscribed != channelHash) {
+      if (this.subscribed !== channelHash) {
         this._onChannelData = function(_data) {self.onChannelData(_data);};
         if (client.handler_map["chan.update." + channelHash]) {
             // update callback
@@ -44,14 +43,14 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
                 if (!err) {
                     self.subscribed = channelHash;
                     // Internal log only for shout messages for now
-                    self.addCallback('Shout', function(_data) {self.onChatMessage(_data)})
-                    self.addCallback('Pair', function(_data) {self.onPairMessage(_data)})
-                    self.addCallback('publicKeyRequest', function(_data) {self.onPublicKeyRequest(_data)})
+                    self.addCallback('Shout', function(_data) {self.onChatMessage(_data);});
+                    self.addCallback('Pair', function(_data) {self.onPairMessage(_data);});
+                    self.addCallback('publicKeyRequest', function(_data) {self.onPublicKeyRequest(_data);});
 
                     // now tell listeners we'resubscribed
-                    self.triggerCallbacks('subscribed', {})
+                    self.triggerCallbacks('subscribed', {});
                 }
-                console.log("[catchan] channel subscribed", name)
+                console.log("[catchan] channel subscribed", name);
             }, this._onChannelData);
         }
       }
@@ -105,20 +104,20 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
    * Get peer from the fingerprint
    */
   Channel.prototype.getPeer = function(fingerprint, discover) {
-      if (fingerprint == this.fingerprint) {
+      if (fingerprint === this.fingerprint) {
           return this.transport.comms;
       }
       for(var idx=0; idx<this.transport.peers.length; idx++) {
           var peer = this.transport.peers[idx];
-          if (peer.fingerprint == fingerprint) {
+          if (peer.fingerprint === fingerprint) {
               peer.updateChannel(this);
               return peer;
           }
       }
-      if (fingerprint.length != 40) {
+      if (fingerprint.length !== 40) {
           // bad peers
           var pubKeyBytes = convert.stringToBytes(fingerprint);
-          while(pubKeyBytes.length<32) { pubKeyBytes.push(6) };
+          while(pubKeyBytes.length<32) { pubKeyBytes.push(6); }
           pubKeyBytes = pubKeyBytes.slice(32);
 
           console.log("[catchan] bad peer detected, dropping lookup", fingerprint);
@@ -141,8 +140,8 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
    * Request the public key from the given fingerprint
    */
   Channel.prototype.requestPublicKey = function(fingerprint) {
-      if (fingerprint == this.fingerprint) {
-          throw Error("Requesting my own public key");
+      if (fingerprint === this.fingerprint) {
+          throw new Error("Requesting my own public key");
       }
       if (this.requested.indexOf(fingerprint) > -1) {
           console.log("[catchan] dropping request since already requested");
@@ -176,11 +175,11 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   Channel.prototype.onPublicKey = function(data) {
       var first = Object.keys(data.text)[0];
 
-      var pubKeyB64 = data.text[first]['message'];
+      var pubKeyB64 = data.text[first].message;
       var pubKey = convert.base64ToBytes(pubKeyB64);
 
       var fingerprint = Encryption.genFingerprint(pubKey);
-      if (fingerprint == this.fingerprint) {
+      if (fingerprint === this.fingerprint) {
           return;
       }
       this.transport.addPeer(pubKey, fingerprint, this);
@@ -284,10 +283,10 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
    */
   Channel.prototype.triggerCallbacks = function(type, data) {
       // channel messages don't have sender
-      if (data.sender && type != 'publicKey') {
+      if (data.sender && type !== 'publicKey') {
           data.peer = this.getPeer(data.sender, true);
-      } else if (!data.sender && ['subscribed', 'publicKeyRequest'].indexOf(type) == -1) {
-          console.log("[catchan] message with no sender", type, data)
+      } else if (!data.sender && ['subscribed', 'publicKeyRequest'].indexOf(type) === -1) {
+          console.log("[catchan] message with no sender", type, data);
       }
       if (this.callbacks.hasOwnProperty(type)) {
           this.callbacks[type].forEach(function(cb) {cb(data);});
@@ -300,7 +299,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   Channel.prototype.removeCallback = function(type, callback) {
       if (this.callbacks.hasOwnProperty(type)) {
           var cbArr = this.callbacks[type];
-          if (cbArr.indexOf(callback) != -1) {
+          if (cbArr.indexOf(callback) !== -1) {
               cbArr.splice(cbArr.indexOf(callback), 1);
           }
       }
@@ -311,8 +310,8 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
    */
   Channel.prototype.removeAllCallbacks = function() {
       // tell listeners we're being unsubscribed
-      if (this.callbacks['unsubscribed'] && this.callbacks['unsubscribed'].length) {
-          this.callbacks['unsubscribed'].forEach(function(callback) {
+      if (this.callbacks.unsubscribed && this.callbacks.unsubscribed.length) {
+          this.callbacks.unsubscribed.forEach(function(callback) {
               callback({});
           });
       }
@@ -344,7 +343,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
               console.log("Unknown message type on channel! " + message.type);
               break;
       }
-  }
+  };
 
   /**
    * Channel data arriving
@@ -361,7 +360,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
           channelPriv: this.priv.toByteArrayUnsigned(),
           scanKey: this.transport.getScanKey(),
           message: message
-      }
+      };
       // serialize private key
       msg.scanKey.priv = msg.scanKey.priv.toByteArrayUnsigned();
 
@@ -394,20 +393,20 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
 
       var msg = Protocol.PairMsg(nick, signKey, scanKey.pub, address);
       this.postDH(peer.pubKey, msg, callback);
-  }
+  };
 
   Channel.prototype.onPairMessage = function(data) {
       this.peerRequests.push(data);
-  }
+  };
 
   Channel.prototype.checkPairMessage = function(decoded) {
       var idKey = decoded.body.pub;
       var keys = bufToArray(Bitcoin.base58check.decode(idKey.substr(3)).payload);
       var data = decoded.body;
-      var toCheck = data['address']+data['nick']+data['pub'];
+      var toCheck = data.address+data.nick+data.pub;
 
       return Curve25519.checksig(decoded.body.sig, toCheck, keys.slice(32));
-  }
+  };
 
   Channel.prototype.sendBeacon = function(beaconKey, callback) {
       var signKey = this.transport.getSignKey();
@@ -418,7 +417,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
               self.postDH(beaconKey, beacon, callback);
           }
       });
-  }
+  };
 
   /**
    * Trigger callbacks for the peer and peer.contact
@@ -426,7 +425,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
    */
   Channel.prototype.onContactAvailable = function(peer) {
       Port.post('contacts', {type: 'contact', peer: peer});
-  }
+  };
 
   Channel.prototype.onReceiveBeacon = function(decoded) {
       var self = this;
@@ -438,8 +437,8 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
            if (idKey) {
                var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
                var signKey = Bitcoin.convert.bytesToString(keys.slice(32));
-               if (signKey == decoded.body.pub) {
-                   var toCheck = decoded.body['ephem']+decoded.body['pub'];
+               if (signKey === decoded.body.pub) {
+                   var toCheck = decoded.body.ephem+decoded.body.pub;
                    if (Curve25519.checksig(decoded.body.sig, toCheck, keys.slice(32))) {
                        decoded.body.nick = contact.name;
                        decoded.peer.nick = contact.name;
@@ -455,9 +454,9 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       if (valid) {
           this.peerRequests.push(decoded);
       }
-      this.triggerCallbacks('Beacon', decoded)
+      this.triggerCallbacks('Beacon', decoded);
       return decoded;
-  }
+  };
 
   Channel.prototype.startPairing = function(fingerprint, pubKey) {
      console.log('[catchan] stored pubkey', fingerprint);
