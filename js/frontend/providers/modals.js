@@ -40,7 +40,7 @@ var modals = {
   cancel: function(reason) {
       modals.show = false;
       if (modals.cancelCallback) {
-          modals.cancelCallback(reason, $scope.vars);
+          modals.cancelCallback(reason, modals.vars);
       }
   },
 
