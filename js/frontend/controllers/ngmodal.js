@@ -8,12 +8,6 @@ define(['./module', 'darkwallet', 'frontend/port', 'angular'], function (control
 
   $scope.vars = $scope.modals.vars;
 
-  $scope.onKeyDown = function(evt) {
-      if (evt.keyCode == 27) {
-          $scope.cancel();
-      }
-  };
-
   $scope.ok = function(data) {
       $scope.modals.show = false;
       if ($scope.modals.okCallback) {
@@ -21,10 +15,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'angular'], function (control
       }
   }
   $scope.cancel = function(reason) {
-      $scope.modals.show = false;
-      if ($scope.modals.cancelCallback) {
-          $scope.modals.cancelCallback(reason, $scope.vars);
-      }
+      $scope.modals.cancel(reason);
   }
   }]);
 });

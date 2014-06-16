@@ -37,6 +37,19 @@ var modals = {
     }
   },
 
+  cancel: function(reason) {
+      modals.show = false;
+      if (modals.cancelCallback) {
+          modals.cancelCallback(reason, $scope.vars);
+      }
+  },
+
+  checkKeyDown: function(evt) {
+      if (modals.show && evt.keyCode == 27) {
+          modals.cancel();
+      }
+  },
+
   focus: function(id) {
     $timeout(function() {
         var elmt = document.getElementById(id);
