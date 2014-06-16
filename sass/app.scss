@@ -67,7 +67,7 @@ span.tooltip.fade.in { opacity: 1; }
 }
 
 div.container { 
-	padding-top: 45px; height: 100%;
+	height: 100%;
 }
 
 div.cardflipper { 
@@ -78,6 +78,7 @@ div.cardflipper {
 div.tab-scroller { padding-top: 1em; }
 
 div.scroller { 
+	padding-top: 45px;
 	background: black;
 	height: 100%;
 	width: 100%;
@@ -456,7 +457,7 @@ div.wizard {
 	-webkit-backface-visibility: hidden;
 }
 
-form.send { background: url(../images/send.svg) center/contain no-repeat; }
+form.send { min-height: 60%; background: url(../images/send.svg) center/contain no-repeat; }
 
 .seed { background: url(../images/seed.svg) center/cover no-repeat; }
 

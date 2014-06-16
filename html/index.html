@@ -14,47 +14,46 @@
     <span ng-controller="GuiNotifyCtrl"></span>
     <div id="fixed" style="position: fixed"></div>
     <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
-    <nav class="top-bar hide-for-small">
-      <ul class="title-area" ng-cloak ng-show="identityName">
-        <li class="name">
-          <h1 class="hide-for-medium"><a href="#/wallet" id="maintitle" style="cursor: default"><img id="logo" src="../images/logo.svg" width="32" height="32" /> Dark Wallet</a></h1>
-        </li>
-        <li class="toggle-topbar menu-icon"><a href="">Menu</a></li>
-      </ul>
-      <section class="top-bar-section" ng-cloak ng-show="identityName">
-        <!-- Right Nav Section -->
-        <ul class="right">
-	  <li title="Gateway: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i></a></li>
-	  <li ng-show="settings.advanced && status.syncing" title="Fetching data from obelisk!"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
-	  <li ng-show="settings.advanced" title="Current height"><a><i> {{currentHeight}}</i></a></li>
-	  <li ng-show="settings.advanced" title="Block explorer" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i></a></li>
-          
-		  
-		  
-		  <li ng-show="settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings" class="fa fa-cog"></a></li>
-          
-		  
-		  <li ng-show="!settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="fa fa-cog"></i> Settings</a></li>
-          
-		  
-		  <li title="identities" ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="fa fa-user"></i> {{identityName}}</a></li>
-        </ul>
-        <!-- Left Nav Section -->
-        <ul class="left">
-          <li ng-class="{active:isActive('/wallet')}"><a href="#wallet"><i class="fa fa-th-list"></i> Wallet</a></li>
-          <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="fa fa-share"></i> Send</a></li>
-          <li ng-class="{active:isActive('/contacts')}"><a href="#contacts"><i class="fa fa-users"></i> Contacts</a></li>
-		  <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="fa fa-comments"></i> Lobby</a></li>
-        </ul>
-      </section>
-    </nav>
-
     <div class="modal-ng" ng-cloak ng-if="modals.show">
        <div ng-controller="NgModalCtrl" ng-include="modals.page" ng-keydown="onKeyDown($event)" tabindex="6">
        </div>
     </div>
 	
     <div class="container">
+	    <nav class="top-bar hide-for-small">
+	      <ul class="title-area" ng-cloak ng-show="identityName">
+	        <li class="name">
+	          <h1 class="hide-for-medium"><a href="#/wallet" id="maintitle" style="cursor: default"><img id="logo" src="../images/logo.svg" width="32" height="32" /> Dark Wallet</a></h1>
+	        </li>
+	        <li class="toggle-topbar menu-icon"><a href="">Menu</a></li>
+	      </ul>
+	      <section class="top-bar-section" ng-cloak ng-show="identityName">
+	        <!-- Right Nav Section -->
+	        <ul class="right">
+		  <li title="Gateway: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i></a></li>
+		  <li ng-show="settings.advanced && status.syncing" title="Fetching data from obelisk!"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
+		  <li ng-show="settings.advanced" title="Current height"><a><i> {{currentHeight}}</i></a></li>
+		  <li ng-show="settings.advanced" title="Block explorer" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i></a></li>
+          
+		  
+		  
+			  <li ng-show="settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings" class="fa fa-cog"></a></li>
+          
+		  
+			  <li ng-show="!settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="fa fa-cog"></i> Settings</a></li>
+          
+		  
+			  <li title="identities" ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="fa fa-user"></i> {{identityName}}</a></li>
+	        </ul>
+	        <!-- Left Nav Section -->
+	        <ul class="left">
+	          <li ng-class="{active:isActive('/wallet')}"><a href="#wallet"><i class="fa fa-th-list"></i> Wallet</a></li>
+	          <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="fa fa-share"></i> Send</a></li>
+	          <li ng-class="{active:isActive('/contacts')}"><a href="#contacts"><i class="fa fa-users"></i> Contacts</a></li>
+			  <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="fa fa-comments"></i> Lobby</a></li>
+	        </ul>
+	      </section>
+	    </nav>
       <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include>
       <div class="scroller" ng-view>
       </div>
