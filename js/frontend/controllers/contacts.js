@@ -120,8 +120,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     var identity = DarkWallet.getIdentity();
     var name = $scope.newContact.name;
     var address = $scope.newContact.address;
+    var label = $scope.newContact.label;
 
-    identity.contacts.addContactKey(contact, address);
+    identity.contacts.addContactKey(contact, address, label);
 
     // add to scope
     $scope.newContact = {};

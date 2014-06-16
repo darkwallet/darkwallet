@@ -88,8 +88,7 @@
 				   {{pubKey.type}} 
 				 </span>
 				 <identicon icon-size="32" data="pubKey.address"></identicon>
-            	<span ng-show="pubKey.address">{{pubKey.address}}</span>
-            	<span ng-show="!pubKey.address">{{pubKey.data}}</span>
+	            	<span title="{{pubKey.address||pubKey.data}}">{{pubKey.label||pubKey.address||pubKey.data}}</span>
 
 			</div>
 			<div class="small-1 columns" ng-if="pubKey.type!='revoked'&&$index===vars.contact.mainKey" ng-show="!(editingContact===$index)">
@@ -110,8 +109,11 @@
   		<a ng-click="creatingContact=true" class="fa fa-plus button small radius" ng-show="!creatingContact"> Add another address</a>
   	  	<form name="createContact" ng-show="creatingContact" ng-submit="creatingContact=false;addContactKey(vars.contact);" novalidate>
     		<div class="row collapse">
-				<div class="small-10 columns">
-               	 	<input type="text" class="prefix radius" placeholder="Enter a bitcoin address here..." required btc-address ng-model="newContact.address"></input>
+				<div class="small-4 columns">
+               	 	<input type="text" class="prefix radius" placeholder="Enter a label..." ng-model="newContact.label"></input>
+        		</div>
+				<div class="small-6 columns">
+               	 	<input type="text" class="prefix radius" placeholder="Enter a bitcoin address here..." required btc-address ng-model="newContact.address" autofocus></input>
         		</div>
 				<div class="small-2 columns">
 					<a class="button postfix radius fa fa-qrcode">Scan QR code</a>

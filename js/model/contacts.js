@@ -28,7 +28,7 @@ function Contacts(store, identity) {
       // Changing compromised contact for libbitcoin to the old darkwallet fund,
       // controlled by a few trusted people.
       compromised.pubKeys[0].type = 'revoked';
-      this.addContactKey(compromised, '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP', true);
+      this.addContactKey(compromised, '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP', null, true);
   }
 }
 
@@ -209,11 +209,14 @@ Contacts.prototype.addContact = function (contact) {
 /**
  * Add key
  */
-Contacts.prototype.addContactKey = function (contact, data, main) {
+Contacts.prototype.addContactKey = function (contact, data, label, main) {
   var newKey = this.prepareAddress(data);
 
   if (!contact.pubKeys) {
       contact.pubKeys = [];
+  }
+  if (label) {
+      newKey.label = label;
   }
   contact.pubKeys.push(newKey);
   if (main) {
