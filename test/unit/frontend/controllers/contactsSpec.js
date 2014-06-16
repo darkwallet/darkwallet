@@ -21,9 +21,9 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
     
     var resetContacts = function() {
       identity.contacts.contacts = [
-        {name: "Satoshi Nakamoto", mainKey: 0, pubKeys: [{address: "address1", data: "address1"}]},
-        {name: "Dorian Nakamoto", mainKey: 0, pubKeys: [{address: "address2", data: "address2"}]},
-        {name: "Satoshi Forest", mainKey: 0, pubKeys: [{address: "address3", data: "address3"}]}
+        {name: "Satoshi Nakamoto", mainKey: 0, pubKeys: [{address: "address1", data: "address1", type: "address"}]},
+        {name: "Dorian Nakamoto", mainKey: 0, pubKeys: [{address: "address2", data: "address2", type: "address"}]},
+        {name: "Satoshi Forest", mainKey: 0, pubKeys: [{address: "address3", data: "address3", type: "address"}]}
       ];
       _contacts = identity.contacts.contacts;
     };

@@ -6,9 +6,15 @@
 define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
   describe('Wallet model', function() {
     
-    var identity, wallet, _store, _private;
-    
+    var identity, wallet, _store, _private, initIfEmpty;
+ 
+
     beforeEach(function() {
+      // inhibit initIfEmpty for part of the tests so it doesn't need
+      // so much processing   
+      initIfEmpty = Wallet.prototype.initIfEmpty;
+      Wallet.prototype.initIfEmpty = function() {};
+      // Store
       _store = {
         mpk: 'xpub693Ab9Kv7vQjSJ9fZLKAWjqPUEjSyM7LidCCZW8wGosvZKi3Pf2ijiGe1MDTBmQnpXU795HNb4ebuW95tbLNuAzXndALZpRkRaRCbXDhafA',
         pubkeys: {
@@ -110,10 +116,14 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       });
     });
     
+    afterEach(function() {
+      Wallet.prototype.initIfEmpty = initIfEmpty;
+    });
+
     it('creates an empty wallet correctly', function() {
       _store = {mpk: _store.mpk};
+      Wallet.prototype.initIfEmpty = initIfEmpty;
       var myWallet = new Wallet(identity.store, identity);
-      myWallet.initIfEmpty();
       expect(Object.keys(myWallet.pubKeys).length).toBe(6);
       expect(Object.keys(myWallet.pubKeys)).toEqual(['0,0', '0,1', '1,0', '2,0', '2,1', '3,0']);
     });
@@ -433,150 +443,6 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         wallet.getUtxoToPay(10, 'bla');
       }).toThrow();
     });
-    
-    describe('prepares a transaction', function() {
-      var juiceRapNews = '1ESKsNEfjmCZJt3yEYjdE31L1QKqnRVcmn';
-      var satoshiForest = '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd';
-      var change = {address: '1FiQzyDcmsozGMFUoFMfemNKCMFWqxM72E'};
-      
-      var commonTransactionChecks = function(tx, tx2) {
-        expect(tx2.total).toBe(tx.total);
-        expect(tx2.fee).toBe(tx.fee);
-        expect(tx2.change).toBe(tx.change);
-        expect(tx2.myamount).toBe(tx.myamount);
-        expect(tx2.tx.version).toBe(tx.tx.version);
-        expect(tx2.tx.ins[0].outpoint.hash).toBe(tx.tx.ins[0].outpoint.hash);
-        expect(tx2.tx.ins[0].outpoint.index).toBe(tx.tx.ins[0].outpoint.index);
-        expect(tx2.utxo[0].address).toBe(tx.utxo[0].address);
-        expect(tx2.utxo[0].value).toBe(tx.utxo[0].value);        
-      };
-
-      it('to a normal address', function() {
-        var recipients = [{amount: 200000, address: juiceRapNews}];
-        var tx = wallet.prepareTx(0, recipients, change, 10000);
-        
-        expect(tx.total).toBe(200000);
-        expect(tx.fee).toBe(10000);
-        expect(tx.change).toBe(2790000);
-        expect(tx.myamount).toBe(3000000);
-        expect(tx.tx.version).toBe(1);
-        expect(tx.tx.ins[0].outpoint.hash).toBe('64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6');
-        expect(tx.tx.ins[0].outpoint.index).toBe('1');
-        expect(tx.utxo[0].address).toBe('1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ');
-        expect(tx.utxo[0].value).toBe(3000000);
-        
-        // One output for the recipient and the other for the change
-        expect(tx.stealth).toBe(false);
-        expect(tx.tx.outs.length).toBe(2);
-        expect(tx.tx.outs[0].value+tx.tx.outs[1].value).toBe(200000+2790000);
-      });
-      
-      it('to an stealth address', function() {
-        var recipients = [{amount: 200000, address: juiceRapNews}];
-        var tx = wallet.prepareTx(0, recipients, change, 10000);
-        
-        var recipients = [{amount: 200000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyvUfMT7tvsZPS8xhGGfSmoDGQ8AKRyi7oRYhrhLQJRdvdYLh2z2j5k'}];
-        var tx2 = wallet.prepareTx(0, recipients, change, 10000);
-
-        // Stealth addresses have the same values than a normal address
-        commonTransactionChecks(tx, tx2);
-        
-        // One output that contains the stealth data, other for the recipient
-        // and other for the change
-        expect(tx2.stealth).toBe(true);
-        expect(tx2.tx.outs.length).toBe(3);
-        expect(tx2.tx.outs[0].value+tx2.tx.outs[1].value+tx2.tx.outs[2].value).toBe(tx.tx.outs[0].value+tx.tx.outs[1].value);
-      });
-      
-      it('to multiple normal addresses', function() {
-        var recipients = [{amount: 200000, address: juiceRapNews}];
-        var tx = wallet.prepareTx(0, recipients, change, 10000);
-        
-        recipients = [
-          {amount: 100000, address: juiceRapNews},
-          {amount: 100000, address: satoshiForest}
-        ];
-        var tx3 = wallet.prepareTx(0, recipients, change, 10000);
-        
-        commonTransactionChecks(tx, tx3);
-        
-        // Two outputs for the recipients and one for the change
-        expect(tx3.stealth).toBe(false);
-        expect(tx3.tx.outs.length).toBe(3);
-        expect(tx3.tx.outs[0].value+tx3.tx.outs[1].value+tx3.tx.outs[2].value).toBe(100000+100000+2790000);
-      });
-      
-      it('to multiple stealth addresses', function() {
-        var recipients = [{amount: 200000, address: juiceRapNews}];
-        var tx = wallet.prepareTx(0, recipients, change, 10000);
-        
-        recipients = [
-          {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyvUfMT7tvsZPS8xhGGfSmoDGQ8AKRyi7oRYhrhLQJRdvdYLh2z2j5k'},
-          {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyubqxGCwKCgqXQRzqP3b8nbU8yUnuaazNxAq1ZgmtM6ft6tGWptnkx'}
-        ];
-        var tx4 = wallet.prepareTx(0, recipients, change, 10000);
-        
-        commonTransactionChecks(tx, tx4);
-        
-        // Two outputs for the stealth data, two for recipients and another for
-        // change
-        expect(tx4.stealth).toBe(true);
-        expect(tx4.tx.outs.length).toBe(5);
-        expect(tx4.tx.outs[0].value+tx4.tx.outs[1].value+tx4.tx.outs[2].value+tx4.tx.outs[3].value+tx4.tx.outs[4].value).toBe(0+100000+0+100000+2790000);
-      });
-      
-      it('to multiple addresses', function() {
-        var recipients = [{amount: 200000, address: juiceRapNews}];
-        var tx = wallet.prepareTx(0, recipients, change, 10000);
-        
-        recipients = [
-          {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyubqxGCwKCgqXQRzqP3b8nbU8yUnuaazNxAq1ZgmtM6ft6tGWptnkx'},
-          {amount: 100000, address: satoshiForest}
-        ];
-        var tx5 = wallet.prepareTx(0, recipients, change, 10000);
-        
-        commonTransactionChecks(tx, tx5);
-        
-        // One output for stealth data, two for recipients and another for change
-        expect(tx5.stealth).toBe(true);
-        expect(tx5.tx.outs.length).toBe(4);
-        expect(tx5.tx.outs[0].value+tx5.tx.outs[1].value+tx5.tx.outs[2].value+tx5.tx.outs[3].value).toBe(100000+100000+2790000);
-      });
-      
-      it('from a different pocket', function() {
-        var recipients = [{amount: 4990000, address: juiceRapNews}];
-        var tx6 = wallet.prepareTx(1, recipients, change, 10000);
-        
-        expect(tx6.total).toBe(4990000);
-        expect(tx6.fee).toBe(10000);
-        expect(tx6.change).toBe(0);
-        expect(tx6.myamount).toBe(5000000);
-        expect(tx6.tx.version).toBe(1);
-        expect(tx6.tx.ins[0].outpoint.hash).toBe('c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c');
-        expect(tx6.tx.ins[0].outpoint.index).toBe('0');
-        expect(tx6.utxo[0].address).toBe('1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs');
-        expect(tx6.utxo[0].value).toBe(5000000);
-        
-        // Only one output because we don't have change in this transaction
-        expect(tx6.stealth).toBe(false);
-        expect(tx6.tx.outs.length).toBe(1);
-        expect(tx6.tx.outs[0].value).toBe(4990000);
-        
-        expect(function() {
-          wallet.prepareTx('not an index', recipients, change, 10000)
-        }).toThrow();
-      });
-      
-      it('with a different fee', function() {
-        var recipients = [{amount: 200000, address: juiceRapNews}];
-        var tx7 = wallet.prepareTx(0, recipients, change, 20000);
-        
-        expect(tx7.fee).toBe(20000);
-        expect(tx7.change).toBe(3000000 - 200000 - 20000);
-        expect(tx7.tx.outs[1].value+tx7.tx.outs[0].value).toBe(3000000 - 20000);
-      });
-    });
-    
     
     it('processes an output for an external source');
     

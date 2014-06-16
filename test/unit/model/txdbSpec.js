@@ -37,7 +37,7 @@ f2aeea554b7fb7d145061efad4398879b9be88ac00000000";
       var callback = function(transaction, data) {
         expect(transaction).toBe(trans);
         expect(data).toBe(userData);
-        expect(txdb.transactions[txHash]).toEqual(trans);
+        expect(txdb.transactions[txHash]).toEqual([trans]);
       };
       txdb.fetchTransaction(txHash, callback, userData);
       // Again to try cache
@@ -47,8 +47,8 @@ f2aeea554b7fb7d145061efad4398879b9be88ac00000000";
     it('stores a transaction', function() {
       txdb.storeTransaction(txHash, trans);
       expect(txdb.transactions[txHash]).toBeDefined();
-      expect(txdb.transactions[txHash]).toEqual(trans);
-      expect(_store[txHash]).toEqual(trans);
+      expect(txdb.transactions[txHash]).toEqual([trans]);
+      expect(_store[txHash]).toEqual([trans]);
     });
   });
 });

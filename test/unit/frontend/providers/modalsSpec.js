@@ -3,7 +3,7 @@
 define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
   describe('Modals provider', function() {
 
-    var modals, $modal, $timeout, $window, notify, sounds, element, _params, settings;
+    var modals, $modal, $timeout, $window, notify, sounds, element, settings;
     
     beforeEach(function(done) {
       settings = {
@@ -27,41 +27,15 @@ define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
           $provide.value('sounds', {});
         });
         
-        mocks.inject(['modals', '$modal', '$timeout', '$window', 'notify', 'sounds',
-          function(_modals_, _$modal_, _$timeout_, _$window_, _notify_, _sounds_) {
+        mocks.inject(['modals', '$modal', '$timeout', '$window', 'notify', 'sounds', '$templateCache',
+          function(_modals_, _$modal_, _$timeout_, _$window_, _notify_, _sounds_, _$templateCache_) {
           modals = _modals_;
           $modal = _$modal_;
           $timeout = _$timeout_;
           $window = _$window_;
           notify = _notify_;
           sounds = _sounds_;
-
-          $modal.open = function(params) {
-            _params = params;
-            var scope = {};
-            var modalInstance = {
-              close: function() {},
-              dismiss: function() {}
-            };
-            var vars = params.resolve.vars();
-            params.controller(scope, modalInstance, vars);
-            scope.ok();
-            scope.cancel();
-            scope.onError();
-            return {
-              opened: {
-                then: function(callback) {
-                  callback();
-                }
-              },
-              result: {
-                then: function(success, failed) {
-                  success('result ' + params.windowClass);
-                  failed('reason');
-                }
-              }
-            };
-          };
+          _$templateCache_.get = function() { return true; };
 
           element = {focus: function() {}};
           $window.document.querySelectorAll = function(selector) {
@@ -172,28 +146,30 @@ define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
     it('opens a qr scan modal', function() {
       var field = {};
       modals.scanQr(field);
-      expect(_params.templateUrl).toBe('modals/scan-qr.html');
+      modals.okCallback("result modal-scan-qr", modals.vars);
+      expect(modals.page).toBe('modals/scan-qr.html');
       expect(field.address).toBe('result modal-scan-qr');
     });
     
     it('opens a qr show modal', function() {
       modals.showQr('data');
-      expect(_params.templateUrl).toBe('modals/show-qr.html');
-      expect(_params.resolve.vars()).toEqual({value: 'data'});
+      expect(modals.page).toBe('modals/show-qr.html');
+      expect(modals.vars).toEqual({value: 'data'});
       modals.showBtcQr('data');
-      expect(_params.resolve.vars()).toEqual({value: 'data', btc: true});
+      expect(modals.vars).toEqual({value: 'data', btc: true});
       modals.showQr({value: 'data', version: 'version'});
-      expect(_params.resolve.vars()).toEqual({value: 'data', version: 'version'});
+      expect(modals.vars).toEqual({value: 'data', version: 'version'});
       modals.showBtcQr({value: 'data', version: 'version'});
-      expect(_params.resolve.vars()).toEqual({value: 'data', version: 'version', btc: true});
+      expect(modals.vars).toEqual({value: 'data', version: 'version', btc: true});
     });
     
     it('opens an enter password modal', function(done) {
       modals.password('Enter your password', function(password) {
-        expect(_params.templateUrl).toBe('modals/ask-password.html');
+        expect(modals.page).toBe('modals/ask-password.html');
         expect(password).toBe('result modal-ask-password');
         done();
       });
+      modals.okCallback("result modal-ask-password");
     });
   });
 });

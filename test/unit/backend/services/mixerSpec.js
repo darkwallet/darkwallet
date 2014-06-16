@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function(testUtils, Bitcoin, Wallet, CoinJoin) {
+define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx'], function(testUtils, Bitcoin, Wallet, CoinJoin, Transaction) {
 
   var BTC = 99000000;
   var mBTC = 100000;
@@ -73,18 +73,26 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
         },
         getLobbyTransport: function() {
           return {
-            initChannel: function(name) { return new MockChannel(name) }
+            initChannel: function(name) { return new MockChannel(name); }
           };
         },
         getCurrentIdentity: function() {
           return {
             tasks: {
-              getTasks: function(section) { return tasks }
+              getTasks: function(section) { return tasks; }
+            },
+            tx: {
+              get identity() {return core.getIdentity();},
+              prepare: function() { return {tx: txGuest}; },
+              signMyInputs: function(inputs, tx, privKeys) {
+                return Transaction.prototype.signMyInputs.apply(core.getIdentity().tx, [inputs, tx, privKeys]);
+              }
+
             },
             wallet: {
-              get identity() {return core.getIdentity()},
+              get identity() {return core.getIdentity();},
               deriveHDPrivateKey: Wallet.prototype.deriveHDPrivateKey,
-              getWalletAddress: function() {return {index: [0,0], address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}},
+              getWalletAddress: function() {return {index: [0,0], address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'};},
               wallet: {
                 outputs: {"8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'},
                           "217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}}
@@ -92,17 +100,13 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin'], function
               pockets: {
                 hdPockets: hdPockets
               },
-              signMyInputs: function(inputs, tx, privKeys) {
-                return Wallet.prototype.signMyInputs.apply(core.getIdentity().wallet, [inputs, tx, privKeys]);
-              },
               getChangeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}; },
               getFreeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}; },
-              getBalance: function() { return {confirmed: 2*BTC, unconfirmed: 0}; },
-              prepareTx: function() { return {tx: txGuest}; }
+              getBalance: function() { return {confirmed: 2*BTC, unconfirmed: 0}; }
             }
           };
         },
-        getIdentity: function() {return core.getCurrentIdentity()}
+        getIdentity: function() {return core.getCurrentIdentity();}
       };
       testUtils.loadWithCurrentStubs('backend/services/mixer', function(MixerService) {
         MixerClass = MixerService;

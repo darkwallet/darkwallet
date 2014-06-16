@@ -3,11 +3,14 @@
 define(['angular-mocks', 'frontend/providers/tabs'], function(mocks) {
   describe('Tabs provider', function() {
 
-    var tabs;
+    var tabs, $templateCache;
     
     beforeEach(mocks.module("DarkWallet.providers"));
-    beforeEach(mocks.inject(['$tabs', function(_$tabs_) {
+    beforeEach(mocks.inject(['$tabs', '$templateCache', function(_$tabs_, _$templateCache_) {
       tabs = _$tabs_;
+      $templateCache = _$templateCache_;
+      $templateCache.get = function() { return true; };
+      
     }]));
 
     it('is initiated correctly', function() {
