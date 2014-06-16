@@ -1,5 +1,8 @@
-
+<div class="large-10 large-centered columns panel radius topmargin">
     <h6>Are you sure you want to delete <i>{{vars.name}}</i>?</h6>
-    <button class="button alert small" ng-click="ok(vars.object)">Delete</button>
-    <button class="button small" ng-click="cancel()">Cancel</button>
-    <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
+    <button class="button alert small radius fa-trash-o" ng-click="ok(vars.object)"> Delete</button>
+    <button class="button small fa fa-times glow" ng-click="cancel()">Cancel</button>
+</div>
+<div class="qractions">
+	<a class="fa fa-times button" ng-click="cancel()"></a>
+</div>

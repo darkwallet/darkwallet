@@ -1,6 +1,6 @@
 <div class="row"><div ng-controller="ContactsCtrl" class="small-12 columns">
       
-<h6>Select a contact <span ng-show="vars.type">({{vars.type}})</span></h6>
+<h3>Select a contact <small ng-show="vars.type=='pubKey'">Showing only contacts with master/stealth address.</small></h3>
 
 <div class="row" ng-show="allContacts.length>5">
   <div class="small-12 columns">
@@ -31,4 +31,6 @@
 </div>
 </div>
 </div>
-<a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
+<div class="qractions">
+	<a class="fa fa-times button" ng-click="cancel()"></a>
+</div>

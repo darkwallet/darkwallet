@@ -1,6 +1,6 @@
-<div ng-controller="BackupsCtrl">
+<div class="large-10 large-centered columns panel radius topmargin" ng-controller="BackupsCtrl">
     <div ng-show="!step">
-        <h3>Choose a file:</h3>
+        <h3>Import from file</h3>
         <input type="file" id="import-wallet-file"></input>
     </div>
     <div ng-show="step=='unlock'">
@@ -49,9 +49,11 @@
             </div>
         </div>
     </div>
-    <div ng-show="!step">
-        <button class="button small" type="submit" ng-click="ok(vars.password)">OK</button>
-        <a class="button alert small" ng-click="cancel()">Cancel</a>
+    <div class="text-right" ng-show="!step">
+		<a class="button alert small radius fa fa-times" ng-click="cancel()"> Cancel</a>
+        <button class="button small radius glow fa fa-check" type="submit" ng-click="ok(vars.password)"> Import</button>
     </div>
-    <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
+</div>
+<div class="qractions">
+	<a class="fa fa-times button" ng-click="cancel()"></a>
 </div>
