@@ -12,14 +12,8 @@
 			    <h5>{{vars.spend.metadata.total+vars.spend.metadata.fee | formatBtc}} will be sent from "{{vars.spend.pocket.label || vars.spend.pocket.name}}"</h5>
 			    <h5 ng-repeat="recipient in vars.recipients">
 					{{recipient.amount | formatBtc}} ({{recipient.amount | formatFiat}}) <i class="fa fa-arrow-right"></i> 
-			         <span ng-show="recipient.contact">
-			             <identicon icon-size="36" hash="recipient.contact.hash"></identicon>
-			             {{recipient.contact.name}}
-			         </span>
-			         <span ng-show="!recipient.contact">
-			             <identicon icon-size="36" data="recipient.address"></identicon>
-			             {{recipient.address}}
-			         </span>
+			         <identicon icon-size="36" hash="recipient.contact.hash"></identicon>
+			         {{recipient.contact.name}}
 			    </h5>
 				<h6>Fee: {{vars.spend.metadata.fee | formatBtc}} ({{vars.spend.metadata.fee | formatFiat}})</h6>
 			    <h6 ng-show="vars.spend.metadata.label">Description: {{vars.spend.metadata.label}}</h6>
