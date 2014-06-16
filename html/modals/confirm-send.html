@@ -1,25 +1,32 @@
-<form ng-submit="ok(vars.password)">
-<!--{tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth, recipients: recipients}-->
-    <h6>{{vars.text}}</h6>
-    <div ng-show="vars.spend.metadata.label">Label: {{vars.spend.metadata.label}}</div>
-    <div>From: {{vars.spend.pocket.label || vars.spend.pocket.name}}</div>
-    <div>Amount: {{vars.spend.metadata.total | formatBtc}} ({{vars.spend.metadata.total | formatFiat}})</div>
-    <div>Fee: {{vars.spend.metadata.fee | formatBtc}} ({{vars.spend.metadata.fee | formatFiat}})</div>
-    <div>total: {{vars.spend.metadata.total+vars.spend.metadata.fee | formatBtc}} ({{vars.spend.metadata.total+vars.spend.metadata.fee | formatFiat}})</div>
-    <h6>Recipients</h6>
-    <div ng-repeat="recipient in vars.recipients">
-         <span ng-show="recipient.contact">
-             <identicon icon-size="36" hash="recipient.contact.hash"></identicon>
-             {{recipient.contact.name}}
-         </span>
-         <span ng-show="!recipient.contact">
-             <identicon icon-size="36" data="recipient.address"></identicon>
-             {{recipient.address}}
-         </span>
-         {{recipient.amount | formatBtc}} ({{recipient.amount | formatFiat}})
-    </div>
-    <input auto-focus ng-model="vars.password" type="password" placeholder="Write your password..." />
-    <button class="button small" type="submit">OK</button>
-    <a class="button alert small" ng-click="cancel()">Cancel</a>
-    <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
-</form>
+<div class="large-8 large-centered columns panel radius topmargin">
+	<div class="row">
+		<form ng-submit="ok(vars.password)">
+		<!--{tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth, recipients: recipients}-->
+			<div class="medium-6 columns">
+			    <h3>{{vars.text}}</h3>
+			    <input auto-focus ng-model="vars.password" type="password" placeholder="Write your password..." />
+			    <button class="button small fa fa-check radius glow" type="submit"> OK</button>
+			    <a class="button alert small radius fa fa-times" ng-click="cancel()"> Cancel</a>
+			</div>
+			<div class="medium-6 columns">
+			    <h5>{{vars.spend.metadata.total+vars.spend.metadata.fee | formatBtc}} will be sent from "{{vars.spend.pocket.label || vars.spend.pocket.name}}"</h5>
+			    <h5 ng-repeat="recipient in vars.recipients">
+					{{recipient.amount | formatBtc}} ({{recipient.amount | formatFiat}}) <i class="fa fa-arrow-right"></i> 
+			         <span ng-show="recipient.contact">
+			             <identicon icon-size="36" hash="recipient.contact.hash"></identicon>
+			             {{recipient.contact.name}}
+			         </span>
+			         <span ng-show="!recipient.contact">
+			             <identicon icon-size="36" data="recipient.address"></identicon>
+			             {{recipient.address}}
+			         </span>
+			    </h5>
+				<h6>Fee: {{vars.spend.metadata.fee | formatBtc}} ({{vars.spend.metadata.fee | formatFiat}})</h6>
+			    <h6 ng-show="vars.spend.metadata.label">Description: {{vars.spend.metadata.label}}</h6>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="qractions">
+	<a class="fa fa-times button" ng-click="cancel()"></a>
+</div>
