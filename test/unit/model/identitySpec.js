@@ -39,8 +39,8 @@ define(['model/identity'], function(Identity) {
     it('is created properly', function() {
       expect(identity.name).toBe("Sean's Outpost");
       expect(identity.settings).toEqual({
-        currency: 'USD',
-        fiatCurrency: 'EUR',
+        currency: 'BTC',
+        fiatCurrency: 'USD',
         animations: {
           enabled: true
         },
