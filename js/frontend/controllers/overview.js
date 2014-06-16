@@ -101,6 +101,9 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           $scope.currentHeight = data.value;
           calculateBalances();
       }
+      else if (data.type == 'rename') {
+          loaded = data.newName;
+      }
   });
 
   Port.connectNg('gui', $scope, function(data) {

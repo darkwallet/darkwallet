@@ -68,6 +68,18 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         startIdentity(identity, callback);
     }
 
+    this.renameIdentity = function(newName, callback) {
+        var identity = core.getCurrentIdentity();
+        var oldName = currentIdentity;
+        // Need to set this here since it won't be got automatically from the store change.
+        identity.name = newName;
+        keyRing.rename(oldName, newName, function() {
+            currentIdentity = newName;
+            Port.post('wallet', {'type': 'rename', 'oldName': oldName, 'newName': newName});
+            callback ? callback() : null;
+        });
+    }
+
     this.reloadIdentity = function(store, callback) {
         if (store.name != currentIdentity) {
             throw Error("This is not the running identity!");

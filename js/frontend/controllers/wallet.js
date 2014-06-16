@@ -35,6 +35,10 @@ function (controllers, DarkWallet, Port) {
               $scope.$apply();
           }
       }
+      else if (data.type == 'rename') {
+          $scope.identityName = data.newName;
+          $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
+      }
       else if (data.type == 'height') {
           $scope.currentHeight = data.value;
       }

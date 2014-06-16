@@ -58,6 +58,22 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
       var identity = DarkWallet.getIdentity();
       identity.store.save();
   };
+
+  // Identity settings
+  $scope.setIdentityName = function(newName) {
+      var keyRing = DarkWallet.getKeyRing();
+      if (keyRing.availableIdentities.indexOf(newName) > -1) {
+          notify.warning("You have another identity with that name!");
+          return;
+      }
+      DarkWallet.service.wallet.renameIdentity(newName, function() {
+          notify.success("Identity renamed to " + newName);
+          if (!$scope.$$phase) {
+              $scope.$apply();
+          }
+      });
+  };
+
   $scope.showSeed = function(){
       /* show mnemonic pass and hex seed*/
       var current_password = $scope.seedPassword; 

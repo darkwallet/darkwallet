@@ -70,6 +70,36 @@ IdentityKeyRing.prototype.close = function(name) {
 };
 
 /**
+ * Rename an identity.
+ * @param {String} name Old name
+ * @param {String} newName New name
+ */
+IdentityKeyRing.prototype.rename = function(name, newName, callback) {
+    var self = this;
+    var store = this.identities[name].store;
+    if (!store) {
+        throw Error("Identity must be loaded to rename");
+    }
+    var oldIdx = this.availableIdentities.indexOf(name);
+    // First save under the new name
+    store.set('name', newName);
+    this.identities[newName] = this.identities[name];
+    store.save(function() {
+        // Now remove the old version from the store
+        self.remove(name, function() {
+            var idx = self.availableIdentities.indexOf(newName);
+            // Remove the new name from the end
+            self.availableIdentities.splice(idx, 1)
+            // Insert the new name in its old place
+            self.availableIdentities.splice(oldIdx, 0, newName);
+            // Done
+            callback ? callback() : null;
+         });
+    });
+};
+
+
+/**
  * Create an identity.
  * @param {String} name Identity identifier.
  * @param {String} seed Seed for the keys in string format.
@@ -154,11 +184,11 @@ IdentityKeyRing.prototype.load = function(name, callback) {
 IdentityKeyRing.prototype.save = function(name, data, callback) {
     var pars = {};
     pars[DW_NS+name] = data;
-    chrome.storage.local.set(pars, callback);
     // If this is a new identity add it to the available identities list.
     if (this.availableIdentities.indexOf(name) == -1) {
         this.availableIdentities.push(name);
     }
+    chrome.storage.local.set(pars, callback);
 };
 
 /**

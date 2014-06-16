@@ -117,6 +117,12 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
         var identity = DarkWallet.getIdentity();
         initIdentity(identity);
     }
+    else if (data.type == 'rename') {
+        initialized = data.newName;
+        if (sendForm) {
+            sendForm.identity = data.newName;
+        }
+    }
   });
 
   var onUpdateRadar = function(radar, task, warning) {

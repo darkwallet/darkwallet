@@ -78,6 +78,9 @@ function (controllers, DarkWallet, Port) {
           // update history rows shown
           $scope.historyRows = $history.onBalanceUpdate();
       }
+      else if (data.type == 'rename') {
+          $history.previousIdentity = data.newName;
+      }
   });
 
 

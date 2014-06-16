@@ -72,6 +72,21 @@
             </div>
           </div>
         </div>
+        <div class="panel setback notifications">
+          <h5>Identity</h5>
+          <a class="button fa fa-flask postfix" ng-click="identitySettings=!identitySettings">Settings</a>
+          <div class="row" ng-show="identitySettings">
+              <form name="identityNameForm" ng-submit="setIdentityName(identityNameForm.name)">
+                  <div class="columns small-6">
+                      <input type="text" placeholder="New name..." ng-model="identityNameForm.name" value="{{currentIdentity}}"></input>
+                  </div>
+                  <div class="columns small-6">
+                      <button type="submit">Change name</button>
+                  </div>
+              </form>
+          </div>
+        </div>
+
       </div>
       <div class="large-3 columns">
         <div class="panel setback coins">

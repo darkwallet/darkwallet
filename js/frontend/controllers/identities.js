@@ -3,7 +3,7 @@
 define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port, DarkWallet) {
   controllers.controller('IdentitiesCtrl', ['$scope', '$window', 'modals', 'notify', function($scope, $window, modals, notify) {
     Port.connectNg('wallet', $scope, function(data) {
-      if (data.type == 'ready') {
+      if (data.type == 'ready' || data.type == 'rename') {
         // identity is ready here
         $scope.currentIdentity = DarkWallet.getIdentity().name;
         $scope.identities = DarkWallet.getKeyRing().identities;
