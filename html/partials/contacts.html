@@ -6,9 +6,11 @@
     <a id="newcontact" class="button tiny radius fa fa-plus topright" ng-show="!(contactFormShown===true)" ng-click="modals.focus('new-contact-name'); contactFormShown = true"> New contact</a>
   </div>
 </div>
-<div class="row" ng-if="!(contactFormShown === true) && allContacts.length>5">
+<div class="row" ng-show="!(contactFormShown === true) && allContacts.length>5">
   <div class="small-12 columns">
-        <input id="contact-search" type="text" placeholder="Search..." class="radius" ng-change="filterContacts()" ng-model="contactSearch" auto-focus>
+      <form name="searchForm">
+        <input id="contact-search" type="text" placeholder="Search..." class="radius" ng-change="filterContacts()" ng-model="contactSearch" auto-focus autofocus></input>
+      </form>
   </div>
 </div>
 <form name="createContactForm" ng-show="contactFormShown === true" ng-submit="createContact()" novalidate>
@@ -27,7 +29,7 @@
 			<input id="new-contact-name" ng-model="newContact.name" type="text" class="radius prefix" placeholder="Name for this contact..." required />
 		</div>
         <div class="medium-6 columns">
-          <input auto-focus ng-model="newContact.address" class="prefix" type="text" placeholder="Bitcoin address..." required btc-address />
+          <input autofocus ng-model="newContact.address" class="prefix" type="text" placeholder="Bitcoin address..." required btc-address />
           <span class="input-status fa fa-check"></span>
         </div>
         <div class="small-6 medium-2 columns"><a href="" ng-click="newContact.address = clipboard.paste()" class="button postfix fa fa-clipboard">Paste</a></div>
