@@ -97,12 +97,12 @@ var modals = {
     modals.showQr(value, value);
   },
 
-  password: function(text, callback) {
-    modals.open('ask-password', {text: text, password: ''}, callback);
+  password: function(text, callback, cancelCallback) {
+    modals.open('ask-password', {text: text, password: ''}, callback, cancelCallback);
   },
 
-  confirmSend: function(text, spend, recipients, callback) {
-    modals.open('confirm-send', {text: text, spend: spend, recipients: recipients, password: ''}, callback);
+  confirmSend: function(text, spend, recipients, callback, cancelCallback) {
+    modals.open('confirm-send', {text: text, spend: spend, recipients: recipients, password: ''}, callback, cancelCallback);
   }
 };
 return modals;

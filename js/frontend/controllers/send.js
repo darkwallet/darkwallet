@@ -374,6 +374,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       modals.confirmSend('Unlock password', {pocket: identity.wallet.getPocket(pocketIndex), metadata: metadata}, spend.contacts, function(password) {
           // Run the password callback
           onPassword(metadata, amountNote, password);
+      }, function() {
+          sendForm.sending = false;
       });
   };
 
