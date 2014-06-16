@@ -57,7 +57,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         Port.post('wallet', {'type': 'loaded', 'identity': identity.name});
 
         callback ? callback(identity) : null;
-    }
+    };
 
     this.createIdentity = function(name, network, secret, password, callback) {
         console.log("[wallet] Create identity", name);
@@ -66,7 +66,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         }
         var identity = keyRing.createIdentity(name, network, secret, password);
         startIdentity(identity, callback);
-    }
+    };
 
     this.renameIdentity = function(newName, callback) {
         var identity = core.getCurrentIdentity();
@@ -78,11 +78,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             Port.post('wallet', {'type': 'rename', 'oldName': oldName, 'newName': newName});
             callback ? callback() : null;
         });
-    }
+    };
 
     this.reloadIdentity = function(store, callback) {
-        if (store.name != currentIdentity) {
-            throw Error("This is not the running identity!");
+        if (store.name !== currentIdentity) {
+            throw new Error("This is not the running identity!");
         }
         Port.post('wallet', {'type': 'closing', 'identity': currentIdentity});
         keyRing.close(store.name);
@@ -91,11 +91,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 startIdentity(identity, callback);
             });
         });
-    }
+    };
 
     this.loadIdentity = function(idx, callback) {
         var name = keyRing.availableIdentities[idx];
-        if (currentIdentity != name) {
+        if (currentIdentity !== name) {
             Port.post('wallet', {'type': 'closing', 'identity': currentIdentity});
             console.log("[wallet] Load identity", name);
             keyRing.get(name, function(identity) {
@@ -138,7 +138,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         }
         var task = TransactionTasks.processRow(value, row, height);
         // task.outPocket can be a number so we need to check for undefined
-        if (!(task.outPocket === undefined)) {
+        if (task.outPocket !== undefined) {
             var identity = core.getCurrentIdentity();
             var outPocket = identity.wallet.getPocket(task.outPocket);
             title = (outPocket.name || outPocket.label) + ': ' + title;
@@ -162,9 +162,8 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         var height = addressUpdate.height;
         var tx = addressUpdate.tx;
         // var block_hash = addressUpdate.block_hash;
-        var address = addressUpdate.address;
 
-        if (addressUpdate.address != walletAddress.address) {
+        if (addressUpdate.address !== walletAddress.address) {
             // not for us..
             console.log("Invalid address update!!!!!");
             return;
@@ -178,7 +177,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             core.service.multisigTrack.processTx(tx);
             notifyRow(walletAddress, row, height);
         }
-    }
+    };
 
     /***************************************
     /* History and address subscription
@@ -250,7 +249,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
     // Handle height arriving from obelisk
     function handleHeight(err, height) {
-        if (height != self.currentHeight) {
+        if (height !== self.currentHeight) {
             self.currentHeight = height;
             console.log("[wallet] height fetched", height);
             TransactionTasks.processHeight(height);
@@ -262,9 +261,9 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             client.fetch_block_header(height, function(err, data) {
                 core.servicesStatus.syncing -= 1;
                 if (!err) {
-                    handleBlockHeader(height, data)
+                    handleBlockHeader(height, data);
                 } else {
-                   console.log("[wallet] error fetching block header", err, height)
+                   console.log("[wallet] error fetching block header", err, height);
                 }
             });
             core.service.stealth.fetch(height);
@@ -287,15 +286,13 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 client.fetch_last_height(handleHeight);
             }
         }, 60000);
-    }
+    };
 
     this.handleInitialConnect = function() {
         console.log("[wallet] initial connect");
         var identity = self.getCurrentIdentity();
         core.service.stealth.initWorker(identity);
         core.servicesStatus.syncing = 0;
-
-        var client = core.getClient();
 
         self.fetchHeight();
 
@@ -369,7 +366,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         // Sign the transaction to have a fallback in case the mixing fails
 
         this.signTransaction(newTx.clone(), metadata, password, function(err, signed) {
-            if (!err && signed.type == 'signed') {
+            if (!err && signed.type === 'signed') {
                 task.fallback = signed.tx.serializeHex();
                 // Callback for calling process
                 callback(null, {task: task, tx: newTx, type: 'mixer', privKeys: privKeys});
@@ -384,7 +381,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
      * Perform fallback operations for a failed task
      */
     this.sendFallback = function(type, task) {
-        if (type == 'mixer') {
+        if (type === 'mixer') {
             if (!task.fallback) {
                 console.log("no fallback for this task!!", task);
                 return;
@@ -396,11 +393,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             var hash = Bitcoin.convert.bytesToHex(tx.getHash());
             var spendTask = TransactionTasks.processSpend(hash, task.total, task.recipients, task.label);
             core.service.badge.setItems(self.getCurrentIdentity());
-            self.broadcastTx(tx, spendTask, function(err, data) {console.log(err,data)});
+            self.broadcastTx(tx, spendTask, function(err, data) {console.log(err,data);});
         } else {
             console.log("[wallet] Calling fallback for unknown type", task);
         }
-    }
+    };
 
     /*
      * Sign a transaction, then broadcast or add task to gather sigs
@@ -441,7 +438,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
          if (task.label) {
              var hash = Bitcoin.convert.bytesToHex(newTx.getHash());
-             core.getCurrentIdentity().txdb.setLabel(hash, label);
+             core.getCurrentIdentity().txdb.setLabel(hash, task.label);
          }
          var notifyTx = function(error, count) {
              if (error) {

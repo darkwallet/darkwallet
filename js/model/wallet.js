@@ -101,7 +101,7 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     } else {
         for(i=0; i<keys.length; i++) {
             var walletAddress = this.pubKeys[keys[i]];
-            if (walletAddress.index && walletAddress.index[0] == pocketIndex) {
+            if (walletAddress.index && walletAddress.index[0] === pocketIndex) {
                 allAddresses.push(walletAddress.address);
            }
         }
@@ -245,7 +245,6 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
  * @param {Bitcoin.ECKey} key Private key to store
  */
 Wallet.prototype.storePrivateKey = function(seq, password, key) {
-    var self = this;
     seq = seq.slice(0);
     var data = this.store.getPrivateData(password);
     data.privKeys[seq] = key.toBytes();
@@ -441,7 +440,6 @@ Wallet.prototype.setDefaultFee = function(newFee) {
  * @return {Object} List of outputs
  */
 Wallet.prototype.getUtxoToPay = function(value, pocketId) {
-    var outputs = this.wallet.outputs;
     var tmpWallet;
     if (pocketId === 'all') {
         tmpWallet = this.wallet;
@@ -459,7 +457,7 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
         utxo = utxo.filter(function(x) { return (x.height || (hot&&x.change)); });
 
         // organize and select
-        var valuecompare = function(a,b) { return a.value > b.value; }
+        var valuecompare = function(a,b) { return a.value > b.value; };
         var high = utxo.filter(function(o) { return o.value >= value; })
                        .sort(valuecompare);
         if (high.length > 0) { return [high[0]]; }
@@ -503,7 +501,6 @@ Wallet.prototype.markOutput = function(output, index) {
  */
 Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, height, spend, spendheight) {
     // Wallet wide
-    var output;
     var wallet = this.wallet;
     var outId = txHash+":"+index;
     var output = wallet.outputs[outId];
@@ -563,7 +560,7 @@ Wallet.prototype.processHistory = function(walletAddress, history, initial) {
         var inTxHash = tx[4];
         var outHeight = tx[2];
         var spend;
-        if (inTxHash == null) {
+        if (!inTxHash) {
             if (outHeight) {
                 walletAddress.height = Math.max(outHeight, walletAddress.height);
             }
@@ -571,7 +568,7 @@ Wallet.prototype.processHistory = function(walletAddress, history, initial) {
             spend = inTxHash + ":" + tx[5];
         }
         // pass on to internal Bitcoin.Wallet
-        self.processOutput(walletAddress, tx[0], tx[1], tx[3], outHeight, spend, tx[6]);
+        self.processOutput(walletAddress, outTxHash, tx[1], tx[3], outHeight, spend, tx[6]);
     });
     if (!initial) {
         this.store.save();
