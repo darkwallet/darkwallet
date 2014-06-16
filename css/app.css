@@ -4650,6 +4650,9 @@ div.modal-ng + div.container.animations-disabled {
   -webkit-transform: none;
   display: none; }
 
+.inherit-height {
+  height: inherit !important; }
+
 .nomarginbottom {
   margin-bottom: 0 !important; }
 
@@ -5022,7 +5025,7 @@ textarea.script {
   cursor: pointer; }
 
 .contact-mosaic {
-  max-height: 90%;
+  max-height: 85%;
   overflow-y: scroll;
   overflow-x: hidden; }
 

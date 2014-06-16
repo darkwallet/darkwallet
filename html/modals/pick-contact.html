@@ -1,36 +1,38 @@
-<div class="row"><div ng-controller="ContactsCtrl" class="small-12 columns panel radius topmargin">
-      
-<h3>Select a contact <small ng-show="vars.type=='pubKey'">Showing only contacts with master/stealth address.</small></h3>
-
-<div class="row" ng-show="allContacts.length>5">
-  <div class="small-12 columns">
-    <div class="row collapse">
-      <div class="small-2 columns">
-        <span class="prefix radius">Search</span>
-      </div>
-      <div class="small-10 columns">
-        <input type="text" auto-focus class="postfix radius" ng-change="filterContacts()" ng-model="contactSearch">
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="small-12 columns">
-     <div class="contact-mosaic">
-        <ul class="large-block-grid-5 medium-block-grid-3 small-block-grid-2">
-	  <li ng-repeat="contact in contacts | orderBy:'name' track by $index" ng-click="pickContact(contact)">
-	    <div class="contact-mosaic-square">
-		    <identicon icon-size="64" hash="contact.hash" title="{{contact.hash}}"></identicon>
-		    <div class="contact-label">{{contact.name}}</div>
+<div ng-controller="ContactsCtrl" class="large-11 large-centered columns panel inherit-height">
+	<div class="row">
+		<div class="small-12 columns">
+			<h3>Select a contact <small ng-show="vars.type=='pubKey'">Showing only contacts with master/stealth address.</small></h3>
+		</div>
+	</div>
+	<div class="row" ng-show="allContacts.length>10">
+	  <div class="small-12 columns">
+	    <div class="row collapse">
+	      <div class="small-2 columns">
+	        <span class="prefix radius">Search</span>
+	      </div>
+	      <div class="small-10 columns">
+	        <input type="text" auto-focus class="postfix radius" ng-change="filterContacts()" ng-model="contactSearch">
+	      </div>
 	    </div>
-  	  </li>
-      </ul>
-      </div>
-  </div>
+	  </div>
+	</div>
+
+	<div class="row inherit-height">
+	  <div class="small-12 columns inherit-height">
+	     <div class="contact-mosaic">
+	        <ul class="large-block-grid-5 medium-block-grid-3 small-block-grid-2">
+		  <li ng-repeat="contact in contacts | orderBy:'name' track by $index" ng-click="pickContact(contact)">
+		    <div class="contact-mosaic-square">
+			    <identicon icon-size="64" hash="contact.hash" title="{{contact.hash}}"></identicon>
+			    <div class="contact-label">{{contact.name}}</div>
+		    </div>
+	  	  </li>
+	      </ul>
+	      </div>
+	  </div>
+	</div>
 </div>
-</div>
-</div>
+
 <div class="qractions">
 	<a class="fa fa-times button" ng-click="cancel()"></a>
 </div>

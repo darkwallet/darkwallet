@@ -46,6 +46,7 @@ div.modal-ng:not([ng-cloak]) + div.container { -webkit-transform: scale(0.8); }
 div.modal-ng.ng-leave + div.container { -webkit-transform: scale(1); }
 div.modal-ng + div.container.animations-disabled { -webkit-transform: none; display: none; }
 
+.inherit-height { height: inherit !important; }
 
 .nomarginbottom { margin-bottom: 0 !important; }
 
@@ -367,7 +368,7 @@ div.notifications .panel:hover,
 }
 
 .contact-mosaic { 
-	max-height: 90%; 
+	max-height: 85%; 
 	overflow-y: scroll; 
 	overflow-x: hidden; 
 }
