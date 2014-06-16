@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="../vendors/angular/angular-csp.css">
     <link rel="stylesheet" href="../css/app.css">
   </head>
-  <body class="popupbody" ng-controller="PopupCtrl">
+  <body class="popupbody" ng-controller="PopupCtrl" ng-keydown="modals.checkKeyDown($event)">
     <div class="popupcontainer" ng-controller="NotificationsCtrl">
       <!-- modals -->
       <div class="modal-ng" ng-cloak ng-if="modals.show">
-        <div ng-controller="NgModalCtrl" ng-include="modals.page" ng-keydown="onKeyDown($event)" tabindex="0">
+        <div ng-controller="NgModalCtrl" ng-include="modals.page" tabindex="0">
         </div>
       </div>
 
