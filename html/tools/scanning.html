@@ -1,0 +1,21 @@
+<div ng-controller="ScanningCtrl">
+  <h3>Seed Scanning</h3>
+  <div ng-show="!scanning">
+    <a class="button fa fa-pencil postfix" ng-click="tools.scanOpen=true" novalidate>Scan</a>
+    <form name="scanningForm" ng-show="tools.scanOpen" ng-submit="scanSeed()">
+        <div class="row collapse">
+          <div class="medium-6 columns">
+            <button type="submit" class="button fa fa-pencil postfix">Scan!</button>
+          </div>
+          <div class="medium-6 columns">
+            <a class="button alert fa fa-times postfix" ng-click="tools.scanOpen=false;">Cancel</a>
+          </div>
+        </div>
+    </form>
+  </div>
+  <div ng-show="scanning">
+      <h4>Scanning</h4>
+      <p ng-show="scanner">{{scanner.status}}<p>
+      <p ng-show="!scanner">{{scanStatus}}<p>
+  </div>
+</div>

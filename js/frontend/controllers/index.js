@@ -21,6 +21,7 @@ define([
     './overview',
     './pocketaction',
     './pocketcreate',
+    './scanning',
     './send',
     './settings',
     './wallet',

@@ -14,6 +14,9 @@
           <h4>Developer mode</h4>
           <input id="checkbox-devmode" ng-model="settings.advanced" ng-change="setAdvanced()" type="checkbox"><label for="checkbox-devmode">Enable developer mode</label><br>
         </div>
+        <div class="panel setback seed">
+          <div ng-include="'tools/scanning.html'"></div>
+        </div>
       </div>
       <div class="large-5 columns">
         <div class="panel setback notifications">
