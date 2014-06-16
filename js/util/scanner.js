@@ -17,6 +17,8 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       this.lastPocketUsed = 0;
       this.pocketMargin = 10;
       this.addressMargin = 10;
+      this.scanned = 0;
+      this.target = this.pocketMargin*this.addressMargin;
       this.pocketCache = {};
       this.status = '';
       this.finishCb = finishCb;
@@ -43,10 +45,11 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       var self = this;
       this.status = 'Scanning ' + pocket + " " + n + " found: " + this.used.length;
       var address = this.getAddress(pocket, n);
+      this.scanned += 1;
       this.client.fetch_history(address, 0, function(err, history) {
           callback(err, (history && history.length));
       });
-      this.updateCb ? this.updateCb() : null;
+      this.updateCb ? this.updateCb(this.scanned, this.target) : null;
   }
 
   Scanner.prototype.scanNext = function() {
@@ -70,8 +73,14 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       }
       if (used) {
           this.used.push(seq);
-          this.lastAddressUsed[seq[0]] = seq[1] + 1;
-          this.lastPocketUsed = seq[0] + 1;
+          if (seq[0]+1 > this.lastPocketUsed) {
+              this.target += ((seq[0]+1)-this.lastPocketUsed)*10;
+              this.lastPocketUsed = seq[0] + 1;
+          }
+          if (seq[1] + 1 > this.lastAddressUsed[seq[0]]) {
+              this.target += ((seq[1]+1)-this.lastAddressUsed[seq[0]]);
+              this.lastAddressUsed[seq[0]] = seq[1] + 1;
+          }
       }
       this.scanNext();
   }

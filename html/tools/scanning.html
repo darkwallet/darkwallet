@@ -17,5 +17,6 @@
       <h4>Scanning</h4>
       <p ng-show="scanner">{{scanner.status}}<p>
       <p ng-show="!scanner">{{scanStatus}}<p>
+      <progressbar value="scanProgress">{{scanned.scanned}}/{{scanned.max}}</progressbar>
   </div>
 </div>

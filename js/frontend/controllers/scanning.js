@@ -29,7 +29,9 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
   }
 
   // Update every time we get results for an address
-  var onScanUpdate = function() {
+  var onScanUpdate = function(scanned, max) {
+      $scope.scanProgress = (scanned / max)*100;
+      $scope.scanned = {max: max, scanned: scanned};
       if (!$scope.$$phase) {
           $scope.$apply();
       }
@@ -49,7 +51,9 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
   $scope.scanSeed = function() {
       $scope.scanning = true;
       notify.note("Start Scanning");
+      $scope.scanned = {max: 100, scanned: 0};
       $scope.scanStatus = "Scanning...";
+      $scope.scanProgress = 0;
       var client = DarkWallet.getClient();
       if (client) {
           var identity = DarkWallet.getIdentity();
