@@ -47,10 +47,10 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
     } catch(e) {
         if (typeof e == 'string') {
             // Errors from libbitcoin come as strings
-            throw Error(e)
+            throw new Error(e);
         } else {
             // Otherwise it must be a javascript error
-            throw Error('Error sending: ' + e)
+            throw new Error('Error sending: ' + e);
         }
     }
 
@@ -167,7 +167,7 @@ Transaction.prototype.signMyInputs = function(inputs, newTx, privKeys) {
             continue;
         }
         if (found.length != 1) {
-            throw Error("Duplicate input found!");
+            throw new Error("Duplicate input found!");
         }
         if (wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
             var output = wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index];

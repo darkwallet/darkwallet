@@ -22,7 +22,7 @@ function Wallet(store, identity) {
     this.mpk = store.get('mpk');
 
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
-    this.pockets = new Pockets(store, identity, this)
+    this.pockets = new Pockets(store, identity, this);
     this.wallet = new Bitcoin.Wallet(this.mpk);
     this.multisig = new MultisigFunds(store, identity, this);
 
@@ -32,10 +32,10 @@ function Wallet(store, identity) {
 
     // store balance
     this.balance = this.getBalance();
-};
+}
 
 Wallet.prototype.initVersions = function(network) {
-    network = (network == 'bitcoin') ? 'mainnet' : network;
+    network = (network === 'bitcoin') ? 'mainnet' : network;
     this.versions = {
         address: Bitcoin.network[network].addressVersion,
         p2sh: Bitcoin.network[network].p2shVersion,
@@ -49,18 +49,18 @@ Wallet.prototype.initVersions = function(network) {
             this.versions.stealth = {address: Stealth.testnet, nonce: Stealth.nonceVersion, prefix: 'w'};
             break;
     }
-}
+};
 
 /**
  * This gets pocket or multisig from pocketId
  */
 Wallet.prototype.getPocket = function(pocketId) {
-    if (typeof pocketId == 'string') {
+    if (typeof pocketId === 'string') {
         return this.getWalletAddress(pocketId);
     } else {
         return this.pockets.hdPockets[pocketId];
     }
-}
+};
 
 /**
  * Initialize addresses for the wallet if empty
@@ -75,7 +75,7 @@ Wallet.prototype.initIfEmpty = function() {
             self.getAddress([(i*2)+1,0]);
         });
         self.store.save();
-    };
+    }
 };
 
 /**
@@ -84,6 +84,7 @@ Wallet.prototype.initIfEmpty = function() {
  * @param {Number} Balance in satoshis
  */
 Wallet.prototype.getBalance = function(pocketIndex) {
+    var i;
     var confirmed = 0;
     var unconfirmed = 0;
     var current = 0;
@@ -91,14 +92,14 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     var allAddresses = [];
     var keys = Object.keys(this.pubKeys);
     if (pocketIndex === undefined) {
-        for(var i=0; i<keys.length; i++) {
+        for(i=0; i<keys.length; i++) {
             // don't add fund or readonly addresses to total funds
-            if (['multisig', 'readonly'].indexOf(this.pubKeys[keys[i]].type) == -1) {
+            if (['multisig', 'readonly'].indexOf(this.pubKeys[keys[i]].type) === -1) {
                 allAddresses.push(this.pubKeys[keys[i]].address);
             }
         }
     } else {
-        for(var i=0; i<keys.length; i++) {
+        for(i=0; i<keys.length; i++) {
             var walletAddress = this.pubKeys[keys[i]];
             if (walletAddress.index && walletAddress.index[0] == pocketIndex) {
                 allAddresses.push(walletAddress.address);
@@ -107,11 +108,11 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     }
     // Get balance directly from available outputs
     var outputs = this.wallet.outputs;
-    var keys = Object.keys(outputs);
-    for(var i=0; i<keys.length; i++) {
+    keys = Object.keys(outputs);
+    for(i=0; i<keys.length; i++) {
         var out = outputs[keys[i]];
-        if (allAddresses.indexOf(out.address) != -1) {
-            if (out.spend && out.spendheight == 0) {
+        if (allAddresses.indexOf(out.address) !== -1) {
+            if (out.spend && (out.spendheight === 0)) {
                 unconfirmed -= out.value;
             } else if (out.spend) {
                 // spent so don't count it
@@ -130,7 +131,7 @@ Wallet.prototype.getBalance = function(pocketIndex) {
                 current += out.value;
             }
         }
-    };
+    }
     var balances = {confirmed: confirmed, unconfirmed: unconfirmed, current: current};
     
     if (pocketIndex === undefined) {
@@ -227,7 +228,7 @@ Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     }
     var masterKey = Bitcoin.HDWallet.fromBase58(data.privKey);
     var privKey;
-    if (seq.length > 1 && seq[1] == 's') {
+    if (seq.length > 1 && seq[1] === 's') {
         privKey = this.deriveStealthPrivateKey(seq, masterKey, data);
     } else {
         privKey = this.deriveHDPrivateKey(seq, masterKey);
@@ -264,9 +265,9 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
     var address = new Bitcoin.Address(pubKeyHash, this.versions.address);
 
     var label = 'unused';
-    if (seq.length == 1) {
+    if (seq.length === 1) {
         label = 'pocket';
-    } else if (seq.length > 1 && seq[0]%2 == 1) {
+    } else if (seq.length > 1 && (seq[0]%2 === 1)) {
         label = 'change';
     } else {
         label = 'unused';
@@ -290,13 +291,13 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
     }
 
     // Precalculate stealth address and mpk for pockets (only main branch)
-    if ((seq.length == 1) && (seq[0]%2 == 0)) {
+    if ((seq.length === 1) && (seq[0]%2 === 0)) {
         // Stealth
         var scanKey = this.getScanKey(seq[0]);
         var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [pubKey], this.versions.stealth.address);
-        walletAddress['stealth'] = stealthAddress;
+        walletAddress.stealth = stealthAddress;
         // Mpk
-        walletAddress['mpk'] = BtcUtils.deriveMpk(this.mpk, seq[0])
+        walletAddress.mpk = BtcUtils.deriveMpk(this.mpk, seq[0]);
     }
 
     // add to internal bitcoinjs-lib wallet
@@ -328,7 +329,7 @@ Wallet.prototype.deleteAddress = function(seq, dontSave) {
     if (!dontSave) {
         this.store.save();
     }
-}
+};
 
 /**
  * Get an address from this wallet.
@@ -358,11 +359,11 @@ Wallet.prototype.getAddress = function(seq) {
  */
 Wallet.prototype.getFreeAddress = function(branchIndex) {
     var walletAddress;
-    if (typeof branchIndex == 'string') {
+    if (typeof branchIndex === 'string') {
         // multisig get the same address again
         walletAddress = this.getWalletAddress(branchIndex);
-        if (walletAddress.type != 'multisig') {
-           throw Error("Generated an incorrect change address");
+        if (walletAddress.type !== 'multisig') {
+           throw new Error("Generated an incorrect change address");
         }
     } else {
         // normal address, get the address
@@ -374,7 +375,7 @@ Wallet.prototype.getFreeAddress = function(branchIndex) {
 
         // This should have no type
         if (walletAddress.type) {
-           throw Error("Generated an incorrect change address");
+           throw new Error("Generated an incorrect change address");
         }
     }
     return walletAddress;
@@ -389,7 +390,7 @@ Wallet.prototype.getFreeAddress = function(branchIndex) {
 
 Wallet.prototype.getChangeAddress = function(pocketId) {
     var branchIndex;
-    if (typeof pocketId == 'string') {
+    if (typeof pocketId === 'string') {
         branchIndex = pocketId;
     } else {
         // Change branch
@@ -414,7 +415,7 @@ Wallet.prototype.getWalletAddress = function(address) {
     var keys = Object.keys(this.pubKeys);
     for (var idx=0; idx<keys.length; idx++) {
          var walletAddress = this.pubKeys[keys[idx]];
-         if (walletAddress.address == address) {
+         if (walletAddress.address === address) {
              return walletAddress;
          }
     }
@@ -442,31 +443,31 @@ Wallet.prototype.setDefaultFee = function(newFee) {
 Wallet.prototype.getUtxoToPay = function(value, pocketId) {
     var outputs = this.wallet.outputs;
     var tmpWallet;
-    if (pocketId == 'all') {
+    if (pocketId === 'all') {
         tmpWallet = this.wallet;
     } else {
         tmpWallet = this.pockets.getPocketWallet(pocketId);
     }
 
     var getCandidateOutputs = function(w, value, hot) {
-        var h = []
-        for (var out in w.outputs) h.push(w.outputs[out])
+        var h = [];
+        for (var out in w.outputs) { h.push(w.outputs[out]); }
         // remove spent
-        var utxo = h.filter(function(x) { return !x.spend });
+        var utxo = h.filter(function(x) { return !x.spend; });
 
         // remove unconfirmed (leave hot change if 'hot' is true)
-        utxo = utxo.filter(function(x) { return (x.height || (hot&&x.change)) });
+        utxo = utxo.filter(function(x) { return (x.height || (hot&&x.change)); });
 
         // organize and select
         var valuecompare = function(a,b) { return a.value > b.value; }
         var high = utxo.filter(function(o) { return o.value >= value; })
                        .sort(valuecompare);
-        if (high.length > 0) return [high[0]];
+        if (high.length > 0) { return [high[0]]; }
         utxo.sort(valuecompare);
         var totalval = 0;
         for (var i = 0; i < utxo.length; i++) {
             totalval += utxo[i].value;
-            if (totalval >= value) return utxo.slice(0,i+1);
+            if (totalval >= value) { return utxo.slice(0,i+1); }
         }
         // if looking without hot and didn't find any, look for hot also
         if (!hot) {
@@ -474,7 +475,7 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId) {
         }
         throw ("Not enough money to send funds including transaction fee. Have: "
                      + (totalval / 100000000) + ", needed: " + (value / 100000000));
-   }
+   };
 
    return getCandidateOutputs(tmpWallet, value);
 };
@@ -516,7 +517,7 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
         walletAddress.nOutputs += 1;
     }
     // Set as change
-    if (!height && output.change == undefined) {
+    if (!height && output.change === undefined) {
         // no 0 confirm spends for now
         // output.change = this.identity.tx.inputsMine(txHash, tx);
     }
@@ -528,7 +529,7 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
             output.counted = true;
         }
     }
-    if (walletAddress.type == 'stealth') {
+    if (walletAddress.type === 'stealth') {
         output.stealth = true;
     }
     // Save height
@@ -636,7 +637,7 @@ Wallet.prototype.processStealthMatch = function(pocketIndex, ephemKey, pubKey, a
         this.store.save();
     }
     return walletAddress;
-}
+};
 
 return Wallet;
 });
