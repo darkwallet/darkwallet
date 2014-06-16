@@ -54,12 +54,12 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
 
   Scanner.prototype.scanNext = function() {
       this.currentAddress+=1;
-      if ((this.currentAddress - this.lastAddressUsed[this.currentPocket]) > this.addressMargin) {
+      if ((this.currentAddress - this.lastAddressUsed[this.currentPocket]) >= this.addressMargin) {
           this.currentAddress = 0;
           this.currentPocket += 1;
           this.lastAddressUsed[this.currentPocket] = 0;
       }
-      if ((this.currentPocket - this.lastPocketUsed) > this.pocketMargin) {
+      if ((this.currentPocket - this.lastPocketUsed) >= this.pocketMargin) {
           this.finish();
       } else {
           this.scan();
