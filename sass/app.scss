@@ -44,6 +44,8 @@ div.modal-ng.ng-animate.ng-enter.ng-enter-active { -webkit-transform: translate3
 
 div.modal-ng:not([ng-cloak]) + div.container { -webkit-transform: scale(0.8); }
 div.modal-ng.ng-leave + div.container { -webkit-transform: scale(1); }
+div.modal-ng + div.container.animations-disabled { -webkit-transform: none; display: none; }
+
 
 .nomarginbottom { margin-bottom: 0 !important; }
 

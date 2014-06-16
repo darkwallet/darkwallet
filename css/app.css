@@ -4646,6 +4646,10 @@ div.modal-ng:not([ng-cloak]) + div.container {
 div.modal-ng.ng-leave + div.container {
   -webkit-transform: scale(1); }
 
+div.modal-ng + div.container.animations-disabled {
+  -webkit-transform: none;
+  display: none; }
+
 .nomarginbottom {
   margin-bottom: 0 !important; }
 
