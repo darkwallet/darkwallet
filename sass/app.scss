@@ -357,9 +357,18 @@ textarea.script {
 
 .pocket-square { min-height: 120px; margin-bottom: -0.3rem; }
 
-.contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover { background: $primary-color; cursor: pointer; }
+.contact-mosaic .panel:hover,
+div.notifications .panel:hover,
+.pocket-square:hover { 
+	background: $primary-color; 
+	cursor: pointer; 
+}
 
-.contact-mosaic { max-height: 500px; overflow-y: scroll; overflow-x: hidden; }
+.contact-mosaic { 
+	max-height: 90%; 
+	overflow-y: scroll; 
+	overflow-x: hidden; 
+}
 
 .contact-mosaic-full { overflow: hidden; }
 
@@ -388,19 +397,33 @@ span.contact-name { font-size: 200%; vertical-align: middle; }
 
 .select-list { min-height: 100px; background-image: none; }
 
-.showqr > div { text-align: center; }
+.showqr > div { 
+	text-align: center;
+}
 
 .showqr > div canvas { display: none; }
 
 .showqr > div img { 
-	max-width: 86%; 
-	margin-bottom: 1em;
+	max-width: 86%;
 	image-rendering: -webkit-optimize-contrast;
+	border: 10px solid white;
  }
 
-.qractions { position: absolute; top: 0; right: 0; }
-.qractions a.button { position: absolute; top: 0; right: 0; width: 36px; padding: 8px 0; }
-.qractions a:last-child { top: 40px; }
+.qractions { 
+	position: absolute; 
+	top: 0; 
+	right: 0; 
+}
+
+.qractions a.button { 
+	font-size: 160%;
+	position: absolute; 
+	top: 0; right: 0; 
+	padding: 8px 0; 
+	width: 50px;
+}
+
+.qractions a:last-child:not(:first-child) { top: 60px; }
 
 .modal-show-qr { background: white; top: 10px; overflow: hidden; padding: 0; }
 .qr-address { word-wrap: break-word; color: black; margin-right: 3em; }

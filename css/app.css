@@ -5018,7 +5018,7 @@ textarea.script {
   cursor: pointer; }
 
 .contact-mosaic {
-  max-height: 500px;
+  max-height: 90%;
   overflow-y: scroll;
   overflow-x: hidden; }
 
@@ -5073,8 +5073,8 @@ span.contact-name {
 
 .showqr > div img {
   max-width: 86%;
-  margin-bottom: 1em;
-  image-rendering: -webkit-optimize-contrast; }
+  image-rendering: -webkit-optimize-contrast;
+  border: 10px solid white; }
 
 .qractions {
   position: absolute;
@@ -5082,14 +5082,15 @@ span.contact-name {
   right: 0; }
 
 .qractions a.button {
+  font-size: 160%;
   position: absolute;
   top: 0;
   right: 0;
-  width: 36px;
-  padding: 8px 0; }
+  padding: 8px 0;
+  width: 50px; }
 
-.qractions a:last-child {
-  top: 40px; }
+.qractions a:last-child:not(:first-child) {
+  top: 60px; }
 
 .modal-show-qr {
   background: white;
