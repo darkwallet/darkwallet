@@ -17,28 +17,28 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
     // Connect to wallet port for identity cleanup and startup
     Port.connect('wallet', function(data) {
       // Cleanup on identity change;
-      if (data.type == 'ready') {
+      if (data.type === 'ready') {
         self.checkFinishedTasks();
       }
-      else if (data.type == 'closing') {
+      else if (data.type === 'closing') {
         self.ongoing = {};
       }
     });
 
     // Connect to contacts port to know about contacts becoming available
     Port.connect('contacts', function(data) {
-        if (data.type == 'contact') {
+        if (data.type === 'contact') {
             self.onContactAvailable(data.peer);
         }
     });
     Port.connect('channel', function(data) {
-        if (data.type == 'initChannel') {
+        if (data.type === 'initChannel') {
             console.log("[msTrack] connecting", data.name);
             var channel = core.getLobbyTransport().getChannel(data.name);
-            channel.addCallback('MultisigAnnounce', function(msg) { self.onMultisigAnnounce(msg) });
-            channel.addCallback('MultisigSpend', function(msg) { self.onMultisigSpend(msg) } );
-            channel.addCallback('MultisigAck', function(msg) { self.onMultisigAck(msg) } );
-            channel.addCallback('MultisigSign', function(msg) { self.onMultisigSign(msg) } );
+            channel.addCallback('MultisigAnnounce', function(msg) { self.onMultisigAnnounce(msg); });
+            channel.addCallback('MultisigSpend', function(msg) { self.onMultisigSpend(msg); } );
+            channel.addCallback('MultisigAck', function(msg) { self.onMultisigAck(msg); } );
+            channel.addCallback('MultisigSign', function(msg) { self.onMultisigSign(msg); } );
         }
     });
 
@@ -55,14 +55,14 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       if (!task.participants) {
           var multisig = identity.wallet.multisig.search({address: task.inPocket});
           if (!multisig) {
-              return
+              return;
           }
           self.prepareTask(task, multisig);
       }
 
       task.participants.forEach(function(participant) {
           participant.available = true;
-          if (!participant.sent || (participant.peer != peer.fingerprint)) {
+          if (!participant.sent || (participant.peer !== peer.fingerprint)) {
               var taskContact = identity.contacts.findByPubKey(participant.pubKey);
               if (taskContact == contact) {
                   participant.peer = peer.fingerprint;
@@ -71,7 +71,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
               }
           }
       });
-  }
+  };
 
   /**
    * Check for peer tasks
@@ -86,7 +86,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       tasks.forEach(function(task) {
           self.checkPeerTask(peer, section, task);
       });
-  }
+  };
 
   /**
    * Process a transaction arriving to the wallet to see if we need
@@ -100,11 +100,11 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       tasks = tasks.concat(identity.tasks.getTasks('multisig-sign'));
 
       tasks.forEach(function(task) {
-            if ((task.tx == serializedTx) || (task.hash == txHash)) {
+            if ((task.tx === serializedTx) || (task.hash === txHash)) {
                 task.state = 'finished';
             }
       });
-  }
+  };
 
   /**
    * Check all tasks to see if any are finished
@@ -123,13 +123,13 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
 
           // Check if some row references this
           identity.history.history.some(function(row) {
-              if (row.hash == hash) {
+              if (row.hash === hash) {
                   task.state = 'finished';
                   return true;
               }
           });
       });
-  }
+  };
 
   /**
    * A contact becomes available.
@@ -140,7 +140,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       this.checkPeerTasks(peer, 'multisig-announce');
       this.checkPeerTasks(peer, 'multisig-sign');
 
-  }
+  };
 
   /**
    * Start a task for a multisig with slots for every participant.
@@ -153,11 +153,11 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       multisig.pubKeys.forEach(function(pubKey) {
           // pubkey, available, sent, ack, signature
           var state = {pubKey: pubKey.slice(), available: false, sent: false, ack: false, sig: null};
-          task.participants.push(state)
+          task.participants.push(state);
       });
       task.address = multisig.address;
       return task;
-  }
+  };
 
   /**
    * Add a task and check if we can send it to any peers
@@ -179,7 +179,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
               }
           });
       }
-  }
+  };
 
   /**
    * Queue announcing the multisig to all peers
@@ -190,7 +190,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       // Add the task
       this.addTask('multisig-announce', task);
       return task;
-  }
+  };
 
   MultisigTrackService.prototype.accept = function(task) {
       var identity = this.core.getCurrentIdentity();
@@ -207,7 +207,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       }
 
       // identity.tasks.removeTask('multisig-invite', task);
-  }
+  };
 
   /**
    * Create a task for sending the sign
@@ -220,7 +220,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       // Add the task
       this.addTask('multisig-sign', task);
       return task;
-  }
+  };
 
 
   /**
@@ -233,7 +233,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       var address = pending[0].address;
       var multisig = identity.wallet.multisig.search({address: address});
       if (!multisig) {
-          throw Error("The selected multisig does not exist");
+          throw new Error("The selected multisig does not exist");
       }
       var task = this.prepareTask({}, multisig);
       task.tx = txHex;
@@ -245,7 +245,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       // Add the task
       this.addTask('multisig', task);
       return task;
-  }
+  };
 
   /**
    * Send a task to a contact
@@ -253,15 +253,15 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
    */
   MultisigTrackService.prototype.send = function(peer, section, task, tracking) {
       var msg;
-      if (section == 'multisig') {
+      if (section === 'multisig') {
           msg = Protocol.MultisigSpendMsg(task.address, task.tx);
           msg.body.pending = task.pending;
-      } else if (section == 'multisig-announce') {
+      } else if (section === 'multisig-announce') {
           var identity = this.core.getCurrentIdentity();
           var multisig = identity.wallet.multisig.search({address: task.address});
           msg = Protocol.MultisigAnnounceMsg(multisig.script);
           msg.body.name = multisig.name;
-      } else if (section == 'multisig-sign') {
+      } else if (section === 'multisig-sign') {
           msg = Protocol.MultisigSignMsg(task.address, task.hash, [task.signature]);
       }
  
@@ -273,7 +273,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       }
 
       peer.channel.postDH(peer.pubKey, msg, function() {});
-  }
+  };
 
   /**
    * A new multisig was received, queue for accepting
@@ -292,7 +292,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
           var task = { fund: multisig, name: msg.body.name };
           this.addTask('multisig-invite', task);
       }
-  }
+  };
 
   /**
    * Acknowledge receiving a spend request
@@ -302,7 +302,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       // Add the task
       var msg = Protocol.MultisigAckMsg(spend.id);
       peer.channel.postDH(peer.pubKey, msg, function() {});
-  }
+  };
 
 
   /**
@@ -330,7 +330,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       if (spend) {
           fund.importSignature(sigHex, spend);
       }
-  }
+  };
 
   /**
    * A new spend arrived from a peer, queue for spending
@@ -359,20 +359,19 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
               this.prepareTask(spend.task, multisig);
           }
       }
-  }
+  };
 
   /**
    * A new multisig ack has arrived
    */
   MultisigTrackService.prototype.onMultisigAck = function(msg) {
-      var identity = this.core.getCurrentIdentity();
       var peer = msg.peer;
       var tracking = this.ongoing[msg.body.id];
       if (tracking) {
           tracking.ack = true;
           delete this.ongoing[msg.body.id];
       }
-  }
+  };
 
   return MultisigTrackService;
 
