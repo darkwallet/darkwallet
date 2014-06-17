@@ -16,10 +16,10 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     // Port for communication with other services
     Port.connect('obelisk', function(data) {
       // WakeUp when connected to obelisk
-      if (data.type == 'disconnect' || data.type == 'disconnected') {
+      if (data.type === 'disconnect' || data.type === 'disconnected') {
         self.stopTasks();
       }
-      else if (data.type == 'connected') {
+      else if (data.type === 'connected') {
         self.checkMixing();
         // resume tasks
         self.resumeTasks();
@@ -73,7 +73,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     var lobbyTransport = this.core.getLobbyTransport();
     if (!this.channel) {
       var network = this.core.getIdentity().wallet.network;
-      if (network == 'bitcoin') {
+      if (network === 'bitcoin') {
           this.channel = lobbyTransport.initChannel('CoinJoin', Channel);
       } else {
           this.channel = lobbyTransport.initChannel('CoinJoin:'+network, Channel);
@@ -104,7 +104,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
 
   MixerService.prototype.stopTasks = function(task) {
     this.ongoing = {};
-  }
+  };
 
   /*
    * Check a running task to see if we have to resend or cancel
@@ -114,19 +114,19 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       if (coinJoin) {
           var start = coinJoin.task.start;
           var timeout = coinJoin.task.timeout;
-          if (coinJoin.state != 'finished' && (Date.now()/1000)-start > timeout) {
+          if (coinJoin.state !== 'finished' && (Date.now()/1000)-start > timeout) {
               // Cancel task if it expired and not finished
               console.log("[mixer] Cancelling coinjoin!", msg.body.id);
               Port.post('gui', {type: 'mixer', state: 'Sending with no mixing'});
               var walletService = this.core.service.wallet;
               walletService.sendFallback('mixer', coinJoin.task);
-          } else if (coinJoin.state == 'announce') {
+          } else if (coinJoin.state === 'announce') {
               // Otherwise resend
               this.postRetry(msg);
               Port.post('gui', {type: 'mixer', state: 'Announcing'});
           }
       }
-  }
+  };
 
   /*
    * Send a message on the channel and schedule a retry
@@ -143,7 +143,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       setTimeout(function() {
             self.checkAnnounce(msg);
       }, 10000);
-  }
+  };
 
   /**
    * Announce a coinjoin.
@@ -229,7 +229,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
             return i;
         }
       }
-    };
+    }
     return -1;
   };
 
@@ -250,7 +250,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     var pocketIndex = this.findMixingPocket(opening.amount+fee);
 
     // If we found a pocket, continue with the protocol.
-    if (pocketIndex != -1) {
+    if (pocketIndex !== -1) {
       // Prepare arguments for preparing the tx
       var changeAddress = identity.wallet.getChangeAddress(pocketIndex);
       var destAddress = identity.wallet.getFreeAddress(pocketIndex*2);
@@ -269,9 +269,6 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   };
 
   MixerService.prototype.sendTo = function(peer, id, tx, callback) {
-      // Save the transaction with the ongoing task
-      var coinJoin = this.ongoing[id];
-
       // Now create and send the message
       var msg = Protocol.CoinJoinMsg(id, tx.serializeHex());
       this.channel.postDH(peer.pubKey, msg, function(err, data) {
@@ -284,7 +281,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
    */
   MixerService.prototype.checkDelete = function(id) {
       var coinJoin = this.ongoing[id];
-      if (['finished', 'cancelled'].indexOf(coinJoin.state) != -1) {
+      if (['finished', 'cancelled'].indexOf(coinJoin.state) !== -1) {
           console.log("[mixer] Deleting coinjoin because " + coinJoin.state);
           delete this.ongoing[id];
       }
@@ -336,23 +333,23 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           var output = identity.wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index];
           // we're only adding keyhash inputs for now
           if (!output) {
-              throw Error("Invalid input in our join (no output)");
+              throw new Error("Invalid input in our join (no output)");
           }
           var walletAddress = identity.wallet.getWalletAddress(output.address);
 
           // only normal addresses supported for now
           if (!walletAddress || walletAddress.type) {
-              throw Error("Invalid input in our join (bad address)");
+              throw new Error("Invalid input in our join (bad address)");
           }
           // skip if we already got this key
           if (privKeys[walletAddress.index]) {
               continue;
           }
-          if (Math.floor(walletAddress.index[0]/2) != pocketIndex) {
-              throw Error("Address from an invalid pocket");
+          if (Math.floor(walletAddress.index[0]/2) !== pocketIndex) {
+              throw new Error("Address from an invalid pocket");
           }
           // derive this key
-          var change  = walletAddress.index[0]%2 == 1;
+          var change = walletAddress.index[0]%2 === 1;
           privKeys[walletAddress.index] = identity.wallet.deriveHDPrivateKey(walletAddress.index.slice(1), change?changeKey:masterKey).toBytes();
       }
       return privKeys;
@@ -382,7 +379,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       console.log("[mixer] Peer not found " + msg.sender, msg.peer);
       return;
     }
-    if (msg.sender != this.channel.fingerprint) {
+    if (msg.sender !== this.channel.fingerprint) {
       console.log("[mixer] CoinJoinOpen", msg.peer);
       this.evaluateOpening(msg.peer, msg.body);
     } else {
@@ -391,27 +388,27 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   };
 
   MixerService.prototype.onCoinJoin = function(msg) {
-    if (msg.sender != this.channel.fingerprint) {
+    if (msg.sender !== this.channel.fingerprint) {
       var coinJoin = this.getOngoing(msg);
       if (coinJoin) {
           console.log("[mixer] CoinJoin", msg);
 
           var updatedTx = coinJoin.process(msg.body, msg.peer);
           // if requested to sign, try to do it
-          if (coinJoin.state == 'sign') {
+          if (coinJoin.state === 'sign') {
               // Needs signing from user
               var signed = this.requestSignInputs(coinJoin);
               if (signed) {
                   updatedTx = coinJoin.addSignatures(coinJoin.tx);
               }
           }
-          if (updatedTx && coinJoin.state != 'sign') {
+          if (updatedTx && coinJoin.state !== 'sign') {
               this.sendTo(msg.peer, msg.body.id, updatedTx);
           }
           if (updatedTx) {
               Port.post('gui', {type: 'mixer', state: coinJoin.state});
           }
-          if (coinJoin.state == 'sign') {
+          if (coinJoin.state === 'sign') {
               console.log("task requires signing from user!");
           }
           // copy coinjoin state to the store
@@ -419,10 +416,10 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
               coinJoin.task.state = coinJoin.state;
           }
           // Check state and perform appropriate tasks
-          if (coinJoin.state == 'finished' && coinJoin.task) {
+          if (coinJoin.state === 'finished' && coinJoin.task) {
               var onBroadcast = function(_error, _data) {
                   console.log("broadcasting!", _error, _data);
-              }
+              };
               var walletService = this.core.service.wallet;
               coinJoin.task.tx = coinJoin.tx.serializeHex();
               walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
@@ -439,7 +436,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     }
   };
   MixerService.prototype.onCoinJoinFinish = function(msg) {
-    if (msg.sender != this.channel.fingerprint) {
+    if (msg.sender !== this.channel.fingerprint) {
       console.log("[mixer] CoinJoinFinish", msg);
       var coinJoin = this.getOngoing(msg);
       if (coinJoin) {
