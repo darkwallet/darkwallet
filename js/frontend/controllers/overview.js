@@ -33,7 +33,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       } else {
           $scope.allPockets.push(newData);
       }
-  }
+  };
 
   /**
    * Calculate all balances
@@ -47,13 +47,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           if (!pocket) {
               return;
           }
-          var balance = identity.wallet.getBalance(i*2);
-          var balance2 = identity.wallet.getBalance((i*2)+1);
-
-          // Sum change and main balance for the pocket
-          balance.confirmed += balance2.confirmed;
-          balance.current += balance2.current;
-          balance.unconfirmed += balance2.unconfirmed;
+          var balance = identity.wallet.getBalance(i);
 
           // Update total
           total.confirmed += balance.confirmed;
@@ -68,9 +62,13 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
               return;
           }
           var balance = identity.wallet.getBalance(fund.address);
+
+          // Update total
           total.current += balance.current;
           total.confirmed += balance.confirmed;
           total.unconfirmed += balance.unconfirmed;
+
+          // Save the pocket information
           updatePocket({name: fund.name, mixing: fund.mixing, balance: balance, type: 'fund', fund: fund, index: i});
       });
       updatePocket({name: 'Total', balance: total, type: 'total'}, identity.wallet.pockets.hdPockets.length-1);

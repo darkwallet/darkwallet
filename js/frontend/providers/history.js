@@ -40,13 +40,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       } else if (pocket.isAll) {
           balance = wallet.getBalance();
       } else {
-          var mainBalance = wallet.getBalance(pocket.index*2);
-          var changeBalance = wallet.getBalance((pocket.index*2)+1);
-
-          var confirmed = mainBalance.confirmed + changeBalance.confirmed;
-          var unconfirmed = mainBalance.unconfirmed + changeBalance.unconfirmed;
-          var current = mainBalance.current + changeBalance.current;
-          balance = {confirmed: confirmed, unconfirmed: unconfirmed, current: current};
+          balance = wallet.getBalance(pocket.index);
       }
       return balance;
   };

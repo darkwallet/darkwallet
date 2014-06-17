@@ -78,37 +78,50 @@ Wallet.prototype.initIfEmpty = function() {
 };
 
 /**
- * Get balance for a specific pocket or all pockets
- * @param {String|undefined} pocket Pocket number or all pockets if undefined
- * @param {Number} Balance in satoshis
+ * Get addresses for given pocket / chain index.
+ * @param {String|undefined} pocket Chain number, multisig id or all pockets if undefined
+ * @param {Array} Array with addresses
  */
-Wallet.prototype.getBalance = function(pocketIndex) {
-    var i;
-    var confirmed = 0;
-    var unconfirmed = 0;
-    var current = 0;
-    var hot = 0;
+Wallet.prototype.getPocketAddresses = function(pocketId) {
     var allAddresses = [];
     var keys = Object.keys(this.pubKeys);
-    if (pocketIndex === undefined) {
-        for(i=0; i<keys.length; i++) {
+
+    if (pocketId === undefined) {
+        // All
+        for(var i=0; i<keys.length; i++) {
             // don't add fund or readonly addresses to total funds
             if (['multisig', 'readonly'].indexOf(this.pubKeys[keys[i]].type) === -1) {
                 allAddresses.push(this.pubKeys[keys[i]].address);
             }
         }
+    } else if (typeof pocketId === 'number') {
+        // Hd pocket
+        allAddresses = this.pockets.getAllAddresses(pocketId);
     } else {
-        for(i=0; i<keys.length; i++) {
-            var walletAddress = this.pubKeys[keys[i]];
-            if (walletAddress.index && walletAddress.index[0] === pocketIndex) {
-                allAddresses.push(walletAddress.address);
-           }
-        }
+        // Multisig
+        allAddresses = [pocketId]; 
     }
+    return allAddresses;
+
+};
+
+/**
+ * Get balance for a specific pocket or all pockets
+ * @param {String|undefined} pocket Pocket number or all pockets if undefined
+ * @param {Number} Balance in satoshis
+ */
+Wallet.prototype.getBalance = function(pocketId) {
+    var confirmed = 0;
+    var unconfirmed = 0;
+    var current = 0;
+    var hot = 0;
+
+    var allAddresses = this.getPocketAddresses(pocketId);
+
     // Get balance directly from available outputs
     var outputs = this.wallet.outputs;
-    keys = Object.keys(outputs);
-    for(i=0; i<keys.length; i++) {
+    var keys = Object.keys(outputs);
+    for(var i=0; i<keys.length; i++) {
         var out = outputs[keys[i]];
         if (allAddresses.indexOf(out.address) !== -1) {
             if (out.spend && (out.spendheight === 0)) {
@@ -133,7 +146,7 @@ Wallet.prototype.getBalance = function(pocketIndex) {
     }
     var balances = {confirmed: confirmed, unconfirmed: unconfirmed, current: current};
     
-    if (pocketIndex === undefined) {
+    if (pocketId === undefined) {
         this.balance = balances;
     }
     return balances;

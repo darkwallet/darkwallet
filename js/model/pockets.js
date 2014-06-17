@@ -39,7 +39,7 @@ Pockets.prototype.initPockets = function(store) {
 Pockets.prototype.createPocket = function(name) {
     // Raise exception if name exists
     if (this.getPocket(name)) {
-        throw Error("Pocket with that name already exists!");
+        throw new Error("Pocket with that name already exists!");
     }
     this.hdPockets.push({name: name});
     this.store.save();
@@ -54,7 +54,7 @@ Pockets.prototype.createPocket = function(name) {
  * @private
  */
 Pockets.prototype.initPocketWallet = function(id) {
-    this.pocketWallets[id] = {addresses: [], balance: 0};
+    this.pocketWallets[id] = {addresses: [], changeAddresses: [], balance: 0};
 };
 
 /**
@@ -84,7 +84,7 @@ Pockets.prototype.deletePocket = function(name) {
              return;
         }
     }
-    throw Error("Pocket with that name does not exist!");
+    throw new Error("Pocket with that name does not exist!");
 };
 
 /**
@@ -111,21 +111,53 @@ Pockets.prototype.addToPocket = function(walletAddress) {
     if (!this.pocketWallets.hasOwnProperty(pocketId)) {
         this.initPocketWallet(pocketId);
     }
-    this.pocketWallets[pocketId].addresses.push(walletAddress.address);
+    if (walletAddress.index[0]%2 === 1) {
+        this.pocketWallets[pocketId].changeAddresses.push(walletAddress.address);
+    } else {
+        this.pocketWallets[pocketId].addresses.push(walletAddress.address);
+    }
 };
 
 /**
- * Gets the pocket wallet for a pocket
+ * Gets all public addresses for this pocket.
  * @param {Object} id Pocket id (can be branch number, multisig address...)
+ * @return {Array} An array of strings with the addresses.
+ */
+Pockets.prototype.getAddresses = function(id) {
+    return this.pocketWallets[id].addresses;
+};
+
+/**
+ * Gets all change addresses for this pocket.
+ * @param {Object} id Pocket id (can be branch number, multisig address...)
+ * @return {Array} An array of strings with the addresses.
+ */
+Pockets.prototype.getChangeAddresses = function(id) {
+    return this.pocketWallets[id].changeAddresses;
+};
+
+/**
+ * Gets all addresses for this pocket.
+ * @param {Object} id Pocket id (can be pocket index, multisig address...)
+ * @return {Array} An array of strings with the addresses.
+ */
+Pockets.prototype.getAllAddresses = function(id) {
+    return this.getAddresses(id).concat(this.getChangeAddresses(id));
+};
+
+
+/**
+ * Gets the pocket wallet for a pocket
+ * @param {Object} id Pocket id (can be pocket index, multisig address...)
  * @return {Object} The pocket wallet
  */
 Pockets.prototype.getPocketWallet = function(id) {
     if (!this.pocketWallets.hasOwnProperty(id)) {
-        throw Error("Pocket doesn't exist");
+        throw new Error("Pocket doesn't exist");
     }
     // Generate on the fly
     var outputs = this.wallet.wallet.outputs;
-    var addresses = this.pocketWallets[id].addresses;
+    var addresses = this.getAllAddresses();
     var pocketOutputs = {};
     Object.keys(outputs).forEach(function(outputKey) {
         var output = outputs[outputKey];
