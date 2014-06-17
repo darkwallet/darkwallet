@@ -49,7 +49,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           balance = {confirmed: confirmed, unconfirmed: unconfirmed, current: current};
       }
       return balance;
-  }
+  };
 
   /**
    * Pocket change
@@ -57,19 +57,19 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   HistoryProvider.prototype.isCurrentPocket = function(pocketId) {
       if (this.pocket.isAll) {
           return true;
-      } else if (this.pocket.index == pocketId) {
+      } else if (this.pocket.index === pocketId) {
           return true;
       }
-  }
+  };
 
   HistoryProvider.prototype.onBalanceUpdate = function() {
       this.pocket.balance = this.calculateBalance(this.pocket);
       return this.chooseRows();
-  }
+  };
 
   HistoryProvider.prototype.getCurrentPocket = function() {
       return this.pocket;
-  }
+  };
 
   // History Listing
   HistoryProvider.prototype.selectFund = function(fund, rowIndex) {
@@ -102,7 +102,6 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   HistoryProvider.prototype.selectAll = function(pocketName, rowIndex) {
       var identity = DarkWallet.getIdentity();
-      var pocketIndex;
       this.pocket.name = pocketName ? "Overview" : "All Pockets";
       this.pocket.index = undefined;
       this.pocket.mpk = undefined;
@@ -116,7 +115,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       this.pocket.addresses = this.$wallet.allAddresses;
       this.pocket.changeAddresses = [];
       this.pocket.isAll = true;
-      this.pocket.isOverview = (pocketName == 'overview');
+      this.pocket.isOverview = (pocketName === 'overview');
       this.pocket.isFund = false;
 
       this.pocket.balance = identity.wallet.getBalance();
@@ -129,7 +128,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   HistoryProvider.prototype.selectPocket = function(pocketName, rowIndex) {
       var identity = DarkWallet.getIdentity();
-      if (pocketName === undefined || pocketName == 'overview') {
+      if (pocketName === undefined || pocketName === 'overview') {
           return this.selectAll(pocketName, rowIndex);
       }
       var pocketIndex = rowIndex*2;
@@ -167,7 +166,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
               row.contact = contact;
           }
       }
-  }
+  };
  
   // Filter the rows we want to show
   HistoryProvider.prototype.chooseRows = function() {
@@ -185,31 +184,30 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
          return b.height - a.height;
       });
       var shownRows = [];
-      rows = rows.filter(function(row) { return self.historyFilter(row, shownRows) } );
+      rows = rows.filter(function(row) { return self.historyFilter(row, shownRows); } );
       if (!rows.length) {
           return [];
       }
-      if (this.txFilter == 'weekly') {
+      if (this.txFilter === 'weekly') {
           this.rows = this.calculateWeekly(rows);
       }
-      else if (this.txFilter == 'monthly') {
+      else if (this.txFilter === 'monthly') {
           this.rows = this.calculateMonthly(rows);
       } else {
           this.rows = this.calculateHistory(rows);
       }
       return this.rows;
-  }
+  };
 
   HistoryProvider.prototype.calculateMonthly = function(rows) {
       var self = this;
-      var pocketId = this.pocket.index;
       var now = new Date();
       var d = now.getDate(); //get the current day
-      var monthStart = new Date(now.valueOf() - ((d==1?0:d-1)*86400000)); //rewind to start day
+      var monthStart = new Date(now.valueOf() - ((d===1?0:d-1)*86400000)); //rewind to start day
       var monthEnd;
       var getLabel = function(dateStart, dateEnd) {
          return monthNames[dateEnd.getMonth()]+"/"+dateEnd.getFullYear();
-      }
+      };
       var month = {index: 0, incoming: 0, outgoing: 0, transactions: 0, label: getLabel(monthStart, monthStart)};
       var result = [month];
 
@@ -237,11 +235,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       });
 
       return result;
-  }
+  };
 
   HistoryProvider.prototype.calculateWeekly = function(rows) {
       var self = this;
-      var pocketId = this.pocket.index;
       var now = new Date();
       var startDay = 1; //0=sunday, 1=monday etc.
       var d = now.getDay(); //get the current day
@@ -251,10 +248,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
       var getLabel = function(dateStart, dateEnd) {
          var start = dateStart.toLocaleDateString();
-         var end = dateEnd.toLocaleDateString()
+         var end = dateEnd.toLocaleDateString();
          //return monthNames[weekStart.getMonth()]+"-"+(Math.floor(weekStart.getDate()/7)+1);
          return start + "-" + end;
-      }
+      };
       var week = {index: 0, incoming: 0, outgoing: 0, transactions: 0};
       var result = [week];
 
@@ -283,7 +280,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       });
 
       return result;
-  }
+  };
 
   HistoryProvider.prototype.getRowImpact = function(row) {
       if (this.pocket.index === undefined) {
@@ -291,11 +288,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       } else {
           return row.impact[this.pocket.index].total;
       }
-  }
+  };
 
   HistoryProvider.prototype.calculateHistory = function(rows) {
       var identity =  DarkWallet.getIdentity();
-      var pocketId = this.pocket.index;
 
       // Now calculate balances
       var prevRow = rows[0];
@@ -332,7 +328,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           idx++;
       }
       return rows;
-  }
+  };
 
 
   HistoryProvider.prototype.pocketFilter = function(row) {
@@ -342,7 +338,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           return ((typeof row.inPocket === 'number') || (typeof row.outPocket === 'number'));
       }
       else {
-          return (row.inPocket == this.pocket.index || row.outPocket == this.pocket.index);
+          return (row.inPocket === this.pocket.index || row.outPocket === this.pocket.index);
       }
   };
 
@@ -399,7 +395,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
               break;
           case 'last10':
           default:
-              if (shownRows.indexOf(row.hash) != -1) {
+              if (shownRows.indexOf(row.hash) !== -1) {
                   return true;
               } else if (shownRows.length < 10) {
                   shownRows.push(row.hash);
