@@ -38,12 +38,12 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
     this.getSelfKey = function() { return selfKey; };
 
     // Signing
-    this.getSignKey = function() { return {pub: signPubKey, priv: signKey} };
+    this.getSignKey = function() { return {pub: signPubKey, priv: signKey}; };
 
     // Scanning
     var scanPriv = Encryption.adaptPrivateKey(this.getSelfKey().priv);
     var scanKeyPub = Curve25519.ecDH(scanPriv);
-    this.getScanKey = function() { return {priv: scanPriv, pub: scanKeyPub} };
+    this.getScanKey = function() { return {priv: scanPriv, pub: scanKeyPub}; };
 
     // Session keys
     this.getSessionKey = function() { return this.sessionKey; };
@@ -82,7 +82,7 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
       } else {
           console.log("[transport] Message for unexisting worker!");
       }
-  }
+  };
 
   /**
    * Kill the worker thread
@@ -93,7 +93,7 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
        this.channelWorker.terminate();
        this.channelWorker = undefined;
     }
-  }
+  };
  
   /**
    * Initialize a new discardable session key
@@ -122,7 +122,7 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
   Transport.prototype.addPeer = function(pubKey, fingerprint, channel) {
       var peer;
       var index = this.peerIds.indexOf(fingerprint);
-      if (index == -1) {
+      if (index === -1) {
           peer = new Peer(pubKey, fingerprint, channel);
           this.peerIds.push(fingerprint);
           this.peers.push(peer);
@@ -156,7 +156,7 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
    */
   Transport.prototype.closeChannel = function(name) {
       if (!this.channels.hasOwnProperty(name)) {
-          throw Error("Channel does not exist");
+          throw new Error("Channel does not exist");
       }
       console.log("[transport] close channel", name);
       this.channels[name].disconnect();
