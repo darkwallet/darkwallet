@@ -12,7 +12,7 @@ function(Stealth, Bitcoin, BtcUtils) {
 function Transaction(store, identity) {
     this.identity = identity;
     this.store = store;
-};
+}
 
 /**
  * Prepare a transaction with the given constraints
@@ -45,7 +45,7 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
     try {
         txUtxo = wallet.getUtxoToPay(totalAmount+fee, pocketId);
     } catch(e) {
-        if (typeof e == 'string') {
+        if (typeof e === 'string') {
             // Errors from libbitcoin come as strings
             throw new Error(e);
         } else {
@@ -72,12 +72,12 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
     // Add Outputs
     var versions = wallet.versions;
     recipients.forEach(function(recipient, i) {
-        if (change && (i == changeInto)) {
+        if (change && (i === changeInto)) {
             newTx.addOutput(changeAddress.address, change);
         }
         var address = recipient.address;
         // test for stealth
-        if (address[0] == versions.stealth.prefix) {
+        if (address[0] === versions.stealth.prefix) {
             isStealth = true;
             address = Stealth.addStealth(address, newTx, versions.address, versions.stealth.nonce);
         }
@@ -122,7 +122,7 @@ Transaction.prototype.sign = function(newTx, txUtxo, password, callback) {
         if (outAddress) {
             seq = outAddress.index;
         }
-        if (!outAddress || outAddress.type == 'multisig' || outAddress.type == 'readonly') {
+        if (!outAddress || outAddress.type === 'multisig' || outAddress.type === 'readonly') {
             pending.push({output: utxo.receive, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'});
         } else {
           // Get private keys and sign
@@ -139,7 +139,7 @@ Transaction.prototype.sign = function(newTx, txUtxo, password, callback) {
             return;
           }
         }
-    };
+    }
     txUtxo.forEach(function(utxo, i) {
         wallet.markOutput(utxo, hash + ":" + i);
     });
@@ -161,12 +161,12 @@ Transaction.prototype.signMyInputs = function(inputs, newTx, privKeys) {
     for(var i=0; i<newTx.ins.length; i++) {
         var anIn = newTx.ins[i];
         var found = inputs.filter(function(myIn) {
-            return (myIn.hash == anIn.hash) && (myIn.index == anIn.index);
+            return (myIn.hash === anIn.hash) && (myIn.index === anIn.index);
         });
-        if (found.length == 0) {
+        if (found.length === 0) {
             continue;
         }
-        if (found.length != 1) {
+        if (found.length !== 1) {
             throw new Error("Duplicate input found!");
         }
         if (wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
@@ -202,7 +202,7 @@ Transaction.prototype.inputsMine = function(txHash, txObj) {
         console.log("txInputsMine resorting to slow search");
         for(var i=0; i<keys.length; i++) {
             var output = wallet.wallet.outputs[keys[i]];
-            if (output.spend && (txHash == output.spend.split(":")[0])) {
+            if (output.spend && (txHash === output.spend.split(":")[0])) {
                 return true;
             }
         }
@@ -210,14 +210,14 @@ Transaction.prototype.inputsMine = function(txHash, txObj) {
         return;
     }
     var tx = txObj || new Bitcoin.Transaction(txHex);
-    for (var i=0; i<tx.ins.length; i++) {
-        var anIn = tx.ins[i];
+    for (var j=0; j<tx.ins.length; j++) {
+        var anIn = tx.ins[j];
         if (wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
             return true;
         }
-    };
+    }
     return false;
-}
+};
 
 /*
  * Check if transaction involves given address.
@@ -241,11 +241,11 @@ Transaction.prototype.forAddress = function(walletAddress, tx) {
             // XXX temporary while bitcoinjs-lib supports testnet better
             prevTx = BtcUtils.fixTxVersions(prevTx, identity);
 
-            if (prevTx.outs[outpoint.index].address == walletAddress.address) {
+            if (prevTx.outs[outpoint.index].address === walletAddress.address) {
                 inputs.push({index: i, address: walletAddress.address, outpoint: outpoint});
             }
         }
-    };
+    }
     return inputs;
 };
 
@@ -256,7 +256,7 @@ Transaction.prototype.forAddress = function(walletAddress, tx) {
 Transaction.prototype.undo = function(tx) {
     var wallet = this.identity.wallet;
     var txHash = Bitcoin.convert.bytesToHex(tx.getHash());
-    tx.ins.forEach(function(anIn, i) {
+    tx.ins.forEach(function(anIn) {
         var index = anIn.outpoint.hash + ':' + anIn.outpoint.index;
         var output = wallet.wallet.outputs[index];
         if (output && output.spend) {
@@ -324,7 +324,7 @@ Transaction.prototype.process = function(serializedTx, height) {
     });
 
     tx.ins.forEach(function(txIn, i){
-      var op = txIn.outpoint
+      var op = txIn.outpoint;
       var o = wallet.wallet.outputs[op.hash+':'+op.index];
       if (o) {
         if (!o.spend) {
@@ -344,7 +344,7 @@ Transaction.prototype.process = function(serializedTx, height) {
 
 
     // process in history (updates history rows)
-    return this.identity.history.txFetched(serializedTx, height)
+    return this.identity.history.txFetched(serializedTx, height);
 };
 
 return Transaction;

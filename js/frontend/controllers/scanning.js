@@ -3,7 +3,7 @@
 define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWallet, Scanner) {
 
   // Controller
-  controllers.controller('ScanningCtrl', ['$scope', 'notify', 'modals', '$wallet', function($scope, notify, modals, $wallet) {
+  controllers.controller('ScanningCtrl', ['$scope', 'notify', '$wallet', function($scope, notify, $wallet) {
 
   $scope.scanning = false;
   $scope.scanStatus = "";
@@ -21,12 +21,12 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
               pockets.store.save();
           }
           if (!identity.wallet.pubKeys[seq]) {
-              //$wallet.generateAddress(seq[0], seq[1]);
+              $wallet.generateAddress(seq[0], seq[1]);
           } else {
               console.log("Already exists!");
           }
       });
-  }
+  };
 
   // Update every time we get results for an address
   var onScanUpdate = function(scanned, max) {
@@ -45,7 +45,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
           createAddresses(results);
           notify.success("Scanning", "Finished. Found " + results.length + " addresses");
       }
-  }
+  };
 
   // Scan all addresses from seed
   $scope.scanSeed = function() {
@@ -63,7 +63,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
           // Start scanner
           scanner.scan();
       }
-  }
+  };
 
 }]);
 });

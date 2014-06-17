@@ -26,7 +26,6 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   }
 
   Scanner.prototype.getAddress = function(pocket, n) {
-      var workSeq = [pocket, n];
       var childKey = this.mpKey;
       // Derive pocket key
       if (this.pocketCache.hasOwnProperty(pocket)) {
@@ -39,10 +38,9 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       childKey = childKey.derive(n);
       var address = childKey.pub.getAddress(this.addressVersion);
       return address.toString();
-  }
+  };
 
   Scanner.prototype.scanAddress = function(pocket, n, callback) {
-      var self = this;
       this.status = 'Scanning ' + pocket + " " + n + " found: " + this.used.length;
       var address = this.getAddress(pocket, n);
       this.scanned += 1;
@@ -50,7 +48,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
           callback(err, (history && history.length));
       });
       this.updateCb ? this.updateCb(this.scanned, this.target) : null;
-  }
+  };
 
   Scanner.prototype.scanNext = function() {
       this.currentAddress+=1;
@@ -64,7 +62,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       } else {
           this.scan();
       }
-  }
+  };
 
   Scanner.prototype.onAddressScan = function(err, seq, used) {
       if (err) {
@@ -83,12 +81,12 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
           }
       }
       this.scanNext();
-  }
+  };
 
   Scanner.prototype.finish = function() {
       this.status = "Finished. Found " + this.used.length + " addresses";
       this.finishCb(null, this.used);
-  }
+  };
 
   Scanner.prototype.scan = function() {
       var self = this;
@@ -97,7 +95,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
           self.onAddressScan(err, seq, used);
       }
       this.scanAddress(this.currentPocket, this.currentAddress, done);
-  }
+  };
 
   return Scanner;
 
