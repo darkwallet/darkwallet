@@ -5,13 +5,34 @@
 'use strict';
 
 define(['./module', 'frontend/port'], function (controllers, Port) {
-  controllers.controller('GuiNotifyCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('GuiNotifyCtrl', ['$scope', 'notify', '$timeout', function($scope, notify, $timeout) {
 
-  // Gui service, connect to report events on page.
-  Port.connectNg('gui', $scope, function(data) {
-      if (data.type == 'balance') {
+  var timeout;
+
+  /**
+   * Trigger a screen refresh, gets called from $timeout
+   * so not need to apply.
+   */
+  var refresh = function() {
+      timeout = false;
+  };
+
+  /**
+   * Schedule a refresh 200ms into the future.
+   * We throttle to avoid too many refresh if information is still arriving.
+   */
+  var scheduleRefresh = function() {
+      if (timeout) {
+          $timeout.cancel(timeout);
       }
-      else if (data.type == 'height') {
+      timeout = $timeout(refresh, 200);
+  };
+
+  /**
+   * Gui service, connect to report events on page.
+   */
+  Port.connectNg('gui', $scope, function(data) {
+      if (data.type == 'height') {
           $scope.currentHeight = data.value;
       }
       else if (data.type == 'text' || data.type == 'note') {
@@ -30,9 +51,7 @@ define(['./module', 'frontend/port'], function (controllers, Port) {
           notify.warning('gui', data.text);
       }
       if (['height', 'balance', 'timestamps'].indexOf(data.type) > -1) {
-          if (!$scope.$$phase) {
-              $scope.$apply();
-          }
+          scheduleRefresh();
       }
   });
 
