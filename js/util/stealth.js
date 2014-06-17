@@ -5,7 +5,7 @@
 
 define(['bitcoinjs-lib'], function(Bitcoin) {
 
-var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0)};
+var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0);};
 
 var convert = Bitcoin.convert;
 
@@ -19,7 +19,7 @@ Stealth.testnet = 43;
 Stealth.nonceVersion = 6;
 
 // Backwards compatibility quirk (0.4.0)
-Stealth.quirk = false
+Stealth.quirk = false;
 
 /*
  * Create a bitcoin key with just public component.
@@ -133,7 +133,7 @@ Stealth.parseAddress = function(recipient) {
  *                                if null will be generated.
  */
 Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKeyBytes) {
-    if (version === null || version === undefined) version = Bitcoin.network.mainnet.addressVersion;
+    if (version === null || version === undefined) { version = Bitcoin.network.mainnet.addressVersion; };
     // Parse public keys into api objects
     var scanKey = Stealth.importPublic(scanKeyBytes);
     var spendKey = Stealth.importPublic(spendKeyBytes);
@@ -237,7 +237,7 @@ Stealth.derivePublicKey = function(spendKey, c) {
  * @private
  */
 Stealth.deriveAddress = function(spendKey, c, version) {
-    if (version === null || version === undefined) version = Bitcoin.network.mainnet.addressVersion;
+    if (version === null || version === undefined) { version = Bitcoin.network.mainnet.addressVersion; };
     // Now generate address
     var bytes = this.derivePublicKey(spendKey, c);
 
@@ -257,7 +257,7 @@ Stealth.deriveAddress = function(spendKey, c, version) {
  * @private
  */
 Stealth.buildNonceOutput = function(ephemKeyBytes, nonce, version) {
-    if (version === null || version === undefined) version = Stealth.nonceVersion;
+    if (version === null || version === undefined) { version = Stealth.nonceVersion; };
 
     var ephemScript = new Bitcoin.Script();
     ephemScript.writeOp(Bitcoin.Opcode.map.OP_RETURN);
@@ -285,7 +285,7 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
         if ((outHash[nbyte] & mask) != (prefix[nbyte] & mask)) {
             return false;
         }
-        if (mask == 1) {
+        if (mask === 1) {
             // restart mask and advance byte
             mask = 1<<7;
             nbyte += 1;
@@ -310,9 +310,9 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
  */
 
 Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ephemKeyBytes, initialNonce) {
-    if (nonceVersion === undefined) nonceVersion = Stealth.nonceVersion;
-    if (addressVersion === undefined) addressVersion = Bitcoin.network.mainnet.addressVersion;
-    var outHash, ephemKey, recipient;
+    if (nonceVersion === undefined) { nonceVersion = Stealth.nonceVersion; };
+    if (addressVersion === undefined) { addressVersion = Bitcoin.network.mainnet.addressVersion; };
+    var outHash, ephemKey;
     var stealthAddress = Stealth.parseAddress(recipient);
     var stealthPrefix = stealthAddress.prefix;
     var scanKeyBytes = stealthAddress.scanKey;
@@ -325,11 +325,12 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
     // we need to create a new ephemkey
     // TODO: Correctly manage spend keys here when there is more than one
     var spendKeyBytes = stealthAddress.spendKeys[0];
+    var nonce;
     do {
         var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, addressVersion, ephemKeyBytes);
         recipient = stealthData[0].toString();
         ephemKey = stealthData[1];
-        var nonce = startingNonce;
+        nonce = startingNonce;
         var iters = 0;
         // iterate through nonces to find a match for given prefix
         do {
@@ -339,7 +340,7 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
             if (nonce > maxNonce) {
                 nonce = 0;
             }
-	    var nonceBytes = convert.numToBytes(nonce, 4)
+            var nonceBytes = convert.numToBytes(nonce, 4);
 
             // Hash the nonce 
             outHash = bufToArray(Bitcoin.crypto.hash160(nonceBytes.concat(ephemKey)));
