@@ -6,7 +6,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
   
   var sendForm = $scope.forms.send;
 
-  var dustThreshold = 5600;
+  var dustThreshold = 5430;
   $scope.quicksend = {};
 
   $scope.resetSendForm = function() {
@@ -81,9 +81,6 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           identity.wallet.versions.p2sh
       ]
  
-      // Set the dust threshold
-      dustThreshold = identity.wallet.wallet.dustThreshold;
-
       // Initialize the store and send form if it's the first time
       if (!sendForm || (sendForm.identity != identity.name)) {
           $scope.forms.send = { mixing: true,
