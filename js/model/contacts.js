@@ -43,7 +43,7 @@ Contacts.prototype.initContacts = function() {
 
   this._contacts.forEach(function(contact) {
       if (contact) {
-          contacts.push(new Contact(contact, self, true));
+          contacts.push(new Contact(contact, self));
       }
   });
   return contacts;
@@ -153,6 +153,7 @@ Contacts.prototype.addContact = function (contact) {
   var newContact = new Contact(contact, this);
   this._contacts.push(newContact.data);
   this.contacts.push(newContact);
+  this.store.save();
   return newContact;
 };
 

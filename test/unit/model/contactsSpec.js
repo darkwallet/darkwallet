@@ -38,7 +38,7 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
       contacts.contacts = []; // Delete darkwallet contact
       satoshiForestAddress = '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd';
       satoshiForestNew = {name: 'Satoshi Forest', address: satoshiForestAddress},
-      satoshiForest = {name: 'Satoshi Forest', mainKey: 0, pubKeys: [{data: satoshiForestAddress, type: 'address', address: satoshiForestAddress}]};
+      satoshiForest = { name: 'Satoshi Forest', mainKey: 0, pubKeys: [{data: satoshiForestAddress, type: 'address', address: satoshiForestAddress}] };
       _store = [];
     });
 
@@ -99,7 +99,7 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
     
     it('updates contact hash', function() {
       var forest = new Contact(satoshiForest, contacts);
-      contacts.updateContactHash(satoshiForest);
+      forest.updateHash();
       expect(satoshiForest.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
     });
     
@@ -127,13 +127,13 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
 
       var contact = contacts.findByPubKey(libBitcoinPub);
 
-      expect(contact.data.name).toEqual(libBitcoin.name)
-      expect(contact.data.address).toEqual(libBitcoin.address)
+      expect(contact.data.name).toEqual(libBitcoin.name);
+      expect(contact.data.address).toEqual(libBitcoin.address);
 
       contact = contacts.findByPubKey(libBitcoinShort);
 
-      expect(contact.data.name).toEqual(libBitcoin.name)
-      expect(contact.data.address).toEqual(libBitcoin.address)
+      expect(contact.data.name).toEqual(libBitcoin.name);
+      expect(contact.data.address).toEqual(libBitcoin.address);
     });
     
     it('adds contact', function() {

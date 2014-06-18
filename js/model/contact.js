@@ -7,10 +7,10 @@ define([], function() {
  * @param {Object} store Object store
  * @constructor
  */
-function Contact(data, contacts, dontSave) {
+function Contact(data, contacts) {
   this.data = data;
   this.contacts = contacts;
-  this.initContact(dontSave);
+  this.initContact();
 }
 
 /**
@@ -48,7 +48,7 @@ Contact.prototype.updateIdKey = function() {
 /**
  * Add a contact to the address book
  */
-Contact.prototype.initContact = function (dontSave) {
+Contact.prototype.initContact = function () {
   if (this.data.pubKeys) {
       this.pubKeys = this.data.pubKeys;
       this.updateIdKey();
@@ -66,10 +66,6 @@ Contact.prototype.initContact = function (dontSave) {
 
   this.updateIdKey();
   this.updateHash();
-
-  if (!dontSave) {
-      this.contacts.store.save();
-  }
 };
 
 

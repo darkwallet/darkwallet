@@ -13,6 +13,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         contacts: _contacts,
         addContact: function(newContact) {
           identity.contacts.contacts.push(newContact);
+          return newContact;
         },
         updateContact: function(contact) {},
         deleteContact: function(contact) {}
@@ -21,10 +22,17 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
     
     var resetContacts = function() {
       identity.contacts.contacts = [
-        {name: "Satoshi Nakamoto", mainKey: 0, pubKeys: [{address: "address1", data: "address1", type: "address"}]},
-        {name: "Dorian Nakamoto", mainKey: 0, pubKeys: [{address: "address2", data: "address2", type: "address"}]},
-        {name: "Satoshi Forest", mainKey: 0, pubKeys: [{address: "address3", data: "address3", type: "address"}]}
+        {data: { name: "Satoshi Nakamoto", mainKey: 0, pubKeys: [{address: "address1", data: "address1", type: "address"}]}},
+        {data: { name: "Dorian Nakamoto", mainKey: 0, pubKeys: [{address: "address2", data: "address2", type: "address"}]}},
+        {data: { name: "Satoshi Forest", mainKey: 0, pubKeys: [{address: "address3", data: "address3", type: "address"}]}}
       ];
+      for(var i=0; i<3; i++) {
+          identity.contacts.contacts[i].pubKeys = identity.contacts.contacts[i].data.pubKeys;
+          identity.contacts.contacts[i].remove = function() {};
+          identity.contacts.contacts[i].update = function() {};
+          spyOn(identity.contacts.contacts[i], 'remove');
+          spyOn(identity.contacts.contacts[i], 'update');
+      }
       _contacts = identity.contacts.contacts;
     };
     
@@ -54,7 +62,6 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         resetContacts();
         injectController();
         DarkWallet = require('darkwallet');
-        spyOn(identity.contacts, 'updateContact');
         spyOn(identity.contacts, 'deleteContact');
         done();
       });
@@ -88,6 +95,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         var newContact = {name: 'DarkWallet donations', address: '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy'};
         scope.newContact = newContact;
         scope.createContact();
+        expect(scope.contacts.length).toBe(4);
         expect(scope.contacts).toContain(newContact);
         expect(scope.newContact).toEqual({});
         expect(scope.contactFormShown).toBe(false);
@@ -95,7 +103,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
 
       it('opens the edit form', function() {
         scope.openEditForm(_contacts[0], 0);
-        expect(scope.contactToEdit).toEqual({name: _contacts[0].name, address: _contacts[0].pubKeys[0].data});
+        expect(scope.contactToEdit).toEqual({name: _contacts[0].data.name, address: _contacts[0].pubKeys[0].data});
       });
 
       it('opens a contact', function() {
@@ -106,22 +114,22 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
       it('edits a contact', function() {
         scope.contactToEdit = {name: 'Nakamoto Satoshi', address: '6...'};
         scope.editContact(_contacts[0], 0);
-        expect(identity.contacts.updateContact).toHaveBeenCalledWith(_contacts[0], '6...', 0);
+        expect(_contacts[0].update).toHaveBeenCalledWith('6...', 0);
       });
 
       it('deletes a contact', function() {
-        expect(_contacts[0].name).toEqual('Satoshi Nakamoto');
-        expect(scope.contacts[0].name).toEqual('Satoshi Nakamoto');
+        expect(_contacts[0].data.name).toEqual('Satoshi Nakamoto');
+        expect(scope.contacts[0].data.name).toEqual('Satoshi Nakamoto');
 
         scope.deleteContact(_contacts[0]);
 
-        expect(identity.contacts.deleteContact).toHaveBeenCalledWith(_contacts[0]);
-        expect(scope.contacts[0].name).not.toEqual('Satoshi Nakamoto');
+        expect(_contacts[0].remove).toHaveBeenCalled();
+        expect(scope.contacts[0].data.name).not.toEqual('Satoshi Nakamoto');
         expect(scope.contacts.length).toBe(2);
         expect(location._path).toBe('/contacts');
         
-        // Deleting unexisting contact fails silently
-        scope.deleteContact({});
+        // Deleting unexisting contact throws.
+        expect(function() {scope.deleteContact({})}).toThrow();
         expect(scope.contacts.length).toBe(2);
       });
     });
