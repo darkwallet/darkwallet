@@ -84,10 +84,10 @@ Wallet.prototype.initIfEmpty = function() {
  */
 Wallet.prototype.getPocketAddresses = function(pocketId) {
     var allAddresses = [];
-    var keys = Object.keys(this.pubKeys);
 
     if (pocketId === undefined) {
         // All
+        var keys = Object.keys(this.pubKeys);
         for(var i=0; i<keys.length; i++) {
             // don't add fund or readonly addresses to total funds
             if (['multisig', 'readonly'].indexOf(this.pubKeys[keys[i]].type) === -1) {
