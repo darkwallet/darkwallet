@@ -48,8 +48,8 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes, i) {
         // Check if it's a contact
         var contact = identity.contacts.findByPubKey(pubKeyBytes);
         if (contact) {
-            participant.name = contact.name;
-            participant.hash = contact.hash;
+            participant.name = contact.data.name;
+            participant.hash = contact.data.hash;
             participant.type = 'contact';
             if (contact.findIdentityKey()) {
                 participant.paired = true;
