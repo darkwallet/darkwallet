@@ -157,7 +157,7 @@ Pockets.prototype.getPocketWallet = function(id) {
     }
     // Generate on the fly
     var outputs = this.wallet.wallet.outputs;
-    var addresses = this.getAllAddresses();
+    var addresses = this.getAllAddresses(id);
     var pocketOutputs = {};
     Object.keys(outputs).forEach(function(outputKey) {
         var output = outputs[outputKey];
