@@ -68,44 +68,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       }
   };
 
-  var initialized, validAddresses;
-  var initIdentity = function(identity) {
-      if (!identity || initialized == identity.name) {
-          return;
-      }
-
-      initialized = identity.name;
-      validAddresses = [
-          identity.wallet.versions.address,
-          identity.wallet.versions.stealth.address,
-          identity.wallet.versions.p2sh
-      ]
  
-      // Initialize the store and send form if it's the first time
-      if (!sendForm || (sendForm.identity != identity.name)) {
-          $scope.forms.send = { mixing: true,
-                        sending: false,
-                        sendPocket: 0,
-                        autoAddEnabled: false,
-                        identity: identity.name,
-                        advanced: false };
-          // Need to set the form here
-          sendForm = $scope.forms.send;
-          $scope.resetSendForm();
-          if (location.hash.split('?')[1]) {
-              parseUri(location.hash.split('?')[1].split('=')[1]);
-          }
-      }
-
-      // init scope variables
-      $scope.setPocket(sendForm.pocketIndex||0);
-      if (!$scope.$$phase) {
-          $scope.$apply();
-      }
-  };
-
-  initIdentity(DarkWallet.getIdentity());
-  
   // Identity ready
   Port.connectNg('wallet', $scope, function(data) {
     if (data.type == 'ready') {
@@ -429,5 +392,46 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       $scope.addField();
       sendForm.autoAddEnabled = true;
   };
+
+  var initialized, validAddresses;
+  var initIdentity = function(identity) {
+      if (!identity || initialized == identity.name) {
+          return;
+      }
+
+      initialized = identity.name;
+      validAddresses = [
+          identity.wallet.versions.address,
+          identity.wallet.versions.stealth.address,
+          identity.wallet.versions.p2sh
+      ]
+ 
+      // Initialize the store and send form if it's the first time
+      if (!sendForm || (sendForm.identity != identity.name)) {
+          $scope.forms.send = { mixing: true,
+                        sending: false,
+                        sendPocket: 0,
+                        autoAddEnabled: false,
+                        identity: identity.name,
+                        advanced: false };
+          // Need to set the form here
+          sendForm = $scope.forms.send;
+          $scope.resetSendForm();
+          if (location.hash.split('?')[1]) {
+              parseUri(location.hash.split('?')[1].split('=')[1]);
+          }
+      } else {
+          $scope.validateSendForm();
+      }
+
+      // init scope variables
+      $scope.setPocket(sendForm.pocketIndex||0);
+      if (!$scope.$$phase) {
+          $scope.$apply();
+      }
+  };
+
+  initIdentity(DarkWallet.getIdentity());
+ 
 }]);
 });
