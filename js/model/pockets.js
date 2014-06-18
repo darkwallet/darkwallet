@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib'], function(Bitcoin) {
+define(['bitcoinjs-lib', 'model/pocket/hd', 'model/pocket/multisig'], function(Bitcoin, HdPocket, MultisigPocket) {
 
 /**
  * Pocket functionality.
@@ -12,7 +12,33 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
 function Pockets(store, identity, wallet) {
     this.store = store;
     this.wallet = wallet;
-    this.hdPockets = this.initPockets(store)
+    this.registerTypes();
+    this.initPockets(store);
+}
+
+/**
+ * Register all pocket types
+ * @private
+ */
+
+Pockets.prototype.registerTypes = function() {
+    this.pocketTypes = {};
+    this.addressTypes = {};
+    this.registerType(HdPocket);
+    this.registerType(MultisigPocket);
+}
+
+/**
+ * Register a pocket type
+ * @private
+ */
+Pockets.prototype.registerType = function(pocketType) {
+    var self = this;
+    var name = pocketType.type;
+    this.pocketTypes[name] = pocketType.prototype;
+    pocketType.prototype.types.forEach(function(type) {
+        self.addressTypes[type] = pocketType.prototype;
+    });
 }
 
 /**
@@ -22,14 +48,16 @@ function Pockets(store, identity, wallet) {
  * @private
  */
 Pockets.prototype.initPockets = function(store) {
-    var pockets = store.init('pockets', [{name:'spending'}, {name: 'savings'}]);
+    this.hdPockets = store.init('pockets', [{name:'spending'}, {name: 'savings'}]);
 
     // Init pocket wallets (temporary cache for pockets)
-    this.pocketWallets = {};
-    for(var i=0; i< pockets.length; i++) {
-        this.initPocketWallet(i);
-    };
-    return pockets;
+    this.pockets = { 'hd': {}, 'multisig': {}, 'readonly': {} };
+    for(var i=0; i< this.hdPockets.length; i++) {
+        if (this.hdPockets[i]) {
+            this.initPocketWallet(i, this.hdPockets[i]);
+        }
+    }
+    return this.hdPockets;
 };
 
 /**
@@ -41,11 +69,10 @@ Pockets.prototype.createPocket = function(name) {
     if (this.getPocket(name)) {
         throw new Error("Pocket with that name already exists!");
     }
-    this.hdPockets.push({name: name});
+    var pocketStore = {name: name};
+    this.hdPockets.push(pocketStore);
+    this.initPocketWallet(this.hdPockets.length-1, pocketStore);
     this.store.save();
-
-    // Multisig addresses also have pocket wallets
-    this.initPocketWallet(this.hdPockets.length-1);
 };
 
 /**
@@ -53,12 +80,22 @@ Pockets.prototype.createPocket = function(name) {
  * @param {Object} id Pocket id (can be branch number, multisig address...)
  * @private
  */
-Pockets.prototype.initPocketWallet = function(id) {
-    this.pocketWallets[id] = {addresses: [], changeAddresses: [], balance: 0};
+Pockets.prototype.initPocketWallet = function(id, pocketStore) {
+    if (typeof id === 'string') {
+        var fund = this.wallet.multisig.search({ address: id });
+        if (!fund) {
+            // TODO: Create a fake fund for now
+            fund = {address: id, name: id};
+            console.log("No fund for this address!", id);
+        }
+        this.pockets.multisig[id] = new MultisigPocket(fund, this);
+    } else {
+        this.pockets.hd[id] = new HdPocket(pocketStore, this);
+    }
 };
 
 /**
- * Get a pocket by name
+ * Get an hd pocket by name
  * @param {String} name Name for the pocket
  * @return {Object} The pocket with the given name
  */
@@ -78,9 +115,10 @@ Pockets.prototype.getPocket = function(name) {
 Pockets.prototype.deletePocket = function(name) {
     for(var i=0; i<this.hdPockets.length; i++) {
         if (this.hdPockets[i] && (this.hdPockets[i].name == name)) {
+             var pocket = this.hdPockets[i];
+             delete this.pockets.hd[i];
              this.hdPockets[i] = null;
              this.store.save();
-             // TODO: Cleanup pocket addresses?
              return;
         }
     }
@@ -93,29 +131,34 @@ Pockets.prototype.deletePocket = function(name) {
  * @return {Number|String} The pocket index
  */
 Pockets.prototype.getAddressPocketId = function(walletAddress) {
-    if (walletAddress.type == 'multisig') {
-        return walletAddress.index[0];
-    } else {
-        return Math.floor(walletAddress.index[0]/2);
-    }
+    return this.addressTypes[walletAddress.type].getIndex(walletAddress);
 };
+
+/**
+ * Get all pockets of a certain type
+ */
+
+Pockets.prototype.getPockets = function(type) {
+    var pockets = this.pockets[this.addressTypes[type].type];
+    if (!pockets) {
+        throw new Error("Unknown address type! " + type);
+    }
+    return pockets;
+}
 
 /**
  * Add an address to its pocket
  * @param {Object} walletAddress Address we're adding. See {@link Wallet#getWalletAddress}.
  */
 Pockets.prototype.addToPocket = function(walletAddress) {
+    var pocketBase = this.getPockets(walletAddress.type);
     var pocketId = this.getAddressPocketId(walletAddress);
-
-    // add to the list of pocket addresses
-    if (!this.pocketWallets.hasOwnProperty(pocketId)) {
+    // Only autoinitialize multisig funds for now
+    var addressType = this.addressTypes[walletAddress.type];
+    if (addressType && addressType.autoCreate && !(this.pockets[addressType.type][pocketId])) {
         this.initPocketWallet(pocketId);
     }
-    if (walletAddress.index[0]%2 === 1) {
-        this.pocketWallets[pocketId].changeAddresses.push(walletAddress.address);
-    } else {
-        this.pocketWallets[pocketId].addresses.push(walletAddress.address);
-    }
+    pocketBase[pocketId].addToPocket(walletAddress);
 };
 
 /**
@@ -124,27 +167,26 @@ Pockets.prototype.addToPocket = function(walletAddress) {
  * @return {Array} An array of strings with the addresses.
  */
 Pockets.prototype.getAddresses = function(id) {
-    return this.pocketWallets[id].addresses;
+    return this.pockets.hd[id].getAddresses();
 };
 
 /**
- * Gets all change addresses for this pocket.
+ * Gets all change addresses for a pocket.
  * @param {Object} id Pocket id (can be branch number, multisig address...)
  * @return {Array} An array of strings with the addresses.
  */
 Pockets.prototype.getChangeAddresses = function(id) {
-    return this.pocketWallets[id].changeAddresses;
+    return this.pockets.hd[id].getChangeAddresses();
 };
 
 /**
- * Gets all addresses for this pocket.
+ * Gets all addresses for a pocket.
  * @param {Object} id Pocket id (can be pocket index, multisig address...)
  * @return {Array} An array of strings with the addresses.
  */
 Pockets.prototype.getAllAddresses = function(id) {
-    return this.getAddresses(id).concat(this.getChangeAddresses(id));
+    return this.pockets.hd[id].getAllAddresses();
 };
-
 
 /**
  * Gets the pocket wallet for a pocket
@@ -152,23 +194,11 @@ Pockets.prototype.getAllAddresses = function(id) {
  * @return {Object} The pocket wallet
  */
 Pockets.prototype.getPocketWallet = function(id) {
-    if (!this.pocketWallets.hasOwnProperty(id)) {
-        throw new Error("Pocket doesn't exist");
+    if (typeof id === 'string') {
+        return this.pockets.multisig[id].getWallet();
+    } else {
+        return this.pockets.hd[id].getWallet();
     }
-    // Generate on the fly
-    var outputs = this.wallet.wallet.outputs;
-    var addresses = this.getAllAddresses(id);
-    var pocketOutputs = {};
-    Object.keys(outputs).forEach(function(outputKey) {
-        var output = outputs[outputKey];
-        if (addresses.indexOf(output.address) != -1) {
-            pocketOutputs[outputKey] = output;
-        }
-    });
-    var tmpWallet = new Bitcoin.Wallet(this.mpk);
-    tmpWallet.outputs = pocketOutputs;
-    tmpWallet.addresses = addresses;
-    return tmpWallet;
 };
 
 return Pockets;

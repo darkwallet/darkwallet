@@ -21,9 +21,9 @@ function Wallet(store, identity) {
     this.mpk = store.get('mpk');
 
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
+    this.multisig = new MultisigFunds(store, identity, this);
     this.pockets = new Pockets(store, identity, this);
     this.wallet = { addresses: [], outputs: {} };
-    this.multisig = new MultisigFunds(store, identity, this);
 
     this.stealthCache = {};
 
