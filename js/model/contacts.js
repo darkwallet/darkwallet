@@ -25,7 +25,7 @@ function Contacts(store, identity) {
 
   // revoke the libbitcoin old address
   var compromised = this.findByAddress('1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY');
-  if (compromised && compromised.pubKeys.length == 1) {
+  if (compromised && compromised.pubKeys.length === 1) {
       // Changing compromised contact for libbitcoin to the old darkwallet fund,
       // controlled by a few trusted people.
       compromised.pubKeys[0].type = 'revoked';
@@ -54,21 +54,20 @@ Contacts.prototype.initContacts = function() {
  * @param {String} data Data with the address information
  */
 Contacts.prototype.parseKey = function(data) {
-  var addresses = []; // {pubKey: ..., address: ..., data: ..., type: ...}
   var pubKey;
   try {
       // for now show uncompressed for contacts from uncompressed pubkeys
-      pubKey = BtcUtils.extractPublicKey(data, (data.length == 130) ? false : true);
+      pubKey = BtcUtils.extractPublicKey(data, (data.length === 130) ? false : true);
   } catch (e) {
   }
   var newKey = {data: data, pubKey: pubKey, type: 'address'};
 
   var versions = this.identity.wallet.versions;
-  if (data.slice(0,3) == 'PSI') {
+  if (data.slice(0,3) === 'PSI') {
       newKey.type = 'id';
   } else if (BtcUtils.isAddress(data, this.validAddresses)) {
       newKey.address = data;
-      if (data[0] == versions.stealth.prefix) {
+      if (data[0] === versions.stealth.prefix) {
           newKey.type = 'stealth';
       }
   } else if (pubKey) {
@@ -109,7 +108,7 @@ Contacts.prototype.generateContactHash = function(data) {
  */
 Contacts.prototype.findByPubKey = function (pubKey) {
   var toCheck = pubKey.toString();
-  var compressed = (pubKey.length == 33);
+  var compressed = (pubKey.length === 33);
   for(var i in this.contacts) {
     for(var j in this.contacts[i].pubKeys) {
       var address = this.contacts[i].pubKeys[j].data;
@@ -120,7 +119,7 @@ Contacts.prototype.findByPubKey = function (pubKey) {
           // not a good address
           continue;
       }
-      if (cPubKey.toString() == toCheck) {
+      if (cPubKey.toString() === toCheck) {
         return this.contacts[i];
       }
     }
@@ -137,7 +136,7 @@ Contacts.prototype.findByAddress = function (address) {
   for(var i in this.contacts) {
     for(var j in this.contacts[i].pubKeys) {
       var cAddress = this.contacts[i].pubKeys[j].address;
-      if (cAddress == address) {
+      if (cAddress === address) {
         return this.contacts[i];
       }
     }
@@ -165,8 +164,8 @@ Contacts.prototype.addContact = function (contact) {
  */
 Contacts.prototype.deleteContact = function (contact) {
   var i = this.contacts.indexOf(contact);
-  if (i == -1) {
-    throw Error("Contact does not exist!");
+  if (i === -1) {
+    throw new Error("Contact does not exist!");
   }
   this._contacts.splice(this._contacts.indexOf(contact.data), 1);
   this.contacts.splice(i, 1);
