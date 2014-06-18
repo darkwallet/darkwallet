@@ -151,6 +151,7 @@ Contacts.prototype.findByAddress = function (address) {
  */
 Contacts.prototype.addContact = function (contact) {
   var newContact = new Contact(contact, this);
+  this._contacts.push(newContact.data);
   this.contacts.push(newContact);
   return newContact;
 };
@@ -166,6 +167,7 @@ Contacts.prototype.deleteContact = function (contact) {
   if (i == -1) {
     throw Error("Contact does not exist!");
   }
+  this._contacts.splice(this._contacts.indexOf(contact.data), 1);
   this.contacts.splice(i, 1);
   this.store.save();
 };
