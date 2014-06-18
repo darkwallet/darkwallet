@@ -27,7 +27,44 @@
   
 <div class="row topmargin" ng-show="contactSection=='trust'">
     <p>You have no trust on this peer</p>
-    <a class="button fa fa-flask postfix" ng-click="">Set trust</a>
+    <h3>Set trust</h3>
+    <div class="row">
+        <div class="columns small-9">
+             <input type="radio" id="trust-distrust" name="contact-trust" />
+             <label for="trust-distrust">Distrust</label>
+             <input type="radio" id="trust-zero" name="contact-trust" checked />
+             <label for="trust-zero">Zero</label>
+             <input type="radio" id="trust-known" name="contact-trust" />
+             <label for="trust-known">Known</label>
+             <input type="radio" id="trust-friend" name="contact-trust" />
+             <label for="trust-friend">Friend</label>
+             <input type="radio" id="trust-trusted" name="contact-trust" />
+             <label for="trust-trusted">Trusted</label>
+             <input type="radio" id="trust-maximum" name="contact-trust" />
+             <label for="trust-maximum">Maximum</label>
+        </div>
+        <div class="columns small-3">
+            <a class="button fa fa-flask postfix" ng-click="">Set trust</a>
+        </div>
+    </div>
+    <h3>Set validation</h3>
+    <em ng-show="settings.advanced">This should be per key but maybe is ok here if there is just one?...</em>
+    <div class="row">
+        <div class="columns small-9">
+             <input type="radio" id="validation-no" name="contact-validation" checked />
+             <label for="validation-no">No validation</label>
+             <input type="radio" id="validation-casual" name="contact-validation" />
+             <label for="validation-casual">Casual checking</label>
+             <input type="radio" id="validation-carefully" name="contact-validation" />
+             <label for="validation-carefully">Carefully checked</label>
+             <input type="radio" id="validation-mathematic" name="contact-validation" />
+             <label for="validation-mathematic">Mathematically checked</label>
+        </div>
+        <div class="columns small-3">
+            <a class="button fa fa-flask postfix" ng-click="">Set validation</a>
+        </div>
+    </div>
+
 </div>
 
 <div class="row topmargin" ng-show="contactSection=='history'">
