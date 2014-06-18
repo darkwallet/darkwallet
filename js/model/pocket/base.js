@@ -3,8 +3,7 @@
 define([], function() {
 
 /**
- * Hierarchical Deterministic Pocket functionality.
- * @param {Object} store Store for the object.
+ * Base Pocket functionality.
  * @param {Object} pockets Pockets parent object
  * @constructor
  */
@@ -23,7 +22,7 @@ function BasePocket(pockets) {
  * @param {Object} id Pocket id (can be branch number, multisig address...)
  * @private
  */
-BasePocket.prototype.init = function(id) {
+BasePocket.prototype.init = function() {
 };
 
 /**
@@ -37,7 +36,6 @@ BasePocket.prototype.addToPocket = function(walletAddress) {
 
 /**
  * Gets all public addresses for this pocket.
- * @param {Object} id Pocket id (can be branch number, multisig address...)
  * @return {Array} An array of strings with the addresses.
  */
 BasePocket.prototype.getAddresses = function() {
@@ -46,7 +44,6 @@ BasePocket.prototype.getAddresses = function() {
 
 /**
  * Gets all change addresses for this pocket.
- * @param {Object} id Pocket id (can be branch number, multisig address...)
  * @return {Array} An array of strings with the addresses.
  */
 BasePocket.prototype.getChangeAddresses = function() {
@@ -55,7 +52,6 @@ BasePocket.prototype.getChangeAddresses = function() {
 
 /**
  * Gets all addresses for this pocket.
- * @param {Object} id Pocket id (can be pocket index, multisig address...)
  * @return {Array} An array of strings with the addresses.
  */
 BasePocket.prototype.getAllAddresses = function() {
@@ -65,7 +61,6 @@ BasePocket.prototype.getAllAddresses = function() {
 
 /**
  * Gets the pocket wallet for a pocket
- * @param {Object} id Pocket id (can be pocket index, multisig address...)
  * @return {Object} The pocket wallet
  */
 BasePocket.prototype.getWallet = function() {
