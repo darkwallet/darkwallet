@@ -33,16 +33,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
    * Balance
    */ 
   HistoryProvider.prototype.calculateBalance = function(pocket) {
-      var balance;
-      var wallet = DarkWallet.getIdentity().wallet;
-      if (pocket.isFund) {
-          balance = wallet.getBalance(pocket.fund.multisig.seq[0]);
-      } else if (pocket.isAll) {
-          balance = wallet.getBalance();
-      } else {
-          balance = wallet.getBalance(pocket.index);
-      }
-      return balance;
+      var identity = DarkWallet.getIdentity();
+      return identity.wallet.getBalance(pocket.index);
   };
 
   /**
