@@ -16,10 +16,10 @@ Immediate:
 
 Architecture/api:
 - Backend
- - Unify pocket/multisig interface
+ + Unify pocket/multisig interface
  - Unify task/notification mechanics
  * Worker for communications encryption DONE
- - New modules to split model/wallet
+ + New modules to split model/wallet
  - Make a messenger service to manage delivery of messages to other contacts
 - Frontend
  - Send provider
