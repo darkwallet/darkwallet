@@ -72,7 +72,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       if (used) {
           this.used.push(seq);
           if (seq[0]+1 > this.lastPocketUsed) {
-              this.target += ((seq[0]+1)-this.lastPocketUsed)*10;
+              this.target += ((seq[0]+1)-this.lastPocketUsed)*this.addressMargin;
               this.lastPocketUsed = seq[0] + 1;
           }
           if (seq[1] + 1 > this.lastAddressUsed[seq[0]]) {
