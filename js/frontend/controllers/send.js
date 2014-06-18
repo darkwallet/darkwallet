@@ -175,7 +175,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           }
           recipient.contact = identity.contacts.findByAddress(recipient.address);
           if (!recipient.contact) {
-              recipient.contact = {name: recipient.address, hash: identity.contacts.generateContactHash(recipient.address)};
+              recipient.contact = {data: { name: recipient.address, hash: identity.contacts.generateContactHash(recipient.address) }};
           }
           if (!recipient.amount || !recipient.address) {
               return;

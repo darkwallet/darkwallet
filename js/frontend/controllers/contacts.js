@@ -68,7 +68,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     var key;
     if (!filterType) {
         // If looking for address get the main key
-        key = contact.pubKeys[contact.mainKey];
+        key = contact.mainKey;
     }
     // If we don't have a key yet look for one of the right types
     if (!key) {
@@ -95,7 +95,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         var hasType = contact.pubKeys.some(function(key) {
              return (types.indexOf(key.type) > -1);
         });
-        return hasType && contact.name.toLowerCase().search(search) != -1;
+        return hasType && contact.data.name.toLowerCase().search(search) != -1;
     });
   };
 
@@ -105,9 +105,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   $scope.createContact = function() {
     var identity = DarkWallet.getIdentity();
-    var newContact = $scope.newContact;
 
-    identity.contacts.addContact(newContact);
+    var newContact = identity.contacts.addContact($scope.newContact);
 
     // add to scope
     $scope.contacts.push(newContact);
@@ -117,12 +116,10 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   };
 
   $scope.addContactKey = function(contact) {
-    var identity = DarkWallet.getIdentity();
-    var name = $scope.newContact.name;
     var address = $scope.newContact.address;
     var label = $scope.newContact.label;
 
-    identity.contacts.addContactKey(contact, address, label);
+    contact.addKey(address, label);
 
     // add to scope
     $scope.newContact = {};
@@ -130,7 +127,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
 
   $scope.openEditForm = function(contact, index) {
-    $scope.contactToEdit = {name: contact.name, address: contact.pubKeys[index].data};
+    $scope.contactToEdit = {name: contact.data.name, address: contact.pubKeys[index].data};
     $scope.editingContact = index;
   };
 
@@ -143,36 +140,31 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   }
 
   $scope.saveName = function(contact, name) {
-    var identity = DarkWallet.getIdentity();
-    contact.name = name;
-    identity.contacts.updateContact(contact);
+    contact.data.name = name;
+    contact.update();
     $scope.editingContact = false;
   }
 
   $scope.editContact = function(contact, index) {
-    var identity = DarkWallet.getIdentity();
-    contact.name = $scope.contactToEdit.name;
-    identity.contacts.updateContact(contact, $scope.contactToEdit.address, index);
+    contact.data.name = $scope.contactToEdit.name;
+    contact.update($scope.contactToEdit.address, index);
     $scope.editingContact = false;
   };
 
   $scope.toggleWatch = function(contact, index) {
-    contact.watch = !contact.watch;
+    contact.data.watch = !contact.data.watch;
   }
 
   $scope.setMainKey = function(contact, index) {
-    var identity = DarkWallet.getIdentity();
-    identity.contacts.setMainKey(contact, index);
+    contact.setMainKey(index);
   }
 
   $scope.deleteKey = function(contact, index) {
-    var identity = DarkWallet.getIdentity();
-    identity.contacts.deleteKey(contact, index);
+    contact.deleteKey(index);
   }
 
   $scope.deleteContact = function(contact) {
-    var identity = DarkWallet.getIdentity();
-    identity.contacts.deleteContact(contact);
+    contact.remove();
     var contactIndex = $scope.contacts.indexOf(contact);
     if (contactIndex > -1) {
         $scope.contacts.splice(contactIndex, 1);

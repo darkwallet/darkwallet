@@ -34,6 +34,7 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
         return value;
       };
       contacts = new Contacts(store, identity);
+      contacts._contacts = []; // Delete darkwallet contact
       contacts.contacts = []; // Delete darkwallet contact
       satoshiForestAddress = '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd';
       satoshiForestNew = {name: 'Satoshi Forest', address: satoshiForestAddress},
@@ -44,18 +45,18 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
     it('is created properly', function() {
       contacts = new Contacts(store, identity);
       expect(contacts.store).toBe(store);
-      expect(contacts.contacts).toEqual([{
+      expect(contacts.contacts[0].data).toEqual({
           name : 'DarkWallet team',
           pubKeys : [ { data : '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy', pubKey : undefined, type : 'address', address : '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy' } ],
           mainKey : 0,
           hash : '97ff6614bac3eab9ee8afdf4e7ced9f790a776c77f5b8c7a1e1b74763f616cd3'
-        },{
+        });
+      expect(contacts.contacts[1].data).toEqual({
           name : 'libbitcoin team',
           pubKeys : [ { data : '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP', pubKey : undefined, type : 'address', address : '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP' } ],
           mainKey : 0,
           hash : '627b0f3cea255982d98a3a9f2f1addda472bcb564505002a8ab7e43cd1f9bef6'
-        }
-      ]);
+        });
     });
 
     // don't think we handle this case, if it happens should be cleaned up before..
@@ -142,39 +143,39 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
     });
     
     it('throws updating a wrong index', function() {
-      contacts.addContact(satoshiForestNew);
-      contacts.contacts[0].pubKeys = [];
+      var contact = contacts.addContact(satoshiForestNew);
+      contact.data.pubKeys = [];
+      contact.pubKeys = contact.data.pubKeys;
       expect(function() {
-         contacts.updateKey(contacts.contacts[0], data, 3);
+         contact.updateKey(data, 3);
       }).toThrow();
     });
     
     it('updates contact', function() {
-      contacts.addContact(satoshiForestNew);
-      var forest = contacts.contacts[0];
-      forest.name = "Sean's Outpost";
-      contacts.updateContact(forest, 'PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW', 0);
-      expect(forest.pubKeys[forest.mainKey].address).toBe('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
-      expect(forest.hash).toBe('c410cf311c6cda613d9b494164b304fa1dc413494dcc045477c65008361c47d8');
+      var forest = contacts.addContact(satoshiForestNew);
+      forest.data.name = "Sean's Outpost";
+      forest.update('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW', 0);
+      expect(forest.mainKey.address).toBe('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
+      expect(forest.data.hash).toBe('c410cf311c6cda613d9b494164b304fa1dc413494dcc045477c65008361c47d8');
       expect(_store).toContain("Sean's Outpost");
       
       expect(function() {
-        contacts.updateContact({name: 'Dorian', address: 'unknown'});
+        forest.update({name: 'Dorian', address: 'unknown'});
       }).toThrow();
     });
 
     it('finds a contact by address', function() {
       contacts.addContact(satoshiForestNew);
       var contact = contacts.findByAddress(satoshiForestAddress);
-      expect(contact.pubKeys[contact.mainKey].address).toBe(satoshiForestAddress);
-      expect(contact.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
+      expect(contact.mainKey.address).toBe(satoshiForestAddress);
+      expect(contact.data.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
       
     });
 
     it('adds a contact key', function() {
       contacts.addContact(satoshiForestNew);
       var contact = contacts.findByAddress(satoshiForestAddress);
-      contacts.addContactKey(contact, 'PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
+      contact.addKey('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
       expect(contact.pubKeys.length).toBe(2);
       
     });
@@ -184,8 +185,9 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
 
       var contact = contacts.findByAddress(satoshiForestAddress);
       delete contact.pubKeys;
+      delete contact.data.pubKeys;
 
-      contacts.addContactKey(contact, 'PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
+      contact.addKey('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
 
       expect(contact.pubKeys.length).toBe(1);
     });
@@ -195,9 +197,10 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
       var contact = contacts.findByAddress(satoshiForestAddress);
 
       delete contact.pubKeys;
+      delete contact.data.pubKeys;
 
       expect(function() {
-          contacts.updateKey(contact, 'PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW', 1);
+          contact.updateKey('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW', 1);
       }).toThrow();
       
     });
@@ -207,30 +210,29 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
     it('sets the main key', function() {
       contacts.addContact(satoshiForestNew);
       var contact = contacts.findByAddress(satoshiForestAddress);
-      expect(contact.hash).toBe("ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3");
-      contacts.addContactKey(contact, 'PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
-      contacts.addContactKey(contact, '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy');
-      contacts.setMainKey(contact, 1);
-      expect(contact.mainKey).toBe(1);
-      expect(contact.hash).toBe("c410cf311c6cda613d9b494164b304fa1dc413494dcc045477c65008361c47d8");
+      expect(contact.data.hash).toBe("ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3");
+      contact.addKey('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
+      contact.addKey('31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy');
+      contact.setMainKey(1);
+      expect(contact.data.mainKey).toBe(1);
+      expect(contact.data.hash).toBe("c410cf311c6cda613d9b494164b304fa1dc413494dcc045477c65008361c47d8");
 
       // key does not exist
       expect(function() {
-          contacts.setMainKey(contact, 7);
+          contact.setMainKey(7);
       }).toThrow();
     });
 
 
     it('deletes contact', function() {
-      contacts.addContact(satoshiForestNew);
-      var forest = contacts.contacts[0];
+      var forest = contacts.addContact(satoshiForestNew);
       contacts.deleteContact(forest);
       expect(contacts.contacts).not.toContain(forest);
       expect(_store).not.toContain('Satoshi Forest');
 
       // now try when it's not there any more
       expect(function() {
-        contacts.deleteContact(satoshiForest);
+        contacts.deleteContact(forest);
       }).toThrow();
 
     });
@@ -309,7 +311,7 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
 
     it('it upgrades from array properly', function() {
       expect(contacts.store).toBe(store);
-      expect(contacts.contacts[0]).toEqual(satoshiForestNew);
+      expect(contacts.contacts[0].data).toEqual(satoshiForestNew);
     });
 
   });

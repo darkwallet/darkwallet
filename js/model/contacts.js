@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
+define(['bitcoinjs-lib', 'util/btc', './contact'], function(Bitcoin, BtcUtils, Contact) {
 
 var Crypto = Bitcoin.CryptoJS;
 
@@ -12,7 +12,7 @@ var Crypto = Bitcoin.CryptoJS;
 function Contacts(store, identity) {
   this.store = store;
   this.identity = identity
-  this.contacts = this.store.init('contacts', [
+  this._contacts = this.store.init('contacts', [
     { name: 'DarkWallet team', address: '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy' },
     { name: 'libbitcoin team', address: '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP' }
   ]);
@@ -21,14 +21,15 @@ function Contacts(store, identity) {
       identity.wallet.versions.stealth.address,
       identity.wallet.versions.p2sh
   ]
-  this.initContacts();
+  this.contacts = this.initContacts();
+
   // revoke the libbitcoin old address
   var compromised = this.findByAddress('1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY');
   if (compromised && compromised.pubKeys.length == 1) {
       // Changing compromised contact for libbitcoin to the old darkwallet fund,
       // controlled by a few trusted people.
       compromised.pubKeys[0].type = 'revoked';
-      this.addContactKey(compromised, '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP', null, true);
+      compromised.addKey('339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP', null, true);
   }
 }
 
@@ -37,29 +38,15 @@ function Contacts(store, identity) {
  * @private
  */
 Contacts.prototype.initContacts = function() {
+  var contacts = [];
   var self = this;
-  var updated;
 
-  // TODO Remove when Darkwallet 1.0 release
-  this.contacts.forEach(function(contact) {
-      if (!contact) {
-          return;
+  this._contacts.forEach(function(contact) {
+      if (contact) {
+          contacts.push(new Contact(contact, self, true));
       }
-      if (!contact.pubKeys) {
-          self.updateKey(contact, contact.address, 0);
-          contact.mainKey = 0;
-          updated = true;
-          self.updateContactHash(contact);
-          // delete address since now is contained inside contact.pubKeys
-          delete contact.address;
-      }
-      // Set the idkey for this contact
-      self.updateIdKey(contact);
   });
-  if (updated) {
-    console.log("updated contacts", this.contacts);
-    // this.store.save();
-  }
+  return contacts;
 };
 
 /**
@@ -76,16 +63,17 @@ Contacts.prototype.prepareAddress = function(data) {
   }
   var newKey = {data: data, pubKey: pubKey, type: 'address'};
 
+  var versions = this.identity.wallet.versions;
   if (data.slice(0,3) == 'PSI') {
       newKey.type = 'id';
   } else if (BtcUtils.isAddress(data, this.validAddresses)) {
       newKey.address = data;
-      if (data[0] == this.identity.wallet.versions.stealth.prefix) {
+      if (data[0] == versions.stealth.prefix) {
           newKey.type = 'stealth';
       }
   } else if (pubKey) {
       var pubKeyHash = Bitcoin.crypto.hash160(pubKey);
-      var address = new Bitcoin.Address(pubKeyHash, this.identity.wallet.versions.address).toString();
+      var address = new Bitcoin.Address(pubKeyHash, versions.address).toString();
       newKey.address = address;
       newKey.type = 'pubkey';
   } else {
@@ -94,15 +82,6 @@ Contacts.prototype.prepareAddress = function(data) {
       newKey.type = 'unknown';
   }
   return newKey;
-};
-
-
-/**
- * Update fingerprint hash for a contact
- * @param {Object} contact Dictionary with a field address to feed the hash
- */
-Contacts.prototype.updateContactHash = function(contact) {
-    contact.hash = this.generateAddressHash(contact.pubKeys[contact.mainKey].address);
 };
 
 /**
@@ -122,28 +101,6 @@ Contacts.prototype.generateContactHash = function(data) {
     return this.generateAddressHash(newKey.address);
 };
 
-/**
- * Find an idKey for the contact
- */
-Contacts.prototype.findIdentityKey = function (contact) {
-    for(var i=0; i<contact.pubKeys.length; i++) {
-        if (contact.pubKeys[i].type == 'id') {
-            return contact.pubKeys[i];
-        }
-    }
-}
-
-/**
- * Update the internal reference to the current id key
- */
-Contacts.prototype.updateIdKey = function(contact) {
-    var idKey = this.findIdentityKey(contact);
-    if (idKey) {
-        contact.idKey = this.contacts.indexOf(idKey);
-    } else if (contact.idKey) {
-        delete contact.idKey;
-    }
-};
 
 /**
  * Find Contact by pubkey
@@ -193,104 +150,9 @@ Contacts.prototype.findByAddress = function (address) {
  * @param {Object} contact Contact information.
  */
 Contacts.prototype.addContact = function (contact) {
-  contact.pubKeys = [];
-
-  this.updateKey(contact, contact.address, 0);
-  delete contact.address;
-  contact.mainKey = 0;
-
-  this.updateIdKey(contact);
-  this.updateContactHash(contact);
-  this.contacts.push(contact);
-  this.store.save();
-};
-
-
-/**
- * Add key
- */
-Contacts.prototype.addContactKey = function (contact, data, label, main) {
-  var newKey = this.prepareAddress(data);
-
-  if (!contact.pubKeys) {
-      contact.pubKeys = [];
-  }
-  if (label) {
-      newKey.label = label;
-  }
-  contact.pubKeys.push(newKey);
-  if (main) {
-      contact.mainKey = contact.pubKeys.length-1;
-      this.updateContactHash(contact);
-  }
-  this.updateIdKey(contact);
-  this.store.save();
-  // delete address since now is contained inside contact.pubKeys
-};
-
-/**
- * Sets key index as main key
- * Will also update the contact hash to reflect new main identity.
- */
-Contacts.prototype.setMainKey = function (contact, index) {
-    if (index >= contact.pubKeys.length) {
-       throw Error("Key does not exist");
-    }
-    contact.mainKey = index;
-    this.updateContactHash(contact);
-    this.store.save();
-}
-
-/**
- * Delete contact key
- */
-Contacts.prototype.deleteKey = function (contact, index) {
-  contact.pubKeys.splice(index, 1);
-  if (contact.mainKey > contact.pubKeys.length) {
-      contact.mainKey = contact.pubKeys.length-1;
-  }
-  this.updateContactHash(contact);
-  // Check if we have an idkey
-  this.updateIdKey(contact);
-  this.store.save();
-}
- 
-
-/**
- * Update a key from given user input
- */
-Contacts.prototype.updateKey = function (contact, data, index) {
-  var newKey = this.prepareAddress(data);
-
-  if (!contact.pubKeys || !contact.pubKeys.length) {
-      if (index) {
-          throw Error("Trying to update key with index from contact with no keys");
-      }
-      contact.pubKeys = [newKey];
-  } else {
-      for(var par in newKey) {
-          contact.pubKeys[index][par] = newKey[par];
-      }
-  }
-};
-
-
-/**
- * Edit a contact in the address book
- * @param {Object} contact Contact information.
- * @throws {Error} When trying to update a non-existing contact
- */
-Contacts.prototype.updateContact = function (contact, data, index) {
-  if (this.contacts.indexOf(contact) == -1) {
-    throw Error("This is not an already existing contact!");
-  }
-
-  if (data) {
-    this.updateKey(contact, data, index);
-  }
-  this.updateContactHash(contact);
-
-  this.store.save();
+  var newContact = new Contact(contact, this);
+  this.contacts.push(newContact);
+  return newContact;
 };
 
 

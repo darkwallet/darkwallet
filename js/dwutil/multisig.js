@@ -51,7 +51,7 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes, i) {
             participant.name = contact.name;
             participant.hash = contact.hash;
             participant.type = 'contact';
-            if (identity.contacts.findIdentityKey(contact)) {
+            if (contact.findIdentityKey()) {
                 participant.paired = true;
             }
         } else {

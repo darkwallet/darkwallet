@@ -39,8 +39,8 @@
 
                 <input ng-show="!field.contact" type="text" class="address-buttons" required btc-address ng-disabled="forms.send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="Enter a bitcoin address here or use the buttons on the right." />
                 <span class="postfix" ng-show="field.contact">
-                   <identicon icon-size="36" hash="field.contact.hash"></identicon>
-                   {{field.contact.name}}
+                   <identicon icon-size="36" hash="field.contact.data.hash"></identicon>
+                   {{field.contact.data.name}}
                 </span>
                 <span class="input-status fa fa-check"></span>
 

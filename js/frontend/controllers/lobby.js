@@ -22,7 +22,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       var identity = DarkWallet.getIdentity();
       var anyPaired = false;
       $scope.anyPaired = identity.contacts.contacts.some(function(contact) {
-          if (identity.contacts.findIdentityKey(contact)) {
+          if (contact.findIdentityKey()) {
               return true;
           }
       });
@@ -66,10 +66,10 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       var peerChannel = $scope.selectedRequest.peer.channel;
       if (peerChannel.checkPairMessage(request)) {
-          var newContact = {name: request.nick, address: request.body.address};
+          var data = {name: request.nick, address: request.body.address};
 
-          identity.contacts.addContact(newContact);
-          identity.contacts.addContactKey(newContact, request.body.pub);
+          var newContact = identity.contacts.addContact(data);
+          newContact.addKey(request.body.pub);
 
           $scope.anyPaired = true;
           $scope.selectedRequest.peer.nick = request.nick;
@@ -84,8 +84,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   // Send a beacon for the given contact over given channel
   var sendBeacon = function(channel, contact) {
-      var identity = DarkWallet.getIdentity();
-      var idKey = identity.contacts.findIdentityKey(contact);
+      var idKey = contact.findIdentityKey();
       if (idKey) {
           var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
           var beaconKey = keys.slice(0, 32);

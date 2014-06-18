@@ -433,15 +433,15 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       var valid = false;
       var identity = this.transport.identity;
       identity.contacts.contacts.forEach(function(contact) {
-           var idKey = identity.contacts.findIdentityKey(contact);
+           var idKey = contact.findIdentityKey();
            if (idKey) {
                var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
                var signKey = Bitcoin.convert.bytesToString(keys.slice(32));
                if (signKey === decoded.body.pub) {
                    var toCheck = decoded.body.ephem+decoded.body.pub;
                    if (Curve25519.checksig(decoded.body.sig, toCheck, keys.slice(32))) {
-                       decoded.body.nick = contact.name;
-                       decoded.peer.nick = contact.name;
+                       decoded.body.nick = contact.data.name;
+                       decoded.peer.nick = contact.data.name;
                        decoded.peer.contact = contact;
                        self.onContactAvailable(decoded.peer, contact);
                        valid = true;

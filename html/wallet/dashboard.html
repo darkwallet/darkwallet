@@ -45,14 +45,14 @@
              <div class="small-5 medium-4 large-7 columns">
                <div tooltip-append-to-body="true" class="ellipsis">
                 <i tooltip="{{row.address}}" ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
-                <identicon ng-show="row.contact" icon-size="24" hash="row.contact.hash"></identicon>
+                <identicon ng-show="row.contact" icon-size="24" hash="row.contact.data.hash"></identicon>
 				<identicon ng-hide="row.contact" icon-size="24" data="row.address"></identicon>
 				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                 <span ng-show="!row.label">
-                {{row.contact ? row.contact.name : row.address}}
+                {{row.contact ? row.contact.data.name : row.address}}
                 </span>
                 <span ng-show="row.label">
-                {{row.contact ? row.contact.name + ' (' + row.label + ')' : row.label}}
+                {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
                 </span>
                 
                </div>

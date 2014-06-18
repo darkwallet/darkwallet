@@ -3,8 +3,8 @@
 	<div class="small-12 columns">
    <!-- Contact info -->
   <div class="row">
-        	<identicon icon-size="48" hash="vars.contact.hash" title="{{vars.contact.hash}}"></identicon>
-			<span class="contact-name">{{vars.contact.name}}</span>
+        	<identicon icon-size="48" hash="vars.contact.data.hash" title="{{vars.contact.data.hash}}"></identicon>
+			<span class="contact-name">{{vars.contact.data.name}}</span>
   </div>
 
   <!-- Options -->
@@ -38,16 +38,16 @@
 	<label>The main address for this contact is</label>	
       <div class="row collapse">
 		<div class="medium-1 columns">
-			<span class="prefix radius fa" title="Type of address" ng-class="{'fa-btc': vars.contact.pubKeys[vars.contact.mainKey].type=='address', 'fa-key': vars.contact.pubKeys[vars.contact.mainKey].type=='pubkey', 'fa-fighter-jet': vars.contact.pubKeys[vars.contact.mainKey].type=='stealth'}"> {{vars.contact.pubKeys[vars.contact.mainKey].type}}</span>
+			<span class="prefix radius fa" title="Type of address" ng-class="{'fa-btc': vars.contact.mainKey.type=='address', 'fa-key': vars.contact.mainKey.type=='pubkey', 'fa-fighter-jet': vars.contact.mainKey.type=='stealth'}"> {{vars.contact.mainKey.type}}</span>
 		</div>
         <div class="large-9 medium-7 columns">
-          <input type="text" readonly value="{{vars.contact.pubKeys[vars.contact.mainKey].address}}" />
+          <input type="text" readonly value="{{vars.contact.mainKey.address}}" />
         </div>
         <div class="large-1 medium-2 small-6 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(vars.contact.pubKeys[vars.contact.mainKey].address)" class="button postfix fa fa-clipboard">Copy</a>
+          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(vars.contact.mainKey.address)" class="button postfix fa fa-clipboard">Copy</a>
         </div>
         <div class="large-1 medium-2 small-6 columns">
-          <a class="button postfix radius fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(vars.contact.pubKeys[vars.contact.mainKey].address)">QR</a>
+          <a class="button postfix radius fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(vars.contact.mainKey.address)">QR</a>
         </div>
       </div>
       <div class="row collapse">
@@ -70,7 +70,7 @@
 			  <li>
 				  <a ng-click="openEditForm(vars.contact, currentIndex)" class="fa fa-pencil-square"> Edit</a>
 			  </li>
-			  <li ng-show="currentIndex!=vars.contact.mainKey">
+			  <li ng-show="currentIndex!=vars.contact.data.mainKey">
 				  <a ng-click="deleteKey(vars.contact, currentIndex)" class="fa fa-trash-o"> Delete</a>
 			  </li>
 	        </ul>
@@ -91,10 +91,10 @@
 	            	<span title="{{pubKey.address||pubKey.data}}">{{pubKey.label||pubKey.address||pubKey.data}}</span>
 
 			</div>
-			<div class="small-1 columns" ng-if="pubKey.type!='revoked'&&$index===vars.contact.mainKey" ng-show="!(editingContact===$index)">
+			<div class="small-1 columns" ng-if="pubKey.type!='revoked'&&pubKey===vars.contact.mainKey" ng-show="!(editingContact===$index)">
 				<div class="fa-star fa button square active righted"></div>
 			</div>
-			<div class="small-1 columns" ng-if="['revoked','id'].indexOf(pubKey.type)==-1&&$index!=vars.contact.mainKey" ng-show="!(editingContact===$index)">
+			<div class="small-1 columns" ng-if="['revoked','id'].indexOf(pubKey.type)==-1&&pubKey!==vars.contact.mainKey" ng-show="!(editingContact===$index)">
 				<a ng-click="setMainKey(vars.contact, $index)" class="fa button square righted fa-star-o"></a>
 			</div>
 			<div ng-show="editingContact===$index" class="small-12 columns">
