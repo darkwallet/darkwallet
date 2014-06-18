@@ -317,7 +317,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
         if (participant.type !== 'me') {     // can't be me if we're importing the key
             var pubKey = new Bitcoin.ECPubKey(participant.pubKey, true);
 
-            if (pubKey.getAddress(identity.wallet.versions.address).toString() =?= signingAddress) {
+            if (pubKey.getAddress(identity.wallet.versions.address).toString() === signingAddress) {
                 // It's this position, so sign all inputs
                 inputs.forEach(function(input, i) {
                     var sig = spend.tx.p2shsign(input.index, script, privKey.toBytes(), 1);
