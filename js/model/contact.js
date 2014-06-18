@@ -4,7 +4,8 @@ define([], function() {
 
 /**
  * Contact (Address book).
- * @param {Object} store Object store
+ * @param {Object} data Object store (new dictionary or a dict from the store)
+ * @param {Contacts} contacts Parent contacts object
  * @constructor
  */
 function Contact(data, contacts) {
@@ -14,8 +15,38 @@ function Contact(data, contacts) {
 }
 
 /**
+ * Initialize a contact
+ */
+Contact.prototype.initContact = function () {
+  // Loaded from store
+  if (this.data.pubKeys) {
+      this.pubKeys = this.data.pubKeys;
+      this.updateIdKey();
+      if (this.data.mainKey !== undefined) {
+          this.mainKey = this.pubKeys[this.data.mainKey];
+      }
+      return;
+  }
+  // Creating a brand new contact
+  this.data.pubKeys = [];
+  this.pubKeys = this.data.pubKeys;
+
+  // On first create data for the address comes in data.address
+  // We use updateKey so we don't trigger save here.
+  this.updateKey(this.data.address, 0);
+
+  // delete address since now is contained inside this.pubKeys
+  delete this.data.address;
+
+  // Set the just created key as our main key
+  this.data.mainKey = 0;
+
+  this.updateIdKey();
+  this.updateHash();
+};
+
+/**
  * Update fingerprint hash for a contact
- * @param {Object} contact Dictionary with a field address to feed the hash
  */
 Contact.prototype.updateHash = function() {
     this.mainKey = this.pubKeys[this.data.mainKey];
@@ -27,7 +58,7 @@ Contact.prototype.updateHash = function() {
  */
 Contact.prototype.findIdentityKey = function () {
     for(var i=0; i<this.pubKeys.length; i++) {
-        if (this.pubKeys[i].type == 'id') {
+        if (this.pubKeys[i].type === 'id') {
             return this.pubKeys[i];
         }
     }
@@ -46,31 +77,10 @@ Contact.prototype.updateIdKey = function() {
 };
 
 /**
- * Add a contact to the address book
- */
-Contact.prototype.initContact = function () {
-  if (this.data.pubKeys) {
-      this.pubKeys = this.data.pubKeys;
-      this.updateIdKey();
-      if (this.data.mainKey !== undefined) {
-          this.mainKey = this.pubKeys[this.data.mainKey];
-      }
-      return;
-  }
-  this.data.pubKeys = [];
-  this.pubKeys = this.data.pubKeys;
-
-  this.updateKey(this.data.address, 0);
-  delete this.data.address;
-  this.data.mainKey = 0;
-
-  this.updateIdKey();
-  this.updateHash();
-};
-
-
-/**
  * Add key
+ * @param {String} data Data for the key to add
+ * @param {String} label Label for the key
+ * @param {Bool} main Set the key as main
  */
 Contact.prototype.addKey = function (data, label, main) {
   var newKey = this.contacts.parseKey(data);
@@ -85,11 +95,12 @@ Contact.prototype.addKey = function (data, label, main) {
   }
   this.updateIdKey();
   this.contacts.store.save();
-  // delete address since now is contained inside this.pubKeys
 };
 
 /**
  * Sets key index as main key
+ * @param {Number} index Index for the key to set as main,
+ *                 should be something we can pay to.
  * Will also update the contact hash to reflect new main identity.
  */
 Contact.prototype.setMainKey = function (index) {
@@ -103,6 +114,7 @@ Contact.prototype.setMainKey = function (index) {
 
 /**
  * Delete contact key
+ * @param {Number} index Index for the key to delete
  */
 Contact.prototype.deleteKey = function (index) {
   this.pubKeys.splice(index, 1);
@@ -118,13 +130,16 @@ Contact.prototype.deleteKey = function (index) {
 
 /**
  * Update a key from given user input
+ * @param {String} data Data for the update
+ * @param {Number} index Index for the key to update
+ * @throws {Error} When the contact has no pubKeys and index is greater than 0
  */
 Contact.prototype.updateKey = function (data, index) {
   var newKey = this.contacts.parseKey(data);
 
-  if (!this.pubKeys || !this.pubKeys.length) {
+  if (!this.pubKeys.length) {
       if (index) {
-          throw Error("Trying to update key with index from contact with no keys");
+          throw new Error("Trying to update key with index from contact with no keys");
       }
       this.pubKeys.push(newKey);
   } else {
@@ -136,9 +151,9 @@ Contact.prototype.updateKey = function (data, index) {
 
 
 /**
- * Edit a contact in the address book
- * @param {Object} contact Contact information.
- * @throws {Error} When trying to update a non-existing contact
+ * Edit a contact key and save contact
+ * @param {String} data Data for the update
+ * @param {Number} index Index for the key to update
  */
 Contact.prototype.update = function (data, index) {
   if (data) {
@@ -151,9 +166,7 @@ Contact.prototype.update = function (data, index) {
 
 
 /**
- * Delete a contact from the address book
- * @param {String} contact Contact information.
- * @throws {Error} When trying to delete a non-existing contact
+ * Delete this contact and remove from the parent contacts.
  */
 Contact.prototype.remove = function () {
   this.contacts.deleteContact(this);
