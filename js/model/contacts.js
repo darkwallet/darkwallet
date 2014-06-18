@@ -50,10 +50,10 @@ Contacts.prototype.initContacts = function() {
 };
 
 /**
- * Update address for a contact
- * @param {Object} contact Dictionary with a field address to feed the hash
+ * Create a key from an address string
+ * @param {String} data Data with the address information
  */
-Contacts.prototype.prepareAddress = function(data) {
+Contacts.prototype.parseKey = function(data) {
   var addresses = []; // {pubKey: ..., address: ..., data: ..., type: ...}
   var pubKey;
   try {
@@ -97,7 +97,7 @@ Contacts.prototype.generateAddressHash = function(address) {
  * @param {String} data address or pubkey to generate the hash from
  */
 Contacts.prototype.generateContactHash = function(data) {
-    var newKey = this.prepareAddress(data);
+    var newKey = this.parseKey(data);
     return this.generateAddressHash(newKey.address);
 };
 

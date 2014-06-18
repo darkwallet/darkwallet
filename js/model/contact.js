@@ -73,7 +73,7 @@ Contact.prototype.initContact = function () {
  * Add key
  */
 Contact.prototype.addKey = function (data, label, main) {
-  var newKey = this.contacts.prepareAddress(data);
+  var newKey = this.contacts.parseKey(data);
 
   if (label) {
       newKey.label = label;
@@ -120,7 +120,7 @@ Contact.prototype.deleteKey = function (index) {
  * Update a key from given user input
  */
 Contact.prototype.updateKey = function (data, index) {
-  var newKey = this.contacts.prepareAddress(data);
+  var newKey = this.contacts.parseKey(data);
 
   if (!this.pubKeys || !this.pubKeys.length) {
       if (index) {

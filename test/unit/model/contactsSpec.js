@@ -76,7 +76,7 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
 
     it('prepares an address', function() {
       var data = '04cf2e5b02d6f02340f5a9defbbf710c388b8451c82145b1419fe9696837b1cdefc569a2a79baa6da2f747c3b25a102a081dfd5e799abc41262103e0d17114770b';
-      var key = contacts.prepareAddress(data);
+      var key = contacts.parseKey(data);
       var libBitcoinPub = [4,207,46,91,2,214,240,35,64,245,169,222,251,191,113,12,56,139,132,81,200,
                            33,69,177,65,159,233,105,104,55,177,205,239,197,105,162,167,155,170,109,162,
                            247,71,195,178,90,16,42,8,29,253,94,121,154,188,65,38,33,3,224,209,113,20,119,11];
@@ -89,7 +89,7 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
 
     it('prepares a stealth address', function() {
       var data = 'vJmuN2YqducEXDVX9EAu5HFNfnfDv1fCBhKmhUPTcvaykpM1mvyRXhHFVsJwWa47kGiZU14JrsxgCPsW1bd3pT8arAiTYRd9zhRPAT';
-      var key = contacts.prepareAddress(data);
+      var key = contacts.parseKey(data);
       expect(key.data).toBe(data);
       expect(key.address).toBe(data);
       expect(key.pubKey).toEqual([2,159,232,217,203,3,194,39,63,147,143,84,79,107,13,189,71,126,12,131,188,2,154,242,76,126,37,119,160,45,224,171,125]);
