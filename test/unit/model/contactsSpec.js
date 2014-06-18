@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
+define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, Stealth, Contact) {
   describe('Contacts model', function() {
     
     var contacts, satoshiForest, _store, satoshiForestNew, satoshiForestAddress;
@@ -14,7 +14,7 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
       save: function() {
         _store = [];
         for(var i = 0; i < contacts.contacts.length; i++) {
-          _store[i] = contacts.contacts[i].name;
+          _store[i] = contacts.contacts[i].data.name;
         }
       }
     };
@@ -98,6 +98,7 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
     });
     
     it('updates contact hash', function() {
+      var forest = new Contact(satoshiForest, contacts);
       contacts.updateContactHash(satoshiForest);
       expect(satoshiForest.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
     });
@@ -126,13 +127,13 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
 
       var contact = contacts.findByPubKey(libBitcoinPub);
 
-      expect(contact.name).toEqual(libBitcoin.name)
-      expect(contact.address).toEqual(libBitcoin.address)
+      expect(contact.data.name).toEqual(libBitcoin.name)
+      expect(contact.data.address).toEqual(libBitcoin.address)
 
       contact = contacts.findByPubKey(libBitcoinShort);
 
-      expect(contact.name).toEqual(libBitcoin.name)
-      expect(contact.address).toEqual(libBitcoin.address)
+      expect(contact.data.name).toEqual(libBitcoin.name)
+      expect(contact.data.address).toEqual(libBitcoin.address)
     });
     
     it('adds contact', function() {
@@ -184,8 +185,8 @@ define(['model/contacts', 'util/stealth'], function(Contacts, Stealth) {
       contacts.addContact(satoshiForestNew);
 
       var contact = contacts.findByAddress(satoshiForestAddress);
-      delete contact.pubKeys;
-      delete contact.data.pubKeys;
+      contact.pubKeys = [];
+      contact.data.pubKeys = contact.pubKeys;
 
       contact.addKey('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
 
