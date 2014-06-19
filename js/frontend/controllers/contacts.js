@@ -271,6 +271,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     } else {
         destroyReadOnlyPocket(contact);
     }
+    $scope.updateReadOnlyPockets(DarkWallet.getIdentity());
   };
 
 }]);
