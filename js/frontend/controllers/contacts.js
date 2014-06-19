@@ -230,7 +230,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     // Now add all keys
     contact.pubKeys.forEach(function(pubKey) {
         var seq = ['readonly:'+pocketId, pubKey.address];
-        if (pubKey.address && !identity.wallet.pubKeys[seq]) {
+        if (pubKey.address && !identity.wallet.pubKeys[seq] && pubKey.type !== 'stealth') {
             var walletAddress = {
                                 'index': seq,
                                 'label': pubKey.label || pubKey.address,
