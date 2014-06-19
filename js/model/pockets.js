@@ -216,6 +216,7 @@ Pockets.prototype.getAllAddresses = function(id, type) {
 Pockets.prototype.getPocketWallet = function(id, type) {
     // Default to multisig or hd for backwards compatibility.
     type = type ? type : (typeof id === 'string') ? 'multisig' : 'hd';
+    return this.pockets[type][id].getWallet();
 };
 
 return Pockets;

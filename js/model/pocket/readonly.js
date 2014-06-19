@@ -43,21 +43,21 @@ ReadOnlyPocket.prototype.addToPocket = function(walletAddress) {
  * Create a read only address
  */
 ReadOnlyPocket.prototype.createAddress = function(data) {
-    var seq = ['readonly:'+this.name, pubKey.address];
-    var oldAddress = this.getWallet().pubKeys[seq];
+    var seq = ['readonly:'+this.name, data.address];
+    var oldAddress = this.getMyWallet().pubKeys[seq];
     if (!oldAddress) {
         var walletAddress = {
                         'index': seq,
                         'label': data.label || data.address,
                         'type': 'readonly',
-                        'address': pubKey.address,
+                        'address': data.address,
                         'balance': 0,
                         'nOutputs': 0,
                         'height': 0,
                         'pubKey': false };
 
         // Add to Wallet
-        this.getWallet().addToWallet(walletAddress);
+        this.getMyWallet().addToWallet(walletAddress);
         return walletAddress;
     }
 };
@@ -67,7 +67,7 @@ ReadOnlyPocket.prototype.createAddress = function(data) {
  */
 ReadOnlyPocket.prototype.destroy = function() {
     var pocketId = this.name;
-    var wallet = this.getWallet();
+    var wallet = this.getMyWallet();
     // First delete all addresses
     var addresses = this.getAllAddresses();
     addresses.forEach(function(address) {

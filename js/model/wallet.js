@@ -335,7 +335,7 @@ Wallet.prototype.addToWallet = function(walletAddress) {
  * @param {Bool} dontSave Won't trigger store.save if true
  */
 Wallet.prototype.deleteAddress = function(seq, dontSave) {
-    var walletAddress = this.getAddress(seq);
+    var walletAddress = this.pubKeys[seq];
     this.wallet.addresses.splice(this.wallet.addresses.indexOf(walletAddress.index), 1);
     delete this.pubKeys[seq];
     // TODO: should cleanup pockets
