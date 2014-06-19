@@ -26,4 +26,24 @@ directives.directive('btcAddress', function() {
   };
 });
 
+directives.directive('contactAddress', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, elm, attrs, ctrl) {
+      var f = function(viewValue) {
+        if (viewValue) {
+          var identity = DarkWallet.getIdentity();
+          var newKey = identity.contacts.parseKey(viewValue);
+          var res = (newKey.type !== 'unknown');
+          ctrl.$setValidity('contact', res);
+        }
+        return viewValue;
+      };
+      ctrl.$parsers.unshift(f);
+      ctrl.$formatters.unshift(f);
+    }
+  };
+});
+
+
 });

@@ -131,6 +131,9 @@
 			  <li>
 				  <a ng-click="openEditForm(vars.contact, currentIndex)" class="fa fa-pencil-square"> Edit</a>
 			  </li>
+			  <li>
+				  <a ng-click="openEditForm(vars.contact, currentIndex, 'label')" class="fa fa-pencil-square"> Edit label</a>
+			  </li>
 			  <li ng-show="currentIndex!=vars.contact.data.mainKey">
 				  <a ng-click="deleteKey(vars.contact, currentIndex)" class="fa fa-trash-o"> Delete</a>
 			  </li>
@@ -160,7 +163,7 @@
 			</div>
 			<div ng-show="editingContact===$index" class="small-12 columns">
 				<form ng-submit="editContact(vars.contact, $index)">
-					<input type="text" class="prefix radius nomarginbottom" ng-model="contactToEdit.address">
+					<input placeholder="{{contactToEdit.type?'Enter a label...':'Enter an address or public key...'}}" type="text" class="prefix radius nomarginbottom" ng-model="contactToEdit.address">
 					<button class="button square righted fa fa-check" type="submit"></button>
 				</form>
 			</div>
@@ -174,7 +177,7 @@
                	 	<input type="text" class="prefix radius" placeholder="Enter a label..." ng-model="newContact.label"></input>
         		</div>
 				<div class="small-6 columns">
-               	 	<input type="text" class="prefix radius" placeholder="Enter a bitcoin address here..." required btc-address ng-model="newContact.address" autofocus></input>
+               	 	<input type="text" class="prefix radius" placeholder="Enter a bitcoin address here..." required contact-address ng-model="newContact.address" autofocus></input>
         		</div>
 				<div class="small-2 columns">
 					<a class="button postfix radius fa fa-qrcode">Scan QR code</a>

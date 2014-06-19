@@ -150,8 +150,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   };
 
 
-  $scope.openEditForm = function(contact, index) {
-    $scope.contactToEdit = {name: contact.data.name, address: contact.pubKeys[index].data};
+  $scope.openEditForm = function(contact, index, type) {
+    $scope.contactToEdit = {name: contact.data.name, address: type?contact.pubKeys[index].label:contact.pubKeys[index].data, type: type};
     $scope.editingContact = index;
   };
 
@@ -171,7 +171,12 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   $scope.editContact = function(contact, index) {
     contact.data.name = $scope.contactToEdit.name;
-    contact.update($scope.contactToEdit.address, index);
+    if ($scope.contactToEdit.type === 'label') {
+        contact.pubKeys[index].label = $scope.contactToEdit.address;
+        contact.update();
+    } else {
+        contact.update($scope.contactToEdit.address, index);
+    }
     $scope.editingContact = false;
   };
 
