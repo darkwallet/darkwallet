@@ -19,7 +19,7 @@
       <li>
       <a class="button small expand radius" ng-click="newMultiSig()">New Multisig fund</a>
       </li>
-      <li ng-show="settings.advanced" class="divider"></li>
-      <li ng-show="settings.advanced">Watch-only pockets</li>
+      <li ng-show="settings.advanced&&forms.hasReadOnly" class="divider"></li>
+      <li ng-show="settings.advanced&&forms.hasReadOnly">Watch-only pockets</li>
       <li ng-show="settings.advanced" ng-class="{active: 'readonly:'+$index===selectedPocket}" ng-repeat="readOnlyPocket in allReadOnly track by $index"><a ng-click="selectReadOnly(readOnlyPocket, $index)"href="">{{readOnlyPocket.name}}</a></li>
     </ul>

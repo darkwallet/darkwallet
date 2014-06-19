@@ -268,8 +268,10 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     contact.data.watch = !contact.data.watch;
     if (contact.data.watch) {
         initReadOnlyPocket(contact);
+        $scope.forms.hasReadOnly += 1;
     } else {
         destroyReadOnlyPocket(contact);
+        $scope.forms.hasReadOnly -= 1;
     }
   };
 
