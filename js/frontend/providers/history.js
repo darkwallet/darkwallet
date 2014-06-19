@@ -195,11 +195,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   HistoryProvider.prototype.selectPocket = function(pocketName, rowIndex) {
       var identity = DarkWallet.getIdentity();
-      if (pocketName === undefined || pocketName === 'overview') {
+      if (pocketName === undefined) {
           return this.selectAll(pocketName, rowIndex);
       }
       var pocketIndex = rowIndex*2;
-
       this.pocket.index = rowIndex;
       this.pocket.type = 'hd';
       this.pocket.lastIndex = rowIndex;
@@ -256,6 +255,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var shownRows = [];
       rows = rows.filter(function(row) { return self.historyFilter(row, shownRows); } );
       if (!rows.length) {
+          this.rows = [];
           return [];
       }
       if (this.txFilter === 'weekly') {
