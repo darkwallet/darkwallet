@@ -4540,8 +4540,16 @@ div.modal-ng.ng-animate.ng-leave {
 div.modal-ng.ng-animate.ng-enter {
   transition: all 300ms ease-out; }
 
-#maintitle img, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
+div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
   transition: all 300ms ease-out; }
+
+#maintitle {
+  -webkit-perspective: 100px; }
+
+#logo.busy {
+  -webkit-animation-name: spin;
+  -webkit-animation-duration: 1.6s;
+  -webkit-animation-iteration-count: infinite; }
 
 a.glow.button, button.glow, input[type="submit"].glow {
   -webkit-animation-name: glowpulse;
@@ -4585,6 +4593,16 @@ a.glow.button, button.glow, input[type="submit"].glow {
 
   to {
     background-color: rgba(30, 190, 90, 0.9); } }
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotateY(0deg); }
+
+  50% {
+    -webkit-transform: rotateY(180deg); }
+
+  to {
+    -webkit-transform: rotateY(360deg); } }
 
 @-webkit-keyframes rotateFoldBottom {
   to {
@@ -5129,9 +5147,6 @@ span.contact-name {
 
 #logo {
   margin: -2px 5px 0 -5px; }
-
-#maintitle:hover img {
-  -webkit-transform: rotateY(180deg); }
 
 div.pockets {
   z-index: 2; }
