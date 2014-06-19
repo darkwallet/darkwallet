@@ -141,7 +141,12 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         if (task.outPocket !== undefined) {
             var identity = core.getCurrentIdentity();
             var outPocket = identity.wallet.getPocket(task.outPocket);
-            title = (outPocket.name || outPocket.label) + ': ' + title;
+            if (outPocket) {
+                title = (outPocket.name || outPocket.label) + ': ' + title;
+            } else {
+                // TODO: do proper fix
+                title = 'watch-only (unknown) ' + task.address;
+            }
         }
         core.service.badge.setItems();
         var formattedValue = CurrencyFormatting.format(value);
