@@ -99,6 +99,10 @@ ReadOnlyPocket.prototype.fromContact = function(contact) {
     return created;
 };
 
+ReadOnlyPocket.prototype.getMainAddress = function() {
+    return this.getMyWallet().getWalletAddress(this.addresses[0]);
+    
+};
 
 return ReadOnlyPocket;
 });

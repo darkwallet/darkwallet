@@ -157,7 +157,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var pocket = pockets[pocketId];
 
       this.pocket.index = pocketId;
-      this.pocket.type = 'readonly';
+      this.pocket.type = type;
       this.pocket.lastIndex = rowIndex;
       this.pocket.name = pocketId;
       this.pocket.fund = null;
@@ -166,7 +166,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       // directly, also cache there...
       // addresses = this.$wallet.addresses['readonly:'+pocketId]);
       pocket.getAllAddresses().forEach(function(address) {
-          addresses.push(identity.wallet.pubKeys[['readonly:'+pocketId, address]]);
+          addresses.push(identity.wallet.pubKeys[[type+':'+pocketId, address]]);
       });
       this.pocket.addresses = addresses;
       this.pocket.changeAddresses = [];
@@ -179,14 +179,16 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
       this.pocket.balance = this.calculateBalance(this.pocket);
 
-      // main address
-      var walletAddress = this.pocket.addresses[0];
-      this.pocket.mpk = walletAddress.address;
-      this.pocket.stealth = walletAddress.address;
-      this.pocket.mainAddress = walletAddress.address;
+      // Get the main address for the pocket
+      var walletAddress = pocket.getMainAddress();
+
+      // Set some contact fields
+      this.pocket.mpk = walletAddress.mpk || walletAddress.address;
+      this.pocket.stealth = walletAddress.stealth || walletAddress.address;
+      this.pocket.mainAddress = walletAddress.stealth || walletAddress.address;
       this.pocket.mainHash = identity.contacts.generateContactHash(this.pocket.mainAddress);
 
-      this.selectedPocket = 'readonly:' + rowIndex;
+      this.selectedPocket = type+':' + rowIndex;
       return this.chooseRows();
 
   };
