@@ -23,7 +23,7 @@
 	    <nav class="top-bar hide-for-small">
 	      <ul class="title-area" ng-cloak ng-show="identityName">
 	        <li class="name">
-	          <h1 class="hide-for-medium"><a href="#/wallet" id="maintitle" style="cursor: default"><img id="logo" src="../images/logo.svg" width="32" height="32" /> Dark Wallet</a></h1>
+	          <h1 class="hide-for-medium"><a ng-click="tabs.openWallet()" id="maintitle" style="cursor: default"><img id="logo" src="../images/logo.svg" width="32" height="32" /> Dark Wallet</a></h1>
 	        </li>
 	        <li class="toggle-topbar menu-icon"><a href="">Menu</a></li>
 	      </ul>
@@ -47,7 +47,7 @@
 	        </ul>
 	        <!-- Left Nav Section -->
 	        <ul class="left">
-	          <li ng-class="{active:isActive('/wallet')}"><a href="#wallet"><i class="fa fa-th-list"></i> Wallet</a></li>
+	          <li ng-class="{active:isActive('/wallet')}"><a ng-click="openWallet()"><i class="fa fa-th-list"></i> Wallet</a></li>
 	          <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="fa fa-share"></i> Send</a></li>
 	          <li ng-class="{active:isActive('/contacts')}"><a href="#contacts"><i class="fa fa-users"></i> Contacts</a></li>
 			  <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="fa fa-comments"></i> Lobby</a></li>

@@ -11,8 +11,8 @@ function (controllers, DarkWallet, Port) {
    * Controller
    */
   controllers.controller('WalletCtrl',
-  ['$scope', '$location', 'clipboard', 'modals', '$wallet', '$animate',
-      function($scope, $location, clipboard, modals, $wallet, $animate) {
+  ['$scope', '$location', 'clipboard', 'modals', '$wallet', '$animate', '$tabs',
+      function($scope, $location, clipboard, modals, $wallet, $animate, $tabs) {
 
   // Scope variables
   $scope.rates = {};
@@ -23,7 +23,9 @@ function (controllers, DarkWallet, Port) {
   // Global scope utils
   $scope.modals = modals;
   $scope.clipboard = clipboard;
-  
+
+  $scope.openWallet = $tabs.openWallet;
+ 
   /**
    * Wallet Port
    * Sends notifications about wallet state and identity change
@@ -59,7 +61,7 @@ function (controllers, DarkWallet, Port) {
    * Check if a route is active
    */
   $scope.isActive = function(route) {
-    return route === $location.path();
+    return route === $location.path().slice(0, route.length);
   };
 
 

@@ -13,19 +13,34 @@ function (controllers, DarkWallet, Port) {
 
   $scope.historyRows = $history.rows;
 
-  $tabs.loadRoute($routeParams.section);
+  $tabs.loadRoute($routeParams.section, $routeParams.pocketType, $routeParams.pocketId);
+
   // Link tabs from service
   $scope.tabs = $tabs;
 
   // Filters
   $scope.txFilter = $history.txFilter;
 
+  var checkChanges = function(type, idx) {
+    var changed = $history.setCurrentPocket(type, idx);
+    if (changed) {
+        $scope.pocket = $history.getCurrentPocket();
+        $scope.historyRows = $history.rows;
+        $scope.selectedPocket = $history.selectedPocket;
+        $tabs.updateTabs($scope.pocket.isAll, $scope.pocket.isFund, $scope.pocket.tasks);
+    }
+  }
+
   // Don't reload the controller if coming from this tab
   var lastRoute = $route.current;
   $scope.$on('$locationChangeSuccess', function(event) {
     if ($route.current.templateUrl.indexOf('wallet.html') > 0) {
-        $tabs.loadRoute($route.current.pathParams.section);
-        // maybe could just set the template here but works like this
+        var params = $route.current.pathParams;
+        var pocketId = params.pocketId;
+        $tabs.loadRoute(params.section, params.pocketType, pocketId, function() {
+            checkChanges(params.pocketType, pocketId?parseInt(pocketId):undefined);
+        });
+        // Overwrite the route so the template doesn't reload
         $route.current = lastRoute;
     }
   });
@@ -43,9 +58,8 @@ function (controllers, DarkWallet, Port) {
       if ($history.previousIdentity != identity.name) {
           // prevents loading the first time...
           //if ($history.previousIdentity) {
-          $scope.historyRows = $history.selectAll();
-          // Set the selected pocket
-          $scope.selectedPocket = $history.selectedPocket;
+          var pocketId = $routeParams.pocketId;
+          checkChanges($routeParams.pocketType, pocketId?parseInt(pocketId):undefined);
 
           // Update tabs
           $scope.tabs.updateTabs($scope.pocket.isAll, $scope.pocket.isFund, $scope.pocket.tasks);
@@ -99,14 +113,7 @@ function (controllers, DarkWallet, Port) {
    * Select fund as current pocket
    */
   $scope.selectFund = function(fund, rowIndex) {
-      // Select the fund in history
-      $scope.historyRows = $history.selectFund(fund, rowIndex);
-
-      // Set the selected pocket
-      $scope.selectedPocket = $history.selectedPocket;
-
-      // Update tabs
-      $scope.tabs.updateTabs($history.pocket.isAll, $history.pocket.isFund, $history.pocket.tasks);
+      $tabs.open('multisig', rowIndex);
   };
 
 
@@ -115,18 +122,11 @@ function (controllers, DarkWallet, Port) {
    */
   $scope.selectPocket = function(pocketName, rowIndex, form) {
       if (pocketName === undefined) {
-          $scope.historyRows = $history.selectAll(pocketName, rowIndex);
+          $tabs.open();
       } else {
-          $scope.historyRows = $history.selectPocket(pocketName, rowIndex);
-
           $scope.forms.pocketLabelForm = form;
+          $tabs.open(undefined, rowIndex);
       }
-
-      // Set the selected pocket
-      $scope.selectedPocket = $history.selectedPocket;
-
-      // Update tabs
-      $scope.tabs.updateTabs($scope.pocket.isAll, $scope.pocket.isFund, $scope.pocket.tasks);
   };
 
 

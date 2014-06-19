@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module'], function (providers) {
-  providers.factory('$tabs', ['$templateCache', '$http', '$location', function($templateCache, $http, $location) {
+  providers.factory('$tabs', ['$templateCache', '$http', '$location', '$route', function($templateCache, $http, $location, $route) {
 
   var tabs = {};
 
@@ -14,7 +14,12 @@ define(['./module'], function (providers) {
   tabs.current = 0;
 
   tabs.previous = 0;
-  
+  tabs.pocketType = 'all';
+
+  tabs.openWallet = function() {
+     tabs.pages[tabs.current].select();
+  }
+ 
   var index = 0;
 
   var Tab = function(heading, page) {
@@ -32,17 +37,32 @@ define(['./module'], function (providers) {
       return tabs.visible.indexOf(this.index) > -1;
   };
  
+  tabs.open = function(pocketType, pocketId) {
+     tabs.pocketType = pocketType;
+     tabs.pocketId = pocketId;
+     tabs.pages[tabs.current].select();
+  }
+
   Tab.prototype.select = function() {
-      $location.path('wallet/'+this.page);
+      var dest = 'wallet/'+this.page;
+      if (tabs.pocketType) {
+          dest += '/'+tabs.pocketType;
+      }
+      if (tabs.pocketId !== undefined) {
+          dest += '/'+tabs.pocketId;
+      }
+      $location.path(dest);
+
   };
 
-  Tab.prototype.load = function() {
+  Tab.prototype.load = function(callback) {
       var self = this;
       var tplUrl = this.tplUrl;
       // Finish setting the tab
       var finish = function() {
           tabs.previous = tabs.current;
           tabs.current = self.index;
+          callback ? callback() : undefined;
       }
       // Load straight away or preload the template
       if ($templateCache.get(tplUrl)) {
@@ -63,10 +83,12 @@ define(['./module'], function (providers) {
   
   tabs.visible = [0, 1, 3]; // Overview, history and addresses
 
-  tabs.loadRoute = function(section) {
+  tabs.loadRoute = function(section, pocketType, pocketId, callback) {
+      tabs.pocketType = pocketType;
+      tabs.pocketId = pocketId;
       for(var i=0; i<tabs.pages.length; i++) {
           if (tabs.pages[i].page == section) {
-              tabs.pages[i].load();
+              tabs.pages[i].load(callback);
           }
       }
   };

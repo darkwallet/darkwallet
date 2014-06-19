@@ -11,6 +11,8 @@ define(['frontend/app'], function (app) {
     $routeProvider.when('/tools', {templateUrl: 'partials/tools.html', controller: 'ToolsCtrl'});
     $routeProvider.when('/wallet', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
     $routeProvider.when('/wallet/:section', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
+    $routeProvider.when('/wallet/:section/:pocketId', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
+    $routeProvider.when('/wallet/:section/:pocketType/:pocketId', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
     $routeProvider.when('/send', {templateUrl: 'partials/send.html', controller: 'WalletSendCtrl'});
     $routeProvider.when('/contacts', {templateUrl: 'partials/contacts.html', controller: 'ContactsCtrl'});
     $routeProvider.when('/lobby', {templateUrl: 'partials/lobby.html', controller: 'LobbyCtrl'});
