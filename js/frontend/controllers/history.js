@@ -29,7 +29,7 @@ function (controllers, DarkWallet, Port) {
         $scope.selectedPocket = $history.selectedPocket;
         $tabs.updateTabs($scope.pocket.isAll, $scope.pocket.isFund, $scope.pocket.tasks);
     }
-  }
+  };
 
   // Don't reload the controller if coming from this tab
   var lastRoute = $route.current;
@@ -129,6 +129,9 @@ function (controllers, DarkWallet, Port) {
       }
   };
 
+  $scope.selectReadOnly = function(pocket, rowIndex) {
+      $tabs.open('readonly', rowIndex);
+  };
 
   /**
    * Start creating a new multisig

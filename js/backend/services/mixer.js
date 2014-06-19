@@ -224,7 +224,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           continue;
       }
       if (pocket.mixing) {
-        var balance = identity.wallet.getBalance(i*2).confirmed + identity.wallet.getBalance((i*2)+1).confirmed;
+        var balance = identity.wallet.getBalance(i*2, 'hd').confirmed + identity.wallet.getBalance((i*2)+1, 'hd').confirmed;
         if (balance >= amount) {
             return i;
         }

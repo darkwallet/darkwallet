@@ -47,7 +47,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           if (!pocket) {
               return;
           }
-          var balance = identity.wallet.getBalance(i);
+          var balance = identity.wallet.getBalance(i, 'hd');
 
           // Update total
           total.confirmed += balance.confirmed;
@@ -61,7 +61,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           if (!fund) {
               return;
           }
-          var balance = identity.wallet.getBalance(fund.address);
+          var balance = identity.wallet.getBalance(fund.address, 'multisig');
 
           // Update total
           total.current += balance.current;

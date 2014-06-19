@@ -82,10 +82,10 @@ Wallet.prototype.initIfEmpty = function() {
  * @param {String|undefined} pocket Chain number, multisig id or all pockets if undefined
  * @param {Array} Array with addresses
  */
-Wallet.prototype.getPocketAddresses = function(pocketId) {
+Wallet.prototype.getPocketAddresses = function(pocketId, type) {
     var allAddresses = [];
 
-    if (pocketId === undefined) {
+    if (pocketId === undefined || pocketId === 'all') {
         // All
         var keys = Object.keys(this.pubKeys);
         for(var i=0; i<keys.length; i++) {
@@ -96,7 +96,9 @@ Wallet.prototype.getPocketAddresses = function(pocketId) {
         }
     } else if (typeof pocketId === 'number') {
         // Hd pocket
-        allAddresses = this.pockets.getAllAddresses(pocketId);
+        allAddresses = this.pockets.getAllAddresses(pocketId, type);
+    } else if (type == 'readonly') {
+        allAddresses = this.pockets.getAllAddresses(pocketId, type);
     } else {
         // Multisig
         allAddresses = [pocketId]; 
@@ -110,13 +112,13 @@ Wallet.prototype.getPocketAddresses = function(pocketId) {
  * @param {String|undefined} pocket Pocket number or all pockets if undefined
  * @param {Number} Balance in satoshis
  */
-Wallet.prototype.getBalance = function(pocketId) {
+Wallet.prototype.getBalance = function(pocketId, type) {
     var confirmed = 0;
     var unconfirmed = 0;
     var current = 0;
     var hot = 0;
 
-    var allAddresses = this.getPocketAddresses(pocketId);
+    var allAddresses = this.getPocketAddresses(pocketId, type);
 
     // Get balance directly from available outputs
     var outputs = this.wallet.outputs;
@@ -373,7 +375,7 @@ Wallet.prototype.getFreeAddress = function(branchIndex) {
     if (typeof branchIndex === 'string') {
         // multisig get the same address again
         walletAddress = this.getWalletAddress(branchIndex);
-        if (walletAddress.type !== 'multisig') {
+        if (['multisig', 'readonly'].walletAddress.type === -1) {
            throw new Error("Generated an incorrect change address");
         }
     } else {
@@ -451,12 +453,12 @@ Wallet.prototype.setDefaultFee = function(newFee) {
  * @param {Object} pocketId The pocket identifier
  * @return {Object} List of outputs
  */
-Wallet.prototype.getUtxoToPay = function(value, pocketId) {
+Wallet.prototype.getUtxoToPay = function(value, pocketId, type) {
     var tmpWallet;
     if (pocketId === 'all') {
         tmpWallet = this.wallet;
     } else {
-        tmpWallet = this.pockets.getPocketWallet(pocketId);
+        tmpWallet = this.pockets.getPocketWallet(pocketId, type);
     }
 
     var getCandidateOutputs = function(w, value, hot) {

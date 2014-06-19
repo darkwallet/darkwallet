@@ -21,7 +21,5 @@
       </li>
       <li ng-show="settings.advanced" class="divider"></li>
       <li ng-show="settings.advanced">Watch-only pockets</li>
-      <li ng-show="settings.advanced"><a href="">My smartphone</a></li>
-      <li ng-show="settings.advanced"><a href="">My cold wallet</a></li>
-      <li ng-show="settings.advanced"><a class="button small expand radius">Add watch-only pocket</a></li>
+      <li ng-show="settings.advanced" ng-class="{active: 'readonly:'+$index===selectedPocket}" ng-repeat="readOnlyPocket in allReadOnly track by $index"><a ng-click="selectReadOnly(readOnlyPocket, $index)"href="">{{readOnlyPocket.name}}</a></li>
     </ul>

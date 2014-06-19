@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', function($scope, $routeParams, $location, $route) {
+  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', function($scope, $routeParams, $location, $route, $wallet) {
 
   $scope.newContact = {};
   $scope.contactToEdit = {};
@@ -22,7 +22,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
               $location.path('/contacts');
           }
       }
-  }
+  };
 
   // Don't reload the controller if coming from this tab
   // (only on contact.html template)
@@ -44,7 +44,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         dest += section + '/';
     }
     $location.path(dest+$routeParams.contactId);
-  }
+  };
 
 
   var identity = DarkWallet.getIdentity();
@@ -55,7 +55,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.setCurrentPubKey = function(pubKey, i) {
       $scope.currentPubKey = pubKey;
       $scope.currentIndex = i;
-  }
+  };
 
   $scope.contacts = identity.contacts.contacts.slice(0);
   $scope.allContacts = identity.contacts.contacts;
@@ -85,7 +85,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         }
     });
     return found;
-  }
+  };
 
   $scope.pickContact = function(contact) {
     var types = getContactTypes();
@@ -109,7 +109,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
     // Run the modal ok method
     $scope.ok(key[field]);
-  }
+  };
 
   $scope.filterContacts = function() {
     var identity = DarkWallet.getIdentity();
@@ -161,13 +161,13 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     var contactIndex = identity.contacts.contacts.indexOf(contact);;
 
     $location.path('/contact/'+contactIndex);
-  }
+  };
 
   $scope.saveName = function(contact, name) {
     contact.data.name = name;
     contact.update();
     $scope.editingContact = false;
-  }
+  };
 
   $scope.editContact = function(contact, index) {
     contact.data.name = $scope.contactToEdit.name;
@@ -180,17 +180,13 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $scope.editingContact = false;
   };
 
-  $scope.toggleWatch = function(contact, index) {
-    contact.data.watch = !contact.data.watch;
-  }
-
   $scope.setMainKey = function(contact, index) {
     contact.setMainKey(index);
-  }
+  };
 
   $scope.deleteKey = function(contact, index) {
     contact.deleteKey(index);
-  }
+  };
 
   $scope.deleteContact = function(contact) {
     contact.remove();
@@ -200,5 +196,72 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     }
     $location.path('/contacts');
   };
+
+  /**
+   * Watch / ReadOnly Pockets from contact
+   */
+  var destroyReadOnlyPocket = function(contact) {
+    var identity = DarkWallet.getIdentity();
+    var pocketId = contact.data.name;
+    var pocket = identity.wallet.pockets.pockets.readonly[pocketId];
+    if (pocket) {
+        // First delete all addresses
+        var addresses = pocket.getAllAddresses();
+        addresses.forEach(function(address) {
+            var seq = ['readonly:'+pocketId, address];
+            if (identity.wallet.pubKeys[seq]) {
+                identity.wallet.deleteAddress(seq, true);
+            }
+        });
+        // Now destroy the pocket
+        delete identity.wallet.pockets.pockets.readonly[pocketId];
+    }
+    
+  };
+
+  var initReadOnlyPocket = function(contact) {
+    var identity = DarkWallet.getIdentity();
+    var pocketId = contact.data.name;
+    var data = {name: pocketId};
+
+    // Create the pocket
+    identity.wallet.pockets.initPocketWallet('readonly', pocketId, data);
+
+    // Now add all keys
+    contact.pubKeys.forEach(function(pubKey) {
+        var seq = ['readonly:'+pocketId, pubKey.address];
+        if (pubKey.address && !identity.wallet.pubKeys[seq]) {
+            var walletAddress = {
+                                'index': seq,
+                                'label': pubKey.label || pubKey.address,
+                                'type': 'readonly',
+                                'address': pubKey.address,
+                                'balance': 0,
+                                'nOutputs': 0,
+                                'height': 0,
+                                'pubKey': false };
+
+            // Add to Wallet
+            identity.wallet.addToWallet(walletAddress);
+
+            // Add to Scope
+            $wallet.addToScope(walletAddress);
+
+            // Add to Backend
+            DarkWallet.core.initAddress(walletAddress);
+        }
+    });
+
+  };
+
+  $scope.toggleWatch = function(contact, index) {
+    contact.data.watch = !contact.data.watch;
+    if (contact.data.watch) {
+        initReadOnlyPocket(contact);
+    } else {
+        destroyReadOnlyPocket(contact);
+    }
+  };
+
 }]);
 });

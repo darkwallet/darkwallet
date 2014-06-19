@@ -13,6 +13,10 @@ function (controllers, Bitcoin, DarkWallet) {
   $scope.page = 0;
   var limit = 10;
 
+  if ($scope.pocket.type === 'readonly' && $scope.addrFilter === 'unused') {
+      $scope.addrFilter = 'all';
+  }
+
   $scope.setCurrentAddress = function(address, editForm) {
       $scope.currentAddress = address;
       $scope.currentForm = editForm;

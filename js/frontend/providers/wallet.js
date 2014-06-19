@@ -7,11 +7,6 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       this.allAddresses = [];
   }
 
-  WalletProvider.prototype.getBalance = function(pocketId) {
-      var identity = DarkWallet.getIdentity();
-      return identity.wallet.getBalance(pocketId);
-  }
-
   WalletProvider.prototype.onIdentityLoaded = function(identity) {
       this.addresses = {};
       this.allAddresses.splice(0, this.allAddresses.length);
@@ -22,13 +17,13 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
 
   WalletProvider.prototype.loadAddresses = function(identity) {
       var self = this;
+      // Init pockets
+      for(var idx=0; idx<identity.wallet.pockets.hdPockets.length; idx++) {
+          self.initPocket(idx);
+      };
       /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var walletAddress = identity.wallet.getAddress(pubKeyIndex);
-          // Init pockets
-          for(var idx=0; idx<identity.wallet.pockets.hdPockets.length; idx++) {
-              self.initPocket(idx);
-          };
           // Regular addresses
           if (walletAddress.index.length > 1) {
               // add to scope
@@ -111,8 +106,12 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
   WalletProvider.prototype.addToScope = function(walletAddress) {
     var identity = DarkWallet.getIdentity();
     var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
-    if (walletAddress.type != 'multisig') {
+    if (!walletAddress.type) {
         this.initPocket(pocketId);
+    } else {
+        if (!this.addresses[walletAddress.index[0]]) {
+            this.addresses[walletAddress.index[0]] = [];
+        }
     }
     var addressArray = this.addresses[walletAddress.index[0]];
     if (this.allAddresses.indexOf(walletAddress) == -1) {

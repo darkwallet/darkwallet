@@ -203,7 +203,7 @@
           <input type="text" autofocus ng-model="contactToEdit.name"><button class="button square righted fa fa-check" type="submit"></button>
         </form>
 		<div ng-show="contactSection=='overview'">
-		<a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.watch, 'fa-eye': vars.contact.watch}" class="fa button disabled small nomarginbottom radius"> Watch</a>
+		<a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.data.watch, 'fa-eye': vars.contact.data.watch}" class="fa button small nomarginbottom radius"> {{vars.contact.data.watch?'Unwatch':'Watch'}}</a>
 		<a ng-click="openEditForm(vars.contact, 0)" class="fa button small nomarginbottom radius fa-terminal"> Rename</a>
     	<a ng-click="modals.open('confirm-delete', {name: vars.contact.name, object: vars.contact}, deleteContact)" class="small button nomarginbottom radius alert fa fa-trash-o"> Delete</a>
     </div>

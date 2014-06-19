@@ -72,13 +72,14 @@ function (controllers, DarkWallet, Port) {
       // Link pockets and funds
       $scope.hdPockets = identity.wallet.pockets.hdPockets;
       $scope.allFunds = identity.wallet.multisig.funds;
+      $scope.allReadOnly = identity.wallet.pockets.pockets.readonly;
 
       // set some links
       $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
       $scope.settings = identity.settings;
 
       // get the balance for the wallet
-      var balance = $wallet.getBalance();
+      var balance = identity.wallet.getBalance();
       
       $scope.totalBalance = balance.confirmed;
       $scope.totalUnconfirmed = balance.unconfirmed;
@@ -121,7 +122,7 @@ function (controllers, DarkWallet, Port) {
       console.log("[WalletCtrl] loadIdentity", identity.name);
       // apply scope changes
       return true;
-  };
+  }
 
   /**
    * Utility function to create iterators
