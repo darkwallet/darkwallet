@@ -169,8 +169,42 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $scope.editingContact = false;
   };
 
+  // Rename a pocket linked to some contact
+  var renamePocket = function(newName, prevName) {
+    var identity = DarkWallet.getIdentity();
+    var pockets = identity.wallet.getPockets('readonly');
+    if (prevName && prevName !== newName && pockets[prevName]) {
+        var newIndex = 'readonly'+newName;
+        var pocket = pockets[prevName];
+        // Save the name in the pocket
+        pocket.name = newName;
+        pocket.data.id = newName;
+        //  Reindex with the new pocketId
+        pockets[newName] = pocket;
+        delete pockets[prevName];
+        // If any addresses are using the old index reindex them
+        var reindexed = [];
+        identity.wallet.pubKeys.forEach(function(walletAddress) {
+            if (walletAddress.index[0] === ('readonly:'+prevName)) {
+                // Save the index before changing it
+                reindexed.push(walletAddress.index.slice());
+                // Change the index to the new name
+                walletAddress.index[0] = newIndex;
+                identity.wallet.pubKeys[newIndex] = walletAddress;
+            }
+        });
+        // Now delete all reindexed
+        reindexed.forEach(function(seq) {
+            delete identity.wallet.pubKeys[seq];
+        });
+    }
+  };
+
   $scope.editContact = function(contact, index) {
-    contact.data.name = $scope.contactToEdit.name;
+    var newName = $scope.contactToEdit.name;
+    var prevName = contact.data.name;
+    contact.data.name = newName;
+    renamePocket(newName, prevName);
     if ($scope.contactToEdit.type === 'label') {
         contact.pubKeys[index].label = $scope.contactToEdit.address;
         contact.update();
