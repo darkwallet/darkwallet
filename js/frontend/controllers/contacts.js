@@ -25,14 +25,17 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   }
 
   // Don't reload the controller if coming from this tab
+  // (only on contact.html template)
   var lastRoute = $route.current;
-  $scope.$on('$locationChangeSuccess', function(event) {
-    if ($route.current.templateUrl.indexOf('contact.html') > 0) {
-        $scope.contactSection = $route.current.pathParams.section || 'overview';
-        // Overwrite the route so the template doesn't reload
-        $route.current = lastRoute;
-    }
-  });
+  if ($route.current.templateUrl.indexOf('contact.html') > 0) {
+      $scope.$on('$locationChangeSuccess', function(event) {
+          if ($route.current.templateUrl.indexOf('contact.html') > 0) {
+              $scope.contactSection = $route.current.pathParams.section || 'overview';
+              // Overwrite the route so the template doesn't reload
+              $route.current = lastRoute;
+          }
+      });
+  }
 
   // Set the contact section
   $scope.setContactSection = function(section) {
