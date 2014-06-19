@@ -213,7 +213,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       this.pocket.addresses = this.$wallet.addresses[pocketIndex];
       this.pocket.changeAddresses = this.$wallet.addresses[pocketIndex+1];
 
-      var walletPocket = identity.wallet.getPocket(pocketName);
+      var walletPocket = identity.wallet.getPocket(rowIndex);
 
       this.pocket.mixing = walletPocket.mixing;
       this.pocket.readOnly = false;

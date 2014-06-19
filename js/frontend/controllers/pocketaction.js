@@ -35,7 +35,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
      */
     $scope.setMixing = function(pocket) {
         var identity = DarkWallet.getIdentity();
-        var walletPocket = identity.wallet.getPocket(pocket.name);
+        var walletPocket = identity.wallet.getPocket(pocket.index);
         // Finish setting mixing in the pocket
         // this can happen after requesting the password
         var finishSetMixing = function() {
