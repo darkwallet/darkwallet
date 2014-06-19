@@ -1,8 +1,10 @@
 <div class="large-10 large-centered columns panel radius topmargin">
     <h6>{{vars.message}}</h6>
     <p>{{vars.detail}}</p>
-    <button class="button small" ng-click="ok(vars.object)">Accept</button>
-    <button class="button alert small" ng-click="cancel()">Cancel</button>
+	<div class="text-right">
+    	<button class="button fa radius fa-check small" ng-click="ok(vars.object)"> Accept</button>
+    	<button class="button alert small radius fa fa-times" ng-click="cancel()"> Cancel</button>
+	</div>
 </div>
 <div class="qractions">
 	<a class="fa fa-times button" ng-click="cancel()"></a>

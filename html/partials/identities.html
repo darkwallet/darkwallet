@@ -10,7 +10,7 @@
     <div class="small-12 columns">
       <ul class="large-block-grid-5 medium-block-grid-4 small-block-grid-2">
         <li ng-repeat="identityName in availableIdentities">
-          <div class="panel radius">
+          <div class="panel radius nomarginbottom">
             <h4>{{identityName}} <small ng-show="identities.hasOwnProperty(identityName) && identities[identityName].wallet.network!='bitcoin'">{{identities[identityName].wallet.network}}</small></h4>
             <h6 ng-show="identities.hasOwnProperty(identityName)">Balance: {{identities[identityName].wallet.balance.confirmed | currencyPresenter}}</h6>
             <button ng-click="selectIdentity(identityName)" ng-hide="identityName == currentIdentity" class="radius small expand fa fa-user"> Log in</button>
