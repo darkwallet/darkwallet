@@ -69,7 +69,7 @@ ReadOnlyPocket.prototype.destroy = function() {
     var pocketId = this.name;
     var wallet = this.getWallet();
     // First delete all addresses
-    var addresses = pocket.getAllAddresses();
+    var addresses = this.getAllAddresses();
     addresses.forEach(function(address) {
         var seq = ['readonly:'+pocketId, address];
         if (wallet.pubKeys[seq]) {
