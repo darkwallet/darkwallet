@@ -205,53 +205,29 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     var pocketId = contact.data.name;
     var pocket = identity.wallet.pockets.pockets.readonly[pocketId];
     if (pocket) {
-        // First delete all addresses
-        var addresses = pocket.getAllAddresses();
-        addresses.forEach(function(address) {
-            var seq = ['readonly:'+pocketId, address];
-            if (identity.wallet.pubKeys[seq]) {
-                identity.wallet.deleteAddress(seq, true);
-            }
-        });
-        // Now destroy the pocket
-        delete identity.wallet.pockets.pockets.readonly[pocketId];
+        pocket.destroy();
+
+        // TODO: Should disconnect from the backend too
     }
-    
   };
 
   var initReadOnlyPocket = function(contact) {
     var identity = DarkWallet.getIdentity();
     var pocketId = contact.data.name;
-    var data = {name: pocketId};
 
-    // Create the pocket
-    identity.wallet.pockets.initPocketWallet('readonly', pocketId, data);
+    // Create the pocket and addreses
+    var pocket = identity.wallet.pockets.initPocketWallet('readonly', pocketId);
+    var addresses = pocket.fromContact(contact);
 
-    // Now add all keys
-    contact.pubKeys.forEach(function(pubKey) {
-        var seq = ['readonly:'+pocketId, pubKey.address];
-        if (pubKey.address && !identity.wallet.pubKeys[seq] && pubKey.type !== 'stealth') {
-            var walletAddress = {
-                                'index': seq,
-                                'label': pubKey.label || pubKey.address,
-                                'type': 'readonly',
-                                'address': pubKey.address,
-                                'balance': 0,
-                                'nOutputs': 0,
-                                'height': 0,
-                                'pubKey': false };
+    // Load addresses into scope
+    addresses.forEach(function(walletAddress) {
+         // Add to Scope
+        $wallet.addToScope(walletAddress);
 
-            // Add to Wallet
-            identity.wallet.addToWallet(walletAddress);
-
-            // Add to Scope
-            $wallet.addToScope(walletAddress);
-
-            // Add to Backend
-            DarkWallet.core.initAddress(walletAddress);
-        }
+        // Add to Backend
+        DarkWallet.core.initAddress(walletAddress);
+       
     });
-
   };
 
   $scope.toggleWatch = function(contact, index) {

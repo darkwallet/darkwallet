@@ -39,5 +39,65 @@ ReadOnlyPocket.prototype.addToPocket = function(walletAddress) {
     this.addresses.push(walletAddress.address);
 };
 
+/**
+ * Create a read only address
+ */
+ReadOnlyPocket.prototype.createAddress = function(data) {
+    var seq = ['readonly:'+this.name, pubKey.address];
+    var oldAddress = this.getWallet().pubKeys[seq];
+    if (!oldAddress) {
+        var walletAddress = {
+                        'index': seq,
+                        'label': data.label || data.address,
+                        'type': 'readonly',
+                        'address': pubKey.address,
+                        'balance': 0,
+                        'nOutputs': 0,
+                        'height': 0,
+                        'pubKey': false };
+
+        // Add to Wallet
+        this.getWallet().addToWallet(walletAddress);
+        return walletAddress;
+    }
+};
+
+/**
+ * Destroy this pocket and cleanup all related addresses.
+ */
+ReadOnlyPocket.prototype.destroy = function() {
+    var pocketId = this.name;
+    var wallet = this.getWallet();
+    // First delete all addresses
+    var addresses = pocket.getAllAddresses();
+    addresses.forEach(function(address) {
+        var seq = ['readonly:'+pocketId, address];
+        if (wallet.pubKeys[seq]) {
+            wallet.deleteAddress(seq, true);
+        }
+    });
+    // Now delete our index in the wallet
+    delete wallet.pockets.pockets.readonly[pocketId];
+}
+
+/**
+ * Create a read only addresses into this pocket from the given contact
+ */
+ReadOnlyPocket.prototype.fromContact = function(contact) {
+    var self = this;
+    var created = [];
+    // Now add all keys
+    contact.pubKeys.forEach(function(pubKey) {
+        if (pubKey.address && pubKey.type !== 'stealth') {
+            var walletAddress = self.createAddress(pubKey);
+            if (walletAddress) {
+                created.push(walletAddress);
+            }
+        }
+    });
+    return created;
+};
+
+
 return ReadOnlyPocket;
 });

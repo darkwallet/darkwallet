@@ -99,6 +99,7 @@ Pockets.prototype.initPocketWallet = function(type, id, pocketStore) {
     } else {
         console.log("could not create pocket!", type);
     }
+    return this.pockets[type][id];
 };
 
 /**
