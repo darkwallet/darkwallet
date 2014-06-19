@@ -109,6 +109,35 @@ button.button,
 a.button, 
 button.square { @include single-transition(); }
 
+a.glow.button, button.glow, input[type="submit"].glow {
+  -webkit-animation-name: glowpulse;
+  -webkit-animation-duration: 4s;
+  -webkit-animation-iteration-count: infinite;
+  &:hover, &.working { -webkit-animation: none; }
+  span, .progbar { @include single-transition(); }
+  &.working .progbar { opacity: 1; }
+  &.working span { opacity: 0; }
+}
+
+.animations-disabled a.glow.button, button.glow, input[type="submit"].glow {
+    -webkit-animation-name: simplepulse;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    &:hover, &.working { -webkit-animation: none; }
+  }
+
+@-webkit-keyframes glowpulse {
+  from { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
+  50% { background-color: darken($primary-color, 10%); -webkit-box-shadow: 0 0 18px $primary-color; }
+  to { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
+}
+
+@-webkit-keyframes simplepulse {
+  from { background-color: $primary-color; }
+  50% { background-color: darken($primary-color, 10%); }
+  to { background-color: $primary-color; }
+}
+
 @-webkit-keyframes rotateFoldBottom {
 	to { opacity: 0; -webkit-transform: translateY(100%) rotateX(-90deg); }
 }

@@ -143,15 +143,6 @@ input[type="range"]::-webkit-slider-thumb {
 	background: darken($primary-color, 20%);
 }
 
-a.glow.button, button.glow, input[type="submit"].glow {
-  -webkit-animation-name: glowpulse;
-  -webkit-animation-duration: 4s;
-  -webkit-animation-iteration-count: infinite;
-  &:hover, &.working { -webkit-animation: none; }
-  span, .progbar { @include single-transition(); }
-  &.working .progbar { opacity: 1; }
-  &.working span { opacity: 0; }
-}
 
 button:active .button:active, table tr:nth-child(odd) a.button:active { 
 	background: darken($primary-color, 20%);
@@ -207,12 +198,6 @@ button.righted ~ form.editable-wrap input { padding-right: 37px; }
 .button.topright { margin: 0.7em 0 0 0; }
 
 div.address-row button.tiny { margin: 0;}
-
-@-webkit-keyframes glowpulse {
-  from { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
-  50% { background-color: darken($primary-color, 10%); -webkit-box-shadow: 0 0 18px $primary-color; }
-  to { background-color: $primary-color; -webkit-box-shadow: 0 0 9px #333; }
-}
 
 /* TABLES ----------- */
 table.contacts td { padding: 0.3em 0.8em; }
