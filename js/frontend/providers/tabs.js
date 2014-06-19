@@ -64,11 +64,6 @@ define(['./module'], function (providers) {
   tabs.visible = [0, 1, 3]; // Overview, history and addresses
 
   tabs.loadRoute = function(section) {
-      var finish = function() {
-          tabs.previous = tabs.current;
-          tabs.current = self.index;
-      }
-
       for(var i=0; i<tabs.pages.length; i++) {
           if (tabs.pages[i].page == section) {
               tabs.pages[i].load();
