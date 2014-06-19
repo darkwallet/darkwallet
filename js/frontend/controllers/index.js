@@ -10,6 +10,7 @@ define([
     './addresses',
     './backups',
     './browser',
+    './bitid',
     './contacts',
     './history',
     './identities',

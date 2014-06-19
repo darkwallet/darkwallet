@@ -22,6 +22,7 @@ define(['frontend/app'], function (app) {
     $routeProvider.when('/new_wallet', {templateUrl: 'partials/new_wallet.html', controller: 'NewWalletCtrl'});
     $routeProvider.when('/browser/:search', {templateUrl: 'partials/browser.html', controller: 'BrowserCtrl'});
     $routeProvider.when('/browser', {templateUrl: 'partials/browser.html', controller: 'BrowserCtrl'});
+    $routeProvider.when('/bitid', {templateUrl: 'partials/bitid.html', controller: 'BitIdCtrl'});
     $routeProvider.when('/popup', {templateUrl: 'partials/popup.html', controller: 'PopupCtrl'});
     $routeProvider.otherwise({redirectTo: '/wallet'});
   }]);

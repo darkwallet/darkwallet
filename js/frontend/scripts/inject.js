@@ -1,18 +1,5 @@
 'use strict';
 
-// Search for things that look like Bitcoin addresses
-// Replace them with clickable links.
-//var replaced = $("body").html().replace(/text/g,'replace');
-//$("body").html(replaced);
-
-/*
-var btn = document.createElement("BUTTON")
-var t = document.createTextNode("CLICK ME");
-btn.appendChild(t);
-//Appending to DOM 
-document.body.appendChild(btn);
-*/
-
 /*
  * We don't use registerProtocolHandler() because we have to declare web accessible
  * resources, and that exposes to the web that the user is using that extension.
@@ -22,14 +9,29 @@ document.body.appendChild(btn);
  * 
  * Instead, we listen the click event on links that have bitcoin uris.
  */
-var uri = 'chrome-extension://' + chrome.runtime.id + "/html/index.html#/send?uri=";
+
+var bitcoinUri = function(uri) {
+  var _uri = 'chrome-extension://' + chrome.runtime.id + '/html/index.html#/';
+  if (typeof uri != 'string') {
+    return false;
+  }
+  if (uri.indexOf('bitcoin:') == 0) {
+    return _uri + "send?uri=" + encodeURIComponent(uri);
+  }
+  if (uri.indexOf('bitid:') == 0) {
+    return _uri + "bitid?uri=" + encodeURIComponent(uri);
+  }
+  return false;
+};
+
 document.body.addEventListener('click', function(e) {
   var elem = e.target;
   while (elem && elem.tagName != 'A') {
     elem = elem.parentNode;
   }
-  if (elem && elem.tagName == 'A' && typeof elem.href == 'string' && elem.href.indexOf('bitcoin:') == 0) {
-    chrome.runtime.sendMessage({ type: 'newTab', url: uri + encodeURIComponent(elem.href) });
+  if (elem && elem.tagName == 'A' && bitcoinUri(elem.href)) {
+    var u = bitcoinUri(elem.href);
+    chrome.runtime.sendMessage({ type: 'newTab', url: u });
     e.preventDefault();
   }
 }, false);
