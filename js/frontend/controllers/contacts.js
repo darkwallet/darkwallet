@@ -4,24 +4,45 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', function($scope, $routeParams, $location) {
+  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', function($scope, $routeParams, $location, $route) {
 
   $scope.newContact = {};
   $scope.contactToEdit = {};
   $scope.contactFormShown = false;
   $scope.editingContact = false;
-  $scope.contactSection = 'overview';
+  $scope.contactSection = $routeParams.section || 'overview';
 
   // Check the route to see if we have to connect some contact
   var initRouteContact = function(identity) {
       if ($routeParams.contactId) {
-          if (identity.contacts.contacts[$routeParams.contactId]) {
-              $scope.vars = { contact: identity.contacts.contacts[$routeParams.contactId] }
+          var id = parseInt($routeParams.contactId);
+          if (identity.contacts.contacts[id]) {
+              $scope.vars = { contact: identity.contacts.contacts[id] }
           } else {
               $location.path('/contacts');
           }
       }
   }
+
+  // Don't reload the controller if coming from this tab
+  var lastRoute = $route.current;
+  $scope.$on('$locationChangeSuccess', function(event) {
+    if ($route.current.templateUrl.indexOf('contact.html') > 0) {
+        $scope.contactSection = $route.current.pathParams.section || 'overview';
+        // Overwrite the route so the template doesn't reload
+        $route.current = lastRoute;
+    }
+  });
+
+  // Set the contact section
+  $scope.setContactSection = function(section) {
+    var dest = '/contact/';
+    if (section !== 'overview') {
+        dest += section + '/';
+    }
+    $location.path(dest+$routeParams.contactId);
+  }
+
 
   var identity = DarkWallet.getIdentity();
   if (identity) {

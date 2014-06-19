@@ -11,13 +11,13 @@
   <div class="row topmargin">
         <dl class="tabs">
           <dd ng-class="{active: contactSection=='overview'}">
-              <a ng-click="contactSection='overview'">Overview</a>
+              <a ng-click="setContactSection('overview')">Overview</a>
           </dd>
 		  <dd ng-class="{active: contactSection=='addresses'}">
-			  <a ng-click="contactSection='addresses'">Addresses</a>
+			  <a ng-click="setContactSection('addresses')">Addresses</a>
 		  </dd>
 		  <dd ng-show="settings.advanced" ng-class="{active: contactSection=='trust'}">
-		  	  <a ng-click="contactSection='trust'">Trust</a>
+		  	  <a ng-click="setContactSection('trust')">Trust</a>
 		  </dd>
 	  <!--<dd>
 			  <a ng-click="contactSection='history'">History</a>

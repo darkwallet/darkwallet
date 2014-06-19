@@ -8,6 +8,7 @@ define(['frontend/app'], function (app) {
   'use strict';
   return app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/contact/:contactId', {templateUrl: 'partials/contact.html', controller: 'ContactsCtrl'});
+    $routeProvider.when('/contact/:section/:contactId', {templateUrl: 'partials/contact.html', controller: 'ContactsCtrl'});
     $routeProvider.when('/tools', {templateUrl: 'partials/tools.html', controller: 'ToolsCtrl'});
     $routeProvider.when('/wallet', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
     $routeProvider.when('/wallet/:section', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
