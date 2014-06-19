@@ -66,6 +66,13 @@ function (controllers, DarkWallet, Port) {
     return route === $location.path().slice(0, route.length);
   };
 
+  var updateReadOnlyPockets = function(identity) {
+      $scope.forms.readOnlyArray.splice(0, $scope.forms.readOnlyArray.length);
+      var keys = Object.keys(identity.wallet.pockets.pockets.readonly);
+      keys.forEach(function(pocketId) {
+          $scope.forms.readOnlyArray.push(identity.wallet.pockets.pockets.readonly[pocketId]);
+      });
+  };
 
   /**
    * Link given identity to the scope
@@ -77,6 +84,7 @@ function (controllers, DarkWallet, Port) {
 
       // Sync read only pockets
       $scope.allReadOnly = identity.wallet.pockets.pockets.readonly;
+      updateReadOnlyPockets(identity);
 
       // set some links
       $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
@@ -95,11 +103,10 @@ function (controllers, DarkWallet, Port) {
 
   $scope.$watch('allReadOnly', function() {
       var identity = DarkWallet.getIdentity();
-      $scope.forms.readOnlyArray.splice(0, $scope.forms.readOnlyArray.length);
-      var keys = Object.keys(identity.wallet.pockets.pockets.readonly);
-      keys.forEach(function(pocketId) {
-          $scope.forms.readOnlyArray.push(identity.wallet.pockets.pockets.readonly[pocketId]);
-      });
+      if (identity) {
+          // not ready yet
+          updateReadOnlyPockets(identity);
+      }
 
   });
 
