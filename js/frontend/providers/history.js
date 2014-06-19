@@ -22,7 +22,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
    * History provider class
    */ 
   function HistoryProvider($scope, $wallet) {
-      this.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $wallet.allAddresses, changeAddresses: [], isAll: true, type: 'all'};
+      this.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $wallet.allAddresses, changeAddresses: [], isAll: true, type: 'init'};
       this.txFilter = 'last10';
       this.addrFilter = 'unused';
       this.$wallet = $wallet;
