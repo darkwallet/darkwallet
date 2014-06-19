@@ -28,6 +28,7 @@
 <div class="row topmargin" ng-show="contactSection=='trust'">
     <p>You have no trust on this peer</p>
     <h3>Set trust</h3>
+    <em>This describes the trust you have on this person.</em>
     <div class="row">
         <div class="columns small-9">
              <input type="radio" id="trust-distrust" name="contact-trust" />
@@ -45,6 +46,29 @@
         </div>
         <div class="columns small-3">
             <a class="button fa fa-flask postfix" ng-click="">Set trust</a>
+        </div>
+    </div>
+    <h3>Security level</h3>
+    <em>This describes how conscious this person is about operational security.</em>
+    <div class="row">
+        <div class="columns small-9">
+             <input type="radio" id="sec-sabotager" name="contact-sec" />
+             <label for="sec-sabotager">Sabotager</label>
+             <input type="radio" id="sec-careless" name="contact-sec" />
+             <label for="sec-careless">Careless</label>
+             <input type="radio" id="sec-unrated" name="contact-sec" checked />
+             <label for="sec-unrated">Unrated</label>
+             <input type="radio" id="sec-meticulous" name="contact-sec" />
+             <label for="sec-meticulous">Meticulous</label>
+             <input type="radio" id="sec-expert" name="contact-sec" />
+             <label for="sec-expert">Expert</label>
+             <input type="radio" id="sec-paranoid" name="contact-sec" />
+             <label for="sec-paranoid">Paranoid</label>
+             <input type="radio" id="sec-snowden" name="contact-sec" />
+             <label for="sec-snowden">Snowden</label>
+        </div>
+        <div class="columns small-3">
+            <a class="button fa fa-flask postfix" ng-click="">Set level</a>
         </div>
     </div>
     <h3>Set validation</h3>
