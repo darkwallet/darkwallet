@@ -17,8 +17,10 @@ function (controllers, DarkWallet, Port) {
   // Scope variables
   $scope.rates = {};
   $scope.totalBalance = 0;
-  $scope.forms = {hasReadOnly: false};
+  $scope.forms = {readOnlyArray: []};
   $scope.identityName = false;
+
+  $scope.allReadOnly = {};
 
   // Global scope utils
   $scope.modals = modals;
@@ -72,9 +74,9 @@ function (controllers, DarkWallet, Port) {
       // Link pockets and funds
       $scope.hdPockets = identity.wallet.pockets.hdPockets;
       $scope.allFunds = identity.wallet.multisig.funds;
-      $scope.allReadOnly = identity.wallet.pockets.pockets.readonly;
-      $scope.forms.hasReadOnly = Object.keys($scope.allReadOnly).length;
 
+      // Sync read only pockets
+      $scope.allReadOnly = identity.wallet.pockets.pockets.readonly;
 
       // set some links
       $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
@@ -90,6 +92,16 @@ function (controllers, DarkWallet, Port) {
       
       $animate.enabled(identity.settings.animations.enabled);
   }
+
+  $scope.$watch('allReadOnly', function() {
+      var identity = DarkWallet.getIdentity();
+      $scope.forms.readOnlyArray.splice(0, $scope.forms.readOnlyArray.length);
+      var keys = Object.keys(identity.wallet.pockets.pockets.readonly);
+      keys.forEach(function(pocketId) {
+          $scope.forms.readOnlyArray.push(identity.wallet.pockets.pockets.readonly[pocketId]);
+      });
+
+  });
 
   /**
    * Identity loaded, called when a new identity is loaded

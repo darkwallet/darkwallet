@@ -172,7 +172,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   // Rename a pocket linked to some contact
   var renamePocket = function(newName, prevName) {
     var identity = DarkWallet.getIdentity();
-    var pockets = identity.wallet.getPockets('readonly');
+    var pockets = identity.wallet.pockets.getPockets('readonly');
     if (prevName && prevName !== newName && pockets[prevName]) {
         var newIndex = 'readonly'+newName;
         var pocket = pockets[prevName];
@@ -268,10 +268,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     contact.data.watch = !contact.data.watch;
     if (contact.data.watch) {
         initReadOnlyPocket(contact);
-        $scope.forms.hasReadOnly += 1;
     } else {
         destroyReadOnlyPocket(contact);
-        $scope.forms.hasReadOnly -= 1;
     }
   };
 
