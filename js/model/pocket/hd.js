@@ -19,7 +19,7 @@ HdPocket.prototype = Object.create(BasePocket.prototype);
 // Pocket definition
 HdPocket.prototype.type = 'hd';
 HdPocket.prototype.types = [undefined, 'stealth'];
-HdPocket.prototype.autoCreate = false;
+HdPocket.prototype.autoCreate = true;
 
 /**
  * Get the index for some address in this pocket
