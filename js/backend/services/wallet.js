@@ -120,6 +120,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
     // Notify frontend of history row updates
     var notifyRow = function(walletAddress, row, height) {
+        var identity = core.getCurrentIdentity();
         var title;
         var value = row.total;
 
@@ -137,15 +138,15 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             }
         }
         var task = TransactionTasks.processRow(value, row, height);
+
+        // Post the balance update to the gui so it can be updated
+        var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
+
         // task.outPocket can be a number so we need to check for undefined
-        if (task.outPocket !== undefined) {
-            var identity = core.getCurrentIdentity();
-            var outPocket = identity.wallet.getPocket(task.outPocket);
+        if (pocketId !== undefined) {
+            var outPocket = identity.wallet.pockets.getPocket(pocketId, walletAddress.type);
             if (outPocket) {
-                title = (outPocket.name || outPocket.label) + ': ' + title;
-            } else {
-                // TODO: do proper fix
-                title = 'watch-only (unknown) ' + task.address;
+                title = outPocket.name + ': ' + title;
             }
         }
         core.service.badge.setItems();
@@ -154,8 +155,6 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         // Port the the os notification service
         core.service.notifier.post(title, formattedValue);
 
-        // Post the balance update to the gui so it can be updated
-        var pocketId = core.getIdentity().wallet.pockets.getAddressPocketId(walletAddress);
         Port.post('gui', {type: 'balance', pocketId: pocketId});
     };
 

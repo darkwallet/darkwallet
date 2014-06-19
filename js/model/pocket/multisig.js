@@ -11,6 +11,7 @@ define(['bitcoinjs-lib', 'model/pocket/base'], function(Bitcoin, BasePocket) {
 function MultisigPocket(multisig, pockets) {
     this.multisig = multisig;
     BasePocket.call(this, pockets);
+    this.name = multisig.name;
 }
 
 MultisigPocket.prototype = Object.create(BasePocket.prototype);

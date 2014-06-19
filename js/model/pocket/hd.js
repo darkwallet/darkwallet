@@ -12,6 +12,7 @@ function HdPocket(store, pockets) {
     BasePocket.call(this, pockets);
     this.store = store;
     this.init();
+    this.name = store.name;
 }
 
 HdPocket.prototype = Object.create(BasePocket.prototype);

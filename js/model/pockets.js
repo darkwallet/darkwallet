@@ -107,12 +107,9 @@ Pockets.prototype.initPocketWallet = function(type, id, pocketStore) {
  * @param {String} name Name for the pocket
  * @return {Object} The pocket with the given name
  */
-Pockets.prototype.getPocket = function(name) {
-    for(var i=0; i<this.hdPockets.length; i++) {
-        if (this.hdPockets[i] && (this.hdPockets[i].name == name)) {
-            return this.hdPockets[i];
-        }
-    }
+Pockets.prototype.getPocket = function(pocketId, addressType) {
+    var type = this.addressTypes[addressType].type;
+    return this.pockets[type][pocketId];
 };
 
 /**
