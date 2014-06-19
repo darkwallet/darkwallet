@@ -5,7 +5,7 @@
 
 define(['./module', 'darkwallet', 'frontend/port'],
 function (controllers, DarkWallet, Port) {
-  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', '$location', function($scope, $history, $tabs, $location) {
+  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', '$location', '$routeParams', '$route', function($scope, $history, $tabs, $location, $routeParams, $route) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
@@ -13,12 +13,22 @@ function (controllers, DarkWallet, Port) {
 
   $scope.historyRows = $history.rows;
 
+  $tabs.loadRoute($routeParams.section);
   // Link tabs from service
   $scope.tabs = $tabs;
 
   // Filters
   $scope.txFilter = $history.txFilter;
 
+  // Don't reload the controller if coming from this tab
+  var lastRoute = $route.current;
+  $scope.$on('$locationChangeSuccess', function(event) {
+    if ($route.current.templateUrl.indexOf('wallet.html') > 0) {
+        $tabs.loadRoute($route.current.pathParams.section);
+        // maybe could just set the template here but works like this
+        $route.current = lastRoute;
+    }
+  });
 
   /**
    * Identity Loading
@@ -31,14 +41,15 @@ function (controllers, DarkWallet, Port) {
           $scope.pocket.mainAddress = mainAddress.stealth;
       }
       if ($history.previousIdentity != identity.name) {
-          if ($history.previousIdentity) {
-              $scope.historyRows = $history.selectAll();
-              // Set the selected pocket
-              $scope.selectedPocket = $history.selectedPocket;
+          // prevents loading the first time...
+          //if ($history.previousIdentity) {
+          $scope.historyRows = $history.selectAll();
+          // Set the selected pocket
+          $scope.selectedPocket = $history.selectedPocket;
 
-              // Update tabs
-              $scope.tabs.updateTabs($scope.pocket.isAll, $scope.pocket.isFund, $scope.pocket.tasks);
-          }
+          // Update tabs
+          $scope.tabs.updateTabs($scope.pocket.isAll, $scope.pocket.isFund, $scope.pocket.tasks);
+          //}
 
           $history.previousIdentity = identity.name;
           if (!$scope.$$phase) {
