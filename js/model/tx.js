@@ -35,7 +35,13 @@ function Transaction(store, identity) {
 Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fee, reserveOutputs) {
     var wallet = this.identity.wallet;
     var totalAmount = 0;
+    if (fee < 0) {
+        throw new Error('negative fee');
+    }
     recipients.forEach(function(recipient) {
+        if (recipient.amount < 0) {
+            throw new Error ('negative amount');
+        }
         totalAmount += recipient.amount;
     });
     var isStealth = false;

@@ -68,7 +68,7 @@
             <div class="small-4 columns">
               <a class="button radius prefix fa fa-plus" ng-click="enableAutoAddFields()"> Add another recipient</a>
               <h6>Fee</h6>
-              <input ng-model="forms.send.fee" type="text" class="radius" />
+              <input ng-model="forms.send.fee" type="text" ng-change="validateSendForm()" class="radius" />
             </div>
             <div class="small-8 columns">
               <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!forms.send.mixing, 'fa-check-square-o': forms.send.mixing}" class="fa button postfix radius">{{forms.send.mixing?'CoinJoin mixing enabled':'CoinJoin mixing disabled'}}</a>

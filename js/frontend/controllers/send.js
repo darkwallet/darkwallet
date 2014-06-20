@@ -159,7 +159,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           }
       }
       var spend = prepareRecipients();
-      if ((spend.recipients.length > 0) && (spend.amount > dustThreshold)) {
+      var checkNegative = spend.recipients.filter(function(r) { return r.amount < 0; });
+      if ((spend.recipients.length > 0) && (spend.amount > dustThreshold) && (!checkNegative.length) && (sendForm.fee >= 0)) {
           $scope.sendEnabled = true;
       } else {
           $scope.sendEnabled = false;
