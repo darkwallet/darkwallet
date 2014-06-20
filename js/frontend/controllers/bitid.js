@@ -44,7 +44,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
         var identity = DarkWallet.getIdentity();
 
         // Generate a random n
-        var siteHash = CryptoJS.SHA256('Bitid site:'+identity.name+site);
+        var siteHash = CryptoJS.SHA256('Bitid site:'+identity.wallet.mpk+site);
         siteHash = convert.wordArrayToBytes(siteHash);
         var siteN = convert.bytesToNum(siteHash.slice(0, 4));
 
