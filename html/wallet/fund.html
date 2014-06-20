@@ -40,14 +40,14 @@
     <h5>Script</h5>
     <div class="row collapse">
       <div class="large-4 columns">
-        <button ng-click="clipboard.copy(pocket.fund.multisig.script)" class="button postfix fa fa-clipboard">Copy</button>
+        <button ng-click="clipboard.copy(pocket.fund.multisig.script)" class="button nomarginbottom postfix fa fa-clipboard">Copy</button>
       </div>
       <div class="large-4 columns">
-        <button ng-click="showFundScript=!showFundScript" class="button postfix fa fa-eye">Show</button>
+        <button ng-click="showFundScript=!showFundScript" class="button nomarginbottom postfix fa fa-eye">Show</button>
       </div>
       <div class="medium-4 columns">
         <!-- Maybe too heavy -->
-        <button ng-click="modals.showQr(pocket.fund.multisig.script)" class="button postfix radius fa fa-qrcode">QR</button>
+        <button ng-click="modals.showQr(pocket.fund.multisig.script)" class="button nomarginbottom postfix radius fa fa-qrcode">QR</button>
       </div>
     </div>
     <textarea class="script" ng-show="showFundScript">{{pocket.fund.multisig.script}}</textarea>
@@ -56,10 +56,10 @@
     <h5>Tools</h5>
 	<div class="row" ng-show="!importingFundTransaction">
 		<div class="small-6 columns">
-    		<button class="button postfix fa fa-cloud-download" ng-click="importingFundTransaction=true">Import Spend</button>
+    		<button class="button postfix nomarginbottom fa fa-cloud-download" ng-click="importingFundTransaction=true">Import Spend</button>
 		</div>
 		<div class="small-6 columns">
-    		<button class="button postfix alert fa fa-trash-o" ng-click="deleteFund(pocket.fund)">Delete</button>
+    		<button class="button postfix nomarginbottom alert fa fa-trash-o" ng-click="deleteFund(pocket.fund)">Delete</button>
 		</div>
 	</div>
     <form name="fundTxForm" novalidate ng-submit="importFundTx(fundTxForm)" ng-show="importingFundTransaction">
