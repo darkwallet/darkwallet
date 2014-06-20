@@ -27,6 +27,13 @@ html.popup { width: auto; height: auto; max-height: 100%; overflow: hidden; }
 	font-family: FontAwesome;
 }
 
+@font-face {
+  font-family: 'roboto';
+  src: url('../fonts/Roboto-Light.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
 div.modal-ng { 
 	z-index: 20; 
 	position: absolute; 
