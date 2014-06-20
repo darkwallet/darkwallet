@@ -4,6 +4,9 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkWallet, Bitcoin) {
+  var convert = Bitcoin.convert;
+  var CryptoJS = Bitcoin.CryptoJS;
+
   controllers.controller('BitIdCtrl', ['$scope', '$window', '$http', 'notify', function($scope, $window, $http, notify) {
       $scope.site = '';
       var bitid_uri;
@@ -32,31 +35,39 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
 
           var res = Bitcoin.Message.verify(address, sig, text);
 
-          var sigText = Bitcoin.convert.bytesToBase64(sig);
+          var sigText = convert.bytesToBase64(sig);
 
           return sigText;
       };
       
-      var sign = function(text) {
-        var address = '1CMRL89LAAj7J9DUqeHek1Ux4NqQgjJ13L';
+      var sign = function(site, text) {
         var identity = DarkWallet.getIdentity();
-        var walletAddress = identity.wallet.getWalletAddress(address);
-        var signature;
-        identity.wallet.getPrivateKey(walletAddress.index, 'ara', function(privKey) {
-          signature = signText(privKey, walletAddress.address, text);
-        });
-        return signature;
+
+        // Generate a random n
+        var siteHash = CryptoJS.SHA256('Bitid site:'+identity.name+site);
+        siteHash = convert.wordArrayToBytes(siteHash);
+        var siteN = convert.bytesToNum(siteHash.slice(0, 4));
+
+        // Get an id key and address for n
+        var idKey = identity.wallet.getIdentityKey(siteN);
+        var address = idKey.getPub().getAddress(identity.wallet.versions.address).toString();
+        var signed = {address: address};
+
+        // sign
+        signed.signature = signText(idKey, address, text);
+        return signed;
       };
       
       $scope.login = function() {
+        var signed = sign($scope.site, bitid_uri);
         var params = {
           url: callback_uri,
           //dataType: "json",
           method: "POST",
           data: JSON.stringify({
             "uri" : bitid_uri, 
-            "address" : "1CMRL89LAAj7J9DUqeHek1Ux4NqQgjJ13L", 
-            "signature" : sign(bitid_uri)
+            "address" : signed.address, 
+            "signature" : signed.signature
           }),
           headers: {
             'Content-Type': 'application/json'
