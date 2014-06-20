@@ -7,16 +7,20 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
   var convert = Bitcoin.convert;
   var CryptoJS = Bitcoin.CryptoJS;
 
-  controllers.controller('BitIdCtrl', ['$scope', '$window', '$http', 'notify', function($scope, $window, $http, notify) {
+  controllers.controller('BitIdCtrl', ['$scope', '$window', '$http', 'notify', '$location', function($scope, $window, $http, notify, $location) {
       $scope.site = '';
       var bitid_uri;
       var callback_uri;
       
       var parseUri = function(uri) {
+        // decode the uri
+        bitid_uri = decodeURIComponent(uri);
+        var isDev = bitid_uri.search("u=1");
+
+        // parse uri and prepare some variables
         var a = document.createElement('a');
-        a.href = decodeURIComponent(uri).replace('bitid:', 'http:');
+        a.href = bitid_uri.replace('bitid:', isDev ? 'http:' : 'https:');
         $scope.site = a.hostname;
-        bitid_uri = uri;
         callback_uri = a.href;
       };
       
@@ -51,15 +55,16 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
         // Get an id key and address for n
         var idKey = identity.wallet.getIdentityKey(siteN);
         var address = idKey.getPub().getAddress(identity.wallet.versions.address).toString();
-        var signed = {address: address};
 
         // sign
-        signed.signature = signText(idKey, address, text);
-        return signed;
+        var signature = signText(idKey, address, text);
+        return {address: address, signature: signature};
       };
       
       $scope.login = function() {
         var signed = sign($scope.site, bitid_uri);
+        console.log(signed);
+        console.log(bitid_uri);
         var params = {
           url: callback_uri,
           //dataType: "json",
