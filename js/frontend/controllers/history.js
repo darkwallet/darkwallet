@@ -21,8 +21,8 @@ function (controllers, DarkWallet, Port) {
   // Filters
   $scope.txFilter = $history.txFilter;
 
-  var checkChanges = function(type, idx) {
-    var changed = $history.setCurrentPocket(type, idx);
+  var checkChanges = function(type, idx, force) {
+    var changed = $history.setCurrentPocket(type, idx, force);
     if (changed) {
         $scope.pocket = $history.getCurrentPocket();
         $scope.historyRows = $history.rows;
@@ -51,7 +51,7 @@ function (controllers, DarkWallet, Port) {
   var identityLoaded = function(identity) {
       // set main address on the general section
       identity = identity || DarkWallet.getIdentity();
-      if ($scope.pocket.isAll && !$scope.pocket.stealth) {
+      if ($scope.pocket.type === 'init') {
           var mainAddress = identity.wallet.getAddress([0]);
           $scope.pocket.mainAddress = mainAddress.stealth;
       }
@@ -59,7 +59,7 @@ function (controllers, DarkWallet, Port) {
           // prevents loading the first time...
           //if ($history.previousIdentity) {
           var pocketId = $routeParams.pocketId;
-          checkChanges($routeParams.pocketType, pocketId?parseInt(pocketId):undefined);
+          checkChanges($routeParams.pocketType, pocketId?parseInt(pocketId):undefined, true);
 
           // Update tabs
           $scope.tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);

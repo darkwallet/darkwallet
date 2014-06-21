@@ -5,6 +5,7 @@
 
 define(['./module', 'util/btc', 'darkwallet', 'dwutil/multisig'],
 function (providers, BtcUtils, DarkWallet, MultisigFund) {
+  providers.factory('$history', ['$rootScope', '$wallet', '$location', function($rootScope, $wallet, $location) {
 
   var monthNames = [ "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December" ];
@@ -60,6 +61,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
         // go to 'all' if this is the current pocket
         if (this.pocket.index === pocketId && this.pocket.type === type) {
             this.selectAll();
+            $location.path('/wallet');
         }
         return pocket;
     }
@@ -74,7 +76,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       return this.pocket;
   };
 
-  HistoryProvider.prototype.setCurrentPocket = function(type, idx) {
+  HistoryProvider.prototype.setCurrentPocket = function(type, idx, force) {
       if (type === undefined) {
           if (idx === undefined) {
               type = 'all';
@@ -84,7 +86,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       }
 
       // If type is the same or 
-      if (type === this.pocket.type && idx === this.pocket.lastIndex) {
+      if (type === this.pocket.type && idx === this.pocket.lastIndex && !force) {
           return false;
       }
 
@@ -95,9 +97,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
               break;
           case 'hd':
               var keys = Object.keys(identity.wallet.pockets.pockets.hd);
-              this.selectGenericPocket('hd', keys.indexOf(''+idx));
-              this.selectedPocket = 'hd:' + idx;
-              this.pocket.lastIndex = idx;
+              if (this.selectGenericPocket('hd', keys.indexOf(''+idx))) {
+                  this.selectedPocket = 'hd:' + idx;
+                  this.pocket.lastIndex = idx;
+              }
               break;
           case 'readonly':
               this.selectGenericPocket(type, idx);
@@ -114,17 +117,23 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var identity = DarkWallet.getIdentity();
       var fund = identity.wallet.multisig.funds[fundIndex];
 
+      if (!fund) {
+          $location.path('/wallet');
+          return this.selectAll();
+      }
+
       // Need to find the original index for this fund
       var keys = Object.keys(identity.wallet.pockets.pockets.multisig);
       var rowIndex = keys.indexOf(fund.address);
-      this.selectGenericPocket('multisig', rowIndex);
 
-      // some custom data...
-      this.pocket.lastIndex = fundIndex;
-      this.pocket.fund = new MultisigFund(fund);
-      this.pocket.tasks = this.pocket.fund.tasks;
-      this.pocket.isFund = true;
-      this.selectedPocket = 'multisig:' + fundIndex;
+      if (this.selectGenericPocket('multisig', rowIndex)) {
+          // some custom data...
+          this.pocket.lastIndex = fundIndex;
+          this.pocket.fund = new MultisigFund(fund);
+          this.pocket.tasks = this.pocket.fund.tasks;
+          this.pocket.isFund = true;
+          this.selectedPocket = 'multisig:' + fundIndex;
+      }
   };
 
   HistoryProvider.prototype.selectAll = function() {
@@ -154,6 +163,11 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   };
 
   HistoryProvider.prototype.selectGenericPocket = function(type, rowIndex) {
+      if (rowIndex === -1) {
+          this.selectAll();
+          $location.path('/wallet');
+          return false;
+      }
       var identity = DarkWallet.getIdentity();
 
       var pockets = identity.wallet.pockets.getPockets(type);
@@ -161,6 +175,11 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       // ensure order is the same as the sidebar
       var keys = Object.keys(pockets);
       var pocketId = keys[rowIndex];
+      if (pocketId === undefined) {
+          this.selectAll();
+          $location.path('/wallet');
+          return false;
+      }
       var pocket = pockets[pocketId];
 
       // set some type information
@@ -193,7 +212,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       this.pocket.mainHash = identity.contacts.generateContactHash(this.pocket.mainAddress);
 
       this.selectedPocket = type+':' + rowIndex;
-      return this.chooseRows();
+      this.chooseRows();
+      return false;
 
   };
 
@@ -455,9 +475,6 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       return false;
   };
 
-  providers.factory('$history', ['$rootScope', '$wallet', function($rootScope, $wallet) {
       return new HistoryProvider($rootScope.$new(), $wallet);
   }]);
-
-
 });
