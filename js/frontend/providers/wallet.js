@@ -93,7 +93,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       });
 
       // remove from backend
-      DarkWallet.core.removeAddress(walletAddress);
+      DarkWallet.service.wallet.removeAddress(walletAddress);
       return walletAddress;
   };
 
