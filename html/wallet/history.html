@@ -88,7 +88,7 @@
                 <span ng-show="!row.label">
                 {{row.contact ? row.contact.data.name : row.address}}
                 </span>
-                <span tooltip="{{row.address}}" ng-show="row.label">
+                <span tooltip="{{row.address}}" tooltip-append-to-body="true" ng-show="row.label">
                 {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
                 </span>
                 </span>
