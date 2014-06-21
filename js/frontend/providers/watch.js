@@ -36,17 +36,18 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
     var identity = DarkWallet.getIdentity();
     var pockets = identity.wallet.pockets.getPockets('readonly');
     if (prevName && prevName !== newName && pockets[prevName]) {
-        var newIndex = 'readonly'+newName;
+        var newIndex = 'readonly:'+newName;
         var pocket = pockets[prevName];
         // Save the name in the pocket
         pocket.name = newName;
-        pocket.data.id = newName;
+        pocket.store.id = newName;
         //  Reindex with the new pocketId
         pockets[newName] = pocket;
         delete pockets[prevName];
         // If any addresses are using the old index reindex them
         var reindexed = [];
-        identity.wallet.pubKeys.forEach(function(walletAddress) {
+        Object.keys(identity.wallet.pubKeys).forEach(function(seq) {
+            var walletAddress = identity.wallet.pubKeys[seq];
             if (walletAddress.index[0] === ('readonly:'+prevName)) {
                 // Save the index before changing it
                 reindexed.push(walletAddress.index.slice());

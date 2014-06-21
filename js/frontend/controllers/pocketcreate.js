@@ -48,21 +48,24 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
             $scope.forms.pocketLabelForm.$show();
         } else {
             var identity = DarkWallet.getIdentity();
-            var pocket = identity.wallet.pockets.getPocket($history.pocket.index, $history.pocket.type);
-            if (pocket.type === 'readonly') {
+            var walletPocket = identity.wallet.pockets.getPocket($history.pocket.index, $history.pocket.type);
+            if (walletPocket.type === 'readonly') {
                 // Disable watch also if deleting a watch pocket
-                var contact = identity.contacts.search({name: pocket.name});
-                if (contact.data.watch) {
-                    watch.renamePocket(name, pocket.name);
+                var contact = identity.contacts.search({name: walletPocket.name});
+                if (contact && contact.data.watch) {
+                    watch.renamePocket(name, walletPocket.name);
                     contact.data.watch = false;
+                    contact.data.name = name;
                 }
-            } else if (pocket.type === 'multisig') {
-                pocket.name = name;
-                pocket.fund.name = name;
+                // update frontend index
+                $scope.updateReadOnlyPockets(identity);
+            } else if (walletPocket.type === 'multisig') {
+                walletPocket.name = name;
+                walletPocket.fund.name = name;
             } else {
                 // Otherwise just change the name
-                pocket.name = name;
-                pocket.store.name = name;
+                walletPocket.name = name;
+                walletPocket.store.name = name;
             }
             identity.store.save();
             $scope.pocket.name = name;
