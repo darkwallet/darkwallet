@@ -33,7 +33,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
             if (contact && contact.data.watch) {
                 contact.data.watch = false;
             }
-            $scope.updateReadOnlyPockets(identity);
+            $scope.updateReadOnly(identity);
         }
     };
 

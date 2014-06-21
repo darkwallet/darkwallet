@@ -248,7 +248,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     contact.data.watch ? watch.initPocket(contact) : watch.removePocket(contact);
 
     // update the scope
-    $scope.updateReadOnlyPockets(DarkWallet.getIdentity());
+    $scope.updateReadOnly(DarkWallet.getIdentity());
   };
 
 }]);

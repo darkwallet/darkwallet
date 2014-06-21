@@ -57,7 +57,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
                     watch.renamePocket(name, walletPocket.name);
                 }
                 // update frontend index
-                $scope.updateReadOnlyPockets(identity);
+                $scope.updateReadOnly(identity);
             } else if (walletPocket.type === 'multisig') {
                 walletPocket.name = name;
                 walletPocket.fund.name = name;
