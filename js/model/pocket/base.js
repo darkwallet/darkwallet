@@ -58,7 +58,7 @@ BasePocket.prototype.getWalletAddress = function(address) {
 
 /**
  * Gets all public addresses for this pocket.
- * @return {Array} An array of strings with the addresses.
+ * @return {Array} An array of walletAddress structures
  */
 BasePocket.prototype.getWalletAddresses = function() {
     return this.walletAddresses;
@@ -66,7 +66,7 @@ BasePocket.prototype.getWalletAddresses = function() {
 
 
 /**
- * Gets all public addresses for this pocket.
+ * Gets all public addresses for this pocket as strings.
  * @return {Array} An array of strings with the addresses.
  */
 BasePocket.prototype.getAddresses = function() {
@@ -95,7 +95,7 @@ BasePocket.prototype.getWallet = function() {
  * Get the main address for this pocket
  */
 BasePocket.prototype.getMainAddress = function() {
-    return this.getMyWallet().getWalletAddress(this.addresses[0]);
+    return this.walletAddresses[0];
 };
 
 return BasePocket;
