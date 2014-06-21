@@ -48,6 +48,22 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       }
   };
 
+  HistoryProvider.prototype.removePocket = function(type, pocketId) {
+    var identity = DarkWallet.getIdentity();
+    var pocket = identity.wallet.pockets.getPocket(pocketId, type);
+    if (pocket) {
+        var removed = pocket.destroy();
+        removed.forEach(function(walletAddress) {
+            $wallet.removeAddress(walletAddress);
+        });
+        // go to 'all' if this is the current pocket
+        if (this.pocket.index === pocketId && this.pocket.type === type) {
+            $history.selectAll();
+        }
+        return pocket;
+    }
+  };
+
   HistoryProvider.prototype.onBalanceUpdate = function() {
       this.pocket.balance = this.calculateBalance(this.pocket);
       return this.chooseRows();

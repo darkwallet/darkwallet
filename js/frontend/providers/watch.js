@@ -12,19 +12,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
 
   // Remove a watch only pocket from a contact
   WatchProvider.prototype.removePocket = function(contact) {
-    var identity = DarkWallet.getIdentity();
-    var pocketId = contact.data.name;
-    var pocket = identity.wallet.pockets.pockets.readonly[pocketId];
-    if (pocket) {
-        var removed = pocket.destroy();
-        removed.forEach(function(walletAddress) {
-            $wallet.removeAddress(walletAddress);
-        });
-        // go to 'all' if this is the current pocket
-        if ($history.pocket.index === contact.data.name) {
-            $history.selectAll();
-        }
-    }
+    $history.removePocket('readonly', contact.data.name);
   };
 
   // Add a watch only pocket from a contact
