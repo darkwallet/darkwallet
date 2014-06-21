@@ -231,10 +231,16 @@ span.ellipsis, div.ellipsis {
  }
 
 
-.transactions div.row {
+.transactions div.row, .transactions.hide-for-small {
 	padding: 0.5em;
 	font-size: 90%;
 	line-height: normal;
+}
+
+.transactions.address-row {
+	font-size: 80%;
+	span { margin-top: 0.2em; line-height: 2.6em; }
+	identicon { margin-left: 0.4em; }
 }
 
 .address-label { margin-left: 0.4em; }

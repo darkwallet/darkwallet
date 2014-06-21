@@ -1,9 +1,9 @@
 <div class="row">
     <div class="small-12 columns">
-        <div class="row collapse panel radius transactions" ng-show="!historyRows.length">
+        <div class="row collapse panel radius" ng-show="!historyRows.length">
             You have no history in this pocket.
         </div>
-        <div class="row collapse panel radius transactions" ng-show="historyRows.length">
+        <div class="row collapse panel radius" ng-show="historyRows.length">
             <dl class="sub-nav">
                 <dt>Filter:</dt>
                 <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
@@ -52,38 +52,34 @@
           </div>
 
           <div ng-if="txFilter!='weekly' && txFilter!='monthly'">
-            <div class="row collapse hide-for-small">
-             <div class="medium-4 large-5 columns">
+            <div class="transactions row collapse hide-for-small">
+             <div class="medium-6 large-8 columns">
                Address
              </div>
-             <div class="medium-2 columns">
-               Date
-             </div>
-             <div class="medium-1 columns ellipsis">
-               Confirmations
-             </div>
-             <div class="medium-2 columns">
+             <div class="medium-3 large-2 columns">
                Amount
              </div>
              <div class="medium-3 large-2 columns text-right">
                Total
              </div>
             </div>
-             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
-             <div class="medium-4 columns large-5">
+             <div class="row collapse address-row transactions"  ng-repeat="row in historyRows track by $index">
+             <div class="medium-4 columns large-6 ellipsis">
+				<a class="fa button square lefted fa-chevron-circle-down"></a>
+			
+          	   <identicon ng-show="(row.contact!==undefined)" icon-size="24" hash="row.contact.data.hash"></identicon>
+			   <identicon ng-show="(row.contact==undefined)" icon-size="24" data="row.address"></identicon>
                <!-- check for row.contact gets stuck if not done as follows... -->
-               <div title="{{row.address}}" ng-class="{ellipsis: (row.contact!==undefined)}">
-                <i ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
-                <identicon ng-show="(row.contact!==undefined)" icon-size="24" hash="row.contact.data.hash"></identicon>
+            
                 <span ng-show="!row.label">
                 {{row.contact ? row.contact.data.name : row.address}}
                 </span>
-                <span ng-show="row.label">
+                <span tooltip="{{row.address}}" ng-show="row.label">
                 {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
                 </span>
  
                 <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
-               </div>
+               
              </div>
              <div ng-show="row.height" class="small-4 medium-2 columns ellipsis">
                <span title="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
@@ -91,29 +87,30 @@
              <div ng-show="!row.height" class="small-4 medium-2 columns ellipsis">
                none
              </div>
-             <div tooltip-placement="left" tooltip="See the transaction in the block explorer" ng-click="openTransaction(row.hash)" class="small-4 medium-1 columns ellipsis">
+             <div ng-hide="true" tooltip-placement="left" tooltip="See the transaction in the block explorer" ng-click="openTransaction(row.hash)" class="small-4 medium-1 columns ellipsis">
                <a ng-safebrowser="{{row.hash}}"><i class="fa fa-sitemap hide-for-medium"></i> {{row.height?1+currentHeight-row.height:0}}</a>
                
              </div>
-             <div class="small-4 medium-2 columns">
-             {{(row.partial) | amountFilter}}
+             <div class="small-4 medium-3 large-2 columns">
+				 <i ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
+             	 {{(row.partial) | amountFilter}}
              </div>
              <div class="hide-for-small medium-3 large-2 columns text-right">
               {{row.current | asBtc}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span>
              </div>
             </div>
           </div>
+		  <div class="pagination-centered topmargin" ng-show="historyRows.length">
+		      <ul class="pagination">
+		          <li class="arrow unavailable"><a href="">&laquo;</a></li>
+		          <li class="current"><a href="">1</a></li>
+		          <li><a href="">2</a></li>
+		          <li class="unavailable"><a href="">&hellip;</a></li>
+		          <li><a href="">12</a></li>
+		          <li><a href="">13</a></li>
+		          <li class="arrow"><a href="">&raquo;</a></li>
+		      </ul>
+		  </div>
         </div>
     </div>
-</div>
-<div class="pagination-centered" ng-show="historyRows.length">
-    <ul class="pagination">
-        <li class="arrow unavailable"><a href="">&laquo;</a></li>
-        <li class="current"><a href="">1</a></li>
-        <li><a href="">2</a></li>
-        <li class="unavailable"><a href="">&hellip;</a></li>
-        <li><a href="">12</a></li>
-        <li><a href="">13</a></li>
-        <li class="arrow"><a href="">&raquo;</a></li>
-    </ul>
 </div>

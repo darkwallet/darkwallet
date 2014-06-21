@@ -4540,10 +4540,18 @@ span.ellipsis, div.ellipsis {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
-.transactions div.row {
+.transactions div.row, .transactions.hide-for-small {
   padding: 0.5em;
   font-size: 90%;
   line-height: normal; }
+
+.transactions.address-row {
+  font-size: 80%; }
+  .transactions.address-row span {
+    margin-top: 0.2em;
+    line-height: 2.6em; }
+  .transactions.address-row identicon {
+    margin-left: 0.4em; }
 
 .address-label {
   margin-left: 0.4em; }
