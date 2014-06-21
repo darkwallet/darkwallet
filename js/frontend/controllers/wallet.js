@@ -68,9 +68,10 @@ function (controllers, DarkWallet, Port) {
 
   $scope.updateReadOnlyPockets = function(identity) {
       $scope.forms.readOnlyArray.splice(0, $scope.forms.readOnlyArray.length);
-      var keys = Object.keys(identity.wallet.pockets.pockets.readonly);
+      $scope.allReadOnly = identity.wallet.pockets.pockets.readonly;
+      var keys = Object.keys($scope.allReadOnly);
       keys.forEach(function(pocketId) {
-          $scope.forms.readOnlyArray.push(identity.wallet.pockets.pockets.readonly[pocketId]);
+          $scope.forms.readOnlyArray.push($scope.allReadOnly[pocketId]);
       });
   };
 
@@ -83,7 +84,6 @@ function (controllers, DarkWallet, Port) {
       $scope.allFunds = identity.wallet.multisig.funds;
 
       // Sync read only pockets
-      $scope.allReadOnly = identity.wallet.pockets.pockets.readonly;
       $scope.updateReadOnlyPockets(identity);
 
       // set some links
