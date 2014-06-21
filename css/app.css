@@ -4558,10 +4558,7 @@ span.ellipsis, div.ellipsis {
 
 .transactions.address-row {
   font-size: 90%; }
-  .transactions.address-row span {
-    margin-top: 0.2em;
-    line-height: 2.6em; }
-  .transactions.address-row identicon {
+  .transactions.address-row img {
     margin-left: 0.4em; }
 
 .address-label {

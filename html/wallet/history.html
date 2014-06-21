@@ -85,6 +85,7 @@
                <!-- check for row.contact gets stuck if not done as follows... -->
             
                 <span editable-text="rowEdit.label" e-form="rowBtnForm" buttons="no" onaftersave="saveRowLabel()">
+				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                 <span ng-show="!row.label">
                 {{row.contact ? row.contact.data.name : row.address}}
                 </span>
@@ -92,15 +93,13 @@
                 {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
                 </span>
                 </span>
- 
-                <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
                
              </div>
              <div ng-show="row.height" class="small-4 medium-2 columns ellipsis">
                <span title="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
              </div>
              <div ng-show="!row.height" class="small-4 medium-2 columns ellipsis">
-               none
+               <span>none</span>
              </div>
             <!-- <div ng-hide="true" tooltip-placement="left" tooltip="See the transaction in the block explorer" ng-click="openTransaction(row.hash)" class="small-4 medium-1 columns ellipsis">
                <a ng-safebrowser="row.hash"><i class="fa fa-sitemap hide-for-medium"></i> {{row.height?1+currentHeight-row.height:0}}</a>
