@@ -4308,6 +4308,20 @@ html.popup {
   max-height: 100%;
   overflow: hidden; }
 
+.editable-wrap {
+  display: inline-block;
+  white-space: nowrap;
+  margin: 0; }
+
+.editable-wrap .editable-controls, .editable-wrap .editable-error, .editable-wrap .editable-controls > input {
+  margin-bottom: 0; }
+
+.editable-wrap .editable-input {
+  display: inline-block; }
+
+.editable-hide {
+  display: none !important; }
+
 *:focus {
   outline: 0; }
 

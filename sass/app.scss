@@ -18,6 +18,11 @@ $light-transparent: rgba(100,100,100,0.2);
 html, body:not(.popupbody) { height: 100%; overflow-y: hidden; }
 html.popup { width: auto; height: auto; max-height: 100%; overflow: hidden; }
 
+.editable-wrap {display:inline-block;white-space:nowrap;margin:0}
+.editable-wrap .editable-controls,.editable-wrap .editable-error, .editable-wrap .editable-controls>input {margin-bottom:0}
+.editable-wrap .editable-input{display:inline-block}
+.editable-hide {display:none!important}
+
 *:focus { outline: 0; } /* Remove webkit's default outline */
 
 *.fa {
