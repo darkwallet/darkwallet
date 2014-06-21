@@ -205,8 +205,8 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
           var walletAddress = identity.wallet.multisig.addFund(multisig);
           this.core.initAddress(walletAddress);
       }
-
-      // identity.tasks.removeTask('multisig-invite', task);
+      // remove the task
+      identity.tasks.removeTask('multisig-invite', task);
   };
 
   /**

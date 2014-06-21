@@ -60,8 +60,10 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require']
   $scope.acceptFund = function(guiTask) {
       DarkWallet.service.multisigTrack.accept(guiTask.store);
 
-      // Should now go to the fund page
-      $window.open('index.html#wallet');
+      var fundIndex = DarkWallet.getIdentity().wallet.multisig.funds.indexOf(guiTask.store.fund);
+
+      // Go to the fund page
+      $window.open('index.html#wallet/fund/multisig/'+fundIndex);
   }
 
   /**
