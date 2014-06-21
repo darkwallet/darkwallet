@@ -53,9 +53,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
                 // Disable watch also if deleting a watch pocket
                 var contact = identity.contacts.search({name: walletPocket.name});
                 if (contact && contact.data.watch) {
-                    watch.renamePocket(name, walletPocket.name);
-                    contact.data.watch = false;
                     contact.data.name = name;
+                    watch.renamePocket(name, walletPocket.name);
                 }
                 // update frontend index
                 $scope.updateReadOnlyPockets(identity);
