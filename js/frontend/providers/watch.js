@@ -86,7 +86,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
   // Add watched contact key
   WatchProvider.prototype.addKey = function(contact, key) {
     var identity = DarkWallet.getIdentity();
-    var pocket = identity.pockets.getPocket(contact.data.name, 'readonly');
+    var pocket = identity.wallet.pockets.getPocket(contact.data.name, 'readonly');
     var walletAddress = pocket.createAddress(key);
     if (walletAddress) {
         $wallet.initAddress(walletAddress);
@@ -96,7 +96,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
   // Rename watched contact key
   WatchProvider.prototype.renameKey = function(contact, key) {
     var identity = DarkWallet.getIdentity();
-    var pocket = identity.pockets.getPocket(contact.data.name, 'readonly');
+    var pocket = identity.wallet.pockets.getPocket(contact.data.name, 'readonly');
     if (key && key.address && key.type !== 'stealth') {
         var seq = ['readonly:'+contact.data.name, key.address];
         var walletAddress = identity.wallet.pubKeys[seq];
