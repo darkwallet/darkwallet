@@ -76,6 +76,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
 
       // Init this address
       this.initAddress(walletAddress);
+      return walletAddress;
   };
 
   // initialize an address on the scope and the backend
