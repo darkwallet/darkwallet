@@ -15,7 +15,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
       var parseUri = function(uri) {
         // decode the uri
         bitid_uri = decodeURIComponent(uri);
-        var isDev = bitid_uri.search("u=1");
+        var isDev = bitid_uri.search("u=1") > -1;
 
         // parse uri and prepare some variables
         var a = document.createElement('a');
@@ -63,11 +63,8 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
       
       $scope.login = function() {
         var signed = sign($scope.site, bitid_uri);
-        console.log(signed);
-        console.log(bitid_uri);
         var params = {
           url: callback_uri,
-          //dataType: "json",
           method: "POST",
           data: JSON.stringify({
             "uri" : bitid_uri, 
