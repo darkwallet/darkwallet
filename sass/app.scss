@@ -1,3 +1,5 @@
+@import "angular-csp";
+
 $primary-color: rgba(30, 190, 90,0.9) !default;
 $primary-color-dark: rgba(30, 170, 80,0.9);
 
@@ -12,7 +14,6 @@ $light-transparent: rgba(100,100,100,0.2);
 @import "foundation";
 @import "toaster";
 @import "animation";
-
 
 html, body:not(.popupbody) { height: 100%; overflow-y: hidden; }
 html.popup { width: auto; height: auto; max-height: 100%; overflow: hidden; }
@@ -238,7 +239,7 @@ span.ellipsis, div.ellipsis {
 }
 
 .transactions.address-row {
-	font-size: 80%;
+	font-size: 90%;
 	span { margin-top: 0.2em; line-height: 2.6em; }
 	identicon { margin-left: 0.4em; }
 }

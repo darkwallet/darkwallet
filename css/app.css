@@ -1,3 +1,14 @@
+/* Include this file in your html if you are using the CSP mode. */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
+  display: none !important; }
+
+ng\:form {
+  display: block; }
+
+.ng-animate-block-transitions {
+  transition: 0s all !important;
+  -webkit-transition: 0s all !important; }
+
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 /**
  * 1. Set default font family to sans-serif.
@@ -4546,7 +4557,7 @@ span.ellipsis, div.ellipsis {
   line-height: normal; }
 
 .transactions.address-row {
-  font-size: 80%; }
+  font-size: 90%; }
   .transactions.address-row span {
     margin-top: 0.2em;
     line-height: 2.6em; }
