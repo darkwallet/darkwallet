@@ -91,11 +91,12 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   // History Listing
   HistoryProvider.prototype.selectFund = function(fundIndex) {
-      var fund = this.wallet.multisig.funds[fundIndex];
-      var pocket = this.wallet.pockets.getPocket(fund.address, 'multisig');
+      var identity = DarkWallet.getIdentity();
+      var fund = identity.wallet.multisig.funds[fundIndex];
 
       // Need to find the original index for this fund
-      var rowIndex = this.wallet.pockets.pockets.multisig.indexOf(pocket);
+      var keys = Object.keys(identity.wallet.pockets.pockets.multisig);
+      var rowIndex = keys.indexOf(fund.address);
       this.selectGenericPocket('multisig', rowIndex);
 
       // some custom data...
