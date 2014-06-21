@@ -35,9 +35,9 @@
 			<div class="panel radius pocket-square">
            		<h5>{{pocket.name}} <small ng-show="pocket.type=='fund'">{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</small></h5>
         
-           		<span ng-show="pocket.balance.current">{{pocket.balance.current | formatBtc}} <span class="fiat">{{pocket.balance.current | formatFiat}}</span></span>
+           		<span ng-show="pocket.balance.current">{{pocket.balance.current | formatBtc}} <br><span class="fiat">{{pocket.balance.current | formatFiat}}</span></span>
            		<span ng-show="!pocket.balance.current">No coins</span>
-           		<span ng-show="pocket.balance.unconfirmed">{{pocket.balance.unconfirmed | formatBtc}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></span>
+           		<span ng-show="pocket.balance.unconfirmed">{{pocket.balance.unconfirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></span>
            	</div>
   		</li>
     </ul>
