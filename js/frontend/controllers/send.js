@@ -335,8 +335,11 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       // Store the label for the tx
       metadata.label = title;
 
+     var pocketType = (typeof pocketIndex === 'string') ? 'multisig' : 'hd';
+     var pocket = identity.wallet.pockets.getPocket(pocketIndex, pocketType);
+
       // Now ask for the password before continuing with the next step   
-      modals.confirmSend('Unlock password', {pocket: identity.wallet.getPocket(pocketIndex), metadata: metadata}, spend.contacts, function(password) {
+      modals.confirmSend('Unlock password', {pocket: pocket, metadata: metadata}, spend.contacts, function(password) {
           // Run the password callback
           onPassword(metadata, amountNote, password);
       }, function() {

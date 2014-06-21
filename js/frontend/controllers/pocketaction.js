@@ -35,7 +35,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
      */
     $scope.setMixing = function(pocket) {
         var identity = DarkWallet.getIdentity();
-        var walletPocket = identity.wallet.getPocket(pocket.index);
+        var walletPocket = identity.wallet.pockets.getPocket(pocket.index, 'hd').store;
         // Finish setting mixing in the pocket
         // this can happen after requesting the password
         var finishSetMixing = function() {
@@ -48,12 +48,11 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
 
         // We're going to enable mixing so request the password to gather the key for the pocket
         if (!walletPocket.mixing) {
-            var pocketIndex = identity.wallet.pockets.hdPockets.indexOf(walletPocket);
             modals.password('Write the password for your pocket', function(password) {
                 var safe = DarkWallet.service.safe;
                 // get master private for the pockets since the mixer will need them
                 try {
-                    var privKey = identity.wallet.getPocketPrivate(pocketIndex*2, password);
+                    var privKey = identity.wallet.getPocketPrivate(pocket.index*2, password);
                 } catch(e) {
                     if ($scope.settings.advanced) {
                         notify.warning("Invalid password", e.message || ""+e)
@@ -62,10 +61,10 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
                     }
                     return;
                 }
-                var changeKey = identity.wallet.getPocketPrivate((pocketIndex*2)+1, password);
+                var changeKey = identity.wallet.getPocketPrivate((pocket.index*2)+1, password);
 
                 // Save some session passwords for the mixer
-                var pocketPassword = safe.set('mixer', 'pocket:'+pocketIndex, password);
+                var pocketPassword = safe.set('mixer', 'pocket:'+pocket.index, password);
 
                 // Save the keys encrypted with the pocket
                 walletPocket.privKey = sjcl.encrypt(pocketPassword, privKey, {ks: 256, ts: 128});

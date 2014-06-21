@@ -50,16 +50,6 @@ Wallet.prototype.initVersions = function(network) {
     }
 };
 
-/**
- * This gets pocket or multisig from pocketId
- */
-Wallet.prototype.getPocket = function(pocketId) {
-    if (typeof pocketId === 'string') {
-        return this.getWalletAddress(pocketId);
-    } else {
-        return this.pockets.hdPockets[pocketId];
-    }
-};
 
 /**
  * Initialize addresses for the wallet if empty

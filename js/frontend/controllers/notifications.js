@@ -27,10 +27,12 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require']
                   }
                   var outPocket, inPocket;
                   if (!(task.outPocket === undefined)) {
-                      outPocket = identity.wallet.getPocket(task.outPocket);
+                      var outType = (typeof task.outPocket === 'number') ? 'hd' : (task.outPocket.slice(0, 9) === 'readonly:') : 'readonly' : 'multisig';
+                      outPocket = identity.wallet.pockets.getPocket(task.outPocket, outType);
                   }
                   if (!(task.inPocket === undefined)) {
-                      inPocket = identity.wallet.getPocket(task.inPocket);
+                      var inType = (typeof task.inPocket === 'number') ? 'hd' : (task.inPocket.slice(0, 9) === 'readonly:') : 'readonly' : 'multisig';
+                      inPocket = identity.wallet.pockets.getPocket(task.inPocket, inType);
                   }
                   var guiTask = {section: section, store: task, outPocket: outPocket, inPocket: inPocket};
                   if (section == 'multisig') {
