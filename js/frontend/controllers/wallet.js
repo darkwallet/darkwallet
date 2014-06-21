@@ -68,10 +68,10 @@ function (controllers, DarkWallet, Port) {
 
   $scope.updateReadOnly = function(identity) {
       $scope.allReadOnly = identity.wallet.pockets.pockets.readonly;
+      this.updateReadOnlyPockets(identity);
   };
 
   $scope.updateReadOnlyPockets = function(identity) {
-      this.updateReadOnly(identity);
       $scope.forms.readOnlyArray.splice(0, $scope.forms.readOnlyArray.length);
       var keys = Object.keys($scope.allReadOnly);
       keys.forEach(function(pocketId) {
