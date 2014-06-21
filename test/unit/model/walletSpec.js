@@ -187,7 +187,6 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       wallet.pockets.initPocketWallet(100, 'hd');
       var pocket = wallet.pockets.pockets.hd[100];
       expect(pocket.addresses).toEqual([]);
-      expect(pocket.changeAddresses).toEqual([]);
       expect(pocket.balance).toEqual(0);
     });
     
@@ -234,10 +233,8 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       wallet.pockets.addToPocket({index: [0,2], address: '12...'});
       wallet.pockets.addToPocket({index: [1,1], address: '14...'});
       wallet.pockets.addToPocket({index: [2,1], address: '16...'});
-      expect(wallet.pockets.pockets.hd[0].addresses).toEqual([ '10...', '12...' ]);
+      expect(wallet.pockets.pockets.hd[0].addresses).toEqual([ '10...', '12...', '14...' ]);
       expect(wallet.pockets.pockets.hd[1].addresses).toEqual([ '16...' ]);
-      expect(wallet.pockets.pockets.hd[0].changeAddresses).toEqual([ '14...' ]);
-      expect(wallet.pockets.pockets.hd[1].changeAddresses).toEqual([ ]);
     });
     
     it('adds an addres to itself', function() {
@@ -262,10 +259,8 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         "1,1": walletAddress2,
         "2,1": walletAddress3
       });
-      expect(wallet.pockets.pockets.hd[0].addresses).toEqual([ '10...', '12...' ]);
+      expect(wallet.pockets.pockets.hd[0].addresses).toEqual([ '10...', '12...', '14...' ]);
       expect(wallet.pockets.pockets.hd[1].addresses).toEqual([ '16...' ]);
-      expect(wallet.pockets.pockets.hd[0].changeAddresses).toEqual([ '14...' ]);
-      expect(wallet.pockets.pockets.hd[1].changeAddresses).toEqual([ ]);
       expect(_store.wallet.addresses).toEqual(['10...', '12...', '14...', '16...']);
     });
     
