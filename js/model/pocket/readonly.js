@@ -43,6 +43,9 @@ ReadOnlyPocket.prototype.addToPocket = function(walletAddress) {
  * Create a read only address
  */
 ReadOnlyPocket.prototype.createAddress = function(data) {
+    if (!data.address || data.type === 'stealth') {
+        return;
+    }
     var seq = ['readonly:'+this.name, data.address];
     var walletAddress = this.getMyWallet().pubKeys[seq];
     if (!walletAddress) {
@@ -63,22 +66,42 @@ ReadOnlyPocket.prototype.createAddress = function(data) {
 };
 
 /**
+ * Remove an address from the pocket and wallet.
+ */
+ReadOnlyPocket.prototype.removeAddress = function(address) {
+    var wallet = this.getMyWallet();
+    var seq = ['readonly:'+this.name, address];
+    var walletAddress = wallet.pubKeys[seq];
+    if (walletAddress) {
+        wallet.deleteAddress(seq, true);
+    }
+    var idx = this.addresses.indexOf(address);
+    if (idx > -1) {
+        this.addresses.splice(idx, 0);
+    }
+    return walletAddress;
+}
+
+/**
  * Destroy this pocket and cleanup all related addresses.
  */
 ReadOnlyPocket.prototype.destroy = function() {
+    var self = this;
     var pocketId = this.name;
     var wallet = this.getMyWallet();
     // First delete all addresses
     var addresses = this.getAllAddresses();
+    var removed = [];
     addresses.forEach(function(address) {
-        var seq = ['readonly:'+pocketId, address];
-        if (wallet.pubKeys[seq]) {
-            wallet.deleteAddress(seq, true);
+        var walletAddress = self.removeAddress(address);
+        if (walletAddress) {
+            removed.push(walletAddress);
         }
     });
     // Now delete our index in the wallet
     delete wallet.pockets.pockets.readonly[pocketId];
     this.addresses = [];
+    return removed;
 }
 
 /**
@@ -89,11 +112,9 @@ ReadOnlyPocket.prototype.fromContact = function(contact) {
     var created = [];
     // Now add all keys
     contact.pubKeys.forEach(function(pubKey) {
-        if (pubKey.address && pubKey.type !== 'stealth') {
-            var walletAddress = self.createAddress(pubKey);
-            if (walletAddress) {
-                created.push(walletAddress);
-            }
+        var walletAddress = self.createAddress(pubKey);
+        if (walletAddress) {
+            created.push(walletAddress);
         }
     });
     return created;

@@ -95,6 +95,7 @@ Contact.prototype.addKey = function (data, label, main) {
   }
   this.updateIdKey();
   this.contacts.store.save();
+  return newKey;
 };
 
 /**

@@ -44,6 +44,13 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
     
     var injectController = function(routeParams) {
       mocks.inject(["$rootScope", "$controller", function ($rootScope, $controller) {
+        var watch = {};
+        watch.removePocket = function() {};
+        watch.initPocket = function() {};
+        watch.renamePocket = function() {};
+        watch.addKey = function() {};
+        watch.removeKey = function() {};
+        watch.renameKey = function() {};
         scope = $rootScope.$new();
         routeParams = routeParams || {};
         location = {
@@ -53,7 +60,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         };
         var route = {contactId: undefined, current: {templateUrl: "bla"}};
         var wallet = {addToScope: function() {}};
-        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet});
+        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet, watch: watch});
       }]);
     };
     
@@ -121,7 +128,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
 
       it('edits a contact', function() {
         scope.contactToEdit = {name: 'Nakamoto Satoshi', address: '6...'};
-        scope.editContact(_contacts[0], 0);
+        scope.editContactKey(_contacts[0], 0);
         expect(_contacts[0].update).toHaveBeenCalledWith('6...', 0);
       });
 

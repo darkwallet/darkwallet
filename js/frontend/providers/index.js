@@ -10,5 +10,6 @@ define([
     './history',
     './notify',
     './sounds',
+    './watch',
     './tabs'
 ], function () {});

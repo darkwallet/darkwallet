@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', function($scope, $routeParams, $location, $route, $wallet) {
+  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', function($scope, $routeParams, $location, $route, $wallet, watch) {
 
   $scope.newContact = {};
   $scope.contactToEdit = {};
@@ -87,6 +87,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     return found;
   };
 
+  /**
+   * Scope functions
+   */
   $scope.pickContact = function(contact) {
     var types = getContactTypes();
     var key;
@@ -143,7 +146,12 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     var address = $scope.newContact.address;
     var label = $scope.newContact.label;
 
-    contact.addKey(address, label);
+    var newKey = contact.addKey(address, label);
+
+    // If pocket is watch only add the new address
+    if (contact.data.watch) {
+        watch.addKey(contact, newKey);
+    }
 
     // add to scope
     $scope.newContact = {};
@@ -163,66 +171,61 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $location.path('/contact/'+contactIndex);
   };
 
-  $scope.saveName = function(contact, name) {
-    contact.data.name = name;
-    contact.update();
-    $scope.editingContact = false;
-  };
-
-  // Rename a pocket linked to some contact
-  var renamePocket = function(newName, prevName) {
-    var identity = DarkWallet.getIdentity();
-    var pockets = identity.wallet.pockets.getPockets('readonly');
-    if (prevName && prevName !== newName && pockets[prevName]) {
-        var newIndex = 'readonly'+newName;
-        var pocket = pockets[prevName];
-        // Save the name in the pocket
-        pocket.name = newName;
-        pocket.data.id = newName;
-        //  Reindex with the new pocketId
-        pockets[newName] = pocket;
-        delete pockets[prevName];
-        // If any addresses are using the old index reindex them
-        var reindexed = [];
-        identity.wallet.pubKeys.forEach(function(walletAddress) {
-            if (walletAddress.index[0] === ('readonly:'+prevName)) {
-                // Save the index before changing it
-                reindexed.push(walletAddress.index.slice());
-                // Change the index to the new name
-                walletAddress.index[0] = newIndex;
-                identity.wallet.pubKeys[newIndex] = walletAddress;
-            }
-        });
-        // Now delete all reindexed
-        reindexed.forEach(function(seq) {
-            delete identity.wallet.pubKeys[seq];
-        });
-    }
-  };
-
-  $scope.editContact = function(contact, index) {
-    var newName = $scope.contactToEdit.name;
-    var prevName = contact.data.name;
-    contact.data.name = newName;
-    renamePocket(newName, prevName);
+  // Edit a contact's key
+  $scope.editContactKey = function(contact, index) {
+    var key = contact.pubKeys[index];
     if ($scope.contactToEdit.type === 'label') {
-        contact.pubKeys[index].label = $scope.contactToEdit.address;
-        contact.update();
+        // Edit label
+        if (key.label !== $scope.contactToEdit.address) {
+            // update the key
+            key.label = $scope.contactToEdit.address;
+            // rename the given address
+            watch.renameKey(contact, key);
+            // trigger saving and updating contact
+            contact.update();
+        }
     } else {
-        contact.update($scope.contactToEdit.address, index);
+        // Edit address
+        if (key.data !== $scope.contactToEdit.address) {
+            // recreate and update the contact
+            watch.removeKey(contact, key);
+            contact.update($scope.contactToEdit.address, index);
+            watch.addKey(contact, key);
+        }
     }
     $scope.editingContact = false;
   };
 
+  // Set the name on a contact
+  $scope.saveName = function(contact, name) {
+    if (name !== contact.data.name) {
+        var prevName = contact.data.name;
+        contact.data.name = name;
+        contact.update();
+        watch.renamePocket(name, prevName);
+    }
+    $scope.editingContact = false;
+  };
+
+  // Set the main key for a contact
   $scope.setMainKey = function(contact, index) {
     contact.setMainKey(index);
   };
 
+  // Delete a contacts key
   $scope.deleteKey = function(contact, index) {
+    // if watch remove the address from the wallet
+    if (contact.data.watch) {
+        watch.removeKey(contact, contact.pubKeys[index]);
+    }
     contact.deleteKey(index);
   };
 
+  // Delete a contact
   $scope.deleteContact = function(contact) {
+    if (contact.data.watch) {
+        watch.removePocket(contact);
+    }
     contact.remove();
     var contactIndex = $scope.contacts.indexOf(contact);
     if (contactIndex > -1) {
@@ -231,46 +234,15 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $location.path('/contacts');
   };
 
-  /**
-   * Watch / ReadOnly Pockets from contact
-   */
-  var destroyReadOnlyPocket = function(contact) {
-    var identity = DarkWallet.getIdentity();
-    var pocketId = contact.data.name;
-    var pocket = identity.wallet.pockets.pockets.readonly[pocketId];
-    if (pocket) {
-        pocket.destroy();
-
-        // TODO: Should disconnect from the backend too
-    }
-  };
-
-  var initReadOnlyPocket = function(contact) {
-    var identity = DarkWallet.getIdentity();
-    var pocketId = contact.data.name;
-
-    // Create the pocket and addreses
-    var pocket = identity.wallet.pockets.initPocketWallet('readonly', pocketId);
-    var addresses = pocket.fromContact(contact);
-
-    // Load addresses into scope
-    addresses.forEach(function(walletAddress) {
-         // Add to Scope
-        $wallet.addToScope(walletAddress);
-
-        // Add to Backend
-        DarkWallet.core.initAddress(walletAddress);
-       
-    });
-  };
-
+  // Toggle watch on a contact
   $scope.toggleWatch = function(contact, index) {
+    // toggle watch on the contact
     contact.data.watch = !contact.data.watch;
-    if (contact.data.watch) {
-        initReadOnlyPocket(contact);
-    } else {
-        destroyReadOnlyPocket(contact);
-    }
+
+    // init or remove watching pocket
+    contact.data.watch ? watch.initPocket(contact) : watch.removePocket(contact);
+
+    // update the scope
     $scope.updateReadOnlyPockets(DarkWallet.getIdentity());
   };
 

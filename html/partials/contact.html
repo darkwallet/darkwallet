@@ -162,7 +162,7 @@
 				<a ng-click="setMainKey(vars.contact, $index)" class="fa button square righted fa-star-o"></a>
 			</div>
 			<div ng-show="editingContact===$index" class="small-12 columns">
-				<form ng-submit="editContact(vars.contact, $index)">
+				<form ng-submit="editContactKey(vars.contact, $index)">
 					<input placeholder="{{contactToEdit.type?'Enter a label...':'Enter an address or public key...'}}" type="text" class="prefix radius nomarginbottom" ng-model="contactToEdit.address">
 					<button class="button square righted fa fa-check" type="submit"></button>
 				</form>

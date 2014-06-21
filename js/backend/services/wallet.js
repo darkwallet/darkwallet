@@ -240,6 +240,15 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         client.fetch_history(walletAddress.address, 0 /*walletAddress.height*/, function(err, res) { historyFetched(err, walletAddress, res); });
     };
 
+    // Unsusbscribe an address from the backend
+    this.removeAddress = function(walletAddress, callback) {
+        var client = core.getClient();
+        // Unsubscribe the address
+        client.unsubscribe(walletAddress.address, function() {
+            callback ? callback : null;
+        });
+    };
+ 
     // Handle a block header arriving from obelisk
     function handleBlockHeader(height, headerHex) {
         var header = BtcUtils.decodeBlockHeader(headerHex);
