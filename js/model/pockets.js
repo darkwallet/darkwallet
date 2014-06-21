@@ -121,6 +121,7 @@ Pockets.prototype.search = function(type, search) {
  * @return {Object} The pocket instance
  */
 Pockets.prototype.getPocket = function(id, type) {
+    type = type ? type : 'hd';
     return this.pockets[type][id];
 };
 
@@ -139,7 +140,8 @@ Pockets.prototype.getPocketType = function(addressType) {
  * @throws {Error} When the pocket doesn't exist
  */
 Pockets.prototype.deletePocket = function(id, type) {
-   var oldPocket;
+    type = type ? type : 'hd';
+    var oldPocket;
     if (this.pockets[type][id]) {
         oldPocket = this.pockets[type][id];
         delete this.pockets[type][id];
@@ -175,6 +177,7 @@ Pockets.prototype.getAddressPocketId = function(walletAddress) {
  */
 
 Pockets.prototype.getPockets = function(type) {
+    type = type ? type : 'hd';
     var pockets = this.pockets[type];
     if (!pockets) {
         throw new Error("Unknown address type! " + type);

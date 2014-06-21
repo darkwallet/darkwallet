@@ -80,7 +80,7 @@ BasePocket.prototype.getAddresses = function() {
 BasePocket.prototype.getWallet = function() {
     // Generate on the fly
     var outputs = this.getMyWallet().wallet.outputs;
-    var addresses = this.getAllAddresses();
+    var addresses = this.getAddresses();
     var pocketOutputs = {};
     Object.keys(outputs).forEach(function(outputKey) {
         var output = outputs[outputKey];
