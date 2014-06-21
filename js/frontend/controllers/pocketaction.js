@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
-  controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', function($scope, modals, notify, $history) {
+  controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', '$location', function($scope, modals, notify, $history, $location) {
 
     /**
      * Delete pocket
@@ -35,6 +35,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
             }
             $scope.updateReadOnly(identity);
         }
+        $location.path('/wallet');
     };
 
     /**

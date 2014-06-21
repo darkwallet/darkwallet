@@ -61,7 +61,6 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
         // go to 'all' if this is the current pocket
         if (this.pocket.index === pocketId && this.pocket.type === type) {
             this.selectAll();
-            $location.path('/wallet');
         }
         return pocket;
     }
