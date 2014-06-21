@@ -52,6 +52,19 @@
           </div>
 
           <div ng-if="txFilter!='weekly' && txFilter!='monthly'">
+	        <ul id="row-actions" class="f-dropdown">
+	          <li>
+	            <a ng-safebrowser="currentRow.hash" class="fa fa-qrcode"> Show in block explorer</a>
+	          </li>
+		  <li>
+			  <a ng-click="currentForm.$show()" class="fa fa-pencil-square"> Edit label</a>
+		  </li>
+		  <li>
+			  <a ng-click="clipboard.copy(currentRow.hash)" class="fa fa-clipboard"> Copy hash</a>
+		  </li>
+	        </ul>
+
+
             <div class="transactions row collapse hide-for-small">
              <div class="medium-6 large-8 columns">
                Address
@@ -65,17 +78,19 @@
             </div>
              <div class="row collapse address-row transactions"  ng-repeat="row in historyRows track by $index">
              <div class="medium-4 columns large-6 ellipsis">
-				<a class="fa button square lefted fa-chevron-circle-down"></a>
+		<a ng-click="setCurrentRow(row, rowBtnForm)" class="fa button square lefted fa-chevron-circle-down" dropdown-toggle="#row-actions"></a>
 			
           	   <identicon ng-show="(row.contact!==undefined)" icon-size="24" hash="row.contact.data.hash"></identicon>
 			   <identicon ng-show="(row.contact==undefined)" icon-size="24" data="row.address"></identicon>
                <!-- check for row.contact gets stuck if not done as follows... -->
             
+                <span editable-text="rowEdit.label" e-form="rowBtnForm" buttons="no" onaftersave="saveRowLabel()">
                 <span ng-show="!row.label">
                 {{row.contact ? row.contact.data.name : row.address}}
                 </span>
                 <span tooltip="{{row.address}}" ng-show="row.label">
                 {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
+                </span>
                 </span>
  
                 <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
@@ -87,10 +102,10 @@
              <div ng-show="!row.height" class="small-4 medium-2 columns ellipsis">
                none
              </div>
-             <div ng-hide="true" tooltip-placement="left" tooltip="See the transaction in the block explorer" ng-click="openTransaction(row.hash)" class="small-4 medium-1 columns ellipsis">
-               <a ng-safebrowser="{{row.hash}}"><i class="fa fa-sitemap hide-for-medium"></i> {{row.height?1+currentHeight-row.height:0}}</a>
+            <!-- <div ng-hide="true" tooltip-placement="left" tooltip="See the transaction in the block explorer" ng-click="openTransaction(row.hash)" class="small-4 medium-1 columns ellipsis">
+               <a ng-safebrowser="row.hash"><i class="fa fa-sitemap hide-for-medium"></i> {{row.height?1+currentHeight-row.height:0}}</a>
                
-             </div>
+             </div>-->
              <div class="small-4 medium-3 large-2 columns">
 				 <i ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
              	 {{(row.partial) | amountFilter}}

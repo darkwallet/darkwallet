@@ -34,7 +34,7 @@ function (controllers, DarkWallet, Port) {
   // Don't reload the controller if coming from this tab
   var lastRoute = $route.current;
   $scope.$on('$locationChangeSuccess', function(event) {
-    if ($route.current.templateUrl.indexOf('wallet.html') > 0) {
+    if ($route.current.templateUrl && $route.current.templateUrl.indexOf('wallet.html') > 0) {
         var params = $route.current.pathParams;
         var pocketId = params.pocketId;
         $tabs.loadRoute(params.section, params.pocketType, pocketId, function() {
@@ -158,6 +158,20 @@ function (controllers, DarkWallet, Port) {
       return $history.historyFilter(row, shownRows);
   };
 
+
+  /**
+   * Row dropdown selector
+   */
+  $scope.setCurrentRow = function(row, editForm) {
+      $scope.currentRow = row;
+      $scope.rowEdit  = {label: row.label};
+      $scope.currentForm = editForm;
+  };
+  $scope.saveRowLabel = function() {
+      var identity = DarkWallet.getIdentity();
+      $scope.currentRow.label = $scope.rowEdit.label;
+      identity.txdb.setLabel($scope.currentRow.hash, $scope.rowEdit.label);
+  };
 
 }]);
 });
