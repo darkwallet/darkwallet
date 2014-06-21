@@ -50,6 +50,19 @@ Contacts.prototype.initContacts = function() {
 };
 
 /**
+ * Search for a contact
+ */
+Contacts.prototype.search = function(search) {
+    var label = Object.keys(search)[0];
+    var value = search[label];
+    for(var i=0; i<this.contacts.length; i++) {
+        if (this.contacts[i][label] === value) {
+            return this.contacts[i];
+        }
+    }
+}
+
+/**
  * Create a key from an address string
  * @param {String} data Data with the address information
  */
