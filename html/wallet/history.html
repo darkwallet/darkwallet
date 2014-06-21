@@ -15,7 +15,7 @@
             </dl>
 
           <div ng-if="txFilter=='weekly' || txFilter=='monthly'">
-            <div class="row collapse hide-for-small">
+            <div class="transactions row collapse hide-for-small">
              <div class="large-3 columns">
                Week
              </div>
@@ -30,11 +30,11 @@
              </div>
             </div>
 
-            <div class="row collapse"  ng-repeat="row in historyRows">
+            <div class="row collapse address-row"  ng-repeat="row in historyRows">
              <div class="large-3 columns">
-               <span ng-show="row.label">{{row.label}}</span>
-               <span ng-show="!row.label && txFilter=='weekly'">Curent week</span>
-               <span ng-show="!row.label && txFilter=='monthly'">Curent month</span>
+               <span class="address-label" ng-show="row.label">{{row.label}}</span>
+               <span class="address-label" ng-show="!row.label && txFilter=='weekly'">Curent week</span>
+               <span class="address-label" ng-show="!row.label && txFilter=='monthly'">Curent month</span>
              </div>
              <div class="large-4 columns">
                <span ng-show="row.incoming">{{row.incoming | currencyPresenter}}</span>
