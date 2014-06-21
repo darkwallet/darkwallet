@@ -62,6 +62,9 @@
 		  <li>
 			  <a ng-click="clipboard.copy(currentRow.hash)" class="fa fa-clipboard"> Copy hash</a>
 		  </li>
+		  <li ng-show="currentRow.address!=='internal'&&currentRow.address!='unknown'">
+			  <a ng-click="clipboard.copy(currentRow.address)" class="fa fa-btc"> Copy {{currentRow.inMine?'destination':'origin'}} address</a>
+		  </li>
 	        </ul>
 
 
