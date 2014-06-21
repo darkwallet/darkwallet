@@ -83,7 +83,6 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
               this.selectGenericPocket(type, idx);
               break;
           case 'multisig':
-              var fund = identity.wallet.multisig.funds[idx];
               this.selectFund(fund, idx);
               break;
       }
@@ -91,10 +90,15 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   };
 
   // History Listing
-  HistoryProvider.prototype.selectFund = function(fund, rowIndex) {
+  HistoryProvider.prototype.selectFund = function(fund, fundIndex) {
+      var pocket = this.wallet.pockets.getPocket(fund.address, 'multisig');
+
+      // Need to find the original index for this fund
+      var rowIndex = this.wallet.pockets.pockets.multisig.indexOf(pocket);
       this.selectGenericPocket('multisig', rowIndex);
 
       // some custom data...
+      this.pocket.lastIndex = fundIndex;
       this.pocket.fund = new MultisigFund(fund);
       this.pocket.tasks = this.pocket.fund.tasks;
       this.pocket.isFund = true;
