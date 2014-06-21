@@ -201,7 +201,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
         wallet.pockets.deletePocket('incorrect', 'foo');
       }).toThrow();
       
-      wallet.pockets.deletePocket(0, 'hd');
+      wallet.pockets.pockets.hd[0].destroy();
       expect(wallet.pockets.hdPockets).toEqual([null, {name: 'savings'}]);
       expect(_store.pockets).toEqual([null, {name: 'savings'}]);
       expect(Object.keys(wallet.pockets.pockets.hd).length).toBe(1);
