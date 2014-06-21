@@ -1,8 +1,8 @@
     <ul class="side-nav" ng-controller="PocketCreateCtrl">
       <li>Pockets on my wallet</li>
       <li ng-class="{active: pocket.isAll}" ng-click="selectPocket()"><a>All</a></li>
-      <li ng-class="{active: 'hd:'+$index===selectedPocket}" ng-repeat="pocket in hdPockets track by $index">
-        <a href="" ng-click="selectPocket(pocket.name, $index, form)" editable-text="pocket.name" e-form="form" blur="submit" onaftersave="finalizeRenamePocket(pocket)" buttons="no">{{pocket.name}}</a>
+      <li ng-class="{active: 'hd:'+$index===pocket.type+':'+pocket.lastIndex}" ng-repeat="hdPocket in hdPockets track by $index">
+        <a href="" ng-click="selectPocket(hdPocket.name, $index, form)" editable-text="hdPocket.name" e-form="form" blur="submit" onaftersave="finalizeRenamePocket(pocket)" buttons="no">{{hdPocket.name}}</a>
       </li>
       <li ng-show="creatingPocket">
         <form ng-submit="createPocket()">

@@ -213,8 +213,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
       this.selectedPocket = type+':' + rowIndex;
       this.chooseRows();
-      return false;
-
+      return true;
   };
 
   HistoryProvider.prototype.refreshAddresses = function() {
