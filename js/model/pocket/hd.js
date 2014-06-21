@@ -54,12 +54,13 @@ HdPocket.prototype.getPocketId = function() {
  */
 HdPocket.prototype.destroy = function() {
     // First cleanup using the base class
-    BasePocket.prototype.destroy.call(this);
+    var destroyed = BasePocket.prototype.destroy.call(this);
 
     // Now do specific hd pocket cleaning
     var i = this.getPocketId();
     var wallet = this.getMyWallet();
     wallet.pockets.hdPockets[i] = null;
+    return destroyed;
 };
 
 
