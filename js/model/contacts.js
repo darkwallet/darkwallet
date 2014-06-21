@@ -56,7 +56,7 @@ Contacts.prototype.search = function(search) {
     var label = Object.keys(search)[0];
     var value = search[label];
     for(var i=0; i<this.contacts.length; i++) {
-        if (this.contacts[i][label] === value) {
+        if (this.contacts[i].data[label] === value) {
             return this.contacts[i];
         }
     }
