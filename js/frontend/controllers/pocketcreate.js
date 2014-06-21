@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('PocketCreateCtrl', ['$scope', '$wallet', function($scope, $wallet) {
+  controllers.controller('PocketCreateCtrl', ['$scope', '$wallet', '$history', 'watch', function($scope, $wallet, $history, watch) {
 
     /**
      * Scope variables
@@ -42,14 +42,31 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     /**
      * Rename a pocket
      */
-    $scope.finalizeRenamePocket = function(pocket) {
-        if (!pocket || !pocket.name) {
+    $scope.finalizeRenamePocket = function(pocket, name) {
+        if (!pocket || !name) {
             // if empty just toggle visibility
             $scope.forms.pocketLabelForm.$show();
         } else {
             var identity = DarkWallet.getIdentity();
+            var pocket = identity.wallet.pockets.getPocket($history.pocket.index, $history.pocket.type);
+            if (pocket.type === 'readonly') {
+                // Disable watch also if deleting a watch pocket
+                var contact = identity.contacts.search({name: pocket.name});
+                if (contact.data.watch) {
+                    watch.renamePocket(name, pocket.name);
+                    contact.data.watch = false;
+                }
+            } else if (pocket.type === 'multisig') {
+                pocket.name = name;
+                pocket.fund.name = name;
+            } else {
+                // Otherwise just change the name
+                pocket.name = name;
+                pocket.store.name = name;
+            }
             identity.store.save();
-            $scope.pocket.name = pocket.name;
+            $scope.pocket.name = name;
+            $scope.forms.pocketName = '';
         }
     };
 

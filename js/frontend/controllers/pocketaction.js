@@ -18,6 +18,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
      */
     $scope.renamePocket = function(pocket) {
         // continues in PocketCreateCtrl
+        $scope.forms.pocketName = pocket.name;
         $scope.forms.pocketLabelForm.$show();
     };
 
