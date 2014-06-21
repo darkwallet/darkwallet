@@ -17,6 +17,12 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         },
         updateContact: function(contact) {},
         deleteContact: function(contact) {}
+      },
+      wallet: {
+        pockets: {
+            pockets: {readonly: [], hd: [], multisig: []},
+            getPockets: function() {return []}
+        }
       }
     };
     
@@ -45,7 +51,9 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
             location._path = path;
           }
         };
-        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location});
+        var route = {contactId: undefined, current: {templateUrl: "bla"}};
+        var wallet = {addToScope: function() {}};
+        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet});
       }]);
     };
     
@@ -103,7 +111,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
 
       it('opens the edit form', function() {
         scope.openEditForm(_contacts[0], 0);
-        expect(scope.contactToEdit).toEqual({name: _contacts[0].data.name, address: _contacts[0].pubKeys[0].data});
+        expect(scope.contactToEdit).toEqual({name: _contacts[0].data.name, address: _contacts[0].pubKeys[0].data, type: undefined});
       });
 
       it('opens a contact', function() {

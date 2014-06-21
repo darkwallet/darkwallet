@@ -69,10 +69,10 @@ Pockets.prototype.initPockets = function(store) {
  */
 Pockets.prototype.createPocket = function(name) {
     // Raise exception if name exists
-    if (this.getPocket(name)) {
+    if (this.search('hd', {'name': name})) {
         throw new Error("Pocket with that name already exists!");
     }
-    var pocketStore = {name: name};
+    var pocketStore = {'name': name};
     this.hdPockets.push(pocketStore);
     this.initPocketWallet('hd', this.hdPockets.length-1, pocketStore);
     this.store.save();
@@ -101,6 +101,24 @@ Pockets.prototype.initPocketWallet = function(type, id, pocketStore) {
     }
     return this.pockets[type][id];
 };
+
+/**
+ * Search for a pocket
+ * @param {String} type Pocket type
+ * @param {Object} search Search query, has to be one key: value for now.
+ */
+
+Pockets.prototype.search = function(type, search) {
+    var label = Object.keys(search)[0];
+    var value = search[label];
+    var keys = Object.keys(this.pockets[type]);
+    for(var i=0; i<keys.length; i++) {
+        if (this.pockets[type][keys[i]][label] === value) {
+            return this.pockets[type][keys[i]];
+        }
+    }
+}
+
 
 /**
  * Get an hd pocket by name

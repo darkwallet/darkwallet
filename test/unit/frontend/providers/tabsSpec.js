@@ -3,15 +3,25 @@
 define(['angular-mocks', 'frontend/providers/tabs'], function(mocks) {
   describe('Tabs provider', function() {
 
-    var tabs, $templateCache;
+    var tabs, $templateCache, $http, $location, $route, currentPath;
     
-    beforeEach(mocks.module("DarkWallet.providers"));
-    beforeEach(mocks.inject(['$tabs', '$templateCache', function(_$tabs_, _$templateCache_) {
-      tabs = _$tabs_;
-      $templateCache = _$templateCache_;
-      $templateCache.get = function() { return true; };
-      
-    }]));
+    // '$templateCache', '$http', '$location', '$route'
+    beforeEach(function(done){
+      mocks.module("DarkWallet.providers");
+      mocks.module(function($provide) {
+        // Override services
+        $provide.value('$route', {});
+      });
+      mocks.inject([ '$templateCache', '$http', '$location', '$route', '$tabs', function(_$templateCache_, _$http_, _$location_, _$route_, _$tabs_) {
+        $templateCache = _$templateCache_;
+        $http = _$http_;
+        $location = _$location_;
+        $route = _$route_;
+        $templateCache.get = function() { return true; };
+        tabs = _$tabs_;
+        done();
+      }]);
+    });
 
     it('is initiated correctly', function() {
       expect(tabs.current).toBe(0);
@@ -20,11 +30,11 @@ define(['angular-mocks', 'frontend/providers/tabs'], function(mocks) {
     });
     
     it('selects a tab', function() {
-      tabs.pages[2].select();
+      tabs.pages[2].load();
       expect(tabs.current).toBe(2);
       expect(tabs.previous).toBe(0);
       
-      tabs.pages[4].select();
+      tabs.pages[4].load();
       expect(tabs.current).toBe(4);
       expect(tabs.previous).toBe(2);
       

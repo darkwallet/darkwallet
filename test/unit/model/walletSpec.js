@@ -177,7 +177,6 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       expect(wallet.pockets.hdPockets).toEqual(pockets);
       expect(_store.pockets).toEqual(pockets);
       expect(Object.keys(wallet.pockets.pockets.hd).length).toBe(3);
-
       // Do not allow duplicates
       expect(function() {
         wallet.pockets.createPocket('Spendings');
@@ -185,7 +184,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
     
     it('initializes a pocket', function() {
-      wallet.pockets.initPocketWallet(100);
+      wallet.pockets.initPocketWallet('hd', 100);
       var pocket = wallet.pockets.pockets.hd[100];
       expect(pocket.addresses).toEqual([]);
       expect(pocket.changeAddresses).toEqual([]);
@@ -194,16 +193,16 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     
     it('gets a pocket', function() {
       wallet.pockets.hdPockets = [{name: 'spending'}, {name: 'savings'}, {name: 'Spendings'}];
-      expect(wallet.pockets.getPocket('savings')).toBe(wallet.pockets.hdPockets[1]);
+      expect(wallet.pockets.getPocket(1).store).toEqual(wallet.pockets.hdPockets[1]);
     });
     
     it('deletes a pocket', function() {
       var pockets = [{name: 'spending'}, {name: 'savings'}];
       expect(function() {
-        wallet.pockets.deletePocket('incorrect');
+        wallet.pockets.deletePocket('foo', 'incorrect');
       }).toThrow();
       
-      wallet.pockets.deletePocket('spending');
+      wallet.pockets.deletePocket('hd', 0);
       expect(wallet.pockets.hdPockets).toEqual([null, {name: 'savings'}]);
       expect(_store.pockets).toEqual([null, {name: 'savings'}]);
       expect(Object.keys(wallet.pockets.pockets.hd).length).toBe(1);
