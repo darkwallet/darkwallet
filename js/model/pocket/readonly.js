@@ -73,5 +73,13 @@ ReadOnlyPocket.prototype.fromContact = function(contact) {
     return created;
 };
 
+/**
+ * Get our index
+ * @private
+ */
+ReadOnlyPocket.prototype.getPocketId = function() {
+    return this.name;
+};
+
 return ReadOnlyPocket;
 });

@@ -104,7 +104,6 @@ BasePocket.prototype.getMainAddress = function() {
  */
 BasePocket.prototype.destroy = function() {
     var self = this;
-    var pocketId = this.name;
     var wallet = this.getMyWallet();
     // First delete all addresses
     var walletAddresses = this.getWalletAddresses();
@@ -116,12 +115,12 @@ BasePocket.prototype.destroy = function() {
         }
     });
     // Now delete our index in the wallet
+    var pocketId = this.getPocketId();
     delete wallet.pockets.pockets[this.type][pocketId];
     this.addresses = this.addresses.splice(0, this.addresses.length);
     wallet.store.save();
     return removed;
-}
-
+};
 
 return BasePocket;
 });

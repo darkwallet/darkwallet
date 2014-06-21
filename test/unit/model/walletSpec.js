@@ -196,7 +196,6 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
     
     it('deletes a pocket', function() {
-      var pockets = [{name: 'spending'}, {name: 'savings'}];
       expect(function() {
         wallet.pockets.deletePocket('incorrect', 'foo');
       }).toThrow();

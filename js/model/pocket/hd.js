@@ -42,20 +42,24 @@ HdPocket.prototype.getMainAddress = function() {
 };
 
 /**
+ * Get our index
+ */
+HdPocket.prototype.getPocketId = function() {
+    var wallet = this.getMyWallet();
+    return wallet.pockets.hdPockets.indexOf(this.store);
+}
+
+/**
  * Custom destroy to also cleanup the internal hdPocket
  */
 HdPocket.prototype.destroy = function() {
-    // Backwards compatibility while cleaning up:
-    var name = this.name;
-    var wallet = this.getMyWallet();
-    var hdPockets = wallet.pockets.hdPockets;
-    var i = hdPockets.indexOf(this.store);
-    if (i > -1) {
-        hdPockets[i] = null;
-    } else {
-        throw new Error("Backend does not exist!");
-    }
+    // First cleanup using the base class
     BasePocket.prototype.destroy.call(this);
+
+    // Now do specific hd pocket cleaning
+    var i = this.getPocketId();
+    var wallet = this.getMyWallet();
+    wallet.pockets.hdPockets[i] = null;
 };
 
 

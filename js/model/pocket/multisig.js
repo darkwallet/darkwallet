@@ -43,5 +43,12 @@ MultisigPocket.prototype.getIndex = function(walletAddress) {
     return walletAddress.index[0];
 };
 
+/**
+ * Get our index
+ */
+MultisigPocket.prototype.getPocketId = function() {
+    return this.multisig.address;
+};
+
 return MultisigPocket;
 });
