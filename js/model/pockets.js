@@ -57,7 +57,7 @@ Pockets.prototype.initPockets = function(store) {
     this.pockets = { 'hd': {}, 'multisig': {}, 'readonly': {} };
     for(var i=0; i< this.hdPockets.length; i++) {
         if (this.hdPockets[i]) {
-            this.initPocketWallet('hd', i, this.hdPockets[i]);
+            this.initPocketWallet(i, 'hd', this.hdPockets[i]);
         }
     }
     return this.hdPockets;
@@ -74,25 +74,19 @@ Pockets.prototype.createPocket = function(name) {
     }
     var pocketStore = {'name': name};
     this.hdPockets.push(pocketStore);
-    this.initPocketWallet('hd', this.hdPockets.length-1, pocketStore);
+    this.initPocketWallet(this.hdPockets.length-1, 'hd', pocketStore);
     this.store.save();
 };
 
 /**
  * Initialize a pockets wallet
  * @param {Object} id Pocket id (can be branch number, multisig address...)
+ * @param {String} type The pocket type
+ * @param {Object} pocketStore The store for the pocket
  * @private
  */
-Pockets.prototype.initPocketWallet = function(type, id, pocketStore) {
-    if (type === 'multisig') {
-        var fund = this.wallet.multisig.search({ address: id });
-        if (!fund) {
-            // TODO: Create a fake fund for now
-            fund = {address: id, name: id};
-            console.log("No fund for this address!", id);
-        }
-        this.pockets.multisig[id] = new MultisigPocket(fund, this);
-    } else if (this.pockets[type] && this.pocketFactories[type]) {
+Pockets.prototype.initPocketWallet = function(id, type, pocketStore) {
+    if (this.pockets[type] && this.pocketFactories[type]) {
         pocketStore = pocketStore ? pocketStore : {id: id};
         var PocketFactory = this.pocketFactories[type];
         this.pockets[type][id] = new PocketFactory(pocketStore, this);
@@ -104,7 +98,7 @@ Pockets.prototype.initPocketWallet = function(type, id, pocketStore) {
 
 /**
  * Search for a pocket
- * @param {String} type Pocket type
+ * @param {String} type The pocket type
  * @param {Object} search Search query, has to be one key: value for now.
  */
 
@@ -122,24 +116,26 @@ Pockets.prototype.search = function(type, search) {
 
 /**
  * Get an hd pocket by name
- * @param {String} name Name for the pocket
+ * @param {Object} id Pocket id (can be branch number, multisig address...)
+ * @param {String} addressType The type of the address
  * @return {Object} The pocket with the given name
  */
-Pockets.prototype.getPocket = function(pocketId, addressType) {
+Pockets.prototype.getPocket = function(id, addressType) {
     var type = this.addressTypes[addressType].type;
-    return this.pockets[type][pocketId];
+    return this.pockets[type][id];
 };
 
 /**
  * Delete a pocket
- * @param {String} name Name for the pocket to delete
+ * @param {Object} id Pocket id (can be branch number, multisig address...)
+ * @param {String} type The pocket type
  * @throws {Error} When the pocket doesn't exist
  */
-Pockets.prototype.deletePocket = function(type, pocketId) {
+Pockets.prototype.deletePocket = function(id, type) {
    var oldPocket;
-    if (this.pockets[type][pocketId]) {
-        oldPocket = this.pockets[type][pocketId];
-        delete this.pockets[type][pocketId];
+    if (this.pockets[type][id]) {
+        oldPocket = this.pockets[type][id];
+        delete this.pockets[type][id];
         this.store.save();
     }
     // Backwards compatibility while cleaning up:
@@ -168,10 +164,11 @@ Pockets.prototype.getAddressPocketId = function(walletAddress) {
 
 /**
  * Get all pockets of a certain type
+ * @param {String} type The pocket type
  */
 
 Pockets.prototype.getPockets = function(type) {
-    var pockets = this.pockets[this.addressTypes[type].type];
+    var pockets = this.pockets[type];
     if (!pockets) {
         throw new Error("Unknown address type! " + type);
     }
@@ -183,19 +180,19 @@ Pockets.prototype.getPockets = function(type) {
  * @param {Object} walletAddress Address we're adding. See {@link Wallet#getWalletAddress}.
  */
 Pockets.prototype.addToPocket = function(walletAddress) {
-    var pocketBase = this.getPockets(walletAddress.type);
-    var pocketId = this.getAddressPocketId(walletAddress);
-    // Only autoinitialize multisig funds for now
+    var id = this.getAddressPocketId(walletAddress);
     var addressType = this.addressTypes[walletAddress.type];
-    if (addressType && addressType.autoCreate && !(this.pockets[addressType.type][pocketId])) {
-        this.initPocketWallet(addressType.type, pocketId);
+    if (addressType && addressType.autoCreate && !(this.pockets[addressType.type][id])) {
+        this.initPocketWallet(id, addressType.type);
     }
-    pocketBase[pocketId].addToPocket(walletAddress);
+    var pocketBase = this.getPockets(addressType.type);
+    pocketBase[id].addToPocket(walletAddress);
 };
 
 /**
  * Gets all public addresses for this pocket.
  * @param {Object} id Pocket id (can be branch number, multisig address...)
+ * @param {String} type The pocket type
  * @return {Array} An array of strings with the addresses.
  */
 Pockets.prototype.getAddresses = function(id, type) {
@@ -206,6 +203,7 @@ Pockets.prototype.getAddresses = function(id, type) {
 /**
  * Gets all change addresses for a pocket.
  * @param {Object} id Pocket id (can be branch number, multisig address...)
+ * @param {String} type The pocket type
  * @return {Array} An array of strings with the addresses.
  */
 Pockets.prototype.getChangeAddresses = function(id, type) {
@@ -216,6 +214,7 @@ Pockets.prototype.getChangeAddresses = function(id, type) {
 /**
  * Gets all addresses for a pocket.
  * @param {Object} id Pocket id (can be pocket index, multisig address...)
+ * @param {Object} type The pocket type
  * @return {Array} An array of strings with the addresses.
  */
 Pockets.prototype.getAllAddresses = function(id, type) {
@@ -226,6 +225,7 @@ Pockets.prototype.getAllAddresses = function(id, type) {
 /**
  * Gets the pocket wallet for a pocket
  * @param {Object} id Pocket id (can be pocket index, multisig address...)
+ * @param {String} type The pocket type
  * @return {Object} The pocket wallet
  */
 Pockets.prototype.getPocketWallet = function(id, type) {

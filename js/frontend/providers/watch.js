@@ -29,7 +29,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
     var pocketId = contact.data.name;
 
     // Create the pocket and addreses
-    var pocket = identity.wallet.pockets.initPocketWallet('readonly', pocketId);
+    var pocket = identity.wallet.pockets.initPocketWallet(pocketId, 'readonly');
     var addresses = pocket.fromContact(contact);
 
     // Load addresses into scope

@@ -184,7 +184,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
     
     it('initializes a pocket', function() {
-      wallet.pockets.initPocketWallet('hd', 100);
+      wallet.pockets.initPocketWallet(100, 'hd');
       var pocket = wallet.pockets.pockets.hd[100];
       expect(pocket.addresses).toEqual([]);
       expect(pocket.changeAddresses).toEqual([]);
@@ -199,10 +199,10 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     it('deletes a pocket', function() {
       var pockets = [{name: 'spending'}, {name: 'savings'}];
       expect(function() {
-        wallet.pockets.deletePocket('foo', 'incorrect');
+        wallet.pockets.deletePocket('incorrect', 'foo');
       }).toThrow();
       
-      wallet.pockets.deletePocket('hd', 0);
+      wallet.pockets.deletePocket(0, 'hd');
       expect(wallet.pockets.hdPockets).toEqual([null, {name: 'savings'}]);
       expect(_store.pockets).toEqual([null, {name: 'savings'}]);
       expect(Object.keys(wallet.pockets.pockets.hd).length).toBe(1);

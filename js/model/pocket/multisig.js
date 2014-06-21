@@ -8,7 +8,13 @@ define(['bitcoinjs-lib', 'model/pocket/base'], function(Bitcoin, BasePocket) {
  * @param {Object} pockets Pockets parent object
  * @constructor
  */
-function MultisigPocket(multisig, pockets) {
+function MultisigPocket(store, pockets) {
+    var multisig = pockets.wallet.multisig.search({ address: store.id });
+    if (!multisig) {
+        // TODO: Create a fake fund for now
+        multisig = {address: id, name: id};
+        console.log("No fund for this address!", id);
+    }
     this.multisig = multisig;
     BasePocket.call(this, pockets);
     this.name = multisig.name;

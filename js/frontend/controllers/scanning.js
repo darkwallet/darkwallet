@@ -17,7 +17,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
           if (!pockets.hdPockets[pocketIndex]) {
               // Manual initialization of specific pocket
               pockets.hdPockets[pocketIndex] = {name: "Pocket " + pocketIndex};
-              pockets.initPocketWallet('hd', pocketIndex, pockets.hdPockets[pocketIndex]);
+              pockets.initPocketWallet(pocketIndex, 'hd', pockets.hdPockets[pocketIndex]);
               pockets.store.save();
           }
           if (!identity.wallet.pubKeys[seq]) {
