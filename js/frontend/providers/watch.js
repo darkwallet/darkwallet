@@ -1,7 +1,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (providers, DarkWallet) {
-  providers.factory('watch', ['$wallet', function($wallet) {
+  providers.factory('watch', ['$wallet', '$history', function($wallet, $history) {
   // - start provider
 
   /**
@@ -20,6 +20,10 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
         removed.forEach(function(walletAddress) {
             $wallet.removeAddress(walletAddress);
         });
+        // go to 'all' if this is the current pocket
+        if ($history.pocket.index === contact.data.name) {
+            $history.selectAll();
+        }
     }
   };
 
@@ -76,8 +80,9 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
     var identity = DarkWallet.getIdentity();
     if (key && key.address && key.type !== 'stealth') {
         var pocket = identity.wallet.pockets.getPocket(contact.data.name, 'readonly');
-        var walletAddress = pocket.removeAddress(key.address);
+        var walletAddress = pocket.getWalletAddress(key.address);
         if (walletAddress) {
+            pocket.removeAddress(walletAddress);
             $wallet.removeAddress(walletAddress);
         }
     }

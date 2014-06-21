@@ -32,14 +32,6 @@ ReadOnlyPocket.prototype.getIndex = function(walletAddress) {
 };
 
 /**
- * Add an address to its pocket
- * @param {Object} walletAddress Address we're adding. See {@link Wallet#getWalletAddress}.
- */
-ReadOnlyPocket.prototype.addToPocket = function(walletAddress) {
-    this.addresses.push(walletAddress.address);
-};
-
-/**
  * Create a read only address
  */
 ReadOnlyPocket.prototype.createAddress = function(data) {
@@ -66,23 +58,6 @@ ReadOnlyPocket.prototype.createAddress = function(data) {
 };
 
 /**
- * Remove an address from the pocket and wallet.
- */
-ReadOnlyPocket.prototype.removeAddress = function(address) {
-    var wallet = this.getMyWallet();
-    var seq = ['readonly:'+this.name, address];
-    var walletAddress = wallet.pubKeys[seq];
-    if (walletAddress) {
-        wallet.deleteAddress(seq, true);
-    }
-    var idx = this.addresses.indexOf(address);
-    if (idx > -1) {
-        this.addresses.splice(idx, 1);
-    }
-    return walletAddress;
-}
-
-/**
  * Destroy this pocket and cleanup all related addresses.
  */
 ReadOnlyPocket.prototype.destroy = function() {
@@ -90,11 +65,11 @@ ReadOnlyPocket.prototype.destroy = function() {
     var pocketId = this.name;
     var wallet = this.getMyWallet();
     // First delete all addresses
-    var addresses = this.getAllAddresses();
+    var walletAddresses = this.getWalletAddresses();
     var removed = [];
-    addresses.forEach(function(address) {
-        var walletAddress = self.removeAddress(address);
+    walletAddresses.forEach(function(walletAddress) {
         if (walletAddress) {
+            self.removeAddress(walletAddress);
             removed.push(walletAddress);
         }
     });
@@ -118,11 +93,6 @@ ReadOnlyPocket.prototype.fromContact = function(contact) {
         }
     });
     return created;
-};
-
-ReadOnlyPocket.prototype.getMainAddress = function() {
-    return this.getMyWallet().getWalletAddress(this.addresses[0]);
-    
 };
 
 return ReadOnlyPocket;

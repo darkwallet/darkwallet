@@ -11,7 +11,7 @@
     <div class="large-6 columns">
       <div class="panel radius">
 		<div class="row collapse">
-	        <h5>{{pocket.isFund?'Fund':'Stealth'}} address</h5>
+	        <h5>{{pocket.type=='multisig'?'Fund':pocket.stealth?'Stealth':'Main'}} address</h5>
 			<div class="small-1 columns text-center">
 				<identicon ng-hide="row.contact" icon-size="38" hash="pocket.mainHash"></identicon>
 			</div>

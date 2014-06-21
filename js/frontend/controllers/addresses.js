@@ -42,7 +42,7 @@ function (controllers, Bitcoin, DarkWallet) {
   $scope.setAddressFilter = function(name) {
       $history.setAddressFilter(name);
       $scope.addrFilter = name;
-      $scope.allAddresses = $scope.pocket.addresses.concat($scope.pocket.changeAddresses).filter($scope.addressFilter);
+      $scope.allAddresses = $scope.pocket.addresses.filter($scope.addressFilter);
       $scope.nPages = Math.ceil($scope.allAddresses.length/limit);
       $scope.page = 0;
       $scope.addresses = $scope.allAddresses.slice($scope.page*limit, ($scope.page*limit) + limit);
@@ -87,6 +87,5 @@ function (controllers, Bitcoin, DarkWallet) {
   $scope.$watch('pocket.name', function() {
       $scope.setAddressFilter($scope.addrFilter);
   })
-
 }]);
 });

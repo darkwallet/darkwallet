@@ -144,7 +144,8 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
         // task.outPocket can be a number so we need to check for undefined
         if (pocketId !== undefined) {
-            var outPocket = identity.wallet.pockets.getPocket(pocketId, walletAddress.type);
+            var pocketType = identity.wallet.pockets.getPocketType(walletAddress.type);
+            var outPocket = identity.wallet.pockets.getPocket(pocketId, pocketType);
             if (outPocket) {
                 title = outPocket.name + ': ' + title;
             }

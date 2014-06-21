@@ -9,10 +9,10 @@ define(['bitcoinjs-lib', 'model/pocket/base'], function(Bitcoin, BasePocket) {
  * @constructor
  */
 function HdPocket(store, pockets) {
-    BasePocket.call(this, pockets);
     this.store = store;
-    this.init();
+    BasePocket.call(this, pockets);
     this.name = store.name;
+    this.mainAddress = null;
 }
 
 HdPocket.prototype = Object.create(BasePocket.prototype);
@@ -30,16 +30,18 @@ HdPocket.prototype.getIndex = function(walletAddress) {
 };
 
 /**
- * Add an address to its pocket
- * @param {Object} walletAddress Address we're adding. See {@link Wallet#getWalletAddress}.
+ * Get the main address for this pocket
  */
-HdPocket.prototype.addToPocket = function(walletAddress) {
-    if (walletAddress.index[0]%2 === 1) {
-        this.changeAddresses.push(walletAddress.address);
-    } else {
-        this.addresses.push(walletAddress.address);
+HdPocket.prototype.getMainAddress = function() {
+    var wallet = this.getMyWallet();
+    var index = wallet.pockets.hdPockets.indexOf(this.store);
+    if (index === -1) {
+        throw new Error("Wrong hd pocket!");
     }
+    return wallet.getAddress([index]);
 };
+
+
 
 return HdPocket;
 });

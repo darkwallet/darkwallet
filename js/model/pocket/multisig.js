@@ -9,15 +9,8 @@ define(['bitcoinjs-lib', 'model/pocket/base'], function(Bitcoin, BasePocket) {
  * @constructor
  */
 function MultisigPocket(store, pockets) {
-    var multisig = pockets.wallet.multisig.search({ address: store.id });
-    if (!multisig) {
-        // TODO: Create a fake fund for now
-        multisig = {address: id, name: id};
-        console.log("No fund for this address!", id);
-    }
-    this.multisig = multisig;
     BasePocket.call(this, pockets);
-    this.name = multisig.name;
+    this.init(store);
 }
 
 MultisigPocket.prototype = Object.create(BasePocket.prototype);
@@ -28,30 +21,26 @@ MultisigPocket.prototype.types = ['multisig'];
 MultisigPocket.prototype.autoCreate = true;
 
 /**
+ * Initialize the pocket's internal structures.
+ */
+MultisigPocket.prototype.init = function(store) {
+    var address = store.id;
+    var multisig = this.getMyWallet().multisig.search({ address: address });
+    if (!multisig) {
+        // TODO: Create a fake fund for now
+        multisig = {address: address, name: address};
+        console.log("No fund for this address!", address);
+    }
+    this.multisig = multisig;
+    this.store = store;
+    this.name = multisig.name;
+}
+
+/**
  * Get the index for some address in this pocket
  */
 MultisigPocket.prototype.getIndex = function(walletAddress) {
     return walletAddress.index[0];
-};
-
-
-/**
- * Initialize a pockets wallet
- * @param {Object} id Pocket id (can be branch number, multisig address...)
- * @private
- */
-MultisigPocket.prototype.init = function(id) {
-    this.addresses.push(this.multisig.address);
-};
-
-/**
- * Add an address to its pocket
- * @param {Object} walletAddress Address we're adding. See {@link Wallet#getWalletAddress}.
- */
-MultisigPocket.prototype.addToPocket = function(walletAddress) {
-    if (!walletAddress.address === this.multisig.address) {
-        throw new Error("Can't add to multisig pocket");
-    }
 };
 
 return MultisigPocket;

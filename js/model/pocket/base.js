@@ -11,26 +11,57 @@ function BasePocket(pockets) {
     this.getMyWallet = function() {
         return pockets.wallet;
     };
+    this.walletAddresses = [];
     this.addresses = [];
-    this.changeAddresses = [];
     this.balance = 0;
-    this.init();
 }
-
-/**
- * Initialize a pockets wallet
- * @param {Object} id Pocket id (can be branch number, multisig address...)
- * @private
- */
-BasePocket.prototype.init = function() {
-};
 
 /**
  * Add an address to its pocket
  * @param {Object} walletAddress Address we're adding. See {@link Wallet#getWalletAddress}.
  */
 BasePocket.prototype.addToPocket = function(walletAddress) {
-    throw new Error("Not implemented!");
+    this.addresses.push(walletAddress.address);
+    this.walletAddresses.push(walletAddress);
+};
+
+/**
+ * Remove an address from the pocket and wallet.
+ */
+BasePocket.prototype.removeAddress = function(walletAddress) {
+    var wallet = this.getMyWallet();
+    wallet.deleteAddress(walletAddress.index, true);
+    var i = this.walletAddresses.indexOf(walletAddress);
+    if (i>0) {
+        this.walletAddresses.splice(i, 1);
+        if (this.addresses[i] !== walletAddress.address) {
+            // consistency must be maintained
+            throw new Error("pocket index mismatch!");
+        }
+        this.addresses.splice(i, 1);
+    }
+
+    return walletAddress;
+}
+
+/**
+ * Gets wallet address for the given address
+ * @return {Array} An array of strings with the addresses.
+ */
+BasePocket.prototype.getWalletAddress = function(address) {
+    var idx = this.addresses.indexOf(address);
+    if (idx > -1) {
+        return this.walletAddresses[idx];
+    }
+};
+
+
+/**
+ * Gets all public addresses for this pocket.
+ * @return {Array} An array of strings with the addresses.
+ */
+BasePocket.prototype.getWalletAddresses = function() {
+    return this.walletAddresses;
 };
 
 
@@ -41,23 +72,6 @@ BasePocket.prototype.addToPocket = function(walletAddress) {
 BasePocket.prototype.getAddresses = function() {
     return this.addresses;
 };
-
-/**
- * Gets all change addresses for this pocket.
- * @return {Array} An array of strings with the addresses.
- */
-BasePocket.prototype.getChangeAddresses = function() {
-    return this.changeAddresses;
-};
-
-/**
- * Gets all addresses for this pocket.
- * @return {Array} An array of strings with the addresses.
- */
-BasePocket.prototype.getAllAddresses = function() {
-    return this.getAddresses().concat(this.getChangeAddresses());
-};
-
 
 /**
  * Gets the pocket wallet for a pocket
@@ -75,6 +89,13 @@ BasePocket.prototype.getWallet = function() {
         }
     });
     return { outputs: pocketOutputs, addresses: addresses };
+};
+
+/**
+ * Get the main address for this pocket
+ */
+BasePocket.prototype.getMainAddress = function() {
+    return this.getMyWallet().getWalletAddress(this.addresses[0]);
 };
 
 return BasePocket;

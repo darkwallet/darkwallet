@@ -27,7 +27,7 @@ function (controllers, DarkWallet, Port) {
         $scope.pocket = $history.getCurrentPocket();
         $scope.historyRows = $history.rows;
         $scope.selectedPocket = $history.selectedPocket;
-        $tabs.updateTabs($scope.pocket.isAll, $scope.pocket.isFund, $scope.pocket.tasks);
+        $tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
     }
   };
 
@@ -62,7 +62,7 @@ function (controllers, DarkWallet, Port) {
           checkChanges($routeParams.pocketType, pocketId?parseInt(pocketId):undefined);
 
           // Update tabs
-          $scope.tabs.updateTabs($scope.pocket.isAll, $scope.pocket.isFund, $scope.pocket.tasks);
+          $scope.tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
           //}
 
           $history.previousIdentity = identity.name;

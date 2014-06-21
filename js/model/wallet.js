@@ -96,9 +96,9 @@ Wallet.prototype.getPocketAddresses = function(pocketId, type) {
         }
     } else if (typeof pocketId === 'number') {
         // Hd pocket
-        allAddresses = this.pockets.getAllAddresses(pocketId, type);
+        allAddresses = this.pockets.getAddresses(pocketId, type);
     } else if (type == 'readonly') {
-        allAddresses = this.pockets.getAllAddresses(pocketId, type);
+        allAddresses = this.pockets.getAddresses(pocketId, type);
     } else {
         // Multisig
         allAddresses = [pocketId]; 

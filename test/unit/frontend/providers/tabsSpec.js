@@ -44,36 +44,36 @@ define(['angular-mocks', 'frontend/providers/tabs'], function(mocks) {
     
     describe('updates visible tabs', function() {
       it('when in overview', function() {
-        tabs.updateTabs(true, false, []);
+        tabs.updateTabs('all', []);
         expect(tabs.visible).toEqual([0, 1, 3]);
       });
       
       it('when in a pocket', function() {
-        tabs.updateTabs(false, false, []);
+        tabs.updateTabs('hd', []);
         expect(tabs.visible).toEqual([0, 1, 3, 5]);
       });
       
       it('when in a fund', function() {
-        tabs.updateTabs(false, true, []);
+        tabs.updateTabs('multisig', []);
         expect(tabs.visible).toEqual([0, 1, 2]);
       });
       
       it('when pending tasks', function() {
-        tabs.updateTabs(true, false, [{}]);
+        tabs.updateTabs('all', [{}]);
         expect(tabs.visible).toEqual([ 0, 1, 3, 4 ]);
         
-        tabs.updateTabs(false, false, [{}]);
+        tabs.updateTabs('hd', [{}]);
         expect(tabs.visible).toEqual([ 0, 1, 3, 4, 5 ]);
         
-        tabs.updateTabs(false, true, [{}]);
+        tabs.updateTabs('multisig', [{}]);
         expect(tabs.visible).toEqual([ 0, 1, 2, 4 ]);
       });
     });
     it('selects another tab if current is not visible', function() {
       tabs.current = 5;
-      tabs.updateTabs(false, false);
+      tabs.updateTabs('hd');
       expect(tabs.current).toBe(5);
-      tabs.updateTabs(false, true);
+      tabs.updateTabs('multisig');
       expect(tabs.current).toBe(0);
     });
   });

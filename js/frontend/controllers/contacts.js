@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', function($scope, $routeParams, $location, $route, $wallet, watch) {
+  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', function($scope, $routeParams, $location, $route, $wallet, watch, $history) {
 
   $scope.newContact = {};
   $scope.contactToEdit = {};
@@ -151,6 +151,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     // If pocket is watch only add the new address
     if (contact.data.watch) {
         watch.addKey(contact, newKey);
+        $history.refreshAddresses();
     }
 
     // add to scope
@@ -191,6 +192,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
             watch.removeKey(contact, key);
             contact.update($scope.contactToEdit.address, index);
             watch.addKey(contact, key);
+            $history.refreshAddresses();
         }
     }
     $scope.editingContact = false;
@@ -217,6 +219,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     // if watch remove the address from the wallet
     if (contact.data.watch) {
         watch.removeKey(contact, contact.pubKeys[index]);
+        $history.refreshAddresses();
     }
     contact.deleteKey(index);
   };
@@ -227,10 +230,12 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         watch.removePocket(contact);
     }
     contact.remove();
+    // remove from this scope
     var contactIndex = $scope.contacts.indexOf(contact);
     if (contactIndex > -1) {
         $scope.contacts.splice(contactIndex, 1);
     }
+    // go to contacts
     $location.path('/contacts');
   };
 

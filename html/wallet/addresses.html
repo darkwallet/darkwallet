@@ -1,17 +1,17 @@
 <div ng-controller="AddressesCtrl">
-  <div class="panel radius" ng-hide="pocket.isAll || pocket.isFund">
+  <div class="panel radius" ng-hide="pocket.isAll">
     <div class="row collapse">
         <div class="medium-2 columns">
-            <span class="prefix radius">Stealth Address</span>
+            <span class="prefix radius">{{pocket.stealth?'Stealth':'Main'}} Address</span>
         </div>
         <div class="medium-6 columns">
-            <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.stealth}}" />
+            <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.mainAddress}}" />
         </div>
         <div class="medium-2 columns">
-            <button ng-click="clipboard.copy(pocket.stealth)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
+            <button ng-click="clipboard.copy(pocket.mainAddress)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
         </div>
         <div class="medium-2 columns">
-            <button ng-click="modals.showBtcQr(pocket.stealth)" class="nomarginbottom button postfix radius fa fa-qrcode">Show QR</button>
+            <button ng-click="modals.showBtcQr(pocket.mainAddress)" class="nomarginbottom button postfix radius fa fa-qrcode">Show QR</button>
         </div>
     </div>
 
@@ -70,9 +70,9 @@
         <li ng-click="setPage(page+1)" ng-class="{unavailable:page==nPages-1}" class="arrow"><a href="">&raquo;</a></li>
     </ul>
    </div>
-	<div class="text-right topmargin" ng-hide="pocket.isFund">
-    	<a class="button small radius nomarginbottom fa fa-plus" ng-hide="pocket.isAll||pocket.readOnly" ng-click="generateAddress((pocket.index*2)+1)"> New change address</a>
-    	<a class="button small radius nomarginbottom fa fa-plus" ng-click="generateAddress(pocket.index*2)" ng-hide="pocket.isAll||pocket.readOnly"> New address</a>
+	<div class="text-right topmargin" ng-show="pocket.type==='hd'">
+    	<a class="button small radius nomarginbottom fa fa-plus" ng-click="generateAddress((pocket.index*2)+1)"> New change address</a>
+    	<a class="button small radius nomarginbottom fa fa-plus" ng-click="generateAddress(pocket.index*2)"> New address</a>
   	</div>
 
 

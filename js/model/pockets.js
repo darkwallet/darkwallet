@@ -115,14 +115,21 @@ Pockets.prototype.search = function(type, search) {
 
 
 /**
- * Get an hd pocket by name
+ * Get an hd pocket by id and type
  * @param {Object} id Pocket id (can be branch number, multisig address...)
- * @param {String} addressType The type of the address
- * @return {Object} The pocket with the given name
+ * @param {String} type The pocket type
+ * @return {Object} The pocket instance
  */
-Pockets.prototype.getPocket = function(id, addressType) {
-    var type = this.addressTypes[addressType].type;
+Pockets.prototype.getPocket = function(id, type) {
     return this.pockets[type][id];
+};
+
+/**
+ * Get the type for a certain address type
+ * @return {String} addressType The address type
+ */
+Pockets.prototype.getPocketType = function(addressType) {
+    return this.addressTypes[addressType].type;
 };
 
 /**
@@ -198,28 +205,6 @@ Pockets.prototype.addToPocket = function(walletAddress) {
 Pockets.prototype.getAddresses = function(id, type) {
     type = type ? type : 'hd';
     return this.pockets[type][id].getAddresses();
-};
-
-/**
- * Gets all change addresses for a pocket.
- * @param {Object} id Pocket id (can be branch number, multisig address...)
- * @param {String} type The pocket type
- * @return {Array} An array of strings with the addresses.
- */
-Pockets.prototype.getChangeAddresses = function(id, type) {
-    type = type ? type : 'hd';
-    return this.pockets[type][id].getChangeAddresses();
-};
-
-/**
- * Gets all addresses for a pocket.
- * @param {Object} id Pocket id (can be pocket index, multisig address...)
- * @param {Object} type The pocket type
- * @return {Array} An array of strings with the addresses.
- */
-Pockets.prototype.getAllAddresses = function(id, type) {
-    type = type ? type : 'hd';
-    return this.pockets[type][id].getAllAddresses();
 };
 
 /**

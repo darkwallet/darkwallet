@@ -93,8 +93,8 @@ define(['./module'], function (providers) {
       }
   };
  
-  tabs.updateTabs = function(isAll, isFund, tasks) {
-      if (isFund) {
+  tabs.updateTabs = function(pocketType, tasks) {
+      if (pocketType === 'multisig') {
           tabs.visible = [0, 1, 2]; // Overview, history and fund
       } else {
           tabs.visible = [0, 1, 3]; // Overview, history, addresses
@@ -102,7 +102,7 @@ define(['./module'], function (providers) {
       if (tasks && tasks.length) {
           tabs.visible.push(4); // Tasks
       }
-      if (!isFund && !isAll) {
+      if (['multisig', 'all', 'init'].indexOf(pocketType) == -1) {
           tabs.visible.push(5); // Actions
       }
       if (!tabs.pages[tabs.current].isVisible()) {
