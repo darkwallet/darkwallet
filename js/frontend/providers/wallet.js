@@ -85,9 +85,9 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       var allCache = this.allAddresses;
       [thisCache, allCache].forEach(function(cache) {
           if (cache) { 
-              var idx = cache.indexOf(walletAddress)
+              var idx = cache.indexOf(walletAddress);
               if (idx > 0) {
-                  cache.splice(idx, 0);
+                  cache.splice(idx, 1);
               }
           }
       });

@@ -77,7 +77,7 @@ ReadOnlyPocket.prototype.removeAddress = function(address) {
     }
     var idx = this.addresses.indexOf(address);
     if (idx > -1) {
-        this.addresses.splice(idx, 0);
+        this.addresses.splice(idx, 1);
     }
     return walletAddress;
 }
