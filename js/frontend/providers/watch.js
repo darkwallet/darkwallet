@@ -48,7 +48,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
         var reindexed = [];
         Object.keys(identity.wallet.pubKeys).forEach(function(seq) {
             var walletAddress = identity.wallet.pubKeys[seq];
-            if (walletAddress.index[0] === ('readonly:'+prevName)) {
+            if (walletAddress && walletAddress.index[0] === ('readonly:'+prevName)) {
                 // Save the index before changing it
                 reindexed.push(walletAddress.index.slice());
                 // Change the index to the new name

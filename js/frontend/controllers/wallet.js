@@ -71,6 +71,7 @@ function (controllers, DarkWallet, Port) {
   };
 
   $scope.updateReadOnlyPockets = function(identity) {
+      this.updateReadOnly(identity);
       $scope.forms.readOnlyArray.splice(0, $scope.forms.readOnlyArray.length);
       var keys = Object.keys($scope.allReadOnly);
       keys.forEach(function(pocketId) {
