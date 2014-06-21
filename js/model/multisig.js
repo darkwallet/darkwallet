@@ -91,14 +91,18 @@ Multisig.prototype.search = function(search) {
 
 Multisig.prototype.deleteFund = function(fund) {
     // Add a walletAddres to the wallet so we can keep track of the fund address
-    var walletAddress = this.wallet.getWalletAddress(fund.address);
     var fundIndex = this.funds.indexOf(fund);
     if (fundIndex == -1) {
         throw Error("Fund does not exist");
     }
     this.funds.splice(fundIndex, 1);
-    this.wallet.deleteAddress([fund.address], true);
-    this.store.save();
+    var pocket = this.wallet.pockets.getPocket(fund.address, 'multisig');
+    if (pocket) {
+        pocket.destroy();
+    } else {
+        // pocket.destroy also saves
+        this.store.save();
+    }
 };
 
 return Multisig;

@@ -26,6 +26,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
      */
     $scope.deletePocketFinish = function(pocket) {
         var identity = DarkWallet.getIdentity();
+        var pocket = identity.wallet.pockets.getPocket();
         identity.wallet.pockets.deletePocket(pocket.index, pocket.type);
         $scope.selectPocket();
     };

@@ -141,24 +141,9 @@ Pockets.prototype.getPocketType = function(addressType) {
  */
 Pockets.prototype.deletePocket = function(id, type) {
     type = type ? type : 'hd';
-    var oldPocket;
-    if (this.pockets[type][id]) {
-        oldPocket = this.pockets[type][id];
-        delete this.pockets[type][id];
-        this.store.save();
-    }
-    // Backwards compatibility while cleaning up:
-    if (type == 'hd' && oldPocket) {
-        var name = oldPocket.store.name;
-        for(var i=0; i<this.hdPockets.length; i++) {
-            if (this.hdPockets[i] && (this.hdPockets[i].name == name)) {
-                 var pocket = this.hdPockets[i];
-                 this.hdPockets[i] = null;
-                 this.store.save();
-                 return;
-             }
-         }
-         throw new Error("Pocket with that name does not exist!");
+    var pocket = this.pockets[type][id];
+    if (pocket) {
+        pocket.destroy();
     }
 };
 

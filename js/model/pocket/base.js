@@ -30,7 +30,7 @@ BasePocket.prototype.addToPocket = function(walletAddress) {
  */
 BasePocket.prototype.removeAddress = function(walletAddress) {
     var wallet = this.getMyWallet();
-    wallet.deleteAddress(walletAddress.index, true);
+    wallet.deleteAddress(walletAddress.index);
     var i = this.walletAddresses.indexOf(walletAddress);
     if (i>0) {
         this.walletAddresses.splice(i, 1);
@@ -97,6 +97,31 @@ BasePocket.prototype.getWallet = function() {
 BasePocket.prototype.getMainAddress = function() {
     return this.walletAddresses[0];
 };
+
+/**
+ * Destroy this pocket and cleanup all related addresses.
+ * Also unlinks the pocket from the wallet
+ */
+BasePocket.prototype.destroy = function() {
+    var self = this;
+    var pocketId = this.name;
+    var wallet = this.getMyWallet();
+    // First delete all addresses
+    var walletAddresses = this.getWalletAddresses();
+    var removed = [];
+    walletAddresses.forEach(function(walletAddress) {
+        if (walletAddress) {
+            self.removeAddress(walletAddress);
+            removed.push(walletAddress);
+        }
+    });
+    // Now delete our index in the wallet
+    delete wallet.pockets.pockets[this.type][pocketId];
+    this.addresses = this.addresses.splice(0, this.addresses.length);
+    wallet.store.save();
+    return removed;
+}
+
 
 return BasePocket;
 });

@@ -322,16 +322,13 @@ Wallet.prototype.addToWallet = function(walletAddress) {
 /**
  * Delete an address from the wallet
  * @param {Array} seq Array for the bip32 sequence to retrieve address for
- * @param {Bool} dontSave Won't trigger store.save if true
+ * @private - should be called from the pocket
  */
-Wallet.prototype.deleteAddress = function(seq, dontSave) {
+Wallet.prototype.deleteAddress = function(seq) {
+    // Addresses should be cleaned up from their pocket not from here (unlees they are not in a pocket)
     var walletAddress = this.pubKeys[seq];
     this.wallet.addresses.splice(this.wallet.addresses.indexOf(walletAddress.index), 1);
     delete this.pubKeys[seq];
-    // TODO: should cleanup pockets
-    if (!dontSave) {
-        this.store.save();
-    }
 };
 
 /**

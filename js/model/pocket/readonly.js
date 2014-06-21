@@ -58,28 +58,6 @@ ReadOnlyPocket.prototype.createAddress = function(data) {
 };
 
 /**
- * Destroy this pocket and cleanup all related addresses.
- */
-ReadOnlyPocket.prototype.destroy = function() {
-    var self = this;
-    var pocketId = this.name;
-    var wallet = this.getMyWallet();
-    // First delete all addresses
-    var walletAddresses = this.getWalletAddresses();
-    var removed = [];
-    walletAddresses.forEach(function(walletAddress) {
-        if (walletAddress) {
-            self.removeAddress(walletAddress);
-            removed.push(walletAddress);
-        }
-    });
-    // Now delete our index in the wallet
-    delete wallet.pockets.pockets.readonly[pocketId];
-    this.addresses = [];
-    return removed;
-}
-
-/**
  * Create a read only addresses into this pocket from the given contact
  */
 ReadOnlyPocket.prototype.fromContact = function(contact) {
