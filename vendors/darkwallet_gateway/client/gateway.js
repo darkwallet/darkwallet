@@ -123,6 +123,25 @@ GatewayClient.prototype.subscribe = function(
     });
 }
 
+/**
+ * Unsubscribe
+ *
+ * @param {String}   address
+ * @param {Function} handle_fetch Callback to handle subscription result
+ * representing for updates
+ */
+
+GatewayClient.prototype.unsubscribe = function(address, handle_fetch)
+{
+    if (this.handler_map["update." + address]) {
+        delete this.handler_map["update." + address];
+    }
+    this.make_request("unsubscribe_address", [address], function(response) {
+        handle_fetch(response["error"], response["result"][0]);
+    });
+}
+
+
 GatewayClient.prototype.fetch_block_header = function(index, handle_fetch) {
     GatewayClient._check_function(handle_fetch);
 
