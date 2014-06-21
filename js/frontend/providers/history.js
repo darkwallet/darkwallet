@@ -120,7 +120,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       this.pocket.fund = new MultisigFund(fund);
       this.pocket.tasks = this.pocket.fund.tasks;
       this.pocket.isFund = true;
-      this.selectedPocket = type+':' + fundIndex;
+      this.selectedPocket = 'multisig:' + fundIndex;
   };
 
   HistoryProvider.prototype.selectAll = function() {
