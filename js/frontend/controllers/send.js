@@ -176,7 +176,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               if (err.type == 'password') {
                   notify.warning(err.message);
               } else {
-                  notify.error('Error sending to mixer ('+mixingTask.task.state+')', amountNote);
+                  notify.error('Error sending to mixer ('+amountNote+')', mixingTask.task.state+' '+err.message);
               }
           } else {
               $scope.resetSendForm();

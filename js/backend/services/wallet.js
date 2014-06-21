@@ -342,7 +342,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         var privKeys = {};
         var failed = metadata.utxo.some(function(utxo) {
             var address = identity.wallet.getWalletAddress(utxo.address);
-            if (address && !privKeys.hasOwnProperty(address.index)) {
+            if (!address) {
+                callback({message: 'No keys found for some addresses', type: 'keys'});
+                return true; // to break out of the some loop
+            }
+            else if (!privKeys.hasOwnProperty(address.index)) {
                 try {
                     // Stealth backwards comp workaround, 0.4.0
                     Stealth.quirk = address.quirk;
@@ -355,8 +359,6 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                     callback({data: e, message: 'Password incorrect!', type: 'password'});
                     return true; // to break out of the some loop
                 }
-            } else if (!address) {
-                console.log("[wallet] No private keys for", address);
             }
         });
         if (failed) {
