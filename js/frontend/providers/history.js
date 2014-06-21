@@ -97,6 +97,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
               var keys = Object.keys(identity.wallet.pockets.pockets.hd);
               this.selectGenericPocket('hd', keys.indexOf(''+idx));
               this.selectedPocket = 'hd:' + idx;
+              this.pocket.lastIndex = idx;
               break;
           case 'readonly':
               this.selectGenericPocket(type, idx);
