@@ -146,7 +146,7 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKe
     var c = Stealth.stealthDH(encKey.priv, scanKey);
 
     // Now generate pubkey and address
-    var pubKey = Stealth.deriveKey(spendKey, c);
+    var pubKey = Stealth.derivePublicKey(spendKey, c);
 
     var mpKeyHash = Bitcoin.crypto.hash160(pubKey);
     var address = new Bitcoin.Address(mpKeyHash, version);
