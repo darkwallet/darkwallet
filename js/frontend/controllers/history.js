@@ -5,7 +5,7 @@
 
 define(['./module', 'darkwallet', 'frontend/port'],
 function (controllers, DarkWallet, Port) {
-  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', '$location', '$routeParams', '$route', function($scope, $history, $tabs, $location, $routeParams, $route) {
+  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', '$location', '$routeParams', '$route', 'watch', function($scope, $history, $tabs, $location, $routeParams, $route, watch) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
@@ -171,6 +171,21 @@ function (controllers, DarkWallet, Port) {
       var identity = DarkWallet.getIdentity();
       $scope.currentRow.label = $scope.rowEdit.label;
       identity.txdb.setLabel($scope.currentRow.hash, $scope.rowEdit.label);
+  };
+
+  /**
+   * Add current row's address to a contact
+   */
+  $scope.addToContact = function(contact) {
+      var row = $scope.currentRow;
+      var newKey = contact.addKey(row.address);
+
+      // If pocket is watch only add the new address
+      if (contact.data.watch) {
+          watch.addKey(contact, newKey);
+          $history.refreshAddresses();
+      }
+      $history.chooseRows();
   };
 
 }]);

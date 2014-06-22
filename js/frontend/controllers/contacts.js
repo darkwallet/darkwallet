@@ -66,9 +66,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   var getContactTypes = function() {
     var types;
-    if (filterType == 'pubKey') {
+    if (filterType === 'any') {
+        types = ['stealth', 'address', 'pubkey', 'id'];
+    } else if (filterType === 'pubKey') {
         types = ['pubkey', 'stealth'];
-    } else if (filterType == 'idKey') {
+    } else if (filterType === 'idKey') {
         types = ['id'];
     } else {
         types = ['stealth', 'address', 'pubkey'];
@@ -96,6 +98,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     if (!filterType) {
         // If looking for address get the main key
         key = contact.mainKey;
+    } else if (filterType === 'any') {
+        $scope.ok(contact);
+        return;
     }
     // If we don't have a key yet look for one of the right types
     if (!key) {
