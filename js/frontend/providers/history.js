@@ -445,7 +445,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           if (contact === row.contact) {
               row.contact = undefined;
           }
-      };
+      });
   };
 
   HistoryProvider.prototype.historyFilter = function(row, shownRows) {
