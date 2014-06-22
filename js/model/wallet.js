@@ -153,6 +153,12 @@ Wallet.prototype.loadPubKeys = function() {
     Object.keys(this.pubKeys).forEach(function(index) {
         var walletAddress = self.pubKeys[index];
 
+        // Cleanup if malformed
+        if (!walletAddress){
+            console.log("delete empty address", index);
+            delete self.pubKeys[index];
+            return;
+        }
         // Add all to the wallet
         self.wallet.addresses.push(walletAddress.address);
         if (walletAddress.index.length > 1) {
