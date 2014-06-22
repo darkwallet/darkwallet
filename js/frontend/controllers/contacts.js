@@ -204,7 +204,10 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         var prevName = contact.data.name;
         contact.data.name = name;
         contact.update();
-        watch.renamePocket(name, prevName);
+        if (watch.renamePocket(name, prevName)) {
+            // update the scope
+            $scope.updateReadOnly(DarkWallet.getIdentity());
+        }
     }
     $scope.editingContact = false;
   };
@@ -227,7 +230,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   // Delete a contact
   $scope.deleteContact = function(contact) {
     if (contact.data.watch) {
-        watch.removePocket(contact);
+        $history.removePocket('readonly', contact.data.name);
     }
     contact.remove();
     // remove from this scope
@@ -245,7 +248,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     contact.data.watch = !contact.data.watch;
 
     // init or remove watching pocket
-    contact.data.watch ? watch.initPocket(contact) : watch.removePocket(contact);
+    contact.data.watch ? watch.initPocket(contact) : $history.removePocket('readonly', contact.data.name);
 
     // update the scope
     $scope.updateReadOnly(DarkWallet.getIdentity());

@@ -10,11 +10,6 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
   function WatchProvider() {
   }
 
-  // Remove a watch only pocket from a contact
-  WatchProvider.prototype.removePocket = function(contact) {
-    return $history.removePocket('readonly', contact.data.name);
-  };
-
   // Add a watch only pocket from a contact
   WatchProvider.prototype.initPocket = function(contact) {
     var identity = DarkWallet.getIdentity();
@@ -60,6 +55,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
         reindexed.forEach(function(seq) {
             delete identity.wallet.pubKeys[seq];
         });
+        return true;
     }
   };
 
