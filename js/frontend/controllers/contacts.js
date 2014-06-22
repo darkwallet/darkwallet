@@ -263,6 +263,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         $history.refreshAddresses();
     }
     contact.deleteKey(index);
+    // clear the contact in any related rows in case it came from this key
+    $history.clearRowContacts(contact);
   };
 
   // Delete a contact
@@ -276,6 +278,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     if (contactIndex > -1) {
         $scope.contacts.splice(contactIndex, 1);
     }
+    // clear the contact in any related row
+    $history.clearRowContacts(contact);
     // go to contacts
     $location.path('/contacts');
   };

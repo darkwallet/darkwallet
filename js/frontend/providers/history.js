@@ -438,6 +438,16 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       return this.chooseRows();
   };
 
+  // Clear the contact in any rows that have it linked
+  HistoryProvider.prototype.clearRowContacts = function(contact) {
+      var identity = DarkWallet.getIdentity();
+      identity.history.history.forEach(function(row) {
+          if (contact === row.contact) {
+              row.contact = undefined;
+          }
+      };
+  };
+
   HistoryProvider.prototype.historyFilter = function(row, shownRows) {
       var blockDiff = DarkWallet.service.wallet.blockDiff;
       if (!row.height) {
