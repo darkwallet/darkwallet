@@ -177,8 +177,17 @@ function (controllers, DarkWallet, Port) {
    * Add current row's address to a contact
    */
   $scope.addToContact = function(contact) {
+      var newKey;
       var row = $scope.currentRow;
-      var newKey = contact.addKey(row.address);
+
+      // Check to see if it was just added while creating a new contact
+      var lastKey = contact.pubKeys[contact.pubKeys.length-1].data;
+      if (lastKey.data === row.address || lastKey.address === row.address) {
+          newKey = lastKey;
+      } else {
+          // Otherwise create a new key on an existing contact
+          newKey = contact.addKey(row.address);
+      }
 
       // If pocket is watch only add the new address
       if (contact.data.watch) {

@@ -114,7 +114,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
       it('creates a new contact', function() {
         var newContact = {name: 'DarkWallet donations', address: '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy'};
         scope.newContact = newContact;
-        scope.createContact();
+        scope.createContact(newContact);
         expect(scope.contacts.length).toBe(4);
         expect(scope.contacts).toContain(newContact);
         expect(scope.newContact).toEqual({});

@@ -152,22 +152,23 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     }
   }
 
-  $scope.createContact = function() {
+  $scope.createContact = function(contactData) {
     var identity = DarkWallet.getIdentity();
 
-    if (checkDuplicate($scope.newContact.address)) {
+    if (checkDuplicate(contactData.address)) {
         $scope.newContact = {};
         $scope.contactFormShown = false;
         return;
     }
 
-    var newContact = identity.contacts.addContact($scope.newContact);
+    var newContact = identity.contacts.addContact(contactData);
 
     // add to scope
     $scope.contacts.push(newContact);
 
     $scope.newContact = {};
     $scope.contactFormShown = false;
+    return newContact;
   };
 
   $scope.addContactKey = function(contact) {
