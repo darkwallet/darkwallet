@@ -130,8 +130,31 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     $scope.filterContacts();
   }
 
+  var checkDuplicate = function(address) {
+    var identity = DarkWallet.getIdentity();
+    var parsed = identity.contacts.parseKey(address);
+    var found = identity.contacts.findByAddress(parsed.address);
+    // check for duplicate contact
+    if (found) {
+        notify.warning('Contact with that key already exists: ' + found.data.name);
+        return found;
+    }
+    // also see if this is ourselves
+    found = identity.wallet.getWalletAddress(address);
+    if (found) {
+        notify.warning('This is yourself!');
+        return found;
+    }
+  }
+
   $scope.createContact = function() {
     var identity = DarkWallet.getIdentity();
+
+    if (checkDuplicate($scope.newContact.address)) {
+        $scope.newContact = {};
+        $scope.contactFormShown = false;
+        return;
+    }
 
     var newContact = identity.contacts.addContact($scope.newContact);
 
@@ -145,6 +168,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.addContactKey = function(contact) {
     var address = $scope.newContact.address;
     var label = $scope.newContact.label;
+
+    if (checkDuplicate(address)) {
+        $scope.newContact = {};
+        return;
+    }
 
     var newKey = contact.addKey(address, label);
 
@@ -165,7 +193,6 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   };
 
   $scope.openContact = function(contact) {
-    // modals.open('show-contact', {contact: contact});
     var identity = DarkWallet.getIdentity();
     var contactIndex = identity.contacts.contacts.indexOf(contact);;
 
@@ -188,6 +215,12 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     } else {
         // Edit address
         if (key.data !== $scope.contactToEdit.address) {
+            // Don't allow duplicates
+            if (checkDuplicate($scope.contactToEdit.address)) {
+                $scope.editingContact = false;
+                return;
+            }
+
             // recreate and update the contact
             watch.removeKey(contact, key);
             contact.update($scope.contactToEdit.address, index);
