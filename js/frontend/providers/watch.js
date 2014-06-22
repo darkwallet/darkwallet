@@ -36,6 +36,21 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
         // Save the name in the pocket
         pocket.name = newName;
         pocket.store.id = newName;
+
+        // Rewrite history
+        identity.history.history.forEach(function(row) {
+            if (row.inPocket === prevName) {
+                row.inPocket = newName;
+            }
+            if (row.outPocket === prevName) {
+                row.outPocket = newName;
+            }
+            if (row.impact.hasOwnProperty(prevName)) {
+                row.impact[newName] = row.impact[prevName];
+                delete row.impact[prevName];
+            }
+        });
+
         //  Reindex with the new pocketId
         pockets[newName] = pocket;
         delete pockets[prevName];
