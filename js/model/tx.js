@@ -33,6 +33,7 @@ function Transaction(store, identity) {
  */
 // was prepareTx
 Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fee, reserveOutputs) {
+    var newAddresses = [];
     var wallet = this.identity.wallet;
     var totalAmount = 0;
     recipients.forEach(function(recipient) {
@@ -79,7 +80,12 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
         // test for stealth
         if (address[0] === versions.stealth.prefix) {
             isStealth = true;
-            address = Stealth.addStealth(address, newTx, versions.address, versions.stealth.nonce);
+            var res = Stealth.addStealth(address, newTx, versions.address, versions.stealth.nonce);
+            address = res.address.toString();
+            var newAddress = wallet.checkNewStealth(recipient.address, address, dest.ephemKey, dest.pubKey);
+            if (newAddress) {
+                newAddresses.push(newAddress);
+            }
         }
         newTx.addOutput(address, recipient.amount);
     });
@@ -94,7 +100,7 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
         });
     }
     // Return the transaction and some metadata
-    return {tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth, recipients: recipients};
+    return {tx: newTx, utxo: txUtxo, total: totalAmount, fee: fee, change: change, myamount: outAmount, stealth: isStealth, recipients: recipients, created: newAddresses};
 };
 
 

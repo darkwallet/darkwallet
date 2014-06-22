@@ -38,7 +38,7 @@ HdPocket.prototype.getMainAddress = function() {
     if (index === -1) {
         throw new Error("Wrong hd pocket!");
     }
-    return wallet.getAddress([index]);
+    return wallet.getAddress([index*2]);
 };
 
 /**

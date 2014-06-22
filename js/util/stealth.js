@@ -145,9 +145,12 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKe
     // Generate shared secret
     var c = Stealth.stealthDH(encKey.priv, scanKey);
 
-    // Now generate address
-    var address = Stealth.deriveAddress(spendKey, c, version);
-    return [address, ephemKey];
+    // Now generate pubkey and address
+    var pubKey = Stealth.deriveKey(spendKey, c);
+
+    var mpKeyHash = Bitcoin.crypto.hash160(pubKey);
+    var address = new Bitcoin.Address(mpKeyHash, version);
+    return [address, ephemKey, pubKey];
 };
 
 /*
@@ -312,7 +315,7 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
 Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ephemKeyBytes, initialNonce) {
     if (nonceVersion === undefined) { nonceVersion = Stealth.nonceVersion; };
     if (addressVersion === undefined) { addressVersion = Bitcoin.network.mainnet.addressVersion; };
-    var outHash, ephemKey;
+    var outHash, ephemKey, pubKey;
     var stealthAddress = Stealth.parseAddress(recipient);
     var stealthPrefix = stealthAddress.prefix;
     var scanKeyBytes = stealthAddress.scanKey;
@@ -328,8 +331,9 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
     var nonce;
     do {
         var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, addressVersion, ephemKeyBytes);
-        recipient = stealthData[0].toString();
+        recipient = stealthData[0];
         ephemKey = stealthData[1];
+        pubKey = stealthData[2];
         nonce = startingNonce;
         var iters = 0;
         // iterate through nonces to find a match for given prefix
@@ -351,7 +355,7 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
     // we finally mined the ephemKey that makes the hash match
     var stealthOut = Stealth.buildNonceOutput(ephemKey, nonce-1, nonceVersion);
     newTx.addOutput(stealthOut);
-    return recipient;
+    return {address: recipient, ephemKey: ephemKey, pubKey: pubKey};
 };
 
 return Stealth;

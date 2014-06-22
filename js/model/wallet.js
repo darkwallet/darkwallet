@@ -643,5 +643,33 @@ Wallet.prototype.processStealthMatch = function(pocketIndex, ephemKey, pubKey, a
     return walletAddress;
 };
 
+/**
+ * Search for an address
+ */
+Wallet.prototype.searchAddress = function(search) {
+    var label = Object.keys(search)[0];
+    var value = search[label];
+    var keys = Object.keys(this.pubKeys);
+    for(var i=0; i<keys.length; i++) {
+        var seq = keys[i];
+        if (this.pubKeys[seq][label] === value) {
+            return this.pubKeys[seq];
+        }
+    }
+};
+
+/**
+ * Check for new derived stealth address
+ */
+Wallet.prototype.checkNewStealth = function(recipient, address, ephemKey, pubKey) {
+    var pocketAddress = wallet.searchAddress({'stealth': recipient});
+    if (pocketAddress) {
+        var seq = [pocketAddress.index[0], 's'].concat(ephemKey);
+        var addrData = {'type': 'stealth', 'ephemKey': ephemKey, 'address': address, 'quirk': false};
+        var walletAddress = this.storePublicKey(seq, pubKey, addrData);
+        return walletAddress;
+    }
+}
+
 return Wallet;
 });

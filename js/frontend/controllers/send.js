@@ -322,13 +322,18 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           metadata = identity.tx.prepare(pocketIndex,
                                          recipients,
                                          changeAddress,
-                                         fee)
+                                         fee);
       } catch (error) {
           var errorMessage = error.message || ''+error;
           notify.error("Failed preparing transaction", errorMessage);
           sendForm.sending = false;
           return;
       }
+
+      // Add newly created addresses to the wallet
+      metadata.created.forEach(function(newAddress) {
+          $wallet.initAddress(newAddress);
+      });
 
       var amountNote = (fee + totalAmount) + ' satoshis';
 

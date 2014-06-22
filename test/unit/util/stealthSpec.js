@@ -65,7 +65,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
 
       // try with no ephemKeyBytes so it will be generated (normal case)
       res = Stealth.initiateStealth(scanBytes, spendBytes);
-      expect(res.length).toBe(2);
+      expect(res.length).toBe(3);
     });
 
     it('uncovers the stealth secret', function() {
@@ -161,11 +161,10 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
     });
     
     it('adds stealth output to the given transaction and return destination address', function() {
-      var recipient = testAddress;
       var newTx = new Bitcoin.Transaction();
-      var recipient = Stealth.addStealth(recipient, newTx, undefined, undefined, ephemKeyBytes, 1);
+      var recipient = Stealth.addStealth(testAddress, newTx, undefined, undefined, ephemKeyBytes, 1);
 
-      expect(recipient).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
+      expect(recipient.address.toString()).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
       expect(newTx.outs.length).toBe(1);
       var outBuffer = newTx.outs[0].script.chunks[1];
       expect(newTx.outs[0].script.chunks[0]).toBe(Bitcoin.Opcode.map.OP_RETURN); // OP_RETURN
