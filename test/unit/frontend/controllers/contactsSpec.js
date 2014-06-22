@@ -21,6 +21,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         deleteContact: function(contact) {}
       },
       wallet: {
+        getWalletAddress: function() {},
         pockets: {
             pockets: {readonly: [], hd: [], multisig: []},
             getPockets: function() {return []}
@@ -63,7 +64,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         };
         var history = {refreshAddresses: function() {}, clearRowContacts: function() {}, removePocket: function(){}};
         var route = {contactId: undefined, current: {templateUrl: "bla"}};
-        var wallet = {addToScope: function() {}, getWalletAddress: function() {}};
+        var wallet = {addToScope: function() {}};
         contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet, watch: watch, $history: history, notify: notify});
       }]);
     };
