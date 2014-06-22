@@ -82,7 +82,7 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
             isStealth = true;
             var res = Stealth.addStealth(address, newTx, versions.address, versions.stealth.nonce);
             address = res.address.toString();
-            var newAddress = wallet.checkNewStealth(recipient.address, address, dest.ephemKey, dest.pubKey);
+            var newAddress = wallet.checkNewStealth(recipient.address, address, res.ephemKey, res.pubKey);
             if (newAddress) {
                 newAddresses.push(newAddress);
             }
