@@ -11,6 +11,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
     var identity = {
       contacts: {
         parseKey: function() { return {}; },
+        findByAddress: function() { },
         contacts: _contacts,
         addContact: function(newContact) {
           identity.contacts.contacts.push(newContact);
