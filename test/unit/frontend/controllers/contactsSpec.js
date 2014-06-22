@@ -45,6 +45,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
     var injectController = function(routeParams) {
       mocks.inject(["$rootScope", "$controller", function ($rootScope, $controller) {
         var watch = {};
+        var notify = {};
         watch.removePocket = function() {};
         watch.initPocket = function() {};
         watch.renamePocket = function() {};
@@ -61,7 +62,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         var history = {refreshAddresses: function() {}};
         var route = {contactId: undefined, current: {templateUrl: "bla"}};
         var wallet = {addToScope: function() {}};
-        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet, watch: watch, $history: history});
+        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet, watch: watch, $history: history, notify: notify});
       }]);
     };
     

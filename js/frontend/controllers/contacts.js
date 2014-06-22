@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', function($scope, $routeParams, $location, $route, $wallet, watch, $history) {
+  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', 'notify', function($scope, $routeParams, $location, $route, $wallet, watch, $history, notify) {
 
   $scope.newContact = {};
   $scope.contactToEdit = {};
