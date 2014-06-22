@@ -662,7 +662,7 @@ Wallet.prototype.searchAddress = function(search) {
  * Check for new derived stealth address
  */
 Wallet.prototype.checkNewStealth = function(recipient, address, ephemKey, pubKey) {
-    var pocketAddress = wallet.searchAddress({'stealth': recipient});
+    var pocketAddress = this.searchAddress({'stealth': recipient});
     if (pocketAddress) {
         var seq = [pocketAddress.index[0], 's'].concat(ephemKey);
         var addrData = {'type': 'stealth', 'ephemKey': ephemKey, 'address': address, 'quirk': false};
