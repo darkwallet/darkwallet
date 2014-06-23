@@ -57,6 +57,9 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       if (err) {
           notify.error("Scanning", err.message || ""+err);
       } else {
+          $scope.scanning = false;
+          $scope.scanStatus = $scope.scanner.status;
+          $scope.scanner = undefined;
           createAddresses(results);
           notify.success("Scanning", "Finished. Found " + results.length + " addresses");
       }
