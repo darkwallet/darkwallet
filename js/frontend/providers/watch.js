@@ -92,6 +92,10 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
   WatchProvider.prototype.addKey = function(contact, key) {
     var identity = DarkWallet.getIdentity();
     var pocket = identity.wallet.pockets.getPocket(contact.data.name, 'readonly');
+    if (!pocket) {
+        this.initPocket(contact):
+        return;
+    }
     var walletAddress = pocket.createAddress(key);
     if (walletAddress) {
         $wallet.initAddress(walletAddress);
