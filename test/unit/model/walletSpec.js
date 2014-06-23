@@ -137,7 +137,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       expect(wallet.pubKeys['0,0']).toBeDefined();
       expect(wallet.scanKeys[0].priv).toBeDefined();
       expect(wallet.scanKeys[0].pub).toBeDefined();
-      expect(wallet.pockets.hdPockets).toEqual([{name: 'spending'}, {name: 'savings'}]);
+      expect(wallet.pockets.hdPockets).toEqual([{name: 'spending'}, {name: 'business'}, {name: 'savings'}]);
       expect(wallet.pockets.pockets.hd[0].addresses).toEqual(['1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ']);
       expect(wallet.pockets.pockets.hd[1].addresses).toEqual(['1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs']);
       expect(wallet.mpk).toBe('xpub693Ab9Kv7vQjSJ9fZLKAWjqPUEjSyM7LidCCZW8wGosvZKi3Pf2ijiGe1MDTBmQnpXU795HNb4ebuW95tbLNuAzXndALZpRkRaRCbXDhafA');
@@ -153,11 +153,13 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       expect(wallet.fee).toBe(10000); // 0.1 mBTC
       expect(wallet.pubKeys).toEqual({});
       expect(wallet.scanKeys).toEqual([]);
-      expect(wallet.pockets.hdPockets).toEqual([{name: 'spending'}, {name: 'savings'}]);
+      expect(wallet.pockets.hdPockets).toEqual([{name: 'spending'}, {name: 'business'}, {name: 'savings'}]);
       expect(wallet.pockets.pockets.hd[0].addresses).toEqual([]);
       expect(wallet.pockets.pockets.hd[1].addresses).toEqual([]);
+      expect(wallet.pockets.pockets.hd[2].addresses).toEqual([]);
       expect(wallet.pockets.pockets.hd[0].store.name).toEqual('spending');
-      expect(wallet.pockets.pockets.hd[1].store.name).toEqual('savings');
+      expect(wallet.pockets.pockets.hd[1].store.name).toEqual('business');
+      expect(wallet.pockets.pockets.hd[2].store.name).toEqual('savings');
       expect(wallet.mpk).toBeFalsy();
       expect(wallet.wallet).toBeDefined();
       expect(wallet.multisig).toBeDefined();
@@ -172,7 +174,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
     
     it('creates a pocket', function() {
-      var pockets = [{name: 'spending'}, {name: 'savings'}, {name: 'Spendings'}];
+      var pockets = [{name: 'spending'}, {name: 'business'}, {name: 'savings'}, {name: 'Spendings'}];
       wallet.pockets.createPocket('Spendings');
       expect(wallet.pockets.hdPockets).toEqual(pockets);
       expect(_store.pockets).toEqual(pockets);
@@ -191,7 +193,6 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
     
     it('gets a pocket', function() {
-      wallet.pockets.hdPockets = [{name: 'spending'}, {name: 'savings'}, {name: 'Spendings'}];
       expect(wallet.pockets.getPocket(1).store).toEqual(wallet.pockets.hdPockets[1]);
     });
     
@@ -201,8 +202,8 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       }).toThrow();
       
       wallet.pockets.pockets.hd[0].destroy();
-      expect(wallet.pockets.hdPockets).toEqual([null, {name: 'savings'}]);
-      expect(_store.pockets).toEqual([null, {name: 'savings'}]);
+      expect(wallet.pockets.hdPockets).toEqual([null, {name: 'business'}, {name: 'savings'}]);
+      expect(_store.pockets).toEqual([null, {name: 'business'}, {name: 'savings'}]);
       expect(Object.keys(wallet.pockets.pockets.hd).length).toBe(1);
     });
     

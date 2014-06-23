@@ -51,7 +51,7 @@ Pockets.prototype.registerType = function(pocketType) {
  * @private
  */
 Pockets.prototype.initPockets = function(store) {
-    this.hdPockets = store.init('pockets', [{name:'spending'}, {name: 'savings'}]);
+    this.hdPockets = store.init('pockets', [{name:'spending'}, {name: 'business'}, {name: 'savings'}]);
 
     // Init pocket wallets (temporary cache for pockets)
     this.pockets = { 'hd': {}, 'multisig': {}, 'readonly': {} };
