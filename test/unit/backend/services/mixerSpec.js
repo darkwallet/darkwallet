@@ -89,6 +89,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
               }
 
             },
+            settings: {},
             wallet: {
               get identity() {return core.getIdentity();},
               deriveHDPrivateKey: Wallet.prototype.deriveHDPrivateKey,

@@ -114,7 +114,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       if (coinJoin) {
           var start = coinJoin.task.start;
           var timeout = coinJoin.task.timeout;
-          if (coinJoin.state !== 'finished' && (Date.now()/1000)-start > timeout) {
+          var hardMixing = this.core.getCurrentIdentity().settings.hardMixing;
+          if (coinJoin.state !== 'finished' && ((Date.now()/1000)-start > timeout) && !hardMixing) {
               // Cancel task if it expired and not finished
               console.log("[mixer] Cancelling coinjoin!", msg.body.id);
               Port.post('gui', {type: 'mixer', state: 'Sending with no mixing'});
