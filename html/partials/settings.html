@@ -15,8 +15,8 @@
            Incorrect password
           </div>
           <button class="small" ng-click="showSeed();">Show seed</button>
-          <h5>Mixing</h5>
-          <div>
+          <h5 ng-show="settings.advanced">Mixing</h5>
+          <div ng-show="settings.advanced">
              <input id="checkbox-mixer" title="If mixing is enabled when sending, will only send if successfull mixing, otherwise will just not send" ng-model="settings.hardMixing" ng-change="storeSettings()" type="checkbox"><label for="checkbox-mixer">Enforced mixing</label><br>
           </div>
         <form name="passwordForm" ng-submit="passwordChanged()" novalidate>
