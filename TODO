@@ -3,16 +3,21 @@ Immediate:
  + Wallet
    - Cache address history and resume
    + Review sending
-   - Review coinjoin mechanics
+   - CoinJoin Hardening
+     - check balance of peer inputs
+     - match fee with the other peer (if within limits)
+     - pocket mixing 'budget' or other controls
+     - controls for cancelling mixer tasks
+     - bip32 branch depth == mixing depth
    - Stealth multisig
    + Polish multisig mechanics
  - Lobby system
-   * Automatize multisig DONE
    - Establish trust and reputation
+   - Automatic beacons (trust based)
+   - Per-channel cloaks (or selectable per-channel cloaks)
  - Pocket actions:
    * Move funds to another pocket DONE
    - Move funds to another identity
-   + Delete STARTED
 
 Architecture/api:
 - Backend
@@ -62,6 +67,7 @@ Done:
    * then finish CoinJoin DONE
    * Implement multiParty from cryptocat (ed25519 curves) DONE
    * link contacts using lobby (sync stealth, mpk...) DONE
+   * Automatize multisig DONE
  * Currency support
    * Select BTC/mBTC DONE
    * Show as EUR/USD/CNY... (prices from bitcoinaverage) DONE
@@ -86,6 +92,7 @@ Done:
    * Pocket have 2 branches (public and change) DONE
    * Set as mixing DONE
    * Rename DONE
+   * Delete DONE
  * Settings
    * Change password DONE
    * Select server DONE
