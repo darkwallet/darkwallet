@@ -253,8 +253,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     // If we found a pocket, continue with the protocol.
     if (pocketIndex !== -1) {
       // Prepare arguments for preparing the tx
-      var changeAddress = identity.wallet.getChangeAddress(pocketIndex);
-      var destAddress = identity.wallet.getFreeAddress(pocketIndex*2);
+      var changeAddress = identity.wallet.getChangeAddress(pocketIndex, 'mixing');
+      var destAddress = identity.wallet.getFreeAddress(pocketIndex*2, 'mixing');
 
       var recipient = {address: destAddress.address, amount: opening.amount};
 
