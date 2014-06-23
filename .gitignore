@@ -30,7 +30,7 @@ Desktop.ini
 /vendors/angular-route/*
 !/vendors/angular-route/*.min.js
 /vendors/angular-foundation/*
-!/vendors/angular-foundation/mm-foundation-tpls.min.js
+!/vendors/angular-foundation/mm-foundation-custom-tpls.min.js
 /vendors/angular-xeditable/*
 !/vendors/angular-xeditable/dist
 /vendors/angular-xeditable/dist/js/xeditable.js
