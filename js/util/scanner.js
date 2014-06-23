@@ -15,15 +15,19 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       this.currentAddress = 0;
       this.lastAddressUsed = {0: 0};
       this.lastPocketUsed = 0;
-      this.pocketMargin = 10;
-      this.addressMargin = 10;
+      this.setMargins(5, 10);
       this.scanned = 0;
-      this.target = this.pocketMargin*this.addressMargin;
       this.pocketCache = {};
       this.status = '';
       this.finishCb = finishCb;
       this.updateCb = updateCb;
   }
+
+  Scanner.prototype.setMargins = function(pocketMargin, addressMargin) {
+      this.pocketMargin = pocketMargin*2;
+      this.addressMargin = addressMargin;
+      this.target = this.pocketMargin*this.addressMargin;
+  };
 
   Scanner.prototype.getAddress = function(pocket, n) {
       var childKey = this.mpKey;

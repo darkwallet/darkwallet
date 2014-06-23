@@ -7,6 +7,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
 
   $scope.scanning = false;
   $scope.scanStatus = "";
+  $scope.scanParams = {addresses: 10, pockets: 5};
 
   // Create addresses for the given results
   var createAddresses = function(results) {
@@ -72,6 +73,8 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       if (client) {
           var identity = DarkWallet.getIdentity();
           var scanner = new Scanner(client, identity, onScanFinish, onScanUpdate);
+          scanner.setMargins(parseInt($scope.scanParams.pockets||5),
+                             parseInt($scope.scanParams.addresses||10));
           $scope.scanner = scanner;
 
           // Start scanner

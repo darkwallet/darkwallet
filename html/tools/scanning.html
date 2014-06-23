@@ -1,8 +1,12 @@
 <div ng-controller="ScanningCtrl">
   <h3>Seed Scanning</h3>
   <div ng-show="!scanning">
-    <a class="button fa fa-pencil postfix" ng-click="tools.scanOpen=true" novalidate>Scan</a>
+    <a class="button fa fa-pencil postfix" ng-show="!tools.scanOpen" ng-click="tools.scanOpen=true" novalidate>Scan</a>
     <form name="scanningForm" ng-show="tools.scanOpen" ng-submit="scanSeed()">
+        <label>Address margin</label>
+        <input ng-model="scanParams.addresses" type="number"></input>
+        <label>Pocket margin</label>
+        <input ng-model="scanParams.pockets" type="number"></input>
         <div class="row collapse">
           <div class="medium-6 columns">
             <button type="submit" class="button fa fa-pencil postfix">Scan!</button>
@@ -16,7 +20,9 @@
   <div ng-show="scanning">
       <h4>Scanning</h4>
       <p ng-show="scanner">{{scanner.status}}<p>
-      <p ng-show="!scanner">{{scanStatus}}<p>
-      <progressbar value="scanProgress">{{scanned.scanned}}/{{scanned.max}}</progressbar>
+      <div ng-show="!scanner">
+          <p>{{scanStatus}}<p>
+          <progressbar value="scanProgress">{{scanned.scanned}}/{{scanned.max}}</progressbar>
+      </div>
   </div>
 </div>
