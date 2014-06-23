@@ -93,7 +93,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
     var identity = DarkWallet.getIdentity();
     var pocket = identity.wallet.pockets.getPocket(contact.data.name, 'readonly');
     if (!pocket) {
-        this.initPocket(contact):
+        this.initPocket(contact);
         return;
     }
     var walletAddress = pocket.createAddress(key);
