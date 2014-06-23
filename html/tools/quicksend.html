@@ -18,7 +18,7 @@
   </form>
   <form ng-submit="sendBitcoins()" ng-show="quicksend.next">
 
-	  <span ng-show="quicksend.contact" title="{{quicksend.contact.pubKeys[quicksend.contact.mainKey].address}}">Sending to {{quicksend.contact.name}} <identicon icon-size="24" hash="quicksend.contact.hash"></identicon></span>
+	  <span ng-show="quicksend.contact" title="{{quicksend.address}}">Sending to {{quicksend.contact.data.name}} <identicon icon-size="24" hash="quicksend.contact.data.hash"></identicon></span>
 	<div ng-show="!quicksend.contact" class="ellipsis contact-address">Sending to <identicon icon-size="24" hash="quicksend.address"></identicon>{{quicksend.address}}</div>
     <div class="row collapse">
       <div class="small-1 columns">
