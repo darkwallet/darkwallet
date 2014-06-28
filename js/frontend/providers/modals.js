@@ -29,7 +29,7 @@ var modals = {
         modals.okCallback = okCallback;
         modals.cancelCallback = cancelCallback;
         modals.show = true;
-    }
+    };
     if ($templateCache.get(tplUrl)) {
         finish();
     } else {
@@ -45,7 +45,7 @@ var modals = {
   },
 
   checkKeyDown: function(evt) {
-      if (modals.show && evt.keyCode == 27) {
+      if (modals.show && evt.keyCode === 27) {
           modals.cancel();
       }
   },
@@ -64,10 +64,10 @@ var modals = {
       notify.warning('URI not supported');
       return;
     }
-    if (pars.amount !== undefined && DarkWallet.getIdentity().settings.currency == 'mBTC') {
+    if (pars.amount !== undefined && DarkWallet.getIdentity().settings.currency === 'mBTC') {
       pars.amount = CurrencyFormat.asSatoshis(pars.amount, 'BTC');
       pars.amount = CurrencyFormat.asBtc(pars.amount, 'mBTC').toString();
-    } else if (pars.amount !== undefined && DarkWallet.getIdentity().settings.currency == 'bits') {
+    } else if (pars.amount !== undefined && DarkWallet.getIdentity().settings.currency === 'bits') {
       pars.amount = CurrencyFormat.asSatoshis(pars.amount, 'BTC');
       pars.amount = CurrencyFormat.asBtc(pars.amount, 'bits').toString();
     }
@@ -90,7 +90,9 @@ var modals = {
   scanQr: function(value, callback) {
     var cb = function(data, vars) {
       modals.onQrOk(data, vars);
-      if (callback) callback();
+      if (callback) {
+          callback();
+      }
     };
     modals.open('scan-qr', {field: value}, cb, modals.onQrCancel);
   },
