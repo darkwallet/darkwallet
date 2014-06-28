@@ -10,7 +10,7 @@ function CurrencyFormatting() {
 var symbol = {
   'BTC': '฿',
   'mBTC': 'm฿',
-  'bits': 'µ'
+  'bits': 'bits'
 }
 
 /**
