@@ -29,6 +29,13 @@
 	  <div class="panel radius">
 		<h5>Mix funds</h5>
 	  	<a ng-click="setMixing(pocket)" ng-class="{'fa-square-o':!pocket.mixing, 'fa-check-square-o': pocket.mixing}" class="fa button postfix">Mix funds on this pocket (CoinJoin)</a>
+		<h4 ng-show="pocket.mixing">Mixing Options</h4>
+		<form name="mixingOptionsForm" ng-show="pocket.mixing" ng-submit="setMixingOptions(pocket, forms.mixingOptions)">
+ 		        Budget: <input type="text" autofocus ng-model="forms.mixingOptions.budget" tooltip="Maximum budget to spend on fees"></input>
+ 		        <p tooltip="Amount already spent mixing">Spent: {{forms.mixingOptions.spent}}</p>
+ 		        <p tooltip="Target number of mixings">Target mixings: {{forms.mixingOptions.mixings}}</p>
+			<button class="button postfix fa fa-check" type="submit" ng-disabled="pocket.mixingOptions.budget===forms.mixingOptions.budget">Save</button>
+	        </form>
 	  </div>
   </div>
   <div class="medium-4 columns" ng-show="!pocket.readOnly">

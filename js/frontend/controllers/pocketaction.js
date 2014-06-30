@@ -83,6 +83,12 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
         var finishSetMixing = function() {
             walletPocket.mixing = !walletPocket.mixing;
             pocket.mixing = walletPocket.mixing;
+            // mixing options
+            if (pocket.mixing && !walletPocket.mixingOptions) {
+                walletPocket.mixingOptions = {budget: 100000, spent: 0, mixings: 5};
+                pocket.mixingOptions = walletPocket.mixingOptions;
+            }
+            // save store
             identity.wallet.store.save();
             var mixerService = DarkWallet.service.mixer;
             mixerService.checkMixing();
@@ -122,6 +128,42 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
             finishSetMixing();
         }
     };
+
+    /**
+     * Update the form with mixing options
+     */
+    var updateMixingOptions = function(pocket) {
+        if (!$scope.forms.mixingOptions) {
+            $scope.forms.mixingOptions = {};
+        }
+        if (!pocket.mixingOptions) {
+            return;
+        }
+        Object.keys(pocket.mixingOptions).forEach(function(name) {
+            $scope.forms.mixingOptions[name] = pocket.mixingOptions[name];
+        });
+    };
+
+    /**
+     * Set mixing options
+     */
+    $scope.setMixingOptions = function(pocket, options) {
+        var identity = DarkWallet.getIdentity();
+        var walletPocket = identity.wallet.pockets.getPocket(pocket.index, 'hd').store;
+
+        // now set options
+        walletPocket.mixingOptions.budget = parseInt(options.budget);
+        walletPocket.mixingOptions.mixings = parseInt(options.mixings);
+
+        // save
+        identity.wallet.store.save();
+    };
+
+    // Watch pocket change to update the form
+    $scope.$watch('pocket.mixingOptions', function() {
+        updateMixingOptions($scope.pocket);
+    });
+
 
     /**
      * Move funds to another pocket or identity
