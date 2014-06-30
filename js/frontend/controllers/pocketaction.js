@@ -19,8 +19,42 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
     $scope.renamePocket = function(pocket) {
         // continues in PocketCreateCtrl
         $scope.forms.pocketName = pocket.name;
-        $scope.forms.pocketLabelForm.$show();
+        $scope.renamingPocket = true;
     };
+
+    /**
+     * Finalize Rename a pocket
+     */
+    $scope.finalizeRenamePocket = function(pocket, name) {
+        if (!pocket || !name || pocket.name === name) {
+            // if empty just toggle visibility
+        } else {
+            var identity = DarkWallet.getIdentity();
+            var walletPocket = identity.wallet.pockets.getPocket($history.pocket.index, $history.pocket.type);
+            if (walletPocket.type === 'readonly') {
+                // Disable watch also if deleting a watch pocket
+                var contact = identity.contacts.search({name: walletPocket.name});
+                if (contact && contact.data.watch) {
+                    contact.data.name = name;
+                    watch.renamePocket(name, walletPocket.name);
+                    // update frontend index
+                    $scope.updateReadOnly(identity);
+                }
+            } else if (walletPocket.type === 'multisig') {
+                walletPocket.name = name;
+                walletPocket.fund.name = name;
+            } else {
+                // Otherwise just change the name
+                walletPocket.name = name;
+                walletPocket.store.name = name;
+            }
+            identity.store.save();
+            $scope.pocket.name = name;
+        }
+        $scope.forms.pocketName = '';
+        $scope.renamingPocket = false;
+    };
+
 
     /**
      * Really delete a pocket after confirmation

@@ -13,10 +13,16 @@
 				<a class="button postfix radius">Down</a>
 			</div>
 		  </div> -->
-		  <div class="row collapse">
-	        <a href="" ng-click="renamePocket(pocket)" class="fa button postfix fa-terminal">Rename</a>
-	        <a class="fa button alert postfix fa-trash-o" ng-click="deletePocket(pocket)" ng-show="pocket.index !== 0">Delete</a>
+	  <div class="row collapse">
+		  <div class="medium-12 columns">
+			<form name="pocketRenameForm" ng-show="renamingPocket" ng-submit="finalizeRenamePocket(pocket, forms.pocketName)">
+ 			         <input type="text" autofocus ng-model="forms.pocketName"></input><button class="button square righted fa fa-check" type="submit"></button>
+		        </form>
+	
+		        <a href="" ng-click="renamePocket(pocket)" class="fa button postfix fa-terminal">Rename</a>
+		        <a class="fa button alert postfix fa-trash-o" ng-click="deletePocket(pocket)" ng-show="pocket.index !== 0">Delete</a>
 		  </div>
+	  </div>
   	</div>
   </div>
   <div class="medium-4 columns" ng-show="!pocket.readOnly">

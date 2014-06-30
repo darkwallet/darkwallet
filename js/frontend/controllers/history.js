@@ -28,6 +28,10 @@ function (controllers, DarkWallet, Port) {
         $scope.historyRows = $history.rows;
         $scope.selectedPocket = $history.selectedPocket;
         $tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
+        // If the rename form is open we need to change the default shown there
+        if ($scope.forms.pocketName) {
+            $scope.forms.pocketName = $scope.pocket.name;
+        }
     }
   };
 
