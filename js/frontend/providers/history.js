@@ -406,7 +406,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           return ((typeof row.inPocket === 'number') || (typeof row.outPocket === 'number'));
       }
       else {
-          return (row.inPocket === this.pocket.index || row.outPocket === this.pocket.index);
+          var keys = Object.keys(row.impact);
+          return (keys.indexOf(this.pocket.index) > -1);
       }
   };
 
