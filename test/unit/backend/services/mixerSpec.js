@@ -99,10 +99,12 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
                           "217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}}
               },
               pockets: {
-                hdPockets: hdPockets
+                hdPockets: hdPockets,
+                getPocket: function() {
+                    getChangeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}; },
+                    getFreeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}; }
+                }
               },
-              getChangeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}; },
-              getFreeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}; },
               getBalance: function() { return {confirmed: 2*BTC, unconfirmed: 0}; }
             }
           };
