@@ -57,9 +57,9 @@ HdPocket.prototype.destroy = function() {
     var destroyed = BasePocket.prototype.destroy.call(this);
 
     // Now do specific hd pocket cleaning
-    var i = this.getPocketId();
+    var pocketId = this.getPocketId();
     var wallet = this.getMyWallet();
-    wallet.pockets.hdPockets[i] = null;
+    wallet.pockets.hdPockets[pocketId] = null;
     return destroyed;
 };
 
@@ -70,7 +70,6 @@ HdPocket.prototype.destroy = function() {
 HdPocket.prototype.getFreeAddress = function(change, label) {
     var walletAddress;
     // normal address, get the address
-    var pocketId = this.getPocketId();
     var branchIndex = this.getPocketId()*2;
     if (change) {
         branchIndex += 1;
