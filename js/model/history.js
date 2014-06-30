@@ -117,8 +117,8 @@ History.prototype.buildHistoryRow = function(transaction, height) {
             outMine += 1;
             myOutValue += anOut.value;
             var _outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
-            // save out pocket (don't set if it's change)
-            if (!((typeof outWalletAddress.index[0] === 'number') && (outWalletAddress.index[0]%2 == 1))) {
+            // save out pocket (don't set if it's change or same as input)
+            if (inPocket !== _outPocket && !((typeof outWalletAddress.index[0] === 'number') && (outWalletAddress.index[0]%2 == 1))) {
                 outPocket = _outPocket;
             }
             addPocketImpact(_outPocket, anOut.value);
