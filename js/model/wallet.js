@@ -360,54 +360,6 @@ Wallet.prototype.getAddress = function(seq, label) {
     }
 };
 
-/**
- * Get a free address from a branch id (can be pocket or pocket+1 for change)
- * @param {Object} branchIndex Branch index or pocket id
- * @param {String} label Default label for the address (optional)
- * @throws {Error} When generated an incorrect change address.
- */
-Wallet.prototype.getFreeAddress = function(branchIndex, label) {
-    var walletAddress;
-    if (typeof branchIndex === 'string') {
-        // multisig get the same address again
-        walletAddress = this.getWalletAddress(branchIndex);
-        if (['multisig', 'readonly'].walletAddress.type === -1) {
-           throw new Error("Generated an incorrect change address");
-        }
-    } else {
-        // normal address, get the address
-        var n = 0;
-        do {
-            walletAddress = this.getAddress([branchIndex, n], label);
-            n += 1;
-        } while (walletAddress.nOutputs > 0);
-
-        // This should have no type
-        if (walletAddress.type) {
-           throw new Error("Generated an incorrect change address");
-        }
-    }
-    return walletAddress;
-};
-
-/**
- * Get a free change address for a pocket
- * @param {Object} pocketIndex Index for the pocket, can be string for
- *                 multisigs or int for a normal pocket (as usual).
- * @param {String} label Default label for the address (optional)
- * @return {Object} The first change address
- */
-
-Wallet.prototype.getChangeAddress = function(pocketId, label) {
-    var branchIndex;
-    if (typeof pocketId === 'string') {
-        branchIndex = pocketId;
-    } else {
-        // Change branch
-        branchIndex = (pocketId*2)+1;
-    }
-    return this.getFreeAddress(branchIndex, label);
-};
 
 /**
  * Get the wallet address structure for an address.

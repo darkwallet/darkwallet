@@ -110,10 +110,12 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
 
 
   // get a free change address or a new one
-  WalletProvider.prototype.getChangeAddress = function(pocketId) {
+  WalletProvider.prototype.getChangeAddress = function(pocketId, pocketType) {
       var identity = DarkWallet.getIdentity();
       if (!pocketId) pocketId = 0;
-      var changeAddress = identity.wallet.getChangeAddress(pocketId);
+      if (!pocketType) pocketType = 'hd';
+      var pocket = identity.wallet.pockets.getPocket(pocketId, pocketType);
+      var changeAddress = pocket.getChangeAddress();
       this.addToScope(changeAddress);
       return changeAddress;
   };

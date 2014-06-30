@@ -50,5 +50,12 @@ MultisigPocket.prototype.getPocketId = function() {
     return this.multisig.address;
 };
 
+/**
+ * Get a free address
+ */
+MultisigPocket.prototype.getFreeAddress = function(change, label) {
+    return this.walletAddresses[0];
+};
+
 return MultisigPocket;
 });

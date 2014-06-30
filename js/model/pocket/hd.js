@@ -64,5 +64,29 @@ HdPocket.prototype.destroy = function() {
 };
 
 
+/**
+ * Get a free address
+ */
+HdPocket.prototype.getFreeAddress = function(change, label) {
+    var walletAddress;
+    // normal address, get the address
+    var pocketId = this.getPocketId();
+    var branchIndex = this.getPocketId()*2;
+    if (change) {
+        branchIndex += 1;
+    }
+    var n = 0;
+    do {
+        walletAddress = this.getMyWallet().getAddress([branchIndex, n], label);
+        n += 1;
+    } while (walletAddress.nOutputs > 0);
+
+    // This should have no type
+    if (walletAddress.type) {
+       throw new Error("Generated an incorrect change address");
+    }
+    return walletAddress;
+};
+
 return HdPocket;
 });

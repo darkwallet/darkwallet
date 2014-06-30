@@ -316,8 +316,9 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           }
       }
 
+      var pocketType = (typeof pocketIndex === 'string') ? 'multisig' : 'hd';
       // get a free change address
-      var changeAddress = $wallet.getChangeAddress(pocketIndex);
+      var changeAddress = $wallet.getChangeAddress(pocketIndex, pocketType);
 
       try {
           metadata = identity.tx.prepare(pocketIndex,
@@ -341,8 +342,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       // Store the label for the tx
       metadata.label = title;
 
-     var pocketType = (typeof pocketIndex === 'string') ? 'multisig' : 'hd';
-     var pocket = identity.wallet.pockets.getPocket(pocketIndex, pocketType);
+      var pocket = identity.wallet.pockets.getPocket(pocketIndex, pocketType);
 
       // Now ask for the password before continuing with the next step   
       modals.confirmSend('Unlock password', {pocket: pocket, metadata: metadata}, spend.contacts, function(password) {

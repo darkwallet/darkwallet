@@ -174,11 +174,13 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
         var to;
         var address;
         if (type === 'pocket') {
-            to = wallet.pockets.hdPockets[index].name;
-            address = wallet.getFreeAddress(index*2).address;
-        } else if (type === 'multisig') {
-            to = wallet.multisig.funds[index].name;
-            address = wallet.getFreeAddress(index).address;
+            type = 'hd';
+        }
+        // generate a destination address
+        var pocket = wallet.pockets.getPocket(index, type);
+        if (pocket) {
+            to = pocket.name;
+            address = pocket.getFreeAddress().address;
         } else {
             throw Error('Invalid type while moving funds!');
         }
