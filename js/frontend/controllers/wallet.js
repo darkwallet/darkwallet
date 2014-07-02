@@ -149,6 +149,19 @@ function (controllers, DarkWallet, Port) {
   }
 
   /**
+   * Click on the title either toggles pocket list or goes to wallet
+   */
+  $scope.titleClick = function() {
+      var currentPath = $location.path();
+      if (currentPath.substr(0, 8) === '/wallet/') {
+          var element = angular.element(document.querySelector('.off-canvas-wrap'));
+          element.toggleClass('move-right');
+      } else {
+          $location.path("/wallet/");
+      }
+  }
+
+  /**
    * Utility function to create iterators
    */
   $scope.range = function(n) {
