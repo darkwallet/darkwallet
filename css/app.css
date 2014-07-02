@@ -4438,7 +4438,7 @@ div.modal-ng.ng-animate.ng-leave {
 div.modal-ng.ng-animate.ng-enter {
   transition: all 300ms ease-out; }
 
-div.inner-wrap, section.left, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
+section.left, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
   transition: all 300ms ease-out; }
 
 #maintitle {
@@ -4829,6 +4829,7 @@ div.scroller {
   padding-top: 50px;
   background: black;
   height: 100%;
+  min-height: 100%;
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden; }
@@ -5207,8 +5208,10 @@ div.pockets {
 div.inner-wrap {
   min-height: inherit; }
 
-.scroller.move-right div.inner-wrap {
-  padding-right: 15.625rem; }
+@media only screen and (min-width:64.063em) {
+  .scroller > div.inner-wrap {
+    -webkit-transform: translate3d(15.625rem, 0, 0);
+    padding-right: 15.625rem; } }
 
 .left-off-canvas-toggle {
   cursor: pointer; }
