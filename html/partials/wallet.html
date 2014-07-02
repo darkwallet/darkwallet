@@ -1,7 +1,15 @@
     <div class="inner-wrap">
         <nav class="tab-bar">
-            <section class="left left-off-canvas-toggle">
-                <span class="fa fa-list"> Pockets</span>
+            <section class="left left-off-canvas-toggle" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
+                <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> Pockets</span>
+                <span ng-show="pocket.type==='multisig'" class="fa fa-list"> Multisig</span>
+                <span ng-show="pocket.type==='readonly'" class="fa fa-list"> Watch-only</span>
+            </section>
+	    <section class="left left-off-canvas-toggle" ng-show="selectedPocket==='newMultisig'">
+                <span class="fa fa-list"> Multisig</span>
+            </section>
+	    <section class="left left-off-canvas-toggle" ng-show="selectedPocket==='newPocket'">
+                <span class="fa fa-list"> Pocket</span>
             </section>
 				<div class="tri left-off-canvas-toggle"></div>
             <!-- Pocket name and balance -->
