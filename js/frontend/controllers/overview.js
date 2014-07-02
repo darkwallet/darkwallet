@@ -71,7 +71,8 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           // Save the pocket information
           updatePocket({name: fund.name, mixing: fund.mixing, balance: balance, type: 'fund', fund: fund, index: i});
       });
-      updatePocket({name: 'Total', balance: total, type: 'total'}, identity.wallet.pockets.hdPockets.length-1);
+      $scope.setOverview(total);
+      // updatePocket({name: 'Total', balance: total, type: 'total'}, identity.wallet.pockets.hdPockets.length-1);
  
   };
 

@@ -29,6 +29,12 @@
 				<div class="lin" ng-show="pocket.outgoing">
 					Sending: {{pocket.outgoing | formatBtc}}
 				</div>
+				<div class="lin" ng-show="overviewPocket">
+					<b>Including Multisig:</b> {{overviewPocket.confirmed | formatBtc}}
+				</div>
+				<div class="lin" ng-show="overviewPocket">
+					{{overviewPocket.confirmed | formatFiat}}
+				</div>
             </section>
             <!-- New multisig header -->
             <section class="middle tab-bar-section" ng-if="selectedPocket==='newMultisig'">

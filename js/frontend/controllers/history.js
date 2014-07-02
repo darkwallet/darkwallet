@@ -11,6 +11,8 @@ function (controllers, DarkWallet, Port) {
   $scope.pocket = $history.getCurrentPocket();
   $scope.selectedPocket = $history.selectedPocket;
 
+  $scope.overviewPocket = false;
+
   $scope.historyRows = $history.rows;
 
   $tabs.loadRoute($routeParams.section, $routeParams.pocketType, $routeParams.pocketId);
@@ -121,10 +123,15 @@ function (controllers, DarkWallet, Port) {
   };
 
 
+  $scope.setOverview = function(overview) {
+      $scope.overviewPocket = overview;
+  }
+
   /**
    * Select an hd pocket
    */
   $scope.selectPocket = function(pocketName, rowIndex, form) {
+      $scope.overviewPocket = false;
       if (pocketName === undefined) {
           $tabs.open();
       } else {
@@ -134,6 +141,7 @@ function (controllers, DarkWallet, Port) {
   };
 
   $scope.selectReadOnly = function(pocket, rowIndex) {
+      $scope.overviewPocket = false;
       $tabs.open('readonly', rowIndex);
   };
 
@@ -141,6 +149,7 @@ function (controllers, DarkWallet, Port) {
    * Start creating a new multisig
    */
   $scope.newMultiSig = function() {
+      $scope.overviewPocket = false;
       $scope.selectedPocket = 'newMultisig';
       $scope.pocket.isAll = false;
   };
@@ -149,6 +158,7 @@ function (controllers, DarkWallet, Port) {
    * Start creating a new pocket
    */
   $scope.newPocket = function() {
+      $scope.overviewPocket = false;
       $scope.selectedPocket = 'newPocket';
       $scope.pocket.isAll = false;
   };
