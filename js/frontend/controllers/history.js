@@ -146,6 +146,15 @@ function (controllers, DarkWallet, Port) {
   };
 
   /**
+   * Start creating a new pocket
+   */
+  $scope.newPocket = function() {
+      $scope.selectedPocket = 'newPocket';
+      $scope.pocket.isAll = false;
+  };
+
+
+  /**
    * History filter
    */
   $scope.pocketFilter = function(row) {
