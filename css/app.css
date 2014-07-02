@@ -5209,7 +5209,7 @@ div.inner-wrap {
   min-height: inherit; }
 
 @media only screen and (min-width:64.063em) {
-  .scroller > div.inner-wrap {
+  .scroller > div.inner-wrap.pinned {
     -webkit-transform: translate3d(15.625rem, 0, 0);
     padding-right: 15.625rem; } }
 

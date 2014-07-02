@@ -408,9 +408,9 @@ div.inner-wrap { min-height: inherit; }
 
 
 @media #{$large-up} { 
-.scroller > div.inner-wrap { 
-	-webkit-transform: translate3d($off-canvas-width, 0, 0);
-	padding-right: $off-canvas-width; }
+	.scroller > div.inner-wrap.pinned { 
+		-webkit-transform: translate3d($off-canvas-width, 0, 0);
+		padding-right: $off-canvas-width; }
 }
 
 .left-off-canvas-toggle { cursor: pointer; }
