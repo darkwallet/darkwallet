@@ -1,48 +1,42 @@
-/* ==========================================================================
-   Import Foundation base styles
-   _foundation.scss
-   ========================================================================== */
-
 // Make sure the charset is set appropriately
 @charset "UTF-8";
 
-// This includes all of the foundation global elements that are needed to work with any of the other files.
-@import "variables";
-
-// 
-/* Foundation Components (comment out as necessary)
-   ======================================================================== */
+// Foundation Components (comment out as necessary)
 @import
+  	"foundation/components/grid",
 //  "foundation/components/accordion",
-  "foundation/components/alert-boxes",
-  "foundation/components/block-grid",
+  	"foundation/components/alert-boxes",
+  	"foundation/components/block-grid",
 //  "foundation/components/breadcrumbs",
-  "foundation/components/button-groups",
-  "foundation/components/buttons",
+	"foundation/components/button-groups",
+  	"foundation/components/buttons",
 //  "foundation/components/clearing",
-  "foundation/components/dropdown",
+  	"foundation/components/dropdown",
 //  "foundation/components/dropdown-buttons",
 //  "foundation/components/flex-video",
-  "foundation/components/forms",
-  "foundation/components/grid",
-  "foundation/components/inline-lists",
-  "foundation/components/joyride",
+	"foundation/components/forms",
+	"foundation/components/icon-bar",
+	"foundation/components/inline-lists",
+//  "foundation/components/joyride",
 //  "foundation/components/keystrokes",
-  "foundation/components/labels",
+	"foundation/components/labels",
 //  "foundation/components/magellan",
 //  "foundation/components/orbit",
-  "foundation/components/pagination",
-  "foundation/components/panels",
+	"foundation/components/pagination",
+  	"foundation/components/panels",
 //  "foundation/components/pricing-tables",
-  "foundation/components/progress-bars",
+  	"foundation/components/progress-bars",
+  	"foundation/components/range-slider",
 //  "foundation/components/reveal",
-  "foundation/components/side-nav",
+  	"foundation/components/side-nav",
 //  "foundation/components/split-buttons",
-  "foundation/components/sub-nav",
-//  "foundation/components/switch",
+  	"foundation/components/sub-nav",
+	"foundation/components/switches",
 //  "foundation/components/tables",
-  "foundation/components/tabs",
+  	"foundation/components/tabs",
 //  "foundation/components/thumbs",
-  "foundation/components/tooltips",
-  "foundation/components/offcanvas",
-  "foundation/components/visibility";
+  	"foundation/components/tooltips",
+  	"foundation/components/top-bar",
+  	"foundation/components/type",
+  	"foundation/components/offcanvas",
+  	"foundation/components/visibility";
