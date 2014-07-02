@@ -54,6 +54,18 @@ div.totheright div.tab-scroller.ng-leave {
   opacity:1;
 }
 
+
+div.modal-ng.ng-animate.ng-enter,
+div.modal-ng.ng-animate.ng-leave-active { -webkit-transform: translate3d(0,100%,0); opacity: 0.7; }
+
+div.modal-ng.ng-animate.ng-enter.ng-enter-active { -webkit-transform: translate3d(0,0,0); opacity: 1; }
+
+div.modal-ng:not([ng-cloak]) + div.container { -webkit-transform: scale(0.8); }
+div.modal-ng.ng-leave + div.container { -webkit-transform: scale(1); }
+div.modal-ng + div.container.animations-disabled { -webkit-transform: none; display: none; }
+
+
+
 div.scroller.ng-animate {
 	position: absolute;
  	width: 100%;	
@@ -94,6 +106,7 @@ div.container { @include single-transition(all, 300ms, ease-out); }
 div.modal-ng.ng-animate.ng-leave { @include single-transition(all, 200ms, ease-in); }
 div.modal-ng.ng-animate.ng-enter { @include single-transition(all, 300ms, ease-out); }
 
+section.left,
 div.identitylist,
 div.send-advanced.ng-hide,
 span.tooltip.fade.ng-animate,
