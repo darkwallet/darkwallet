@@ -4,20 +4,19 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('PocketCreateCtrl', ['$scope', '$wallet', '$history', 'watch', function($scope, $wallet, $history, watch) {
+  controllers.controller('PocketCreateCtrl', ['$scope', '$wallet', '$history', 'watch', '$tabs', function($scope, $wallet, $history, watch, $tabs) {
 
     /**
      * Scope variables
      */
     $scope.newPocket = {};
-    $scope.creatingPocket = false;
 
 
     /**
      * Create a pocket
      */
     $scope.createPocket = function() {
-        if ($scope.creatingPocket && $scope.newPocket.name) {
+        if ($scope.newPocket.name) {
             var identity = DarkWallet.getIdentity();
 
             // create pocket
@@ -35,8 +34,10 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
             // reset pocket form
             $scope.newPocket = {name:''};
+        } else {
+            // cancel
+            $tabs.open();
         }
-        $scope.creatingPocket = !$scope.creatingPocket;
     };
 }]);
 });

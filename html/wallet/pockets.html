@@ -1,17 +1,11 @@
-    <ul class="off-canvas-list" ng-controller="PocketCreateCtrl">
+    <ul class="off-canvas-list">
       <li><label>Pockets on my wallet</label></li>
       <li ng-class="{active: pocket.isAll}" ng-click="selectPocket()"><a>All</a></li>
       <li ng-show="hdPocket" ng-class="{active: 'hd:'+$index===pocket.type+':'+pocket.lastIndex}" ng-repeat="hdPocket in hdPockets track by $index">
         <a href="" ng-click="selectPocket(hdPocket.name, $index, form)" editable-text="forms.pocketName" e-form="form" blur="submit" onaftersave="finalizeRenamePocket(pocket, forms.pocketName)" buttons="no">{{hdPocket.name}}</a>
       </li>
-      <li ng-show="creatingPocket">
-        <form ng-submit="createPocket()">
-          <input type="text" autofocus ng-model="newPocket.name" placeholder="Name your pocket..." />
-          <input type="submit" class="button small expand radius" value="OK"/>
-        </form>
-      </li>
-      <li ng-hide="creatingPocket">
-        <a class="button expand nomarginbottom" ng-click="createPocket()">New Pocket</a>
+      <li ng-hide="selectedPocket==='newPocket'">
+        <a class="button expand nomarginbottom" ng-click="newPocket()">New Pocket</a>
       </li>
       <li class="divider"></li>
       <li><label>My multisig funds</label></li>
