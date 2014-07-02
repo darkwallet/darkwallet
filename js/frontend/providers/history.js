@@ -196,6 +196,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       this.refreshAddresses();
 
       this.pocket.mixing = pocket.store.mixing;
+      this.pocket.mixingOptions = pocket.store.mixingOptions;
       this.pocket.tasks = [];
       this.pocket.readOnly = pocket.readOnly;
 

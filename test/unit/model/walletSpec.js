@@ -345,17 +345,17 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
 
     it('gets a free address', function() {
       // Already stored
-      expect(wallet.getFreeAddress(0).address).toBe('1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs');
+      expect(wallet.pockets.getPocket(0, 'hd').getFreeAddress().address).toBe('1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs');
       // Derive and store
-      expect(wallet.getFreeAddress(1).address).toBe('1JcmPQq3375pgukzqefdqQdpR4M9ThuR7x');
+      expect(wallet.pockets.getPocket(0, 'hd').getFreeAddress(true).address).toBe('1JcmPQq3375pgukzqefdqQdpR4M9ThuR7x');
       expect(wallet.wallet.addresses).toContain('1JcmPQq3375pgukzqefdqQdpR4M9ThuR7x');
     });
 
     it('gets a change address', function() {
       // Already stored
-      expect(wallet.getChangeAddress(0).address).toBe('1JcmPQq3375pgukzqefdqQdpR4M9ThuR7x');
+      expect(wallet.pockets.getPocket(0).getChangeAddress().address).toBe('1JcmPQq3375pgukzqefdqQdpR4M9ThuR7x');
       // Derive and store
-      var changeAddress = wallet.getChangeAddress(1);
+      var changeAddress = wallet.pockets.getPocket(1).getChangeAddress();
       expect(changeAddress.address).toBe('1JTQfz3j4S2VmkgNGcV4BwGf5cLYYH7TgV');
       expect(changeAddress.index).toEqual([3,0]);
       expect(wallet.wallet.addresses).toContain('1JTQfz3j4S2VmkgNGcV4BwGf5cLYYH7TgV');

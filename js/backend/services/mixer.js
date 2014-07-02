@@ -252,9 +252,10 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
 
     // If we found a pocket, continue with the protocol.
     if (pocketIndex !== -1) {
+      var pocket = identity.wallet.pockets.getPocket(pocketIndex, 'hd');
       // Prepare arguments for preparing the tx
-      var changeAddress = identity.wallet.getChangeAddress(pocketIndex, 'mixing');
-      var destAddress = identity.wallet.getFreeAddress(pocketIndex*2, 'mixing');
+      var changeAddress = pocket.getChangeAddress('mixing');
+      var destAddress = pocket.getFreeAddress(true, 'mixing');
 
       var recipient = {address: destAddress.address, amount: opening.amount};
 
@@ -372,8 +373,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       return signed;
   };
 
-  /*
-   * Protocol messages arriving
+  /**
+   * CoinJoin open arrived
    */
   MixerService.prototype.onCoinJoinOpen = function(msg) {
     if (!msg.peer || !msg.peer.trusted) {
@@ -388,9 +389,13 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     }
   };
 
+  /**
+   * CoinJoin arrived
+   */
   MixerService.prototype.onCoinJoin = function(msg) {
     if (msg.sender !== this.channel.fingerprint) {
       var coinJoin = this.getOngoing(msg);
+      var prevState = coinJoin.state;
       if (coinJoin) {
           console.log("[mixer] CoinJoin", msg);
 
@@ -424,11 +429,12 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
               var walletService = this.core.service.wallet;
               coinJoin.task.tx = coinJoin.tx.serializeHex();
               walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
-          }/* else if (coinJoin.state == 'announce') {
-              Shouldn't be needed here...
-              // announce again
-              this.announce(msg.body.id, coinJoin);
-          }*/
+          }
+          // Update budget (only guest applies budgeting)
+          if (coinJoin.state === 'finished' && prevState !== 'finished' && coinJoin.role === 'guest') {
+              this.trackBudget(coinJoin);
+          }
+          // Check for deletion
           this.checkDelete(msg.body.id);
 
           // See if we should desactivate mixing
@@ -436,6 +442,10 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       }
     }
   };
+
+  /**
+   * CoinJoinFinish arrived
+   */
   MixerService.prototype.onCoinJoinFinish = function(msg) {
     if (msg.sender !== this.channel.fingerprint) {
       console.log("[mixer] CoinJoinFinish", msg);
@@ -445,6 +455,21 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         this.checkDelete(msg.body.id);
       }
     }
+  };
+
+  /**
+   * Budgeting
+   */
+  MixerService.prototype.trackBudget = function(coinJoin) {
+    var identity = this.core.getCurrentIdentity();
+    var pocketStore = identity.wallet.pockets.getPocket(coinJoin.pocket, 'hd').store;
+    pocketStore.mixingOptions.spent += coinJoin.fee;
+    if (pocketStore.mixingOptions.spent >= pocketStore.mixingOptions.budget) {
+      pocketStore.privKey = undefined;
+      pocketStore.privChangeKey = undefined;
+      pocketStore.mixing = false;
+    }
+    identity.wallet.store.save();
   };
 
   return MixerService;
