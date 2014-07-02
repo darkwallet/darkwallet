@@ -19,30 +19,31 @@
 	          <input type="text" class="prefix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
 	        </div>
 	        <div class="small-1 columns">
-	          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square fa fa-clipboard"></a>
+	          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square icon-copy"></a>
 	        </div>
 	        <div class="small-1 columns">
-	          <a class="button postfix square radius fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
+	          <a class="button postfix square radius icon-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
 	        </div>
 		</div>
       </div>
     </div>
   </div>
-  <div ng-if="pocket.isAll" ng-controller="OverviewCtrl">
+  <div class="row">
+	  <div class="small-12 columns" ng-if="pocket.isAll" ng-controller="OverviewCtrl">
 
-    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
-		<li ng-repeat="pocket in allPockets" ng-click="selectGridPocket(pocket)">
-			<div class="panel radius pocket-square">
-           		<h5>{{pocket.name}} <small ng-show="pocket.type=='fund'">{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</small></h5>
+	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
+			<li ng-repeat="pocket in allPockets" ng-click="selectGridPocket(pocket)">
+				<div class="panel radius pocket-square">
+	           		<h5>{{pocket.name}} <small ng-show="pocket.type=='fund'">{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</small></h5>
         
-           		<span ng-show="pocket.balance.current">{{pocket.balance.current | formatBtc}} <br><span class="fiat">{{pocket.balance.current | formatFiat}}</span></span>
-           		<span ng-show="!pocket.balance.current">No coins</span>
-           		<span ng-show="pocket.balance.unconfirmed">{{pocket.balance.unconfirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></span>
-           	</div>
-  		</li>
-    </ul>
-  </div>
-
+	           		<span ng-show="pocket.balance.current">{{pocket.balance.current | formatBtc}} <br><span class="fiat">{{pocket.balance.current | formatFiat}}</span></span>
+	           		<span ng-show="!pocket.balance.current">No coins</span>
+	           		<span ng-show="pocket.balance.unconfirmed">{{pocket.balance.unconfirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></span>
+	           	</div>
+	  		</li>
+	    </ul>
+	  </div>
+	</div>
   <div ng-show="historyRows.length" class="row" ng-controller="LatestCtrl">
     <div class="small-12 columns">
 
