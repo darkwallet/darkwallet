@@ -16,7 +16,6 @@
        <div class="inherit-height" ng-controller="NgModalCtrl" ng-include="modals.page" tabindex="6">
        </div>
     </div>
-	
     <div class="container" ng-cloak ng-class="{'animations-disabled': !settings.animations.enabled}">
 	    <top-bar scrolltop="false">
 	      <ul class="title-area">
@@ -41,7 +40,7 @@
   			  <li ng-show="!settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> Settings</a></li>
           
 		  
-  			  <li title="identities" ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="icon-profile"></i> {{identityName}}</a></li>
+  			  <li title="identities" ng-class="{active:isActive('/identities')}"><a ng-show="identityName" href="#identities"><i class="icon-profile"></i> {{identityName}}</a></li>
   	        </ul>
 	        <ul class="left">
 	          <li ng-class="{active:isActive('/wallet')}"><a ng-click="openWallet()"><i class="icon-wallet"></i> Wallet</a></li>
