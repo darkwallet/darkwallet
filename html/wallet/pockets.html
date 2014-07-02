@@ -1,5 +1,5 @@
-    <ul class="side-nav" ng-controller="PocketCreateCtrl">
-      <li>Pockets on my wallet</li>
+    <ul class="off-canvas-list" ng-controller="PocketCreateCtrl">
+      <li><label>Pockets on my wallet</label></li>
       <li ng-class="{active: pocket.isAll}" ng-click="selectPocket()"><a>All</a></li>
       <li ng-class="{active: 'hd:'+$index===pocket.type+':'+pocket.lastIndex}" ng-repeat="hdPocket in hdPockets track by $index">
         <a href="" ng-click="selectPocket(hdPocket.name, $index, form)" editable-text="forms.pocketName" e-form="form" blur="submit" onaftersave="finalizeRenamePocket(pocket, forms.pocketName)" buttons="no">{{hdPocket.name}}</a>
@@ -11,13 +11,13 @@
         </form>
       </li>
       <li ng-hide="creatingPocket">
-        <a class="button small expand radius" ng-click="createPocket()">New Pocket</a>
+        <a class="button expand nomarginbottom" ng-click="createPocket()">New Pocket</a>
       </li>
       <li class="divider"></li>
-      <li>My multisig funds</li>
+      <li><label>My multisig funds</label></li>
       <li ng-class="{active: 'multisig:'+$index===selectedPocket}" ng-click="selectFund(fund, $index)" ng-repeat="fund in allFunds track by $index"><a href="">{{fund.name}}</a></li>
       <li>
-      <a class="button small expand radius" ng-click="newMultiSig()">New Multisig fund</a>
+      <a class="button expand" ng-click="newMultiSig()">New Multisig fund</a>
       </li>
       <li ng-show="forms.readOnlyArray.length" class="divider"></li>
       <li ng-show="forms.readOnlyArray.length">Watch-only pockets</li>

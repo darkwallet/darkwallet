@@ -1,33 +1,62 @@
-<div class="row">
-  <!-- Left sidebar -->
-  <div class="hide-for-small large-2 medium-3 columns panel pockets">
-      <!-- Pockets sidebar -->
-      <ng-include src="'wallet/pockets.html'"></ng-include>
-  </div>
-  <!-- Content area -->
-  <div ng-hide="selectedPocket==='newMultisig'" class="large-10 medium-9 columns wallet-view">
-    <!-- Pocket name and balance -->
-    <h4 ng-show="!(pocket.balance===undefined)">
-        {{pocket.name}}
-        <small title="Total funds in the wallet including unconfirmed." ng-show="pocket.balance.current!=pocket.balance.confirmed">Current: {{pocket.balance.current | formatBtc}} <span class="fiat">{{pocket.balance.current | formatFiat}}</span></small>
-        <small title="Funds available for spending"><span ng-show="pocket.balance.current!=pocket.balance.confirmed">Spendable:</span> {{pocket.balance.confirmed | formatBtc}} <span class="fiat">{{pocket.balance.confirmed | formatFiat}}</span></small>
-        <small title="Total funds unconfirmed, including incoming and outgoing balances" ng-show="pocket.balance.unconfirmed">Unconfirmed: {{pocket.balance.unconfirmed | formatBtc}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></small>
-    </h4>
-    <!-- Tabs -->
-    <div class="tabbable" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
-        <dl class="tabs">
-          <dd ng-show="tab.isVisible()" ng-class="{active: tab.isActive()}" ng-repeat="tab in tabs.pages">
-              <a ng-click="tab.select()">{{tab.heading}}</a>
-          </dd>
-        </dl>
-        <div class="tab-scroller" ng-include="tabs.pages[tabs.current].tplUrl">
-        </div>
-    </div>
-  </div>
-  <!-- New multisig dialog -->
-  <div ng-if="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 medium-9 columns">
-      <ng-include src="'wallet/new_fund.html'">
-      </ng-include>
-  </div>
+    <div class="inner-wrap">
+        <nav class="tab-bar">
+            <section class="left left-off-canvas-toggle">
+                <span class="fa fa-list"> Pockets</span>
+            </section>
+				<div class="tri left-off-canvas-toggle"></div>
+            <section class="middle tab-bar-section">
+			    <h1 class="title lin" ng-show="!(pocket.balance===undefined)">
+			        {{pocket.name}}
+			  <!--      <small title="Total funds in the wallet including unconfirmed." ng-show="pocket.balance.current!=pocket.balance.confirmed">Current: {{pocket.balance.current | formatBtc}} <span class="fiat">{{pocket.balance.current | formatFiat}}</span></small>
+			        <small title="Funds available for spending"><span ng-show="pocket.balance.current!=pocket.balance.confirmed">Spendable:</span> {{pocket.balance.confirmed | formatBtc}} <span class="fiat">{{pocket.balance.confirmed | formatFiat}}</span></small>
+			        <small title="Total funds unconfirmed, including incoming and outgoing balances" ng-show="pocket.balance.unconfirmed">Unconfirmed: {{pocket.balance.unconfirmed | formatBtc}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></small> -->
+			    </h1>
+				<div class="lin">
+					{{pocket.balance.confirmed | formatBtc}}
+				</div>
+				<div class="lin">
+					{{pocket.balance.confirmed | formatFiat}}
+				</div>
+				<div class="lin">
+					Receiving: 1.034034 B
+				</div>
+				<div class="lin">
+					Sending: 1.534435234 B
+				</div>
+            </section>
+        </nav>
 
-</div>
+        <aside class="left-off-canvas-menu">
+            <ng-include src="'wallet/pockets.html'"></ng-include>
+        </aside>
+        <section class="main-section">
+
+  <!-- Content area -->
+  			<div ng-hide="selectedPocket==='newMultisig'">
+    <!-- Pocket name and balance -->
+    
+    <!-- Tabs -->
+    			<div class="tabbable" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
+					<div class="row topmargin">
+						<div class="small-12 columns">
+	        				<dl class="tabs">
+	          				  	<dd ng-show="tab.isVisible()" ng-class="{active: tab.isActive()}" ng-repeat="tab in tabs.pages">
+	              <a ng-click="tab.select()">{{tab.heading}}</a>
+	          					</dd>
+	        				</dl>
+						</div>
+					</div>
+       			 <div class="tab-scroller" ng-include="tabs.pages[tabs.current].tplUrl">
+        		 </div>
+    		 </div>
+  	   </div>
+  <!-- New multisig dialog -->
+  		<div ng-if="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 medium-9 columns">
+      	  <ng-include src="'wallet/new_fund.html'">
+      		</ng-include>
+  		</div>
+
+        </section>
+
+        <a class="exit-off-canvas"></a>
+    </div>
