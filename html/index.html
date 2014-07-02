@@ -38,22 +38,22 @@
   			  <li ng-show="settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings" class="fa fa-cog"></a></li>
           
 		  
-  			  <li ng-show="!settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="fa fa-cog"></i> Settings</a></li>
+  			  <li ng-show="!settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> Settings</a></li>
           
 		  
-  			  <li title="identities" ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="fa fa-user"></i> {{identityName}}</a></li>
+  			  <li title="identities" ng-class="{active:isActive('/identities')}"><a href="#identities"><i class="icon-profile"></i> {{identityName}}</a></li>
   	        </ul>
 	        <ul class="left">
-	          <li ng-class="{active:isActive('/wallet')}"><a ng-click="openWallet()"><i class="fa fa-th-list"></i> Wallet</a></li>
-	          <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="fa fa-share"></i> Send</a></li>
-	          <li ng-class="{active:isActive('/contact')}"><a href="#contacts"><i class="fa fa-users"></i> Contacts</a></li>
-			  <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="fa fa-comments"></i> Lobby</a></li>
+	          <li ng-class="{active:isActive('/wallet')}"><a ng-click="openWallet()"><i class="icon-wallet"></i> Wallet</a></li>
+	          <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="icon-rocket"></i> Send</a></li>
+	          <li ng-class="{active:isActive('/contact')}"><a href="#contacts"><i class="icon-contacts"></i> Contacts</a></li>
+			  <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="icon-chat"></i> Lobby</a></li>
 	        </ul>
 	      </top-bar-section>
 	    </top-bar>
 	    
       <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include>
-      <div class="scroller" ng-view>
+      <div class="scroller off-canvas-wrap" ng-view>
       </div>
     </div>
     <!-- Notification Controllers -->
