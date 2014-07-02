@@ -46,19 +46,18 @@
 </form>
 
 <div class="row">
-  <div class="small-12 columns">
-<div class="contact-mosaic-full">
-  <ul class="contacts large-block-grid-5 medium-block-grid-3 small-block-grid-2">
-    <li ng-repeat="contact in contacts | orderBy:'data.name' track by $index">
-      <div ng-click="openContact(contact)" class="contact-mosaic-square">
-        <identicon icon-size="64" hash="contact.data.hash" title="{{contact.mainKey.address}}"></identicon>
-        <div 
-             class="contact-label">
-            <div class="fa" 
-                 ng-class="{'fa-btc': contact.data.idKey===undefined&&contact.mainKey.type=='address', 'fa-key': contact.data.idKey===undefined&&contact.mainKey.type=='pubkey', 'fa-fighter-jet': contact.data.idKey===undefined&&contact.mainKey.type=='stealth', 'fa-user': !(contact.data.idKey===undefined)}">
-            </div> {{contact.data.name}}</div>
-      </li>
-  </ul>
-</div>
-</div>
+	<div class="small-12 columns">
+		<div class="contact-mosaic-full">
+  			<ul class="contacts large-block-grid-5 medium-block-grid-3 small-block-grid-2">
+   				<li ng-repeat="contact in contacts | orderBy:'data.name' track by $index">
+      				<div ng-click="openContact(contact)" class="contact-mosaic-square">
+        				<identicon icon-size="64" hash="contact.data.hash" title="{{contact.mainKey.address}}"></identicon>
+
+            				<div class="contact-label" ng-class="{'fa-btc': contact.data.idKey===undefined&&contact.mainKey.type=='address', 'fa-key': contact.data.idKey===undefined&&contact.mainKey.type=='pubkey', 'icon-stealth': contact.data.idKey===undefined&&contact.mainKey.type=='stealth', 'fa-user': !(contact.data.idKey===undefined)}">{{contact.data.name}}
+            				</div>
+					</div>
+      			  </li>
+  			</ul>
+		</div>
+	</div>
 </div>
