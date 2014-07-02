@@ -185,6 +185,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
               updateChat();
           });
       }
+      $scope.comms = channelLink.channel.comms;
       $scope.shoutboxLog = channelLink.channel.chatLog;
       $scope.peerRequests = channelLink.channel.peerRequests;
 
@@ -208,6 +209,9 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   }, function(port) {
     // onCreate callback
     transport = DarkWallet.getLobbyTransport();
+
+    // if no channel show transport cloak...
+    $scope.comms = transport.comms;
 
     checkPaired(DarkWallet.getIdentity());
 
@@ -311,7 +315,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
         var msg = Protocol.ShoutMsg(toSend);
         if ($scope.selectedPeer) {
             $scope.selectedPeer.channel.postDH($scope.selectedPeer.pubKey, msg, onSent);
-            msg.peer = currentChannel.transport.comms;
+            msg.peer = currentChannel.comms;
             $scope.selectedPeer.chatLog.splice(0,0,msg);
             $scope.selectedPeer.chatLog.dirty = false;
         } else {

@@ -24,7 +24,8 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
 
       // Set transport session key
       this.transport = transport;
-      this.prepareSession();
+      //this.prepareSession(transport.getSessionKey());
+      this.newSession();
 
       this.name = name;
 
@@ -59,9 +60,9 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   /**
    * Get the session from the transport
    */
-  Channel.prototype.prepareSession = function() {
+  Channel.prototype.prepareSession = function(sessionKey) {
     // Set keys
-    var priv = this.transport.getSessionKey().priv;
+    var priv = sessionKey.priv;
     var ecPriv = Encryption.adaptPrivateKey(priv);
 
     this.pub = Curve25519.ecDH(ecPriv);
@@ -70,11 +71,13 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
     // Setup peer details
     var newMe = new Peer(this.pub.toByteArrayUnsigned());
 
+    this.comms = newMe;
+
     // Just relink so interface can be updated
-    this.transport.comms.pubKeyHex = newMe.pubKeyHex;
+    /*this.transport.comms.pubKeyHex = newMe.pubKeyHex;
     this.transport.comms.fingerprint = newMe.fingerprint;
     this.transport.comms.name = newMe.name;
-    this.transport.comms.pubKey = newMe.pubKey;
+    this.transport.comms.pubKey = newMe.pubKey;*/
 
     // Set some identity variables
     this.fingerprint = newMe.fingerprint;
@@ -86,7 +89,9 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   Channel.prototype.newSession = function() {
     // For now this will get changed in transport
     // and propagated back to all channels
-    this.transport.newSession();
+    var sessionKey = new Bitcoin.ECKey();
+    sessionKey.compressed = true;
+    this.prepareSession(sessionKey);
   };
 
   /**

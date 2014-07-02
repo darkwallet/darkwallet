@@ -23,7 +23,7 @@ define(['backend/port'], function(Port) {
         data.id = jobIndex;
         worker.postMessage(data);
         jobIndex += 1;
-    }
+    };
 
     /**
      * Initialize the stealth worker for an identity
