@@ -13,7 +13,27 @@ function (controllers, DarkWallet, Port) {
 
   $scope.overviewPocket = false;
 
-  $scope.historyRows = $history.rows;
+  // pages
+  $scope.nPages = 0;
+  $scope.page = 0;
+  var limit = 10;
+
+  $scope.setPage = function(page, updatePage) {
+      if (updatePage) {
+          $scope.page = page;
+      }
+      $scope.historyRows = $scope.allHistoryRows.slice($scope.page*limit, ($scope.page*limit) + limit);
+  };
+
+
+  // Set current rows
+  var setHistoryRows = function(rows, updatePage) {
+      $scope.allHistoryRows = rows;
+      $scope.nPages = Math.ceil($scope.allHistoryRows.length/limit);
+      $scope.setPage(0, updatePage);
+  }
+
+  setHistoryRows($history.rows, true);
 
   $tabs.loadRoute($routeParams.section, $routeParams.pocketType, $routeParams.pocketId);
 
@@ -27,7 +47,7 @@ function (controllers, DarkWallet, Port) {
     var changed = $history.setCurrentPocket(type, idx, force);
     if (changed) {
         $scope.pocket = $history.getCurrentPocket();
-        $scope.historyRows = $history.rows;
+        setHistoryRows($history.rows, true);
         $scope.selectedPocket = $history.selectedPocket;
         $tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
         // If the rename form is open we need to change the default shown there
@@ -91,7 +111,7 @@ function (controllers, DarkWallet, Port) {
       // Check on gui balance updates to recalculate pocket balance so it shows properly
       if (data.type == 'balance') {
           if ($history.isCurrentPocket(data.pocketId)) {
-              $scope.historyRows = $history.onBalanceUpdate();
+              setHistoryRows($history.onBalanceUpdate(), false);
               if (!$scope.$$phase) {
                   $scope.$apply();
               }
@@ -107,7 +127,7 @@ function (controllers, DarkWallet, Port) {
           identityLoaded();
 
           // update history rows shown
-          $scope.historyRows = $history.onBalanceUpdate();
+          setHistoryRows($history.onBalanceUpdate(), true);
       }
       else if (data.type == 'rename') {
           $history.previousIdentity = data.newName;
@@ -123,6 +143,9 @@ function (controllers, DarkWallet, Port) {
   };
 
 
+  /**
+   * Set overview information (for extra balance on the dashboard area header)
+   */
   $scope.setOverview = function(overview) {
       $scope.overviewPocket = overview;
   }
@@ -173,8 +196,10 @@ function (controllers, DarkWallet, Port) {
 
   // Set the history filter
   $scope.setHistoryFilter = function(name) {
-      $scope.txFilter = name;
-      $scope.historyRows = $history.setHistoryFilter(name);
+      if ($scope.txFilter !== name) {
+          $scope.txFilter = name;
+          setHistoryRows($history.setHistoryFilter(name), true);
+      }
   };
 
   $scope.historyFilter = function(row, shownRows) {

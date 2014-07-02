@@ -24,7 +24,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
    */ 
   function HistoryProvider($scope, $wallet) {
       this.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $wallet.allAddresses, isAll: true, type: 'init', incoming: 0, outgoing: 0};
-      this.txFilter = 'last10';
+      this.txFilter = 'last';
       this.addrFilter = 'unused';
       this.$wallet = $wallet;
       this.rows = [];
@@ -469,22 +469,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           return true;
       }
       switch(this.txFilter) {
-          case 'all':
+          case 'last':
           case 'weekly':
           case 'monthly':
               return true;
-          case 'lastWeek':
-              var ts = BtcUtils.heightToTimestamp(row.height, blockDiff);
-              if (ts > prevweek.getTime()) {
-                  return true;
-              }
-              break;
-          case 'lastMonth':
-              var ts = BtcUtils.heightToTimestamp(row.height, blockDiff);
-              if (ts > prevmonth.getTime()) {
-                  return true;
-              }
-              break;
           case 'last10':
           default:
               if (shownRows.indexOf(row.hash) !== -1) {

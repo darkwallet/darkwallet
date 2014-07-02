@@ -13,6 +13,7 @@ define([
     './bitid',
     './contacts',
     './history',
+    './history_rows',
     './identities',
     './latest',
     './lobby',

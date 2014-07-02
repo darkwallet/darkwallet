@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" ng-controller="HistoryRowsCtrl">
     <div class="small-12 columns">
         <div class="row collapse panel radius" ng-show="!historyRows.length">
             You have no history in this pocket.
@@ -6,12 +6,9 @@
         <div class="row collapse panel radius" ng-show="historyRows.length">
             <dl class="sub-nav">
                 <dt>Filter:</dt>
-                <dd ng-class="{active: 'last10'===txFilter}"><a ng-click="setHistoryFilter('last10')">Last 10</a></dd>
+                <dd ng-class="{active: 'last'===txFilter}"><a ng-click="setHistoryFilter('last')">Last</a></dd>
                 <dd ng-class="{active: 'weekly'===txFilter}"><a ng-click="setHistoryFilter('weekly')">Weekly</a></dd>
                 <dd ng-class="{active: 'monthly'===txFilter}"><a ng-click="setHistoryFilter('monthly')">Monthly</a></dd>
-                <!--<dd ng-class="{active: 'lastWeek'===txFilter}"><a ng-click="setHistoryFilter('lastWeek')">Last week</a></dd>
-                <dd ng-class="{active: 'lastMonth'===txFilter}"><a ng-click="setHistoryFilter('lastMonth')">Last month</a></dd>-->
-                <dd ng-class="{active: 'all'===txFilter}"><a ng-click="setHistoryFilter('all')">All</a></dd>
             </dl>
 
           <div ng-if="txFilter=='weekly' || txFilter=='monthly'">
@@ -120,16 +117,13 @@
              </div>
             </div>
           </div>
-		  <div class="pagination-centered topmargin" ng-show="historyRows.length">
-		      <ul class="pagination">
-		          <li class="arrow unavailable"><a href="">&laquo;</a></li>
-		          <li class="current"><a href="">1</a></li>
-		          <li><a href="">2</a></li>
-		          <li class="unavailable"><a href="">&hellip;</a></li>
-		          <li><a href="">12</a></li>
-		          <li><a href="">13</a></li>
-		          <li class="arrow"><a href="">&raquo;</a></li>
-		      </ul>
+		  <div class="pagination-centered topmargin" ng-show="nPages>1">
+		    <ul class="pagination">
+		        <li ng-click="setPage(page-1, true)" ng-class="{unavailable:page==0}" class="arrow unavailable"><a href="">&laquo;</a></li>
+		        <li ng-click="setPage($index, true)" ng-repeat="n in range(nPages) track by $index" ng-class="{current: page==$index}"><a>{{$index+1}}</a></li>
+		        <!--<li class="unavailable"><a href="">&hellip;</a></li>-->
+		        <li ng-click="setPage(page+1, true)" ng-class="{unavailable:page==nPages-1}" class="arrow"><a href="">&raquo;</a></li>
+		    </ul>
 		  </div>
         </div>
     </div>
