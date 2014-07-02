@@ -23,7 +23,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
    * History provider class
    */ 
   function HistoryProvider($scope, $wallet) {
-      this.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $wallet.allAddresses, isAll: true, type: 'init'};
+      this.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $wallet.allAddresses, isAll: true, type: 'init', incoming: 0, outgoing: 0};
       this.txFilter = 'last10';
       this.addrFilter = 'unused';
       this.$wallet = $wallet;
@@ -238,6 +238,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
  
   // Filter the rows we want to show
   HistoryProvider.prototype.chooseRows = function() {
+      this.pocket.incoming = 0;
+      this.pocket.outgoing = 0;
       var identity =  DarkWallet.getIdentity();
       var self = this;
       var history = identity.history.history;
@@ -403,12 +405,20 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   HistoryProvider.prototype.pocketFilter = function(row) {
       // Making sure shownRows is reset before historyFilter stage is reached.
       if (this.pocket.isAll) {
+          this.pocket.incoming += row.myInValue;
+          this.pocket.outgoing += row.myOutValue;
           // only add pocket transactions for now
           return ((typeof row.inPocket === 'number') || (typeof row.outPocket === 'number'));
       }
       else {
           var keys = Object.keys(row.impact);
-          return (keys.indexOf(this.pocket.index) > -1);
+          var impacted = (keys.indexOf(this.pocket.index) > -1);
+          if (impacted && row.impact[this.pocket.index] > 0) {
+              this.pocket.incoming += row.impact[this.pocket.index];
+          } else if (impacted) {
+              this.pocket.outgoing -= row.impact[this.pocket.index];
+          }
+          return impacted;
       }
   };
 

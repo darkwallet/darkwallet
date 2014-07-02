@@ -17,11 +17,11 @@
 				<div class="lin">
 					{{pocket.balance.confirmed | formatFiat}}
 				</div>
-				<div class="lin">
-					Receiving: 1.034034 B
+				<div class="lin" ng-show="pocket.incoming">
+					Receiving: {{pocket.incoming | formatBtc}} B
 				</div>
-				<div class="lin">
-					Sending: 1.534435234 B
+				<div class="lin" ng-show="pocket.outgoing">
+					Sending: {{pocket.outgoing | formatBtc}} B
 				</div>
             </section>
         </nav>
