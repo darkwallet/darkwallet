@@ -1,7 +1,7 @@
     <ul class="off-canvas-list" ng-controller="PocketCreateCtrl">
       <li><label>Pockets on my wallet</label></li>
       <li ng-class="{active: pocket.isAll}" ng-click="selectPocket()"><a>All</a></li>
-      <li ng-class="{active: 'hd:'+$index===pocket.type+':'+pocket.lastIndex}" ng-repeat="hdPocket in hdPockets track by $index">
+      <li ng-show="hdPocket" ng-class="{active: 'hd:'+$index===pocket.type+':'+pocket.lastIndex}" ng-repeat="hdPocket in hdPockets track by $index">
         <a href="" ng-click="selectPocket(hdPocket.name, $index, form)" editable-text="forms.pocketName" e-form="form" blur="submit" onaftersave="finalizeRenamePocket(pocket, forms.pocketName)" buttons="no">{{hdPocket.name}}</a>
       </li>
       <li ng-show="creatingPocket">
