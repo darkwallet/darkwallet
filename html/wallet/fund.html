@@ -1,21 +1,25 @@
 <div ng-controller="FundCtrl"> 
-   <div class="panel">
-      <div class="row collapse">
-        <div class="medium-2 columns">
-            <span class="prefix radius">Fund Address</span>
-        </div>
-        <div class="medium-6 columns">
-            <input type="text" disabled="true" value="{{pocket.fund.multisig.address}}" />
-        </div>
-        <div class="medium-2 columns">
-            <button ng-click="clipboard.copy(pocket.fund.multisig.address)" class="button postfix fa fa-clipboard">Copy</button>
-        </div>
-        <div class="medium-2 columns">
-            <button ng-click="modals.showBtcQr(pocket.fund.multisig.address)" class="button postfix radius fa fa-qrcode">QR</button>
-        </div>
-      </div>
-      <div>{{pocket.fund.multisig.m}} of {{pocket.fund.multisig.pubKeys.length}} signatures are needed for spends</div>
-    </div>
+	<div class="row">
+		<div class="small-12 columns">
+		   <div class="panel">
+		      <div class="row collapse">
+		        <div class="medium-2 columns">
+		            <span class="prefix radius">Fund Address</span>
+		        </div>
+		        <div class="medium-6 columns">
+		            <input type="text" disabled="true" value="{{pocket.fund.multisig.address}}" />
+		        </div>
+		        <div class="medium-2 columns">
+		            <button ng-click="clipboard.copy(pocket.fund.multisig.address)" class="button postfix fa fa-clipboard">Copy</button>
+		        </div>
+		        <div class="medium-2 columns">
+		            <button ng-click="modals.showBtcQr(pocket.fund.multisig.address)" class="button postfix radius fa fa-qrcode">QR</button>
+		        </div>
+		      </div>
+		      <div>{{pocket.fund.multisig.m}} of {{pocket.fund.multisig.pubKeys.length}} signatures are needed for spends</div>
+		    </div>
+		</div>
+	</div>
   <div class="row">
   <div class="columns large-6">
 	  <div class="panel radius">
