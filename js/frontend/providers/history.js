@@ -405,17 +405,19 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   HistoryProvider.prototype.pocketFilter = function(row) {
       // Making sure shownRows is reset before historyFilter stage is reached.
       if (this.pocket.isAll) {
-          this.pocket.incoming += row.myInValue;
-          this.pocket.outgoing += row.myOutValue;
+          if (!row.height) {
+              this.pocket.incoming += row.myInValue;
+              this.pocket.outgoing += row.myOutValue;
+          }
           // only add pocket transactions for now
           return ((typeof row.inPocket === 'number') || (typeof row.outPocket === 'number'));
       }
       else {
           var keys = Object.keys(row.impact);
           var impacted = (keys.indexOf(this.pocket.index) > -1);
-          if (impacted && row.impact[this.pocket.index] > 0) {
+          if (!row.height && impacted && row.impact[this.pocket.index] > 0) {
               this.pocket.incoming += row.impact[this.pocket.index];
-          } else if (impacted) {
+          } else if (impacted && !row.height) {
               this.pocket.outgoing -= row.impact[this.pocket.index];
           }
           return impacted;
