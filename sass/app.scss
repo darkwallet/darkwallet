@@ -345,10 +345,10 @@ div.notifications .panel:hover,
 	text-align: center; 
 	border-radius: $global-radius; 
 	background: rgba(40,40,40,0.8); 
-	img { padding: 1em; -webkit-transform: scale(1) translateY(0); }
+	img { padding: 0.6em; -webkit-transform: scale(1) translateY(0); }
 }
 
-.contact-label { -webkit-transform: translateY(0); border-radius: $global-radius; background: rgba(60,60,60,0.8); width: 100%; padding: 1em 0; }
+.contact-label { -webkit-transform: translateY(0); border-radius: $global-radius; background: rgba(60,60,60,0.8); width: 100%; padding: 0.3em 0; }
 
 span.contact-name { font-size: 200%; vertical-align: middle; }
 
