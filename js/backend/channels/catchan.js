@@ -110,7 +110,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
    */
   Channel.prototype.getPeer = function(fingerprint, discover) {
       if (fingerprint === this.fingerprint) {
-          return this.transport.comms;
+          return this.comms;
       }
       for(var idx=0; idx<this.transport.peers.length; idx++) {
           var peer = this.transport.peers[idx];
