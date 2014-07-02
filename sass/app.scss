@@ -403,6 +403,8 @@ div.pockets { z-index: 2; }
 
 div.inner-wrap { min-height: inherit; }
 
+.scroller.move-right div.inner-wrap { padding-right: $off-canvas-width; }
+
 .left-off-canvas-toggle { cursor: pointer; }
 
  section.left { 
