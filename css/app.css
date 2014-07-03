@@ -5224,6 +5224,7 @@ ul.off-canvas-list li.pocketpinned a {
   position: absolute;
   padding: 0 1rem;
   background: transparent;
+  opacity: 0.1;
   right: 0;
   top: 0;
   height: 2.8125rem;
@@ -5232,7 +5233,7 @@ ul.off-canvas-list li.pocketpinned a {
   z-index: 2;
   width: remcalc(35); }
   ul.off-canvas-list li.pocketpinned a:hover {
-    background: rgba(0, 0, 0, 0.3); }
+    opacity: 1; }
 ul.off-canvas-list li.pocketpinned label {
   height: 2.8125rem;
   line-height: 2.8125rem;

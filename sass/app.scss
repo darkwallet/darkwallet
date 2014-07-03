@@ -412,7 +412,8 @@ ul.off-canvas-list li.pocketpinned {
 		position: absolute;
 		padding: 0 1rem;
 		background: transparent;
-		&:hover { background: $dark-transparent; }
+		opacity: 0.1;
+		&:hover { opacity: 1; }
 		right: 0;
 		top: 0;
 		height: $tabbar-height;
