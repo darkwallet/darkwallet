@@ -421,6 +421,7 @@ ul.off-canvas-list li.pocketpinned {
 		border-bottom: none;
 		z-index: 2;
 		width: remcalc(35);
+		@include single-transition();
 	}
 	label {
 		height: $tabbar-height;
@@ -441,18 +442,19 @@ ul.off-canvas-list li.pocketpinned {
 }
 
 @media #{$large-up} { 
+	.pocketnav { opacity: 1; }
 	.scroller > div.inner-wrap.pinned { 
 		-webkit-transform: translate3d($off-canvas-width, 0, 0);
 		padding-right: $off-canvas-width; 
-		.pocketnav { display: none; }
+		.pocketnav { opacity: 0; }
 		.tab-bar-section.middle { left: 0px; }
 	}
 	
 }
+.pocketnav { cursor: pointer; }
 
 
 
-.left-off-canvas-toggle { cursor: pointer; }
 
  section.left { 
 	 background: $primary-color;

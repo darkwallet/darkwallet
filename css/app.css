@@ -4444,7 +4444,7 @@ nav.top-bar {
 .top-bar section ul {
   transition: all 300ms ease-out; }
 
-section.left, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
+.pocketnav, section.left, .tab-bar-section.middle, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
   transition: all 300ms ease-out; }
 
 #maintitle {
@@ -5231,7 +5231,8 @@ ul.off-canvas-list li.pocketpinned a {
   line-height: 2.8125rem;
   border-bottom: none;
   z-index: 2;
-  width: remcalc(35); }
+  width: remcalc(35);
+  transition: all 300ms ease-out; }
   ul.off-canvas-list li.pocketpinned a:hover {
     opacity: 1; }
 ul.off-canvas-list li.pocketpinned label {
@@ -5250,15 +5251,17 @@ ul.off-canvas-list li.pocketpinned label {
     -webkit-transform: translate3d(0, 0, 0); } }
 
 @media only screen and (min-width:64.063em) {
+  .pocketnav {
+    opacity: 1; }
   .scroller > div.inner-wrap.pinned {
     -webkit-transform: translate3d(15.625rem, 0, 0);
     padding-right: 15.625rem; }
     .scroller > div.inner-wrap.pinned .pocketnav {
-      display: none; }
+      opacity: 0; }
     .scroller > div.inner-wrap.pinned .tab-bar-section.middle {
       left: 0px; } }
 
-.left-off-canvas-toggle {
+.pocketnav {
   cursor: pointer; }
 
 section.left {
