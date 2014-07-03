@@ -59,10 +59,10 @@
 		  <li>
 			  <a ng-click="clipboard.copy(currentRow.hash)" class="fa fa-clipboard"> Copy hash</a>
 		  </li>
-		  <li ng-show="currentRow.address!=='internal'&&currentRow.address!='unknown'">
+		  <li ng-show="!currentRow.internal&&currentRow.address!='unknown'">
 			  <a ng-click="clipboard.copy(currentRow.address)" class="fa fa-btc"> Copy {{currentRow.inMine?'destination':'origin'}} address</a>
 		  </li>
-		  <li ng-show="!currentRow.contact&&currentRow.address!=='internal'&&currentRow.address!='unknown'">
+		  <li ng-show="!currentRow.contact&&!currentRow.internal&&currentRow.address!='unknown'">
 			  <a ng-click="modals.open('pick-contact', {type: 'any', allowCreate: true, newContact: {address: currentRow.address}}, addToContact)" class="fa fa-user"> Add {{currentRow.inMine?'destination':'origin'}} address to contact</a>
 		  </li>
 	        </ul>

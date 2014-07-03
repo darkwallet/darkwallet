@@ -66,9 +66,9 @@ History.prototype.buildHistoryRow = function(transaction, height) {
     var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
 
     var pocketImpact = {};
-    var addPocketImpact = function(pocketId, amount) {
+    var addPocketImpact = function(pocketId, outPocketType, amount) {
         if (!pocketImpact.hasOwnProperty(pocketId)) {
-            pocketImpact[pocketId] = {ins: 0, outs: 0, total: 0};
+            pocketImpact[pocketId] = {ins: 0, outs: 0, total: 0, type: outPocketType};
         }
         if (amount > 0) {
             pocketImpact[pocketId].outs += amount;
@@ -81,7 +81,7 @@ History.prototype.buildHistoryRow = function(transaction, height) {
     // XXX temporary while bitcoinjs-lib supports testnet better
     txObj = BtcUtils.fixTxVersions(txObj, this.identity);
 
-    var inAddress, inPocket, outPocket;
+    var inAddress, inPocket, outPocket, internal;
 
     // Check inputs
     for(var idx=0; idx<txObj.ins.length; idx++) {
@@ -92,10 +92,11 @@ History.prototype.buildHistoryRow = function(transaction, height) {
             // save in pocket
             var inWalletAddress = identity.wallet.getWalletAddress(output.address);
             inPocket = identity.wallet.pockets.getAddressPocketId(inWalletAddress);
+            var inPocketType = identity.wallet.pockets.getPocketType(inWalletAddress.type);
             // counters
             inMine += 1;
             myInValue += output.value;
-            addPocketImpact(inPocket, -output.value);
+            addPocketImpact(inPocket, inPocketType, -output.value);
         } else {
             var address = BtcUtils.getInputAddress(anIn, this.identity.wallet.versions);
             inAddress = address || inAddress;
@@ -117,11 +118,12 @@ History.prototype.buildHistoryRow = function(transaction, height) {
             outMine += 1;
             myOutValue += anOut.value;
             var _outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
+            var outPocketType = identity.wallet.pockets.getPocketType(outWalletAddress.type);
             // save out pocket (don't set if it's change or same as input)
             if (inPocket !== _outPocket && !((typeof outWalletAddress.index[0] === 'number') && (outWalletAddress.index[0]%2 == 1))) {
                 outPocket = _outPocket;
             }
-            addPocketImpact(_outPocket, anOut.value);
+            addPocketImpact(_outPocket, outPocketType, anOut.value);
         } else {
             if (inMine) {
                 txAddr = anOut.address.toString();
@@ -129,14 +131,35 @@ History.prototype.buildHistoryRow = function(transaction, height) {
         }
     }
     if (!txAddr) {
-        txAddr = 'internal';
+        txAddr = this.getTransferLabel(pocketImpact);
+        internal = true;
     }
     // Create a row representing this change (if already referenced will
     // be replaced)
-    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket, impact: pocketImpact, label: this.identity.txdb.getLabel(txHash)};
+    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket, impact: pocketImpact, label: this.identity.txdb.getLabel(txHash), internal: internal};
     return newRow;
 };
 
+History.prototype.getTransferLabel = function(pocketImpact) {
+    var identity = this.identity;
+    var keys = Object.keys(pocketImpact);
+
+    // Input pockets
+    var inKeys = keys.filter(function(key) { return pocketImpact[key].ins!==0; } );
+    inKeys = inKeys.map(function(key) { return identity.wallet.pockets.getPocket(key, pocketImpact[key].type).name; });
+
+    // Output pockets (minus change pockets)
+    var outKeys = keys.filter(function(key) { return pocketImpact[key].outs!==0 && pocketImpact[key].ins===0; } );
+    outKeys = outKeys.map(function(key) { return identity.wallet.pockets.getPocket(key, pocketImpact[key].type).name; });
+
+    // Compose the final label
+    var label = inKeys.join(' ,');
+    if (outKeys.length) {
+        return label + " to " + outKeys.join(' ,');
+    } else {
+        return 'internal on ' + label;
+    }
+}
 
 /**
  * Callback to fill missing input (depending on another transaction)
