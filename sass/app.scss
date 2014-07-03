@@ -411,7 +411,8 @@ ul.off-canvas-list li.pocketpinned {
 	 a {
 		position: absolute;
 		padding: 0 1rem;
-		background: $dark-transparent;
+		background: transparent;
+		&:hover { background: $dark-transparent; }
 		right: 0;
 		top: 0;
 		height: $tabbar-height;
@@ -441,9 +442,10 @@ ul.off-canvas-list li.pocketpinned {
 @media #{$large-up} { 
 	.scroller > div.inner-wrap.pinned { 
 		-webkit-transform: translate3d($off-canvas-width, 0, 0);
-		padding-right: $off-canvas-width; }
-	.pocketnav { }
-	.tab-bar-section.middle { left: 0px; }
+		padding-right: $off-canvas-width; 
+		.pocketnav { display: none; }
+		.tab-bar-section.middle { left: 0px; }
+	}
 	
 }
 

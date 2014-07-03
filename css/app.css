@@ -5223,7 +5223,7 @@ div.inner-wrap {
 ul.off-canvas-list li.pocketpinned a {
   position: absolute;
   padding: 0 1rem;
-  background: rgba(0, 0, 0, 0.3);
+  background: transparent;
   right: 0;
   top: 0;
   height: 2.8125rem;
@@ -5231,6 +5231,8 @@ ul.off-canvas-list li.pocketpinned a {
   border-bottom: none;
   z-index: 2;
   width: remcalc(35); }
+  ul.off-canvas-list li.pocketpinned a:hover {
+    background: rgba(0, 0, 0, 0.3); }
 ul.off-canvas-list li.pocketpinned label {
   height: 2.8125rem;
   line-height: 2.8125rem;
@@ -5250,8 +5252,10 @@ ul.off-canvas-list li.pocketpinned label {
   .scroller > div.inner-wrap.pinned {
     -webkit-transform: translate3d(15.625rem, 0, 0);
     padding-right: 15.625rem; }
-  .tab-bar-section.middle {
-    left: 0px; } }
+    .scroller > div.inner-wrap.pinned .pocketnav {
+      display: none; }
+    .scroller > div.inner-wrap.pinned .tab-bar-section.middle {
+      left: 0px; } }
 
 .left-off-canvas-toggle {
   cursor: pointer; }
