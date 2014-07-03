@@ -154,8 +154,10 @@ function (controllers, DarkWallet, Port) {
   $scope.titleClick = function() {
       var currentPath = $location.path();
       if (currentPath.substr(0, 7) === '/wallet') {
-          var element = angular.element(document.querySelector('.off-canvas-wrap'));
-          element.toggleClass('move-right');
+          var element = angular.element(document.querySelector('.inner-wrap'));
+          element.toggleClass('pinned');
+          //var element = angular.element(document.querySelector('.off-canvas-wrap'));
+          //element.toggleClass('move-right');
       } else {
           $location.path("/wallet");
       }
