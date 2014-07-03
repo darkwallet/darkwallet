@@ -71,7 +71,7 @@ div.scroller.ng-animate {
  	width: 100%;	
 }
 
-div.scroller.ng-animate.ng-enter {
+div.scroller.ng-animate.ng-enter, nav.top-bar {
 	-webkit-animation: moveFromTopFade .5s ease both;
 	-moz-animation: moveFromTopFade .5s ease both;
 	animation: moveFromTopFade .5s ease both;
@@ -105,6 +105,9 @@ div.send-advanced.ng-animate  { @include single-transition(all, 450ms, ease-in-o
 div.container { @include single-transition(all, 300ms, ease-out); }
 div.modal-ng.ng-animate.ng-leave { @include single-transition(all, 200ms, ease-in); }
 div.modal-ng.ng-animate.ng-enter { @include single-transition(all, 300ms, ease-out); }
+
+nav.top-bar { @include single-transition(height, 300ms, ease-out); }
+.top-bar section ul { @include single-transition(all, 300ms, ease-out); }
 
 section.left,
 div.identitylist,
