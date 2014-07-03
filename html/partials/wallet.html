@@ -1,17 +1,17 @@
     <div class="inner-wrap pinned">
         <nav class="tab-bar">
-            <section class="left left-off-canvas-toggle" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
-                <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> Pockets</span>
-                <span ng-show="pocket.type==='multisig'" class="fa fa-list"> Multisig</span>
-                <span ng-show="pocket.type==='readonly'" class="fa fa-list"> Watch-only</span>
-            </section>
-	    <section class="left left-off-canvas-toggle" ng-show="selectedPocket==='newMultisig'">
-                <span class="fa fa-list"> Multisig</span>
-            </section>
-	    <section class="left left-off-canvas-toggle" ng-show="selectedPocket==='newPocket'">
-                <span class="fa fa-list"> Pocket</span>
-            </section>
+			<div class="pocketnav hide-for-large-up">
+	            <section class="left left-off-canvas-toggle" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
+	                <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> Pockets</span>
+	                <span ng-show="pocket.type==='multisig'" class="fa fa-list"> Multisig</span>
+	                <span ng-show="pocket.type==='readonly'" class="fa fa-list"> Watch-only</span>
+	            </section>
+		    	<section class="left left-off-canvas-toggle" >
+	                <span class="fa fa-list" ng-show="selectedPocket==='newMultisig'"> Multisig</span>
+	                <span class="fa fa-list" ng-show="selectedPocket==='newPocket'"> Pocket</span>
+	            </section>
 				<div class="tri left-off-canvas-toggle"></div>
+			</div>
             <!-- Pocket name and balance -->
             <section class="middle tab-bar-section" ng-show="!(pocket.balance===undefined) && selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
 			    <h1 class="title lin">

@@ -4402,7 +4402,7 @@ div.scroller.ng-animate {
   position: absolute;
   width: 100%; }
 
-div.scroller.ng-animate.ng-enter {
+div.scroller.ng-animate.ng-enter, nav.top-bar {
   -webkit-animation: moveFromTopFade 0.5s ease both;
   -moz-animation: moveFromTopFade 0.5s ease both;
   animation: moveFromTopFade 0.5s ease both; }
@@ -4436,6 +4436,12 @@ div.modal-ng.ng-animate.ng-leave {
   transition: all 200ms ease-in; }
 
 div.modal-ng.ng-animate.ng-enter {
+  transition: all 300ms ease-out; }
+
+nav.top-bar {
+  transition: height 300ms ease-out; }
+
+.top-bar section ul {
   transition: all 300ms ease-out; }
 
 section.left, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
@@ -5202,16 +5208,50 @@ span.contact-name {
 #logo {
   margin: -2px 5px 0 -5px; }
 
+#maintitle {
+  margin-right: -1px; }
+
 div.pockets {
   z-index: 2; }
+
+.tab-bar-section.middle {
+  left: 120px; }
 
 div.inner-wrap {
   min-height: inherit; }
 
+ul.off-canvas-list li.pocketpinned a {
+  position: absolute;
+  padding: 0 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  right: 0;
+  top: 0;
+  height: 2.8125rem;
+  line-height: 2.8125rem;
+  border-bottom: none;
+  z-index: 2;
+  width: remcalc(35); }
+ul.off-canvas-list li.pocketpinned label {
+  height: 2.8125rem;
+  line-height: 2.8125rem;
+  padding-top: 0;
+  font-size: 96%; }
+
+@media only screen and (max-width: 40em) {
+  .top-bar ul.title-area {
+    z-index: 2;
+    background: #333; }
+  .top-bar section ul {
+    -webkit-transform: translate3d(0, -100%, 0); }
+  .top-bar.expanded section ul {
+    -webkit-transform: translate3d(0, 0, 0); } }
+
 @media only screen and (min-width:64.063em) {
   .scroller > div.inner-wrap.pinned {
     -webkit-transform: translate3d(15.625rem, 0, 0);
-    padding-right: 15.625rem; } }
+    padding-right: 15.625rem; }
+  .tab-bar-section.middle {
+    left: 0px; } }
 
 .left-off-canvas-toggle {
   cursor: pointer; }
@@ -5221,9 +5261,6 @@ section.left {
   padding-left: 1em; }
   section.left span {
     color: white; }
-
-.tab-bar-section.middle {
-  left: 135px; }
 
 .tab-bar {
   overflow: hidden; }
