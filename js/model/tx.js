@@ -173,7 +173,7 @@ Transaction.prototype.signMyInputs = function(inputs, newTx, privKeys) {
     for(var i=0; i<newTx.ins.length; i++) {
         var anIn = newTx.ins[i];
         var found = inputs.filter(function(myIn) {
-            return (myIn.hash === anIn.hash) && (myIn.index === anIn.index);
+            return (myIn.outpoint.hash === anIn.outpoin.hash) && (myIn.outpoint.index === anIn.outpoint.index);
         });
         if (found.length === 0) {
             continue;
