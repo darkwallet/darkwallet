@@ -414,11 +414,11 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       }
       else {
           var keys = Object.keys(row.impact);
-          var impacted = (keys.indexOf(this.pocket.index) > -1);
-          if (!row.height && impacted && row.impact[this.pocket.index] > 0) {
-              this.pocket.incoming += row.impact[this.pocket.index];
+          var impacted = (keys.indexOf(''+this.pocket.index) > -1);
+          if (!row.height && impacted && row.impact[this.pocket.index].total > 0) {
+              this.pocket.incoming += row.impact[this.pocket.index].total;
           } else if (impacted && !row.height) {
-              this.pocket.outgoing -= row.impact[this.pocket.index];
+              this.pocket.outgoing -= row.impact[this.pocket.index].total;
           }
           return impacted;
       }
