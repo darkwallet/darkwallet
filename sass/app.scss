@@ -5,7 +5,7 @@
 $primary-color: rgba(30, 190, 90,0.9) !default;
 $primary-color-dark: rgba(30, 170, 80,0.9);
 $alternative-color: #002B29;
-$secondary-color: #e7e7e7;
+$secondary-color: #bbb;
 $alert-color: #c92441;
 $success-color: #43AC6A;
 $dark-transparent: rgba(0,0,0,0.3);
@@ -403,7 +403,9 @@ span.contact-name { font-size: 200%; vertical-align: middle; }
 
 div.pockets { z-index: 2; }
 
-.tab-bar-section.middle { left: 120px; }
+.tab-bar-section.middle { left: 120px; padding: 0; }
+
+
 
 div.inner-wrap { min-height: inherit; }
 
@@ -441,12 +443,18 @@ ul.off-canvas-list li.pocketpinned {
 	}
 }
 
+@media #{$medium-only} {
+	.top-bar ul li a { font-size: 88%; } 
+	.top-bar ul.right li:last-child a { max-width: 175px; overflow: hidden; height: $topbar-height; text-overflow: ellipsis; }
+}
+
 @media #{$large-up} { 
-	.pocketnav { opacity: 1; }
+	nav.tab-bar { width: 150%; }
+	.pocketnav { opacity: 1; -webkit-transform: translate3d(0,0,0); }
 	.scroller > div.inner-wrap.pinned { 
 		-webkit-transform: translate3d($off-canvas-width, 0, 0);
 		padding-right: $off-canvas-width; 
-		.pocketnav { opacity: 0; }
+		.pocketnav { -webkit-transform: translate3d(-10%,0,0); opacity: 0; }
 		.tab-bar-section.middle { left: 0px; }
 	}
 	
@@ -467,10 +475,12 @@ ul.off-canvas-list li.pocketpinned {
 
  .lin { display: inline-block; }
  
+ h1.lin { margin: 0 1rem; }
+ 
  div.lin { 
 	 border-left: 1px solid $darker-transparent;
  	 padding: 0 1rem;
-	 &:first-of-type { margin-left: 1rem; }
+	 &:first-of-type {  }
   }
 
 div.tri { 
