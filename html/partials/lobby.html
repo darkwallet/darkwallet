@@ -79,11 +79,12 @@
           </div>
           <h5>Your permanent identity</h5>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
-          <h5 title="Your temporary identity">Cloak</h5>
+          <h5 title="Your temporary identity">Cloak 
+              <a class="fa fa-refresh" title="Change cloak" ng-click="newTempIdentity()"></a>
+	  </h5>
           <div class="row">
             <div class="small-12 columns">
               <face title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></face> {{comms.name}}
-              <a class="fa fa-refresh" title="Change cloak" ng-click="newTempIdentity()"></a>
             </div>
           </div>
           <h5>Peers</h5>
