@@ -101,13 +101,14 @@ CurrencyFormatting.fiatToBtc = function(amount, currency, fiatCurrency) {
  * Add dots for thousands if needed
  */
 CurrencyFormatting.addThousands = function(value, formatted) {
+    formatted = formatted || new Big(value).toFixed();
     if (value>=1000) {
-        var parts = (formatted || value.toString()).split(".");
+        var parts = formatted.split(".");
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         value = parts.join(".");
         return value;
     }
-    return (formatted || value)
+    return formatted;
 }
 
 /**
