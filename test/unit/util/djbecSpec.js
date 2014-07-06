@@ -159,7 +159,7 @@ define(['util/djbec', 'bitcoinjs-lib'], function(Djbec, Bitcoin) {
    });
 
    describe('ecDH timing', function () {
-    iit('test if the branches in zpt_sm take different time', function() {
+    xit('test if the branches in zpt_sm take different time', function() {
         var base = new Uint8Array(32);
         var n = new Uint8Array(32);
         window.crypto.getRandomValues(base);
