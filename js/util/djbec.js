@@ -275,13 +275,13 @@ function sig_test(msg) {
 //  Curve25519 diffie-helman
 //
 
-function zpt_add(xz1, xz2, base) {
+function zpt_add(xz1, xz2, diff) {
   var x1 = xz1[0];
   var x2 = xz2[0];
   var z1 = xz1[1];
   var z2 = xz2[1];
-  var x = x2.times(x1).minus(z2.times(z1)).square().shiftLeft(2).mod(q);
-  var z = x2.times(z1).minus(z2.times(x1)).square().shiftLeft(2).times(base).mod(q);
+  var x = x2.times(x1).minus(z2.times(z1)).square().shiftLeft(2).times(diff[1]).mod(q);
+  var z = x2.times(z1).minus(z2.times(x1)).square().shiftLeft(2).times(diff[0]).mod(q);
   return [x,z];
 }
 
@@ -301,8 +301,8 @@ function zpt_sm(n, base) {
     var pm_pm1 = f(m.shiftRight(1));
     var pm = pm_pm1[0];
     var pm1 = pm_pm1[1];
-    if (m.testBit(0)) return [zpt_add(pm, pm1, base), zpt_double(pm1)];
-    else return [zpt_double(pm), zpt_add(pm, pm1, base)];
+    if (m.testBit(0)) return [zpt_add(pm, pm1, bp), zpt_double(pm1)];
+    else return [zpt_double(pm), zpt_add(pm, pm1, bp)];
   }
   return f(n);
 }
@@ -321,6 +321,15 @@ function dh_test(sk1, sk2) {
   return curve25519(sk1, pk2).equals(curve25519(sk2, pk1));
 }
 
+/* use blinding to not leak timing info */
+function ecDH(n, base) {
+    var r_bytes = new Uint8Array(32);
+    window.crypto.getRandomValues(r_bytes);
+    var r = bytes2bi(r_bytes);
+    var pt = zpt_add(zpt_sm(n.minus(r).mod(l), base)[0], zpt_sm(r.mod(l), base)[0], zpt_sm(n.minus(r).minus(r).mod(l), base)[0]);
+    return pt[0].times(pt[1].modInverse(q)).mod(q);
+}
+
 return {
   'curve25519': curve25519,
   'isoncurve': isoncurve,
@@ -337,7 +346,7 @@ return {
   'bi2bytes': bi2bytes,
   'bytes2bi': bytes2bi,
   'bytes2string': bytes2string,
-  'ecDH': curve25519
+  'ecDH': ecDH
 };
 
 });
