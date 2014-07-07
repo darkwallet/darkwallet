@@ -79,6 +79,11 @@ define(['util/djbec', 'bitcoinjs-lib'], function(Djbec, Bitcoin) {
         expect(res).toBe(true);
     });
 
+    it('ecDH', function() {
+        expect(Djbec.ecDH(sk1, pk2).toString()).toEqual(Djbec.curve25519(sk1, pk2).toString());
+        expect(Djbec.ecDH(sk2, pk1).toString()).toEqual(Djbec.curve25519(sk2, pk1).toString());
+    });
+
 
    });
 
