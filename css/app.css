@@ -5219,7 +5219,8 @@ div.pockets {
   padding: 0; }
 
 div.inner-wrap {
-  min-height: inherit; }
+  min-height: inherit;
+  padding: 0; }
 
 ul.off-canvas-list li.pocketpinned a {
   position: absolute;
