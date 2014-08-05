@@ -14,7 +14,7 @@ You can load the extension into Chrome by going to _Extensions_, enabling _Devel
 
 Alpha!!!
 -----------
-We're still in alpha state, that means we're still changing things a lot and it's not safe at all to use the wallet.
+We're still in [alpha](http://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha) state, that means we're still changing things a lot and it's not safe at all to use the wallet.
 More information at: https://wiki.unsystem.net/index.php/DarkWallet/Alpha
 
 You are *very welcome* to test, just remember the following:
