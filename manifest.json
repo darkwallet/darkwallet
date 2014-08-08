@@ -1,5 +1,5 @@
 {
-  "name": "Dark Wallet",
+  "name": "Darkwallet",
   "description": "Your keys. Your privacy. Your sovereignty.",
   "homepage_url": "https://darkwallet.is",
   "version": "0.5.0",
@@ -8,7 +8,7 @@
     "128": "images/icon_128.png"
   },
   "browser_action": {
-    "default_title": "Dark Wallet",
+    "default_title": "Darkwallet",
     "default_icon": "images/icon_128.png",
     "default_popup": "html/popup.html"
   },

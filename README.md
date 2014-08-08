@@ -1,4 +1,4 @@
-Dark Wallet [![Build Status](https://drone.io/github.com/darkwallet/darkwallet/status.png)](https://drone.io/github.com/darkwallet/darkwallet/latest) [![Code Quality](https://codeclimate.com/github/darkwallet/darkwallet.png)](https://codeclimate.com/github/darkwallet/darkwallet) [![Coverage Status](https://coveralls.io/repos/darkwallet/darkwallet/badge.png?branch=develop)](https://coveralls.io/r/darkwallet/darkwallet?branch=develop)
+Darkwallet [![Build Status](https://drone.io/github.com/darkwallet/darkwallet/status.png)](https://drone.io/github.com/darkwallet/darkwallet/latest) [![Code Quality](https://codeclimate.com/github/darkwallet/darkwallet.png)](https://codeclimate.com/github/darkwallet/darkwallet) [![Coverage Status](https://coveralls.io/repos/darkwallet/darkwallet/badge.png?branch=develop)](https://coveralls.io/r/darkwallet/darkwallet?branch=develop)
 ===========
 
 We love Bitcoin, and the power it gives for trade and social connections. There is so much untapped power in Bitcoin. You know the saying "we only use 10% of our brain's power"? We probably use less than 1% of what is possible with Bitcoin!

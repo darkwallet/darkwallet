@@ -1,4 +1,4 @@
-Dark Wallet Development
+Darkwallet Development
 ==========
 
 You are welcome to participate in the development by contributing or forking the code at:
