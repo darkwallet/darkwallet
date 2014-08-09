@@ -49,6 +49,11 @@ Use the following resources for communication with "the team"
 * IRC: #darkwallet (freenode)
 * [Wiki](https://wiki.unsystem.net)
 
+
+License
+------------
+See the license [here](COPYRIGHT)
+
 Support Us!
 ------------
 
