@@ -1,7 +1,7 @@
-<h3 ng-show="!tools.open || tools.exportOpen">Exporting</h3>
+<h3 ng-show="!tools.open || tools.exportOpen">Key management</h3>
 <a class="button fa fa-pencil postfix" ng-click="tools.open=true;tools.exportOpen=true" ng-show="!tools.open" novalidate>Export keys</a>
 <form name="exportingForm" ng-show="tools.exportOpen" ng-submit="exportKeys()">
-    <label>Public keys (leave empty for all):</label>
+    <label>Addresses (leave empty for all):</label>
     <textarea ng-model="tools.exportKeys" rows="4" cols="50"></textarea>
     <div class="row collapse">
       <div class="medium-6 columns">
