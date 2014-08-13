@@ -1,0 +1,14 @@
+<h3 ng-show="!tools.open || tools.exportOpen">Exporting</h3>
+<a class="button fa fa-pencil postfix" ng-click="tools.open=true;tools.exportOpen=true" ng-show="!tools.open" novalidate>Export keys</a>
+<form name="exportingForm" ng-show="tools.exportOpen" ng-submit="exportKeys()">
+    <label>Public keys (leave empty for all):</label>
+    <textarea ng-model="tools.exportKeys" rows="4" cols="50"></textarea>
+    <div class="row collapse">
+      <div class="medium-6 columns">
+        <button type="submit" class="button fa fa-pencil postfix">Export</button>
+      </div>
+      <div class="medium-6 columns">
+        <a class="button alert fa fa-times postfix" ng-click="tools.exportOpen=false;tools.open=false;">Cancel</a>
+      </div>
+    </div>
+</form>
