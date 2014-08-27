@@ -10,7 +10,7 @@
  * @constructor
  */
 define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWallet, Mnemonic) {
-  controllers.controller('NewWalletCtrl', ['$scope', '$location', function($scope, $location) {
+  controllers.controller('NewWalletCtrl', ['$scope', '$location', 'notify', function($scope, $location, notify) {
 
   $scope.step = 1;
   $scope.form = {
@@ -49,6 +49,14 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
     }
     
     var words = $scope.form.mnemonic2.split(' ');
+
+    /* check that it's a valid mnemonic */
+    for (var i = 0; i < 12; i++)
+        if (Mnemonic.words.indexOf(words[i]) == -1) {
+            notify.error('invalid mnemonic');
+            return;
+        }
+
     var mnemonic = new Mnemonic(words);
 
     var walletService = DarkWallet.service.wallet;
