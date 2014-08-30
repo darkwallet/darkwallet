@@ -38,6 +38,8 @@ Desktop.ini
 !/vendors/angular-mocks/angular-mocks.js
 /vendors/angular-translate/*
 !/vendors/angular-translate/angular-translate.min.js
+/vendors/angular-translate-loader-static-files/*
+!/vendors/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js
 /vendors/mnemonic.js/*
 !/vendors/mnemonic.js/mnemonic.js
 /vendors/ngprogress/*
