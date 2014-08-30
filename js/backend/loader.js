@@ -12,6 +12,7 @@ require.config({
     'angular-route': '../vendors/angular-route/angular-route.min',
     'mm.foundation': '../vendors/angular-foundation/mm-foundation-custom-tpls.min',
     'angular-xeditable': '../vendors/angular-xeditable/dist/js/xeditable.min',
+    'angular-translate': '../vendors/angular-translate/angular-translate.min',
     'moment': '../vendors/moment/min/moment-with-langs.min',
     'angular-moment': '../vendors/angular-moment/angular-moment.min',
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
@@ -51,6 +52,9 @@ require.config({
       deps: ['angular']
     },
     'angular-xeditable': {
+      deps: ['angular']
+    },
+    'angular-translate': {
       deps: ['angular']
     },
     'ngProgress': {
