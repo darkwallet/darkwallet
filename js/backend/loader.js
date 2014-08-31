@@ -13,7 +13,7 @@ require.config({
     'mm.foundation': '../vendors/angular-foundation/mm-foundation-custom-tpls.min',
     'angular-xeditable': '../vendors/angular-xeditable/dist/js/xeditable.min',
     'angular-translate': '../vendors/angular-translate/angular-translate.min',
-    'angular-translate-loader-static-files': '../vendors/angular-translate-loader-static-files/angular-translate-loader-static-files.min',
+    'angular-translate-loader-static-file': '../vendors/angular-translate-loader-static-files/angular-translate-loader-static-files.min',
     'moment': '../vendors/moment/min/moment-with-langs.min',
     'angular-moment': '../vendors/angular-moment/angular-moment.min',
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
@@ -58,8 +58,8 @@ require.config({
     'angular-translate': {
       deps: ['angular']
     },
-    'angular-translate-loader-static-files': {
-      deps: ['angular-translate']
+    'angular-translate-loader-static-file': {
+      deps: ['angular', 'angular-translate']
     },
     'ngProgress': {
       deps: ['angular']

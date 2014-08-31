@@ -26,13 +26,13 @@
 			  </div>
 	  	  </div>
           <a ng-show="!forms.identityDropdown" href="index.html#wallet" target="_blank" class="button topmargin small radius expand">
-            Open wallet
+            {{ 'OPEN_WALLET' | translate }}
           </a>
         </div>
         <div ng-show="!identities.length" ng-cloak class="small-12 columns">
 			<h6>Welcome to Darkwallet! Let's get started:
           <a href="index.html#new_wallet" target="_blank" class="button small radius expand">
-            Create wallet
+            {{ 'CREATE_WALLET' | translate }}
           </a>
         </div>
       </div>
