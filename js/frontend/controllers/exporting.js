@@ -1,7 +1,6 @@
 'use strict';
 
-// TODO: remove stealth?
-define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (controllers, DarkWallet, Bitcoin, Stealth) {
+define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   // Controller
   controllers.controller('ExportingCtrl', ['$scope', 'notify', 'modals', function($scope, notify, modals) {
