@@ -6,11 +6,6 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
   // Controller
   controllers.controller('ExportingCtrl', ['$scope', 'notify', 'modals', function($scope, notify, modals) {
 
-  // Get text from textbox, return list of addresses to export
-  var parseAddressList = function(addressList) {
-    // TODO
-  }
-
   $scope.exportKeys = function() {
       var identity = DarkWallet.getIdentity();
       var allAddresses = identity.wallet.getPocketAddresses('all');
