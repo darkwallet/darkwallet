@@ -28,11 +28,16 @@ function (mocks, testUtils) {
         DarkWallet = require('darkwallet');
         mocks.module("DarkWallet.controllers");
         mocks.inject(["$rootScope", "$controller", function ($rootScope, $controller) {
+          var notify = {
+            success: function(){},
+            warning: function(){},
+            error: function(){}
+          };
           scope = $rootScope.$new();
           $location = {path: function(location){
               _location = location;
           }};
-          newWalletCtrl = $controller('NewWalletCtrl', {$scope: scope, $location: $location});
+          newWalletCtrl = $controller('NewWalletCtrl', {$scope: scope, $location: $location, notify: notify});
           done();
         }]);
       });
