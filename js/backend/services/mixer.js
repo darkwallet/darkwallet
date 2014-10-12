@@ -255,7 +255,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       var pocket = identity.wallet.pockets.getPocket(pocketIndex, 'hd');
       // Prepare arguments for preparing the tx
       var changeAddress = pocket.getChangeAddress('mixing');
-      var destAddress = pocket.getFreeAddress(true, 'mixing');
+      var destAddress = pocket.getFreeAddress(false, 'mixing');
 
       var recipient = {address: destAddress.address, amount: opening.amount};
 
