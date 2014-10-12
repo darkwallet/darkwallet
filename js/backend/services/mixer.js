@@ -395,8 +395,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   MixerService.prototype.onCoinJoin = function(msg) {
     if (msg.sender !== this.channel.fingerprint) {
       var coinJoin = this.getOngoing(msg);
-      var prevState = coinJoin.state;
       if (coinJoin) {
+          var prevState = coinJoin.state;
           console.log("[mixer] CoinJoin", msg);
 
           var updatedTx = coinJoin.process(msg.body, msg.peer);
