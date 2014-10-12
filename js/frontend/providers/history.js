@@ -406,11 +406,11 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       // Making sure shownRows is reset before historyFilter stage is reached.
       if (this.pocket.isAll) {
           if (!row.height) {
-              var rowImpact = row.myInValue - row.myOutValue;
+              var rowImpact = row.myOutValue - row.myInValue;
               if (rowImpact < 0) {
-                  this.pocket.incoming += rowImpact;
+                  this.pocket.outgoing += -rowImpact;
               } else {
-                  this.pocket.outgoing += rowImpact;
+                  this.pocket.incoming += rowImpact;
               } 
           }
           // only add pocket transactions for now
