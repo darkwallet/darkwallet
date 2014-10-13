@@ -119,8 +119,8 @@ Contact.prototype.setMainKey = function (index) {
  */
 Contact.prototype.deleteKey = function (index) {
   this.pubKeys.splice(index, 1);
-  if (this.data.mainKey > this.pubKeys.length) {
-      this.data.mainKey = this.pubKeys.length-1;
+  if (this.data.mainKey > index) {
+      this.data.mainKey = this.data.mainKey-1;
   }
   this.updateHash();
   // Check if we have an idkey
