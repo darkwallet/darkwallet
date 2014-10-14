@@ -30,9 +30,13 @@ BasePocket.prototype.addToPocket = function(walletAddress) {
  */
 BasePocket.prototype.removeAddress = function(walletAddress) {
     var wallet = this.getMyWallet();
-    wallet.deleteAddress(walletAddress.index);
+    try {
+        wallet.deleteAddress(walletAddress.index);
+    } catch(e) {
+        console.log("address not available while removing");
+    }
     var i = this.walletAddresses.indexOf(walletAddress);
-    if (i>0) {
+    if (i>-1) {
         this.walletAddresses.splice(i, 1);
         if (this.addresses[i] !== walletAddress.address) {
             // consistency must be maintained
@@ -105,8 +109,8 @@ BasePocket.prototype.getMainAddress = function() {
 BasePocket.prototype.destroy = function() {
     var self = this;
     var wallet = this.getMyWallet();
-    // First delete all addresses
-    var walletAddresses = this.getWalletAddresses();
+    // First delete all addresses, clone array so we can safely iterate
+    var walletAddresses = this.getWalletAddresses().slice(0);
     var removed = [];
     walletAddresses.forEach(function(walletAddress) {
         if (walletAddress) {
@@ -117,7 +121,6 @@ BasePocket.prototype.destroy = function() {
     // Now delete our index in the wallet
     var pocketId = this.getPocketId();
     delete wallet.pockets.pockets[this.type][pocketId];
-    this.addresses = this.addresses.splice(0, this.addresses.length);
     wallet.store.save();
     return removed;
 };
