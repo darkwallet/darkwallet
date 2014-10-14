@@ -41,10 +41,10 @@
 				<div class="lin" ng-show="pocket.outgoing">
 					Sending: {{pocket.outgoing | formatBtc}}
 				</div>
-				<div class="lin" ng-show="overviewPocket && overviewPocket.confirmed && overviewPocket.confirmed !== pocket.balance.confirmed">
+				<div class="lin" ng-if="overviewPocket && overviewPocket.confirmed && overviewPocket.confirmed !== pocket.balance.confirmed">
 					<b>Including Multisig:</b> {{overviewPocket.confirmed | formatBtc}}
 				</div>
-				<div class="lin" ng-show="overviewPocket && overviewPocket.confirmed && overviewPocket.confirmed !== pocket.balance.confirmed">
+				<div class="lin" ng-if="overviewPocket && overviewPocket.confirmed && overviewPocket.confirmed !== pocket.balance.confirmed">
 					{{overviewPocket.confirmed | formatFiat}}
 				</div>
             </section>

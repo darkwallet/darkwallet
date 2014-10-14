@@ -67,6 +67,15 @@ Support our development efforts by donating to the darkwallet multisig:
 >
 > -- <cite>Henry David Thoreau</cite>
 
+HDWallet restoration info
+------------
+The following page in our wiki documents our hd wallet paths:
+
+https://wiki.unsystem.net/en/index.php/DarkWallet/HDWallet
+
+You can use this with 3rd party tools to access your funds.
+
+
 - - -
 
 DarkWallet Team

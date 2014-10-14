@@ -225,7 +225,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           continue;
       }
       if (pocket.mixing) {
-        var balance = identity.wallet.getBalance(i*2, 'hd').confirmed + identity.wallet.getBalance((i*2)+1, 'hd').confirmed;
+        var balance = identity.wallet.getBalance(i, 'hd').confirmed;
         if (balance >= amount) {
             return i;
         }
@@ -255,7 +255,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       var pocket = identity.wallet.pockets.getPocket(pocketIndex, 'hd');
       // Prepare arguments for preparing the tx
       var changeAddress = pocket.getChangeAddress('mixing');
-      var destAddress = pocket.getFreeAddress(true, 'mixing');
+      var destAddress = pocket.getFreeAddress(false, 'mixing');
 
       var recipient = {address: destAddress.address, amount: opening.amount};
 
@@ -395,8 +395,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   MixerService.prototype.onCoinJoin = function(msg) {
     if (msg.sender !== this.channel.fingerprint) {
       var coinJoin = this.getOngoing(msg);
-      var prevState = coinJoin.state;
       if (coinJoin) {
+          var prevState = coinJoin.state;
           console.log("[mixer] CoinJoin", msg);
 
           var updatedTx = coinJoin.process(msg.body, msg.peer);

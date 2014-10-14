@@ -36,7 +36,7 @@ var DarkWallet = {
     getClient: function() {return DarkWallet.core.getClient();},
 
     /**
-     * Get identtiy
+     * Get identity
      * 
      * @param {Number} [idx] Index of the identity, default is current.
      * @returns {Object}

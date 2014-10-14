@@ -128,6 +128,8 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
       var walletAddress = identity.wallet.getWalletAddress(address);
       if (!walletAddress) {
           notify.warning("Incorrect address for this wallet");
+      } else if (walletAddress.type == 'readonly' || walletAddress.type == 'multisig') {
+          notify.warning("Can't sign with readonly or multisig addresses");
       } else {
           modals.password('Unlock password', function(password) {
               try {
