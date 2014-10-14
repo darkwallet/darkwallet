@@ -63,7 +63,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
                 reindexed.push(walletAddress.index.slice());
                 // Change the index to the new name
                 walletAddress.index[0] = newIndex;
-                identity.wallet.pubKeys[newIndex] = walletAddress;
+                identity.wallet.pubKeys[walletAddress.index.slice(0)] = walletAddress;
             }
         });
         // Now delete all reindexed
