@@ -33,7 +33,9 @@ require.config({
     'darkwallet_gateway': "../vendors/darkwallet_gateway/client/gateway",
     
     'domReady': '../vendors/requirejs-domready/domReady',
-    'sjcl': 'util/fixes'
+    'sjcl': 'util/fixes',
+    
+    'available_languages': '../i18n/_index'
   },
   
   /**

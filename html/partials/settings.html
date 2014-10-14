@@ -42,6 +42,8 @@
           <input id="checkbox-intx" ng-model="settings.notifications.receive" type="checkbox"><label for="checkbox-intx">For incoming transactions</label><br>
           <input id="checkbox-multisig" ng-model="settings.notifications.multisig" type="checkbox"><label for="checkbox-multisig">For multisig spend requests</label><br>
           <input id="checkbox-notify" ng-model="settings.notifications.popup" type="checkbox" ng-change="storeSettings()"><label for="checkbox-notify">Show chat notifications</label><br>
+          <h5>Language</h5>
+          <select id="select-language" ng-model="settings.language" ng-change="languageChanged()" ng-options="language.code as language.name for language in languages"></select>
         </div>
         <div ng-controller="ServersCtrl" class="panel setback net">
           <h5>Servers</h5>

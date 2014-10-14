@@ -1,9 +1,9 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyformat'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic, CurrencyFormat) {
+define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyformat', 'available_languages'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic, CurrencyFormat, AvailableLanguages) {
 
   // Controller
-  controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', '$animate', function($scope, notify, $animate) {
+  controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', '$animate', '$translate', function($scope, notify, $animate, $translate) {
   var identity = DarkWallet.getIdentity();
 
   // Available fiat currencies
@@ -11,6 +11,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
   $scope.selectedCurrency = identity.settings.currency;
   $scope.selectedFiat = identity.settings.fiatCurrency;
   $scope.defaultFee = CurrencyFormat.asBtc(identity.wallet.fee);
+  $scope.languages = AvailableLanguages;
 
   $scope.passwordChanged = function() {
       if ($scope.newPassword === $scope.newPasswordRepeat) {
@@ -53,6 +54,9 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
   $scope.animationsChanged = function() {
       $animate.enabled($scope.settings.animations.enabled);
       $scope.storeSettings();
+  };
+  $scope.languageChanged = function() {
+      $translate.use(identity.settings.language);
   };
   $scope.storeSettings = function() {
       var identity = DarkWallet.getIdentity();
