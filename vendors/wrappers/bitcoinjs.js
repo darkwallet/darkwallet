@@ -1,3 +1,8 @@
+/**
+ * bitcoinjs-lib backwards compatibility lib
+ * exposes some old functions for easily backporting
+ */
+
 'use strict';
 
 define(['bitcoinjs-lib-real', 'convert'], function(Bitcoin, Convert) {
