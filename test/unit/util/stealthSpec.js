@@ -62,7 +62,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       var address = res[0];
       var ephemKey = res[1];
 
-      expect(bufToArray(ephemKey)).toEqual(ephemKeyPubBytes)
+      expect(ephemKey).toEqual(ephemKeyPubBytes)
       expect(address.toString()).toEqual("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB")
 
       // try with no ephemKeyBytes so it will be generated (normal case)
