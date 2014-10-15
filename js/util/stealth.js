@@ -143,7 +143,7 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKe
 
     // new ephemeral key
     var encKey = Bitcoin.ECKey.fromBytes(ephemKeyBytes);
-    var ephemKey = encKey.pub.Q.getEncoded(true);
+    var ephemKey = bufToArray(encKey.pub.Q.getEncoded(true));
 
     // Generate shared secret
     var c = Stealth.stealthDH(encKey.d, scanKey);

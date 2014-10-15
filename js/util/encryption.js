@@ -17,7 +17,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519, CryptoJS) {
    */
   var stealthEncrypt = function(pubKey, message, encKeyBytes) {
     var encKey = Bitcoin.ECKey.fromBytes(encKeyBytes);
-    var ephemKey = encKey.pub.Q.getEncoded(true);
+    var ephemKey = Array.prototype.slice.call(encKey.pub.Q.getEncoded(true), 0);
 
     var decKey = Stealth.importPublic(pubKey);
     var c = Stealth.stealthDH(encKey.d, decKey);
