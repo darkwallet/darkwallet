@@ -137,8 +137,8 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
         expect(tx2.change).toBe(tx.change);
         expect(tx2.myamount).toBe(tx.myamount);
         expect(tx2.tx.version).toBe(tx.tx.version);
-        expect(tx2.tx.ins[0].outpoint.hash).toBe(tx.tx.ins[0].outpoint.hash);
-        expect(tx2.tx.ins[0].outpoint.index).toBe(tx.tx.ins[0].outpoint.index);
+        expect(tx2.tx.ins[0].hash.toString('hex')).toBe(tx.tx.ins[0].hash.toString('hex'));
+        expect(tx2.tx.ins[0].index).toBe(tx.tx.ins[0].index);
         expect(tx2.utxo[0].address).toBe(tx.utxo[0].address);
         expect(tx2.utxo[0].value).toBe(tx.utxo[0].value);        
       };
@@ -152,8 +152,8 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
         expect(tx.change).toBe(2790000);
         expect(tx.myamount).toBe(3000000);
         expect(tx.tx.version).toBe(1);
-        expect(tx.tx.ins[0].outpoint.hash).toBe('64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6');
-        expect(tx.tx.ins[0].outpoint.index).toBe('1');
+        expect(Bitcoin.bufferutils.reverse(tx.tx.ins[0].hash).toString('hex')).toBe('64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6');
+        expect(tx.tx.ins[0].index).toBe(1);
         expect(tx.utxo[0].address).toBe('1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ');
         expect(tx.utxo[0].value).toBe(3000000);
         
@@ -244,8 +244,8 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
         expect(tx6.change).toBe(0);
         expect(tx6.myamount).toBe(5000000);
         expect(tx6.tx.version).toBe(1);
-        expect(tx6.tx.ins[0].outpoint.hash).toBe('c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c');
-        expect(tx6.tx.ins[0].outpoint.index).toBe('0');
+        expect(Bitcoin.bufferutils.reverse(tx6.tx.ins[0].hash).toString('hex')).toBe('c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c');
+        expect(tx6.tx.ins[0].index).toBe(0);
         expect(tx6.utxo[0].address).toBe('1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs');
         expect(tx6.utxo[0].value).toBe(5000000);
         

@@ -101,21 +101,6 @@ define(['util/btc'], function(BtcUtils) {
       expect(BtcUtils.blockDiff).toEqual(562.6862479167088);
     });
 
-    it('Fixes tx versions', function() {
-      var tx = {outs: [{address: {version: 0}}, {address: {version: 5}}]};
-      var identity = {wallet: {network: 'testnet', versions: {'address': 1, 'p2sh': 2}}};
-      var fixed = BtcUtils.fixTxVersions(tx, identity);
-      expect(fixed).toEqual({outs: [{address: {version: 1}}, {address: {version: 2}}]});
-    });
-
-    it('Does not fix versions', function() {
-      var tx = {outs: [{address: {version: 0}}, {address: {version: 5}}]};
-      var identity = {wallet: {network: 'bitcoin', versions: {'address': 1, 'p2sh': 2}}};
-      var fixed = BtcUtils.fixTxVersions(tx, identity);
-      expect(fixed).toEqual({outs: [{address: {version: 0}}, {address: {version: 5}}]});
-    });
-
-
     it('Decodes a block header', function() {
       var headerHex = "02000000d8aaf32c2bd344a921245b1e675381a5ccfccc397d68614300000000000000008c0e88fa16e068f881ad613f764e03018873e51a5e52c0db432b461365b7d77f4e565b538c9d001985c7aa6e";
       var header = BtcUtils.decodeBlockHeader(headerHex);

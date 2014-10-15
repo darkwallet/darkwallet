@@ -20,46 +20,46 @@ define(['util/coinjoin', 'util/protocol', 'bitcoinjs-lib'], function(CoinJoin, P
 
   // 0. Initiator blueprint
   var txInitiator = new Bitcoin.Transaction();
-  txInitiator.addInput("217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7:0"); // 1 BTC 1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY
+  txInitiator.addInput("217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7", 0); // 1 BTC 1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY
   txInitiator.addOutput("13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd", 99000000);
 
   // 1. Guest blueprint and inital tx
   var txGuest = new Bitcoin.Transaction();
-  txGuest.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0"); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
+  txGuest.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b", 0); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
   txGuest.addOutput("1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh", 99000000);
 
   // 1. Guest blueprint, bad output
   var txGuestBad = new Bitcoin.Transaction();
-  txGuestBad.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0"); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
+  txGuestBad.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b", 0); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
   txGuestBad.addOutput("1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh", 49000000);
 
 
   // 2. Initiator accepting, bad
   var tx2bad = new Bitcoin.Transaction();
-  tx2bad.addInput("217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7:0"); // 1 BTC 1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY
+  tx2bad.addInput("217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7", 0); // 1 BTC 1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY
   tx2bad.addOutput("13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd", 99000000);
-  tx2bad.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0"); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
+  tx2bad.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b", 0); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
   tx2bad.addOutput("13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd", 99000000);
 
   // 2. Initiator accepting, good
   var tx2 = new Bitcoin.Transaction();
-  tx2.addInput("217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7:0"); // 1 BTC 1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY
+  tx2.addInput("217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7", 0); // 1 BTC 1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY
   tx2.addOutput("13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd", 99000000);
-  tx2.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0"); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
+  tx2.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b", 0); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
   tx2.addOutput("1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh", 99000000);
 
   // 1.
-  var msg1 = Protocol.CoinJoinMsg(joinId, txGuest.serializeHex());
-  var msg1bad = Protocol.CoinJoinMsg(joinId, txGuestBad.serializeHex());
+  var msg1 = Protocol.CoinJoinMsg(joinId, txGuest.toHex());
+  var msg1bad = Protocol.CoinJoinMsg(joinId, txGuestBad.toHex());
   // 2.
-  var msg2 = Protocol.CoinJoinMsg(joinId, tx2.serializeHex());
-  var msg2bad = Protocol.CoinJoinMsg(joinId, tx2bad.serializeHex());
+  var msg2 = Protocol.CoinJoinMsg(joinId, tx2.toHex());
+  var msg2bad = Protocol.CoinJoinMsg(joinId, tx2bad.toHex());
   // 3. TODO
-  var msg3 = Protocol.CoinJoinMsg(joinId, tx2.serializeHex());
-  var msg3bad = Protocol.CoinJoinMsg(joinId, tx2bad.serializeHex());
+  var msg3 = Protocol.CoinJoinMsg(joinId, tx2.toHex());
+  var msg3bad = Protocol.CoinJoinMsg(joinId, tx2bad.toHex());
   // 4. TODO
-  var msg4 = Protocol.CoinJoinMsg(joinId, tx2.serializeHex());
-  var msg4bad = Protocol.CoinJoinMsg(joinId, tx2bad.serializeHex());
+  var msg4 = Protocol.CoinJoinMsg(joinId, tx2.toHex());
+  var msg4bad = Protocol.CoinJoinMsg(joinId, tx2bad.toHex());
 
   describe('CoinJoin library', function() {
 

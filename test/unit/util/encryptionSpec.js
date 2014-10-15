@@ -1,6 +1,6 @@
 'use strict';
 
-define(['util/encryption', 'bitcoinjs-lib'], function (Encryption, Bitcoin) {
+define(['util/encryption', 'bitcoinjs-lib', 'crypto-js'], function (Encryption, Bitcoin, CryptoJS) {
 
    var convert = Bitcoin.convert;
    var priv1 = [1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8];
@@ -23,8 +23,8 @@ define(['util/encryption', 'bitcoinjs-lib'], function (Encryption, Bitcoin) {
      });
 
      it('encrypts', function() {
-         var ivWords = Bitcoin.CryptoJS.lib.WordArray.create([964042148, 1339623129, -848535864]);
-         var saltWords = Bitcoin.CryptoJS.lib.WordArray.create([1257186216, 1232830679, 1170146244, -885338222]);
+         var ivWords = CryptoJS.lib.WordArray.create([964042148, 1339623129, -848535864]);
+         var saltWords = CryptoJS.lib.WordArray.create([1257186216, 1232830679, 1170146244, -885338222]);
          var cipher = Encryption.encrypt('foo', 'hello', ivWords, saltWords);
 
          expect(cipher.iv).toBe("OXYdpE/ZBtnNbF7I")
@@ -103,8 +103,8 @@ define(['util/encryption', 'bitcoinjs-lib'], function (Encryption, Bitcoin) {
      var privKey, pubKey, stealthCypher;
 
      beforeEach(function() {
-       privKey = new Bitcoin.ECKey(priv1, true);
-       pubKey = privKey.getPub().toBytes();
+       privKey = Bitcoin.ECKey.fromBytes(priv1, true);
+       pubKey = privKey.pub.toBytes();
      });
 
      it('stealth encrypts and decrypts', function() {
