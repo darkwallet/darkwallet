@@ -2,11 +2,11 @@
 
 	<div class="row">
 		<div class="small-6 columns">
-			<h3>Select a contact <small ng-show="vars.type=='pubKey'">Showing only contacts with public keys (pubkey or stealth addresses).</small></h3>
+			<h3>{{'POPUP:SELECT_CONTACT' | translate}} <small ng-show="vars.type=='pubKey'">{{'POPUP:SELECT_CONTACT:PUBKEY' | translate}}</small></h3>
 		</div>
                 <!-- create button -->
 		<div ng-show="vars.allowCreate" class="small-6 columns text-right">
-		  <a id="newcontact" class="button tiny radius fa fa-plus topright" ng-show="!(contactFormShown===true)" ng-click="modals.focus('new-contact-name'); contactFormShown = true"> New contact</a>
+		  <a id="newcontact" class="button tiny radius fa fa-plus topright" ng-show="!(contactFormShown===true)" ng-click="modals.focus('new-contact-name'); contactFormShown = true"> {{'POPUP:SELECT_CONTACT:NEW' | translate}}</a>
 		</div>
 	</div>
 
@@ -14,7 +14,7 @@
 	  <div class="small-12 columns">
 	    <div class="row collapse">
 	      <div class="small-2 columns">
-	        <span class="prefix radius">Search</span>
+	        <span class="prefix radius">{{'SEARCH' | translate}}</span>
 	      </div>
 	      <div class="small-10 columns">
 	        <input type="text" auto-focus class="postfix radius" ng-change="filterContacts()" ng-model="contactSearch">
@@ -29,15 +29,15 @@
 	    <div class="small-12 columns">
 			<div class="row collapse hide-for-small">
 				<div class="medium-2 columns">
-					<label>Name</label>
+					<label>{{'NAME' | translate}}</label>
 				</div>
 				<div class="medium-10 columns">
-					<label>Address</label>
+					<label>{{'ADDRESS' | translate}}</label>
 				</div>
 			</div>
 	      <div class="row collapse">
 		<div class="medium-3 columns">
-				<input id="new-contact-name" ng-model="vars.newContact.name" type="text" class="radius prefix" autofocus placeholder="Name for this contact..." required />
+				<input id="new-contact-name" ng-model="vars.newContact.name" type="text" class="radius prefix" autofocus placeholder="{{'POPUP:SELECT_CONTACT:NEW:NAME' | translate}}" required />
 			</div>
 		<div class="medium-9 columns">
 		  <input ng-model="vars.newContact.address" class="disabled prefix" type="text" btc-address />
@@ -48,8 +48,8 @@
 	  </div>
 	  <div class="row text-right">
 		<div class="small-12 columns">
-		  <a href="" ng-click="modals.focus('contact-search'); contactFormShown = false" class="button alert small radius">Cancel</a>
-		  <input ng-disabled="createContactForm.$invalid" type="submit" class="button small radius" value="Save" />
+		  <a href="" ng-click="modals.focus('contact-search'); contactFormShown = false" class="button alert small radius">{{'CANCEL' | translate}}</a>
+		  <input ng-disabled="createContactForm.$invalid" type="submit" class="button small radius" value="{{'SAVE' | translate}}" />
 		</div>
 	  </div>
 	</form>
