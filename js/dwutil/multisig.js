@@ -108,7 +108,7 @@ MultisigFund.prototype.detectTasks = function() {
                     });
                 }
 
-                var tx = new Bitcoin.Transaction(task.tx);
+                var tx = Bitcoin.Transaction.fromHex(task.tx);
                 res.push({tx: tx, task: task, canSign: canSign});
 
             }
