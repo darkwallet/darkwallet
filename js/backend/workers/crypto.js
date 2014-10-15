@@ -47,7 +47,7 @@ require(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'sjc
     var shared = Curve25519.ecDH(myPrivKey, pk2);
     data.pubKey = myPub;
 
-    shared = shared.toByteArrayUnsigned();
+    shared = shared.toBuffer().toJSON().data;
     shared = Curve25519.bytes2string(shared);
 
     var encrypted = sjcl.encrypt(shared, JSON.stringify(data), {ks: 256, ts: 128});

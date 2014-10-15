@@ -45,10 +45,10 @@ require(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
           stealthCache[pocketIndex].push(txId+address);
 
           // Try out the stealth row
-          var myKeyBytes = Stealth.uncoverPublic(scanKey, ephemKey, spendKey);
+          var myKeyBuf = Stealth.uncoverPublic(scanKey, ephemKey, spendKey);
 
           // Turn to address
-          var myKeyHash = Bitcoin.crypto.hash160(myKeyBytes);
+          var myKeyHash = Bitcoin.crypto.hash160(myKeyBuf);
           var myAddress = new Bitcoin.Address(myKeyHash, versions.address);
 
           if (address == myAddress.toString()) {

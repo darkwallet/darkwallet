@@ -8,7 +8,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       this.client = client;
 
       var mpk = identity.wallet.mpk;
-      this.mpKey = Bitcoin.HDWallet.fromBase58(mpk);
+      this.mpKey = Bitcoin.HDNode.fromBase58(mpk);
 
       this.used = [];
       this.currentPocket = 0;
@@ -40,7 +40,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       }
       // Derive address key
       childKey = childKey.derive(n);
-      var address = childKey.pub.getAddress(this.addressVersion);
+      var address = childKey.pubKey.getAddress(Bitcoin.networks[identity.wallet.network]);
       return address.toString();
   };
 

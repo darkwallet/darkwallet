@@ -47,7 +47,7 @@ filters.filter('bytesToAddressHash', function() {
     if (input.length == 65 || input.length == 33) {
         var identity = DarkWallet.getIdentity();
         var hashed = Bitcoin.crypto.hash160(input);
-        var address = Bitcoin.Address(hashed, identity.wallet.versions.address);
+        var address = new Bitcoin.Address(hashed, identity.wallet.versions.address);
         return address.toString();
     } else {
         return convert.bytesToHex(input);

@@ -86,7 +86,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   var sendBeacon = function(channel, contact) {
       var idKey = contact.findIdentityKey();
       if (idKey) {
-          var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
+          var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).slice(1));
           var beaconKey = keys.slice(0, 32);
           channel.sendBeacon(beaconKey, function() {});
           return true;

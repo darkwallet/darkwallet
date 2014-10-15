@@ -1,6 +1,6 @@
 'use strict';
 
-define(['darkwallet', 'bitcoinjs-lib'], function(DarkWallet, Bitcoin) {
+define(['darkwallet', 'bitcoinjs-lib', 'crypto-js'], function(DarkWallet, Bitcoin, CryptoJS) {
 
 var convert = Bitcoin.convert;
 
@@ -29,8 +29,8 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes, i) {
     var identity = DarkWallet.getIdentity();
 
     // Ensure we check the compressed version for my address
-    var myPubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
-    var myAddress = myPubKey.getAddress(identity.wallet.versions.address);
+    var myPubKey = Bitcoin.ECPubKey.fromBytes(pubKeyBytes, true);
+    var myAddress = myPubKey.getAddress(Bitcoin.networks[identity.wallet.network]);
 
     var participant = { pubKey: pubKeyBytes };
 
@@ -43,7 +43,7 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes, i) {
         participant.address = walletAddress;
         // In some cases would not be the stealth identifier.
         // Also, doing it like this so it would show the same as in contacts..
-        participant.hash = Bitcoin.CryptoJS.SHA256(walletAddress.stealth).toString();
+        participant.hash = CryptoJS.SHA256(walletAddress.stealth).toString();
     } else {
         // Check if it's a contact
         var contact = identity.contacts.findByPubKey(pubKeyBytes);
@@ -58,7 +58,8 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes, i) {
             // Just set some values
             var compressed = (pubKeyBytes.length === 33);
 
-            var contactAddress = new Bitcoin.ECPubKey(pubKeyBytes, compressed);
+            var contactAddress = Bitcoin.ECPubKey.fromBytes(pubKeyBytes, compressed);
+            console.log(contactAddress);
             participant.name = contactAddress.toString();
             participant.hash = contactAddress.toHex();
         }
@@ -166,7 +167,7 @@ MultisigFund.prototype.finishTransaction = function(spend) {
         }
     });
     if (finished) {
-        spend.task.tx = spend.tx.serializeHex();
+        spend.task.tx = spend.tx.toHex();
         return spend.tx;
     }
 };
@@ -189,9 +190,10 @@ MultisigFund.prototype.importSignature = function(sigHex, spend) {
     // Check where this signature goes
     var script = new Bitcoin.Script(convert.hexToBytes(multisig.script));
     spend.task.pending.forEach(function(input) {
-        var txHash = spend.tx.hashTransactionForSignature(script, input.index, 1);
-        multisig.pubKeys.forEach(function(pubKey, pIdx) {
-            if (Bitcoin.ecdsa.verify(txHash, sig, pubKey)) {
+        var txHash = spend.tx.hashForSignature(input.index, script, 1);
+        multisig.pubKeys.forEach(function(pubKeyBytes, pIdx) {
+            var pubKey = Bitcoin.ECPubKey.fromBytes(pubKeyBytes);
+            if (pubKey.verify(new Buffer(txHash, 'hex'), new Bitcoin.Buffer(sig))) {
                 input.signatures[pIdx] = sigHex;
                 added = true;
             }
@@ -207,7 +209,7 @@ MultisigFund.prototype.importSignature = function(sigHex, spend) {
 MultisigFund.prototype.getSpend = function(txHash) {
     for(var i=0; i<this.tasks.length; i++) {
         var spend = this.tasks[i];
-        var hash = convert.bytesToHex(spend.tx.getHash());
+        var hash = spend.tx.getId();
         if (hash === txHash) {
             return spend;
         }
@@ -224,7 +226,7 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
     // we import the tx
     var tx;
     try {
-        tx = Bitcoin.Transaction.deserialize(serializedTx);
+        tx = Bitcoin.Transaction.fromHex(serializedTx);
     } catch(e) {
         throw new Error('Malformed transaction');
     }
@@ -245,8 +247,10 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
 
     // Now create the task
     var pending = [];
+    // inputs format here comes from getValidInputs not directly from tx
     inputs.forEach(function(input) {
-        var out = input.outpoint.hash+':'+input.outpoint.index;
+        var out = Bitcoin.bufferutils.reverse(input.outpoint.hash).toString('hex')+':'+input.outpoint.index;
+        //var address = Bitcoin.Address.fromInputScript(input.script, Bitcoin.networks[identity.wallet.versions.network]).toString();
         pending.push({output: out, address: input.address, index: input.index, signatures: {}, type: 'multisig'});
     });
     var task = {tx: serializedTx, 'pending': pending, stealth: false};
@@ -307,17 +311,17 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
     }
 
     var script = convert.hexToBytes(multisig.script);
-    var privKey = new Bitcoin.ECKey(foreignKey, true);
-    var signingAddress = privKey.getAddress(identity.wallet.versions.address).toString();
+    var privKey = Bitcoin.ECKey.fromBytes(foreignKey, true);
+    var signingAddress = privKey.pub.getAddress(Bitcoin.networks[identity.wallet.network]).toString();
 
     var signed = false;
 
     // Check each participant
     this.participants.forEach(function(participant, pIdx) {
         if (participant.type !== 'me') {     // can't be me if we're importing the key
-            var pubKey = new Bitcoin.ECPubKey(participant.pubKey, true);
+            var pubKey = Bitcoin.ECPubKey.fromBytes(participant.pubKey, true);
 
-            if (pubKey.getAddress(identity.wallet.versions.address).toString() === signingAddress) {
+            if (pubKey.getAddress(Bitcoin.networks[identity.wallet.network]).toString() === signingAddress) {
                 // It's this position, so sign all inputs
                 inputs.forEach(function(input, i) {
                     var sig = spend.tx.p2shsign(input.index, script, privKey.toBytes(), 1);

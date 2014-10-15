@@ -29,7 +29,7 @@ require(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'sjcl'], function(Bit
   var decryptBeacon = function(scanKey, data, pk2) {
       var scanKeyPriv = BigInteger.fromByteArrayUnsigned(scanKey.priv);
       var shared = Curve25519.ecDH(scanKeyPriv, pk2);
-      shared = shared.toByteArrayUnsigned();
+      shared = shared.toBuffer().toJSON().data;
       shared = Curve25519.bytes2string(shared);
       return sjcl.decrypt(shared, data.data);
   }
@@ -70,7 +70,7 @@ require(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'sjcl'], function(Bit
       var pk2 = BigInteger.fromByteArrayUnsigned(otherKey);
       var shared = Curve25519.ecDH(channelPriv, pk2);
 
-      shared = shared.toByteArrayUnsigned();
+      shared = shared.toBuffer().toJSON().data;
       shared = Curve25519.bytes2string(shared);
 
       // First decrypt with given dh secret for our cloak

@@ -214,7 +214,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
    */
   MultisigTrackService.prototype.sign = function(multisig, tx, signature) {
       var task = this.prepareTask({}, multisig);
-      task.hash = convert.bytesToHex(tx.getHash());
+      task.hash = tx.getId();
       task.signature = convert.bytesToHex(signature);
 
       // Add the task

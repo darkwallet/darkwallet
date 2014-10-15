@@ -1,7 +1,7 @@
 'use strict';
 
-define(['backend/port', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin', 'util/btc', 'sjcl'],
-function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
+define(['backend/port', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin', 'util/btc', 'crypto-js', 'sjcl'],
+function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
 
   /*
    * Service managing mixing.
@@ -164,10 +164,9 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     // Now do stuff with the task...
     switch(task.state) {
       case 'announce':
-        var id = Bitcoin.CryptoJS.SHA256(Math.random()+'').toString();
+        var id = CryptoJS.SHA256(Math.random()+'').toString();
         console.log("[mixer] Announce join");
-        var myTx = new Bitcoin.Transaction(task.tx);
-        myTx = BtcUtils.fixTxVersions(myTx, this.core.getCurrentIdentity());
+        var myTx = Bitcoin.Transaction.fromHex(task.tx);
         if (!task.timeout) {
            task.timeout = 60;
         }
@@ -261,7 +260,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
 
       // Build the tx
       var metadata = identity.tx.prepare(pocketIndex, [recipient], changeAddress, fee);
-      var guestTx = BtcUtils.fixTxVersions(metadata.tx.clone(), identity);
+      var guestTx = metadata.tx.clone();
       this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', guestTx, opening.amount, fee, peer);
       this.ongoing[opening.id].pocket = pocketIndex;
 
@@ -272,7 +271,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
 
   MixerService.prototype.sendTo = function(peer, id, tx, callback) {
       // Now create and send the message
-      var msg = Protocol.CoinJoinMsg(id, tx.serializeHex());
+      var msg = Protocol.CoinJoinMsg(id, tx.toHex());
       this.channel.postDH(peer.pubKey, msg, function(err, data) {
           callback ? callback(err, data) : null;
       });
@@ -325,14 +324,14 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
 
       // Load master keys for the pockets
       var pocket = identity.wallet.pockets.hdPockets[pocketIndex];
-      var masterKey = Bitcoin.HDWallet.fromBase58(sjcl.decrypt(password, pocket.privKey));
-      var changeKey = Bitcoin.HDWallet.fromBase58(sjcl.decrypt(password, pocket.privChangeKey));
+      var masterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.privKey));
+      var changeKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.privChangeKey));
 
       // Iterate over tx inputs and load private keys
       var privKeys = {};
       for(var i=0; i<coinJoin.myTx.ins.length; i++) {
           var anIn = coinJoin.myTx.ins[i];
-          var output = identity.wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index];
+          var output = identity.wallet.wallet.outputs[Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index];
           // we're only adding keyhash inputs for now
           if (!output) {
               throw new Error("Invalid input in our join (no output)");
@@ -427,7 +426,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
                   console.log("broadcasting!", _error, _data);
               };
               var walletService = this.core.service.wallet;
-              coinJoin.task.tx = coinJoin.tx.serializeHex();
+              coinJoin.task.tx = coinJoin.tx.toHex();
               walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
           }
           // Update budget (only guest applies budgeting)
