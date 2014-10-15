@@ -51,6 +51,7 @@ function (Bitcoin, Mnemonic, Encryption) {
       if (!pubKey) throw Error("Update with no public key!");
 
       var fingerprint = Encryption.genFingerprint(pubKey);
+
       // Check this is the correct peer (it should be but to be sure..)
       if (this.fingerprint && fingerprint != this.fingerprint) {
           throw Error("Invalid update for peer!");

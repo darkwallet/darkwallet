@@ -1,12 +1,12 @@
 
-define(['bitcoinjs-lib'], function(Bitcoin) {
+define(['bitcoinjs-lib', 'crypto-js'], function(Bitcoin, CryptoJS) {
 
 // March 2014
 // Change dependencies to use libs from bitcoinjs, removes jsSHA dependency
 //  - darkwallet devs
 
 var BigInteger = Bitcoin.BigInteger;
-var SHA512 = Bitcoin.CryptoJS.SHA512;
+var SHA512 = CryptoJS.SHA512;
 var convert = Bitcoin.convert;
 
 //  Ed25519 - digital signatures based on curve25519

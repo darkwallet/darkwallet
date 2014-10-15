@@ -1,9 +1,9 @@
 'use strict';
 
-define(['bitcoinjs-lib'],
-function (Bitcoin) {
+define(['bitcoinjs-lib', 'crypto-js'],
+function (Bitcoin, CryptoJS) {
 
-  var SHA256 = Bitcoin.CryptoJS.SHA256;
+  var SHA256 = CryptoJS.SHA256;
   var convert = Bitcoin.convert;
 
   // ChannelUtils module

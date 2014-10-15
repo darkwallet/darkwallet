@@ -67,7 +67,7 @@ Multisig.prototype.canSign = function(fund) {
     var me = [];
     fund.pubKeys.forEach(function(pubKeyBytes, i) {
         var myPubKey = new Bitcoin.ECPubKey(pubKeyBytes, true);
-        var myAddress = myPubKey.getAddress(identity.wallet.versions.address);
+        var myAddress = myPubKey.getAddress(Bitcoin.networks[identity.wallet.network]);
         var walletAddress = identity.wallet.getWalletAddress(myAddress);
         if (walletAddress) {
             me.push(i);

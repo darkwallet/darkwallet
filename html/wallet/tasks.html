@@ -5,7 +5,8 @@
       <div class="large-6 columns">
             <h3>Destinations</h3>
             <div ng-repeat="out in task.tx.outs">
-               <li>{{out.address.toString()}} <b>{{out.value | currencyPresenter}}</b></li>
+               <!--<li>{{out.address.toString()}} <b>{{out.value | currencyPresenter}}</b></li>-->
+               <li><b>{{out.value | currencyPresenter}}</b></li>
             </div>
       </div>
       <h3>Transaction:</h3>

@@ -49,7 +49,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
               stealth.push([anOut, tx.outs[idx+1]]);
           } else {
               // this will just push the same output into newTx.outs
-              newTx.addOutput(tx.outs[idx]);
+              newTx.addOutput(tx.outs[idx].script, tx.outs[idx].value);
           }
       });
 
@@ -66,8 +66,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
           newTx.outs.splice(index, 0, nonces[0]);
       });
 
-      // Return while applying a temporal testnet fix for address versions on bitcoinjs-lib (not really affecting the tx itself)
-      return BtcUtils.fixTxVersions(newTx, this.core.getCurrentIdentity());
+      return newTx;
   }
 
   /*
@@ -77,8 +76,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   CoinJoin.prototype.fullfill = function(msg, peer) {
       // Check there is one output like we want to join
       var amount = this.myAmount;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+      var remoteTx = Bitcoin.Transaction.fromHex(msg.tx);
       var isOk = false;
       remoteTx.outs.forEach(function(anOut) {
           if (anOut.value == amount) {
@@ -95,10 +93,10 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       // Now add our inputs and outputs after the ones from guest
       var myTx = this.myTx;
       myTx.ins.forEach(function(anIn) {
-          remoteTx.addInput(anIn.clone());
+          remoteTx.addInput(anIn.hash, anIn.index);
       });
       myTx.outs.forEach(function(anOut) {
-          remoteTx.addOutput(anOut.clone());
+          remoteTx.addOutput(anOut.script, anOut.value);
       });
 
       // Randomize inputs and outputs
@@ -120,8 +118,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       if (peer != this.peer) {
           return;
       }
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+      var remoteTx = Bitcoin.Transaction.fromHex(msg.tx);
 
       // Randomize inputs and outputs
       remoteTx = this.randomize(remoteTx);
@@ -162,8 +159,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
           return;
       }
       var myTx = this.tx;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+      var remoteTx = Bitcoin.Transaction.fromHex(msg.tx);
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(myTx, remoteTx)) {
@@ -186,8 +182,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       if (peer != this.peer) {
           return;
       }
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+      var remoteTx = Bitcoin.Transaction.fromHex(msg.tx);
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(this.tx, remoteTx)) {
@@ -276,16 +271,16 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   CoinJoin.prototype.checkMyInputsOutputs = function(origTx, newTx) {
       for(var i=0; i<origTx.ins.length; i++) {
           // TODO: should check the scripts too
-          var origInP = origTx.ins[i].outpoint;
+          var origInP = origTx.ins[i];
           var found = newTx.ins.filter(function(newIn) {
-              return (origInP.hash == newIn.outpoint.hash) && (parseInt(origInP.index) == parseInt(newIn.outpoint.index));
+              return (origInP.hash.toString('hex') == newIn.hash.toString('hex')) && (parseInt(origInP.index) == parseInt(newIn.index));
           });
           if (found.length != 1) return false;
       }
       for(var i=0; i<origTx.outs.length; i++) {
           var origOut = origTx.outs[i];
           var found = newTx.outs.filter(function(newOut) {
-             return (origOut.address.toString() == newOut.address.toString()) && (origOut.value == newOut.value);
+             return (origOut.script.toBuffer().toString() == newOut.script.toBuffer().toString()) && (origOut.value == newOut.value);
           });
           if (found.length != 1) return false;
       }

@@ -43,8 +43,8 @@ var Protocol = {
   },
   // Pairing message
   PairMsg: function(name, signKey, scanKeyPub, address) {
-    var scanBytes = scanKeyPub.toByteArrayUnsigned();
-    var id = 'PSI'+Bitcoin.base58check.encode(scanBytes.concat(signKey.pub), 1);
+    var scanBytes = scanKeyPub.toBuffer().toJSON().data;
+    var id = 'PSI'+Bitcoin.base58check.encode(new Bitcoin.Buffer([1].concat(scanBytes.concat(signKey.pub))));
     var data = {};
     data['nick'] = name;
     data['pub'] = id;
@@ -59,7 +59,7 @@ var Protocol = {
   BeaconMsg: function(ephemKey, signKey) {
     var data = {};
     data['pub'] = convert.bytesToString(signKey.pub);
-    data['ephem'] = convert.bytesToString(ephemKey.toByteArrayUnsigned());
+    data['ephem'] = convert.bytesToString(ephemKey.toBuffer().toJSON().data);
 
     var toSign = data['ephem']+data['pub'];
     data['sig'] = Curve25519.signature(toSign, signKey.priv, signKey.pub);
@@ -107,7 +107,7 @@ var Protocol = {
 	answer['type'] = 'publicKey';
 	answer['text'] = {};
 	answer['text'][fingerprint] = {};
-	answer['text'][fingerprint]['message'] = convert.bytesToBase64(pubKey.toByteArrayUnsigned());
+	answer['text'][fingerprint]['message'] = pubKey.toBuffer().toString('base64');
 	return answer;
   }
 };

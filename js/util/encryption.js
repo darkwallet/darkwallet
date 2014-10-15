@@ -1,8 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/multiParty', 'util/stealth', 'util/djbec', 'sjcl'],
-function (Bitcoin, multiParty, Stealth, Curve25519) {
-  var CryptoJS = Bitcoin.CryptoJS;
+define(['bitcoinjs-lib', 'util/multiParty', 'util/stealth', 'util/djbec', 'crypto-js', 'sjcl'],
+function (Bitcoin, multiParty, Stealth, Curve25519, CryptoJS) {
   var BigInteger = Bitcoin.BigInteger;
   var convert = Bitcoin.convert;
 
@@ -17,12 +16,12 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
    * @param {Bytes} encKeyBytes (Optional)
    */
   var stealthEncrypt = function(pubKey, message, encKeyBytes) {
-    var encKey = new Bitcoin.ECKey(encKeyBytes);
-    var ephemKey = encKey.getPub().pub.getEncoded(true);
+    var encKey = Bitcoin.ECKey.fromBytes(encKeyBytes);
+    var ephemKey = encKey.pub.Q.getEncoded(true);
 
     var decKey = Stealth.importPublic(pubKey);
-    var c = Stealth.stealthDH(encKey.priv, decKey);
-    var _pass = Bitcoin.convert.bytesToString(c);
+    var c = Stealth.stealthDH(encKey.d, decKey);
+    var _pass = Bitcoin.convert.bytesToString(c.toBuffer().toJSON().data);
     var encrypted = sjcl.encrypt(_pass, message, {ks: 256, ts: 128});
     return {pub: ephemKey, data: sjcl.json.decode(encrypted)};
   }
@@ -38,7 +37,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
 
     var decKey = Stealth.importPublic(message.pub);
     var c = Stealth.stealthDH(priv, decKey);
-    var _pass = Bitcoin.convert.bytesToString(c);
+    var _pass = Bitcoin.convert.bytesToString(c.toBuffer().toJSON().data);
     var decrypted = sjcl.decrypt(_pass, sjcl.json.encode(message.data));
 
     return decrypted;
@@ -91,7 +90,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
    */
   var genFingerprint = function(key) {
         // Parse the key from bitcoin unsigned byte array api format
-        var keyBi = BigInteger.fromByteArrayUnsigned(key);
+        var keyBi = Bitcoin.BigInteger.fromByteArrayUnsigned(key);
         // now hash
         return CryptoJS.SHA512(
                 convert.bytesToWordArray(
@@ -130,7 +129,7 @@ function (Bitcoin, multiParty, Stealth, Curve25519) {
   var genSharedSecret = function(priv, pub) {
     var sharedSecret = CryptoJS.SHA512(
       convert.bytesToWordArray(
-        Curve25519.ecDH(priv,pub).toByteArrayUnsigned()
+        Curve25519.ecDH(priv,pub).toBuffer().toJSON().data
       )
     );
 

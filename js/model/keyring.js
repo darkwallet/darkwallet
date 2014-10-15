@@ -162,7 +162,12 @@ IdentityKeyRing.prototype.load = function(name, callback) {
         var store = obj[DW_NS+name];
         // Finish loading
         var finishLoading = function() {
-            self.identities[name] = new Identity(new Store(store, self));
+            try {
+                self.identities[name] = new Identity(new Store(store, self));
+            } catch (e) {
+                console.log(e.stack);
+                throw Error("Critical Error: Loading Identity")
+            }
             if (callback) {
                 callback(self.identities[name]);
             }

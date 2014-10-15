@@ -1,10 +1,9 @@
 'use strict';
 
-define(['util/encryption', 'bitcoinjs-lib', 'backend/channels/utils'],
-function (Encryption, Bitcoin, ChannelUtils) {
+define(['util/encryption', 'bitcoinjs-lib', 'backend/channels/utils', 'crypto-js'],
+function (Encryption, Bitcoin, ChannelUtils, CryptoJS) {
 
-  var CryptoJS = Bitcoin.CryptoJS;
-  var SHA256 = Bitcoin.CryptoJS.SHA256;
+  var SHA256 = CryptoJS.SHA256;
 
   /************************************
    * Channel
@@ -36,7 +35,7 @@ function (Encryption, Bitcoin, ChannelUtils) {
   Channel.prototype.sendOpening = function() {
       // Send announcement
       var sessionKey = this.transport.getSessionKey();
-      var pubKeyHash = sessionKey.getPub().toHex(true);
+      var pubKeyHash = sessionKey.pub.toHex(true);
 
       // Send encrypted
       this.channelPostEncrypted(pubKeyHash, function(err, data){

@@ -1,8 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/btc', './contact'], function(Bitcoin, BtcUtils, Contact) {
-
-var Crypto = Bitcoin.CryptoJS;
+define(['bitcoinjs-lib', 'util/btc', 'crypto-js', './contact'], function(Bitcoin, BtcUtils, CryptoJS, Contact) {
 
 /**
  * Contacts (Address book).
@@ -109,7 +107,7 @@ Contacts.prototype.parseKey = function(data) {
       newKey.address = address;
       newKey.type = 'pubkey';
   } else {
-      console.log("cant decode address properly!");
+      console.log("cant decode address properly!", data);
       newKey.address = data;
       newKey.type = 'unknown';
   }
@@ -121,7 +119,7 @@ Contacts.prototype.parseKey = function(data) {
  * @param {String} address address to generate the hash from
  */
 Contacts.prototype.generateAddressHash = function(address) {
-    return Crypto.SHA256(address).toString();
+    return CryptoJS.SHA256(address).toString();
 };
 
 /**
