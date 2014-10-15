@@ -283,7 +283,15 @@ li.colorhead h6 { color: white; margin: 0; }
 	 /* ----------------------- */
 ul.off-canvas-list {
 	li a:hover {  }
-	 li.active, li.active a:hover { font-weight: $font-weight-normal; background: $body-bg; }
+	li a.cornerbutton {
+		color: $primary-color-dark;
+		padding: 0.0rem 0.3rem;
+		border-bottom: none;
+	}
+	li.active a {
+		color: $primary-color-dark;
+	}
+	li.active, li.active a:hover { font-weight: $font-weight-normal; background: $body-bg; }
  }
 
 .fiat:not(:empty) {
