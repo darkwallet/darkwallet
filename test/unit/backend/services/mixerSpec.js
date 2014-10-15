@@ -10,18 +10,18 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
 
   // 0. Initiator blueprint
   var txInitiator = new Bitcoin.Transaction();
-  txInitiator.addInput("217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7:0"); // 1 BTC 1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY
+  txInitiator.addInput("217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7", 0); // 1 BTC 1Fufjpf9RM2aQsGedhSpbSCGRHrmLMJ7yY
   txInitiator.addOutput("13i6nM6iauwi3H4cDk77Nu4NY5Y1bKk3Wd", 99000000);
-  var txInitiatorHex = txInitiator.serializeHex();
+  var txInitiatorHex = txInitiator.toHex();
 
   CoinJoin.prototype.shuffleArray = function(array) {return array};
 
 
   // 1. Guest blueprint and inital tx
   var txGuest = new Bitcoin.Transaction();
-  txGuest.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0"); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
+  txGuest.addInput("8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b", 0); // 1 BTC 19TVp7iN6FjSQJTA6DNS9nfauR6PM3Mb8N
   txGuest.addOutput("1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh", 99000000);
-  var txGuestHex = txGuest.serializeHex();
+  var txGuestHex = txGuest.toHex();
   var txFullfilledHex = '01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce62890000000000ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc8271210000000000ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000';
 
 
@@ -162,7 +162,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
 
 
     it('starts mixing because a there is a pending task', function() {
-      tasks = [{state: 'paired'}, {state: 'announce', start: 300}];
+      tasks = [{state: 'paired'}, {state: 'announce', start: 300, tx: txFullfilledHex}];
       var mixer = new MixerClass(core);
       expect(mixer.name).toEqual('mixer');
       expect(mixer.channel.callbacks[0][0]).toEqual('CoinJoinOpen');
@@ -175,7 +175,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
       expect(Object.keys(mixer.ongoing).length).toBe(1);
 
       expect(core.service.wallet.fallbacks[0][0]).toBe('mixer')
-      expect(core.service.wallet.fallbacks[0][1]).toEqual({ state : 'announce', start : 300, timeout : 60 })
+      expect(core.service.wallet.fallbacks[0][1]).toEqual({ state : 'announce', start : 300, timeout : 60, tx: txFullfilledHex })
     });
 
     it('host starts announcing', function() {
