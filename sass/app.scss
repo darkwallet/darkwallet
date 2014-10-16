@@ -288,6 +288,10 @@ ul.off-canvas-list {
 		padding: 0.0rem 0.3rem;
 		border-bottom: none;
 	}
+	li a.cornerbutton.active {
+		background: $primary-color-dark;
+		color: $secondary-color;
+	}
 	li.active a {
 		color: $primary-color-dark;
 	}

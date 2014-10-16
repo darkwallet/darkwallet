@@ -3847,6 +3847,9 @@ ul.off-canvas-list {
       color: rgba(30, 170, 80,0.9);
       padding: 0.0rem 0.3rem;
       border-bottom: none; }
+    ul.off-canvas-list li a.cornerbutton.active {
+      background: rgba(30, 170, 80,0.9);
+      color: rgba(255, 255, 255,0.9); }
     ul.off-canvas-list li a:hover {
       background: #838383; }
 
