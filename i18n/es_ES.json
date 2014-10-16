@@ -1,9 +1,9 @@
 {
-  "OPEN_WALLET": "Abrir cartera",
+  "Open wallet": "Abrir cartera",
 
-  "MENU:WALLET": "Cartera",
-  "MENU:SEND": "Enviar",
-  "MENU:CONTACTS": "Contactos",
-  "MENU:LOBBY": "Sala",
-  "MENU:SETTINGS": "Configuración"
+  "Wallet": "Cartera",
+  "Send": "Enviar",
+  "Contacts": "Contactos",
+  "Lobby": "Sala",
+  "Settings": "Configuración"
 }

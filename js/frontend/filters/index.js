@@ -4,5 +4,6 @@
 
 define([
     './currency',
-    './formats'
+    './formats',
+    './i18n'
 ], function () {});

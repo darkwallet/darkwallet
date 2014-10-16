@@ -4,6 +4,7 @@
 'use strict';
 
 define([
+    'require',
     'angular',
     'angular-animate',
     'mm.foundation',
@@ -16,13 +17,15 @@ define([
     'frontend/controllers/notifications',
     'frontend/controllers/ngmodal',
     'frontend/filters/currency',
+    'frontend/filters/i18n',
     'frontend/providers/wallet',
     'frontend/providers/sounds',
     'frontend/providers/modals',
     'frontend/providers/broadcast',
     'frontend/directives/identicon',
     'frontend/directives/validation'
-], function (angular) {
+], function (require, angular) {
+    var identity = require('darkwallet').getIdentity();
     var app = angular.module('DarkWallet', [
       'mm.foundation',
       'ngAnimate',
@@ -38,7 +41,8 @@ define([
         prefix: '../i18n/',
         suffix: '.json'
       });
-      $translateProvider.preferredLanguage('en');
+      var language = identity ? identity.settings.language : null;
+      $translateProvider.preferredLanguage(language || 'en_US');
     });
     // In case we need to initialize something after the application is created.
     app.initialize = function() {

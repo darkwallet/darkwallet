@@ -1,8 +1,8 @@
 <div class="large-10 large-centered columns panel radius topmargin">
-    <h6>{{ 'POPUP:CONFIRM_DELETE' | translate: vars }}</h6>
+    <h6>{{ 'Are you sure you want to delete *{0}*?' | _:vars.name }}</h6>
 	<div class="text-right">
-    	<a class="button alert small radius fa fa-trash-o" ng-click="ok(vars.object)"> {{'DELETE' | translate}}</a>
-    	<a class="button small fa radius fa-times glow" ng-click="cancel()"> {{'CANCEL' | translate}}</a>
+    	<a class="button alert small radius fa fa-trash-o" ng-click="ok(vars.object)"> {{'Delete'|_}}</a>
+    	<a class="button small fa radius fa-times glow" ng-click="cancel()"> {{'Cancel'|_}}</a>
 	</div>
 </div>
 <div class="qractions">

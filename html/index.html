@@ -37,16 +37,16 @@
   			  <li ng-show="settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings" class="fa fa-cog"></a></li>
           
 		  
-  			  <li ng-show="!settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> {{'MENU:SETTINGS' | translate}}</a></li>
+  			  <li ng-show="!settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> {{'Settings'|_}}</a></li>
           
 		  
   			  <li title="identities" ng-class="{active:isActive('/identities')}"><a ng-show="identityName" href="#identities"><i class="icon-profile"></i> {{identityName}}</a></li>
   	        </ul>
 	        <ul class="left">
-	          <li ng-class="{active:isActive('/wallet')}"><a ng-click="openWallet()"><i class="icon-wallet"></i> {{'MENU:WALLET' | translate}}</a></li>
-	          <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="icon-rocket"></i> {{'MENU:SEND' | translate}}</a></li>
-	          <li ng-class="{active:isActive('/contact')}"><a href="#contacts"><i class="icon-contacts"></i> {{'MENU:CONTACTS' | translate}}</a></li>
-			  <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="icon-chat"></i> {{'MENU:LOBBY' | translate}}</a></li>
+	          <li ng-class="{active:isActive('/wallet')}"><a ng-click="openWallet()"><i class="icon-wallet"></i> {{'Wallet'|_}}</a></li>
+	          <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="icon-rocket"></i> {{'Send'|_}}</a></li>
+	          <li ng-class="{active:isActive('/contact')}"><a href="#contacts"><i class="icon-contacts"></i> {{'Contacts'|_}}</a></li>
+			  <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="icon-chat"></i> {{'Lobby'|_}}</a></li>
 	        </ul>
 	      </top-bar-section>
 	    </top-bar>
