@@ -6,8 +6,18 @@
 define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transaction, Bitcoin) {
   describe('Wallet model', function() {
     
-    var identity, wallet, _store, _private, initIfEmpty;
+    var identity, wallet, _store, _private, initIfEmpty, origMakeRandom = window.crypto.getRandomValues;
  
+    var removeRandomness = function() {
+        // remove randomness from the test, this changes how ECKey.makeRandom and crypto browserify rng works
+        // fixes issues with older ff in tests
+        window.crypto.getRandomValues = function(bytes) { bytes[0] = 255; };
+    }
+    var restoreRandomness = function() {
+      // restore the original getRandom
+      window.crypto.getRandomValues = origMakeRandom;
+    }
+
     beforeEach(function() {
       // inhibit initIfEmpty for part of the tests so it doesn't need
       // so much processing   
@@ -119,6 +129,7 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
     });
     afterEach(function() {
       Wallet.prototype.initIfEmpty = initIfEmpty;
+      restoreRandomness();
     });
     
     it('is created properly', function() {
@@ -168,7 +179,12 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
         var tx = identity.tx.prepare(0, recipients, change, 10000);
         
         var recipients = [{amount: 200000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyvUfMT7tvsZPS8xhGGfSmoDGQ8AKRyi7oRYhrhLQJRdvdYLh2z2j5k'}];
+
+        removeRandomness();
+
         var tx2 = identity.tx.prepare(0, recipients, change, 10000);
+
+        restoreRandomness();
 
         // Stealth addresses have the same values than a normal address
         commonTransactionChecks(tx, tx2);
@@ -200,6 +216,8 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
       
       it('to multiple stealth addresses', function() {
         var recipients = [{amount: 200000, address: juiceRapNews}];
+
+        removeRandomness();
         var tx = identity.tx.prepare(0, recipients, change, 10000);
         
         recipients = [
@@ -207,6 +225,7 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
           {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyubqxGCwKCgqXQRzqP3b8nbU8yUnuaazNxAq1ZgmtM6ft6tGWptnkx'}
         ];
         var tx4 = identity.tx.prepare(0, recipients, change, 10000);
+        restoreRandomness();
         
         commonTransactionChecks(tx, tx4);
         
@@ -225,7 +244,9 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
           {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyubqxGCwKCgqXQRzqP3b8nbU8yUnuaazNxAq1ZgmtM6ft6tGWptnkx'},
           {amount: 100000, address: satoshiForest}
         ];
+        removeRandomness();
         var tx5 = identity.tx.prepare(0, recipients, change, 10000);
+        restoreRandomness();
         
         commonTransactionChecks(tx, tx5);
         

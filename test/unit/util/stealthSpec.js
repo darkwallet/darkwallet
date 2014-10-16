@@ -58,6 +58,11 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       var scanBytes = scanKeyPubBytes;
       var spendBytes = spendKeyPubBytes;
 
+      // remove randomness from the test, this changes how ECKey.makeRandom and crypto browserify rng works
+      // fixes issues with older ff in tests
+      var prevMakeRandom = window.crypto.getRandomValues
+      window.crypto.getRandomValues = function(bytes) { bytes[0] = 255; };
+
       var res = Stealth.initiateStealth(scanBytes, spendBytes, undefined, ephemKeyBytes);
       var address = res[0];
       var ephemKey = res[1];
@@ -68,6 +73,8 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       // try with no ephemKeyBytes so it will be generated (normal case)
       res = Stealth.initiateStealth(scanBytes, spendBytes);
       expect(res.length).toBe(3);
+      // restore the original getRandom
+      window.crypto.getRandomValues = prevMakeRandom;
     });
 
     it('uncovers the stealth secret', function() {
