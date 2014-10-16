@@ -65,6 +65,21 @@ ports.
 To command the backend, the frontend can access directly in most situations, so just start on DarkWallet
 and move down.
 
+Internationalization
+--------------------
+
+You can make a string translatable using the "_" filter:
+
+```html
+<p>{{'This string is translated to the system language'|_}}<p>
+```
+
+When you add or modify a new language string, run the following command:
+
+```sh
+$ npm run i18n-update
+```
+
 Testing
 -------
 
