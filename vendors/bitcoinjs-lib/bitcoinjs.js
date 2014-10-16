@@ -1,4 +1,4 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Bitcoin=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.bitcoin=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // (public) Constructor
 function BigInteger(a, b, c) {
   if (!(this instanceof BigInteger))
@@ -1578,10 +1578,10 @@ module.exports={
   },
   "main": "./lib/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/_mocha -- test/*.js",
-    "jshint": "./node_modules/.bin/jshint --config jshint.json lib/*.js ; true",
-    "unit": "./node_modules/.bin/mocha",
-    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js",
+    "test": "_mocha -- test/*.js",
+    "jshint": "jshint --config jshint.json lib/*.js ; true",
+    "unit": "mocha",
+    "coverage": "istanbul cover ./node_modules/.bin/_mocha -- --reporter list test/*.js",
     "coveralls": "npm run-script coverage && node ./node_modules/.bin/coveralls < coverage/lcov.info"
   },
   "dependencies": {},
@@ -1602,12 +1602,9 @@ module.exports={
   "bugs": {
     "url": "https://github.com/cryptocoinjs/bigi/issues"
   },
+  "homepage": "https://github.com/cryptocoinjs/bigi",
   "_id": "bigi@1.3.0",
-  "dist": {
-    "shasum": "e0807d7169124406a874fd3a3d75c0c60a0dc3bc"
-  },
-  "_from": "bigi@^1.1.0",
-  "_resolved": "https://registry.npmjs.org/bigi/-/bigi-1.3.0.tgz"
+  "_from": "bigi@^1.1.0"
 }
 
 },{}],5:[function(require,module,exports){
@@ -3864,14 +3861,6 @@ function sign(curve, hash, d) {
   return new ECSignature(r, s)
 }
 
-function verify(curve, hash, signature, Q) {
-  // 1.4.2 H = Hash(M), already done by the user
-  // 1.4.3 e = H
-  var e = BigInteger.fromBuffer(hash)
-
-  return verifyRaw(curve, e, signature, Q)
-}
-
 function verifyRaw(curve, e, signature, Q) {
   var n = curve.n
   var G = curve.G
@@ -3900,6 +3889,14 @@ function verifyRaw(curve, e, signature, Q) {
 
   // 1.4.8 If v = r, output "valid", and if v != r, output "invalid"
   return v.equals(r)
+}
+
+function verify(curve, hash, signature, Q) {
+  // 1.4.2 H = Hash(M), already done by the user
+  // 1.4.3 e = H
+  var e = BigInteger.fromBuffer(hash)
+
+  return verifyRaw(curve, e, signature, Q)
 }
 
 /**
@@ -3997,17 +3994,20 @@ var BigInteger = require('bigi')
 var ECPubKey = require('./ecpubkey')
 
 var ecurve = require('ecurve')
-var curve = ecurve.getCurveByName('secp256k1')
+var secp256k1 = ecurve.getCurveByName('secp256k1')
 
 function ECKey(d, compressed) {
   assert(d.signum() > 0, 'Private key must be greater than 0')
-  assert(d.compareTo(curve.n) < 0, 'Private key must be less than the curve order')
+  assert(d.compareTo(ECKey.curve.n) < 0, 'Private key must be less than the curve order')
 
-  var Q = curve.G.multiply(d)
+  var Q = ECKey.curve.G.multiply(d)
 
   this.d = d
   this.pub = new ECPubKey(Q, compressed)
 }
+
+// Constants
+ECKey.curve = secp256k1
 
 // Static constructors
 ECKey.fromWIF = function(string) {
@@ -4039,7 +4039,7 @@ ECKey.makeRandom = function(compressed, rng) {
   assert.equal(buffer.length, 32, 'Expected 256-bit Buffer from RNG')
 
   var d = BigInteger.fromBuffer(buffer)
-  d = d.mod(curve.n)
+  d = d.mod(ECKey.curve.n)
 
   return new ECKey(d, compressed)
 }
@@ -4063,7 +4063,7 @@ ECKey.prototype.toWIF = function(network) {
 
 // Operations
 ECKey.prototype.sign = function(hash) {
-  return ecdsa.sign(curve, hash, this.d)
+  return ecdsa.sign(ECKey.curve, hash, this.d)
 }
 
 module.exports = ECKey
@@ -4079,7 +4079,7 @@ var networks = require('./networks')
 var Address = require('./address')
 
 var ecurve = require('ecurve')
-var curve = ecurve.getCurveByName('secp256k1')
+var secp256k1 = ecurve.getCurveByName('secp256k1')
 
 function ECPubKey(Q, compressed) {
   if (compressed === undefined) compressed = true
@@ -4091,9 +4091,12 @@ function ECPubKey(Q, compressed) {
   this.Q = Q
 }
 
+// Constants
+ECPubKey.curve = secp256k1
+
 // Static constructors
 ECPubKey.fromBuffer = function(buffer) {
-  var Q = ecurve.Point.decodeFrom(curve, buffer)
+  var Q = ecurve.Point.decodeFrom(ECPubKey.curve, buffer)
   return new ECPubKey(Q, Q.compressed)
 }
 
@@ -4109,7 +4112,7 @@ ECPubKey.prototype.getAddress = function(network) {
 }
 
 ECPubKey.prototype.verify = function(hash, signature) {
-  return ecdsa.verify(curve, hash, signature, this.Q)
+  return ecdsa.verify(ECPubKey.curve, hash, signature, this.Q)
 }
 
 // Export functions
@@ -4364,18 +4367,18 @@ HDNode.fromBuffer = function(buffer, __ignoreDeprecation) {
 
   // 32 bytes: the chain code
   var chainCode = buffer.slice(13, 45)
-  var hd
+  var data, hd
 
   // 33 bytes: private key data (0x00 + k)
   if (params.isPrivate) {
     assert.strictEqual(buffer.readUInt8(45), 0x00, 'Invalid private key')
-    var data = buffer.slice(46, 78)
+    data = buffer.slice(46, 78)
     var d = BigInteger.fromBuffer(data)
     hd = new HDNode(d, chainCode, params.network)
 
   // 33 bytes: public key data (0x02 + X or 0x03 + X)
   } else {
-    var data = buffer.slice(45, 78)
+    data = buffer.slice(45, 78)
     var Q = ecurve.Point.decodeFrom(curve, data)
     assert.equal(Q.compressed, true, 'Invalid public key')
 
@@ -4425,7 +4428,7 @@ HDNode.prototype.toBase58 = function(isPrivate) {
 
 // FIXME: remove in 2.x.y
 HDNode.prototype.toBuffer = function(isPrivate, __ignoreDeprecation) {
-  if (isPrivate == undefined) {
+  if (isPrivate === undefined) {
     isPrivate = !!this.privKey
 
   // FIXME: remove in 2.x.y
@@ -4566,15 +4569,12 @@ module.exports = HDNode
 }).call(this,require("buffer").Buffer)
 },{"./crypto":29,"./eckey":31,"./ecpubkey":32,"./networks":36,"./types":42,"assert":44,"bigi":3,"bs58check":6,"buffer":46,"ecurve":24}],35:[function(require,module,exports){
 (function (Buffer){
-/// Implements Bitcoin's feature for signing arbitrary messages.
-var Address = require('./address')
-var BigInteger = require('bigi')
 var bufferutils = require('./bufferutils')
 var crypto = require('./crypto')
 var ecdsa = require('./ecdsa')
 var networks = require('./networks')
 
-var Address = require('./address')
+var BigInteger = require('bigi')
 var ECPubKey = require('./ecpubkey')
 var ECSignature = require('./ecsignature')
 
@@ -4608,10 +4608,6 @@ function verify(address, signature, message, network) {
     signature = new Buffer(signature, 'base64')
   }
 
-  if (address instanceof Address) {
-    address = address.toString()
-  }
-
   network = network || networks.bitcoin
 
   var hash = magicHash(message, network)
@@ -4620,7 +4616,7 @@ function verify(address, signature, message, network) {
   var Q = ecdsa.recoverPubKey(ecparams, e, parsed.signature, parsed.i)
 
   var pubKey = new ECPubKey(Q, parsed.compressed)
-  return pubKey.getAddress(network).toString() === address
+  return pubKey.getAddress(network).toString() === address.toString()
 }
 
 module.exports = {
@@ -4630,7 +4626,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./address":27,"./bufferutils":28,"./crypto":29,"./ecdsa":30,"./ecpubkey":32,"./ecsignature":33,"./networks":36,"bigi":3,"buffer":46,"ecurve":24}],36:[function(require,module,exports){
+},{"./bufferutils":28,"./crypto":29,"./ecdsa":30,"./ecpubkey":32,"./ecsignature":33,"./networks":36,"bigi":3,"buffer":46,"ecurve":24}],36:[function(require,module,exports){
 // https://en.bitcoin.it/wiki/List_of_address_prefixes
 // Dogecoin BIP32 is a proposed standard: https://bitcointalk.org/index.php?topic=409731
 
@@ -5035,63 +5031,18 @@ module.exports = Script
 (function (Buffer){
 var assert = require('assert')
 var enforceType = require('./types')
-var opcodes = require('./opcodes')
+var ops = require('./opcodes')
 
-// FIXME: use ECPubKey, currently the circular dependency breaks everything.
-//
-// Solutions:
-//  * Remove ECPubKey.getAddress
-//    - Minimal change, but likely unpopular
-//  * Move all script related functionality out of Address
-//    - Means a lot of changes to Transaction/Wallet
-//  * Ignore it (existing solution)
-//  * Some form of hackery with commonjs
-//
 var ecurve = require('ecurve')
 var curve = ecurve.getCurveByName('secp256k1')
 
 var ECSignature = require('./ecsignature')
 var Script = require('./script')
 
-function classifyOutput(script) {
-  enforceType(Script, script)
-
-  if (isPubKeyHashOutput.call(script)) {
-    return 'pubkeyhash'
-  } else if (isScriptHashOutput.call(script)) {
-    return 'scripthash'
-  } else if (isMultisigOutput.call(script)) {
-    return 'multisig'
-  } else if (isPubKeyOutput.call(script)) {
-    return 'pubkey'
-  } else if (isNulldataOutput.call(script)) {
-    return 'nulldata'
-  } else {
-    return 'nonstandard'
-  }
-}
-
-function classifyInput(script) {
-  enforceType(Script, script)
-
-  if (isPubKeyHashInput.call(script)) {
-    return 'pubkeyhash'
-  } else if (isScriptHashInput.call(script)) {
-    return 'scripthash'
-  } else if (isMultisigInput.call(script)) {
-    return 'multisig'
-  } else if (isPubKeyInput.call(script)) {
-    return 'pubkey'
-  } else {
-    return 'nonstandard'
-  }
-}
-
 function isCanonicalPubKey(buffer) {
   if (!Buffer.isBuffer(buffer)) return false
 
   try {
-    // FIXME: boo
     ecurve.Point.decodeFrom(curve, buffer)
   } catch (e) {
     if (!(e.message.match(/Invalid sequence (length|tag)/))) throw e
@@ -5116,84 +5067,118 @@ function isCanonicalSignature(buffer) {
   return true
 }
 
-function isPubKeyHashInput() {
-  return this.chunks.length === 2 &&
-    isCanonicalSignature(this.chunks[0]) &&
-    isCanonicalPubKey(this.chunks[1])
+function isPubKeyHashInput(script) {
+  return script.chunks.length === 2 &&
+    isCanonicalSignature(script.chunks[0]) &&
+    isCanonicalPubKey(script.chunks[1])
 }
 
-function isPubKeyHashOutput() {
-  return this.chunks.length === 5 &&
-    this.chunks[0] === opcodes.OP_DUP &&
-    this.chunks[1] === opcodes.OP_HASH160 &&
-    Buffer.isBuffer(this.chunks[2]) &&
-    this.chunks[2].length === 20 &&
-    this.chunks[3] === opcodes.OP_EQUALVERIFY &&
-    this.chunks[4] === opcodes.OP_CHECKSIG
+function isPubKeyHashOutput(script) {
+  return script.chunks.length === 5 &&
+    script.chunks[0] === ops.OP_DUP &&
+    script.chunks[1] === ops.OP_HASH160 &&
+    Buffer.isBuffer(script.chunks[2]) &&
+    script.chunks[2].length === 20 &&
+    script.chunks[3] === ops.OP_EQUALVERIFY &&
+    script.chunks[4] === ops.OP_CHECKSIG
 }
 
-function isPubKeyInput() {
-  return this.chunks.length === 1 &&
-    isCanonicalSignature(this.chunks[0])
+function isPubKeyInput(script) {
+  return script.chunks.length === 1 &&
+    isCanonicalSignature(script.chunks[0])
 }
 
-function isPubKeyOutput() {
-  return this.chunks.length === 2 &&
-    isCanonicalPubKey(this.chunks[0]) &&
-    this.chunks[1] === opcodes.OP_CHECKSIG
+function isPubKeyOutput(script) {
+  return script.chunks.length === 2 &&
+    isCanonicalPubKey(script.chunks[0]) &&
+    script.chunks[1] === ops.OP_CHECKSIG
 }
 
-function isScriptHashInput() {
-  if (this.chunks.length < 2) return false
-  var lastChunk = this.chunks[this.chunks.length - 1]
+function isScriptHashInput(script) {
+  if (script.chunks.length < 2) return false
+  var lastChunk = script.chunks[script.chunks.length - 1]
 
   if (!Buffer.isBuffer(lastChunk)) return false
 
-  var scriptSig = Script.fromChunks(this.chunks.slice(0, -1))
+  var scriptSig = Script.fromChunks(script.chunks.slice(0, -1))
   var scriptPubKey = Script.fromBuffer(lastChunk)
 
   return classifyInput(scriptSig) === classifyOutput(scriptPubKey)
 }
 
-function isScriptHashOutput() {
-  return this.chunks.length === 3 &&
-    this.chunks[0] === opcodes.OP_HASH160 &&
-    Buffer.isBuffer(this.chunks[1]) &&
-    this.chunks[1].length === 20 &&
-    this.chunks[2] === opcodes.OP_EQUAL
+function isScriptHashOutput(script) {
+  return script.chunks.length === 3 &&
+    script.chunks[0] === ops.OP_HASH160 &&
+    Buffer.isBuffer(script.chunks[1]) &&
+    script.chunks[1].length === 20 &&
+    script.chunks[2] === ops.OP_EQUAL
 }
 
-function isMultisigInput() {
-  return this.chunks[0] === opcodes.OP_0 &&
-    this.chunks.slice(1).every(isCanonicalSignature)
+function isMultisigInput(script) {
+  return script.chunks[0] === ops.OP_0 &&
+    script.chunks.slice(1).every(isCanonicalSignature)
 }
 
-function isMultisigOutput() {
-  if (this.chunks < 4) return false
-  if (this.chunks[this.chunks.length - 1] !== opcodes.OP_CHECKMULTISIG) return false
+function isMultisigOutput(script) {
+  if (script.chunks.length < 4) return false
+  if (script.chunks[script.chunks.length - 1] !== ops.OP_CHECKMULTISIG) return false
 
-  var mOp = this.chunks[0]
-  if (mOp === opcodes.OP_0) return false
-  if (mOp < opcodes.OP_1) return false
-  if (mOp > opcodes.OP_16) return false
+  var mOp = script.chunks[0]
+  if (mOp === ops.OP_0) return false
+  if (mOp < ops.OP_1) return false
+  if (mOp > ops.OP_16) return false
 
-  var nOp = this.chunks[this.chunks.length - 2]
-  if (nOp === opcodes.OP_0) return false
-  if (nOp < opcodes.OP_1) return false
-  if (nOp > opcodes.OP_16) return false
+  var nOp = script.chunks[script.chunks.length - 2]
+  if (nOp === ops.OP_0) return false
+  if (nOp < ops.OP_1) return false
+  if (nOp > ops.OP_16) return false
 
-  var m = mOp - (opcodes.OP_1 - 1)
-  var n = nOp - (opcodes.OP_1 - 1)
+  var m = mOp - (ops.OP_1 - 1)
+  var n = nOp - (ops.OP_1 - 1)
   if (n < m) return false
 
-  var pubKeys = this.chunks.slice(1, -2)
+  var pubKeys = script.chunks.slice(1, -2)
   if (n < pubKeys.length) return false
 
   return pubKeys.every(isCanonicalPubKey)
 }
 
-function isNulldataOutput() {
-  return this.chunks[0] === opcodes.OP_RETURN
+function isNulldataOutput(script) {
+  return script.chunks[0] === ops.OP_RETURN
+}
+
+function classifyOutput(script) {
+  enforceType(Script, script)
+
+  if (isPubKeyHashOutput(script)) {
+    return 'pubkeyhash'
+  } else if (isScriptHashOutput(script)) {
+    return 'scripthash'
+  } else if (isMultisigOutput(script)) {
+    return 'multisig'
+  } else if (isPubKeyOutput(script)) {
+    return 'pubkey'
+  } else if (isNulldataOutput(script)) {
+    return 'nulldata'
+  }
+
+  return 'nonstandard'
+}
+
+function classifyInput(script) {
+  enforceType(Script, script)
+
+  if (isPubKeyHashInput(script)) {
+    return 'pubkeyhash'
+  } else if (isScriptHashInput(script)) {
+    return 'scripthash'
+  } else if (isMultisigInput(script)) {
+    return 'multisig'
+  } else if (isPubKeyInput(script)) {
+    return 'pubkey'
+  }
+
+  return 'nonstandard'
 }
 
 // Standard Script Templates
@@ -5201,7 +5186,7 @@ function isNulldataOutput() {
 function pubKeyOutput(pubKey) {
   return Script.fromChunks([
     pubKey.toBuffer(),
-    opcodes.OP_CHECKSIG
+    ops.OP_CHECKSIG
   ])
 }
 
@@ -5210,11 +5195,11 @@ function pubKeyHashOutput(hash) {
   enforceType('Buffer', hash)
 
   return Script.fromChunks([
-    opcodes.OP_DUP,
-    opcodes.OP_HASH160,
+    ops.OP_DUP,
+    ops.OP_HASH160,
     hash,
-    opcodes.OP_EQUALVERIFY,
-    opcodes.OP_CHECKSIG
+    ops.OP_EQUALVERIFY,
+    ops.OP_CHECKSIG
   ])
 }
 
@@ -5223,9 +5208,9 @@ function scriptHashOutput(hash) {
   enforceType('Buffer', hash)
 
   return Script.fromChunks([
-    opcodes.OP_HASH160,
+    ops.OP_HASH160,
     hash,
-    opcodes.OP_EQUAL
+    ops.OP_EQUAL
   ])
 }
 
@@ -5241,10 +5226,10 @@ function multisigOutput(m, pubKeys) {
   var n = pubKeys.length
 
   return Script.fromChunks([].concat(
-    (opcodes.OP_1 - 1) + m,
+    (ops.OP_1 - 1) + m,
     pubKeyBuffers,
-    (opcodes.OP_1 - 1) + n,
-    opcodes.OP_CHECKMULTISIG
+    (ops.OP_1 - 1) + n,
+    ops.OP_CHECKMULTISIG
   ))
 }
 
@@ -5273,18 +5258,18 @@ function scriptHashInput(scriptSig, scriptPubKey) {
 // OP_0 [signatures ...]
 function multisigInput(signatures, scriptPubKey) {
   if (scriptPubKey) {
-    assert(isMultisigOutput.call(scriptPubKey))
+    assert(isMultisigOutput(scriptPubKey))
 
     var mOp = scriptPubKey.chunks[0]
     var nOp = scriptPubKey.chunks[scriptPubKey.chunks.length - 2]
-    var m = mOp - (opcodes.OP_1 - 1)
-    var n = nOp - (opcodes.OP_1 - 1)
+    var m = mOp - (ops.OP_1 - 1)
+    var n = nOp - (ops.OP_1 - 1)
 
     assert(signatures.length >= m, 'Not enough signatures provided')
     assert(signatures.length <= n, 'Too many signatures provided')
   }
 
-  return Script.fromChunks([].concat(opcodes.OP_0, signatures))
+  return Script.fromChunks([].concat(ops.OP_0, signatures))
 }
 
 module.exports = {
@@ -5952,11 +5937,17 @@ module.exports = function enforce(type, value) {
     }
 
     default: {
-      if (value instanceof type) return
+      if (getName(value.constructor) === getName(type)) return
     }
   }
 
-  throw new TypeError('Expected ' + (type.name || type) + ', got ' + value)
+  throw new TypeError('Expected ' + (getName(type) || type) + ', got ' + value)
+}
+
+function getName(fn) {
+  // Why not fn.name: https://kangax.github.io/compat-table/es6/#function_name_property
+  var match = fn.toString().match(/function (.*?)\(/)
+  return match ? match[1] : null
 }
 
 }).call(this,require("buffer").Buffer)
@@ -8727,8 +8718,8 @@ function hasOwnProperty(obj, prop) {
 module.exports = {
   Address: require('./address'),
   BigInteger: require('bigi'),
-  base58check: require('bs58check'),
   Buffer: Buffer,
+  base58check: require('bs58check'),
   bufferutils: require('./bufferutils'),
   crypto: require('./crypto'),
   ecdsa: require('./ecdsa'),
