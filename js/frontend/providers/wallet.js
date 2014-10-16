@@ -71,7 +71,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
           // iterate over available addresses to find out next n
           n = -1;
           this.addresses[branchId].forEach(function(address) {
-              n = max(n, address.index[1]||0);
+              n = Math.max(n, address.index[1]||0);
           });
           n += 1;
       }
