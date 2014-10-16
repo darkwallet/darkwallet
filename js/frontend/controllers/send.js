@@ -6,7 +6,6 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
   
   var sendForm = $scope.forms.send;
 
-  var dustThreshold = 5430;
   $scope.quicksend = {};
 
   $scope.resetSendForm = function() {
@@ -159,8 +158,9 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           }
       }
       var spend = prepareRecipients();
-      var checkNegative = spend.recipients.filter(function(r) { return r.amount < 0; });
-      if ((spend.recipients.length > 0) && (spend.amount > dustThreshold) && (!checkNegative.length) && (sendForm.fee >= 0)) {
+      var checkDust = spend.recipients.filter(function(r) { return r.amount < identity.wallet.dust; });
+ 
+      if ((spend.recipients.length > 0) && (spend.amount >= identity.wallet.dust) && (!checkDust.length) && (sendForm.fee >= 0)) {
           $scope.sendEnabled = true;
       } else {
           $scope.sendEnabled = false;
@@ -292,8 +292,16 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           return;
       }
 
-      if (totalAmount < dustThreshold) {
-          notify.note('Amount is below the dust threshold', totalAmount+'<'+dustThreshold);
+      var identity = DarkWallet.getIdentity();
+
+      for(var i=0; i<recipients.length; i++) {
+          if (recipients[i].amount < identity.wallet.dust) {
+              notify.note('The amount for some recipients is below the dust threshold', totalAmount+'<'+identity.wallet.dust);
+              return;
+          }
+      }
+      if (totalAmount < identity.wallet.dust) {
+          notify.note('Amount is below the dust threshold', totalAmount+'<'+identity.wallet.dust);
           return;
       }
 
@@ -302,7 +310,6 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
       // prepare the transaction
       var metadata;
-      var identity = DarkWallet.getIdentity();
 
       var pocketIndex = sendForm.pocketIndex;
 

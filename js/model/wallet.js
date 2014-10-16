@@ -17,6 +17,7 @@ function Wallet(store, identity) {
     this.pubKeys = store.init('pubkeys', {});
     this.scanKeys = store.init('scankeys', []);
     this.idKeys = store.init('idkeys', []);
+    this.dust = 546;
 
     this.mpk = store.get('mpk');
 
@@ -397,11 +398,17 @@ Wallet.prototype.setDefaultFee = function(newFee) {
  * @return {Object} List of outputs
  */
 Wallet.prototype.getUtxoToPay = function(value, pocketId, type) {
-    var tmpWallet;
+    var tmpWallet, dust=this.dust;
     if (pocketId === 'all') {
         tmpWallet = this.wallet;
     } else {
         tmpWallet = this.pockets.getPocketWallet(pocketId, type);
+    }
+
+    var valueMatch = function(a, b) {
+         // Make sure change isn't below dust threshold.
+         if (a == b || a >= (b+dust)) return true;
+         return false;
     }
 
     var getCandidateOutputs = function(w, value, hot) {
@@ -415,14 +422,14 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId, type) {
 
         // organize and select
         var valuecompare = function(a,b) { return a.value > b.value; };
-        var high = utxo.filter(function(o) { return o.value >= value; })
+        var high = utxo.filter(function(o) { return valueMatch(o.value, value); })
                        .sort(valuecompare);
         if (high.length > 0) { return [high[0]]; }
         utxo.sort(valuecompare);
         var totalval = 0;
         for (var i = 0; i < utxo.length; i++) {
             totalval += utxo[i].value;
-            if (totalval >= value) { return utxo.slice(0,i+1); }
+            if (valueMatch(totalval, value)) { return utxo.slice(0,i+1); }
         }
         // if looking without hot and didn't find any, look for hot also
         if (!hot) {
