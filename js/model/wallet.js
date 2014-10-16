@@ -161,18 +161,16 @@ Wallet.prototype.loadPubKeys = function() {
         }
         // Add all to the wallet
         self.wallet.addresses.push(walletAddress.address);
-        if (walletAddress.index.length > 1) {
-            self.pockets.addToPocket(walletAddress);
+        self.pockets.addToPocket(walletAddress);
 
-            // TODO: Don't process previous history so we can cache
-            // properly later
-            if (walletAddress.history) {
-                  // Reload history
-                  walletAddress.balance = 0;
-                  walletAddress.nOutputs = 0;
-                  walletAddress.height = 0;
-                  self.processHistory(walletAddress, walletAddress.history, true);
-            }
+        // TODO: Don't process previous history so we can cache
+        // properly later
+        if (walletAddress.history) {
+              // Reload history
+              walletAddress.balance = 0;
+              walletAddress.nOutputs = 0;
+              walletAddress.height = 0;
+              self.processHistory(walletAddress, walletAddress.history, true);
         }
     });
 
