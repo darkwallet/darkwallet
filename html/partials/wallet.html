@@ -59,13 +59,6 @@
 			    <h1 class="title lin">
 			        New Pocket
 			    </h1>
-				<div class="lin" ng-controller="PocketCreateCtrl">
-				       <form name="newPocketForm" ng-submit="createPocket()">
-					  <input type="text" auto-focus ng-model="newPocket.name" placeholder="Name your pocket..." />
-					  <input type="submit" class="button small expand radius" value="OK"/>
-					</form>
-				</div>
-
             </section>
         </nav>
 
@@ -99,10 +92,10 @@
   		</div>
 
  		 <!-- New pocket dialog -->
-  	<!--	<div ng-if="selectedPocket==='newPocket'" class="large-10 medium-9 columns">
+  		<div ng-if="selectedPocket==='newPocket'" class="large-10 medium-9 columns">
       	  <ng-include src="'wallet/new_pocket.html'">
       		</ng-include>
-  		</div> -->
+  		</div>
 
 
         </section>

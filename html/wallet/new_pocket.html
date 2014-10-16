@@ -1,0 +1,27 @@
+<div class="row collapse">
+	<div class="large-10 large-centered columns cardflipper">
+		<div class="wizard" ng-controller="PocketCreateCtrl">
+                       <form name="newPocketForm" ng-submit="createPocket()">
+			<div class="row">
+				<div class="small-12 columns">
+					<h6>Pockets allow organizing your wallet in different privacy zones</h6>
+				</div>
+			</div>
+			<div class="row">
+				<div class="small-6 columns">
+                                          <input type="text" auto-focus ng-model="newPocket.name" placeholder="Name your pocket..." />
+				</div>
+				
+				<div class="small-3 columns">
+                                          <input type="submit" class="button small expand radius" value="Create" ng-click="createPocket()"/>
+				</div>
+				<!--<div class="small-3 columns">
+                                          <input type="submit" class="button small alert expand radius" value="Cancel" ng-click="selectPocket()"/>
+				</div>-->
+			</div>
+                       </form>
+		
+		</div>
+
+	</div>
+</div>
