@@ -186,6 +186,7 @@ Wallet.prototype.loadPubKeys = function() {
 
 Wallet.prototype.deriveHDPrivateKey = function(seq, masterKey) {
     var key = masterKey;
+    // clone seq since we're mangling it
     var workSeq = seq.slice(0);
     while(workSeq.length) {
         key = key.derive(workSeq.shift());
@@ -222,7 +223,6 @@ Wallet.prototype.getPocketPrivate = function(index, password) {
  * @param {Function} callback A callback where the private key will be provided.
  */
 Wallet.prototype.getPrivateKey = function(seq, password, callback) {
-    // clone seq since we're mangling it
     var data = this.store.getPrivateData(password);
     if (data.privKeys[seq]) {
         var key = new Bitcoin.ECKey(data.privKeys[seq], true);
@@ -343,7 +343,9 @@ Wallet.prototype.getAddress = function(seq, label) {
         // derive from mpk
         var mpKey = Bitcoin.HDWallet.fromBase58(this.mpk);
 
+        // clone seq since we're mangling it
         var workSeq = seq.slice(0);
+        // derive key seq
         var childKey = mpKey;
         while(workSeq.length) {
             childKey = childKey.derive(workSeq.shift());
