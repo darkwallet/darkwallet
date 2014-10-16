@@ -13,6 +13,7 @@ recursive('html', function (err, files) {
       arr = arr.concat(data);
     }
   });
+  arr.sort();
   arr.forEach(function(str) {
     str = str.slice(3,str.length-3);
     obj[str] = str;
