@@ -84,14 +84,9 @@ Wallet.prototype.getPocketAddresses = function(pocketId, type) {
                 allAddresses.push(this.pubKeys[keys[i]].address);
             }
         }
-    } else if (typeof pocketId === 'number') {
-        // Hd pocket
+    } else{
+        // Standard pocket
         allAddresses = this.pockets.getAddresses(pocketId, type);
-    } else if (type == 'readonly') {
-        allAddresses = this.pockets.getAddresses(pocketId, type);
-    } else {
-        // Multisig
-        allAddresses = [pocketId]; 
     }
     return allAddresses;
 
