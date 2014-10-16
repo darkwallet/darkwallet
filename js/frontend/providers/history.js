@@ -435,6 +435,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   };
 
   HistoryProvider.prototype.addressFilter = function(row) {
+      // filter out pocket addresses with no inputs so the user never see them but can receive funds.
+      if (row.index.length === 1 && row.label === 'pocket' && !row.nOutputs) return false;
       switch(this.addrFilter) {
           case 'all':
               return true;

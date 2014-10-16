@@ -138,8 +138,8 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       expect(wallet.scanKeys[0].priv).toBeDefined();
       expect(wallet.scanKeys[0].pub).toBeDefined();
       expect(wallet.pockets.hdPockets).toEqual([{name: 'spending'}, {name: 'business'}, {name: 'savings'}]);
-      expect(wallet.pockets.pockets.hd[0].addresses).toEqual(['1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ']);
-      expect(wallet.pockets.pockets.hd[1].addresses).toEqual(['1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs']);
+      expect(wallet.pockets.pockets.hd[0].addresses).toEqual(['18a2oJD4prCzbdvL5Z8rDKn5Xj7Z7KeTLy', '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ']);
+      expect(wallet.pockets.pockets.hd[1].addresses).toEqual(['1Ga7oYeQGEqzv8eKdFs4TY16EErmLARoT', '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs']);
       expect(wallet.mpk).toBe('xpub693Ab9Kv7vQjSJ9fZLKAWjqPUEjSyM7LidCCZW8wGosvZKi3Pf2ijiGe1MDTBmQnpXU795HNb4ebuW95tbLNuAzXndALZpRkRaRCbXDhafA');
       expect(wallet.wallet).toBeDefined();
       expect(wallet.multisig).toBeDefined();
@@ -266,8 +266,8 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     
     it('loads public keys', function() { // private
       expect(wallet.wallet.addresses).toEqual([ '18a2oJD4prCzbdvL5Z8rDKn5Xj7Z7KeTLy', '1Ga7oYeQGEqzv8eKdFs4TY16EErmLARoT', '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ', '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs' ]);
-      expect(wallet.pockets.pockets.hd[0].addresses).toEqual(['1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ']);
-      expect(wallet.pockets.pockets.hd[1].addresses).toEqual(['1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs']);
+      expect(wallet.pockets.pockets.hd[0].addresses).toEqual(['18a2oJD4prCzbdvL5Z8rDKn5Xj7Z7KeTLy', '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ']);
+      expect(wallet.pockets.pockets.hd[1].addresses).toEqual(['1Ga7oYeQGEqzv8eKdFs4TY16EErmLARoT', '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs']);
     });
     
     it('gets private key', function() {
@@ -377,13 +377,13 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
    
     it('get pockets wallet', function() {
       var tmpWallet = wallet.pockets.getPocketWallet(0);
-      expect(tmpWallet.addresses).toEqual(['1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ']);
+      expect(tmpWallet.addresses).toEqual(['18a2oJD4prCzbdvL5Z8rDKn5Xj7Z7KeTLy', '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ']);
       expect(Object.keys(tmpWallet.outputs).length).toBe(2);
       expect(tmpWallet.outputs["a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329:0"].value).toBe(40000);
       expect(tmpWallet.outputs["64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6:1"].value).toBe(3000000);
       
       tmpWallet = wallet.pockets.getPocketWallet(1);
-      expect(tmpWallet.addresses).toEqual(['1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs']);
+      expect(tmpWallet.addresses).toEqual(['1Ga7oYeQGEqzv8eKdFs4TY16EErmLARoT', '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs']);
       expect(Object.keys(tmpWallet.outputs).length).toBe(1);
       expect(tmpWallet.outputs["c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c:0"].value).toBe(5000000);
     });

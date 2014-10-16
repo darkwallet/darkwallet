@@ -68,14 +68,14 @@ HdPocket.prototype.destroy = function() {
  * way.
  */
 HdPocket.prototype.addToPocket = function(walletAddress) {
-    // TODO: think a more elegant way to manage the pocket key
-    // (that origins the stealth address).
-    // The problem is the key belongs to the pocket but we don't
-    // want to make its address 'public'.
-    if (walletAddress.index.length > 1) {
-        this.addresses.push(walletAddress.address);
-        this.walletAddresses.push(walletAddress);
-    }
+    // We store pocket addresses as well as normal receiving addresses,
+    // The pocket address is the one used to derive the stealth address,
+    // and normally shouldn't receive funds and the user shouldn't see
+    // it.
+    // At the moment we leave it to the gui not to show the address
+    // to the user and make it invisible.
+    this.addresses.push(walletAddress.address);
+    this.walletAddresses.push(walletAddress);
 };
 
 /**

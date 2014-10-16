@@ -83,14 +83,9 @@ Wallet.prototype.getPocketAddresses = function(pocketId, type) {
                 allAddresses.push(this.pubKeys[keys[i]].address);
             }
         }
-    } else if (typeof pocketId === 'number') {
-        // Hd pocket
+    } else{
+        // Standard pocket
         allAddresses = this.pockets.getAddresses(pocketId, type);
-    } else if (type == 'readonly') {
-        allAddresses = this.pockets.getAddresses(pocketId, type);
-    } else {
-        // Multisig
-        allAddresses = [pocketId]; 
     }
     return allAddresses;
 
@@ -160,18 +155,16 @@ Wallet.prototype.loadPubKeys = function() {
         }
         // Add all to the wallet
         self.wallet.addresses.push(walletAddress.address);
-        if (walletAddress.index.length > 1) {
-            self.pockets.addToPocket(walletAddress);
+        self.pockets.addToPocket(walletAddress);
 
-            // TODO: Don't process previous history so we can cache
-            // properly later
-            if (walletAddress.history) {
-                  // Reload history
-                  walletAddress.balance = 0;
-                  walletAddress.nOutputs = 0;
-                  walletAddress.height = 0;
-                  self.processHistory(walletAddress, walletAddress.history, true);
-            }
+        // TODO: Don't process previous history so we can cache
+        // properly later
+        if (walletAddress.history) {
+              // Reload history
+              walletAddress.balance = 0;
+              walletAddress.nOutputs = 0;
+              walletAddress.height = 0;
+              self.processHistory(walletAddress, walletAddress.history, true);
         }
     });
 
@@ -192,6 +185,7 @@ Wallet.prototype.loadPubKeys = function() {
 
 Wallet.prototype.deriveHDPrivateKey = function(seq, masterKey) {
     var key = masterKey;
+    // clone seq since we're mangling it
     var workSeq = seq.slice(0);
     while(workSeq.length) {
         key = key.derive(workSeq.shift());
@@ -228,7 +222,6 @@ Wallet.prototype.getPocketPrivate = function(index, password) {
  * @param {Function} callback A callback where the private key will be provided.
  */
 Wallet.prototype.getPrivateKey = function(seq, password, callback) {
-    // clone seq since we're mangling it
     var data = this.store.getPrivateData(password);
     if (data.privKeys[seq]) {
         var key = Bitcoin.ECKey.fromBytes(data.privKeys[seq], true);
@@ -349,7 +342,9 @@ Wallet.prototype.getAddress = function(seq, label) {
         // derive from mpk
         var mpKey = Bitcoin.HDNode.fromBase58(this.mpk);
 
+        // clone seq since we're mangling it
         var workSeq = seq.slice(0);
+        // derive key seq
         var childKey = mpKey;
         while(workSeq.length) {
             childKey = childKey.derive(workSeq.shift());
