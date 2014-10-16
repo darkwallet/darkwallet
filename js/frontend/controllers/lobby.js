@@ -66,11 +66,14 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       var peerChannel = $scope.selectedRequest.peer.channel;
       if (peerChannel.checkPairMessage(request)) {
-          var data = {name: request.nick, address: request.body.address};
-
-          var newContact = identity.contacts.addContact(data);
-          newContact.addKey(request.body.pub);
-
+          // Add the contact if not already present
+          if (!identity.contacts.findByAddress(request.body.address)) {
+              if (!identity.contacts.searchKeys({data: request.body.pub})) {
+                  var data = {name: request.nick, address: request.body.address};
+                  var newContact = identity.contacts.addContact(data);
+                  newContact.addKey(request.body.pub);
+              }
+          }
           $scope.anyPaired = true;
           $scope.selectedRequest.peer.nick = request.nick;
           notify.success(request.nick + " added to contacts");
@@ -326,9 +329,13 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
     $scope.addNewContact = function(contact) {
         var identity = DarkWallet.getIdentity();
         var newContact = {name: contact.name, address: contact.stealth, fingerprint: contact.fingerprint};
-        identity.contacts.addContact(newContact);
+        if (!identity.contacts.findByAddress(contact.stealth)) {
+            identity.contacts.addContact(newContact);
+            notify.success('Contact added');
+        } else {
+            notify.warning('Contact already present');
+        }
         $scope.newContact = null;
-        notify.success('Contact added');
     };
   });
 }]);
