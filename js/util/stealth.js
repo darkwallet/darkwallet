@@ -15,8 +15,6 @@ var Stealth = {};
 Stealth.version = 42;
 Stealth.testnet = 43;
 
-Stealth.ecN = new Bitcoin.BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337");
-
 // Can these be different in the future?
 Stealth.nonceVersion = 6;
 
@@ -46,7 +44,7 @@ Stealth.stealthDH = function(e, decKey) {
     // start the second stage
     var S1;
     if (Stealth.quirk) {
-        S1 = [3].concat(point.getX().toBigInteger().toBuffer().toJSON().data);
+        S1 = [3].concat(point.affineX.toBuffer().toJSON().data);
     } else {
         S1 = point.getEncoded(true);
     }
@@ -214,7 +212,7 @@ Stealth.uncoverPrivate = function(scanSecret, ephemKeyBytes, spendKeyBytes) {
  */
 Stealth.derivePrivateKey = function(spendKey, c) {
     // Generate the key with the bitcoin api
-    return new Bitcoin.ECKey(spendKey.d.add(c).mod(Stealth.ecN), spendKey.pub.compressed);
+    return new Bitcoin.ECKey(spendKey.d.add(c).mod(Bitcoin.ECKey.curve.n), spendKey.pub.compressed);
 };
 
 /*
