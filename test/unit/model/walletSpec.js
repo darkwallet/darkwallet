@@ -266,8 +266,8 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     
     it('loads public keys', function() { // private
       expect(wallet.wallet.addresses).toEqual([ '18a2oJD4prCzbdvL5Z8rDKn5Xj7Z7KeTLy', '1Ga7oYeQGEqzv8eKdFs4TY16EErmLARoT', '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ', '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs' ]);
-      expect(wallet.pockets.pockets.hd[0].addresses).toEqual(['1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ']);
-      expect(wallet.pockets.pockets.hd[1].addresses).toEqual(['1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs']);
+      expect(wallet.pockets.pockets.hd[0].addresses).toEqual(['18a2oJD4prCzbdvL5Z8rDKn5Xj7Z7KeTLy', '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ']);
+      expect(wallet.pockets.pockets.hd[1].addresses).toEqual(['1Ga7oYeQGEqzv8eKdFs4TY16EErmLARoT', '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs']);
     });
     
     it('gets private key', function() {
