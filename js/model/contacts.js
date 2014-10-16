@@ -50,7 +50,27 @@ Contacts.prototype.initContacts = function() {
 };
 
 /**
+ * Find for a contact with a certain key field
+ * @param {Object} search an object with {key: value} to search for
+ * @return {Object|null} The contact if it is there
+ */
+Contacts.prototype.searchKeys = function (search) {
+  var label = Object.keys(search)[0];
+  var value = search[label];
+  for(var i in this.contacts) {
+    for(var j in this.contacts[i].pubKeys) {
+      var cVal = this.contacts[i].pubKeys[j][label];
+      if (cVal === value) {
+        return this.contacts[i];
+      }
+    }
+  }
+};
+
+/**
  * Search for a contact
+ * @param {Object} search an object with {key: value} to search for
+ * @return {Object|null} The contact if it is there
  */
 Contacts.prototype.search = function(search) {
     var label = Object.keys(search)[0];
@@ -146,14 +166,7 @@ Contacts.prototype.findByPubKey = function (pubKey) {
  * @return {Object|null} The contact if it is there
  */
 Contacts.prototype.findByAddress = function (address) {
-  for(var i in this.contacts) {
-    for(var j in this.contacts[i].pubKeys) {
-      var cAddress = this.contacts[i].pubKeys[j].address;
-      if (cAddress === address) {
-        return this.contacts[i];
-      }
-    }
-  }
+  return this.searchKeys({address: address});
 };
 
 
