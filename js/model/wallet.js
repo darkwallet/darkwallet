@@ -17,7 +17,7 @@ function Wallet(store, identity) {
     this.pubKeys = store.init('pubkeys', {});
     this.scanKeys = store.init('scankeys', []);
     this.idKeys = store.init('idkeys', []);
-    this.dust = 546;
+    this.dust = Bitcoin.networks[this.network].dustThreshold;
 
     this.mpk = store.get('mpk');
 
