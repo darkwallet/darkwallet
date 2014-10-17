@@ -10,14 +10,16 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
   $scope.scanParams = {addresses: 10, pockets: 5, scanMaster: false};
 
   // Initialize the master pocket address for pockets
-  var createMasterAddresses = function() {
+  var createMasterAddresses = function(results) {
       var identity = DarkWallet.getIdentity();
       // Set the identity to manage pocket addresses from now on
       identity.settings.scanPocketMaster = true;
-      identity.wallet.pockets.hdPockets.forEach(function(hdPocket, i) {
-          var walletAddress = identity.wallet.pubKeys[[i*2]];
-          if (hdPocket && walletAddress) {
-              DarkWallet.service.wallet.initAddress(walletAddress);
+      results.forEach(function(seq) {
+          if (seq.length === 1) {
+              var walletAddress = identity.wallet.getAddress(seq);
+              if (walletAddress) {
+                  $wallet.initAddress(walletAddress);
+              }
           }
       });
 
@@ -45,7 +47,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
 
       // Generate master addresses
       if (pocketAddressesUsed) {
-          createMasterAddresses();
+          createMasterAddresses(results);
       }
  
       // Now generate addresses

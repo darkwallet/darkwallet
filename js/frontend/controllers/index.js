@@ -35,5 +35,6 @@ define([
     './fund',
     './tools',
     './signing',
+    './exporting',
     './rcv_stealth'
 ], function () {});
