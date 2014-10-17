@@ -313,7 +313,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         // get balance for addresses
         Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
             var walletAddress = identity.wallet.pubKeys[pubKeyIndex];
-            if (identity.settings.managePocket || walletAddress.index.length > 1) {
+            if (identity.settings.scanPocketMaster || walletAddress.index.length > 1) {
                 self.initAddress(walletAddress);
             }
         });
