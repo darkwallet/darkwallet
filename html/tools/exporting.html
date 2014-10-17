@@ -1,7 +1,7 @@
 <h3 ng-show="!tools.open || tools.exportOpen">Key management</h3>
-<a class="button fa fa-upload postfix" ng-click="tools.open=true;tools.exportOpen=true" ng-show="!tools.open" novalidate>Export keys</a>
+<a class="button fa fa-upload postfix" ng-click="tools.open=true;tools.exportOpen=true" ng-show="!tools.open" novalidate>Export private keys</a>
 <form name="exportingForm" ng-show="tools.exportOpen" ng-submit="exportKeys()">
-    <label ng-show="!tools.exportAddress">All keys will be exported (this might take a while).</label>
+    <label ng-show="!tools.exportAddress">All private keys will be exported (this might take a while).</label>
     <p ng-show="!tools.exportAddress">Write an address to export just one.</p>
     <div class="row collapse">
       <div class="medium-12 columns">
