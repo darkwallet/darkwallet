@@ -20,9 +20,15 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
               for (var i = 0; i < allAddresses.length; i++) {
                   var address = allAddresses[i];
                   var walletAddress = identity.wallet.getWalletAddress(address);
-                  identity.wallet.getPrivateKey(walletAddress.index, password, function(privKey) {
-                      output += address + ',' + privKey.toWif() + '\n';
-                  } );
+                  // Make sure we only export normal and stealth keys
+                  if (walletAddress && [undefined, 'stealth'].indexOf(walletAddress.type) > -1) {
+                      identity.wallet.getPrivateKey(walletAddress.index, password, function(privKey) {
+                          output += address + ',' + privKey.toWif() + '\n';
+                      } );
+                  } else if (allAddresses.length == 1) {
+                      notify.error("Address not from this wallet");
+                      return;
+                  }
               }
               $scope.tools.output = output;
               $scope.tools.status = 'ok';
