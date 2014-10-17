@@ -401,7 +401,6 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
     if (msg.sender !== this.channel.fingerprint) {
       var coinJoin = this.getOngoing(msg);
       if (coinJoin) {
-          coinJoin.task.ping = Date.now()/1000;
           var prevState = coinJoin.state;
           console.log("[mixer] CoinJoin", msg);
 
@@ -425,6 +424,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
           }
           // copy coinjoin state to the store
           if (coinJoin.task) {
+              coinJoin.task.ping = Date.now()/1000;
               coinJoin.task.state = coinJoin.state;
           }
           // Check state and perform appropriate tasks
