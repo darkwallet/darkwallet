@@ -4,7 +4,7 @@
 <div class="row">
       <div class="large-4 columns">
         <div class="panel setback seed">
-          <em>Experimental tools...</em>
+          <em ng-show="!tools.open">Experimental tools...</em>
           <div ng-controller="SigningCtrl">
               <div ng-include="'tools/signing.html'"></div>
               <div ng-include="'tools/verifying.html'"></div>
@@ -12,6 +12,8 @@
           <div ng-controller="ExportingCtrl">
               <div ng-include="'tools/exporting.html'"></div>
           </div>
+        </div>
+        <div class="panel setback seed">
           <h4>Browsing</h4>
           <a class="button fa fa-sitemap postfix" href="#browser">Browser</a>
           <h4>Developer mode</h4>
