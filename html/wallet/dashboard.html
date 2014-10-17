@@ -1,7 +1,7 @@
   <div class="row" ng-show="pocket.readOnly">
     <div class="small-12 columns">
         <div class="row collapse panel radius transactions">
-        Read only pocket.
+        {{'Read only pocket.'|_}}
         </div>
     </div>
   </div>
@@ -11,7 +11,7 @@
     <div class="large-6 columns">
       <div class="panel radius">
 		<div class="row collapse">
-	        <h5>{{pocket.type=='multisig'?'Fund':pocket.stealth?'Stealth':'Main'}} address</h5>
+	        <h5>{{pocket.type=='multisig'?('Fund address'|_):pocket.stealth?('Stealth address'|_):('Main address'|_)}}</h5>
 			<div class="small-1 columns text-center">
 				<identicon ng-hide="row.contact" icon-size="38" hash="pocket.mainHash"></identicon>
 			</div>
@@ -19,10 +19,10 @@
 	          <input type="text" class="prefix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
 	        </div>
 	        <div class="small-1 columns">
-	          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square icon-copy"></a>
+	          <a href="" tooltip-append-to-body="true" tooltip="{{'Copy to clipboard'|_}}" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square icon-copy"></a>
 	        </div>
 	        <div class="small-1 columns">
-	          <a class="button postfix square radius icon-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
+	          <a class="button postfix square radius icon-qrcode" tooltip-append-to-body="true" tooltip="{{'Show QR code'|_}}" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
 	        </div>
 		</div>
       </div>
@@ -34,10 +34,10 @@
 	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
 			<li ng-repeat="pocket in allPockets" ng-click="selectGridPocket(pocket)">
 				<div class="panel radius pocket-square">
-	           		<h5>{{pocket.name}} <small ng-show="pocket.type=='fund'">{{pocket.fund.m}} of {{pocket.fund.pubKeys.length}}</small></h5>
+	           		<h5>{{pocket.name}} <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small></h5>
         
 	           		<span ng-show="pocket.balance.current">{{pocket.balance.current | formatBtc}} <br><span class="fiat">{{pocket.balance.current | formatFiat}}</span></span>
-	           		<span ng-show="!pocket.balance.current">No coins</span>
+	           		<span ng-show="!pocket.balance.current">{{'No coins'|_}}</span>
 	           		<span ng-show="pocket.balance.unconfirmed">{{pocket.balance.unconfirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></span>
 	           	</div>
 	  		</li>
@@ -48,14 +48,14 @@
     <div class="small-12 columns">
 
         <div class="row collapse panel radius transactions">
-            <h5>Latest transactions</h5>
+            <h5>{{'Latest transactions'|_}}</h5>
             <div class="row collapse"  ng-repeat="row in historyRows track by $index">
              <div class="small-5 medium-4 large-7 columns">
                <div tooltip-append-to-body="true" class="ellipsis">
                 <i tooltip="{{row.address}}" ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
                 <identicon ng-show="row.contact" icon-size="24" hash="row.contact.data.hash"></identicon>
 				<identicon ng-hide="row.contact" icon-size="24" data="row.address"></identicon>
-				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
+				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> {{'stealth'|_}}</span>
                 <span ng-show="!row.label">
                 {{row.contact ? row.contact.data.name : row.address}}
                 </span>
@@ -69,7 +69,7 @@
                <span title="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
              </div>
              <div ng-show="!row.height" class="small-3 medium-2 columns">
-               none
+               {{'none'|_}}
              </div>
              <div class="small-3 large-1 columns">
                 

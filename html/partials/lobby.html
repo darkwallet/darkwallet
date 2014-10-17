@@ -2,7 +2,7 @@
     <div class="row">
       <!-- Channel list -->
       <div class="medium-2 columns panel">
-          <h4>Channels</h4>
+          <h4>{{'Channels'|_}}</h4>
           <div ng-show="lobbyChannels">
               <select class="select-list" size="10">
               <option ng-click="selectChannel(channel)" ng-selected="!selectedPeer && channel.channelHash == subscribed" ng-repeat="channel in lobbyChannels">{{channel.name}} {{channel.channelHash.slice(0,8)}}...</option>
@@ -10,43 +10,43 @@
           </div>
           <form ng-submit="joinChannel();">
             <label>
-              <input ng-model="pairCode" type="password" class="password" value="" placeholder="Enter channel name" />
+              <input ng-model="pairCode" type="password" class="password" value="" placeholder="{{'Enter channel name'|_}}" />
             </label>
             <button class="button small radius expand">
               Join
             </button>
           </form>
-          <h4 ng-show="peerRequests.length">Requests</h4>
+          <h4 ng-show="peerRequests.length">{{'Requests'|_}}</h4>
           <div ng-show="peerRequests.length">
               <select class="select-list" size="10">
-              <option ng-click="openRequest(request)" ng-selected="selectedRequest == request" ng-repeat="request in peerRequests">{{request.type}} from {{request.body.nick}}</option>
+              <option ng-click="openRequest(request)" ng-selected="selectedRequest == request" ng-repeat="request in peerRequests">{{'{0} from {1}'|_:request.type:request.body.nick}}</option>
               </select>
           </div>
       </div>
 
       <!-- Request window -->
       <div ng-show="selectedRequest && (selectedRequest.type == 'Pair')" class="medium-7 columns">
-          <h2>{{selectedRequest.type}} Request</h2>
+          <h2>{{selectedRequest.type}} {{'Request'|_}}</h2>
           <form>
           <div class="wrapper"><face title="{{selectedRequest.peer.name}}" hash="selectedRequest.peer.pubKeyHex" icon-size="32"></face> <input type="text" ng-model="selectedRequest.nick"></input></div>
           </form>
-          <div><h3>Identity:</h3> {{selectedRequest.body.pub.slice(0,32)}}...</div>
-          <div><h3>Address:</h3> {{selectedRequest.body.address.slice(0,32)}}...</div>
-          <button ng-click="acceptRequest()">Add to contacts</button>
-          <button ng-click="cancelRequest()">Cancel</button>
+          <div><h3>{{'Identity'|_}}:</h3> {{selectedRequest.body.pub.slice(0,32)}}...</div>
+          <div><h3>{{'Address'|_}}:</h3> {{selectedRequest.body.address.slice(0,32)}}...</div>
+          <button ng-click="acceptRequest()">{{'Add to contacts'|_}}</button>
+          <button ng-click="cancelRequest()">{{'Cancel'|_}}</button>
       </div>
       <div ng-show="selectedRequest && (selectedRequest.type == 'Beacon')" class="medium-7 columns">
-          <h2>Beacon!</h2>
+          <h2>{{'Beacon!'|_}}</h2>
           <form>
           <div class="wrapper"><face title="{{selectedRequest.peer.name}}" hash="selectedRequest.peer.pubKeyHex" icon-size="32"></face> {{selectedRequest.body.nick}}</div>
           </form>
-          <button ng-click="acceptBeacon()">Accept</button>
-          <button ng-click="cancelRequest()">Cancel</button>
+          <button ng-click="acceptBeacon()">{{'Accept'|_}}</button>
+          <button ng-click="cancelRequest()">{{'Cancel'|_}}</button>
       </div>
       <!-- Channel window -->
       <div ng-show="!selectedRequest" class="medium-7 columns">
         <div ng-show="!subscribed" class="panel">
-          Join a channel on the left to start!
+          {{'Join a channel on the left to start!'|_}}
         </div>
         <div ng-show="subscribed||selectedPeer">
           <form>
@@ -56,7 +56,7 @@
                 <input ng-model="shoutbox" type="text" value="" />
               </div>
               <div class="small-3 columns">
-                <button class="button postfix radius fa fa-comments" ng-click="sendText();">Shout!</button>
+                <button class="button postfix radius fa fa-comments" ng-click="sendText();">{{'Shout!'|_}}</button>
               </div>
               <!-- Show contact face for private channels -->
               <div class="row collapse">
@@ -73,25 +73,25 @@
       <!-- Peers area -->
       <div class="medium-3 columns" ng-show="!newContact">
           <div ng-show="subscribed">
-            <h5>Channel</h5>
+            <h5>{{'Channel'|_}}</h5>
             <span class="label">{{subscribed.slice(0, 8)}}</span>
-            <a ng-click="sendBeacons()" title="Send beacons to unmask yourself to contacts" class="fa fa-magnet"></a>
+            <a ng-click="sendBeacons()" title="{{'Send beacons to unmask yourself to contacts'|_}}" class="fa fa-magnet"></a>
           </div>
-          <h5>Your permanent identity</h5>
+          <h5>{{'Your permanent identity'|_}}</h5>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
-          <h5 title="Your temporary identity">Cloak 
-              <a class="fa fa-refresh" title="Change cloak" ng-click="newTempIdentity()"></a>
+          <h5 title="{{'Your temporary identity'|_}}">Cloak 
+              <a class="fa fa-refresh" title="{{'Change cloak'|_}}" ng-click="newTempIdentity()"></a>
 	  </h5>
           <div class="row">
             <div class="small-12 columns">
               <face title="{{comms.pubKeyHex}}" hash="comms.pubKeyHex" icon-size="32"></face> {{comms.name}}
             </div>
           </div>
-          <h5>Peers</h5>
+          <h5>{{'Peers'|_}}</h5>
           <div ng-show="peer.timestamp + fadeTimeout > lastTimestamp" ng-repeat="peer in peers track by $index">
             <span><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.nick||peer.name}}</span>
-            <a ng-show="peer.trusted" class="fa fa-link" ng-click="sendPairing(peer)" title="Send identity information for long term pairing"></a>
-            <a ng-show="peer.trusted" class="fa" ng-class="{'fa-comment-o': !peer.chatLog.dirty, 'fa-comment': peer.chatLog.dirty}" ng-click="openPrivate(peer)" title="Open a private chat with this peer"></a>
+            <a ng-show="peer.trusted" class="fa fa-link" ng-click="sendPairing(peer)" title="{{'Send identity information for long term pairing'|_}}"></a>
+            <a ng-show="peer.trusted" class="fa" ng-class="{'fa-comment-o': !peer.chatLog.dirty, 'fa-comment': peer.chatLog.dirty}" ng-click="openPrivate(peer)" title="{{'Open a private chat with this peer'|_}}"></a>
           </div>
       </div>
 
@@ -100,8 +100,8 @@
           <h2>{{newContact.name}}</h2>
           <div title="{{newContact.stealth}}">{{newContact.stealth.slice(0,8)}}...</div>
           <div class="wrapper"><face title="{{newContact.pubKeyHex}}" hash="newContact.pubKeyHex" icon-size="64"></face></div>
-          <button ng-click="addNewContact(newContact)">Add contact</button>
-          <button class="cancel" ng-click="newContact=false">Cancel</button>
+          <button ng-click="addNewContact(newContact)">{{'Add contact'|_}}</button>
+          <button class="cancel" ng-click="newContact=false">{{'Cancel'|_}}</button>
       </div>
     </div> <!-- row -->
   </div> <!-- container -->

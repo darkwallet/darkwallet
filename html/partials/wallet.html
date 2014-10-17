@@ -2,25 +2,25 @@
         <nav class="tab-bar">
 			<div class="pocketnav left-off-canvas-toggle hide-for-large-up">
 	            <section class="left" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
-	                <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> Pockets</span>
-	                <span ng-show="pocket.type==='multisig'" class="fa fa-list"> Multisig</span>
-	                <span ng-show="pocket.type==='readonly'" class="fa fa-list"> Watch-only</span>
+	                <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> {{'Pockets'|_}}</span>
+	                <span ng-show="pocket.type==='multisig'" class="fa fa-list"> {{'Multisig'|_}}</span>
+	                <span ng-show="pocket.type==='readonly'" class="fa fa-list"> {{'Watch-only'|_}}</span>
 	            </section>
 		    	<section class="left" >
-	                <span class="fa fa-list" ng-show="selectedPocket==='newMultisig'"> Multisig</span>
-	                <span class="fa fa-list" ng-show="selectedPocket==='newPocket'"> Pocket</span>
+	                <span class="fa fa-list" ng-show="selectedPocket==='newMultisig'"> {{'Multisig'|_}}</span>
+	                <span class="fa fa-list" ng-show="selectedPocket==='newPocket'"> {{'Pocket'|_}}</span>
 	            </section>
 				<div class="tri"></div>
 			</div>
 			<div ng-click="titleClick()" class="pocketnav">
 	            <section class="left" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
-	                <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> Pockets</span>
-	                <span ng-show="pocket.type==='multisig'" class="fa fa-list"> Multisig</span>
-	                <span ng-show="pocket.type==='readonly'" class="fa fa-list"> Watch-only</span>
+	                <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> {{'Pockets'|_}}</span>
+	                <span ng-show="pocket.type==='multisig'" class="fa fa-list"> {{'Multisig'|_}}</span>
+	                <span ng-show="pocket.type==='readonly'" class="fa fa-list"> {{'Watch-only'|_}}</span>
 	            </section>
 		    	<section class="left" >
-	                <span class="fa fa-list" ng-show="selectedPocket==='newMultisig'"> Multisig</span>
-	                <span class="fa fa-list" ng-show="selectedPocket==='newPocket'"> Pocket</span>
+	                <span class="fa fa-list" ng-show="selectedPocket==='newMultisig'"> {{'Multisig'|_}}</span>
+	                <span class="fa fa-list" ng-show="selectedPocket==='newPocket'"> {{'Pocket'|_}}</span>
 	            </section>
 				<div class="tri"></div>
 			</div>
@@ -36,13 +36,13 @@
 					{{pocket.balance.confirmed | formatFiat}}
 				</div>
 				<div class="lin" ng-show="pocket.incoming">
-					Receiving: {{pocket.incoming | formatBtc}}
+					{{'Receiving'|_}}: {{pocket.incoming | formatBtc}}
 				</div>
 				<div class="lin" ng-show="pocket.outgoing">
-					Sending: {{pocket.outgoing | formatBtc}}
+					{{'Sending'|_}}: {{pocket.outgoing | formatBtc}}
 				</div>
 				<div class="lin" ng-if="overviewPocket && overviewPocket.confirmed && overviewPocket.confirmed !== pocket.balance.confirmed">
-					<b>Including Multisig:</b> {{overviewPocket.confirmed | formatBtc}}
+					<b>{{'Including Multisig'|_}}:</b> {{overviewPocket.confirmed | formatBtc}}
 				</div>
 				<div class="lin" ng-if="overviewPocket && overviewPocket.confirmed && overviewPocket.confirmed !== pocket.balance.confirmed">
 					{{overviewPocket.confirmed | formatFiat}}
@@ -51,18 +51,18 @@
             <!-- New multisig header -->
             <section class="middle tab-bar-section" ng-if="selectedPocket==='newMultisig'">
 			    <h1 class="title lin">
-			        New Multisig Fund
+			        {{'New Multisig Fund'|_}}
 			    </h1>
             </section>
             <!-- New pocket header -->
             <section class="middle tab-bar-section" ng-if="selectedPocket==='newPocket'">
 			    <h1 class="title lin">
-			        New Pocket
+			        {{'New Pocket'|_}}
 			    </h1>
 				<div class="lin" ng-controller="PocketCreateCtrl">
 				       <form name="newPocketForm" ng-submit="createPocket()">
-					  <input type="text" auto-focus ng-model="newPocket.name" placeholder="Name your pocket..." />
-					  <input type="submit" class="button small expand radius" value="OK"/>
+					  <input type="text" auto-focus ng-model="newPocket.name" placeholder="{{'Name your pocket...'|_}}" />
+					  <input type="submit" class="button small expand radius" value="{{'Accept'|_}}"/>
 					</form>
 				</div>
 

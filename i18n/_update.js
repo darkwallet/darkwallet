@@ -8,14 +8,16 @@ recursive('html', function (err, files) {
   // Files is an array of filename
   files.forEach(function(file) {
     var data = fs.readFileSync(file, 'utf-8');
-    data = data.match(/\{\{'[^']*'\|_/g);
+    data = data.replace(/\\'/g, "@replace@");
+    data = data.match(/[\{\(]'[^']*'\|_/g);
     if (data) {
       arr = arr.concat(data);
     }
   });
   arr.sort();
   arr.forEach(function(str) {
-    str = str.slice(3,str.length-3);
+    str = str.slice(2,str.length-3);
+    str = str.replace("@replace@", "'");
     obj[str] = str;
   });
   console.log(beautify(JSON.stringify(obj)));

@@ -4,26 +4,26 @@
 		   <div class="panel">
 		      <div class="row collapse">
 		        <div class="medium-2 columns">
-		            <span class="prefix radius">Fund Address</span>
+		            <span class="prefix radius">{{'Fund Address'|_}}</span>
 		        </div>
 		        <div class="medium-6 columns">
 		            <input type="text" disabled="true" value="{{pocket.fund.multisig.address}}" />
 		        </div>
 		        <div class="medium-2 columns">
-		            <button ng-click="clipboard.copy(pocket.fund.multisig.address)" class="button postfix fa fa-clipboard">Copy</button>
+		            <button ng-click="clipboard.copy(pocket.fund.multisig.address)" class="button postfix fa fa-clipboard">{{'Copy'|_}}</button>
 		        </div>
 		        <div class="medium-2 columns">
 		            <button ng-click="modals.showBtcQr(pocket.fund.multisig.address)" class="button postfix radius fa fa-qrcode">QR</button>
 		        </div>
 		      </div>
-		      <div>{{pocket.fund.multisig.m}} of {{pocket.fund.multisig.pubKeys.length}} signatures are needed for spends</div>
+		      <div>{{'{0} of {1} signatures are needed for spends'|_:pocket.fund.multisig.m:pocket.fund.multisig.pubKeys.length}}</div>
 		    </div>
 		</div>
 	</div>
   <div class="row">
   <div class="columns large-6">
 	  <div class="panel radius">
-    <h5>Fund managers</h5>
+    <h5>{{'Fund managers'|_}}</h5>
     <div class="row collapse" ng-repeat="participant in pocket.fund.participants track by $index">
 		<div class="small-1 columns text-right">
 			<span class="label" ng-show="participant.type=='me'">me</span>
@@ -41,13 +41,13 @@
   </div>
   <div class="columns large-6">
 	<div class="panel radius">
-    <h5>Script</h5>
+    <h5>{{'Script'|_}}</h5>
     <div class="row collapse">
       <div class="large-4 columns">
-        <button ng-click="clipboard.copy(pocket.fund.multisig.script)" class="button nomarginbottom postfix fa fa-clipboard">Copy</button>
+        <button ng-click="clipboard.copy(pocket.fund.multisig.script)" class="button nomarginbottom postfix fa fa-clipboard">{{'Copy'|_}}</button>
       </div>
       <div class="large-4 columns">
-        <button ng-click="showFundScript=!showFundScript" class="button nomarginbottom postfix fa fa-eye">Show</button>
+        <button ng-click="showFundScript=!showFundScript" class="button nomarginbottom postfix fa fa-eye">{{'Show'|_}}</button>
       </div>
       <div class="medium-4 columns">
         <!-- Maybe too heavy -->
@@ -57,23 +57,23 @@
     <textarea class="script" ng-show="showFundScript">{{pocket.fund.multisig.script}}</textarea>
 </div>
 <div class="panel radius">
-    <h5>Tools</h5>
+    <h5>{{'Tools'|_}}</h5>
 	<div class="row" ng-show="!importingFundTransaction">
 		<div class="small-6 columns">
-    		<button class="button postfix nomarginbottom fa fa-cloud-download" ng-click="importingFundTransaction=true">Import Spend</button>
+    		<button class="button postfix nomarginbottom fa fa-cloud-download" ng-click="importingFundTransaction=true">{{'Import Spend'|_}}</button>
 		</div>
 		<div class="small-6 columns">
-    		<button class="button postfix nomarginbottom alert fa fa-trash-o" ng-click="deleteFund(pocket.fund)">Delete</button>
+    		<button class="button postfix nomarginbottom alert fa fa-trash-o" ng-click="deleteFund(pocket.fund)">{{'Delete'|_}}</button>
 		</div>
 	</div>
     <form name="fundTxForm" novalidate ng-submit="importFundTx(fundTxForm)" ng-show="importingFundTransaction">
-        <input required ng-model="fundTxForm.newTx" type="text" placeholder="Paste the transaction hex here"></input>
+        <input required ng-model="fundTxForm.newTx" type="text" placeholder="{{'Paste the transaction hex here'|_}}">
 		<div class="row collapse">
 			<div class="small-6 columns">
-        		<button class="button postfix fa fa-cloud-download" type="submit">Import</button>
+        		<button class="button postfix fa fa-cloud-download" type="submit">{{'Import'|_}}</button>
 			</div>
 			<div class="small-6 columns">
-        		<button class="alert button postfix fa fa-times" ng-click="importingFundTransaction=false">Cancel</button>
+        		<button class="alert button postfix fa fa-times" ng-click="importingFundTransaction=false">{{'Cancel'|_}}</button>
 			</div>
 		</div>
     </form>

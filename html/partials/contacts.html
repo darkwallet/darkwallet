@@ -1,15 +1,15 @@
 <div class="row">
   <div class="small-6 columns">
-    <h3>Contacts</h3>
+    <h3>{{'Contacts'|_}}</h3>
   </div>
   <div class="small-6 columns text-right">
-    <a id="newcontact" class="button tiny radius fa fa-plus topright" ng-show="!(contactFormShown===true)" ng-click="modals.focus('new-contact-name'); contactFormShown = true"> New contact</a>
+    <a id="newcontact" class="button tiny radius fa fa-plus topright" ng-show="!(contactFormShown===true)" ng-click="modals.focus('new-contact-name'); contactFormShown = true"> {{'New contact'|_}}</a>
   </div>
 </div>
 <div class="row" ng-show="!(contactFormShown === true) && allContacts.length>5">
   <div class="small-12 columns">
       <form name="searchForm">
-        <input id="contact-search" type="text" placeholder="Search..." class="radius" ng-change="filterContacts()" ng-model="contactSearch" auto-focus autofocus></input>
+        <input id="contact-search" type="text" placeholder="{{'Search...'|_}}" class="radius" ng-change="filterContacts()" ng-model="contactSearch" auto-focus autofocus></input>
       </form>
   </div>
 </div>
@@ -18,29 +18,29 @@
     <div class="small-12 columns">
 		<div class="row collapse hide-for-small">
 			<div class="medium-2 columns">
-				<label>Name</label>
+				<label>{{'Name'|_}}</label>
 			</div>
 			<div class="medium-10 columns">
-				<label>Address</label>
+				<label>{{'Address'|_}}</label>
 			</div>
 		</div>
       <div class="row collapse">
         <div class="medium-2 columns">
-			<input id="new-contact-name" ng-model="newContact.name" type="text" class="radius prefix" placeholder="Name for this contact..." required />
+			<input id="new-contact-name" ng-model="newContact.name" type="text" class="radius prefix" placeholder="{{'Name for this contact...'|_}}" required />
 		</div>
         <div class="medium-6 columns">
-          <input autofocus ng-model="newContact.address" class="prefix" type="text" placeholder="Bitcoin address..." required btc-address />
+          <input autofocus ng-model="newContact.address" class="prefix" type="text" placeholder="{{'Bitcoin address...'|_}}" required btc-address />
           <span class="input-status fa fa-check"></span>
         </div>
-        <div class="small-6 medium-2 columns"><a href="" ng-click="newContact.address = clipboard.paste()" class="button postfix fa fa-clipboard">Paste</a></div>
-        <div class="small-6 medium-2 columns"><a href="" ng-click="modals.scanQr(newContact)" class="button radius postfix fa fa-qrcode">Scan QR</a></div> 
+        <div class="small-6 medium-2 columns"><a href="" ng-click="newContact.address = clipboard.paste()" class="button postfix fa fa-clipboard">{{'Paste'|_}}</a></div>
+        <div class="small-6 medium-2 columns"><a href="" ng-click="modals.scanQr(newContact)" class="button radius postfix fa fa-qrcode">{{'Scan QR'|_}}</a></div> 
       </div>
     </div>
   </div>
   <div class="row text-right">
         <div class="small-12 columns">
-          <a href="" ng-click="modals.focus('contact-search'); contactFormShown = false" class="button alert small radius">Cancel</a>
-          <input ng-disabled="createContactForm.$invalid" type="submit" class="button small radius" value="Save" />
+          <a href="" ng-click="modals.focus('contact-search'); contactFormShown = false" class="button alert small radius">{{'Cancel'|_}}</a>
+          <input ng-disabled="createContactForm.$invalid" type="submit" class="button small radius" value="{{'Save'|_}}" />
         </div>
   </div>
 </form>

@@ -1,56 +1,56 @@
 <div ng-controller="FundCtrl">
         <div ng-repeat="task in pocket.tasks">
-    <h2>Pending Transaction</h2>
+    <h2>{{'Pending Transaction'|_}}</h2>
     <div class="row">
       <div class="large-6 columns">
-            <h3>Destinations</h3>
+            <h3>{{'Destinations'|_}}</h3>
             <div ng-repeat="out in task.tx.outs">
                <li>{{out.address.toString()}} <b>{{out.value | currencyPresenter}}</b></li>
             </div>
       </div>
-      <h3>Transaction:</h3>
+      <h3>{{'Transaction'|_}}:</h3>
       <div class="large-2 columns">
-        <button ng-click="clipboard.copy(task.task.tx)" class="button-sm postfix fa fa-clipboard">Copy</button>
+        <button ng-click="clipboard.copy(task.task.tx)" class="button-sm postfix fa fa-clipboard">{{'Copy'|_}}</button>
       </div>
       <div class="large-2 columns">
-        <button ng-click="showTx=!showTx" class="button-sm postfix fa fa-eye">Show</button>
+        <button ng-click="showTx=!showTx" class="button-sm postfix fa fa-eye">{{'Show'|_}}</button>
       </div>
       <div class="medium-2 columns">
         <!-- Maybe too heavy -->
         <button ng-click="modals.showQr(task.task.tx)" class="button postfix radius fa fa-qrcode">QR</button>
       </div>
-      <div ng-show="task.broadcasting">Broadcasting...</div>
-      <div ng-show="task.broadcasted">Broadcasted ({{task.radar}}%)</div>
+      <div ng-show="task.broadcasting">{{'Broadcasting...'|_}}</div>
+      <div ng-show="task.broadcasted">{{'Broadcasted'|_}} ({{task.radar}}%)</div>
     </div>
     <div ng-show="showTx"><code>{{task.task.tx}}</code></div>
     <div class="row">
       <div class="large-1 columns">
       </div>
       <div class="large-10 columns">
-            <p> <b>Signed: </b>
+            <p> <b>{{'Signed'|_}}: </b>
             <span ng-repeat="pending in task.task.pending" title="{{pending.output}}">
               [{{Object.keys(pending.signatures).length}}/{{pocket.fund.multisig.m}}]
               <div>{{pending.signatures}}</div>
             </span>
             </p>
             <!-- Sign -->
-            <button ng-show="task.canSign.length && !importingFundSig && !foreignFundSig" ng-click="signFundTx(task)" class="button-sm postfix fa large-6 fa-pencil" >Sign</button>
+            <button ng-show="task.canSign.length && !importingFundSig && !foreignFundSig" ng-click="signFundTx(task)" class="button-sm postfix fa large-6 fa-pencil" >{{'Sign'|_}}</button>
 
             <!-- Import sig -->
-            <button class="button-sm postfix fa large-6 fa-link" ng-show="!importingFundSig && !foreignFundSig" ng-click="importingFundSig=true">Import Signature</button>
+            <button class="button-sm postfix fa large-6 fa-link" ng-show="!importingFundSig && !foreignFundSig" ng-click="importingFundSig=true">{{'Import Signature'|_}}</button>
             <form name="fundImportSigForm" novalidate ng-submit="importFundSig(fundImportSigForm, task)" ng-show="importingFundSig">
-                <input required ng-model="fundImportSigForm.text" type="text" placeholder="Paste the signature here"></input>
-                <button class="button-sm postfix fa large-6 fa-check" type="submit">Import</button>
+                <input required ng-model="fundImportSigForm.text" type="text" placeholder="{{'Paste the signature here'|_}}"></input>
+                <button class="button-sm postfix fa large-6 fa-check" type="submit">{{'Import'|_}}</button>
             </form>
-            <button ng-show="importingFundSig" class="alert button-sm postfix large-6 fa fa-times" ng-click="importingFundSig=false">Cancel</button>
+            <button ng-show="importingFundSig" class="alert button-sm postfix large-6 fa fa-times" ng-click="importingFundSig=false">{{'Cancel'|_}}</button>
 
             <!-- Sign with foreign key -->
             <button class="button-sm postfix fa large-6 fa-key" ng-show="!importingFundSig && !foreignFundSig" ng-click="foreignFundSig=true">Sign with foreign key</button>
             <form name="fundForeignForm" novalidate ng-submit="signFundTxForeign(fundForeignForm.foreignKey, task)" ng-show="foreignFundSig">
-                <input required ng-model="fundForeignForm.foreignKey" type="text" placeholder="Paste the private key here"></input>
-                <button class="button-sm postfix fa large-6 fa-check" type="submit">Sign</button>
+                <input required ng-model="fundForeignForm.foreignKey" type="text" placeholder="{{'Paste the private key here'|_}}"></input>
+                <button class="button-sm postfix fa large-6 fa-check" type="submit">{{'Sign'|_}}</button>
             </form>
-            <button ng-show="foreignFundSig" class="alert button-sm postfix large-6 fa fa-times" ng-click="foreignFundSig=false">Cancel</button>
+            <button ng-show="foreignFundSig" class="alert button-sm postfix large-6 fa fa-times" ng-click="foreignFundSig=false">{{'Cancel'|_}}</button>
 
       </div>
       <div class="large-1 columns">

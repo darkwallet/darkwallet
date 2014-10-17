@@ -1,52 +1,52 @@
 <div class="row">
-  <div class="small-12 columns"><h3>Settings</h3></div>
+  <div class="small-12 columns"><h3>{{'Settings'|_}}</h3></div>
 </div>
 <div class="row">
       <div class="large-4 columns">
         <div class="panel setback seed">
-          <h5>Security</h5>
+          <h5>{{'Security'|_}}</h5>
           <div>
-            <label>Enter your current password</label>
+            <label>{{'Enter your current password'|_}}</label>
             <input type="password" class="password" ng-model="seedPassword">
             <input type="text" ng-model="yourSeedHex" ng-show="yourSeed && !seedError">
             <input type="text" ng-model="yourSeedWords" ng-show="yourSeed && !seedError">
           </div>
           <div ng-show="seedError">
-           Incorrect password
+           {{'Incorrect password'|_}}
           </div>
-          <button class="small" ng-click="showSeed();">Show seed</button>
-          <h5 ng-show="settings.advanced">Mixing</h5>
+          <button class="small" ng-click="showSeed();">{{'Show seed'|_}}</button>
+          <h5 ng-show="settings.advanced">{{'Mixing'|_}}</h5>
           <div ng-show="settings.advanced">
-             <input id="checkbox-mixer" title="If mixing is enabled when sending, will only send if successfull mixing, otherwise will just not send" ng-model="settings.hardMixing" ng-change="storeSettings()" type="checkbox"><label for="checkbox-mixer">Enforced mixing</label><br>
+             <input id="checkbox-mixer" title="{{'If mixing is enabled when sending, will only send if successfull mixing, otherwise will just not send'|_}}" ng-model="settings.hardMixing" ng-change="storeSettings()" type="checkbox"><label for="checkbox-mixer">{{'Enforced mixing'|_}}</label><br>
           </div>
         <form name="passwordForm" ng-submit="passwordChanged()" novalidate>
-          <h5>Change your password</h5>
-          <label>Enter your current password</label>
+          <h5>{{'Change your password'|_}}</h5>
+          <label>{{'Enter your current password'|_}}</label>
           <input type="password" class="password" required ng-model="oldPassword">
-          <div ng-show="incorrectPassword">Incorrect password</div>
-          <label>Enter your new password</label>
+          <div ng-show="incorrectPassword">{{'Incorrect password'|_}}</div>
+          <label>{{'Enter your new password'|_}}</label>
           <input type="password" class="password" required ng-model="newPassword">
-          <label>Repeat new password</label>
+          <label>{{'Repeat new password'|_}}</label>
           <input type="password" class="password" required ng-model="newPasswordRepeat">
-          <div ng-show="newPassword !== newPasswordRepeat">Password doesn't match</div>
-          <button type="submit" class="small radius expand">Change password</button>
+          <div ng-show="newPassword !== newPasswordRepeat">{{'Password doesn\'t match'|_}}</div>
+          <button type="submit" class="small radius expand">{{'Change password'|_}}</button>
         </form>
         </div>
       </div>
       <div class="large-5 columns">
         <div class="panel setback notifications">
-          <h5>Interface</h5>
-          <input id="checkbox-animations" ng-model="settings.animations.enabled" type="checkbox" ng-change="animationsChanged()"><label for="checkbox-animations">Enable animations</label><br>
-          <h5>Notifications</h5>
-          <input id="checkbox-outtx" ng-model="settings.notifications.send" type="checkbox"><label for="checkbox-outtx">For outgoing transactions</label><br>
-          <input id="checkbox-intx" ng-model="settings.notifications.receive" type="checkbox"><label for="checkbox-intx">For incoming transactions</label><br>
-          <input id="checkbox-multisig" ng-model="settings.notifications.multisig" type="checkbox"><label for="checkbox-multisig">For multisig spend requests</label><br>
-          <input id="checkbox-notify" ng-model="settings.notifications.popup" type="checkbox" ng-change="storeSettings()"><label for="checkbox-notify">Show chat notifications</label><br>
-          <h5>Language</h5>
+          <h5>{{'Interface'|_}}</h5>
+          <input id="checkbox-animations" ng-model="settings.animations.enabled" type="checkbox" ng-change="animationsChanged()"><label for="checkbox-animations">{{'Enable animations'|_}}</label><br>
+          <h5>{{'Notifications'|_}}</h5>
+          <input id="checkbox-outtx" ng-model="settings.notifications.send" type="checkbox"><label for="checkbox-outtx"> {{'For outgoing transactions'|_}}</label><br>
+          <input id="checkbox-intx" ng-model="settings.notifications.receive" type="checkbox"><label for="checkbox-intx">{{'For incoming transactions'|_}}</label><br>
+          <input id="checkbox-multisig" ng-model="settings.notifications.multisig" type="checkbox"><label for="checkbox-multisig">{{'For multisig spend requests'|_}}</label><br>
+          <input id="checkbox-notify" ng-model="settings.notifications.popup" type="checkbox" ng-change="storeSettings()"><label for="checkbox-notify">{{'Show chat notifications'|_}}</label><br>
+          <h5>{{'Language'|_}}</h5>
           <select id="select-language" ng-model="settings.language" ng-change="languageChanged()" ng-options="language.code as language.name for language in languages"></select>
         </div>
         <div ng-controller="ServersCtrl" class="panel setback net">
-          <h5>Servers</h5>
+          <h5>{{'Servers'|_}}</h5>
           <div ng-show="addServerError" class="row collapse">
             <div class="small-8 columns">
                 {{addServerError}}
@@ -54,12 +54,12 @@
           </div>
           <div class="row collapse">
             <div class="small-8 columns">
-              <input ng-hide="newServer.next" ng-model="newServer.address" type="text" ng-pattern="validIPPort" placeholder="Enter IP address (e.g: 80.34.132.23:2534)" />
-              <input ng-show="newServer.next" ng-model="newServer.name" type="text" placeholder="Enter name" autofocus />
+              <input ng-hide="newServer.next" ng-model="newServer.address" type="text" ng-pattern="validIPPort" placeholder="{{'Enter IP address (e.g: 80.34.132.23:2534)'|_}}" />
+              <input ng-show="newServer.next" ng-model="newServer.name" type="text" placeholder="{{'Enter name'|_}}" autofocus />
             </div>
             <div class="small-4 columns">
-              <a ng-hide="newServer.next" ng-disabled="!newServer.address" ng-click="newServer.address && (newServer.next = true)" class="fa button postfix radius fa-plus">Next</a>
-              <a ng-show="newServer.next" ng-click="addServer()" class="fa button postfix radius fa-plus">Add</a>
+              <a ng-hide="newServer.next" ng-disabled="!newServer.address" ng-click="newServer.address && (newServer.next = true)" class="fa button postfix radius fa-plus">{{'Next'|_}}</a>
+              <a ng-show="newServer.next" ng-click="addServer()" class="fa button postfix radius fa-plus">{{'Add'|_}}</a>
             </div>
           </div>
           <div class="row">
@@ -67,27 +67,27 @@
               <select class="select-list" size="50" ng-model="selectedServerIdx">
                    <option ng-repeat="server in servers track by $index" value="{{$index}}" ng-click="selectedServerIdx=$index" ng-selected="selectedServerIdx==$index">{{server.name}}</option>
               </select>
-              <a ng-click="connectServer()" class="button small radius expand">Connect to selected server</a>
-              <h6>{{connectionStatus}} to {{selectedServer.name}} @ {{selectedServer.address}}</h6>
+              <a ng-click="connectServer()" class="button small radius expand">{{'Connect to selected server'|_}}</a>
+              <h6>{{'{0} to {1} @ {2}'|_:connectionStatus:selectedServer.name:selectedServer.address}}</h6>
               <div ng-show="connectionStatus == 'Connected'">
-                <div>gateway: {{servicesStatus.gateway}}</div>
+                <div>{{'gateway'|_}}: {{servicesStatus.gateway}}</div>
                 <div>obelisk: {{servicesStatus.obelisk}}</div>
                 <textarea readonly>Welcome to the Unsystem server!!</textarea>
-                <a class="button tiny radius expand">Donate to this server</a>
+                <a class="button tiny radius expand">{{'Donate to this server'|_}}</a>
               </div>
             </div>
           </div>
         </div>
         <div class="panel setback notifications">
-          <h5>Identity</h5>
-          <a class="button fa fa-flask postfix" ng-click="identitySettings=!identitySettings">Settings</a>
+          <h5>{{'Identity'|_}}</h5>
+          <a class="button fa fa-flask postfix" ng-click="identitySettings=!identitySettings">{{'Settings'|_}}</a>
           <div class="row" ng-show="identitySettings">
               <form name="identityNameForm" ng-submit="setIdentityName(identityNameForm.name)">
                   <div class="columns small-6">
-                      <input type="text" placeholder="New name..." ng-model="identityNameForm.name" value="{{currentIdentity}}"></input>
+                      <input type="text" placeholder="{{'New name...'|_}}" ng-model="identityNameForm.name" value="{{currentIdentity}}">
                   </div>
                   <div class="columns small-6">
-                      <button type="submit">Change name</button>
+                      <button type="submit">{{'Change name'|_}}</button>
                   </div>
               </form>
           </div>
@@ -96,18 +96,18 @@
       </div>
       <div class="large-3 columns">
         <div class="panel setback coins">
-          <h5>Base unit</h5>
+          <h5>{{'Base unit'|_}}</h5>
             <input type="radio" name="baseunit" value="BTC" id="btc-radio" ng-change="currencyChanged()" ng-model="selectedCurrency"><label for="btc-radio">BTC</label>
             <input type="radio" name="baseunit" value="mBTC" id="mbtc-radio" ng-change="currencyChanged()" ng-model="selectedCurrency"><label for="mbtc-radio">mBTC</label>
             <input type="radio" name="baseunit" value="bits" id="bits-radio" ng-change="currencyChanged()" ng-model="selectedCurrency"><label for="bits-radio">bits</label>
-          <h5>Default fee</h5>
+          <h5>{{'Default fee'|_}}</h5>
           <input ng-model="defaultFee" ng-change="defaultFeeChanged()" type="text" />
         </div>
         <div class="panel setback fiat-background">
-          <h5>Local currency</h5>
+          <h5>{{'Local currency'|_}}</h5>
           <select ng-model="selectedFiat" ng-options="key as value.name for (key , value) in fiatCurrencies" ng-change="fiatCurrencyChanged()">
           </select>
         </div>
-        <a class="button fa fa-flask postfix" href="#tools">Tools</a>
+        <a class="button fa fa-flask postfix" href="#tools">{{'Tools'|_}}</a>
       </div>
 </div>
