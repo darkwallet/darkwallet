@@ -382,7 +382,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
           row.partial = this.getRowImpact(row);
 
-          row.current = prevRow.current-value;
+          row.current = prevRow.current;
 
           if (prevRow.height || prevRow.inMine) {
               row.confirmed = prevRow.confirmed-value;
@@ -390,6 +390,11 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
               if (!prevRow.height) {
                  // outgoing
                  row.unconfirmed -= value;
+                 if (value < 0) {
+                     row.current -= value;
+                 }
+              } else {
+                 row.current -= value;
               }
           } else {
               row.confirmed = prevRow.confirmed;
