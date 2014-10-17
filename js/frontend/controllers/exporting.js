@@ -7,7 +7,12 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   $scope.exportKeys = function() {
       var identity = DarkWallet.getIdentity();
-      var allAddresses = identity.wallet.getPocketAddresses('all');
+      var allAddresses
+      if ($scope.tools.exportAddress) {
+          allAddresses = [$scope.tools.exportAddress];
+      } else {
+          allAddresses = identity.wallet.getPocketAddresses('all');
+      }
 
       modals.password('Unlock password', function(password) {
           try {
@@ -16,7 +21,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
                   var address = allAddresses[i];
                   var walletAddress = identity.wallet.getWalletAddress(address);
                   identity.wallet.getPrivateKey(walletAddress.index, password, function(privKey) {
-                      output += address + ',' + privKey + '\n';
+                      output += address + ',' + privKey.toWif() + '\n';
                   } );
               }
               $scope.tools.output = output;
