@@ -112,6 +112,15 @@ CSS Hacking:
 To modify the CSS we use sass, so you need to mofify the sass files, then run
 the tasks below to generate the css the app needs.
 
+### Setup your environment:
+
+```sh
+$ gem install foundation
+$ foundation update
+```
+
+then you can do 'grunt build' or other tasks
+
 
 ### Grunt tasks
 

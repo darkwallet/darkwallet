@@ -101,7 +101,6 @@ Wallet.prototype.getBalance = function(pocketId, type) {
     var confirmed = 0;
     var unconfirmed = 0;
     var current = 0;
-    var hot = 0;
 
     var allAddresses = this.getPocketAddresses(pocketId, type);
 
@@ -116,12 +115,10 @@ Wallet.prototype.getBalance = function(pocketId, type) {
             } else if (out.spend) {
                 // spent so don't count it
             } else if (!out.height) {
-                // add to balance
-                if (out.change) { // hot change not allowed atm
-                    confirmed += out.value;
-                    hot += out.value;
+                // add current balance, but not to confirmed
+                if (this.identity.tx.inputsMine(out.receive.split(":")[0])) {
+                    current += out.value;
                 }
-                current += out.value;
                 // hot change also gets added to cancel unconfirmed from the spend
                 unconfirmed += out.value;
             }
@@ -478,10 +475,10 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
         walletAddress.nOutputs += 1;
     }
     // Set as change
-    if (!height && output.change === undefined) {
+    /*if (!height && output.change === undefined) {
         // no 0 confirm spends for now
-        // output.change = this.identity.tx.inputsMine(txHash, tx);
-    }
+        output.change = this.identity.tx.inputsMine(txHash, tx);
+    }*/
     // If confirmed or inputs are mine and not spent add balance
     if ((output.change || height) && !output.height && !spend) {
         // Add if we didn't add it yet

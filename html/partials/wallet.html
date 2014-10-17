@@ -29,11 +29,11 @@
 			    <h1 class="title lin">
 			        {{pocket.name}}
 			    </h1>
-				<div class="lin" tooltip="Current: {{pocket.balance.current | formatBtc}}">
-					{{pocket.balance.confirmed | formatBtc}}
+				<div class="lin" tooltip="Confirmed: {{pocket.balance.confirmed | formatBtc}}">
+					{{pocket.balance.current | formatBtc}}
 				</div>
 				<div class="lin">
-					{{pocket.balance.confirmed | formatFiat}}
+					{{pocket.balance.current | formatFiat}}
 				</div>
 				<div class="lin" ng-show="pocket.incoming">
 					Receiving: {{pocket.incoming | formatBtc}}
@@ -41,11 +41,11 @@
 				<div class="lin" ng-show="pocket.outgoing">
 					Sending: {{pocket.outgoing | formatBtc}}
 				</div>
-				<div class="lin" ng-if="overviewPocket && overviewPocket.confirmed && overviewPocket.confirmed !== pocket.balance.confirmed">
-					<b>Including Multisig:</b> {{overviewPocket.confirmed | formatBtc}}
+				<div class="lin" ng-if="overviewPocket && overviewPocket.current && overviewPocket.current !== pocket.balance.current">
+					<b>Including Multisig:</b> {{overviewPocket.current | formatBtc}}
 				</div>
-				<div class="lin" ng-if="overviewPocket && overviewPocket.confirmed && overviewPocket.confirmed !== pocket.balance.confirmed">
-					{{overviewPocket.confirmed | formatFiat}}
+				<div class="lin" ng-if="overviewPocket && overviewPocket.current && overviewPocket.current !== pocket.balance.current">
+					{{overviewPocket.current | formatFiat}}
 				</div>
             </section>
             <!-- New multisig header -->
