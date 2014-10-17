@@ -287,6 +287,11 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       var totalAmount = spend.amount;
       var title = sendForm.title;
 
+      if (sendForm.sending) {
+          console.log("already sending");
+          return;
+      }
+
       if (!recipients.length) {
           notify.note('You need to fill in at least one recipient');
           return;
