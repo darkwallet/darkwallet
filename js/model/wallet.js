@@ -151,6 +151,17 @@ Wallet.prototype.loadPubKeys = function() {
             delete self.pubKeys[index];
             return;
         }
+        // Reindex // delete badly indexed
+        if (walletAddress.type === 'readonly' && walletAddress.index[0] === index) {
+            delete self.pubKeys[index];
+            if (self.pubKeys[walletAddress.index.slice(0)]) {
+                // if it exists this is a duplicate, so just forget it
+                return;
+            } else {
+                // otherwise relink it
+                self.pubKeys[walletAddress.index.slice(0)] = walletAddress;
+            }
+        }
         // Add all to the wallet
         self.wallet.addresses.push(walletAddress.address);
         self.pockets.addToPocket(walletAddress);
