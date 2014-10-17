@@ -64,7 +64,7 @@ require(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
               var myKeyHash2 = Bitcoin.crypto.hash160(myKeyBytes2);
               var myAddress2 = new Bitcoin.Address(myKeyHash2, versions.address);
               if ((myAddress2.toString() != myAddress.toString()) && (address == myAddress2.toString())) {
-                  matches.push({address: address, ephemKey: ephemKey, pocketIndex: pocketIndex, pubKey: myKeyBytes, quirk: true});
+                  matches.push({address: address, ephemKey: ephemKey, pocketIndex: pocketIndex, pubKey: myKeyBytes2, quirk: true});
               }
           }
       });
