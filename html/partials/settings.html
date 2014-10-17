@@ -17,10 +17,6 @@
             <button class="small radius" ng-click="showSeed();">Show seed</button>
             <button class="small alert radius" ng-click="seedTool=false;">Cancel</button>
           </div>
-          <h5 ng-show="settings.advanced">Mixing</h5>
-          <div ng-show="settings.advanced">
-             <input id="checkbox-mixer" title="If mixing is enabled when sending, will only send if successfull mixing, otherwise will just not send" ng-model="settings.hardMixing" ng-change="storeSettings()" type="checkbox"><label for="checkbox-mixer">Enforced mixing</label><br>
-          </div>
         <button class="expand" ng-show="!passTool&&!seedTool" ng-click="incorrectPassword=false;passTool=true">Change password</button>
         <form ng-show="passTool" name="passwordForm" ng-submit="passwordChanged()" novalidate>
           <h5>Change your password</h5>
@@ -35,6 +31,11 @@
           <button type="submit" class="small radius">Change password</button>
           <a class="small radius alert button" ng-click="passTool=false;">Cancel</a>
         </form>
+          <h5 ng-show="settings.advanced">Mixing</h5>
+          <div ng-show="settings.advanced">
+             <input id="checkbox-mixer" title="If mixing is enabled when sending, will only send if successfull mixing, otherwise will just not send" ng-model="settings.hardMixing" ng-change="storeSettings()" type="checkbox"><label for="checkbox-mixer">Enforced mixing</label><br>
+          </div>
+
         </div>
       </div>
       <div class="large-5 columns">
