@@ -402,7 +402,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 console.log("no fallback for this task!!", task);
                 return;
             }
-            var tx = new Bitcoin.Transaction(task.fallback);
+            var tx = Bitcoin.Transaction.fromHex(task.fallback);
             task.state = 'finished';
             task.progress = 100;
 
