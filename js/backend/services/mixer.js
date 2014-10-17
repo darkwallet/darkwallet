@@ -125,6 +125,11 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
               // Otherwise resend
               this.postRetry(msg);
               Port.post('gui', {type: 'mixer', state: 'Announcing'});
+          } else if (coinJoin.state !== 'finished' && ((Date.now()/1000)-coinJoin.task.ping > (timeout/10))) {
+              coinJoin.cancel();
+              // Otherwise resend
+              this.postRetry(msg);
+              Port.post('gui', {type: 'mixer', state: 'Announcing'});
           }
       }
   };
@@ -173,6 +178,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         }
         if (!task.start) {
            task.start = Date.now()/1000;
+           task.ping = task.start;
         }
         var amount = (task.change && (Math.random() < 0.5)) ? task.change : task.total;
         this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', myTx, amount, task.fee);
@@ -396,6 +402,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
     if (msg.sender !== this.channel.fingerprint) {
       var coinJoin = this.getOngoing(msg);
       if (coinJoin) {
+          coinJoin.task.ping = Date.now()/1000;
           var prevState = coinJoin.state;
           console.log("[mixer] CoinJoin", msg);
 
