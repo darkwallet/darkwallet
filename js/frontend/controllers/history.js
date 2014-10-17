@@ -139,6 +139,7 @@ function (controllers, DarkWallet, Port) {
    * Select fund as current pocket
    */
   $scope.selectFund = function(fund, rowIndex) {
+      $scope.overviewPocket = false;
       $tabs.open('multisig', rowIndex);
   };
 
