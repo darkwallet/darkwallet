@@ -117,7 +117,7 @@ Wallet.prototype.getBalance = function(pocketId, type) {
                 // spent so don't count it
             } else if (!out.height) {
                 // add current balance, but not to confirmed
-                if (this.identity.tx.inputsMine(out.receive.split(":")[0])) {
+                if (this.identity.tx.inputsMine(out.receive.split(":")[0], null, this)) {
                     current += out.value;
                 }
                 // hot change also gets added to cancel unconfirmed from the spend
