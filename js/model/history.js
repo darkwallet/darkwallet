@@ -171,10 +171,14 @@ History.prototype.getTransferLabel = function(pocketImpact) {
  * @private
  */
 History.prototype.fillInput = function(transaction, data) {
-    var index = data[0],
+    var address,
+        index = data[0],
         newRow = data[1],
         txObj = Bitcoin.Transaction.fromHex(transaction);
-    var address = Bitcoin.Address.fromOutputScript(txObj.outs[index].script, Bitcoin.networks[this.identity.wallet.network]);
+    try {
+        address = Bitcoin.Address.fromOutputScript(txObj.outs[index].script, Bitcoin.networks[this.identity.wallet.network]);
+    } catch(e) {
+    }
     if (address) {
         newRow.address = address.toString();
         this.update();

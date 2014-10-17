@@ -324,6 +324,11 @@ Transaction.prototype.process = function(serializedTx, height) {
 
     // Now parse inputs and outputs
     tx.outs.forEach(function(txOut, i){
+      var outType = Bitcoin.scripts.classifyOutput(txOut.script, Bitcoin.networks[wallet.versions.network]);
+      // don't process output if not of the right type or has no value
+      if (!outType || outType === 'nulldata' || !txOut.value) {
+          return;
+      }
       var address = Bitcoin.Address.fromOutputScript(txOut.script, Bitcoin.networks[wallet.versions.network]).toString();
       var outputAddress = wallet.getWalletAddress(address);
       // already exists
