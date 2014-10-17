@@ -12,15 +12,6 @@
           <div ng-controller="ExportingCtrl">
               <div ng-include="'tools/exporting.html'"></div>
           </div>
-        </div>
-        <div class="panel setback seed">
-          <h4>Browsing</h4>
-          <a class="button fa fa-sitemap postfix" href="#browser">Browser</a>
-          <h4>Developer mode</h4>
-          <input id="checkbox-devmode" ng-model="settings.advanced" ng-change="setAdvanced()" type="checkbox"><label for="checkbox-devmode">Enable developer mode</label><br>
-          <input ng-show="settings.scanPocketMaster" id="checkbox-scanmaster" ng-model="settings.scanPocketMaster" type="checkbox"><label ng-show="settings.scanPocketMaster" for="checkbox-scanmaster">Disable scanning for pocket master address</label><br>
-        </div>
-        <div class="panel setback seed">
           <div ng-include="'tools/scanning.html'"></div>
         </div>
       </div>
@@ -40,22 +31,23 @@
            </div>
            <div ng-show="!tools.output"><code>Store size: {{storeSize}} kB total: {{totalStoreSize}} kB</code></div>
         </div>
-        <div ng-controller="NotificationsCtrl" class="panel setback net popupcontainer">
-          <h5>Notifications</h5>
-              <div class="panel" ng-repeat="task in tasks" ng-include="'notifications/'+task.section+'.html'">
-              </div>
+        <div class="panel setback seed">
+          <h4>Advanced settings</h4>
+          <input id="checkbox-devmode" ng-model="settings.advanced" ng-change="setAdvanced()" type="checkbox"><label for="checkbox-devmode">Enable developer mode</label><br>
+          <input ng-show="settings.scanPocketMaster" id="checkbox-scanmaster" ng-model="settings.scanPocketMaster" type="checkbox"><label ng-show="settings.scanPocketMaster" for="checkbox-scanmaster">Disable scanning for pocket master address</label><br>
         </div>
       </div>
       <div class="large-3 columns">
         <div class="panel setback coins">
           <h4>Development</h4>
+          <h5>Browsing</h5>
+          <a class="button fa fa-sitemap postfix" href="#browser">Browser</a>
           <h5>Stealth</h5>
         <div ng-controller="ReceiveStealthCtrl">
-          <a class="button fa fa-fighter-jet postfix" ng-click="receiveStealth();">Receive Stealth</a>
+          <a class="button fa fa-fighter-jet postfix" ng-click="modals.open('confirm', {message: 'Scan complete stealth history', detail: 'This can take a long time, are you sure?'}, receiveStealth);">Receive Stealth</a>
         </div>
           <h5>Storage</h5>
-          <a class="button fa fa-eraser postfix" ng-click="clearTasks();">Clear Tasks</a>
-          <a class="button fa fa-eraser postfix" ng-click="newModal('ask-password')">Open modal</a>
+          <a class="button fa fa-eraser postfix" ng-click="modals.open('confirm', {message: 'Clear notifications', detail: 'This will clear all pending notifications, are you sure?'}, clearTasks);">Clear Notifications</a>
           <a class="button fa fa-trash-o postfix alert" ng-click="clearStorage();">Clear Storage</a>
 
       </div>
