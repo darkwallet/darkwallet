@@ -139,6 +139,7 @@ function (controllers, DarkWallet, Port) {
    * Select fund as current pocket
    */
   $scope.selectFund = function(fund, rowIndex) {
+      $scope.overviewPocket = false;
       $tabs.open('multisig', rowIndex);
   };
 
@@ -153,12 +154,11 @@ function (controllers, DarkWallet, Port) {
   /**
    * Select an hd pocket
    */
-  $scope.selectPocket = function(pocketName, rowIndex, form) {
+  $scope.selectPocket = function(pocketName, rowIndex) {
       $scope.overviewPocket = false;
       if (pocketName === undefined) {
           $tabs.open();
       } else {
-          $scope.forms.pocketLabelForm = form;
           $tabs.open(undefined, rowIndex);
       }
   };
