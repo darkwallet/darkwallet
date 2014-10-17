@@ -205,8 +205,8 @@ Transaction.prototype.signMyInputs = function(inputs, newTx, privKeys) {
  * @param {String} txHash Transaction Hash
  */
 // was txInputsMine
-Transaction.prototype.inputsMine = function(txHash, txObj) {
-    var wallet = this.identity.wallet;
+Transaction.prototype.inputsMine = function(txHash, txObj, wallet) {
+    wallet = wallet || this.identity.wallet;
     var txdb = this.identity.txdb;
     var txHex = txdb.getBody(txHash);
     // if we don't have the transaction the inputs can't be ours
