@@ -6,7 +6,7 @@
       	<li ng-class="{active: pocket.isAll}" ng-click="selectPocket()"><a>All</a></li>
       	<li><label>my pockets <a class="cornerbutton right" ng-class="{active: selectedPocket==='newPocket'}" ng-click="newPocket()"> + </a></label></li>
       	<li ng-show="hdPocket" ng-class="{active: 'hd:'+$index===pocket.type+':'+pocket.lastIndex}" ng-repeat="hdPocket in hdPockets track by $index">
-        <a href="" ng-click="selectPocket(hdPocket.name, $index, form)" editable-text="forms.pocketName" e-form="form" blur="submit" onaftersave="finalizeRenamePocket(pocket, forms.pocketName)" buttons="no">{{hdPocket.name}}</a>
+        <a href="" ng-click="selectPocket(hdPocket.name, $index)">{{hdPocket.name}}</a>
       </li>
       <li class="divider"></li>
       <li><label>multisig funds <a class="cornerbutton right" ng-class="{active: selectedPocket==='newMultisig'}" ng-click="newMultiSig()"> + </a></label></li>
