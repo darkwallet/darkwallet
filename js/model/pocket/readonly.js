@@ -53,6 +53,8 @@ ReadOnlyPocket.prototype.createAddress = function(data) {
 
         // Add to Wallet
         this.getMyWallet().addToWallet(walletAddress);
+    } else if (walletAddress.type === 'readonly') {
+        this.addToPocket(walletAddress);
     }
     return walletAddress;
 };

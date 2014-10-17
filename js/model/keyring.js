@@ -164,7 +164,8 @@ IdentityKeyRing.prototype.load = function(name, callback) {
         var finishLoading = function() {
             try {
                 self.identities[name] = new Identity(new Store(store, self));
-            } catch (e) {
+            } catch(e) {
+                // show the inner exception
                 console.log(e.stack);
                 throw Error("Critical Error: Loading Identity")
             }
