@@ -18,7 +18,7 @@ function Identity(store, seed, password) {
         enabled: true
       },
       notifications: {
-        popup: true,
+        popup: false,
         send: true,
         receive: true,
         multisig: true
@@ -27,7 +27,7 @@ function Identity(store, seed, password) {
     // Temporary upgrade store to adapt wallets, we will
     // remove this for release and add a proper mechanism.
     if (!this.settings.hasOwnProperty('notifications')) {
-        this.settings.notifications = { popup: true };
+        this.settings.notifications = { popup: false };
     }
     if (!this.settings.hasOwnProperty('animations')) {
         this.settings.animations = { enabled: true };

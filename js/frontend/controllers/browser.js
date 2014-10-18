@@ -96,8 +96,11 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
   $scope.searchTransaction = function(txHash) {
       var client = DarkWallet.getClient();
       $scope.fetching = true;
-      if (client) {
-          client.fetch_transaction(txHash||$scope.txHash, onFetchTransaction);
+      var tx = DarkWallet.getIdentity().txdb.getBody(txHash);
+      if (tx) {
+          onFetchTransaction(false, tx);
+      } else if (client) {
+          client.fetch_transaction(txHash, onFetchTransaction);
       }
   }
 

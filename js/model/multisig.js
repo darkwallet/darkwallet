@@ -53,11 +53,12 @@ Multisig.prototype.addFund = function(fund) {
         throw Error('fund has no name!');
     }
 
+    // Set the seq for the address on the fund and store
+    this.funds.push(fund);
+
     // Add a walletAddres to the wallet so we can keep track of the fund address
     var walletAddress = this.initWalletAddress(fund)
 
-    // Set the seq for the address on the fund and store
-    this.funds.push(fund);
     this.store.save();
     return walletAddress;
 };

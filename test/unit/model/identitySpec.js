@@ -45,7 +45,7 @@ define(['model/identity'], function(Identity) {
           enabled: true
         },
         notifications: {
-          popup: true,
+          popup: false,
           send: true,
           receive: true,
           multisig: true
