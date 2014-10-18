@@ -62,8 +62,19 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
       // Now re-insert (possibly) stealth information
       stealth.forEach(function(nonces) {
-          var index = newTx.outs.indexOf(nonces[1]);
-          newTx.outs.splice(index, 0, nonces[0]);
+          var origOut = nonces[1];
+          var found = newTx.outs.filter(function(newOut) {
+             return (origOut.script.toHex() === newOut.script.toHex()) && (origOut.value === newOut.value);
+          });
+          if (found.length === 1) {
+              var index = newTx.outs.indexOf(found[0]);
+              // add the output back
+              newTx.addOutput(nonces[0].script, nonces[0].value);
+              // now set it in place
+              newTx.outs.splice(index, 0, newTx.outs.pop());
+          } else {
+              throw Error("Cant add output");
+          }
       });
 
       return newTx;
@@ -291,14 +302,14 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       for(var i=0; i<origTx.outs.length; i++) {
           var origOut = origTx.outs[i];
           var found = newTx.outs.filter(function(newOut) {
-             return (origOut.script.toBuffer().toString('hex') == newOut.script.toBuffer().toString('hex')) && (origOut.value == newOut.value);
+             return (origOut.script.toHex() === newOut.script.toHex()) && (origOut.value === newOut.value);
           });
           if (found.length != 1) return false;
           // Check stealth is ordered
           var isStealth = this.isStealth(origOut) && origTx.outs.length > i;
           if (isStealth) {
               var j = newTx.outs.indexOf(found[0]);
-              if (!origTx.outs[i+1] || !newTx.outs[j+1] || origTx.outs[i+1].script.toBuffer().toString('hex') != newTx.outs[j+1].script.toBuffer().toString('hex')) {
+              if (!origTx.outs[i+1] || !newTx.outs[j+1] || origTx.outs[i+1].script.toHex() != newTx.outs[j+1].script.toHex()) {
                   console.log("unordered stealth");
                   return false;
               }
