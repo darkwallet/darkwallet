@@ -58,10 +58,10 @@ HdPocket.prototype.destroy = function() {
 
     // Now do specific hd pocket cleaning
     var pocketId = this.getPocketId();
-    var wallet = this.getMyWallet();
-    wallet.pockets.hdPockets[pocketId] = null;
-    while(!wallet.pockets.hdPockets[wallet.pockets.hdPockets.length-1]) {
-        wallet.pockets.hdPockets.pop();
+    var pockets = this.getMyWallet().pockets.hdPockets;
+    pockets[pocketId] = null;
+    while(pockets.length>0 && !pockets[pockets.length-1]) {
+        pockets.pop();
     }
     return destroyed;
 };
