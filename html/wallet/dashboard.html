@@ -62,7 +62,7 @@
                 <span tooltip="{{row.address}}" tooltip-append-to-body="true" ng-show="row.label">
                 {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
                 </span>
-                
+		<span class="label radius address" ng-repeat="outAddress in row.outAddresses" ng-show="[undefined, 'change', 'unused'].indexOf(outAddress.label)==-1&&outAddress.type!='multisig'">{{outAddress.label}}</span>
                </div>
              </div>
              <div ng-show="row.height" class="small-3 medium-2 columns ellipsis">
@@ -76,7 +76,7 @@
              {{row.partial | amountFilter}}
              </div>
              <div class="hide-for-small medium-3 large-2 columns text-right">
-              {{row.current | asBtc}} <!--<span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span>-->
+              {{row.current | asBtc}}
              </div>
             </div>
   

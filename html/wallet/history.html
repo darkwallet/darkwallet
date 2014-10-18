@@ -95,6 +95,7 @@
                 <span tooltip="{{row.address}}" tooltip-append-to-body="true" ng-show="row.label">
                 {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
                 </span>
+		<span class="label radius address" ng-repeat="outAddress in row.outAddresses" ng-show="[undefined, 'change', 'unused'].indexOf(outAddress.label)==-1&&outAddress.type!='multisig'">{{outAddress.label}}</span>
                 </span>
                
              </div>
