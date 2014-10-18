@@ -37,14 +37,14 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
    * Happens on the first fullfill by the initiator, and first sign by the guest.
    */
   CoinJoin.prototype.randomize = function(tx) {
+      var self = this;
       tx = tx.clone();
       var newTx = new Bitcoin.Transaction();
       var stealth = [];
 
       // Add non stealth outputs, and keep a matrix of where to put them after
       tx.outs.forEach(function(anOut, idx) {
-          // Value must be 0, size 38, first byte OP_RETURN and there must be an output after this one
-          if (anOut.value == 0 && anOut.script.buffer.length == 38 && anOut.script.buffer[0] == Bitcoin.Opmap.map.OP_RETURN && tx.outs.length > idx) {
+          if (self.isStealth(anOut) && tx.outs.length > idx) {
               // Save an array with the nonce output and then the related output
               stealth.push([anOut, tx.outs[idx+1]]);
           } else {
@@ -101,6 +101,12 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
       // Randomize inputs and outputs
       remoteTx = this.randomize(remoteTx);
+
+      // Check the original inputs and outputs are there
+      if (!this.checkMyInputsOutputs(this.myTx, remoteTx)) {
+          this.cancel();
+          return;
+      }
 
       // Save tx
       this.tx = remoteTx;
@@ -258,6 +264,11 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   /*
    * Helper functions
    */
+  CoinJoin.prototype.isStealth = function(anOut) {
+      // Value must be 0, size 38, first byte OP_RETURN and there must be an output after this one
+      return (anOut.value == 0 && anOut.script.toBuffer().length >= 38 && anOut.script.toBuffer()[0] == Bitcoin.opcodes.OP_RETURN);
+  };
+
   CoinJoin.prototype.checkInputsOutputs = function(origTx, newTx) {
       var isValid = true;
       if (origTx.ins.length != newTx.ins.length) return false;
@@ -280,9 +291,18 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       for(var i=0; i<origTx.outs.length; i++) {
           var origOut = origTx.outs[i];
           var found = newTx.outs.filter(function(newOut) {
-             return (origOut.script.toBuffer().toString() == newOut.script.toBuffer().toString()) && (origOut.value == newOut.value);
+             return (origOut.script.toBuffer().toString('hex') == newOut.script.toBuffer().toString('hex')) && (origOut.value == newOut.value);
           });
           if (found.length != 1) return false;
+          // Check stealth is ordered
+          var isStealth = this.isStealth(origOut) && origTx.outs.length > i;
+          if (isStealth) {
+              var j = newTx.outs.indexOf(found[0]);
+              if (!origTx.outs[i+1] || !newTx.outs[j+1] || origTx.outs[i+1].script.toBuffer().toString('hex') != newTx.outs[j+1].script.toBuffer().toString('hex')) {
+                  console.log("unordered stealth");
+                  return false;
+              }
+          }
       }
       return true;
   };
