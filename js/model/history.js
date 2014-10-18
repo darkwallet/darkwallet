@@ -57,7 +57,7 @@ History.prototype.buildHistoryRow = function(transaction, height) {
     var identity = this.identity,
         btcWallet = identity.wallet.wallet,
         inMine = 0,
-        outMine = 0,
+        outAddresses = [],
         myInValue = 0,
         myOutValue = 0,
         txAddr = "",
@@ -115,7 +115,9 @@ History.prototype.buildHistoryRow = function(transaction, height) {
             if (output && output.stealth) {
                 isStealth = true;
             }
-            outMine += 1;
+            if (outAddresses.indexOf(outWalletAddress) == -1) {
+                outAddresses.push(outWalletAddress);
+            }
             myOutValue += anOut.value;
             var _outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
             var outPocketType = identity.wallet.pockets.getPocketType(outWalletAddress.type);
@@ -136,7 +138,7 @@ History.prototype.buildHistoryRow = function(transaction, height) {
     }
     // Create a row representing this change (if already referenced will
     // be replaced)
-    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outMine: outMine, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket, impact: pocketImpact, label: this.identity.txdb.getLabel(txHash), internal: internal};
+    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outAddresses: outAddresses, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket, impact: pocketImpact, label: this.identity.txdb.getLabel(txHash), internal: internal};
     return newRow;
 };
 
