@@ -60,6 +60,9 @@ HdPocket.prototype.destroy = function() {
     var pocketId = this.getPocketId();
     var wallet = this.getMyWallet();
     wallet.pockets.hdPockets[pocketId] = null;
+    while(!wallet.pockets.hdPockets[wallet.pockets.hdPockets.length-1]) {
+        wallet.pockets.hdPockets.pop();
+    }
     return destroyed;
 };
 
