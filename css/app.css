@@ -2356,6 +2356,8 @@ div.icon-bar {
     border-radius: 3px; }
   .label.round {
     border-radius: 1000px; }
+  .label.address {
+    background-color: #463030; }
   .label.alert {
     background-color: #c92441;
     color: #fff; }
