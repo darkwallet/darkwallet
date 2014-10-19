@@ -147,8 +147,8 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
       var tx = Bitcoin.Transaction.fromHex(txHex);
       var pending = tx.ins.length;
       tx.ins.forEach(function(anIn) {
-           console.log("[mixer] check tx", anIn.outpoint.hash);
-           if (identity.wallet.wallet.outputs[Bitcoin.bufferutils.reverse(anIn.hash).toString()+":"+anIn.outpoint.index]) {
+           console.log("[mixer] check tx", Bitcoin.bufferutils.reverse(anIn.hash).toString('hex'));
+           if (identity.wallet.wallet.outputs[Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.outpoint.index]) {
                // this is our own input
                return;
            }
