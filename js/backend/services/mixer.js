@@ -132,9 +132,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
                  callback(!anySpent, msg);
               }
           });
-      } else {
-          pending -= 1;
-      }
+      });
   };
 
   /*
@@ -152,7 +150,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
            console.log("[mixer] check tx", anIn.outpoint.hash);
            if (identity.wallet.wallet.outputs[Bitcoin.bufferutils.reverse(anIn.hash).toString()+":"+anIn.outpoint.index]) {
                // this is our own input
-               continue;
+               return;
            }
            client.fetch_transaction(Bitcoin.bufferutils.reverse(anIn.hash).toString('hex'), function(err, txBody) {
                var outTx = Bitcoin.Transaction.fromHex(txBody);
