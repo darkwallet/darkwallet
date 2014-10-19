@@ -116,27 +116,25 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
       var anySpent = false;
       // Check all address - outputs pairs for funds
       Object.keys(addresses).forEach(function(address) {
-          if (!identity.wallet.getWalletAddress(address)) {
-              var indexes = addresses[address];
-              client.fetch_history(address, 0, function(err, history) {
-                  if (!err) {
-                      history.forEach(function(row) {
-                          if (row[4] && indexes.indexOf(row[0]+":"+row[1]) > -1) {
-                               console.log("[mixer]", "output", row[1], "spent");
-                               anySpent = true;
-                          }
-                      });
-                  }
-                  pending -= 1;
-                  if (!pending) {
-                     console.log("[mixer] tx ", anySpent?"unfunded":"funded");
-                     callback(!anySpent, msg);
-                  }
-              });
-           } else {
+          var indexes = addresses[address];
+          client.fetch_history(address, 0, function(err, history) {
+              if (!err) {
+                  history.forEach(function(row) {
+                      if (row[4] && indexes.indexOf(row[0]+":"+row[1]) > -1) {
+                           console.log("[mixer]", "output", row[1], "spent");
+                           anySpent = true;
+                      }
+                  });
+              }
               pending -= 1;
-           }
-       });
+              if (!pending) {
+                 console.log("[mixer] tx ", anySpent?"unfunded":"funded");
+                 callback(!anySpent, msg);
+              }
+          });
+      } else {
+          pending -= 1;
+      }
   };
 
   /*
@@ -144,12 +142,17 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
    */
   MixerService.prototype.isTransactionFunded = function(txHex, callback, msg) {
       var self  = this;
+      var identity = this.core.getCurrentIdentity();
       var client = this.core.getClient();
       var addresses = {};
       var tx = new Bitcoin.Transaction(txHex);
       var pending = tx.ins.length;
       tx.ins.forEach(function(anIn) {
            console.log("[mixer] check tx", anIn.outpoint.hash);
+           if (identity.wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
+               // this is our own input
+               continue;
+           }
            client.fetch_transaction(anIn.outpoint.hash, function(err, txBody) {
                var outTx = new Bitcoin.Transaction(txBody);
                var address = outTx.outs[anIn.outpoint.index].address.toString();
