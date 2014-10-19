@@ -9,8 +9,8 @@
         <form name="passwordInput" ng-submit="unlockBackup()">
             <input ng-model="password" type="password" placeholder="Write your password..." autofocus required />
             <code ng-show="error">{{error}}</code>
-            <button ng-disabled="!password" class="button small" type="submit">OK</button>
-            <a class="button small alert" ng-click="importfile.name=false">Cancel</a>
+            <button ng-disabled="!password" class="button small fa fa-check radius glow" type="submit"> OK</button>
+            <a class="button small alert radius fa fa-times" ng-click="importfile.name=false"> Cancel</a>
         </form>
     </div>
 

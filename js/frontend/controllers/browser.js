@@ -87,7 +87,9 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
           $scope.history = '';
           processTransaction($scope.tx);
       }
-      $scope.$apply();
+      if (!$scope.$$phase) {
+          $scope.$apply();
+      }
   };
 
   /**
@@ -155,7 +157,9 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
           $scope.balanceIn = {confirmed: inConfirmed, unconfirmed: inUnconfirmed};
           $scope.balanceOut = {confirmed: outConfirmed, unconfirmed: outUnconfirmed};
       }
-      $scope.$apply();
+      if (!$scope.$$phase) {
+          $scope.$apply();
+      }
   };
 
 

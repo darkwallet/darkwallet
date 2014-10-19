@@ -10,7 +10,7 @@ require.config({
     'angular': '../vendors/angular/angular.min',
     'angular-animate': '../vendors/angular-animate/angular-animate.min',
     'angular-route': '../vendors/angular-route/angular-route.min',
-    'mm.foundation': '../vendors/angular-foundation/mm-foundation-custom-tpls.min',
+    'mm.foundation': '../vendors/angular-foundation/mm-foundation-tpls.min',
     'angular-xeditable': '../vendors/angular-xeditable/dist/js/xeditable.min',
     'moment': '../vendors/moment/min/moment-with-langs.min',
     'angular-moment': '../vendors/angular-moment/angular-moment.min',
