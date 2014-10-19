@@ -79,7 +79,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
           this.channel = lobbyTransport.initChannel('CoinJoin:'+network, Channel);
       }
       this.channel.addCallback('CoinJoinOpen', function(_d) {self.onCoinJoinOpen(_d);});
-      this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d);});
+      this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d, true);});
       this.channel.addCallback('CoinJoinFinish', function(_d) {self.onCoinJoinFinish(_d);});
     }
   };
@@ -107,9 +107,17 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   };
 
   /*
+   * Choose one of several pairing messages
+   */
+  MixerService.prototype.choosePeerMessage = function(messages, callback) {
+      callback(messages[Math.floor(Math.random()*messages.length)]);
+  };
+
+  /*
    * Check a running task to see if we have to resend or cancel
    */
   MixerService.prototype.checkAnnounce = function(msg) {
+      var self = this;
       var coinJoin = this.ongoing[msg.body.id];
       if (coinJoin) {
           var start = coinJoin.task.start;
@@ -122,9 +130,19 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
               var walletService = this.core.service.wallet;
               walletService.sendFallback('mixer', coinJoin.task);
           } else if (coinJoin.state === 'announce') {
-              // Otherwise resend
-              this.postRetry(msg);
-              Port.post('gui', {type: 'mixer', state: 'Announcing'});
+              if (coinJoin.received && coinJoin.received.length) {
+                  this.choosePeerMessage(coinJoin.received, function(msg) {
+                      delete coinJoin.received;
+                      setTimeout(function() {
+                          self.checkAnnounce(msg);
+                      }, 10000);
+                      self.onCoinJoin(msg);
+                  });
+              } else {
+                  // Otherwise resend
+                  this.postRetry(msg);
+                  Port.post('gui', {type: 'mixer', state: 'Announcing'});
+              }
           } else if (coinJoin.state !== 'finished' && ((Date.now()/1000)-coinJoin.task.ping > (timeout/10))) {
               coinJoin.cancel();
               // Otherwise resend
@@ -398,9 +416,16 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
   /**
    * CoinJoin arrived
    */
-  MixerService.prototype.onCoinJoin = function(msg) {
+  MixerService.prototype.onCoinJoin = function(msg, initial) {
     if (msg.sender !== this.channel.fingerprint) {
       var coinJoin = this.getOngoing(msg);
+      if (initial && coinJoin && coinJoin.state === 'announce') {
+          if (!coinJoin.received) {
+              coinJoin.received = [];
+          }
+          coinJoin.received.push(msg);
+          return;
+      }
       if (coinJoin) {
           var prevState = coinJoin.state;
           console.log("[mixer] CoinJoin", msg);
