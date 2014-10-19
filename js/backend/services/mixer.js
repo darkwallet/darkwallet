@@ -143,20 +143,21 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
    * Check if all transaction inputs are funded
    */
   MixerService.prototype.isTransactionFunded = function(txHex, callback, msg) {
+      var identity = this.core.getCurrentIdentity();
       var self  = this;
       var client = this.core.getClient();
       var addresses = {};
-      var tx = new Bitcoin.Transaction(txHex);
+      var tx = Bitcoin.Transaction.fromHex(txHex);
       var pending = tx.ins.length;
       tx.ins.forEach(function(anIn) {
-           console.log("[mixer] check tx", anIn.outpoint.hash);
-           client.fetch_transaction(anIn.outpoint.hash, function(err, txBody) {
-               var outTx = new Bitcoin.Transaction(txBody);
-               var address = outTx.outs[anIn.outpoint.index].address.toString();
+           console.log("[mixer] check tx", anIn.hash.toString('hex'));
+           client.fetch_transaction(anIn.hash.toString('hex'), function(err, txBody) {
+               var outTx = Bitcoin.Transaction.fromHex(txBody);
+               var address = Bitcoin.Address.fromOutputScript(outTx.outs[anIn.index], Bitcoin.networks(identity.wallet.network)).toString();
                if (!addresses.hasOwnProperty(address)) {
                    addresses[address] = [];
                }
-               var index = anIn.outpoint.hash+":"+anIn.outpoint.index;
+               var index = anIn.hash.toString('hex')+":"+anIn.index;
                if (addresses[address].indexOf(index) === -1) {
                    addresses[address].push(index);
                }
