@@ -29,7 +29,7 @@
         <input ng-show="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.fiatAmount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="Enter amount" autofocus class="nomarginbottom" />
       </div>
       <div class="small-2 columns">
-        <a class="button postfix nomarginbottom" tooltip-append-to-body="true" btn-checkbox to tooltip="click to switch to {{!quicksend.isFiatShown? settings.fiatCurrency : settings.currency}}" ng-click="updateBtcFiat(quicksend); quicksend.isFiatShown=!quicksend.isFiatShown">{{quicksend.isFiatShown? settings.fiatCurrency : settings.currency}}</a>
+        <a class="button postfix nomarginbottom" tooltip-append-to-body="true" tooltip="click to switch to {{!quicksend.isFiatShown? settings.fiatCurrency : settings.currency}}" ng-click="updateBtcFiat(quicksend); quicksend.isFiatShown=!quicksend.isFiatShown">{{quicksend.isFiatShown? settings.fiatCurrency : settings.currency}}</a>
       </div>
       <div class="small-4 columns">
         <button class="button nomarginbottom postfix radius fa fa-rocket" ng-disabled="!quicksend.amount||quicksend.amount==0" ng-class="{glow: quicksend.amount||quicksend.amount>0}">Send</button>
