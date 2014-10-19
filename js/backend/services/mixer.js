@@ -79,7 +79,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
           this.channel = lobbyTransport.initChannel('CoinJoin:'+network, Channel);
       }
       this.channel.addCallback('CoinJoinOpen', function(_d) {self.onCoinJoinOpen(_d);});
-      this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d);});
+      this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d, true);});
       this.channel.addCallback('CoinJoinFinish', function(_d) {self.onCoinJoinFinish(_d);});
     }
   };
@@ -107,9 +107,97 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
   };
 
   /*
+   * Check address - outputs pairs for funding
+   */
+  MixerService.prototype.checkOutputs = function(addresses, callback, msg) {
+      var identity = this.core.getCurrentIdentity();
+      var client = this.core.getClient();
+      var pending = addresses.length;
+      var anySpent = false;
+      // Check all address - outputs pairs for funds
+      Object.keys(addresses).forEach(function(address) {
+          if (!identity.wallet.getWalletAddress(address)) {
+              var indexes = addresses[address];
+              client.fetch_history(address, 0, function(err, history) {
+                  if (!err) {
+                      history.forEach(function(row) {
+                          if (row[4] && indexes.indexOf(row[0]+":"+row[1]) > -1) {
+                               console.log("[mixer]", "output", row[1], "spent");
+                               anySpent = true;
+                          }
+                      });
+                  }
+                  pending -= 1;
+                  if (!pending) {
+                     console.log("[mixer] tx ", anySpent?"unfunded":"funded");
+                     callback(!anySpent, msg);
+                  }
+              });
+           } else {
+              pending -= 1;
+           }
+       });
+  };
+
+  /*
+   * Check if all transaction inputs are funded
+   */
+  MixerService.prototype.isTransactionFunded = function(txHex, callback, msg) {
+      var self  = this;
+      var client = this.core.getClient();
+      var addresses = {};
+      var tx = new Bitcoin.Transaction(txHex);
+      var pending = tx.ins.length;
+      tx.ins.forEach(function(anIn) {
+           console.log("[mixer] check tx", anIn.outpoint.hash);
+           client.fetch_transaction(anIn.outpoint.hash, function(err, txBody) {
+               var outTx = new Bitcoin.Transaction(txBody);
+               var address = outTx.outs[anIn.outpoint.index].address.toString();
+               if (!addresses.hasOwnProperty(address)) {
+                   addresses[address] = [];
+               }
+               var index = anIn.outpoint.hash+":"+anIn.outpoint.index;
+               if (addresses[address].indexOf(index) === -1) {
+                   addresses[address].push(index);
+               }
+               addresses[address].push(index);
+               pending -= 1;
+               if (!pending) {
+                   self.checkOutputs(addresses, callback, msg);
+               }
+           });
+      });
+  };
+
+  /*
+   * Choose one of several pairing messages
+   */
+  MixerService.prototype.choosePeerMessage = function(coinJoin, callback) {
+      var self = this;
+      var pending = coinJoin.received.length;
+      var funded = [];
+      console.log("[mixer] choosePeer from", coinJoin.received.length, "messages");
+      coinJoin.received.forEach(function(msg) {
+          var onTxFunded = function(isFunded, _msg) {
+              pending -= 1;
+              if (isFunded) {
+                  funded.push(_msg);
+              }
+              if (!pending) {
+                  console.log("[mixer]", funded.length, "tx after fund checking");
+                  callback(funded[Math.floor(Math.random()*funded.length)]);
+              }
+          }
+          self.isTransactionFunded(msg.body.tx, onTxFunded, msg);
+      });
+      coinJoin.received = [];
+  };
+
+  /*
    * Check a running task to see if we have to resend or cancel
    */
   MixerService.prototype.checkAnnounce = function(msg) {
+      var self = this;
       var coinJoin = this.ongoing[msg.body.id];
       if (coinJoin) {
           var start = coinJoin.task.start;
@@ -122,9 +210,24 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
               var walletService = this.core.service.wallet;
               walletService.sendFallback('mixer', coinJoin.task);
           } else if (coinJoin.state === 'announce') {
-              // Otherwise resend
-              this.postRetry(msg);
-              Port.post('gui', {type: 'mixer', state: 'Announcing'});
+              if (coinJoin.received.length) {
+                  this.choosePeerMessage(coinJoin, function(_msg) {
+                      if (_msg) {
+                          setTimeout(function() {
+                              self.checkAnnounce(msg);
+                          }, 10000);
+                          self.onCoinJoin(_msg);
+                      } else {
+                          // Otherwise resend
+                          self.postRetry(msg);
+                          Port.post('gui', {type: 'mixer', state: 'Announcing'});
+                      }
+                  });
+              } else {
+                  // Otherwise resend
+                  this.postRetry(msg);
+                  Port.post('gui', {type: 'mixer', state: 'Announcing'});
+              }
           } else if (coinJoin.state !== 'finished' && ((Date.now()/1000)-coinJoin.task.ping > (timeout/10))) {
               coinJoin.cancel();
               // Otherwise resend
@@ -181,6 +284,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
         }
         var amount = (task.change && (Math.random() < 0.5)) ? task.change : task.total;
         this.ongoing[id] = new CoinJoin(this.core, 'initiator', 'announce', myTx, amount, task.fee);
+        this.ongoing[id].received = [];
         this.ongoing[id].task = task;
 
         // See if the task is expired otherwise send
@@ -248,7 +352,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
         console.log("[mixer] We already have this task!");
         return;
     }
-    var fee = 50000; // 0.5 mBTC
+    var fee = 10000; // 0.1 mBTC
     var identity = this.core.getCurrentIdentity();
 
     // Evaluate mixing pockets to see if we can pair
@@ -387,20 +491,24 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
       return;
     }
     if (msg.sender !== this.channel.fingerprint) {
-      console.log("[mixer] CoinJoinOpen", msg.peer);
+      console.log("[mixer] CoinJoinOpen ", msg.body.id, msg.sender);
       this.evaluateOpening(msg.peer, msg.body);
     } else {
-      console.log("[mixer] My CoinJoinOpen is back", msg);
+      console.log("[mixer] My CoinJoinOpen is back");
     }
   };
 
   /**
    * CoinJoin arrived
    */
-  MixerService.prototype.onCoinJoin = function(msg) {
+  MixerService.prototype.onCoinJoin = function(msg, initial) {
     if (msg.sender !== this.channel.fingerprint) {
       var coinJoin = this.getOngoing(msg);
       if (coinJoin) {
+          if (initial && coinJoin.state === 'announce') {
+              coinJoin.received.push(msg);
+              return;
+          }
           var prevState = coinJoin.state;
           console.log("[mixer] CoinJoin", msg);
 
