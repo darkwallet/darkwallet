@@ -253,7 +253,7 @@ Transaction.prototype.forAddress = function(walletAddress, tx) {
             // XXX temporary while bitcoinjs-lib supports testnet better
             prevTx = BtcUtils.fixTxVersions(prevTx, identity);
 
-            if (prevTx.outs[outpoint.index].address === walletAddress.address) {
+            if (prevTx.outs[outpoint.index].address.toString() === walletAddress.address) {
                 inputs.push({index: i, address: walletAddress.address, outpoint: outpoint});
             }
         }
