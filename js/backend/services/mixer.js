@@ -132,9 +132,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
                  callback(!anySpent, msg);
               }
           });
-      } else {
-          pending -= 1;
-      }
+      });
   };
 
   /*
@@ -151,7 +149,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
            console.log("[mixer] check tx", anIn.outpoint.hash);
            if (identity.wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
                // this is our own input
-               continue;
+               return;
            }
            client.fetch_transaction(anIn.outpoint.hash, function(err, txBody) {
                var outTx = new Bitcoin.Transaction(txBody);
