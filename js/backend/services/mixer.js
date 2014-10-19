@@ -353,7 +353,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils) {
         console.log("[mixer] We already have this task!");
         return;
     }
-    var fee = 50000; // 0.5 mBTC
+    var fee = 10000; // 0.1 mBTC
     var identity = this.core.getCurrentIdentity();
 
     // Evaluate mixing pockets to see if we can pair
