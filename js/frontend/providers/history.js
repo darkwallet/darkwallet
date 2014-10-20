@@ -44,7 +44,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   HistoryProvider.prototype.isCurrentPocket = function(pocketId) {
       if (this.pocket.isAll) {
           return true;
-      } else if (this.pocket.index === pocketId) {
+      // The test here needs to be == since pocket.index can be a string "1"
+      } else if (this.pocket.index == pocketId) {
           return true;
       }
   };
