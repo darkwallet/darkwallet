@@ -7,6 +7,7 @@
 define([
     'require',
     'angular',
+    'available_languages',
     'angular-route',
     'angular-animate',
     'angular-moment',
@@ -20,7 +21,7 @@ define([
     'frontend/directives/index',
     'frontend/filters/index',
     'frontend/providers/index'
-], function (require, angular) {
+], function (require, angular, AvailableLanguages) {
     var app = angular.module('DarkWallet', [
       'ngRoute', 'mm.foundation', 'xeditable', 'pascalprecht.translate',
       'ngProgress', 'ngAnimate', 'toaster', 'angularMoment',
@@ -39,7 +40,7 @@ define([
         prefix: '../i18n/',
         suffix: '.json'
       });
-      $translateProvider.preferredLanguage('en_US');
+      $translateProvider.preferredLanguage(AvailableLanguages.preferedLanguage());
     });
     // In case we need to initialize something after the application is created.
     app.initialize = function() {

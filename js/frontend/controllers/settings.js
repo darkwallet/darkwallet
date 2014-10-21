@@ -57,6 +57,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
   };
   $scope.languageChanged = function() {
       $translate.use(identity.settings.language);
+      $scope.storeSettings();
   };
   $scope.storeSettings = function() {
       var identity = DarkWallet.getIdentity();

@@ -5,6 +5,7 @@
 
 define([
     'angular',
+    'available_languages',
     'angular-animate',
     'mm.foundation',
     'angular-translate',
@@ -23,7 +24,7 @@ define([
     'frontend/providers/broadcast',
     'frontend/directives/identicon',
     'frontend/directives/validation'
-], function (angular) {
+], function (angular, AvailableLanguages) {
     var app = angular.module('DarkWallet', [
       'mm.foundation',
       'ngAnimate',
@@ -39,7 +40,7 @@ define([
         prefix: '../i18n/',
         suffix: '.json'
       });
-      $translateProvider.preferredLanguage('en_US');
+      $translateProvider.preferredLanguage(AvailableLanguages.preferedLanguage());
     });
     // In case we need to initialize something after the application is created.
     app.initialize = function() {
