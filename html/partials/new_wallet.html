@@ -31,8 +31,11 @@
       <img src="../images/encrypt.svg" style="width:35%; height:35%" />
       <form ng-submit="passwordSubmit()">
           <div class="row topmargin">
-            <div class="small-12 columns">
+            <div class="small-6 columns">
               <input type="text" ng-model="form.name" placeholder="{{'Name for this wallet'|_}}" autofocus ng-required="true" />
+            </div>
+            <div class="small-6 columns">
+              <select id="select-language" ng-model="form.language" ng-change="changeLanguage()" ng-options="language.code as language.name for language in languages"></select>
             </div>
           </div>
           <div class="row">
