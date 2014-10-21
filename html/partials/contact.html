@@ -11,13 +11,13 @@
   <div class="row topmargin">
         <dl class="tabs">
           <dd ng-class="{active: contactSection=='overview'}">
-              <a ng-click="setContactSection('overview')">Overview</a>
+              <a ng-click="setContactSection('overview')">{{'Overview'|_}}</a>
           </dd>
 		  <dd ng-class="{active: contactSection=='addresses'}">
-			  <a ng-click="setContactSection('addresses')">Addresses</a>
+			  <a ng-click="setContactSection('addresses')">{{'Addresses'|_}}</a>
 		  </dd>
 		  <dd ng-show="settings.advanced" ng-class="{active: contactSection=='trust'}">
-		  	  <a ng-click="setContactSection('trust')">Trust</a>
+		  	  <a ng-click="setContactSection('trust')">{{'Trust'|_}}</a>
 		  </dd>
 	  <!--<dd>
 			  <a ng-click="contactSection='history'">History</a>
@@ -26,93 +26,93 @@
   </div>
   
 <div class="row topmargin" ng-show="contactSection=='trust'">
-    <p>You have no trust on this peer</p>
-    <h3>Set trust</h3>
-    <em>This describes the trust you have on this person.</em>
+    <p>{{'You have no trust on this peer'|_}}</p>
+    <h3>{{'Set trust'|_}}</h3>
+    <em>{{'This describes the trust you have on this person.'|_}}</em>
     <div class="row">
         <div class="columns small-9">
              <input type="radio" id="trust-distrust" name="contact-trust" />
-             <label for="trust-distrust">Distrust</label>
+             <label for="trust-distrust">{{'Distrust'|_}}</label>
              <input type="radio" id="trust-zero" name="contact-trust" checked />
-             <label for="trust-zero">Zero</label>
+             <label for="trust-zero">{{'Zero'|_}}</label>
              <input type="radio" id="trust-known" name="contact-trust" />
-             <label for="trust-known">Known</label>
+             <label for="trust-known">{{'Known'|_}}</label>
              <input type="radio" id="trust-friend" name="contact-trust" />
-             <label for="trust-friend">Friend</label>
+             <label for="trust-friend">{{'Friend'|_}}</label>
              <input type="radio" id="trust-trusted" name="contact-trust" />
              <label for="trust-trusted">Trusted</label>
              <input type="radio" id="trust-maximum" name="contact-trust" />
-             <label for="trust-maximum">Maximum</label>
+             <label for="trust-maximum">{{'Maximum'|_}}</label>
         </div>
         <div class="columns small-3">
-            <a class="button fa fa-flask postfix" ng-click="">Set trust</a>
+            <a class="button fa fa-flask postfix" ng-click="">{{'Set trust'|_}}</a>
         </div>
     </div>
-    <h3>Security level</h3>
-    <em>This describes how conscious this person is about operational security.</em>
+    <h3>{{'Security level'|_}}</h3>
+    <em>{{'This describes how conscious this person is about operational security.'|_}}</em>
     <div class="row">
         <div class="columns small-9">
              <input type="radio" id="sec-sabotager" name="contact-sec" />
-             <label for="sec-sabotager">Sabotager</label>
+             <label for="sec-sabotager">{{'Sabotager'|_}}</label>
              <input type="radio" id="sec-careless" name="contact-sec" />
-             <label for="sec-careless">Careless</label>
+             <label for="sec-careless">{{'Careless'|_}}</label>
              <input type="radio" id="sec-unrated" name="contact-sec" checked />
-             <label for="sec-unrated">Unrated</label>
+             <label for="sec-unrated">{{'Unrated'|_}}</label>
              <input type="radio" id="sec-meticulous" name="contact-sec" />
-             <label for="sec-meticulous">Meticulous</label>
+             <label for="sec-meticulous">{{'Meticulous'|_}}</label>
              <input type="radio" id="sec-expert" name="contact-sec" />
-             <label for="sec-expert">Expert</label>
+             <label for="sec-expert">{{'Expert'|_}}</label>
              <input type="radio" id="sec-paranoid" name="contact-sec" />
-             <label for="sec-paranoid">Paranoid</label>
+             <label for="sec-paranoid">{{'Paranoid'|_}}</label>
              <input type="radio" id="sec-snowden" name="contact-sec" />
              <label for="sec-snowden">Snowden</label>
         </div>
         <div class="columns small-3">
-            <a class="button fa fa-flask postfix" ng-click="">Set level</a>
+            <a class="button fa fa-flask postfix" ng-click="">{{'Set level'|_}}</a>
         </div>
     </div>
-    <h3>Set validation</h3>
-    <em ng-show="settings.advanced">This should be per key but maybe is ok here if there is just one?...</em>
+    <h3>{{'Set validation'|_}}</h3>
+    <em ng-show="settings.advanced">{{'This should be per key but maybe is ok here if there is just one?...'|_}}</em>
     <div class="row">
         <div class="columns small-9">
              <input type="radio" id="validation-no" name="contact-validation" checked />
-             <label for="validation-no">No validation</label>
+             <label for="validation-no">{{'No validation'|_}}</label>
              <input type="radio" id="validation-casual" name="contact-validation" />
-             <label for="validation-casual">Casual checking</label>
+             <label for="validation-casual">{{'Casual checking'|_}}</label>
              <input type="radio" id="validation-carefully" name="contact-validation" />
-             <label for="validation-carefully">Carefully checked</label>
+             <label for="validation-carefully">{{'Carefully checked'|_}}</label>
              <input type="radio" id="validation-mathematic" name="contact-validation" />
-             <label for="validation-mathematic">Mathematically checked</label>
+             <label for="validation-mathematic">{{'Mathematically checked'|_}}</label>
         </div>
         <div class="columns small-3">
-            <a class="button fa fa-flask postfix" ng-click="">Set validation</a>
+            <a class="button fa fa-flask postfix" ng-click="">{{'Set validation'|_}}</a>
         </div>
     </div>
 
 </div>
 
 <div class="row topmargin" ng-show="contactSection=='history'">
-    <p>You have no history with this peer</p>
+    <p>{{'You have no history with this peer'|_}}</p>
 </div>
 
 <div class="row topmargin" ng-show="contactSection=='overview' || !contactSection">
-	<label>The main address for this contact is</label>	
+	<label>{{'The main address for this contact is'|_}}</label>	
       <div class="row collapse">
 		<div class="medium-1 columns">
-			<span class="prefix radius fa" title="Type of address" ng-class="{'fa-btc': vars.contact.mainKey.type=='address', 'fa-key': vars.contact.mainKey.type=='pubkey', 'fa-fighter-jet': vars.contact.mainKey.type=='stealth'}"> {{vars.contact.mainKey.type}}</span>
+			<span class="prefix radius fa" title="{{'Type of address'|_}}" ng-class="{'fa-btc': vars.contact.mainKey.type=='address', 'fa-key': vars.contact.mainKey.type=='pubkey', 'fa-fighter-jet': vars.contact.mainKey.type=='stealth'}"> {{vars.contact.mainKey.type}}</span>
 		</div>
         <div class="large-9 medium-7 columns">
           <input type="text" readonly value="{{vars.contact.mainKey.address}}" />
         </div>
         <div class="large-1 medium-2 small-6 columns">
-          <a href="" tooltip-append-to-body="true" tooltip="Copy to clipboard" ng-click="clipboard.copy(vars.contact.mainKey.address)" class="button postfix fa fa-clipboard">Copy</a>
+          <a href="" tooltip-append-to-body="true" tooltip="{{'Copy to clipboard'|_}}" ng-click="clipboard.copy(vars.contact.mainKey.address)" class="button postfix fa fa-clipboard">{{'Copy'|_}}</a>
         </div>
         <div class="large-1 medium-2 small-6 columns">
-          <a class="button postfix radius fa fa-qrcode" tooltip-append-to-body="true" tooltip="Show QR code" ng-click="modals.showBtcQr(vars.contact.mainKey.address)">QR</a>
+          <a class="button postfix radius fa fa-qrcode" tooltip-append-to-body="true" tooltip="{{'Show QR code'|_}}" ng-click="modals.showBtcQr(vars.contact.mainKey.address)">QR</a>
         </div>
       </div>
       <div class="row collapse">
-          <p ng-show="vars.contact.pubKeys.length>1">This contact has <a ng-click="contactSection='addresses'">{{vars.contact.pubKeys.length}} keys</a><span ng-show="settings.advanced" > and no <a ng-click="contactSection='trust'">trust defined</a></span>.</p>
+          <p ng-show="vars.contact.pubKeys.length>1">{{'This contact has'|_}} <a ng-click="contactSection='addresses'">{{'{0} keys'|_:vars.contact.pubKeys.length}}</a><span ng-show="settings.advanced" > {{'and no'|_}} <a ng-click="contactSection='trust'">{{'trust defined'|_}}</a></span>.</p>
           
       </div>
     
@@ -123,19 +123,19 @@
 	
 	        <ul id="contact-address-actions" class="f-dropdown">
 	          <li>
-	            <a ng-click="modals.showBtcQr(currentPubKey.address||currentPubKey.data)" class="fa fa-qrcode"> Show QR code</a>
+	            <a ng-click="modals.showBtcQr(currentPubKey.address||currentPubKey.data)" class="fa fa-qrcode"> {{'Show QR code'|_}}</a>
 	          </li>
 			  <li>
-				  <a ng-click="clipboard.copy(currentPubKey.address||currentPubKey.data)" class="fa fa-clipboard"> Copy to clipboard</a>
+				  <a ng-click="clipboard.copy(currentPubKey.address||currentPubKey.data)" class="fa fa-clipboard"> {{'Copy to clipboard'|_}}</a>
 			  </li>
 			  <li>
-				  <a ng-click="openEditForm(vars.contact, currentIndex)" class="fa fa-pencil-square"> Edit</a>
+				  <a ng-click="openEditForm(vars.contact, currentIndex)" class="fa fa-pencil-square"> {{'Edit'|_}}</a>
 			  </li>
 			  <li>
-				  <a ng-click="openEditForm(vars.contact, currentIndex, 'label')" class="fa fa-pencil-square"> Edit label</a>
+				  <a ng-click="openEditForm(vars.contact, currentIndex, 'label')" class="fa fa-pencil-square"> {{'Edit label'|_}}</a>
 			  </li>
 			  <li ng-show="currentIndex!=vars.contact.data.mainKey">
-				  <a ng-click="deleteKey(vars.contact, currentIndex)" class="fa fa-trash-o"> Delete</a>
+				  <a ng-click="deleteKey(vars.contact, currentIndex)" class="fa fa-trash-o"> {{'Delete'|_}}</a>
 			  </li>
 	        </ul>
 
@@ -145,7 +145,7 @@
 			<div class="small-11 columns ellipsis" ng-show="!(editingContact===$index)">
 					
 				<a ng-click="setCurrentPubKey(pubKey, $index)" dropdown-toggle="#contact-address-actions" class="fa button square lefted fa-chevron-circle-down"></a>
-	            <span class="address-type" title="Type of address">
+	            <span class="address-type" title="{{'Type of address'|_}}">
 	               <div class="fa" 
 	                 ng-class="{'fa-question-circle': pubKey.type=='unknown', 'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth', 'fa-user': pubKey.type=='id'}">
 	               </div>
@@ -163,30 +163,30 @@
 			</div>
 			<div ng-show="editingContact===$index" class="small-12 columns">
 				<form ng-submit="editContactKey(vars.contact, $index)">
-					<input placeholder="{{contactToEdit.type?'Enter a label...':'Enter an address or public key...'}}" type="text" class="prefix radius nomarginbottom" ng-model="contactToEdit.address">
+					<input placeholder="{{contactToEdit.type?('Enter a label...'|_):('Enter an address or public key...'|_)}}" type="text" class="prefix radius nomarginbottom" ng-model="contactToEdit.address">
 					<button class="button square righted fa fa-check" type="submit"></button>
 				</form>
 			</div>
     </div>	
 	<div class="topmargin">
   	  <!-- Create contact form -->
-  		<a ng-click="creatingContact=true" class="fa fa-plus button small radius" ng-show="!creatingContact"> Add another address</a>
+  		<a ng-click="creatingContact=true" class="fa fa-plus button small radius" ng-show="!creatingContact"> {{'Add another address'|_}}</a>
   	  	<form name="createContact" ng-show="creatingContact" ng-submit="creatingContact=false;addContactKey(vars.contact);" novalidate>
     		<div class="row collapse">
 				<div class="small-4 columns">
-               	 	<input type="text" class="prefix radius" placeholder="Enter a label..." ng-model="newContact.label"></input>
+               	 	<input type="text" class="prefix radius" placeholder="{{'Enter a label...'|_}}" ng-model="newContact.label"></input>
         		</div>
 				<div class="small-6 columns">
-               	 	<input type="text" class="prefix radius" placeholder="Enter a bitcoin address here..." required contact-address ng-model="newContact.address" autofocus></input>
+               	 	<input type="text" class="prefix radius" placeholder="{{'Enter a bitcoin address here...'|_}}" required contact-address ng-model="newContact.address" autofocus></input>
         		</div>
 				<div class="small-2 columns">
-					<a class="button postfix radius fa fa-qrcode">Scan QR code</a>
+					<a class="button postfix radius fa fa-qrcode">{{'Scan QR code'|_}}</a>
 				</div>
     		</div>
 			<div class="row">
 				<div class="small-12 columns text-right">
-					<a class="button small radius nomarginbottom alert fa fa-times" ng-click="creatingContact=false"> Cancel</a>
-					<button ng-disabled="createContact.$invalid" type="submit" class="button small radius nomarginbottom fa fa-check"> Confirm</button>
+					<a class="button small radius nomarginbottom alert fa fa-times" ng-click="creatingContact=false"> {{'Cancel'|_}}</a>
+					<button ng-disabled="createContact.$invalid" type="submit" class="button small radius nomarginbottom fa fa-check"> {{'Confirm'|_}}</button>
 				</div>
 			</div>
   	  </form>
@@ -196,16 +196,16 @@
 <!-- Bottom row -->
 <div ng-show="!creatingContact" class="row collapse">
 	<div class="small-4 columns">
-	    <a href="#contacts" class="fa fa-arrow-left nomarginbottom button small radius"> Back</a>
+	    <a href="#contacts" class="fa fa-arrow-left nomarginbottom button small radius"> {{'Back'|_}}</a>
     </div>
 	<div class="small-8 columns text-right">
 		<form name="contactEditForm" ng-show="contactSection=='overview'&&!(editingContact===false)" ng-submit="saveName(vars.contact, contactToEdit.name)">
           <input type="text" autofocus ng-model="contactToEdit.name"><button class="button square righted fa fa-check" type="submit"></button>
         </form>
 		<div ng-show="contactSection=='overview'">
-		<a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.data.watch, 'fa-eye': vars.contact.data.watch}" class="fa button small nomarginbottom radius"> {{vars.contact.data.watch?'Unwatch':'Watch'}}</a>
-		<a ng-click="openEditForm(vars.contact, 0)" class="fa button small nomarginbottom radius fa-terminal"> Rename</a>
-    	<a ng-click="modals.open('confirm-delete', {name: vars.contact.data.name, object: vars.contact}, deleteContact)" class="small button nomarginbottom radius alert fa fa-trash-o"> Delete</a>
+		<a ng-click="toggleWatch(vars.contact)" ng-class="{'fa-eye-slash':!vars.contact.data.watch, 'fa-eye': vars.contact.data.watch}" class="fa button small nomarginbottom radius"> {{vars.contact.data.watch?('Unwatch'|_):('Watch'|_)}}</a>
+		<a ng-click="openEditForm(vars.contact, 0)" class="fa button small nomarginbottom radius fa-terminal"> {{'Rename'|_}}</a>
+    	<a ng-click="modals.open('confirm-delete', {name: vars.contact.data.name, object: vars.contact}, deleteContact)" class="small button nomarginbottom radius alert fa fa-trash-o"> {{'Delete'|_}}</a>
     </div>
 </div>
 </div>

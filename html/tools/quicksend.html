@@ -1,38 +1,38 @@
 <div ng-controller="WalletSendCtrl" class="panel radius">
   <form name="quickSendForm" ng-submit="quicksend.next=true;validateSendForm();" novalidate ng-hide="quicksend.next">
     <div class="row collapse">
-      <h5>Send</h5>
+      <h5>{{'Send'|_}}</h5>
       <div class="small-1 columns">
-        <a href="" tooltip-append-to-body="true" tooltip="Select from contacts" ng-click="modals.open('pick-contact', {field: quicksend}, addAddress)" class="fa button square prefix radius fa-users"></a>
+        <a href="" tooltip-append-to-body="true" tooltip="{{'Select from contacts'|_}}" ng-click="modals.open('pick-contact', {field: quicksend}, addAddress)" class="fa button square prefix radius fa-users"></a>
       </div>
       <div class="small-1 columns">
-        <a href="" tooltip-append-to-body="true" tooltip="Scan QR code" ng-click="modals.scanQr(quicksend)" class="fa button square prefix fa-qrcode"></a>
+        <a href="" tooltip-append-to-body="true" tooltip="{{'Scan QR code'|_}}" ng-click="modals.scanQr(quicksend)" class="fa button square prefix fa-qrcode"></a>
       </div>
       <div class="small-6 columns">
-        <input ng-change="validateSendForm()" type="text" ng-model="quicksend.address" required btc-address placeholder="Bitcoin address..." class="nomarginbottom" />
+        <input ng-change="validateSendForm()" type="text" ng-model="quicksend.address" required btc-address placeholder="{{'Bitcoin address...'|_}}" class="nomarginbottom" />
       </div>
       <div class="small-4 columns">
-        <button type="submit" ng-disabled="!quickSendForm.$valid" ng-class="{glow:quickSendForm.$valid}" class="button postfix radius nomarginbottom fa fa-arrow-right">Next</button>
+        <button type="submit" ng-disabled="!quickSendForm.$valid" ng-class="{glow:quickSendForm.$valid}" class="button postfix radius nomarginbottom fa fa-arrow-right">{{'Next'|_}}</button>
       </div>
     </div>
   </form>
   <form ng-submit="sendBitcoins()" ng-show="quicksend.next">
 
-	  <span ng-show="quicksend.contact" title="{{quicksend.address}}">Sending to {{quicksend.contact.data.name}} <identicon icon-size="24" hash="quicksend.contact.data.hash"></identicon></span>
-	<div ng-show="!quicksend.contact" class="ellipsis contact-address">Sending to <identicon icon-size="24" hash="quicksend.address"></identicon>{{quicksend.address}}</div>
+	  <span ng-show="quicksend.contact" title="{{quicksend.address}}">{{'Sending to'|_}} {{quicksend.contact.data.name}} <identicon icon-size="24" hash="quicksend.contact.data.hash"></identicon></span>
+	<div ng-show="!quicksend.contact" class="ellipsis contact-address">{{'Sending to'|_}} <identicon icon-size="24" hash="quicksend.address"></identicon>{{quicksend.address}}</div>
     <div class="row collapse">
       <div class="small-1 columns">
         <a ng-click="quicksend.next = false" class="button nomarginbottom prefix radius fa fa-arrow-left"></a>
       </div>
       <div class="small-5 columns">
-        <input ng-hide="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.amount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="Enter amount" autofocus class="nomarginbottom" />
-        <input ng-show="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.fiatAmount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="Enter amount" autofocus class="nomarginbottom" />
+        <input ng-hide="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.amount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="{{'Enter amount'|_}}" autofocus class="nomarginbottom" />
+        <input ng-show="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.fiatAmount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="{{'Enter amount'|_}}" autofocus class="nomarginbottom" />
       </div>
       <div class="small-2 columns">
-        <a class="button postfix nomarginbottom" tooltip-append-to-body="true" tooltip="click to switch to {{!quicksend.isFiatShown? settings.fiatCurrency : settings.currency}}" ng-click="updateBtcFiat(quicksend); quicksend.isFiatShown=!quicksend.isFiatShown">{{quicksend.isFiatShown? settings.fiatCurrency : settings.currency}}</a>
+        <a class="button postfix nomarginbottom" tooltip-append-to-body="true" tooltip="{{'click to switch to {0}'|_:(!quicksend.isFiatShown? settings.fiatCurrency : settings.currency)}}" ng-click="updateBtcFiat(quicksend); quicksend.isFiatShown=!quicksend.isFiatShown">{{quicksend.isFiatShown? settings.fiatCurrency : settings.currency}}</a>
       </div>
       <div class="small-4 columns">
-        <button class="button nomarginbottom postfix radius fa fa-rocket" ng-disabled="!quicksend.amount||quicksend.amount==0" ng-class="{glow: quicksend.amount||quicksend.amount>0}">Send</button>
+        <button class="button nomarginbottom postfix radius fa fa-rocket" ng-disabled="!quicksend.amount||quicksend.amount==0" ng-class="{glow: quicksend.amount||quicksend.amount>0}">{{'Send'|_}}</button>
       </div>
     </div>
 

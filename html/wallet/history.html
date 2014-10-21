@@ -1,37 +1,37 @@
 <div class="row" ng-controller="HistoryRowsCtrl">
     <div class="small-12 columns">
         <div class="row collapse panel radius" ng-show="!historyRows.length">
-            You have no history in this pocket.
+            {{'You have no history in this pocket.'|_}}
         </div>
         <div class="row collapse panel radius" ng-show="historyRows.length">
             <dl class="sub-nav">
-                <dt>Filter:</dt>
-                <dd ng-class="{active: 'last'===txFilter}"><a ng-click="setHistoryFilter('last')">Last</a></dd>
-                <dd ng-class="{active: 'weekly'===txFilter}"><a ng-click="setHistoryFilter('weekly')">Weekly</a></dd>
-                <dd ng-class="{active: 'monthly'===txFilter}"><a ng-click="setHistoryFilter('monthly')">Monthly</a></dd>
+                <dt>{{'Filter'|_}}:</dt>
+                <dd ng-class="{active: 'last'===txFilter}"><a ng-click="setHistoryFilter('last')">{{'Last'|_}}</a></dd>
+                <dd ng-class="{active: 'weekly'===txFilter}"><a ng-click="setHistoryFilter('weekly')">{{'Weekly'|_}}</a></dd>
+                <dd ng-class="{active: 'monthly'===txFilter}"><a ng-click="setHistoryFilter('monthly')">{{'Monthly'|_}}</a></dd>
             </dl>
 
           <div ng-if="txFilter=='weekly' || txFilter=='monthly'">
             <div class="transactions row collapse hide-for-small">
              <div class="large-3 columns">
-               Week
+               {{'Week'|_}}
              </div>
              <div class="large-4 columns">
-               Incoming
+               {{'Incoming'|_}}
              </div>
              <div class="large-4 columns ellipsis">
-               Outgoing
+               {{'Outgoing'|_}}
              </div>
              <div class="large-1 columns text-right">
-               Transactions
+               {{'Transactions'|_}}
              </div>
             </div>
 
             <div class="row collapse address-row"  ng-repeat="row in historyRows">
              <div class="large-3 columns">
                <span class="address-label" ng-show="row.label">{{row.label}}</span>
-               <span class="address-label" ng-show="!row.label && txFilter=='weekly'">Curent week</span>
-               <span class="address-label" ng-show="!row.label && txFilter=='monthly'">Curent month</span>
+               <span class="address-label" ng-show="!row.label && txFilter=='weekly'">{{'Curent week'|_}}</span>
+               <span class="address-label" ng-show="!row.label && txFilter=='monthly'">{{'Curent month'|_}}</span>
              </div>
              <div class="large-4 columns">
                <span ng-show="row.incoming">{{row.incoming | currencyPresenter}}</span>
@@ -51,32 +51,32 @@
           <div ng-if="txFilter!='weekly' && txFilter!='monthly'">
 	        <ul id="row-actions" class="f-dropdown">
 	          <li>
-	            <a ng-safebrowser="currentRow.hash" class="fa fa-qrcode"> Show in block explorer</a>
+	            <a ng-safebrowser="currentRow.hash" class="fa fa-qrcode"> {{'Show in block explorer'|_}}</a>
 	          </li>
 		  <li>
-			  <a ng-click="currentForm.$show()" class="fa fa-pencil-square"> Edit label</a>
+			  <a ng-click="currentForm.$show()" class="fa fa-pencil-square"> {{'Edit label'|_}}</a>
 		  </li>
 		  <li>
-			  <a ng-click="clipboard.copy(currentRow.hash)" class="fa fa-clipboard"> Copy hash</a>
+			  <a ng-click="clipboard.copy(currentRow.hash)" class="fa fa-clipboard"> {{'Copy hash'|_}}</a>
 		  </li>
 		  <li ng-show="!currentRow.internal&&currentRow.address!='unknown'">
-			  <a ng-click="clipboard.copy(currentRow.address)" class="fa fa-btc"> Copy {{currentRow.inMine?'destination':'origin'}} address</a>
+			  <a ng-click="clipboard.copy(currentRow.address)" class="fa fa-btc"> {{currentRow.inMine?('Copy destination address'|_):('Copy origin address'|_)}}</a>
 		  </li>
 		  <li ng-show="!currentRow.contact&&!currentRow.internal&&currentRow.address!='unknown'">
-			  <a ng-click="modals.open('pick-contact', {type: 'any', allowCreate: true, newContact: {address: currentRow.address}}, addToContact)" class="fa fa-user"> Add {{currentRow.inMine?'destination':'origin'}} address to contact</a>
+			  <a ng-click="modals.open('pick-contact', {type: 'any', allowCreate: true, newContact: {address: currentRow.address}}, addToContact)" class="fa fa-user"> {{currentRow.inMine?('Add destination address to contact'|_):('Add origin address to contact'|_)}}</a>
 		  </li>
 	        </ul>
 
 
             <div class="transactions row collapse hide-for-small">
              <div class="medium-6 large-8 columns">
-               Address
+               {{'Address'|_}}
              </div>
              <div class="medium-3 large-2 columns">
-               Amount
+               {{'Amount'|_}}
              </div>
              <div class="medium-3 large-2 columns text-right">
-               Total
+               {{'Total'|_}}
              </div>
             </div>
              <div class="row collapse address-row transactions"  ng-repeat="row in historyRows track by $index">
@@ -88,7 +88,7 @@
                <!-- check for row.contact gets stuck if not done as follows... -->
             
                 <span editable-text="rowEdit.label" e-form="rowBtnForm" buttons="no" onaftersave="saveRowLabel()">
-				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> stealth</span>
+				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> {{'stealth'|_}}</span>
                 <span ng-show="!row.label">
                 {{row.contact ? row.contact.data.name : row.address}}
                 </span>
@@ -103,7 +103,7 @@
                <span title="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
              </div>
              <div ng-show="!row.height" class="small-4 medium-2 columns ellipsis">
-               <span>none</span>
+               <span>{{'none'|_}}</span>
              </div>
             <!-- <div ng-hide="true" tooltip-placement="left" tooltip="See the transaction in the block explorer" ng-click="openTransaction(row.hash)" class="small-4 medium-1 columns ellipsis">
                <a ng-safebrowser="row.hash"><i class="fa fa-sitemap hide-for-medium"></i> {{row.height?1+currentHeight-row.height:0}}</a>

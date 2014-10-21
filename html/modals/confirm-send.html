@@ -5,32 +5,32 @@
 			<div class="medium-6 columns">
 			    <!-- High Fee warning -->
 			    <div ng-show="(vars.spend.metadata.fee>=100000)||(vars.spend.metadata.fee>vars.spend.metadata.total)">
-				<h3>Warning: High Fee!</h3>
+				<h3>{{'Warning: High Fee!'|_}}</h3>
 			        <div ng-show="(vars.spend.metadata.fee>=100000)&&(vars.spend.metadata.fee<1000000)">
-					<p>Your fee is bigger than reasonable (greater or equal to 1 mBTC), please <b>double check</b> before sending.</p>
+					<p>{{'Your fee is bigger than reasonable (greater or equal to 1 mBTC), please **double check** before sending.'|_}}</p>
 			        </div>
 			        <div ng-show="vars.spend.metadata.fee>=1000000">
-					<p>Your fee is insanely high (greater or equal to 10 mBTC), please <b>triple check</b> before sending.</p>
+					<p>{{'Your fee is insanely high (greater or equal to 10 mBTC), please **triple check** before sending.'|_}}</p>
 			        </div>
 			        <div ng-show="vars.spend.metadata.fee>vars.spend.metadata.total">
-					<p>Your fee is greater than your sent amount, please <b>triple check</b> before sending.</p>
+					<p>{{'Your fee is greater than your sent amount, please **triple check** before sending.'|_}}</p>
 			        </div>
 			    </div>
 
 			    <h3>{{vars.text}}</h3>
-			    <input auto-focus ng-model="vars.password" type="password" placeholder="Write your password..." />
-			    <button class="button small fa fa-check radius glow" type="submit"> OK</button>
-			    <a class="button alert small radius fa fa-times" ng-click="cancel()"> Cancel</a>
+			    <input auto-focus ng-model="vars.password" type="password" placeholder="{{'Write your password...'|_}}" />
+			    <button class="button small fa fa-check radius glow" type="submit"> {{'Accept'|_}}</button>
+			    <a class="button alert small radius fa fa-times" ng-click="cancel()"> {{'Cancel'|_}}</a>
 			</div>
 			<div class="medium-6 columns">
-			    <h5>Sending {{vars.spend.metadata.total+vars.spend.metadata.fee | formatBtc}} from "{{vars.spend.pocket.name}}"</h5>
+			    <h5>{{'Sending {0} from {1}'|_:(vars.spend.metadata.total+spend.metadata.fee |formatBtc):vars.spend.pocket.name}}</h5>
 			    <h5 ng-repeat="recipient in vars.recipients">
 					{{recipient.amount | formatBtc}} ({{recipient.amount | formatFiat}}) <i class="fa fa-arrow-right"></i> 
 			         <identicon icon-size="36" hash="recipient.contact.data.hash"></identicon>
 			         {{recipient.contact.data.name}}
 			    </h5>
-				<h6>Fee: {{vars.spend.metadata.fee | formatBtc}} ({{vars.spend.metadata.fee | formatFiat}})</h6>
-			    <h6 ng-show="vars.spend.metadata.label">Description: {{vars.spend.metadata.label}}</h6>
+				<h6>{{'Fee'|_}}: {{vars.spend.metadata.fee | formatBtc}} ({{vars.spend.metadata.fee | formatFiat}})</h6>
+			    <h6 ng-show="vars.spend.metadata.label">{{'Description'|_}}: {{vars.spend.metadata.label}}</h6>
 			</div>
 		</form>
 	</div>
