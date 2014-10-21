@@ -21,7 +21,6 @@ define([
     'frontend/filters/index',
     'frontend/providers/index'
 ], function (require, angular) {
-    var identity = require('darkwallet').getIdentity();
     var app = angular.module('DarkWallet', [
       'ngRoute', 'mm.foundation', 'xeditable', 'pascalprecht.translate',
       'ngProgress', 'ngAnimate', 'toaster', 'angularMoment',
@@ -40,8 +39,7 @@ define([
         prefix: '../i18n/',
         suffix: '.json'
       });
-      var language = identity ? identity.settings.language : null;
-      $translateProvider.preferredLanguage(language || 'en_US');
+      $translateProvider.preferredLanguage('en_US');
     });
     // In case we need to initialize something after the application is created.
     app.initialize = function() {

@@ -11,8 +11,8 @@ function (controllers, DarkWallet, Port) {
    * Controller
    */
   controllers.controller('WalletCtrl',
-  ['$scope', '$location', 'clipboard', 'modals', '$wallet', '$animate', '$tabs',
-      function($scope, $location, clipboard, modals, $wallet, $animate, $tabs) {
+  ['$scope', '$location', 'clipboard', 'modals', '$wallet', '$animate', '$tabs', '$translate',
+      function($scope, $location, clipboard, modals, $wallet, $animate, $tabs, $translate) {
 
   // Scope variables
   $scope.rates = {};
@@ -103,6 +103,9 @@ function (controllers, DarkWallet, Port) {
       $scope.identityName = identity.name;
       
       $animate.enabled(identity.settings.animations.enabled);
+      
+      $translate.use(identity.settings.language);
+      
   }
 
   $scope.$watch('allReadOnly', function() {
