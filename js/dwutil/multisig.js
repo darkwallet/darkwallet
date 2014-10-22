@@ -59,7 +59,7 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes, i) {
             var compressed = (pubKeyBytes.length === 33);
 
             var contactAddress = Bitcoin.ECPubKey.fromBytes(pubKeyBytes, compressed);
-            participant.name = contactAddress.toString();
+            participant.name = contactAddress.toHex();
             participant.hash = contactAddress.toHex();
         }
     }
