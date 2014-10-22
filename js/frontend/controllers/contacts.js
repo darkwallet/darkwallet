@@ -4,7 +4,8 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', 'notify', function($scope, $routeParams, $location, $route, $wallet, watch, $history, notify) {
+  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', 'notify', '_Filter',
+      function($scope, $routeParams, $location, $route, $wallet, watch, $history, notify, _) {
 
   $scope.newContact = {};
   $scope.contactToEdit = {};
@@ -141,13 +142,13 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     var found = identity.contacts.findByAddress(parsed.address);
     // check for duplicate contact
     if (found) {
-        notify.warning('Contact with that key already exists: ' + found.data.name);
+        notify.warning(_('Contact with that key already exists: {0}', found.data.name));
         return found;
     }
     // also see if this is ourselves
     found = identity.wallet.getWalletAddress(address);
     if (found) {
-        notify.warning('This is yourself!');
+        notify.warning(_('This is yourself!'));
         return found;
     }
   }

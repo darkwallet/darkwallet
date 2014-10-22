@@ -10,7 +10,7 @@
  * @constructor
  */
 define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function (controllers, DarkWallet, Mnemonic, AvailableLanguages) {
-  controllers.controller('NewWalletCtrl', ['$scope', '$location', 'notify', '$translate', function($scope, $location, notify, $translate) {
+  controllers.controller('NewWalletCtrl', ['$scope', '$location', 'notify', '$translate', '_Filter', function($scope, $location, notify, $translate, _) {
 
   $scope.step = 1;
   $scope.languages = AvailableLanguages;
@@ -35,7 +35,7 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function
   $scope.passwordSubmit = function() {
     // Check that passwords match.
     if ($scope.form.passwd != $scope.form.passwd2) {
-      $scope.message = 'Passwords are not the same';
+      $scope.message = _('Passwords are not the same');
       return;
     }
 
@@ -50,7 +50,7 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function
 
   $scope.mnemonicSubmit = function() {
     if ($scope.form.mnemonic && $scope.form.mnemonic != $scope.form.mnemonic2) {
-      $scope.message2 = 'Mnemonics are not the same';
+      $scope.message2 = _('Mnemonics are not the same');
       return;
     }
     
@@ -59,7 +59,7 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function
     /* check that it's a valid mnemonic */
     for (var i = 0; i < 12; i++) {
         if (Mnemonic.words.indexOf(words[i]) == -1) {
-            notify.error('invalid mnemonic');
+            notify.error(_('invalid mnemonic'));
             return;
         }
     }

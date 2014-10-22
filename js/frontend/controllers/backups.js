@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controllers, DarkWallet, Bitcoin) {
-  controllers.controller('BackupsCtrl', ['$scope', '$window', 'notify', 'modals', function($scope, $window, notify, modals) {
+  controllers.controller('BackupsCtrl', ['$scope', '$window', 'notify', 'modals', '_Filter', function($scope, $window, notify, modals, _) {
 
     /**
      * Export
@@ -91,13 +91,13 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
             // Load one identity
             $scope.step='loaded';
             loadBackup(unlockedData[identity.name]);
-            notify.success("Identity loaded " + identity.name)
+            notify.success(_('Identity loaded {0}', identity.name));
         } else {
             // Load all identities
             $scope.toLoad.forEach(function(identity) {
                 loadBackup(unlockedData[identity.name]);
             });
-            notify.success("Identities loaded");
+            notify.success(_('Identities loaded'));
             unlockedData = {};
             // finish the modal
             $scope.ok();

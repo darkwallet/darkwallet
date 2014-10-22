@@ -1,7 +1,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ReceiveStealthCtrl', ['$scope', 'notify', '$wallet', function($scope, notify, $wallet) {
+  controllers.controller('ReceiveStealthCtrl', ['$scope', 'notify', '$wallet', '_Filter', function($scope, notify, $wallet, _) {
   // function to receive stealth information
   $scope.receiveStealth = function() {
       notify.note("stealth", "initializing");
@@ -9,7 +9,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
       // Callback for detected addresses
       var onStealth = function(error, addresses) {
           if (error) {
-              notify.error("Error fetching stealth", error.message||error);
+              notify.error(_('Error fetching stealth'), error.message||error);
               //write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
               return;
           }
@@ -20,9 +20,9 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
                   // TODO: should be added to scope in response to some event
                   $wallet.addToScope(walletAddress);
               })
-              notify.success("stealth ok", addresses.length + " payments detected");
+              notify.success(_('stealth ok'), _('{0} payments detected', addresses.length));
           } else {
-              notify.success("stealth ok");
+              notify.success(_('stealth ok'));
           }
       }
 

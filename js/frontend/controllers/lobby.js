@@ -7,7 +7,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   var selectedChannel;
 
-  controllers.controller('LobbyCtrl', ['$scope', 'notify', '$timeout', 'modals', function($scope, notify, $timeout, modals) {
+  controllers.controller('LobbyCtrl', ['$scope', 'notify', '$timeout', 'modals', '_Filter', function($scope, notify, $timeout, modals, _) {
 
   var transport, currentChannel;
 
@@ -54,7 +54,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       var detail = "This will send long term pairing information and identity pubkeys, are you sure?";
       modals.open('confirm', {message: message, detail: detail}, function() {
           currentChannel.sendPairing(identity.name, peer, address.stealth, function() {
-              notify.success("lobby", "pairing sent");
+              notify.success(_('lobby'), _('pairing sent'));
           });
       });
   };
@@ -76,9 +76,9 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           }
           $scope.anyPaired = true;
           $scope.selectedRequest.peer.nick = request.nick;
-          notify.success(request.nick + " added to contacts");
+          notify.success(_('{0} added to contacts', request.nick));
       } else {
-          notify.warning("Scam attempt", "Oops seems the signature was wrong");
+          notify.warning(_('Scam attempt'), _('Oops seems the signature was wrong'));
       }
 
       // For now just cancel
@@ -102,7 +102,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       // Send a beacon back to the contact
       if (peer.channel && peer.contact) {
-          notify.note("Sent a beacon back to the contact");
+          notify.note(_('Sent a beacon back to the contact'));
           sendBeacon(peer.channel, peer.contact);
       }
 
@@ -119,7 +119,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
               sent += 1;
           }
       });
-      notify.note("Sent " + sent + " beacons");
+      notify.note(_('Sent {0} beacons', sent));
   }
 
   // hide peers after 4 mins
@@ -151,7 +151,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           channelLink = new ChannelLink(name, $scope);
           channelLinks[name] = channelLink;
           channelLink.addCallback('subscribed', function() {
-              notify.success('channel', 'subscribed successfully');
+              notify.success(_('channel'), _('subscribed successfully'));
               $scope.lastTimestamp = Date.now();
               channelLink.channel.sendOpening();
               if(!$scope.$$phase) {
@@ -159,7 +159,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
               }
           });
           channelLink.addCallback('Contact', function(data) {
-              notify.success('contact', data.body.name);
+              notify.success(_('contact'), data.body.name);
               var peer = data.peer;
               $scope.newContact = data.body;
               $scope.newContact.pubKeyHex = peer.pubKeyHex;
@@ -300,7 +300,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
         var identity = DarkWallet.getIdentity();
         var msg = Protocol.ContactMsg(identity);
         currentChannel.postDH(peer.pubKey, msg, function() {
-            notify.success("lobby", "pairing sent");
+            notify.success(_('lobby'), _('pairing sent'));
         });
     };
     $scope.sendText = function() {
@@ -312,7 +312,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
         var onSent = function(err, data) {
           if (err) {
-              notify.error("error sending " + err);
+              notify.error(_('error sending'), err);
           }
         }
 
@@ -331,9 +331,9 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
         var newContact = {name: contact.name, address: contact.stealth, fingerprint: contact.fingerprint};
         if (!identity.contacts.findByAddress(contact.stealth)) {
             identity.contacts.addContact(newContact);
-            notify.success('Contact added');
+            notify.success(_('Contact added'));
         } else {
-            notify.warning('Contact already present');
+            notify.warning(_('Contact already present'));
         }
         $scope.newContact = null;
     };

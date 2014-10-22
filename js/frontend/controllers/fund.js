@@ -6,7 +6,7 @@
 define(['./module', 'darkwallet'],
 function (controllers, DarkWallet) {
 
-  controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', '$brc', function($scope, modals, notify, $brc) {
+  controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', '$brc', '_Filter', function($scope, modals, notify, $brc, _) {
 
   $scope.Object = Object;
 
@@ -40,10 +40,10 @@ function (controllers, DarkWallet) {
           if (finishSigning(fund, task)) {
               // Wait for notification from broadcasting
           } else {
-              notify.success('Imported', 'Signature imported');
+              notify.success(_('Imported'), _('Signature imported'));
           }
       } else {
-          notify.warning('Error importing', 'Cant verify');
+          notify.warning(_('Error importing'), _('Can\'t verify'));
       }
   };
 
@@ -62,12 +62,12 @@ function (controllers, DarkWallet) {
       try {
           frontTask = fund.importTransaction(form.newTx);
       } catch(e) {
-          notify.error('Error importing', e.message);
+          notify.error(_('Error importing'), e.message);
           return;
       }
 
       // Add to tasks
-      notify.success('Added transaction');
+      notify.success(_('Added transaction'));
   };
 
   /**
@@ -80,18 +80,18 @@ function (controllers, DarkWallet) {
       try {
           signed = fund.signTransaction(password, task, inputs);
       } catch (e) {
-          notify.warning("Invalid Password");
+          notify.warning(_('Invalid Password'));
           return;
       }
 
       if (!signed) {
-          notify.warning("Transaction was already signed by us");
+          notify.warning(_('Transaction was already signed by us'));
           return;
       }
       if (finishSigning(fund, task)) {
-          notify.success('Signed transaction and ready to go!');
+          notify.success(_('Signed transaction and ready to go!'));
       } else {
-          notify.success('Signed transaction');
+          notify.success(_('Signed transaction'));
       }
   };
 
@@ -105,17 +105,17 @@ function (controllers, DarkWallet) {
       try {
           signed = fund.signTxForeign(foreignKey, task);
       } catch (e) {
-          notify.error('Error importing', e.message);
+          notify.error(_('Error importing'), e.message);
       }
 
       if (!signed) {
-          notify.warning("Could not sign with the given key");
+          notify.warning(_('Could not sign with the given key'));
           return;
       }
       if (finishSigning(fund, task)) {
-          notify.success('Signed transaction and ready to go!');
+          notify.success(_('Signed transaction and ready to go!'));
       } else {
-          notify.success('Signed transaction');
+          notify.success(_('Signed transaction'));
       }
  
   }
@@ -132,7 +132,7 @@ function (controllers, DarkWallet) {
       if (inputs.length) {
           modals.password('Unlock password', function(password) { finishSignFundTx(password, fund, task, inputs); } );
       } else {
-          notify.error('Error importing', 'Transaction is not for this multisig');
+          notify.error(_('Error importing'), _('Transaction is not for this multisig'));
       }
   };
 

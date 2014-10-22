@@ -9,7 +9,7 @@
  * @constructor
  */
 define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require'], function (controllers, DarkWallet, Port, require) {
-  controllers.controller('NotificationsCtrl', ['$scope', '$window', 'modals', 'notify', '$brc', function($scope, $window, modals, notify, $brc) {
+  controllers.controller('NotificationsCtrl', ['$scope', '$window', 'modals', 'notify', '$brc', '_Filter', function($scope, $window, modals, notify, $brc, _) {
 
   $scope.tasks = [];
   $scope.modals = modals;
@@ -85,20 +85,20 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require']
           try {
               signed = fund.signTransaction(password, fundTask, inputs);
           } catch (e) {
-              notify.warning("Invalid Password");
+              notify.warning(_('Invalid Password'));
               return;
           }
 
           if (!signed) {
-              notify.warning("Transaction was already signed by us");
+              notify.warning(_('Transaction was already signed by us'));
               return;
           }
           var tx = fund.finishTransaction(fundTask);
           if (tx) {
               $brc.broadcast(tx, fundTask);
-              notify.success('Signed transaction and broadcasted transaction!');
+              notify.success(_('Signed transaction and broadcasted transaction!'));
           } else {
-              notify.success('Signed transaction');
+              notify.success(_('Signed transaction'));
           }
           if (!$scope.$$phase) {
               $scope.$apply();
