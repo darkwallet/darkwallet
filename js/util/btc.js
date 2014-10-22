@@ -32,7 +32,8 @@ define(['bitcoinjs-lib', 'util/stealth', 'crypto-js'], function(Bitcoin, Stealth
      */
     getInputAddress: function(anIn, versions) {
         if (!versions) throw Error("No versions!");
-        return Bitcoin.Address.fromInputScript(anIn.script, Bitcoin.networks[versions.network]).toString();
+        var address = Bitcoin.Address.fromInputScript(anIn.script, Bitcoin.networks[versions.network]);
+        return address ? address.toString() : address;
     },
 
     /*
