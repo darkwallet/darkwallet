@@ -288,7 +288,7 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
         return spends[0];
     }
     else {
-        var task = {tx: serializedTx, 'pending': pending, stealth: false};
+        var task = {tx: serializedTx, 'pending': pending, stealth: false, inPocket: this.multisig.address};
         var spend = {tx: tx, task: task};
 
         // add as task in the store
