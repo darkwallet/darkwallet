@@ -1,13 +1,12 @@
   <form class="bitid" ng-submit="login()" novalidate>
     <div class="row">
       <div class="small-12 columns">
-        <h3>{{_'Request for identification'|_}}</h3>
+        <h3>{{'Request for identification'|_}}</h3>
       </div>
     </div>
     <div class="row">
       <div class="small-12 columns">
-        <div class="row collapse">
-          {{'**{0}** is requesting that you identify yourself with a Bitcoin address. Do you want to proceed?'|_:site}}
+          <div class="row collapse" ng-bind-html="('**{0}** is requesting that you identify yourself with a Bitcoin address. Do you want to proceed?'|_:site)">
         </div>
         <div class="row collapse">
           <button class="button small radius">{{'Yes'|_}}</button>

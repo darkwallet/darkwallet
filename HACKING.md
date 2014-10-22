@@ -74,11 +74,23 @@ You can make a string translatable using the "_" filter:
 <p>{{'This string is translated to the system language'|_}}<p>
 ```
 
+You can use **strong** and *emphasis* markdown formatting syntax:
+
+```html
+<p ng-bind-html="('I love *darkwallet*'|_)"></p>
+```
+
 When you add or modify a new language string, run the following command:
 
 ```sh
 $ npm run i18n-update
 ```
+
+Having transifex client downloaded and [configured](http://docs.transifex.com/developer/client/setup#configuration), you can:
+
+```sh
+$ tx push -s # Push the sources
+$ tx pull -t # Pull the translations
 
 Testing
 -------

@@ -7,13 +7,13 @@
 			    <div ng-show="(vars.spend.metadata.fee>=100000)||(vars.spend.metadata.fee>vars.spend.metadata.total)">
 				<h3>{{'Warning: High Fee!'|_}}</h3>
 			        <div ng-show="(vars.spend.metadata.fee>=100000)&&(vars.spend.metadata.fee<1000000)">
-					<p>{{'Your fee is bigger than reasonable (greater or equal to 1 mBTC), please **double check** before sending.'|_}}</p>
+					<p ng-bind-html="('Your fee is bigger than reasonable (greater or equal to 1 mBTC), please **double check** before sending.'|_)"></p>
 			        </div>
 			        <div ng-show="vars.spend.metadata.fee>=1000000">
-					<p>{{'Your fee is insanely high (greater or equal to 10 mBTC), please **triple check** before sending.'|_}}</p>
+					<p ng-bind-html="('Your fee is insanely high (greater or equal to 10 mBTC), please **triple check** before sending.'|_)"></p>
 			        </div>
 			        <div ng-show="vars.spend.metadata.fee>vars.spend.metadata.total">
-					<p>{{'Your fee is greater than your sent amount, please **triple check** before sending.'|_}}</p>
+					<p ng-bind-html="('Your fee is greater than your sent amount, please **triple check** before sending.'|_)"></p>
 			        </div>
 			    </div>
 
