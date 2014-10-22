@@ -50,7 +50,7 @@ define(['model/identity'], function(Identity) {
           receive: true,
           multisig: true
         },
-        language: 'en-US'
+        language: 'en_US'
       });
       expect(identity.store).toBeDefined();
       expect(identity.wallet).toBeDefined();
