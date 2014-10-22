@@ -64,11 +64,15 @@ describe('Backup controller', function() {
               callback('p4ssw0rd');
             }
           };
+          var _ = function(s) {
+            return s;
+          }
           backupController = $controller('BackupsCtrl', {
             $scope: scope,
             $window: window,
             notify: notify,
-            modals: modals
+            modals: modals,
+            _Filter: _
           });
           done();
         }]);

@@ -7,7 +7,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
   var convert = Bitcoin.convert;
   var CryptoJS = Bitcoin.CryptoJS;
 
-  controllers.controller('BitIdCtrl', ['$scope', '$window', '$http', 'notify', '$location', function($scope, $window, $http, notify, $location) {
+  controllers.controller('BitIdCtrl', ['$scope', '$window', '$http', 'notify', '$location', '_Filter', function($scope, $window, $http, notify, $location, _) {
       $scope.site = '';
       var bitid_uri;
       var callback_uri;
@@ -78,10 +78,10 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
         
         $http(params)
           .success(function(data, status, headers, config) {
-            notify.success('Success');
+            notify.success(_('Success'));
             $scope.close();
           }).error(function(data, status, headers, config) {
-            notify.error('Error');
+            notify.error(_('Error'));
           });
       };
       

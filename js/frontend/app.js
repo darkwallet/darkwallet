@@ -7,20 +7,23 @@
 define([
     'require',
     'angular',
+    'available_languages',
     'angular-route',
     'angular-animate',
     'angular-moment',
     'mm.foundation',
     'angular-xeditable',
+    'angular-translate',
+    'angular-translate-loader-static-file',
     'ngProgress',
     'toaster',
     'frontend/controllers/index',
     'frontend/directives/index',
     'frontend/filters/index',
     'frontend/providers/index'
-], function (require, angular) {
+], function (require, angular, AvailableLanguages) {
     var app = angular.module('DarkWallet', [
-      'ngRoute', 'mm.foundation', 'xeditable',
+      'ngRoute', 'mm.foundation', 'xeditable', 'pascalprecht.translate',
       'ngProgress', 'ngAnimate', 'toaster', 'angularMoment',
       'DarkWallet.controllers',
       'DarkWallet.directives',
@@ -30,6 +33,14 @@ define([
     require(['domReady!'], function (document) {
         // * NOTE: the ng-app attribute should not be on the index.html when using ng.bootstrap
         angular.bootstrap(document, ['DarkWallet']);
+    });
+    // angular-translate configuration.
+    app.config(function($translateProvider) {
+      $translateProvider.useStaticFilesLoader({
+        prefix: '../i18n/',
+        suffix: '.json'
+      });
+      $translateProvider.preferredLanguage(AvailableLanguages.preferedLanguage());
     });
     // In case we need to initialize something after the application is created.
     app.initialize = function() {

@@ -1,18 +1,18 @@
-<h3 ng-show="!tools.open || tools.verifyOpen">Verify</h3>
-<a class="button fa fa-check-square-o postfix" ng-click="tools.open=true;tools.verifyOpen=true" ng-show="!tools.open" novalidate>Verify</a>
+<h3 ng-show="!tools.open || tools.verifyOpen">{{'Verify'|_}}</h3>
+<a class="button fa fa-check-square-o postfix" ng-click="tools.open=true;tools.verifyOpen=true" ng-show="!tools.open" novalidate>{{'Verify'|_}}</a>
 <form name="verifyForm" ng-show="tools.verifyOpen" ng-submit="verifyText()">
-    <label>Text:</label>
+    <label>{{'Text'|_}}:</label>
     <textarea required ng-model="tools.verifyText" rows="4" cols="50"></textarea>
-    <label>Address:</label>
-    <input type="text" ng-model="tools.verifyAddress" placeholder="Address that signed..."></input>
-    <label>Signature:</label>
-    <input type="text" ng-model="tools.verifySig" placeholder="Signature..."></input>
+    <label>{{'Address'|_}}:</label>
+    <input type="text" ng-model="tools.verifyAddress" placeholder="{{'Address that signed...'|_}}"></input>
+    <label>{{'Signature:'|_}}</label>
+    <input type="text" ng-model="tools.verifySig" placeholder="{{'Signature...'|_}}"></input>
     <div class="row collapse">
       <div class="medium-6 columns">
-        <button type="submit" class="button fa fa-check-square-o postfix">Verify</button>
+        <button type="submit" class="button fa fa-check-square-o postfix">{{'Verify'|_}}</button>
       </div>
       <div class="medium-6 columns">
-        <a class="button alert fa fa-times postfix" ng-click="tools.verifyOpen=false;tools.open=false;">Cancel</a>
+        <a class="button alert fa fa-times postfix" ng-click="tools.verifyOpen=false;tools.open=false;">{{'Cancel'|_}}</a>
       </div>
     </div>
 

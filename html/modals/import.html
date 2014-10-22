@@ -1,40 +1,40 @@
 <div class="large-10 large-centered columns panel radius topmargin" ng-controller="BackupsCtrl">
     <div ng-show="!step">
-        <h3>Import from file</h3>
+        <h3>{{'Import from file'|_}}</h3>
         <input type="file" id="import-wallet-file"></input>
     </div>
     <div ng-show="step=='unlock'">
         <h3>{{importFile.name}} <span class="label radius">{{importFile.size}} kB</span></h3>
-        <p>This file is password protected, write the password to unlock</p>
+        <p>{{'This file is password protected, write the password to unlock'|_}}</p>
         <form name="passwordInput" ng-submit="unlockBackup()">
-            <input ng-model="password" type="password" placeholder="Write your password..." autofocus required />
+            <input ng-model="password" type="password" placeholder="{{'Write your password...'|_}}" autofocus required />
             <code ng-show="error">{{error}}</code>
-            <button ng-disabled="!password" class="button small fa fa-check radius glow" type="submit"> OK</button>
-            <a class="button small alert radius fa fa-times" ng-click="importfile.name=false"> Cancel</a>
+            <button ng-disabled="!password" class="button small fa fa-check radius glow" type="submit"> {{'Accept'|_}}</button>
+            <a class="button small alert radius fa fa-times" ng-click="importfile.name=false"> {{'Cancel'|_}}</a>
         </form>
     </div>
 
     <div ng-show="step=='select'">
-        <h4>Available identities:</h4>
+        <h4>{{'Available identities'|_}}:</h4>
         <div class="row" ng-repeat="identity in toLoad">
             <div class="columns small-3">
         	<identicon icon-size="32" hash="identity.hash" title="{{identity.hash}}"></identicon>
                 {{identity.name}}
             </div>
             <div class="columns small-3">
-                <p>has {{identity.contacts}} contacts and {{identity.pubKeys}} keys.</p>
+                <p>{{'has {0} contacts and {1} keys.'|_:identity.contacts:identity.pubKeys}}</p>
             </div>
             <div class="columns small-3">
                 <p><b>v.{{identity.version}}</b></p>
             </div>
             <div class="columns small-3">
-                <button class="button small radius" ng-click="loadBackup(identity)">Load</button>
+                <button class="button small radius" ng-click="loadBackup(identity)">{{'Load'|_}}</button>
             </div>
         </div>
         <div class="row">
              <div class="columns small-3">
-                <button ng-show="toLoad.length>1" class="button small radius" ng-click="loadBackup();">Load All</button>
-                <a class="button alert small" ng-click="cancel()">Cancel</a>
+                <button ng-show="toLoad.length>1" class="button small radius" ng-click="loadBackup();">{{'Load all'|_}}</button>
+                <a class="button alert small" ng-click="cancel()">{{'Cancel'|_}}</a>
             </div>
         </div>
     </div>
@@ -42,16 +42,16 @@
         <h4>Identity loaded, load more?</h4>
         <div class="row">
              <div class="columns small-3">
-                 <button class="button small radius" ng-click="step='select'">Yes</button>
+                 <button class="button small radius" ng-click="step='select'">{{'Yes'|_}}</button>
             </div>
              <div class="columns small-3">
-                 <a class="button alert small" ng-click="ok()">No</a>
+                 <a class="button alert small" ng-click="ok()">{{'No'|_}}</a>
             </div>
         </div>
     </div>
     <div class="text-right" ng-show="!step">
-		<a class="button alert small radius fa fa-times" ng-click="cancel()"> Cancel</a>
-        <button class="button small radius glow fa fa-check" type="submit" ng-click="ok(vars.password)"> Import</button>
+		<a class="button alert small radius fa fa-times" ng-click="cancel()"> {{'Cancel'|_}}</a>
+        <button class="button small radius glow fa fa-check" type="submit" ng-click="ok(vars.password)"> {{'Import'|_}}</button>
     </div>
 </div>
 <div class="qractions">

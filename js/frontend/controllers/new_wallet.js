@@ -9,13 +9,15 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWallet, Mnemonic) {
-  controllers.controller('NewWalletCtrl', ['$scope', '$location', 'notify', function($scope, $location, notify) {
+define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function (controllers, DarkWallet, Mnemonic, AvailableLanguages) {
+  controllers.controller('NewWalletCtrl', ['$scope', '$location', 'notify', '$translate', '_Filter', function($scope, $location, notify, $translate, _) {
 
   $scope.step = 1;
+  $scope.languages = AvailableLanguages;
   $scope.form = {
     create_or_restore: 'create',
-    network: 'bitcoin'
+    network: 'bitcoin',
+    language: AvailableLanguages.preferedLanguage()
   };
 
   $scope.nextStep = function() {
@@ -25,11 +27,15 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
   $scope.previousStep = function() {
     $scope.step--;
   };
+  
+  $scope.changeLanguage = function() {
+    $translate.use($scope.form.language);
+  };
 
   $scope.passwordSubmit = function() {
     // Check that passwords match.
     if ($scope.form.passwd != $scope.form.passwd2) {
-      $scope.message = 'Passwords are not the same';
+      $scope.message = _('Passwords are not the same');
       return;
     }
 
@@ -44,7 +50,7 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
 
   $scope.mnemonicSubmit = function() {
     if ($scope.form.mnemonic && $scope.form.mnemonic != $scope.form.mnemonic2) {
-      $scope.message2 = 'Mnemonics are not the same';
+      $scope.message2 = _('Mnemonics are not the same');
       return;
     }
     
@@ -53,7 +59,7 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
     /* check that it's a valid mnemonic */
     for (var i = 0; i < 12; i++) {
         if (Mnemonic.words.indexOf(words[i]) == -1) {
-            notify.error('invalid mnemonic');
+            notify.error(_('invalid mnemonic'));
             return;
         }
     }
@@ -62,7 +68,9 @@ define(['./module', 'darkwallet', 'mnemonicjs'], function (controllers, DarkWall
 
     var walletService = DarkWallet.service.wallet;
 
-    walletService.createIdentity($scope.form.name, $scope.form.network, mnemonic.toHex(), $scope.form.passwd, function() {
+    walletService.createIdentity($scope.form.name, $scope.form.network, mnemonic.toHex(), $scope.form.passwd, function(identity) {
+        identity.settings.language = $scope.form.language;
+        identity.store.save();
         $location.path('#dashboard');
     });
   }

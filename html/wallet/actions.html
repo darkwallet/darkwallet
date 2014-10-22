@@ -1,7 +1,7 @@
 <div class="row" ng-controller="PocketActionCtrl">
   <div class="medium-4 columns">
 	  <div class="panel radius">
-		  <h5>Pocket</h5>
+		  <h5>{{'Pocket'|_}}</h5>
 	<!--	  <div class="row collapse">
 			<div class="small-3 columns">
 				<a class="button prefix radius">Up</a>
@@ -16,46 +16,46 @@
 	  <div class="row collapse">
 		  <div class="medium-12 columns">
 			<form name="pocketRenameForm" ng-show="renamingPocket" ng-submit="finalizeRenamePocket(pocket, forms.pocketName)">
- 			         <input type="text" autofocus ng-model="forms.pocketName"></input><button class="button square righted fa fa-check" type="submit"></button>
+ 			         <input type="text" autofocus ng-model="forms.pocketName"><button class="button square righted fa fa-check" type="submit"></button>
 		        </form>
 	
-		        <a href="" ng-click="renamePocket(pocket)" class="fa button postfix fa-terminal">Rename</a>
-		        <a class="fa button alert postfix fa-trash-o" ng-click="deletePocket(pocket)" ng-show="pocket.index !== 0">Delete</a>
+		        <a href="" ng-click="renamePocket(pocket)" class="fa button postfix fa-terminal">{{'Rename'|_}}</a>
+		        <a class="fa button alert postfix fa-trash-o" ng-click="deletePocket(pocket)" ng-show="pocket.index !== 0">{{'Delete'|_}}</a>
 		  </div>
 	  </div>
   	</div>
   </div>
   <div class="medium-4 columns" ng-show="!pocket.readOnly">
 	  <div class="panel radius">
-		<h5>Mix funds</h5>
-	  	<a ng-click="setMixing(pocket)" ng-class="{'fa-square-o':!pocket.mixing, 'fa-check-square-o': pocket.mixing}" class="fa button postfix">Mix funds on this pocket (CoinJoin)</a>
-		<h4 ng-show="pocket.mixing">Mixing Options</h4>
+		<h5>{{'Mix funds'|_}}</h5>
+	  	<a ng-click="setMixing(pocket)" ng-class="{'fa-square-o':!pocket.mixing, 'fa-check-square-o': pocket.mixing}" class="fa button postfix">{{'Mix funds on this pocket (CoinJoin)'|_}}</a>
+		<h4 ng-show="pocket.mixing">{{'Mixing Options'|_}}</h4>
 		<form name="mixingOptionsForm" ng-show="pocket.mixing" ng-submit="setMixingOptions(pocket, forms.mixingOptions)">
- 		        Budget: <input type="text" autofocus ng-model="forms.mixingOptions.budget" tooltip="Maximum budget to spend on fees"></input>
- 		        <p tooltip="Amount already spent mixing">Spent: {{forms.mixingOptions.spent}}</p>
- 		        <p tooltip="Target number of mixings">Target mixings: {{forms.mixingOptions.mixings}}</p>
-			<button class="button postfix fa fa-check" type="submit" ng-disabled="pocket.mixingOptions.budget===forms.mixingOptions.budget">Save</button>
+ 		        {{'Budget'|_}}: <input type="text" autofocus ng-model="forms.mixingOptions.budget" tooltip="{{'Maximum budget to spend on fees'|_}}">
+ 		        <p tooltip="{{'Amount already spent mixing'|_}}">{{'Spent'|_}}: {{forms.mixingOptions.spent}}</p>
+ 		        <p tooltip="{{'Target number of mixings'|_}}">{{'Target mixings'|_}}: {{forms.mixingOptions.mixings}}</p>
+			<button class="button postfix fa fa-check" type="submit" ng-disabled="pocket.mixingOptions.budget===forms.mixingOptions.budget">{{'Save'|_}}</button>
 	        </form>
 	  </div>
   </div>
   <div class="medium-4 columns" ng-show="!pocket.readOnly">
 	<div class="panel radius">
-		<h5>Move funds</h5>
-	    <a href="" dropdown-toggle="#pockets" class="fa button postfix fa-share">To another pocket</a>
+		<h5>{{'Move funds'|_}}</h5>
+	    <a href="" dropdown-toggle="#pockets" class="fa button postfix fa-share">{{'To another pocket'|_}}</a>
 	    <ul id="pockets" class="f-dropdown">
-	      <li class="colorhead"><h6>My pockets</h6></li>
+	      <li class="colorhead"><h6>{{'My pockets'|_}}</h6></li>
           <li ng-show="aPocket && $index != pocket.index" ng-repeat="aPocket in hdPockets track by $index">
             <a ng-click="moveFunds('pocket', $index)">{{aPocket.name}}</a>
 	      </li>
-	      <li class="colorhead"><h6>Multisig funds</h6></li>
+	      <li class="colorhead"><h6>{{'Multisig funds'|_}}</h6></li>
 	      <li ng-repeat="fund in allFunds track by $index">
 	        <a ng-click="moveFunds('multisig', $index)">{{fund.name}}</a>
 	      </li>
 	    </ul>
 	  
-	    <a href="" dropdown-toggle="#identities" class="fa button nomarginbottom disabled postfix fa-reply-all">To another identity</a>
+	    <a href="" dropdown-toggle="#identities" class="fa button nomarginbottom disabled postfix fa-reply-all">{{'To another identity'|_}}</a>
 	    <ul id="identities" class="f-dropdown">
-	      <li class="colorhead"><h6>Identities</h6></li>
+	      <li class="colorhead"><h6>{{'Identities'|_}}</h6></li>
 	      <li ng-repeat="identity in availableIdentities track by $index">
 	        <a ng-click="moveFunds('identity', $index)">{{identity}}</a>
 	      </li>

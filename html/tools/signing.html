@@ -1,16 +1,16 @@
-<h3 ng-show="!tools.open || tools.signOpen">Signing</h3>
-<a class="button fa fa-pencil postfix" ng-click="tools.open=true;tools.signOpen=true" ng-show="!tools.open" novalidate>Sign</a>
+<h3 ng-show="!tools.open || tools.signOpen">{{'Signing'|_}}</h3>
+<a class="button fa fa-pencil postfix" ng-click="tools.open=true;tools.signOpen=true" ng-show="!tools.open" novalidate>{{'Sign'|_}}</a>
 <form name="signingForm" ng-show="tools.signOpen" ng-submit="signText()">
-    <label>Text:</label>
+    <label>{{'Text'|_}}:</label>
     <textarea required ng-model="tools.signText" rows="4" cols="50"></textarea>
-    <label>Address:</label>
-    <input required type="text" ng-model="tools.signAddress" placeholder="Address to sign with..."></input>
+    <label>{{'Address'|_}}:</label>
+    <input required type="text" ng-model="tools.signAddress" placeholder="{{'Address to sign with...'|_}}"></input>
     <div class="row collapse">
       <div class="medium-6 columns">
-        <button type="submit" class="button fa fa-pencil postfix">Sign</button>
+        <button type="submit" class="button fa fa-pencil postfix">{{'Sign'|_}}</button>
       </div>
       <div class="medium-6 columns">
-        <a class="button alert fa fa-times postfix" ng-click="tools.signOpen=false;tools.open=false;">Cancel</a>
+        <a class="button alert fa fa-times postfix" ng-click="tools.signOpen=false;tools.open=false;">{{'Cancel'|_}}</a>
       </div>
     </div>
 </form>

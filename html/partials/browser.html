@@ -1,6 +1,6 @@
 <div>
 <div class="row">
-  <div class="small-12 columns"><h3>Browser</h3></div>
+  <div class="small-12 columns"><h3>{{'Browser'|_}}</h3></div>
 </div>
 <div class="row panel setback net">
   <form ng-submit="search()">
@@ -9,14 +9,14 @@
 		<a href="" tooltip="Select from contacts" ng-click="modals.open('pick-contact', {field: txHash}, search)" class="fa button square righted fa-users"></a>
       </div>
       <div class="large-2 columns">
-          <button class="button postfix fa fa-search">Search</button>
+          <button class="button postfix fa fa-search">{{'Search'|_}}</button>
       </div>
   </form>
 </div>
 
 <div class="row panel" ng-if="txName">
      <div class="large-2 columns">
-          Transaction
+          {{'Transaction'|_}}
      </div>
      <div class="large-10 columns">
           {{txName}}
@@ -24,7 +24,7 @@
 </div>
 <div class="row panel setback coins transactions" ng-if="txName">
       <div class="large-6 columns">
-	  <h4>Inputs</h4>
+	  <h4>{{'Inputs'|_}}</h4>
 	  <div class="row" ng-repeat="anIn in tx.ins">
 	      <div class="large-12 columns">
 	          <div ng-show="anIn.address.notes!='coinbase'"><a ng-safebrowser="anIn.outpoint.hash">{{anIn.outpoint.hash.slice(0,48)}}...</a>:{{anIn.outpoint.index}}</div>
@@ -34,7 +34,7 @@
 	  </div>
       </div>
       <div class="large-6 columns">
-          <h4>Outputs</h4>
+          <h4>{{'Outputs'|_}}</h4>
           <div class="row" ng-repeat="anOut in tx.outs">
 	      <div class="large-8 columns">
 		      <a ng-safebrowser="anOut.address.toString()">{{anOut.address.toString()}}</a>
@@ -49,7 +49,7 @@
 
 <div class="row panel" ng-if="address">
      <div class="large-2 columns">
-          Address
+          {{'Address'|_}}
      </div>
      <div class="large-7 columns">
           {{address}}
@@ -57,35 +57,35 @@
      <div class="large-3 columns transactions" ng-if="!fetching">
         <div class="row">
            <div class="columns small-3">
-              In:
+              {{'In'|_}}:
           </div>
            <div class="columns small-9">
-              +{{balanceIn.confirmed|currencyPresenter}} <span ng-show="balanceIn.unconfirmed">unconfirmed: {{balanceIn.unconfirmed|currencyPresenter}}</span>
+              +{{balanceIn.confirmed|currencyPresenter}} <span ng-show="balanceIn.unconfirmed">{{'unconfirmed'|_}}: {{balanceIn.unconfirmed|currencyPresenter}}</span>
           </div>
         </div>
         <div class="row">
            <div class="columns small-3">
-              Out:
+              {{'Out'|_}}:
           </div>
            <div class="columns small-9">
-              -{{balanceOut.confirmed|currencyPresenter}} <span ng-show="balanceOut.unconfirmed">unconfirmed: {{balanceOut.unconfirmed|currencyPresenter}}</span>
+              -{{balanceOut.confirmed|currencyPresenter}} <span ng-show="balanceOut.unconfirmed">{{'unconfirmed'|_}}: {{balanceOut.unconfirmed|currencyPresenter}}</span>
           </div>
         </div>
         <div class="row">
            <div class="columns small-3">
-              Total:
+              {{'Total'|_}}:
           </div>
            <div class="columns small-9">
-              {{balance.confirmed|currencyPresenter}} <span ng-show="balance.unconfirmed">unconfirmed: {{balance.unconfirmed|currencyPresenter}}</span>
+              {{balance.confirmed|currencyPresenter}} <span ng-show="balance.unconfirmed">{{'unconfirmed'|_}}: {{balance.unconfirmed|currencyPresenter}}</span>
           </div>
         </div>
      </div>
 </div>
 <div ng-cloak class="row panel" ng-if="address && !fetching && (!history || !history.length)">
-    No history found for this address
+    {{'No history found for this address'|_}}
 </div>
 <div ng-cloak class="row panel" ng-if="fetching">
-    Requesting information from the server... please wait
+    {{'Requesting information from the server... please wait'|_}}
 </div>
 <div class="row panel setback coins transactions" ng-if="history">
       <div class="row">

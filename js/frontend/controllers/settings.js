@@ -1,9 +1,9 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyformat'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic, CurrencyFormat) {
+define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyformat', 'available_languages'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic, CurrencyFormat, AvailableLanguages) {
 
   // Controller
-  controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', '$animate', function($scope, notify, $animate) {
+  controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', '$animate', '$translate', '_Filter', function($scope, notify, $animate, $translate, _) {
   var identity = DarkWallet.getIdentity();
 
   // Available fiat currencies
@@ -11,6 +11,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
   $scope.selectedCurrency = identity.settings.currency;
   $scope.selectedFiat = identity.settings.fiatCurrency;
   $scope.defaultFee = CurrencyFormat.asBtc(identity.wallet.fee);
+  $scope.languages = AvailableLanguages;
 
   $scope.passwordChanged = function() {
       if ($scope.newPassword === $scope.newPasswordRepeat) {
@@ -18,7 +19,7 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
           var success = identity.changePassword($scope.oldPassword, $scope.newPassword);
           if (success) {
               identity.store.save();
-              notify.note('Password changed');
+              notify.note(_('Password changed'));
               $scope.oldPassword = $scope.newPassword = $scope.newPasswordRepeat = '';
               $scope.incorrectPassword = false;
           } else {
@@ -54,6 +55,10 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
       $animate.enabled($scope.settings.animations.enabled);
       $scope.storeSettings();
   };
+  $scope.languageChanged = function() {
+      $translate.use(identity.settings.language);
+      $scope.storeSettings();
+  };
   $scope.storeSettings = function() {
       var identity = DarkWallet.getIdentity();
       identity.store.save();
@@ -63,11 +68,11 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
   $scope.setIdentityName = function(newName) {
       var keyRing = DarkWallet.getKeyRing();
       if (keyRing.availableIdentities.indexOf(newName) > -1) {
-          notify.warning("You have another identity with that name!");
+          notify.warning(_('You have another identity with that name!'));
           return;
       }
       DarkWallet.service.wallet.renameIdentity(newName, function() {
-          notify.success("Identity renamed to " + newName);
+          notify.success(_('Identity renamed to {0}', newName));
           if (!$scope.$$phase) {
               $scope.$apply();
           }

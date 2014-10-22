@@ -12,6 +12,8 @@ require.config({
     'angular-route': '../vendors/angular-route/angular-route.min',
     'mm.foundation': '../vendors/angular-foundation/mm-foundation-tpls.min',
     'angular-xeditable': '../vendors/angular-xeditable/dist/js/xeditable.min',
+    'angular-translate': '../vendors/angular-translate/angular-translate.min',
+    'angular-translate-loader-static-file': '../vendors/angular-translate-loader-static-files/angular-translate-loader-static-files.min',
     'moment': '../vendors/moment/min/moment-with-langs.min',
     'angular-moment': '../vendors/angular-moment/angular-moment.min',
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
@@ -31,7 +33,9 @@ require.config({
     'darkwallet_gateway': "../vendors/darkwallet_gateway/client/gateway",
     
     'domReady': '../vendors/requirejs-domready/domReady',
-    'sjcl': 'util/fixes'
+    'sjcl': 'util/fixes',
+    
+    'available_languages': '../i18n/_index'
   },
   
   /**
@@ -52,6 +56,12 @@ require.config({
     },
     'angular-xeditable': {
       deps: ['angular']
+    },
+    'angular-translate': {
+      deps: ['angular']
+    },
+    'angular-translate-loader-static-file': {
+      deps: ['angular', 'angular-translate']
     },
     'ngProgress': {
       deps: ['angular']

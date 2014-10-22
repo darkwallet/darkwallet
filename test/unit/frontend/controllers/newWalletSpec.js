@@ -7,7 +7,7 @@ define(['angular-mocks', 'testUtils'],
 function (mocks, testUtils) {
   describe('New wallet controller', function() {
 
-    var newWalletCtrl, scope, $location, _location, DarkWallet, pars = {};
+    var newWalletCtrl, scope, $location, _location, $translate, _lang, DarkWallet, pars = {};
 
     beforeEach(function (done) {
       testUtils.stub('darkwallet', {
@@ -18,7 +18,7 @@ function (mocks, testUtils) {
                 pars.network = network;
                 pars.secret = secret;
                 pars.password = password;
-                callback();
+                callback({settings:{}, store:{save:function(){}}});
             }
           }
         }
@@ -33,11 +33,17 @@ function (mocks, testUtils) {
             warning: function(){},
             error: function(){}
           };
+          var _ = function(s) {
+            return s;
+          }
           scope = $rootScope.$new();
           $location = {path: function(location){
               _location = location;
           }};
-          newWalletCtrl = $controller('NewWalletCtrl', {$scope: scope, $location: $location, notify: notify});
+          $translate = {use: function(lang) {
+              _lang = lang;
+          }};
+          newWalletCtrl = $controller('NewWalletCtrl', {$scope: scope, $location: $location, notify: notify, _Filter: _, $translate: $translate});
           done();
         }]);
       });

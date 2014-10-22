@@ -3,7 +3,7 @@
 define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (controllers, DarkWallet, Bitcoin, Stealth) {
 
   // Controller
-  controllers.controller('SigningCtrl', ['$scope', 'notify', 'modals', function($scope, notify, modals) {
+  controllers.controller('SigningCtrl', ['$scope', 'notify', 'modals', '_Filter', function($scope, notify, modals, _) {
 
   /**
    * Message formatting
@@ -77,7 +77,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
           try {
               parsed = parseText(text);
           } catch(e) {
-              notify.error('Error decoding', e.message);
+              notify.error(_('Error decoding'), e.message);
               return;
           }
           sigText = parsed.signature;
@@ -87,17 +87,17 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
           text = parsed.text;
       }
       if (!sigText || !address) {
-          notify.error('Could not find address or signature');
+          notify.error(_('Could not find address or signature'));
           return;
       }
       var sig = Bitcoin.convert.base64ToBytes(sigText);
       var res = Bitcoin.Message.verify(address, sig, text);
       if (res) {
           $scope.tools.status = 'signature ok by ' + address;
-          notify.success('Signature ok');
+          notify.success(_('Signature ok'));
       } else {
           $scope.tools.status = 'invalid signature';
-          notify.warning('Invalid signature');
+          notify.warning(_('Invalid signature'));
       }
       $scope.tools.output = '';
       $scope.verifyOpen = false;
@@ -127,9 +127,9 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
       var identity = DarkWallet.getIdentity();
       var walletAddress = identity.wallet.getWalletAddress(address);
       if (!walletAddress) {
-          notify.warning("Incorrect address for this wallet");
+          notify.warning(_('Incorrect address for this wallet'));
       } else if (walletAddress.type == 'readonly' || walletAddress.type == 'multisig') {
-          notify.warning("Can't sign with readonly or multisig addresses");
+          notify.warning(_('Can\'t sign with readonly or multisig addresses'));
       } else {
           modals.password('Unlock password', function(password) {
               try {
@@ -141,12 +141,12 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
                       $scope.tools.status = 'ok';
                       $scope.tools.signOpen = false;
                       $scope.tools.open = false;
-                      notify.success("Signed");
+                      notify.success(_('Signed'));
                   });
                   Stealth.quirk = false;
               } catch (e) {
                   Stealth.quirk = false;
-                  notify.error('Incorrect password', e.message);
+                  notify.error(_('Incorrect password'), e.message);
               }
           } );
       }

@@ -3,7 +3,7 @@
 define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWallet, Scanner) {
 
   // Controller
-  controllers.controller('ScanningCtrl', ['$scope', 'notify', '$wallet', function($scope, notify, $wallet) {
+  controllers.controller('ScanningCtrl', ['$scope', 'notify', '$wallet', '_Filter', function($scope, notify, $wallet, _) {
 
   $scope.scanning = false;
   $scope.scanStatus = "";
@@ -77,21 +77,21 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
   // Scan finished callback
   var onScanFinish = function(err, results, pocketAddressesUsed) {
       if (err) {
-          notify.error("Scanning", err.message || ""+err);
+          notify.error(_('Scanning'), err.message || ""+err);
       } else {
           $scope.scanning = false;
           $scope.scanStatus = $scope.scanner.status;
           $scope.scanner = undefined;
           createAddresses(results, pocketAddressesUsed);
 
-          notify.success("Scanning", "Finished. Found " + results.length + " addresses");
+          notify.success(_('Scanning'), _('Finished. Found {0} addresses', results.length));
       }
   };
 
   // Scan all addresses from seed
   $scope.scanSeed = function() {
       $scope.scanning = true;
-      notify.note("Start Scanning");
+      notify.note(_('Start Scanning'));
       $scope.scanned = {max: 100, scanned: 0};
       $scope.scanStatus = "Scanning...";
       $scope.scanProgress = 0;

@@ -61,7 +61,7 @@ var modals = {
     sounds.play('keygenEnd');
     var pars = BtcUtils.parseURI(data);
     if (!pars || !pars.address) {
-      notify.warning('URI not supported');
+      notify.warning('URI not supported'); 
       return;
     }
     if (pars.amount !== undefined && DarkWallet.getIdentity().settings.currency === 'mBTC') {

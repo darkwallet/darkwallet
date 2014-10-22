@@ -37,12 +37,16 @@ describe('Connection notify controller', function() {
             warning: function(){},
             error: function(){}
           };
+          var _ = function(s) {
+            return s;
+          }
           spyOn(notify, 'success');
           spyOn(notify, 'warning');
           spyOn(notify, 'error');
           connectionNotifyController = $controller('ConnectionNotifyCtrl', {
             $scope: scope,
-            notify: notify
+            notify: notify,
+            _Filter: _
           });
           done();
         }]);
