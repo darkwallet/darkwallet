@@ -147,41 +147,59 @@ MultisigFund.prototype.organizeSignatures = function(hexSigs) {
 /**
  * Check if we have enough signatures and put them into the transaction
  */
-MultisigFund.prototype.finishTransaction = function(spend) {
+MultisigFund.prototype.finishTransaction = function(spend, incomplete) {
     var self = this;
     var multisig = this.multisig;
     var script = Bitcoin.Script.fromHex(multisig.script);
 
     var finished = true;
+    var builder = Bitcoin.TransactionBuilder.fromTransaction(spend.tx);
     spend.task.pending.forEach(function(input) {
         var hexSigs = self.organizeSignatures(input.signatures);
 
-        if (Object.keys(input.signatures).length >= multisig.m) {
-            // convert inputs to buffers
-            var sigs = hexSigs.map(function(sig) {return new Bitcoin.Buffer(sig, 'hex');});
-            // apply multisigs
-            spend.tx.ins[input.index].script = Bitcoin.scripts.multisigInput(sigs, script);
+        if (Object.keys(input.signatures).length >= multisig.m || incomplete) {
+            // convert inputs to signatures
+            var sigs = hexSigs.map(function(sig) {return Bitcoin.ECSignature.fromDER(new Bitcoin.Buffer(sig, 'hex'));});
+            // add signatures to the builder
+            if (!builder.signatures[input.index]) {
+                builder.signatures[input.index] = {hashType: Bitcoin.Transaction.SIGHASH_ALL, pubKeys: [], redeemScript: script, scriptType: "multisig", signatures: []};
+            }
+            builder.signatures[input.index].signatures = sigs;
         } else {
             finished = false;
         }
     });
     if (finished) {
+        spend.tx = builder.buildIncomplete();
         spend.task.tx = spend.tx.toHex();
         return spend.tx;
     }
 };
 
+MultisigFund.prototype.importInputSignature = function(tx, sig, input, script) {
+    var added;
+    var txHashBuf = tx.hashForSignature(input.index, script, 1);
+    this.multisig.pubKeys.forEach(function(pubKeyBytes, pIdx) {
+        var pubKey = Bitcoin.ECPubKey.fromBytes(pubKeyBytes);
+        if (pubKey.verify(txHashBuf, sig)) {
+            input.signatures[pIdx] = sig.toDER().toString('hex');
+            added = true;
+        }
+    });
+    return added;
+}
 
 /**
  * Import a signature
  */
 MultisigFund.prototype.importSignature = function(sigHex, spend) {
+    var self = this;
     var added = false;
     var multisig = this.multisig;
 
     var sig;
     try {
-       sig = new Bitcoin.Buffer(sigHex, 'hex');
+       sig = Bitcoin.ECSignature.fromDER(new Bitcoin.Buffer(sigHex, 'hex'));
     } catch(e) {
        throw new Error('Malformed signature');
     }
@@ -189,15 +207,13 @@ MultisigFund.prototype.importSignature = function(sigHex, spend) {
     // Check where this signature goes
     var script = Bitcoin.Script.fromHex(multisig.script);
     spend.task.pending.forEach(function(input) {
-        var txHashBuf = spend.tx.hashForSignature(input.index, script, 1);
-        multisig.pubKeys.forEach(function(pubKeyBytes, pIdx) {
-            var pubKey = Bitcoin.ECPubKey.fromBytes(pubKeyBytes);
-            if (pubKey.verify(txHashBuf, sig)) {
-                input.signatures[pIdx] = sigHex;
-                added = true;
-            }
-        });
+        if (self.importInputSignature(spend.tx, sig, input, script)) {
+            added = true;
+        }
     });
+    if (added) {
+        this.finishTransaction(spend, true);
+    }
     return added;
 };
 
@@ -219,6 +235,7 @@ MultisigFund.prototype.getSpend = function(txHash) {
  * Import a partial transaction into the fund
  */
 MultisigFund.prototype.importTransaction = function(serializedTx) {
+    var self = this;
     // import transaction here
     var identity = DarkWallet.getIdentity();
 
@@ -237,29 +254,49 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
     }
 
     // Check if we have the tx in the identity store
+    var found = false;
     var tasks = identity.tasks.getTasks('multisig');
     tasks.forEach(function(task) {
-        if (task.tx === serializedTx) {
-            throw new Error('Already have this transaction!');
+        if (Bitcoin.Transaction.fromHex(task.tx).getId() === tx.getId()) {
+            found = task;
         }
     });
 
+    var script = Bitcoin.Script.fromHex(this.multisig.script);
+
     // Now create the task
-    var pending = [];
+    var pending = found ? found.pending : [];
     // inputs format here comes from getValidInputs not directly from tx
     inputs.forEach(function(input) {
-        var out = Bitcoin.bufferutils.reverse(input.outpoint.hash).toString('hex')+':'+input.outpoint.index;
-        //var address = Bitcoin.Address.fromInputScript(input.script, Bitcoin.networks[identity.wallet.versions.network]).toString();
-        pending.push({output: out, address: input.address, index: input.index, signatures: {}, type: 'multisig'});
-    });
-    var task = {tx: serializedTx, 'pending': pending, stealth: false};
-    var spend = {tx: tx, task: task};
+        if (!found) {
+            var out = Bitcoin.bufferutils.reverse(input.outpoint.hash).toString('hex')+':'+input.outpoint.index;
+            pending.push({output: out, address: input.address, index: input.index, signatures: {}, type: 'multisig'});
+        }
 
-    // add as task in the store
-    identity.tasks.addTask('multisig', task);
-    // Maybe should be imported here but now it's done on the angular controller..
-    this.tasks.push(spend)
-    return spend;
+        // Import signatures
+        var txIn = tx.ins[input.index];
+        if (txIn.script.chunks.length > 2) {
+            txIn.script.chunks.slice(1,-1).forEach(function(sigBuf) {
+                sigBuf = Bitcoin.ECSignature.parseScriptSignature(sigBuf).signature;
+                self.importInputSignature(tx, sigBuf, pending[pending.length-1], script);
+            });
+        }
+    });
+    if (found) {
+        var spends = this.tasks.filter(function(spend) {return spend.task === found})
+        this.finishTransaction(spends[0], true);
+        return spends[0];
+    }
+    else {
+        var task = {tx: serializedTx, 'pending': pending, stealth: false};
+        var spend = {tx: tx, task: task};
+
+        // add as task in the store
+        identity.tasks.addTask('multisig', task);
+        // Maybe should be imported here but now it's done on the angular controller..
+        this.tasks.push(spend)
+        return spend;
+    }
 };
 
 
@@ -281,7 +318,7 @@ MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
             identity.wallet.getPrivateKey(seq, password, function(privKey) {
                 inputs.forEach(function(input, i) {
                     builder.sign(input.index, privKey, script, 1);
-                    var sig = builder.signatures[input.index].signatures.slice(-1);
+                    var sig = builder.signatures[input.index].signatures.slice(-1)[0];
                     var hexSig = sig.toDER().toString('hex');
                     spend.task.pending[i].signatures[pIdx] = hexSig
                     // propagate transaction
@@ -295,7 +332,7 @@ MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
         }
     });
     if (signed) {
-        spend.tx = builder.buildIncomplete();
+        this.finishTransaction(spend, true);
     }
     return signed;
 };
@@ -331,7 +368,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
                 // It's this position, so sign all inputs
                 inputs.forEach(function(input, i) {
                     builder.sign(input.index, privKey, script, 1);
-                    var sig = builder.signatures[input.index].signatures.slice(-1);
+                    var sig = builder.signatures[input.index].signatures.slice(-1)[0];
                     var hexSig = sig.toDER().toString('hex');
                     spend.task.pending[i].signatures[pIdx] = hexSig;
                     DarkWallet.service.multisigTrack.sign(multisig, spend.tx, hexSig);
@@ -341,7 +378,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
         }
     });
     if (signed) {
-        spend.tx = builder.buildIncomplete();
+        this.finishTransaction(spend, true);
     }
     return signed;
 }
