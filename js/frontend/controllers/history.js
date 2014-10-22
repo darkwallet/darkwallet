@@ -140,6 +140,7 @@ function (controllers, DarkWallet, Port) {
    */
   $scope.selectFund = function(fund, rowIndex) {
       $scope.overviewPocket = false;
+      $scope.selectedPocket = false;
       $tabs.open('multisig', rowIndex);
   };
 
@@ -156,6 +157,7 @@ function (controllers, DarkWallet, Port) {
    */
   $scope.selectPocket = function(pocketName, rowIndex) {
       $scope.overviewPocket = false;
+      $scope.selectedPocket = false;
       if (pocketName === undefined) {
           $tabs.open();
       } else {
@@ -165,6 +167,7 @@ function (controllers, DarkWallet, Port) {
 
   $scope.selectReadOnly = function(pocket, rowIndex) {
       $scope.overviewPocket = false;
+      $scope.selectedPocket = false,
       $tabs.open('readonly', rowIndex);
   };
 
@@ -183,7 +186,7 @@ function (controllers, DarkWallet, Port) {
   $scope.newPocket = function() {
       $scope.overviewPocket = false;
       $scope.selectedPocket = 'newPocket';
-      $scope.pocket.isAll = false;
+      $scope.pocket.isAll = false;      
   };
 
 
