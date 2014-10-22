@@ -2,7 +2,8 @@
 
 define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat', 'bitcoinjs-lib'],
 function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
-  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', '$history', function($scope, $window, notify, modals, $wallet, $timeout, $history) {
+  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', '$history', '_Filter',
+      function($scope, $window, notify, modals, $wallet, $timeout, $history, _) {
   
   var sendForm = $scope.forms.send;
 
@@ -28,7 +29,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
     recipient = recipient || 0;
     var pars = BtcUtils.parseURI(uri);
     if (!pars || !pars.address) {
-      notify.warning('URI not supported');
+      notify.warning(_('URI not supported'));
     } else {
       sendForm.title = pars.message ? decodeURIComponent(pars.message) : '';
       sendForm.recipients.fields[recipient].address = pars.address;
@@ -96,7 +97,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               if (warning) {
                   notify.warning(warning);
               } else {
-                  notify.success('Transaction finished propagating');
+                  notify.success(_('Transaction finished propagating'));
               }
               button.classList.remove('working');
           }
@@ -177,11 +178,11 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               if (err.type == 'password') {
                   notify.warning(err.message);
               } else {
-                  notify.error('Error sending to mixer ('+amountNote+')', mixingTask.task.state+' '+err.message);
+                  notify.error(_('Error sending to mixer ({0})', amountNote), mixingTask.task.state + ' ' + err.message);
               }
           } else {
               $scope.resetSendForm();
-              notify.note('Sent to mixer ('+mixingTask.task.state+')', amountNote);
+              notify.note(_('Sent to mixer ({0})', mixingTask.task.state), amountNote);
           }
       };
 
@@ -221,11 +222,11 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
                   notify.warning(error.message);
               } else {
                   var errorMessage = error.message || ''+error;
-                  notify.error("Error broadcasting", errorMessage);
+                  notify.error(_('Error broadcasting'), errorMessage);
               }
               enableSending();
           } else if (task && task.type == 'signatures') {
-              notify.note('Signatures pending', amountNote)
+              notify.note(_('Signatures pending'), amountNote)
               enableSending();
           } else if (task && task.type == 'radar') {
               if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {
@@ -235,7 +236,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
                   };
               }
               if (!isBroadcasted) {
-                  notify.success('Transaction sent', amountNote);
+                  notify.success(_('Transaction sent'), amountNote);
                   isBroadcasted = true;
               }
           }
@@ -257,7 +258,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               timeoutId = $timeout(function(){onSendTimeout()}, 10000);
               sendTimeout+=1;
               if ([1, 3, 5].indexOf(sendTimeout) != -1) {
-                  notify.note('Broadcasting going slow', (radarCache.radar*100).toFixed(2) + '%');
+                  notify.note(_('Broadcasting going slow'), (radarCache.radar*100).toFixed(2) + '%');
               }
           }
       }
@@ -293,7 +294,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       }
 
       if (!recipients.length) {
-          notify.note('You need to fill in at least one recipient');
+          notify.note(_('You need to fill in at least one recipient'));
           return;
       }
 
@@ -301,12 +302,12 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
       for(var i=0; i<recipients.length; i++) {
           if (recipients[i].amount < identity.wallet.dust) {
-              notify.note('The amount for some recipients is below the dust threshold', totalAmount+'<'+identity.wallet.dust);
+              notify.note(_('The amount for some recipients is below the dust threshold'), totalAmount+'<'+identity.wallet.dust);
               return;
           }
       }
       if (totalAmount < identity.wallet.dust) {
-          notify.note('Amount is below the dust threshold', totalAmount+'<'+identity.wallet.dust);
+          notify.note(_('Amount is below the dust threshold'), totalAmount+'<'+identity.wallet.dust);
           return;
       }
 
@@ -339,7 +340,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
                                          fee);
       } catch (error) {
           var errorMessage = error.message || ''+error;
-          notify.error("Failed preparing transaction", errorMessage);
+          notify.error(_('Failed preparing transaction'), errorMessage);
           sendForm.sending = false;
           return;
       }

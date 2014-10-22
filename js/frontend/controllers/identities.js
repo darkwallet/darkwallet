@@ -1,7 +1,7 @@
 'use strict';
 
 define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port, DarkWallet) {
-  controllers.controller('IdentitiesCtrl', ['$scope', '$window', 'modals', 'notify', function($scope, $window, modals, notify) {
+  controllers.controller('IdentitiesCtrl', ['$scope', '$window', 'modals', 'notify', '_Filter', function($scope, $window, modals, notify, _) {
     Port.connectNg('wallet', $scope, function(data) {
       if (data.type == 'ready' || data.type == 'rename') {
         // identity is ready here
@@ -18,7 +18,7 @@ define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port,
     var deleteCurrentIdentity = function(identityName) {
         var identityIdx = $scope.availableIdentities.indexOf(identityName);
         if ($scope.availableIdentities.length == 1) {
-            notify.warning("Can't delete the last identity!");
+            notify.warning(_('Can\'t delete the last identity!'));
             return;
         }
         var nextIdentity = identityIdx ? 0 : 1;
@@ -37,7 +37,7 @@ define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port,
             if (identityIdx > -1) {
                 $scope.availableIdentities.splice(identityIdx, 1);
             }
-            notify.note(identityName + " has been deleted.");
+            notify.note(_('{0} has been deleted.', identityName));
             if (!$scope.$$phase) {
                 $scope.$apply();
             }

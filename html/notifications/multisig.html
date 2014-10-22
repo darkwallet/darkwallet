@@ -1,5 +1,5 @@
-You have a spend approval request on the {{task.fund.name}} multisig fund<br>
-<small>{{task.fund.m-task.nSigs}} out of {{task.fund.participants.length}} signatures still needed</small>
-<small ng-show="task.canSign && task.signed"><br />You have already signed this transaction</small>
-<small ng-show="task.canSign && !task.signed"><br />You need to sign this transaction</small>
-<a ng-show="task.canSign && !task.signed" ng-click="signTask(task)" class='button small'>Sign</a>
+{{'You have a spend approval request on the {0} multisig fund'|_:task.fund.name}}<br>
+<small>{{'{0} out of {1} signatures still needed'|_:task.fund.m-task.nSigs:task.fund.participants.length}}</small>
+<small ng-show="task.canSign && task.signed"><br />{{'You have already signed this transaction'|_}}</small>
+<small ng-show="task.canSign && !task.signed"><br />{{'You need to sign this transaction'|_}}</small>
+<a ng-show="task.canSign && !task.signed" ng-click="signTask(task)" class='button small'>{{'Sign'|_}}</a>

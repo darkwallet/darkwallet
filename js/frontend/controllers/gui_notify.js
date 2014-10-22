@@ -5,7 +5,7 @@
 'use strict';
 
 define(['./module', 'frontend/port'], function (controllers, Port) {
-  controllers.controller('GuiNotifyCtrl', ['$scope', 'notify', '$timeout', function($scope, notify, $timeout) {
+  controllers.controller('GuiNotifyCtrl', ['$scope', 'notify', '$timeout', '_Filter', function($scope, notify, $timeout, _) {
 
   var timeout;
 
@@ -42,7 +42,7 @@ define(['./module', 'frontend/port'], function (controllers, Port) {
           notify.error(data.title || 'gui', data.text);
       }
       else if (data.type == 'mixer') {
-          notify.note('mixing', data.state);
+          notify.note(_('mixing'), data.state);
           if (!$scope.$$phase) {
               $scope.$apply();
           }

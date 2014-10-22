@@ -2,7 +2,7 @@
 
 define(['./module', 'darkwallet'], function (providers, DarkWallet) {
 
-providers.factory('$brc', ['notify', '$rootScope', function(notify, $scope) {
+providers.factory('$brc', ['notify', '$rootScope', '_Filter', function(notify, $scope, _) {
 
 var broadcast = {
   /**
@@ -14,15 +14,15 @@ var broadcast = {
           console.log("radar feedback", data);
           if (err) {
               task.error = "Failed: " + err;
-              notify.warning("Failed Broadcasting", "Imported but failed to broadcast " + err);
+              notify.warning(_('Failed Broadcasting'), _('Imported but failed to broadcast') + ' ' + err);
           } else if (data.type == 'radar' && task.broadcasting) {
               task.broadcasted = true;
               task.radar = data.radar;
               task.broadcasting = false;
-              notify.success('Imported', 'Signature imported and sent to broadcaster!');
+              notify.success(_('Imported'), _('Signature imported and sent to broadcaster!'));
           } else if (data.type == 'radar') {
               task.radar = data.radar;
-              notify.note('Broadcasting', 'Radar: ' + data.radar);
+              notify.note(_('Broadcasting'), _('Radar') + ': ' + data.radar);
           }
           if (!$scope.$$phase) {
               $scope.$apply();

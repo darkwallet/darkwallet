@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
-  controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', '$location', function($scope, modals, notify, $history, $location) {
+  controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', '$location', '_Filter', function($scope, modals, notify, $history, $location, _) {
 
     /**
      * Delete pocket
@@ -103,9 +103,9 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
                     var privKey = identity.wallet.getPocketPrivate(pocket.index*2, password);
                 } catch(e) {
                     if ($scope.settings.advanced) {
-                        notify.warning("Invalid password", e.message || ""+e)
+                        notify.warning(_('Invalid password'), e.message || ""+e)
                     } else {
-                        notify.warning("Invalid Password")
+                        notify.warning(_('Invalid Password'))
                     }
                     return;
                 }
@@ -206,7 +206,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
                }
                if (count>0.2 && !sent) {
                    sent = true;
-                   notify.success('Funds sent to ' + to);
+                   notify.success(_('Funds sent to {0}', to));
                    if (!$scope.$$phase) {
                        $scope.apply();
                    }

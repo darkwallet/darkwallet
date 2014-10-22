@@ -16,7 +16,8 @@ requirejs.config({
       'chrome': '../test/mock/chrome_mock',
       'testUtils': '../test/mock/testUtils',
       'frontend/app': '../test/mock/frontend_app',
-      'darkwallet': '../test/mock/darkwallet_mock'
+      'darkwallet': '../test/mock/darkwallet_mock',
+      'available_languages': '../test/mock/available_languages'
     },
     
     shim: {

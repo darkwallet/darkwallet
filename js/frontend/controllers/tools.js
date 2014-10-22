@@ -3,7 +3,7 @@
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
 
   // Controller
-  controllers.controller('ToolsCtrl', ['$scope', 'modals', 'notify', function($scope, modals, notify) {
+  controllers.controller('ToolsCtrl', ['$scope', 'modals', 'notify', '_Filter', function($scope, modals, notify, _) {
 
   // General variable to coordinate tools
   $scope.tools = {status: 'OK'};
@@ -46,7 +46,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   var finishClearStorage = function() {
       var keyRing = DarkWallet.getKeyRing();
       keyRing.clear();
-      notify.note('Storage cleared, please restart your browser.');
+      notify.note(_('Storage cleared, please restart your browser.'));
   }
 
   $scope.clearStorage = function() {
@@ -57,7 +57,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   $scope.clearTasks = function() {
       var identity = DarkWallet.getIdentity();
       identity.tasks.clear();
-      notify.note('Tasks cleared.');
+      notify.note(_('Tasks cleared.'));
   };
 
   $scope.newModal = function(name) {

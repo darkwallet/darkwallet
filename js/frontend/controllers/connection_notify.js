@@ -5,7 +5,7 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  controllers.controller('ConnectionNotifyCtrl', ['$scope', 'notify', function($scope, notify) {
+  controllers.controller('ConnectionNotifyCtrl', ['$scope', 'notify', '_Filter', function($scope, notify, _) {
 
   var closingConnection = false;
   console.log("connection notify");
@@ -22,7 +22,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
               closingConnection = false;
               if (seenConnecting) {
                   var connections = DarkWallet.getIdentity().connections;
-                  notify.success('connected', connections.servers[connections.selectedServer].name);
+                  notify.success(_('connected'), connections.servers[connections.selectedServer].name);
                   seenConnecting = false;
               }
               break;
@@ -32,12 +32,12 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           case 'disconnected':
               if (!closingConnection) {
                   var connections = DarkWallet.getIdentity().connections;
-                  notify.warning('disconnected', connections.servers[connections.selectedServer].name);
+                  notify.warning(_('disconnected'), connections.servers[connections.selectedServer].name);
                   $scope.$apply();
               }
               break;
           case 'connectionError':
-              notify.error("Error connecting", data.error);
+              notify.error(_('Error connecting'), data.error);
       }
   });
 

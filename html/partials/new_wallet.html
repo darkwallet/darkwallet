@@ -4,12 +4,12 @@
       <form ng-submit="nextStep()">
         <img src="../images/logo.svg" style="width:50%; height:50%" />
         <div class="row">
-          <h6>Thanks for testing Darkwallet! Keep in mind this is alpha software. Use at your own risk!</h6>
+          <h6>{{'Thanks for testing Darkwallet! Keep in mind this is alpha software. Use at your own risk!'|_}}</h6>
           <div class="small-6 columns">
-              <button ng-click="form.network='bitcoin'" class="button radius expand nomarginbottom">Use real Bitcoins!</button>
+              <button ng-click="form.network='bitcoin'" class="button radius expand nomarginbottom">{{'Use real Bitcoins!'|_}}</button>
           </div>
           <div class="small-6 columns">
-              <button ng-click="form.network='testnet'" class="button glow radius expand nomarginbottom">Use Testnet</button>
+              <button ng-click="form.network='testnet'" class="button glow radius expand nomarginbottom">{{'Use Testnet'|_}}</button>
           </div>
         </div>
       </form>
@@ -19,10 +19,10 @@
         <img src="../images/wallet.svg" style="width:40%; height:40%" />
         <div class="row topmargin">
           <div class="small-6 columns">
-              <button ng-click="form.create_or_restore='restore'" class="button radius expand nomarginbottom">Restore from a seed</button>
+              <button ng-click="form.create_or_restore='restore'" class="button radius expand nomarginbottom">{{'Restore from a seed'|_}}</button>
           </div>
           <div class="small-6 columns">
-              <button ng-click="form.create_or_restore='create'" class="button glow radius expand nomarginbottom">Create a new wallet!</button>
+              <button ng-click="form.create_or_restore='create'" class="button glow radius expand nomarginbottom">{{'Create a new wallet!'|_}}</button>
           </div>
         </div>
       </form>
@@ -31,43 +31,46 @@
       <img src="../images/encrypt.svg" style="width:35%; height:35%" />
       <form ng-submit="passwordSubmit()">
           <div class="row topmargin">
-            <div class="small-12 columns">
-              <input type="text" ng-model="form.name" placeholder="Name for this wallet" autofocus ng-required="true" />
+            <div class="small-6 columns">
+              <input type="text" ng-model="form.name" placeholder="{{'Name for this wallet'|_}}" autofocus ng-required="true" />
+            </div>
+            <div class="small-6 columns">
+              <select id="select-language" ng-model="form.language" ng-change="changeLanguage()" ng-options="language.code as language.name for language in languages"></select>
             </div>
           </div>
           <div class="row">
-            <div class="small-6 columns"><input type="password" ng-model="form.passwd" placeholder="Password" ng-required="true" /></div>
-            <div class="small-6 columns"><input type="password" ng-model="form.passwd2" placeholder="Repeat password" ng-required="true" /></div>
+            <div class="small-6 columns"><input type="password" ng-model="form.passwd" placeholder="{{'Password'|_}}" ng-required="true" /></div>
+            <div class="small-6 columns"><input type="password" ng-model="form.passwd2" placeholder="{{'Repeat password'|_}}" ng-required="true" /></div>
           </div>
           <div class="row" ng-if="message">
              {{message}}
           </div>
           <div class="row">
             <div class="small-12 columns text-right">
-              <input type="submit" value="Continue" class="button small radius nomarginbottom" />
+              <input type="submit" value="{{'Continue'|_}}" class="button small radius nomarginbottom" />
             </div>
           </div>
       </form>
     </div>
     <div ng-if="step==4" class="wizard">
       <form ng-submit="nextStep()">
-              <p>These 12 words are your wallet seed. It will unlock complete access to your bitcoins, without the need for any password, even if you can't access your computer anymore. The seed is essential to recover your wallet, so please write it down on a piece of paper before continuing.</p>
+              <p>{{'These 12 words are your wallet seed. It will unlock complete access to your bitcoins, without the need for any password, even if you can\'t access your computer anymore. The seed is essential to recover your wallet, so please write it down on a piece of paper before continuing.'|_}}</p>
             <textarea readonly ng-model="form.mnemonic" class="seed"></textarea>
             <div class="text-right">
-              <input type="submit" value="I'm ready, continue!" class="button small radius glow nomarginbottom">
+              <input type="submit" value="{{'I\'m ready, continue!'|_}}" class="button small radius glow nomarginbottom">
             </div>
       </form>
     </div>
     <div ng-if="step==5" class="wizard">
       <form ng-submit="mnemonicSubmit()">
-            <h6 ng-show="form.create_or_restore=='create'">To confirm you've written down your seed correctly, please type it here:</h6>
-            <h6 ng-show="form.create_or_restore=='restore'">Write your seed then click finish:</h6>
-            <input type="text" class="seed" placeholder="Write the 12 words here..." ng-model="form.mnemonic2" />
+            <h6 ng-show="form.create_or_restore=='create'">{{'To confirm you\'ve written down your seed correctly, please type it here:'|_}}</h6>
+            <h6 ng-show="form.create_or_restore=='restore'">{{'Write your seed then click finish:'|_}}</h6>
+            <input type="text" class="seed" placeholder="{{'Write the 12 words here...'|_}}" ng-model="form.mnemonic2" />
             <p>{{message2}}</p>
-            <h6 ng-show="form.create_or_restore=='create'">After you finish, please store the piece of paper in a safe place, and never type it on a computer unless you need to recover your lost wallet!</h6>
+            <h6 ng-show="form.create_or_restore=='create'">{{'After you finish, please store the piece of paper in a safe place, and never type it on a computer unless you need to recover your lost wallet!'|_}}</h6>
             <div class="text-right">
-              <a href="" ng-show="form.mnemonic" ng-click="previousStep()" class="button small radius">Back</a>
-              <input type="submit" value="Finish" class="button small radius glow">
+              <a href="" ng-show="form.mnemonic" ng-click="previousStep()" class="button small radius">{{'Back'|_}}</a>
+              <input type="submit" value="{{'Finish'|_}}" class="button small radius glow">
             </div>
       </form>
     </div>

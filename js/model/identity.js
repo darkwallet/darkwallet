@@ -22,7 +22,8 @@ function Identity(store, seed, password) {
         send: true,
         receive: true,
         multisig: true
-      }
+      },
+      language: 'en_US'
     });
     // Temporary upgrade store to adapt wallets, we will
     // remove this for release and add a proper mechanism.
@@ -31,6 +32,9 @@ function Identity(store, seed, password) {
     }
     if (!this.settings.hasOwnProperty('animations')) {
         this.settings.animations = { enabled: true };
+    }
+    if (!this.settings.hasOwnProperty('language')) {
+        this.settings.language = 'en_US';
     }
     this.store = store;
     if (seed && password) {

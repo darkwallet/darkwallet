@@ -107,7 +107,7 @@ Contacts.prototype.parseKey = function(data) {
       newKey.address = address;
       newKey.type = 'pubkey';
   } else {
-      console.log("cant decode address properly!", data);
+      console.log("can\'t decode address properly!", data);
       newKey.address = data;
       newKey.type = 'unknown';
   }

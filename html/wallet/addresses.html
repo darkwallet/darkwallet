@@ -2,16 +2,16 @@
   	<div class="small-12 columns" ng-hide="pocket.isAll">
     	<div class="row collapse panel radius">
 	        <div class="medium-2 columns">
-	            <span class="prefix radius">{{pocket.stealth?'Stealth':'Main'}} Address</span>
+	            <span class="prefix radius">{{pocket.stealth?('Stealth'|_):('Main'|_)}} {{'Address'|_}}</span>
 	        </div>
 	        <div class="medium-6 columns">
 	            <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.mainAddress}}" />
 	        </div>
 	        <div class="medium-2 columns">
-	            <button ng-click="clipboard.copy(pocket.mainAddress)" class="nomarginbottom button postfix fa fa-clipboard">Copy</button>
+	            <button ng-click="clipboard.copy(pocket.mainAddress)" class="nomarginbottom button postfix fa fa-clipboard">{{'Copy'|_}}</button>
 	        </div>
 	        <div class="medium-2 columns">
-	            <button ng-click="modals.showBtcQr(pocket.mainAddress)" class="nomarginbottom button postfix radius fa fa-qrcode">Show QR</button>
+	            <button ng-click="modals.showBtcQr(pocket.mainAddress)" class="nomarginbottom button postfix radius fa fa-qrcode">{{'Show QR'|_}}</button>
 	        </div>
 	    </div>
 	</div>
@@ -20,24 +20,24 @@
 	<div class="small-12 columns">
 		<div class="panel radius">
 		    <dl class="sub-nav">
-		        <dt>Filter:</dt>
-		        <dd ng-class="{active: 'unused'===addrFilter}"><a ng-click="setAddressFilter('unused')">Unused</a></dd>
-		        <dd ng-class="{active: 'labelled'===addrFilter}"><a ng-click="setAddressFilter('labelled')">Labelled</a></dd>
-		        <dd ng-class="{active: 'top'===addrFilter}"><a ng-click="setAddressFilter('top')">Top</a></dd>
-		        <dd ng-class="{active: 'all'===addrFilter}"><a ng-click="setAddressFilter('all')">All</a></dd>
+		        <dt>{{'Filter'|_}}:</dt>
+		        <dd ng-class="{active: 'unused'===addrFilter}"><a ng-click="setAddressFilter('unused')">{{'Unused'|_}}</a></dd>
+		        <dd ng-class="{active: 'labelled'===addrFilter}"><a ng-click="setAddressFilter('labelled')">{{'Labelled'|_}}</a></dd>
+		        <dd ng-class="{active: 'top'===addrFilter}"><a ng-click="setAddressFilter('top')">{{'Top'|_}}</a></dd>
+		        <dd ng-class="{active: 'all'===addrFilter}"><a ng-click="setAddressFilter('all')">{{'All'|_}}</a></dd>
 		    </dl>
 			        <ul id="address-actions" class="f-dropdown">
 			          <li>
-			            <a ng-click="modals.showBtcQr(currentAddress.address)" class="fa fa-qrcode"> Show QR code</a>
+			            <a ng-click="modals.showBtcQr(currentAddress.address)" class="fa fa-qrcode"> {{'Show QR code'|_}}</a>
 			          </li>
 					  <li>
-						  <a ng-click="currentForm.$show()" class="fa fa-pencil-square"> Edit name</a>
+						  <a ng-click="currentForm.$show()" class="fa fa-pencil-square"> {{'Edit name'|_}}</a>
 					  </li>
 					  <li>
-						  <a ng-click="clipboard.copy(currentAddress.address)" class="fa fa-clipboard"> Copy address</a>
+						  <a ng-click="clipboard.copy(currentAddress.address)" class="fa fa-clipboard"> {{'Copy address'|_}}</a>
 					  </li>
 					  <li ng-show="currentAddress.type!='multisig' && currentAddress.pubKey && currentAddress.pubKey.length">
-						  <a ng-click="copyClipboardPublic(currentAddress)" class="fa fa-key"> Copy public key</a>
+						  <a ng-click="copyClipboardPublic(currentAddress)" class="fa fa-key"> {{'Copy public key'|_}}</a>
 					  </li>
 			        </ul>
 
@@ -55,7 +55,7 @@
 		                <span class="label radius" ng-show="address.type=='stealth'">
 		                    <div class="fa fa-fighter-jet"></div> stealth
 		                </span>
-		                <span class="label radius" title="Number of times this address has been used" ng-show="address.nOutputs">
+		                <span class="label radius" title="{{'Number of times this address has been used'|_}}" ng-show="address.nOutputs">
 		                    {{address.nOutputs}}
 		                </span>
 		            </div>
@@ -73,7 +73,7 @@
 		    </ul>
 		   </div>
 			<div class="text-right topmargin" ng-show="pocket.type==='hd'">
-		    	<a class="button small radius nomarginbottom fa fa-plus" ng-click="generateAddress(pocket.index*2)"> New address</a>
+		    	<a class="button small radius nomarginbottom fa fa-plus" ng-click="generateAddress(pocket.index*2)"> {{'New address'|_}}</a>
 		  	</div>
 
 		</div>

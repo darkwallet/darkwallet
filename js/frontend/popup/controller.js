@@ -9,7 +9,7 @@
  * @constructor
  */
 define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  controllers.controller('PopupCtrl', ['$scope', '$window', function($scope, $window) {
+  controllers.controller('PopupCtrl', ['$scope', '$window', '$translate', function($scope, $window, $translate) {
 
   $scope.identityLoaded = false;
   $scope.currentIdentity = false;
@@ -30,6 +30,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
         $scope.identity = DarkWallet.getIdentity();
         $scope.forms.identityDropdown = false;
         $scope.settings = $scope.identity.settings;
+        $translate.use($scope.settings.language);
         if ($scope.needsOpen) {
             $scope.needsOpen = false;
             $window.open('index.html#wallet');

@@ -3,7 +3,7 @@
 define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'], function (controllers, DarkWallet, Port, Bitcoin, BtcUtils) {
 
   // Controller
-  controllers.controller('BrowserCtrl', ['$scope', 'modals', 'notify', '$routeParams', '$location', function($scope, modals, notify, $routeParams, $location) {
+  controllers.controller('BrowserCtrl', ['$scope', 'modals', 'notify', '$routeParams', '$location', '_Filter', function($scope, modals, notify, $routeParams, $location, _) {
 
   $scope.bytesToHex = Bitcoin.convert.bytesToHex;
 
@@ -78,7 +78,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
   var onFetchTransaction = function(err, data) {
       $scope.fetching = false;
       if (err) {
-          notify.warning("Transaction not found", err.message);
+          notify.warning(_('Transaction not found'), err.message);
           return;
       } else {
           $scope.txName = $scope.txHash;
@@ -124,7 +124,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
   var onFetchHistory = function(err, history) {
       $scope.fetching = false;
       if (err) {
-          notify.warning("Address not found!", err.message);
+          notify.warning(_('Address not found!'), err.message);
           return;
       } else {
           $scope.txName = '';
