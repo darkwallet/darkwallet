@@ -62,10 +62,13 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
             location._path = path;
           }
         };
+        var _ = function(s) {
+          return s;
+        };
         var history = {refreshAddresses: function() {}, clearRowContacts: function() {}, removePocket: function(){}};
         var route = {contactId: undefined, current: {templateUrl: "bla"}};
         var wallet = {addToScope: function() {}};
-        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet, watch: watch, $history: history, notify: notify});
+        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet, watch: watch, $history: history, notify: notify, _Filter: _});
       }]);
     };
     
