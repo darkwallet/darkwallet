@@ -283,7 +283,7 @@ MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
                 inputs.forEach(function(input, i) {
                     builder.sign(input.index, privKey, script, 1);
                     var sig = builder.signatures[input.index].signatures.slice(-1);
-                    var hexSig = sig.toString('hex');
+                    var hexSig = sig.toDER().toString('hex');
                     spend.task.pending[i].signatures[pIdx] = hexSig
                     // propagate transaction
                     DarkWallet.service.multisigTrack.sign(self.multisig, spend.tx, hexSig);
@@ -333,7 +333,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
                 inputs.forEach(function(input, i) {
                     builder.sign(input.index, privKey, script, 1);
                     var sig = builder.signatures[input.index].signatures.slice(-1);
-                    var hexSig = sig.toString('hex');
+                    var hexSig = sig.toDER().toString('hex');
                     spend.task.pending[i].signatures[pIdx] = hexSig;
                     DarkWallet.service.multisigTrack.sign(multisig, spend.tx, hexSig);
                     signed = true;
