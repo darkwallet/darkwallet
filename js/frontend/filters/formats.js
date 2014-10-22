@@ -11,6 +11,9 @@ filters.filter('heightToDate', function() {
     if (format === 'calendar') {
       return m.calendar();
     }
+    if (m.isAfter(Date.now()-60000)) {
+        return 'Just now';
+    }
     return m.fromNow();
   };
 });
