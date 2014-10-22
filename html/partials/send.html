@@ -47,7 +47,7 @@
                 <a href="" ng-show="!field.contact" tooltip-placement="left" tooltip-append-to-body="true" tooltip="Scan QR code" ng-click="modals.scanQr(field, validateSendForm)" class="fa button square righted fa-qrcode"></a>
 
                 <a href="" ng-show="!field.contact" tooltip="Select from contacts" tooltip-placement="bottom" ng-click="modals.open('pick-contact', {field: field}, addAddress)" class="fa button square righted fa-users"></a>
-				<a href="" ng-if="field.contact" tooltip="Remove contact from this transaction" tooltip-placement="left" ng-click="removeAddress(contact)" class="fa button square righted fa-times"></a>
+				<a href="" ng-if="field.contact" tooltip="Remove contact from this transaction" tooltip-placement="left" ng-click="removeAddress(field)" class="fa button square righted fa-times"></a>
           </div>
         </div>
       </div>
