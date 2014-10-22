@@ -33,7 +33,7 @@ define(['bitcoinjs-lib-real', 'convert'], function(Bitcoin, Convert) {
           return new Bitcoin.Address(hash, network.scriptHash);
       }
 
-      throw Error(type + ' has no matching Address')
+      // throw Error(type + ' has no matching Address')
     }
 
     Bitcoin.Address.getVersion = function(address) {
