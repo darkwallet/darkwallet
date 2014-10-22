@@ -95,8 +95,12 @@ History.prototype.buildHistoryRow = function(transaction, height) {
             myInValue += output.value;
             addPocketImpact(inPocket, inPocketType, -output.value);
         } else {
-            var address = BtcUtils.getInputAddress(anIn, this.identity.wallet.versions);
-            inAddress = address || inAddress;
+            try {
+                var address = BtcUtils.getInputAddress(anIn, this.identity.wallet.versions);
+                inAddress = address || inAddress;
+            } catch (e) {
+                console.log("error decoding input", anIn);
+            }
         }
     }
     if (!inMine) {
@@ -204,7 +208,7 @@ History.prototype.txFetched = function(transaction, height) {
     // unknown for now means we need to fill in some extra inputs for now get 1st one
     if (newRow.address == 'unknown') {
         if (newRow.tx.ins[0])
-            this.identity.txdb.fetchTransaction(Bitcoin.bufferutils.reverse(newRow.tx.ins[0]).hash.toString('hex'),
+            this.identity.txdb.fetchTransaction(Bitcoin.bufferutils.reverse(newRow.tx.ins[0].hash).toString('hex'),
                                             function(_a, _b) {self.fillInput(_a, _b);},
                                             [newRow.tx.ins[0].index, newRow]);
         else {
