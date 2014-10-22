@@ -77,21 +77,20 @@ Identity.prototype.changePassword = function(oldPassword, newPassword) {
  * @private
  */
 Identity.prototype.generate = function(seed, password, network) {
-    var network = (network == 'bitcoin') ? 'mainnet' : network;
     // Don't use constructor directly since it doesn't manage hex seed properly.
-    var key = Bitcoin.HDWallet.fromSeedHex(seed, network);
-    var identityKey = key.derivePrivate(0);
+    var key = Bitcoin.HDNode.fromSeedHex(seed, Bitcoin.networks[network]);
+    var identityKey = key.deriveHardened(0);
 
     var pubKey = identityKey.toBase58(false);
     var privKey = identityKey.toBase58(true);
 
     // Initialize the scan public key here for now...
-    var scanKey = identityKey.derivePrivate(0);
+    var scanKey = identityKey.deriveHardened(0);
     var scanPubKey = scanKey.toBase58(false);
     var scanPrivKey = scanKey.toBase58(true);
 
     // Initialize the id key here for now...
-    var idKey = identityKey.derivePrivate(1);
+    var idKey = identityKey.deriveHardened(1);
     var idPubKey = idKey.toBase58(false);
     var idPrivKey = idKey.toBase58(true);
 

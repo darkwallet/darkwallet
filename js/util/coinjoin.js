@@ -49,7 +49,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
               stealth.push([anOut, tx.outs[idx+1]]);
           } else {
               // this will just push the same output into newTx.outs
-              newTx.addOutput(tx.outs[idx]);
+              newTx.addOutput(tx.outs[idx].script, tx.outs[idx].value);
           }
       });
 
@@ -62,12 +62,22 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
       // Now re-insert (possibly) stealth information
       stealth.forEach(function(nonces) {
-          var index = newTx.outs.indexOf(nonces[1]);
-          newTx.outs.splice(index, 0, nonces[0]);
+          var origOut = nonces[1];
+          var found = newTx.outs.filter(function(newOut) {
+             return (origOut.script.toHex() === newOut.script.toHex()) && (origOut.value === newOut.value);
+          });
+          if (found.length === 1) {
+              var index = newTx.outs.indexOf(found[0]);
+              // add the output back
+              newTx.addOutput(nonces[0].script, nonces[0].value);
+              // now set it in place
+              newTx.outs.splice(index, 0, newTx.outs.pop());
+          } else {
+              throw Error("Cant add output");
+          }
       });
 
-      // Return while applying a temporal testnet fix for address versions on bitcoinjs-lib (not really affecting the tx itself)
-      return BtcUtils.fixTxVersions(newTx, this.core.getCurrentIdentity());
+      return newTx;
   }
 
   /*
@@ -77,8 +87,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   CoinJoin.prototype.fullfill = function(msg, peer) {
       // Check there is one output like we want to join
       var amount = this.myAmount;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+      var remoteTx = Bitcoin.Transaction.fromHex(msg.tx);
       var isOk = false;
       remoteTx.outs.forEach(function(anOut) {
           if (anOut.value == amount) {
@@ -95,10 +104,10 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       // Now add our inputs and outputs after the ones from guest
       var myTx = this.myTx;
       myTx.ins.forEach(function(anIn) {
-          remoteTx.addInput(anIn.clone());
+          remoteTx.addInput(anIn.hash, anIn.index);
       });
       myTx.outs.forEach(function(anOut) {
-          remoteTx.addOutput(anOut.clone());
+          remoteTx.addOutput(anOut.script, anOut.value);
       });
 
       // Randomize inputs and outputs
@@ -126,8 +135,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       if (peer != this.peer) {
           return;
       }
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+      var remoteTx = Bitcoin.Transaction.fromHex(msg.tx);
 
       // Randomize inputs and outputs
       remoteTx = this.randomize(remoteTx);
@@ -168,8 +176,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
           return;
       }
       var myTx = this.tx;
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+      var remoteTx = Bitcoin.Transaction.fromHex(msg.tx);
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(myTx, remoteTx)) {
@@ -192,8 +199,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
       if (peer != this.peer) {
           return;
       }
-      var remoteTx = new Bitcoin.Transaction(msg.tx);
-      remoteTx = BtcUtils.fixTxVersions(remoteTx, this.core.getCurrentIdentity());
+      var remoteTx = Bitcoin.Transaction.fromHex(msg.tx);
 
       // Check no new inputs or outputs where added
       if (!this.checkInputsOutputs(this.tx, remoteTx)) {
@@ -271,7 +277,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
    */
   CoinJoin.prototype.isStealth = function(anOut) {
       // Value must be 0, size 38, first byte OP_RETURN and there must be an output after this one
-      return (anOut.value == 0 && anOut.script.buffer.length >= 38 && anOut.script.buffer[0] == Bitcoin.Opcode.map.OP_RETURN);
+      return (anOut.value == 0 && anOut.script.toBuffer().length >= 38 && anOut.script.toBuffer()[0] == Bitcoin.opcodes.OP_RETURN);
   };
 
   CoinJoin.prototype.checkInputsOutputs = function(origTx, newTx) {
@@ -287,23 +293,23 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
   CoinJoin.prototype.checkMyInputsOutputs = function(origTx, newTx) {
       for(var i=0; i<origTx.ins.length; i++) {
           // TODO: should check the scripts too
-          var origInP = origTx.ins[i].outpoint;
+          var origInP = origTx.ins[i];
           var found = newTx.ins.filter(function(newIn) {
-              return (origInP.hash == newIn.outpoint.hash) && (parseInt(origInP.index) == parseInt(newIn.outpoint.index));
+              return (origInP.hash.toString('hex') == newIn.hash.toString('hex')) && (parseInt(origInP.index) == parseInt(newIn.index));
           });
           if (found.length != 1) return false;
       }
       for(var i=0; i<origTx.outs.length; i++) {
           var origOut = origTx.outs[i];
           var found = newTx.outs.filter(function(newOut) {
-              return (origOut.address.toString() == newOut.address.toString()) && (origOut.value == newOut.value);
+             return (origOut.script.toHex() === newOut.script.toHex()) && (origOut.value === newOut.value);
           });
           if (found.length != 1) return false;
           // Check stealth is ordered
           var isStealth = this.isStealth(origOut) && origTx.outs.length > i;
           if (isStealth) {
               var j = newTx.outs.indexOf(found[0]);
-              if (!origTx.outs[i+1] || !newTx.outs[j+1] || origTx.outs[i+1].address.toString() != newTx.outs[j+1].address.toString()) {
+              if (!origTx.outs[i+1] || !newTx.outs[j+1] || origTx.outs[i+1].script.toHex() != newTx.outs[j+1].script.toHex()) {
                   console.log("unordered stealth");
                   return false;
               }

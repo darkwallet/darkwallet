@@ -19,16 +19,17 @@ require.config({
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
     'ngProgress': "../vendors/ngprogress/build/ngProgress",
     'toaster': "../vendors/AngularJS-Toaster/toaster",
+    'crypto-js': "../vendors/crypto-js/cryptojs",
     'identicon': "../vendors/identicon/identicon",
     'pnglib': "../vendors/identicon/pnglib",
     'qrcodejs': "../vendors/qrcodejs/qrcode",
     'jsqrcode': "../vendors/jsqrcode/jsqrcode",
     'async': "../vendors/async/lib/async",
-    'convert': "../vendors/wrappers/convert",
-    'crypto-js': "../vendors/wrappers/cryptojs",
+    'convert': "util/convert",
+    'bitcoinjs-lib': "../vendors/wrappers/bitcoinjs",
     'big': "../vendors/big.js/big.min",
 
-    'bitcoinjs-lib': "../vendors/bitcoinjs-lib/bitcoinjs",
+    'bitcoinjs-lib-real': "../vendors/bitcoinjs-lib/bitcoinjs",
     'sjcl-real': "../vendors/sjcl/sjcl",
     'darkwallet_gateway': "../vendors/darkwallet_gateway/client/gateway",
     
@@ -76,11 +77,9 @@ require.config({
       exports: 'QRCode'
     },
     'crypto-js': {
-      deps: ['bitcoinjs-lib'],
       exports: 'CryptoJS'
     },
     'convert': {
-      deps: ['bitcoinjs-lib'],
       exports: 'Convert'
     },
     'jsqrcode': {
@@ -99,11 +98,15 @@ require.config({
     'sjcl-real': {
       exports: 'sjcl'
     },
-    'bitcoinjs-lib': {
-      exports: 'Bitcoin'
-    },
     'sjcl': {
       deps: ['sjcl-real']
+    },
+    'bitcoinjs-lib-real': {
+      exports: 'Bitcoin'
+    },
+    'bitcoinjs-lib': {
+      deps: ['bitcoinjs-lib-real', 'convert'],
+      exports: 'Bitcoin'
     }
   }
 });

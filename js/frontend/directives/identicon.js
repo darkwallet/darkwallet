@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identicon, Bitcoin) {
+define(['./module', 'identicon', 'crypto-js'], function (directives, Identicon, CryptoJS) {
   var iconCache = {};
   var hashCache = {};
   directives.directive('identicon', function () {
@@ -40,7 +40,7 @@ define(['./module', 'identicon', 'bitcoinjs-lib'], function (directives, Identic
             if (hashCache.hasOwnProperty(scope.data)) {
                 hash = hashCache[scope.data];
             } else {
-                hash = Bitcoin.CryptoJS.SHA256(scope.data).toString();
+                hash = CryptoJS.SHA256(scope.data).toString();
                 hashCache[scope.data] = hash;
             }
             // take 11 bytes: 22 hex - 60 bit shape, 28 bit color

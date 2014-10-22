@@ -5,18 +5,20 @@
 
 define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
 
+  var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0);};
+
   // Data for the test
   var ephemKeyBytes = [95, 112, 167, 123, 50, 38, 10, 122, 50, 198, 34, 66, 56, 31, 186, 44, 244, 12, 14, 32, 158, 102, 90, 121, 89, 65, 142, 174, 79, 45, 162, 43, 1];
   var scanKeyBytes = [250, 99, 82, 30, 51, 62, 75, 159, 106, 152, 161, 66, 104, 13, 58, 239, 77, 142, 127, 121, 114, 60, 224, 4, 54, 145, 219, 85, 195, 107, 217, 5];
   var spendKeyBytes = [220, 193, 37, 11, 81, 192, 240, 58, 228, 233, 120, 224, 37, 110, 222, 81, 220, 17, 68, 227, 69, 201, 38, 38, 43, 151, 23, 177, 188, 201, 189, 27];
 
-  var ephemKey = new Bitcoin.ECKey(ephemKeyBytes, true);
-  var scanKey = new Bitcoin.ECKey(scanKeyBytes, true);
-  var spendKey = new Bitcoin.ECKey(spendKeyBytes, true);
+  var ephemKey = Bitcoin.ECKey.fromBytes(ephemKeyBytes, true);
+  var scanKey = Bitcoin.ECKey.fromBytes(scanKeyBytes, true);
+  var spendKey = Bitcoin.ECKey.fromBytes(spendKeyBytes, true);
 
-  var ephemKeyPubBytes = ephemKey.getPub().toBytes();
-  var scanKeyPubBytes = scanKey.getPub().toBytes();
-  var spendKeyPubBytes = spendKey.getPub().toBytes();
+  var ephemKeyPubBytes = ephemKey.pub.toBytes();
+  var scanKeyPubBytes = scanKey.pub.toBytes();
+  var spendKeyPubBytes = spendKey.pub.toBytes();
 
   // Address created from the above keys
   var testAddress = "vJmxHgVSxtBcoe9JQTz9qKN8ZnKcehm37FWwSfejU4AeBuxB8sX6hVPCh2iUJsAdVpbgRdUd3CUPzUCgDmLne6tccTL379SLKv15iK";
@@ -29,8 +31,8 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
     });
     
     it('performs curvedh and stealth formatting', function() {
-      var e = scanKey.priv;
-      var decKey = spendKey.getPub();
+      var e = scanKey.d;
+      var decKey = spendKey.pub;
       Stealth.stealthDH(e, decKey);
     });
     
@@ -56,6 +58,11 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       var scanBytes = scanKeyPubBytes;
       var spendBytes = spendKeyPubBytes;
 
+      // remove randomness from the test, this changes how ECKey.makeRandom and crypto browserify rng works
+      // fixes issues with older ff in tests
+      var prevMakeRandom = window.crypto.getRandomValues
+      window.crypto.getRandomValues = function(bytes) { bytes[0] = 255; };
+
       var res = Stealth.initiateStealth(scanBytes, spendBytes, undefined, ephemKeyBytes);
       var address = res[0];
       var ephemKey = res[1];
@@ -66,12 +73,14 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       // try with no ephemKeyBytes so it will be generated (normal case)
       res = Stealth.initiateStealth(scanBytes, spendBytes);
       expect(res.length).toBe(3);
+      // restore the original getRandom
+      window.crypto.getRandomValues = prevMakeRandom;
     });
 
     it('uncovers the stealth secret', function() {
-      var secret = [75,73,116,38,110,230,200,190,217,239,242,205,16,135,187,193,16,31,23,186,217,195,120,20,248,86,27,103,245,80,197,68];
+      var secret = "34053245118207293422371795779243906008263774607703744573712190846512548332868";
       var c = Stealth.uncoverStealth(scanKeyBytes, ephemKeyPubBytes);
-      expect(c).toEqual(secret);
+      expect(c.toString()).toEqual(secret.toString());
     });
 
     it('generates an address for receiving for a spend key with the given ephemkey', function() {
@@ -80,33 +89,33 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       var spendBytes = spendKeyPubBytes;
       var keyBytes = Stealth.uncoverPublic(scanSecret, ephemBytes, spendBytes);
 
-      expect(keyBytes).toEqual([3, 5, 246, 185, 154, 68, 162, 189, 236, 139, 72, 79, 252, 238, 86, 28, 249, 160, 195, 183, 234, 146, 234, 142, 99, 52, 230, 251, 196, 241, 193, 120, 153]);
+      expect(Array.prototype.slice.call(keyBytes, 0)).toEqual([3, 5, 246, 185, 154, 68, 162, 189, 236, 139, 72, 79, 252, 238, 86, 28, 249, 160, 195, 183, 234, 146, 234, 142, 99, 52, 230, 251, 196, 241, 193, 120, 153]);
 
       var keyHash = Bitcoin.crypto.hash160(keyBytes);
-      var address = new Bitcoin.Address(keyHash);
+      var address = new Bitcoin.Address(keyHash, Bitcoin.networks.bitcoin.pubKeyHash);
 
       expect(address.toString()).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
     });
     
     it('derives a private key from spend key and shared secret', function() {
       var privKey = Stealth.uncoverPrivate(scanKeyBytes, ephemKeyPubBytes, spendKeyBytes);
-      var keyBytes = privKey.getPub().toBytes();
+      var keyBytes = privKey.pub.toBytes();
 
-      var keyHash = Bitcoin.crypto.hash160(keyBytes);
-      var address = new Bitcoin.Address(keyHash);
+      var keyHash = Bitcoin.crypto.hash160(new Bitcoin.Buffer(keyBytes));
+      var address = new Bitcoin.Address(keyHash, Bitcoin.networks.bitcoin.pubKeyHash);
       expect(address.toString()).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
     });
 
     it('derives public key from spend key and shared secret', function() {
-      var spendKey = new Bitcoin.ECPubKey(spendKeyPubBytes);
+      var spendKey = Bitcoin.ECPubKey.fromBytes(spendKeyPubBytes);
       var c = new Bitcoin.BigInteger("10000");
       var keyBytes = Stealth.derivePublicKey(spendKey, c);
 
-      expect(keyBytes).toEqual([3, 173, 36, 66, 71, 110, 69, 203, 135, 107, 57, 44, 117, 28, 232, 195, 123, 20, 36, 239, 18, 50, 107, 196, 154, 84, 37, 176, 43, 123, 246, 179, 204]);
+      expect(bufToArray(keyBytes)).toEqual([3, 173, 36, 66, 71, 110, 69, 203, 135, 107, 57, 44, 117, 28, 232, 195, 123, 20, 36, 239, 18, 50, 107, 196, 154, 84, 37, 176, 43, 123, 246, 179, 204]);
     });
     
     it('derives a bitcoin address from spendkey and shared secret', function() {
-      var spendKey = new Bitcoin.ECPubKey(spendKeyPubBytes);
+      var spendKey = Bitcoin.ECPubKey.fromBytes(spendKeyPubBytes);
       var c = new Bitcoin.BigInteger("1000");
       var address = Stealth.deriveAddress(spendKey, c);
 
@@ -116,14 +125,14 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
     it('builds the stealth nonce output', function() {
       var nonce = 20;
       var ephemBytes = ephemKeyPubBytes;
-      var stealthOut = Stealth.buildNonceOutput(ephemBytes, nonce)
+      var script = Stealth.buildNonceScript(ephemBytes, nonce)
 
-      expect(stealthOut.value).toBe(0);
-      expect(stealthOut.script.buffer.length).toBe(2+1+4+33);
-      expect(stealthOut.script.buffer[2]).toBe(Stealth.nonceVersion);
+      //expect(stealthOut.value).toBe(0);
+      expect(script.buffer.length).toBe(2+1+4+33);
+      expect(script.buffer[2]).toBe(Stealth.nonceVersion);
       // TODO: is this correct or should be [0,0,0,20]?
-      expect(stealthOut.script.buffer.slice(3,7)).toEqual([20,0,0,0]);
-      expect(stealthOut.script.buffer.slice(7,40)).toEqual(ephemBytes);
+      expect(bufToArray(script.buffer.slice(3,7))).toEqual([20,0,0,0]);
+      expect(bufToArray(script.buffer.slice(7,40))).toEqual(ephemBytes);
     });
     
     it('checks prefix against the given array', function() {
@@ -167,9 +176,9 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       expect(recipient.address.toString()).toBe("1Gvq8pSTRocNLDyf858o4PL3yhZm5qQDgB");
       expect(newTx.outs.length).toBe(1);
       var outBuffer = newTx.outs[0].script.chunks[1];
-      expect(newTx.outs[0].script.chunks[0]).toBe(Bitcoin.Opcode.map.OP_RETURN); // OP_RETURN
+      expect(newTx.outs[0].script.chunks[0]).toBe(Bitcoin.opcodes.OP_RETURN); // OP_RETURN
       expect(outBuffer[0]).toBe(Stealth.nonceVersion);
-      expect(outBuffer.slice(1,5)).toEqual([1,0,0,0]);
+      expect(Array.prototype.slice.call(outBuffer, 1, 5)).toEqual([1,0,0,0]);
       expect(newTx.outs[0].script.buffer)
     });
   });

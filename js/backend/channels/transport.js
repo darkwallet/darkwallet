@@ -23,11 +23,10 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
     // Identity (communications) key
     var selfKey;
     if (identity.store.get('commsKey')) {
-        selfKey = new Bitcoin.ECKey(identity.store.get('commsKey'));
+        selfKey = Bitcoin.ECKey.fromBytes(identity.store.get('commsKey'));
     }
     else {
-        selfKey = new Bitcoin.ECKey();
-        selfKey.compressed = true;
+        selfKey = Bitcoin.ECKey.makeRandom(true);
         identity.store.set('commsKey', selfKey.toBytes());
         identity.store.save();
     }
@@ -41,7 +40,7 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
     this.getSignKey = function() { return {pub: signPubKey, priv: signKey}; };
 
     // Scanning
-    var scanPriv = Encryption.adaptPrivateKey(this.getSelfKey().priv);
+    var scanPriv = Encryption.adaptPrivateKey(this.getSelfKey().d);
     var scanKeyPub = Curve25519.ecDH(scanPriv);
     this.getScanKey = function() { return {priv: scanPriv, pub: scanKeyPub}; };
 
@@ -49,8 +48,8 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
     this.getSessionKey = function() { return this.sessionKey; };
 
     // Initialize some own data
-    this.comms = new Peer(this.sessionKey.getPub().toBytes(true));
-    this.myself = new Peer(selfKey.getPub().toBytes(true));
+    this.comms = new Peer(this.sessionKey.pub.toBytes(true));
+    this.myself = new Peer(selfKey.pub.toBytes(true));
 
     this.initWorker();
   }
@@ -100,9 +99,7 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
    */
   Transport.prototype.newSession = function() {
     var self = this;
-    this.sessionKey = new Bitcoin.ECKey();
-    this.sessionKey.compressed = true;
-
+    this.sessionKey = Bitcoin.ECKey.makeRandom(true);
 
     Object.keys(this.channels).forEach(function(name) {
         self.channels[name].prepareSession();

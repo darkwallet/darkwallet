@@ -1,16 +1,16 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
+define(['bitcoinjs-lib', 'util/stealth', 'crypto-js'], function(Bitcoin, Stealth, CryptoJS) {
   var convert = Bitcoin.convert;
 
   var genesisTime = 1231006505;
   var tzOffset = (new Date()).getTimezoneOffset()*60;
 
-  var allowedVersions = [Bitcoin.network.mainnet.addressVersion, Bitcoin.network.mainnet.p2shVersion, Stealth.version];
+  var allowedVersions = [Bitcoin.networks.bitcoin.pubKeyHash, Bitcoin.networks.bitcoin.scriptHash, Stealth.version];
 
   function isSmallIntOp(opcode) {
-    return ((opcode == Bitcoin.Opcode.map.OP_0) ||
-    ((opcode >= Bitcoin.Opcode.map.OP_1) && (opcode <= Bitcoin.Opcode.map.OP_16)))
+    return ((opcode == Bitcoin.opcodes.OP_0) ||
+    ((opcode >= Bitcoin.opcodes.OP_1) && (opcode <= Bitcoin.opcodes.OP_16)))
   }
 
   var BtcUtils = {
@@ -32,17 +32,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
      */
     getInputAddress: function(anIn, versions) {
         if (!versions) throw Error("No versions!");
-        var ops = Bitcoin.Opcode.map;
-        var buffer = anIn.script.buffer;
-        var lastByte = buffer[buffer.length-1];
-        var pubKeys = anIn.script.extractPubkeys();
-        if (isSmallIntOp(buffer[0]) && lastByte == ops.OP_CHECKMULTISIG) {
-            var multisig = BtcUtils.importMultiSig(convert.bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]), versions.p2sh);
-            return multisig.address;
-        } else if (pubKeys && pubKeys.length) {
-            var pubKey = new Bitcoin.ECPubKey(pubKeys[0], pubKeys[0].length==33);
-            return pubKey.getAddress(versions.address).toString();
-        }
+        return Bitcoin.Address.fromInputScript(anIn.script, Bitcoin.networks[versions.network]).toString();
     },
 
     /*
@@ -65,57 +55,49 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
      * Start a multisig structure out of participant public keys and m
      */
     multiSig: function(m, participants, version){
-        if (version === null || version == undefined) version = Bitcoin.network.mainnet.p2shVersion;
+        if (version === null || version == undefined) version = Bitcoin.networks.bitcoin.scriptHash;
         // Create script
-        var script = Bitcoin.Script.createMultiSigOutputScript(m, participants);
+        var pubKeys = [];
+        participants.sort();
+        participants.forEach(function(participant) {
+            pubKeys.push(Bitcoin.ECPubKey.fromBuffer(new Bitcoin.Buffer(participant)));
+        });
+        var script = Bitcoin.scripts.multisigOutput(m, pubKeys); //Bitcoin.Script.createMultiSigOutputScript(m, participants);
         // Hash for address
         var hashed = Bitcoin.crypto.hash160(script.buffer);
         // Encode in base58, v0x05 is multisig
-        var address = Bitcoin.base58check.encode(hashed, version);
+        var address = new Bitcoin.Address(hashed, version).toString();
         // Encoded script
-        var scriptHex = convert.bytesToHex(script.buffer);
+        var scriptHex = script.buffer.toString('hex');
         return {address: address, script: scriptHex, m: m, pubKeys: participants};
     },
 
     deriveMpk: function(mpk, index) {
-        var mpKey = Bitcoin.HDWallet.fromBase58(mpk);
+        var mpKey = Bitcoin.HDNode.fromBase58(mpk);
         var childKey = mpKey.derive(index);
         return childKey.toBase58(false);
     },
 
     importMultiSig: function(data, version){
-        if (version === null || version == undefined) version = Bitcoin.network.mainnet.p2shVersion;
-        var script = new Bitcoin.Script(convert.hexToBytes(data));
+        if (version === null || version == undefined) version = Bitcoin.networks.bitcoin.scriptHash;
+        var script = Bitcoin.Script.fromBuffer(new Bitcoin.Buffer(data, 'hex'));
         var hashed = Bitcoin.crypto.hash160(script.buffer);
-        var address = Bitcoin.base58check.encode(hashed, version);
-        var pubKeys = script.extractPubkeys();
-        var m = script.chunks[0] - Bitcoin.Opcode.map.OP_1 + 1;
+        var address = new Bitcoin.Address(hashed, version).toString();
+        var n = script.chunks[script.chunks.length-2] - Bitcoin.opcodes.OP_1 + 1;
+        var pubKeyBufs = script.chunks.slice(1,1+n)
+        var m = script.chunks[0] - Bitcoin.opcodes.OP_1 + 1;
+        var pubKeys = [];
+        pubKeyBufs.forEach(function(pubKey) {
+             pubKeys.push(Array.prototype.slice.call(pubKey, 0))
+        });
         return {address: address, script: data, m: m, pubKeys: pubKeys};
-    },
-
-    fixTxVersions: function(tx, identity) {
-        // XXX fix trouble with bitcoinjs..
-        if (identity.wallet.network == 'testnet') {
-            var versions = identity.wallet.versions;
-            tx.outs.forEach(function(txOut) {
-                switch(txOut.address.version) {
-                    case 0:
-                        txOut.address.version = versions.address;
-                        break;
-                    case 5:
-                        txOut.address.version = versions.p2sh;
-                        break;
-                }
-            });
-        }
-        return tx;
     },
 
     /*
      *  Uncompress a public address
      */
     compressPublicKey: function(bytes) {
-        var key = Bitcoin.ECPubKey(bytes, false);
+        var key = Bitcoin.ECPubKey.fromBytes(bytes, false);
         return key.toBytes(true);
     },
 
@@ -123,7 +105,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
      *  Uncompress a public address
      */
     uncompressPublicKey: function(bytes) {
-        var key = Bitcoin.ECPubKey(bytes, true);
+        var key = Bitcoin.ECPubKey.fromBytes(bytes, true);
         return key.toBytes(false);
     },
 
@@ -207,8 +189,8 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
             }
         } else if (address.length == 111 && address.slice(0,4) == 'xpub') {
             // Master public key
-            var mpKey = Bitcoin.HDWallet.fromBase58(address);
-            bytes = mpKey.pub.toBytes(false);
+            var mpKey = Bitcoin.HDNode.fromBase58(address);
+            bytes = mpKey.pubKey.toBytes(false);
         } else {
             // Unknown
             throw Error("Can't decode address for multisig with length " + address.length);
@@ -229,7 +211,7 @@ define(['bitcoinjs-lib', 'util/stealth'], function(Bitcoin, Stealth) {
     },
     // Calculate hash for a raw hex transaction
     hash256: function(txHex) {
-        var SHA256 = Bitcoin.CryptoJS.SHA256;
+        var SHA256 = CryptoJS.SHA256;
         var buffer = convert.bytesToWordArray(convert.hexToBytes(txHex));
         var hash = convert.wordArrayToBytes(SHA256(SHA256(buffer)));
         return convert.bytesToHex(hash);

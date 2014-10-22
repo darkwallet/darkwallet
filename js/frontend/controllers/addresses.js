@@ -68,7 +68,7 @@ function (controllers, Bitcoin, DarkWallet) {
    * @param {Object} walletAddress Wallet address struct with the public key to copy
    */
   $scope.copyClipboardPublic = function(walletAddress) {
-      var pubKey = new Bitcoin.ECPubKey(walletAddress.pubKey, true);
+      var pubKey = Bitcoin.ECPubKey.fromBytes(walletAddress.pubKey);
       var publicHex = pubKey.toHex();
       clipboard.copy(publicHex, 'Copied public key to clipboard');
   };

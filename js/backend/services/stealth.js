@@ -121,7 +121,6 @@ define(['backend/port'], function(Port) {
                     stealthJobs[stealthJobIndex] = {type: 'process', cb: cb, nResults: results.length}
 
                     stealthJobIndex += 1;
-
                     stealthWorker.postMessage(request);
                 }
             });

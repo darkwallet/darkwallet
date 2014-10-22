@@ -62,14 +62,14 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
    */
   Channel.prototype.prepareSession = function(sessionKey) {
     // Set keys
-    var priv = sessionKey.priv;
+    var priv = sessionKey.d;
     var ecPriv = Encryption.adaptPrivateKey(priv);
 
     this.pub = Curve25519.ecDH(ecPriv);
     this.priv = ecPriv;
 
     // Setup peer details
-    var newMe = new Peer(this.pub.toByteArrayUnsigned());
+    var newMe = new Peer(this.pub.toBuffer().toJSON().data);
 
     this.comms = newMe;
 
@@ -89,8 +89,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   Channel.prototype.newSession = function() {
     // For now this will get changed in transport
     // and propagated back to all channels
-    var sessionKey = new Bitcoin.ECKey();
-    sessionKey.compressed = true;
+    var sessionKey = Bitcoin.ECKey.makeRandom(true);
     this.prepareSession(sessionKey);
   };
 
@@ -238,7 +237,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
           channelName: this.name,
           otherKey: otherKey,
           privKey: this.priv.toByteArrayUnsigned(),
-          pubKey: this.pub.toByteArrayUnsigned(),
+          pubKey: this.pub.toBuffer().toJSON().data,
           data: data
       };
       // send
@@ -406,7 +405,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
 
   Channel.prototype.checkPairMessage = function(decoded) {
       var idKey = decoded.body.pub;
-      var keys = bufToArray(Bitcoin.base58check.decode(idKey.substr(3)).payload);
+      var keys = bufToArray(Bitcoin.base58check.decode(idKey.substr(3)).slice(1));
       var data = decoded.body;
       var toCheck = data.address+data.nick+data.pub;
 
@@ -440,7 +439,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       identity.contacts.contacts.forEach(function(contact) {
            var idKey = contact.findIdentityKey();
            if (idKey) {
-               var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).payload);
+               var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).slice(1));
                var signKey = Bitcoin.convert.bytesToString(keys.slice(32));
                if (signKey === decoded.body.pub) {
                    var toCheck = decoded.body.ephem+decoded.body.pub;

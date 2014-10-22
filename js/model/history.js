@@ -61,9 +61,9 @@ History.prototype.buildHistoryRow = function(transaction, height) {
         myInValue = 0,
         myOutValue = 0,
         txAddr = "",
-        txObj = new Bitcoin.Transaction(transaction);
+        txObj = Bitcoin.Transaction.fromHex(transaction);
     var isStealth = false;
-    var txHash = Bitcoin.convert.bytesToHex(txObj.getHash());
+    var txHash = txObj.getId();
 
     var pocketImpact = {};
     var addPocketImpact = function(pocketId, outPocketType, amount) {
@@ -78,15 +78,12 @@ History.prototype.buildHistoryRow = function(transaction, height) {
         pocketImpact[pocketId].total += amount;
     };
 
-    // XXX temporary while bitcoinjs-lib supports testnet better
-    txObj = BtcUtils.fixTxVersions(txObj, this.identity);
-
     var inAddress, inPocket, outPocket, internal;
 
     // Check inputs
     for(var idx=0; idx<txObj.ins.length; idx++) {
         var anIn = txObj.ins[idx];
-        var outIdx = anIn.outpoint.hash+":"+anIn.outpoint.index;
+        var outIdx = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index;
         if (btcWallet.outputs[outIdx]) {
             var output = btcWallet.outputs[outIdx];
             // save in pocket
@@ -107,8 +104,14 @@ History.prototype.buildHistoryRow = function(transaction, height) {
     }
     // Check outputs
     for(var idx=0; idx<txObj.outs.length; idx++) {
+        var outAddress;
         var anOut = txObj.outs[idx];
-        var outWalletAddress = identity.wallet.getWalletAddress(anOut.address.toString());
+        try {
+            outAddress = Bitcoin.Address.fromOutputScript(anOut.script, Bitcoin.networks[this.identity.wallet.network]);
+        } catch(e) {
+            outAddress = "";
+        }
+        var outWalletAddress = identity.wallet.getWalletAddress(outAddress.toString());
         if (outWalletAddress) {
             var output = btcWallet.outputs[txHash+":"+idx];
             // TODO: mark also when input is mine and output not
@@ -128,7 +131,7 @@ History.prototype.buildHistoryRow = function(transaction, height) {
             addPocketImpact(_outPocket, outPocketType, anOut.value);
         } else {
             if (inMine) {
-                txAddr = anOut.address.toString();
+                txAddr = outAddress.toString();
             }
         }
     }
@@ -170,13 +173,16 @@ History.prototype.getTransferLabel = function(pocketImpact) {
  * @private
  */
 History.prototype.fillInput = function(transaction, data) {
-    var index = data[0],
+    var address,
+        index = data[0],
         newRow = data[1],
-        txObj = new Bitcoin.Transaction(transaction);
-    // XXX temporary while bitcoinjs-lib supports testnet better
-    txObj = BtcUtils.fixTxVersions(txObj, this.identity);
-    if (Array.isArray(txObj.outs[index].address.hash)) {
-        newRow.address = txObj.outs[index].address.toString();
+        txObj = Bitcoin.Transaction.fromHex(transaction);
+    try {
+        address = Bitcoin.Address.fromOutputScript(txObj.outs[index].script, Bitcoin.networks[this.identity.wallet.network]);
+    } catch(e) {
+    }
+    if (address) {
+        newRow.address = address.toString();
         this.update();
     } else {
         // TODO: need to handle this better
@@ -198,11 +204,12 @@ History.prototype.txFetched = function(transaction, height) {
     // unknown for now means we need to fill in some extra inputs for now get 1st one
     if (newRow.address == 'unknown') {
         if (newRow.tx.ins[0])
-            this.identity.txdb.fetchTransaction(newRow.tx.ins[0].outpoint.hash,
+            this.identity.txdb.fetchTransaction(Bitcoin.bufferutils.reverse(newRow.tx.ins[0]).hash.toString('hex'),
                                             function(_a, _b) {self.fillInput(_a, _b);},
-                                            [newRow.tx.ins[0].outpoint.index, newRow]);
-        else
+                                            [newRow.tx.ins[0].index, newRow]);
+        else {
             console.log("No input!", newRow.tx);
+        }
      }
     if (this.addHistoryRow(newRow) < 2) {
         // It's a relevant event so return the row (initial unspent or initial confirm)

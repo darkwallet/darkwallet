@@ -17,7 +17,7 @@ function Wallet(store, identity) {
     this.pubKeys = store.init('pubkeys', {});
     this.scanKeys = store.init('scankeys', []);
     this.idKeys = store.init('idkeys', []);
-    this.dust = 546;
+    this.dust = Bitcoin.networks[this.network].dustThreshold;
 
     this.mpk = store.get('mpk');
 
@@ -27,7 +27,6 @@ function Wallet(store, identity) {
     this.wallet = { addresses: [], outputs: {} };
 
     this.stealthCache = {};
-
     this.loadPubKeys();
 
     // store balance
@@ -35,14 +34,14 @@ function Wallet(store, identity) {
 }
 
 Wallet.prototype.initVersions = function(network) {
-    network = (network === 'bitcoin') ? 'mainnet' : network;
     this.versions = {
-        address: Bitcoin.network[network].addressVersion,
-        p2sh: Bitcoin.network[network].p2shVersion,
-        hd: Bitcoin.network[network].hdVersions
+        address: Bitcoin.networks[network].pubKeyHash,
+        network: network,
+        p2sh: Bitcoin.networks[network].scriptHash,
+        hd: Bitcoin.networks[network].bip32
     };
     switch(network) {
-        case 'mainnet':
+        case 'bitcoin':
             this.versions.stealth = {address: Stealth.version, nonce: Stealth.nonceVersion, prefix: 'v'};
             break;
         case 'testnet':
@@ -187,7 +186,7 @@ Wallet.prototype.loadPubKeys = function() {
         if (walletAddress && pocket) {
             var scanKey = self.getScanKey(i*2);
             var spendKey = walletAddress.pubKey;
-            walletAddress.stealth = Stealth.formatAddress(scanKey.getPub().toBytes(), [spendKey], self.versions.stealth.address);
+            walletAddress.stealth = Stealth.formatAddress(scanKey.pub.toBytes(), [spendKey], self.versions.stealth.address);
         }
     });
     return false; // updated
@@ -200,7 +199,7 @@ Wallet.prototype.deriveHDPrivateKey = function(seq, masterKey) {
     while(workSeq.length) {
         key = key.derive(workSeq.shift());
     }
-    return key.priv;
+    return key.privKey;
 };
 
 Wallet.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
@@ -208,7 +207,7 @@ Wallet.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
     var scanKey = this.getScanKey(seq[0]);
     var privData = keyStore.privKeys[seq.slice(0,1)];
     if (privData) {
-        spendKey = new Bitcoin.ECKey(privData, true);
+        spendKey = Bitcoin.ECKey.fromBytes(privData, true);
     } else {
         // stealth address take the spend key from the pocket 0
         spendKey = this.deriveHDPrivateKey(seq.slice(0,1), masterKey);
@@ -221,7 +220,7 @@ Wallet.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
  */
 Wallet.prototype.getPocketPrivate = function(index, password) {
     var data = this.store.getPrivateData(password);
-    var masterKey = Bitcoin.HDWallet.fromBase58(data.privKey);
+    var masterKey = Bitcoin.HDNode.fromBase58(data.privKey);
     return masterKey.derive(index).toBase58(true);
 };
 
@@ -234,11 +233,11 @@ Wallet.prototype.getPocketPrivate = function(index, password) {
 Wallet.prototype.getPrivateKey = function(seq, password, callback) {
     var data = this.store.getPrivateData(password);
     if (data.privKeys[seq]) {
-        var key = new Bitcoin.ECKey(data.privKeys[seq], true);
+        var key = Bitcoin.ECKey.fromBytes(data.privKeys[seq], true);
         callback(key);
         return;
     }
-    var masterKey = Bitcoin.HDWallet.fromBase58(data.privKey);
+    var masterKey = Bitcoin.HDNode.fromBase58(data.privKey);
     var privKey;
     if (seq.length > 1 && seq[1] === 's') {
         privKey = this.deriveStealthPrivateKey(seq, masterKey, data);
@@ -272,7 +271,7 @@ Wallet.prototype.storePrivateKey = function(seq, password, key) {
 Wallet.prototype.storePublicKey = function(seq, key, properties) {
     var pubKey = key.length ? key : key.toBytes();
 
-    var pubKeyHash = Bitcoin.crypto.hash160(pubKey);
+    var pubKeyHash = Bitcoin.crypto.hash160(new Bitcoin.Buffer(pubKey));
     var address = new Bitcoin.Address(pubKeyHash, this.versions.address);
 
     var label = 'unused';
@@ -305,7 +304,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
     if ((seq.length === 1) && (seq[0]%2 === 0)) {
         // Stealth
         var scanKey = this.getScanKey(seq[0]);
-        var stealthAddress = Stealth.formatAddress(scanKey.getPub().toBytes(), [pubKey], this.versions.stealth.address);
+        var stealthAddress = Stealth.formatAddress(scanKey.pub.toBytes(), [pubKey], this.versions.stealth.address);
         walletAddress.stealth = stealthAddress;
         // Mpk
         walletAddress.mpk = BtcUtils.deriveMpk(this.mpk, seq[0]);
@@ -350,7 +349,7 @@ Wallet.prototype.getAddress = function(seq, label) {
     }
     else {
         // derive from mpk
-        var mpKey = Bitcoin.HDWallet.fromBase58(this.mpk);
+        var mpKey = Bitcoin.HDNode.fromBase58(this.mpk);
 
         // clone seq since we're mangling it
         var workSeq = seq.slice(0);
@@ -360,7 +359,7 @@ Wallet.prototype.getAddress = function(seq, label) {
             childKey = childKey.derive(workSeq.shift());
         }
         var properties = label ? {'label': label} : null;
-        return this.storePublicKey(seq, childKey.pub, properties);
+        return this.storePublicKey(seq, childKey.pubKey, properties);
     }
 };
 
@@ -555,9 +554,9 @@ Wallet.prototype.processHistory = function(walletAddress, history, initial) {
  */
 Wallet.prototype.getScanKey = function(n) {
     var scanMaster = this.scanKeys[0];
-    var scanMasterKey = Bitcoin.HDWallet.fromBase58(scanMaster.priv);
+    var scanMasterKey = Bitcoin.HDNode.fromBase58(scanMaster.priv);
     var childKey = scanMasterKey.derive(n);
-    return childKey.priv;
+    return childKey.privKey;
 };
 
 /**
@@ -568,9 +567,9 @@ Wallet.prototype.getScanKey = function(n) {
 Wallet.prototype.getIdentityKey = function(n) {
     n = n || 0;
     var idMaster = this.idKeys[0];
-    var idMasterKey = Bitcoin.HDWallet.fromBase58(idMaster.priv);
+    var idMasterKey = Bitcoin.HDNode.fromBase58(idMaster.priv);
     var childKey = idMasterKey.derive(n);
-    return childKey.priv;
+    return childKey.privKey;
 };
 
 /**

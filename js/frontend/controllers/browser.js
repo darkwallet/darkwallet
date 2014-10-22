@@ -27,16 +27,15 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       var lastScriptByte = anIn.script.buffer[anIn.script.buffer.length-1];
       var notes;
 
-      if (anIn.script.chunks[0] == 0 && lastScriptByte == Bitcoin.Opcode.map.OP_CHECKMULTISIG) {
+      if (anIn.script.chunks[0] == 0 && lastScriptByte == Bitcoin.opcodes.OP_CHECKMULTISIG) {
           // multisig
           var fundScript = $scope.bytesToHex(anIn.script.chunks[anIn.script.chunks.length-1]);
           var multisig = BtcUtils.importMultiSig(fundScript);
           notes = (anIn.script.chunks.length-2) + "/" + multisig.pubKeys.length + " sigs"
-      } else if (anIn.outpoint.hash == '0000000000000000000000000000000000000000000000000000000000000000') {
+      } else if (anIn.hash.toString('hex') == '0000000000000000000000000000000000000000000000000000000000000000') {
           result = '';
           notes = "coinbase";
       } else {
-          console.log('unknown', anIn);
           notes = '';
       }
       return {address: address, notes: notes};
@@ -46,10 +45,29 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * Process a transaction to extract some info
    */
   var processTransaction = function(tx) {
-      tx = BtcUtils.fixTxVersions(tx, DarkWallet.getIdentity());
+      var identity = DarkWallet.getIdentity();
       tx.ins.forEach(function(anIn, i) {
-          var pubKeys = anIn.script.extractPubkeys();
           anIn.address = $scope.showInput(anIn);
+          anIn.outpoint = {hash: Bitcoin.bufferutils.reverse(anIn.hash).toString('hex'), index: anIn.index};
+        
+      })
+      tx.outs.forEach(function(anOut, i) {
+          try {
+              anOut.address = Bitcoin.Address.fromOutputScript(anOut.script, Bitcoin.networks[identity.wallet.network]);
+          } catch (e) {
+              if (anOut.script.chunks[0] == Bitcoin.opcodes.OP_RETURN) {
+                  var nonceVersion = anOut.script.chunks[1][0];
+                  if (nonceVersion == identity.wallet.versions.stealth.nonce) {
+                      anOut.notes = 'stealth';
+                  } else {
+                      anOut.notes = 'data';
+                  }
+                  anOut.address = anOut.script.chunks[1].toString('hex').slice(0, 32)+"...";
+              } else {
+                  console.log("cannot decode", e);
+                  anOut.address = '';
+              }
+          }
         
       })
   };
@@ -64,7 +82,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
           return;
       } else {
           $scope.txName = $scope.txHash;
-          $scope.tx = new Bitcoin.Transaction(data);
+          $scope.tx = Bitcoin.Transaction.fromHex(data);
           $scope.address = '';
           $scope.history = '';
           processTransaction($scope.tx);
@@ -83,7 +101,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       var tx = DarkWallet.getIdentity().txdb.getBody(txHash);
       if (tx) {
           onFetchTransaction(false, tx);
-      } else {
+      } else if (client) {
           client.fetch_transaction(txHash, onFetchTransaction);
       }
   }

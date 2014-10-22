@@ -1,8 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/djbec'], function(Bitcoin, Curve25519) {
+define(['bitcoinjs-lib', 'util/djbec', 'crypto-js'], function(Bitcoin, Curve25519, CryptoJS) {
 
-var CryptoJS = Bitcoin.CryptoJS;
 var BigInteger = Bitcoin.BigInteger;
 var ecdsa = Bitcoin.ecdsa;
 var convert =  Bitcoin.convert;

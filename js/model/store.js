@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'sjcl'], function(Bitcoin) {
+define(['bitcoinjs-lib', 'crypto-js', 'sjcl'], function(Bitcoin, CryptoJS) {
 /**
  * Mapping coordinating with the app's database.
  * @constructor
@@ -58,7 +58,7 @@ Store.prototype.save = function(callback) {
  * @return {String} Hashed password
  */
 Store.prototype.getPasswordHash = function(password) {
-    var SHA256 = Bitcoin.CryptoJS.SHA256;
+    var SHA256 = CryptoJS.SHA256;
     var passwordDigest = Bitcoin.convert.wordArrayToBytes(SHA256(SHA256(SHA256(password))));
     return Bitcoin.convert.bytesToString(passwordDigest);
 }

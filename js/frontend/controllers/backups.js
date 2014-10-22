@@ -133,7 +133,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
             if (key.substr(0,12) == 'dw:identity:') {
                 var identity = data[key];
                 var commsKey = new Bitcoin.ECKey(identity.commsKey);
-                var pubKey = commsKey.getPub().toBytes(true);
+                var pubKey = commsKey.pub.toBytes(true);
                 var hash = Bitcoin.convert.bytesToHex(pubKey);
                 var nPubKeys = Object.keys(identity.pubkeys).length;
                 var nContacts = identity.contacts.length;

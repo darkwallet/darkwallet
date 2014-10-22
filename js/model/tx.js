@@ -69,7 +69,7 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
     var outAmount = 0;
     txUtxo.forEach(function(utxo) {
         outAmount += utxo.value;
-        newTx.addInput(utxo.receive);
+        newTx.addInput(utxo.receive.split(":")[0], parseInt(utxo.receive.split(":")[1]));
     });
 
     // Calculate change
@@ -100,7 +100,7 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
         newTx.addOutput(changeAddress.address, change);
     }
     if (reserveOutputs) {
-        var hash = Bitcoin.convert.bytesToHex(newTx.getHash());
+        var hash = newTx.getId();
         txUtxo.forEach(function(output, i) {
             wallet.markOutput(output, hash + ':' + i);
         });
@@ -122,7 +122,7 @@ Transaction.prototype.sign = function(newTx, txUtxo, password, callback) {
     var wallet = this.identity.wallet;
     var pending = [];
 
-    var hash = Bitcoin.convert.bytesToHex(newTx.getHash());
+    var hash = newTx.getId();
 
     // Signing
     for(var idx=0; idx<txUtxo.length; idx++) {
@@ -173,7 +173,7 @@ Transaction.prototype.signMyInputs = function(inputs, newTx, privKeys) {
     for(var i=0; i<newTx.ins.length; i++) {
         var anIn = newTx.ins[i];
         var found = inputs.filter(function(myIn) {
-            return (myIn.outpoint.hash === anIn.outpoint.hash) && (parseInt(myIn.outpoint.index) === parseInt(anIn.outpoint.index));
+            return (myIn.hash.toString('hex') === anIn.hash.toString('hex')) && (parseInt(myIn.index) === parseInt(anIn.index));
         });
         if (found.length === 0) {
             continue;
@@ -181,15 +181,16 @@ Transaction.prototype.signMyInputs = function(inputs, newTx, privKeys) {
         if (found.length !== 1) {
             throw new Error("Duplicate input found!");
         }
-        if (wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
-            var output = wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index];
+        var inId = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index;
+        if (wallet.wallet.outputs[inId]) {
+            var output = wallet.wallet.outputs[inId];
 
             var walletAddress = wallet.getWalletAddress(output.address);
             if (!walletAddress) {
                 console.log("no wallet address for one of our inputs!", output.address);
                 continue;
             }
-            var privKey = new Bitcoin.ECKey(privKeys[walletAddress.index], true);
+            var privKey = Bitcoin.ECKey.fromBytes(privKeys[walletAddress.index], true);
             newTx.sign(i, privKey);
             signed = true;
         } else {
@@ -221,10 +222,10 @@ Transaction.prototype.inputsMine = function(txHash, txObj, wallet) {
         // we don't really know here :P
         return;
     }
-    var tx = txObj || new Bitcoin.Transaction(txHex);
+    var tx = txObj || Bitcoin.Transaction.fromHex(txHex);
     for (var j=0; j<tx.ins.length; j++) {
         var anIn = tx.ins[j];
-        if (wallet.wallet.outputs[anIn.outpoint.hash+":"+anIn.outpoint.index]) {
+        if (wallet.wallet.outputs[Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index]) {
             return true;
         }
     }
@@ -245,16 +246,15 @@ Transaction.prototype.forAddress = function(walletAddress, tx) {
     // looking for the address (but we don't have per address outpoint lists yet...).
     var inputs = [];
     for(var i=0; i<tx.ins.length; i++) {
-        var outpoint = tx.ins[i].outpoint;
-        var txHash = outpoint.hash;
+        var outpoint = tx.ins[i];
+        var txHash = Bitcoin.bufferutils.reverse(outpoint.hash).toString('hex');
         var txHex = identity.txdb.getBody(txHash);
         if (txHex) {
-            var prevTx = new Bitcoin.Transaction(txHex);
-            // XXX temporary while bitcoinjs-lib supports testnet better
-            prevTx = BtcUtils.fixTxVersions(prevTx, identity);
+            var prevTx = Bitcoin.Transaction.fromHex(txHex);
 
-            if (prevTx.outs[outpoint.index].address.toString() === walletAddress.address) {
-                inputs.push({index: i, address: walletAddress.address, outpoint: outpoint});
+            var outAddress = Bitcoin.Address.fromOutputScript(prevTx.outs[outpoint.index].script, Bitcoin.networks[this.identity.wallet.network]).toString();
+            if (outAddress === walletAddress.address) {
+                inputs.push({index: i, address: walletAddress.address, outpoint: outpoint });
             }
         }
     }
@@ -267,9 +267,9 @@ Transaction.prototype.forAddress = function(walletAddress, tx) {
 // was undoTransaction
 Transaction.prototype.undo = function(tx) {
     var wallet = this.identity.wallet;
-    var txHash = Bitcoin.convert.bytesToHex(tx.getHash());
+    var txHash = tx.getId();
     tx.ins.forEach(function(anIn) {
-        var index = anIn.outpoint.hash + ':' + anIn.outpoint.index;
+        var index = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex') + ':' + anIn.index;
         var output = wallet.wallet.outputs[index];
         if (output && output.spend) {
             if (!output.spendpending) {
@@ -310,8 +310,8 @@ Transaction.prototype.undo = function(tx) {
 // was processTx
 Transaction.prototype.process = function(serializedTx, height) {
     var wallet = this.identity.wallet;
-    var tx = new Bitcoin.Transaction(serializedTx);
-    var txHash = Bitcoin.convert.bytesToHex(tx.getHash());
+    var tx = Bitcoin.Transaction.fromHex(serializedTx);
+    var txHash = tx.getId();
 
     // Allow the bitcoinjs wallet to process the tx
     if (!this.identity.txdb.getBody(txHash)) {
@@ -322,12 +322,14 @@ Transaction.prototype.process = function(serializedTx, height) {
         this.identity.txdb.storeTransaction(txHash, serializedTx);
     }
 
-    // XXX temporary while bitcoinjs-lib supports testnet better
-    tx = BtcUtils.fixTxVersions(tx, this.identity);
-
     // Now parse inputs and outputs
     tx.outs.forEach(function(txOut, i){
-      var address = txOut.address.toString();
+      var outType = Bitcoin.scripts.classifyOutput(txOut.script, Bitcoin.networks[wallet.versions.network]);
+      // don't process output if not of the right type or has no value
+      if (!outType || outType === 'nulldata' || !txOut.value) {
+          return;
+      }
+      var address = Bitcoin.Address.fromOutputScript(txOut.script, Bitcoin.networks[wallet.versions.network]).toString();
       var outputAddress = wallet.getWalletAddress(address);
       // already exists
       if (outputAddress) {
@@ -336,8 +338,8 @@ Transaction.prototype.process = function(serializedTx, height) {
     });
 
     tx.ins.forEach(function(txIn, i){
-      var op = txIn.outpoint;
-      var o = wallet.wallet.outputs[op.hash+':'+op.index];
+      var op = txIn;
+      var o = wallet.wallet.outputs[Bitcoin.bufferutils.reverse(op.hash).toString('hex')+':'+op.index];
       if (o) {
         if (!o.spend) {
             o.spend = txHash+':'+i;

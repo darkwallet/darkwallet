@@ -3,9 +3,8 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkWallet, Bitcoin) {
+define(['./module', 'darkwallet', 'bitcoinjs-lib', 'crypto-js'], function (controllers, DarkWallet, Bitcoin, CryptoJS) {
   var convert = Bitcoin.convert;
-  var CryptoJS = Bitcoin.CryptoJS;
 
   controllers.controller('BitIdCtrl', ['$scope', '$window', '$http', 'notify', '$location', '_Filter', function($scope, $window, $http, notify, $location, _) {
       $scope.site = '';
@@ -54,7 +53,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
 
         // Get an id key and address for n
         var idKey = identity.wallet.getIdentityKey(siteN);
-        var address = idKey.getPub().getAddress(identity.wallet.versions.address).toString();
+        var address = idKey.pub.getAddress(Bitcoin.networks[identity.wallet.network]).toString();
 
         // sign
         var signature = signText(idKey, address, text);

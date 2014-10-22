@@ -328,7 +328,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
      */
     this.mixTransaction = function(newTx, metadata, password, callback) {
         var identity = self.getCurrentIdentity();
-        var task = {tx: newTx.serializeHex(),
+        var task = {tx: newTx.toHex(),
                     state: 'announce',
                     total: metadata.total,
                     label: metadata.label,
@@ -383,7 +383,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
         this.signTransaction(newTx.clone(), metadata, password, function(err, signed) {
             if (!err && signed.type === 'signed') {
-                task.fallback = signed.tx.serializeHex();
+                task.fallback = signed.tx.toHex();
                 // Callback for calling process
                 callback(null, {task: task, tx: newTx, type: 'mixer', privKeys: privKeys});
             } else {
@@ -402,11 +402,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 console.log("no fallback for this task!!", task);
                 return;
             }
-            var tx = new Bitcoin.Transaction(task.fallback);
+            var tx = Bitcoin.Transaction.fromHex(task.fallback);
             task.state = 'finished';
             task.progress = 100;
 
-            var hash = Bitcoin.convert.bytesToHex(tx.getHash());
+            var hash = tx.getId();
             var spendTask = TransactionTasks.processSpend(hash, task.total, task.recipients, task.label);
             core.service.badge.setItems(self.getCurrentIdentity());
             self.broadcastTx(tx, spendTask, function(err, data) {console.log(err,data);});
@@ -427,11 +427,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 callback(err);
             } else if (pending.length) {
                 // If pending signatures add task and callback with 2nd parameter
-                var task = core.service.multisigTrack.spend(newTx.serializeHex(), pending);
+                var task = core.service.multisigTrack.spend(newTx.toHex(), pending);
                 callback(null, {task: task, tx: newTx, type: 'signatures'});
             } else if (broadcast) {
                 // Broadcast and add task
-                var txHash = Bitcoin.convert.bytesToHex(newTx.getHash());
+                var txHash = newTx.getId();
                 if (metadata.label) {
                     identity.txdb.setLabel(txHash, metadata.label);
                 }
@@ -450,10 +450,10 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
      */
      this.broadcastTx = function(newTx, task, callback) {
          // Broadcasting
-         var serialized = newTx.serializeHex();
+         var serialized = newTx.toHex();
 
          if (task.label) {
-             var hash = Bitcoin.convert.bytesToHex(newTx.getHash());
+             var hash = newTx.getId();
              core.getCurrentIdentity().txdb.setLabel(hash, task.label);
          }
          var notifyTx = function(error, count) {
@@ -474,7 +474,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
          console.log("send tx", serialized);
          var identity = self.getCurrentIdentity();
          identity.tx.process(serialized, 0);
-         core.getClient().broadcast_transaction(newTx.serializeHex(), notifyTx);
+         core.getClient().broadcast_transaction(newTx.toHex(), notifyTx);
      };
   }
   return WalletService;

@@ -6,8 +6,18 @@
 define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transaction, Bitcoin) {
   describe('Wallet model', function() {
     
-    var identity, wallet, _store, _private, initIfEmpty;
+    var identity, wallet, _store, _private, initIfEmpty, origMakeRandom = window.crypto.getRandomValues;
  
+    var removeRandomness = function() {
+        // remove randomness from the test, this changes how ECKey.makeRandom and crypto browserify rng works
+        // fixes issues with older ff in tests
+        window.crypto.getRandomValues = function(bytes) { bytes[0] = 255; };
+    }
+    var restoreRandomness = function() {
+      // restore the original getRandom
+      window.crypto.getRandomValues = origMakeRandom;
+    }
+
     beforeEach(function() {
       // inhibit initIfEmpty for part of the tests so it doesn't need
       // so much processing   
@@ -119,6 +129,7 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
     });
     afterEach(function() {
       Wallet.prototype.initIfEmpty = initIfEmpty;
+      restoreRandomness();
     });
     
     it('is created properly', function() {
@@ -137,8 +148,8 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
         expect(tx2.change).toBe(tx.change);
         expect(tx2.myamount).toBe(tx.myamount);
         expect(tx2.tx.version).toBe(tx.tx.version);
-        expect(tx2.tx.ins[0].outpoint.hash).toBe(tx.tx.ins[0].outpoint.hash);
-        expect(tx2.tx.ins[0].outpoint.index).toBe(tx.tx.ins[0].outpoint.index);
+        expect(tx2.tx.ins[0].hash.toString('hex')).toBe(tx.tx.ins[0].hash.toString('hex'));
+        expect(tx2.tx.ins[0].index).toBe(tx.tx.ins[0].index);
         expect(tx2.utxo[0].address).toBe(tx.utxo[0].address);
         expect(tx2.utxo[0].value).toBe(tx.utxo[0].value);        
       };
@@ -152,8 +163,8 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
         expect(tx.change).toBe(2790000);
         expect(tx.myamount).toBe(3000000);
         expect(tx.tx.version).toBe(1);
-        expect(tx.tx.ins[0].outpoint.hash).toBe('64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6');
-        expect(tx.tx.ins[0].outpoint.index).toBe('1');
+        expect(Bitcoin.bufferutils.reverse(tx.tx.ins[0].hash).toString('hex')).toBe('64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6');
+        expect(tx.tx.ins[0].index).toBe(1);
         expect(tx.utxo[0].address).toBe('1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ');
         expect(tx.utxo[0].value).toBe(3000000);
         
@@ -168,7 +179,12 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
         var tx = identity.tx.prepare(0, recipients, change, 10000);
         
         var recipients = [{amount: 200000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyvUfMT7tvsZPS8xhGGfSmoDGQ8AKRyi7oRYhrhLQJRdvdYLh2z2j5k'}];
+
+        removeRandomness();
+
         var tx2 = identity.tx.prepare(0, recipients, change, 10000);
+
+        restoreRandomness();
 
         // Stealth addresses have the same values than a normal address
         commonTransactionChecks(tx, tx2);
@@ -200,6 +216,8 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
       
       it('to multiple stealth addresses', function() {
         var recipients = [{amount: 200000, address: juiceRapNews}];
+
+        removeRandomness();
         var tx = identity.tx.prepare(0, recipients, change, 10000);
         
         recipients = [
@@ -207,6 +225,7 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
           {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyubqxGCwKCgqXQRzqP3b8nbU8yUnuaazNxAq1ZgmtM6ft6tGWptnkx'}
         ];
         var tx4 = identity.tx.prepare(0, recipients, change, 10000);
+        restoreRandomness();
         
         commonTransactionChecks(tx, tx4);
         
@@ -225,7 +244,9 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
           {amount: 100000, address: 'vJmtCy3scMRLEDSbFc3xwLXB3Q8fmDLRVaMjC4S2en6KetnAyubqxGCwKCgqXQRzqP3b8nbU8yUnuaazNxAq1ZgmtM6ft6tGWptnkx'},
           {amount: 100000, address: satoshiForest}
         ];
+        removeRandomness();
         var tx5 = identity.tx.prepare(0, recipients, change, 10000);
+        restoreRandomness();
         
         commonTransactionChecks(tx, tx5);
         
@@ -244,8 +265,8 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
         expect(tx6.change).toBe(0);
         expect(tx6.myamount).toBe(5000000);
         expect(tx6.tx.version).toBe(1);
-        expect(tx6.tx.ins[0].outpoint.hash).toBe('c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c');
-        expect(tx6.tx.ins[0].outpoint.index).toBe('0');
+        expect(Bitcoin.bufferutils.reverse(tx6.tx.ins[0].hash).toString('hex')).toBe('c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c');
+        expect(tx6.tx.ins[0].index).toBe(0);
         expect(tx6.utxo[0].address).toBe('1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs');
         expect(tx6.utxo[0].value).toBe(5000000);
         
