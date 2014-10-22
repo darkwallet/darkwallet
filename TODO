@@ -3,10 +3,11 @@ Immediate:
  + Wallet
    - Cache address history and resume
    + Review sending
-   - CoinJoin Hardening
-     - check balance of peer inputs
+   + CoinJoin Hardening
+     * Wait for several on announce DONE
+     * check balance of peer inputs DONE
+     * pocket mixing 'budget' or other controls DONE
      - match fee with the other peer (if within limits)
-     - pocket mixing 'budget' or other controls
      - controls for cancelling mixer tasks
      - bip32 branch depth == mixing depth
    - Stealth multisig
