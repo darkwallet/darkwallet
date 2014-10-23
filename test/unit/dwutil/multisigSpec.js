@@ -9,6 +9,7 @@ define(['testUtils', 'bitcoinjs-lib'], function (testUtils, Bitcoin) {
     var txIn = "01000000011abab476564f7153d6d5c01f69719d083a968e96cfef75f1eb426ad4dfaad8c6010000006a47304402206f0f4cd73269ac852442cce8462bcacae8af6639d7f2b4b0a1f7e10d8d3c9fe402200b7a38ba64e6e62a2596cc21970292c1f5a04886d077ff83dc48350cd10435690121037c54f475e4116d24266e23de543b5f75f7bbf29ff4d3d4cd22d3a7c7d80c61edffffffff01905f01000000000017a9141b59804ad7bf8330d71d8badfec4edd60cb92dc58700000000";
     var txOut = "01000000010eb1f05a823ae9b35955f7549746d307352769758a355015b57fc984f0e6fbb10000000000ffffffff0180380100000000001976a914e0731cac0341d0546d2e754379d1e74370e5d8bf88ac00000000";
     var txOutPartial = '01000000010eb1f05a823ae9b35955f7549746d307352769758a355015b57fc984f0e6fbb1000000006c004c6952210281a3d72a88ec66b04781077359cb04449603909ebe63e6df41de6be55638dfda21023959052c9bb9d66aa52a7e1a34e04ddc0e0833d9c06a57f715366ed097fc8ddf2103b5be88abd12c0273fc284c8cb46ae5cb0750b27a3463cbd0e75d6ba41436e01453aeffffffff0180380100000000001976a914e0731cac0341d0546d2e754379d1e74370e5d8bf88ac00000000';
+    var txForeign = "01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce62890000000000ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc8271210000000000ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000";
 
     var pubKey1 = Bitcoin.Buffer("0281a3d72a88ec66b04781077359cb04449603909ebe63e6df41de6be55638dfda", "hex");
     var pubKey2 = Bitcoin.Buffer("03b5be88abd12c0273fc284c8cb46ae5cb0750b27a3463cbd0e75d6ba41436e014", "hex");
@@ -47,7 +48,7 @@ define(['testUtils', 'bitcoinjs-lib'], function (testUtils, Bitcoin) {
               tasks: identityTasks
             },
             tx: {
-              forAddress: function(walletAddress, tx) { if (walletAddress.name === 'fund') {return [{index: 0, outpoint: {hash: new Bitcoin.Buffer('dead', 'hex'), index: 0}}]} return []; }
+              forAddress: function(walletAddress, tx) { if (tx.ins.length == 1 && walletAddress.name === 'fund') {return [{index: 0, outpoint: {hash: new Bitcoin.Buffer('dead', 'hex'), index: 0}}]} return []; }
             },
             wallet: {
               network: 'bitcoin',
@@ -62,7 +63,7 @@ define(['testUtils', 'bitcoinjs-lib'], function (testUtils, Bitcoin) {
             contacts: {
               findByPubKey: function(pubKeyBytes) {
                   if (pubKeyBytes === multisig.pubKeys[1]) {
-                      return {data: {name: 'test contact', hash: 'dead'}, findIdentityKey: function() {}};
+                      return {data: {name: 'test contact', hash: 'dead'}, findIdentityKey: function() {return "idkey";}};
                   }
               }
             }
@@ -101,7 +102,10 @@ define(['testUtils', 'bitcoinjs-lib'], function (testUtils, Bitcoin) {
     xit('detects tasks', function() {
     });
 
-    xit('finds a fund task', function() {
+    it('finds a fund task', function() {
+      var fund = new MultisigFund(multisig);
+      var spend = fund.findFundTask(fund.tasks[0].task);
+      expect(spend.task.tx).toBe(txIn);
     });
 
     xit('organizes signatures', function() {
@@ -139,7 +143,24 @@ define(['testUtils', 'bitcoinjs-lib'], function (testUtils, Bitcoin) {
     });
 
 
-    xit('gets a spend', function() {
+    it('gets a spend', function() {
+      var fund = new MultisigFund(multisig);
+      var spend = fund.getSpend("b1fbe6f084c97fb51550358a7569273507d3469754f75559b3e93a825af0b10e");
+      expect(spend.task.tx).toBe(txIn);
+    });
+
+    it('imports a malformed transaction', function() {
+      var fund = new MultisigFund(multisig);
+      expect(function() {
+        fund.importTransaction("xxx");
+      }).toThrow();
+    });
+
+    it('imports a transaction for another multisig', function() {
+      var fund = new MultisigFund(multisig);
+      expect(function() {
+        fund.importTransaction(txForeign);
+      }).toThrow();
     });
 
     it('imports a transaction', function() {
