@@ -2,8 +2,6 @@
 
 define(['darkwallet', 'bitcoinjs-lib', 'crypto-js'], function(DarkWallet, Bitcoin, CryptoJS) {
 
-var convert = Bitcoin.convert;
-
 /**
  * Class for dark wallet multisig funds
  */
@@ -34,7 +32,7 @@ MultisigFund.prototype.detectParticipant = function(pubKeyBytes, i) {
 
     var participant = { pubKey: pubKeyBytes };
 
-    var walletAddress = identity.wallet.getWalletAddress(myAddress);
+    var walletAddress = identity.wallet.getWalletAddress(myAddress.toString());
     if (walletAddress) {
         // Current identity
         participant.type = 'me';
@@ -133,7 +131,7 @@ MultisigFund.prototype.findFundTask = function(task) {
 MultisigFund.prototype.organizeSignatures = function(hexSigs) {
     var signatures = [];
     var multisig = this.multisig;
-    multisig.participants.forEach(function(participant, i) {
+    multisig.pubKeys.forEach(function(participant, i) {
         if (hexSigs.hasOwnProperty(i)) {
             signatures.push(hexSigs[i]);
         } else {
