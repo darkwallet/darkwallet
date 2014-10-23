@@ -162,7 +162,8 @@ MultisigFund.prototype.finishTransaction = function(spend, incomplete) {
             if (!builder.signatures[input.index]) {
                 builder.signatures[input.index] = {hashType: Bitcoin.Transaction.SIGHASH_ALL, pubKeys: [], redeemScript: script, scriptType: "multisig", signatures: []};
             }
-            builder.signatures[input.index].signatures = sigs;
+            // add making sure we don't add more signatures than needed
+            builder.signatures[input.index].signatures = sigs.slice(0, multisig.m);
         } else {
             finished = false;
         }
