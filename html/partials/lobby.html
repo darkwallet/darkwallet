@@ -16,7 +16,7 @@
               Join
             </button>
           </form>
-            <button ng-click="removeChannel()" ng-show="canRemove && !selectedPeer" class="button small radius expand alert">
+            <button ng-click="removeChannel()" ng-show="subscribed && canRemove && !selectedPeer" class="button small radius expand alert">
               Leave
             </button>
           <h4 ng-show="peerRequests.length">{{'Requests'|_}}</h4>
