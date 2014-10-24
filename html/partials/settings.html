@@ -72,7 +72,14 @@
               <select class="select-list" size="50" ng-model="selectedServerIdx">
                    <option ng-repeat="server in servers track by $index" value="{{$index}}" ng-click="selectedServerIdx=$index" ng-selected="selectedServerIdx==$index">{{server.name}}</option>
               </select>
-              <a ng-click="connectServer()" class="button small radius expand">{{'Connect to selected server'|_}}</a>
+              <div class="row">
+                <div class="small-9 columns">
+                  <a ng-click="connectServer()" class="button small radius expand">{{'Connect to selected server'|_}}</a>
+                </div>
+                <div class="small-3 columns">
+                  <a ng-disabled="selectedServer===servers[selectedServerIdx]" ng-click="removeServer()" class="button small alert radius expand">{{'Delete'|_}}</a>
+                </div>
+              </div>
               <h6>{{'{0} to {1} @ {2}'|_:connectionStatus:selectedServer.name:selectedServer.address}}</h6>
               <div ng-show="connectionStatus == 'Connected'">
                 <div>{{'gateway'|_}}: {{servicesStatus.gateway}}</div>

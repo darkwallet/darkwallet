@@ -38,6 +38,24 @@ Connections.prototype.addServer = function(name, address, type) {
     this.store.save();
 };
 
+/**
+ * Remove a server from the list
+ * @param {Object} server The server object to remove.
+ *                        The server can't be the currently selected one
+ */
+Connections.prototype.removeServer = function(server) {
+    var serverIdx = this.servers.indexOf(server);
+    if (serverIdx > -1 && serverIdx !== this.selectedServer) {
+        this.servers.splice(serverIdx, 1);
+        if (this.selectedServer > serverIdx) {
+            this.selectedServer -= 1;
+            this.connections.selectedServer = this.selectedServer;
+        }
+        this.store.save();
+        return true;
+    }
+};
+
 
 /**
  * Set the selected server

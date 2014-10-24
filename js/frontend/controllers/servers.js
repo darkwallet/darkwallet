@@ -80,6 +80,16 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       $scope.addServerError = '';
   };
 
+  // Remove a server from html form
+  $scope.removeServer = function() {
+      var identity = DarkWallet.getIdentity();
+      var server = $scope.servers[$scope.selectedServerIdx];
+      if (identity.connections.removeServer(server)) {
+          $scope.selectedServerIdx = identity.connections.selectedServer;
+          $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
+      }
+  };
+
   // Connect the given server, triggered by select changing $scope.selectedServerIdx
   $scope.connectServer = function() {
       var identity = DarkWallet.getIdentity();
