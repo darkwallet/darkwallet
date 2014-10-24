@@ -3,13 +3,18 @@
  */
 'use strict';
 
-define(['testUtils', 'bitcoinjs-lib'], function(testUtils, Bitcoin) {
+define(['testUtils', 'bitcoinjs-lib', 'util/btc'], function(testUtils, Bitcoin, BtcUtils) {
   var testTx = "01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce62890000000000ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc8271210000000000ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000";
   var blockHeader = "020000002e3fa5a84b6f541d7126ea46e89ff2fb263888526bacfc0d0000000000000000c323ea4dd6664bcba6df32875eaed45be95bf8735b5f50ed6240346aa54ff39ae8314a54c08d1e18e579e44a";
+  var lastBlock, lastTimestamp, blockDiff;
 
   describe('Wallet service', function() {
     var Port, walletService, keyRing, core, identity;
     beforeEach(function(done) {
+      lastBlock = BtcUtils.lastBlock;
+      lastTimestamp = BtcUtils.lastTimestamp;
+      blockDiff = BtcUtils.blockDiff;
+
       testUtils.stub('backend/port', {
         listen: function(service, callback) {
           callback({type: 'connected'});
@@ -112,6 +117,13 @@ define(['testUtils', 'bitcoinjs-lib'], function(testUtils, Bitcoin) {
         spyOn(Port, 'post');
         done();
       });
+    });
+
+    afterEach(function(done) {
+      BtcUtils.lastBlock = lastBlock;
+      BtcUtils.lastTimestamp = lastTimestamp;
+      BtcUtils.blockDiff = blockDiff;
+      done();
     });
 
     it('creates the service', function() {
