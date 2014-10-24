@@ -26,7 +26,6 @@ function Wallet(store, identity) {
     this.pockets = new Pockets(store, identity, this);
     this.wallet = { addresses: [], outputs: {} };
 
-    this.stealthCache = {};
     this.loadPubKeys();
 
     // store balance
