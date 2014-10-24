@@ -4,7 +4,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
 
   // Address scanner
   function Scanner(client, identity, finishCb, updateCb, scanMain) {
-      this.addressVersion = identity.wallet.versions.address;
+      this.network = identity.wallet.network;
       this.client = client;
 
       var mpk = identity.wallet.mpk;
@@ -44,7 +44,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       if (n >= 0) {
           childKey = childKey.derive(n);
       }
-      var address = childKey.pubKey.getAddress(Bitcoin.networks[identity.wallet.network]);
+      var address = childKey.pubKey.getAddress(Bitcoin.networks[this.network]);
       return address.toString();
   };
 
