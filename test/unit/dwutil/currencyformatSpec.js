@@ -34,10 +34,17 @@ define(['testUtils'], function (testUtils) {
     afterEach(function() {
       testUtils.reset();
     });
+
+    it('converts user amount to satoshis', function() {
+      expect(CurrencyFormatting.asSatoshis('0.21')).toBe(21000000);
+      expect(CurrencyFormatting.asSatoshis('0.21', 'bits')).toBe(21);
+      expect(CurrencyFormatting.asSatoshis('0.21', 'mBTC')).toBe(21000);
+    });
      
     it('converts satoshis to user bitcoin unit', function() {
       expect(CurrencyFormatting.asBtc(400000)).toBe(0.004);
       expect(CurrencyFormatting.asBtc(400000, 'mBTC')).toBe(4);
+      expect(CurrencyFormatting.asBtc(400000, 'bits')).toBe(4000);
     });
      
     it('converts satoshis to user fiat unit', function() {
@@ -48,6 +55,7 @@ define(['testUtils'], function (testUtils) {
     it('converts btc to fiat', function() {
       expect(CurrencyFormatting.btcToFiat(100, 'BTC', 'EUR')).toBe('35000.00');
       expect(CurrencyFormatting.btcToFiat(100, 'mBTC', 'EUR')).toBe('35.00');
+      expect(CurrencyFormatting.btcToFiat(100000, 'bits', 'EUR')).toBe('35.00');
       
       expect(CurrencyFormatting.btcToFiat(100, 'BTC', 'GALLEON')).toBeUndefined();
     });
@@ -55,6 +63,7 @@ define(['testUtils'], function (testUtils) {
     it('converts fiat to btc', function() {
       expect(CurrencyFormatting.fiatToBtc(100, 'BTC', 'EUR')).toBe('0.28571429');
       expect(CurrencyFormatting.fiatToBtc(100, 'mBTC', 'EUR')).toBe('285.71429');
+      expect(CurrencyFormatting.fiatToBtc(100, 'bits', 'EUR')).toBe('285714.29');
       
       expect(CurrencyFormatting.fiatToBtc(100, 'BTC', 'GALLEON')).toBeUndefined();
     });
@@ -62,6 +71,10 @@ define(['testUtils'], function (testUtils) {
     it('formats satoshis into user unit', function() {
       expect(CurrencyFormatting.formatBtc(400000)).toBe('0.004 ฿');
       expect(CurrencyFormatting.formatBtc(400000, 'mBTC')).toBe('4 m฿');
+      expect(CurrencyFormatting.formatBtc(400000, 'bits')).toBe('4,000 bits');
+      expect(CurrencyFormatting.formatBtc(400000, 'smart')).toBe('4,000 bits');
+      expect(CurrencyFormatting.formatBtc(400000000, 'smart')).toBe('4 ฿');
+      expect(CurrencyFormatting.formatBtc(400, 'smart')).toBe('4 bits');
     });
      
     it('formats satoshis to user fiat', function() {
