@@ -16,6 +16,9 @@
               Join
             </button>
           </form>
+            <button ng-click="removeChannel()" ng-show="canRemove && !selectedPeer" class="button small radius expand alert">
+              Leave
+            </button>
           <h4 ng-show="peerRequests.length">{{'Requests'|_}}</h4>
           <div ng-show="peerRequests.length">
               <select class="select-list" size="10">

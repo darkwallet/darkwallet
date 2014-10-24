@@ -17,6 +17,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   $scope.peerRequests = [];
   $scope.selectedRequest = false;
   $scope.anyPaired = false;
+  $scope.canRemove = false;
 
   var checkPaired = function(identity) {
       var identity = DarkWallet.getIdentity();
@@ -193,6 +194,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.peerRequests = channelLink.channel.peerRequests;
 
       selectedChannel = name;
+      $scope.canRemove = (['Trollbox', 'Trollnet', 'CoinJoin'].indexOf(name) !== 0);
       $scope.subscribed = channelLink.channel.channelHash;
       currentChannel = channelLink.channel;
 
@@ -289,6 +291,20 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
         // Relink
         connectChannel($scope.pairCode);
         $scope.pairCode = '';
+    };
+    $scope.removeChannel = function() {
+        cleanPeer();
+        var name = currentChannel.name;
+        if (channelLinks.hasOwnProperty(name)) {
+            // Channel is linked
+            channelLinks[name].disconnect();
+            delete channelLinks[name];
+            $scope.pairCode = '';
+            var transport = DarkWallet.getLobbyTransport();
+            transport.closeChannel(name);
+            currentChannel = undefined;
+            $scope.subscribed = undefined;
+        }
     };
     $scope.openPrivate = function(peer) {
         cleanPeer();
