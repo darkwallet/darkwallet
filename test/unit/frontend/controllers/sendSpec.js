@@ -1,5 +1,5 @@
 /**
- * @fileOverview ContactsCtrl angular controller
+ * @fileOverview SendCtrl angular controller
  */
 'use strict';
 
