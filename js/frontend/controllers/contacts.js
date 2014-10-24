@@ -287,7 +287,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   };
 
   // Toggle watch on a contact
-  $scope.toggleWatch = function(contact, index) {
+  $scope.toggleWatch = function(contact) {
     // toggle watch on the contact
     contact.data.watch = !contact.data.watch;
 
