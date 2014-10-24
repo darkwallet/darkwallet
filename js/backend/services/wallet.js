@@ -246,7 +246,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         var client = core.getClient();
         // Unsubscribe the address
         client.unsubscribe(walletAddress.address, function() {
-            callback ? callback : null;
+            callback ? callback() : null;
         });
     };
  
