@@ -200,7 +200,7 @@ define(['testUtils', 'bitcoinjs-lib', 'util/btc'], function(testUtils, Bitcoin, 
       var metadata = {};
       var result;
       var cb = function(err, data) {
-          result = data;
+          if (!err) result = data;
       };
       identity.tx.sign = function(newTx, utxo, pass, cb) { cb(null, []) };
       walletService.signTransaction(newTx, metadata, 'pass', cb, false);
@@ -214,7 +214,7 @@ define(['testUtils', 'bitcoinjs-lib', 'util/btc'], function(testUtils, Bitcoin, 
       var metadata = {label: 'foo'};
       var result;
       var cb = function(err, data) {
-          result = data;
+          if (!err) result = data;
       };
       identity.tx.sign = function(newTx, utxo, pass, cb) { cb(null, []) };
       walletService.signTransaction(newTx, metadata, 'pass', cb, true);
@@ -228,7 +228,7 @@ define(['testUtils', 'bitcoinjs-lib', 'util/btc'], function(testUtils, Bitcoin, 
       var metadata = {label: 'foo'};
       var called;
       var cb = function(err, data) {
-          called = true;
+          if (err) called = true;
       };
       identity.tx.sign = function(newTx, utxo, pass, cb) { cb('error') };
       walletService.signTransaction(newTx, metadata, 'pass', cb, true);
@@ -241,7 +241,7 @@ define(['testUtils', 'bitcoinjs-lib', 'util/btc'], function(testUtils, Bitcoin, 
       var metadata = {};
       var result;
       var cb = function(err, data) {
-          result = data;
+          if (!err) result = data;
       };
       identity.tx.sign = function(newTx, utxo, pass, cb) { cb(null, [1, 2]) };
       walletService.signTransaction(newTx, metadata, 'pass', cb, false);
