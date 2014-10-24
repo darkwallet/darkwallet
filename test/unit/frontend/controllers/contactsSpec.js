@@ -39,23 +39,31 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
           identity.contacts.contacts[i].pubKeys = identity.contacts.contacts[i].data.pubKeys;
           identity.contacts.contacts[i].remove = function() {};
           identity.contacts.contacts[i].update = function() {};
+          identity.contacts.contacts[i].addKey = function() {};
+          identity.contacts.contacts[i].deleteKey = function() {};
+          identity.contacts.contacts[i].setMainKey = function() {};
           spyOn(identity.contacts.contacts[i], 'remove');
           spyOn(identity.contacts.contacts[i], 'update');
+          spyOn(identity.contacts.contacts[i], 'setMainKey');
+          spyOn(identity.contacts.contacts[i], 'addKey');
+          spyOn(identity.contacts.contacts[i], 'deleteKey');
       }
       _contacts = identity.contacts.contacts;
     };
     
     var injectController = function(routeParams) {
       mocks.inject(["$rootScope", "$controller", function ($rootScope, $controller) {
-        var watch = {};
         var notify = {};
+        var watch = {};
         watch.removePocket = function() {};
         watch.initPocket = function() {};
-        watch.renamePocket = function() {};
+        watch.renamePocket = function() {return true;};
         watch.addKey = function() {};
         watch.removeKey = function() {};
         watch.renameKey = function() {};
         scope = $rootScope.$new();
+        scope.updateReadOnly = function() {};
+        spyOn(scope, 'updateReadOnly');
         routeParams = routeParams || {};
         location = {
           path: function(path) {
@@ -138,6 +146,39 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         scope.contactToEdit = {name: 'Nakamoto Satoshi', address: '6...'};
         scope.editContactKey(_contacts[0], 0);
         expect(_contacts[0].update).toHaveBeenCalledWith('6...', 0);
+      });
+
+      it('saves a name', function() {
+        scope.saveName(_contacts[0], 'newName');
+        expect(scope.updateReadOnly).toHaveBeenCalledWith(identity);
+        expect(_contacts[0].data.name).toBe('newName');
+      });
+
+      it('sets the main key', function() {
+        scope.setMainKey(_contacts[0], 0);
+        expect(_contacts[0].setMainKey).toHaveBeenCalledWith(0);
+      });
+
+      it('adds a key', function() {
+        scope.contactToEdit = {name: 'Nakamoto Satoshi', address: '6...'};
+        scope.newContact = {address: '7...', label: 'home'};
+        scope.addContactKey(_contacts[0]);
+        expect(scope.newContact).toEqual({});
+        expect(_contacts[0].addKey).toHaveBeenCalledWith('7...', 'home');
+      });
+
+      it('deletes a key', function() {
+        scope.contactToEdit = {name: 'Nakamoto Satoshi', address: '6...', data: {watch: true}};
+        scope.deleteKey(_contacts[0], 0)
+        expect(scope.newContact).toEqual({});
+        expect(_contacts[0].deleteKey).toHaveBeenCalledWith(0);
+      });
+
+
+      it('toggles watch', function() {
+        scope.contactToEdit = {name: 'Nakamoto Satoshi', address: '6...', data: {}};
+        scope.toggleWatch(_contacts[0]);
+        expect(scope.updateReadOnly).toHaveBeenCalledWith(identity);
       });
 
       it('deletes a contact', function() {
