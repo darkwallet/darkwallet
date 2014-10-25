@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['bitcoinjs-lib', 'crypto-js'], function(Bitcoin, CryptoJS) {
+define(['bitcoinjs-lib'], function(Bitcoin) {
 
 var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0);};
 
@@ -44,12 +44,12 @@ Stealth.stealthDH = function(e, decKey) {
     // start the second stage
     var S1;
     if (Stealth.quirk) {
-        S1 = [3].concat(point.affineX.toBuffer().toJSON().data);
+        S1 = new Bitcoin.Buffer([3].concat(point.affineX.toBuffer().toJSON().data));
     } else {
         S1 = point.getEncoded(true);
     }
-    var c = convert.wordArrayToBytes(CryptoJS.SHA256(convert.bytesToWordArray(S1)));
-    return Bitcoin.BigInteger.fromByteArrayUnsigned(c);
+    var c = Bitcoin.crypto.sha256(S1);
+    return Bitcoin.BigInteger.fromBuffer(c);
 };
 
 
