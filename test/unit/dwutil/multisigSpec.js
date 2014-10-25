@@ -10,6 +10,8 @@ define(['testUtils', 'bitcoinjs-lib'], function (testUtils, Bitcoin) {
     var txOut = "01000000010eb1f05a823ae9b35955f7549746d307352769758a355015b57fc984f0e6fbb10000000000ffffffff0180380100000000001976a914e0731cac0341d0546d2e754379d1e74370e5d8bf88ac00000000";
     var txOutPartial = '01000000010eb1f05a823ae9b35955f7549746d307352769758a355015b57fc984f0e6fbb1000000006c004c6952210281a3d72a88ec66b04781077359cb04449603909ebe63e6df41de6be55638dfda21023959052c9bb9d66aa52a7e1a34e04ddc0e0833d9c06a57f715366ed097fc8ddf2103b5be88abd12c0273fc284c8cb46ae5cb0750b27a3463cbd0e75d6ba41436e01453aeffffffff0180380100000000001976a914e0731cac0341d0546d2e754379d1e74370e5d8bf88ac00000000';
     var txForeign = "01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce62890000000000ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc8271210000000000ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000";
+    var txSigned = "01000000010eb1f05a823ae9b35955f7549746d307352769758a355015b57fc984f0e6fbb100000000b400473044022002e4445fd146aad250a6c43d73a4bb63b326671df9966946a9f41e97e95be38602205ec5ecc94b137695b6426aadcc72f6b83a54dc5e0419ba57dffb3642bbf85bfc014c6952210281a3d72a88ec66b04781077359cb04449603909ebe63e6df41de6be55638dfda21023959052c9bb9d66aa52a7e1a34e04ddc0e0833d9c06a57f715366ed097fc8ddf2103b5be88abd12c0273fc284c8cb46ae5cb0750b27a3463cbd0e75d6ba41436e01453aeffffffff0180380100000000001976a914e0731cac0341d0546d2e754379d1e74370e5d8bf88ac00000000";
+    var txSigned2 = "01000000010eb1f05a823ae9b35955f7549746d307352769758a355015b57fc984f0e6fbb100000000b4004730440220287b25690f28b5b3d6bf4326981ffe7c9ac15c9174e4652efe7ef8748e4660710220177abaf19024dd43f7a186e47437115dbe4a119549d10185d4bf81654b99dbc8014c6952210281a3d72a88ec66b04781077359cb04449603909ebe63e6df41de6be55638dfda21023959052c9bb9d66aa52a7e1a34e04ddc0e0833d9c06a57f715366ed097fc8ddf2103b5be88abd12c0273fc284c8cb46ae5cb0750b27a3463cbd0e75d6ba41436e01453aeffffffff0180380100000000001976a914e0731cac0341d0546d2e754379d1e74370e5d8bf88ac00000000";
 
     var pubKey1 = Bitcoin.Buffer("0281a3d72a88ec66b04781077359cb04449603909ebe63e6df41de6be55638dfda", "hex");
     var pubKey2 = Bitcoin.Buffer("03b5be88abd12c0273fc284c8cb46ae5cb0750b27a3463cbd0e75d6ba41436e014", "hex");
@@ -171,6 +173,28 @@ define(['testUtils', 'bitcoinjs-lib'], function (testUtils, Bitcoin) {
       expect(fund.tasks[1].task.tx).toEqual(txOut);
       expect(spend.task.tx).toEqual(txOut);
       expect(spend.task.pending.length).toEqual(1);
+      expect(spend.tx.ins.length).toEqual(1);
+      expect(spend.tx.outs.length).toEqual(1);
+    });
+
+    it('imports a signed transaction', function() {
+      var fund = new MultisigFund(multisig);
+      var spend = fund.importTransaction(txSigned);
+
+      expect(fund.tasks.length).toEqual(2);
+      expect(fund.tasks[1].task.tx).toEqual(txSigned);
+      expect(spend.task.tx).toEqual(txSigned);
+      expect(spend.task.pending.length).toEqual(1);
+      expect(spend.task.pending[0].signatures[0]).toBe('3044022002e4445fd146aad250a6c43d73a4bb63b326671df9966946a9f41e97e95be38602205ec5ecc94b137695b6426aadcc72f6b83a54dc5e0419ba57dffb3642bbf85bfc');
+      expect(spend.tx.ins.length).toEqual(1);
+      expect(spend.tx.outs.length).toEqual(1);
+
+      // import second transaction
+      spend = fund.importTransaction(txSigned2);
+      expect(fund.tasks.length).toEqual(2);
+      expect(spend.task.pending.length).toEqual(1);
+      expect(spend.task.pending[0].signatures[0]).toBe('3044022002e4445fd146aad250a6c43d73a4bb63b326671df9966946a9f41e97e95be38602205ec5ecc94b137695b6426aadcc72f6b83a54dc5e0419ba57dffb3642bbf85bfc');
+      expect(spend.task.pending[0].signatures[2]).toBe('30440220287b25690f28b5b3d6bf4326981ffe7c9ac15c9174e4652efe7ef8748e4660710220177abaf19024dd43f7a186e47437115dbe4a119549d10185d4bf81654b99dbc8');
       expect(spend.tx.ins.length).toEqual(1);
       expect(spend.tx.outs.length).toEqual(1);
     });

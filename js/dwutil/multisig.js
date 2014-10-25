@@ -1,6 +1,6 @@
 'use strict';
 
-define(['darkwallet', 'bitcoinjs-lib', 'crypto-js'], function(DarkWallet, Bitcoin, CryptoJS) {
+define(['darkwallet', 'bitcoinjs-lib', 'crypto-js', 'util/btc'], function(DarkWallet, Bitcoin, CryptoJS, BtcUtils) {
 
 /**
  * Class for dark wallet multisig funds
@@ -256,7 +256,7 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
     var found = false;
     var tasks = identity.tasks.getTasks('multisig');
     tasks.forEach(function(task) {
-        if (Bitcoin.Transaction.fromHex(task.tx).getId() === tx.getId()) {
+        if (BtcUtils.getBareTxId(Bitcoin.Transaction.fromHex(task.tx)) === BtcUtils.getBareTxId(tx)) {
             found = task;
         }
     });
