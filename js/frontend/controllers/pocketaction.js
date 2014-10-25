@@ -173,9 +173,6 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
         var wallet = identity.wallet;
         var to;
         var address;
-        if (type === 'pocket') {
-            type = 'hd';
-        }
         // generate a destination address
         var pocket = wallet.pockets.getPocket(index, type);
         if (pocket) {
