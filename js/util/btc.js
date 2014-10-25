@@ -210,6 +210,11 @@ define(['bitcoinjs-lib', 'util/stealth', 'crypto-js'], function(Bitcoin, Stealth
         diff = diff || BtcUtils.blockDiff;
         return (genesisTime+(height*diff))*1000;
     },
+    // Gets an tx hash without input scripts
+    getBareTxId: function(tx) {
+        var hash = tx.hashForSignature(0, Bitcoin.Script.EMPTY, Bitcoin.Transaction.SIGHASH_ALL);
+        return hash.toString('hex');
+    },
     // Calculate hash for a raw hex transaction
     hash256: function(txHex) {
         var SHA256 = CryptoJS.SHA256;

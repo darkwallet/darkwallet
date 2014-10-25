@@ -1,6 +1,6 @@
 'use strict';
 
-define(['util/btc'], function(BtcUtils) {
+define(['util/btc', 'bitcoinjs-lib'], function(BtcUtils, Bitcoin) {
   describe('Bitcoin Utils', function() {
     
     var pubkeys = [
@@ -135,6 +135,21 @@ define(['util/btc'], function(BtcUtils) {
       expect(BtcUtils.validateAddress(address4)).toEqual(true);
       expect(BtcUtils.validateAddress(address5)).toEqual(true);
       expect(BtcUtils.validateAddress('foo')).toBeUndefined();
+    });
+
+    it('generates consistent bare ids', function() {
+      var txHex1 = "01000000010eb1f05a823ae9b35955f7549746d307352769758a355015b57fc984f0e6fbb100000000b400473044022002e4445fd146aad250a6c43d73a4bb63b326671df9966946a9f41e97e95be38602205ec5ecc94b137695b6426aadcc72f6b83a54dc5e0419ba57dffb3642bbf85bfc014c6952210281a3d72a88ec66b04781077359cb04449603909ebe63e6df41de6be55638dfda21023959052c9bb9d66aa52a7e1a34e04ddc0e0833d9c06a57f715366ed097fc8ddf2103b5be88abd12c0273fc284c8cb46ae5cb0750b27a3463cbd0e75d6ba41436e01453aeffffffff0180380100000000001976a914e0731cac0341d0546d2e754379d1e74370e5d8bf88ac00000000";
+      var txHex2 = "01000000010eb1f05a823ae9b35955f7549746d307352769758a355015b57fc984f0e6fbb100000000b4004730440220287b25690f28b5b3d6bf4326981ffe7c9ac15c9174e4652efe7ef8748e4660710220177abaf19024dd43f7a186e47437115dbe4a119549d10185d4bf81654b99dbc8014c6952210281a3d72a88ec66b04781077359cb04449603909ebe63e6df41de6be55638dfda21023959052c9bb9d66aa52a7e1a34e04ddc0e0833d9c06a57f715366ed097fc8ddf2103b5be88abd12c0273fc284c8cb46ae5cb0750b27a3463cbd0e75d6ba41436e01453aeffffffff0180380100000000001976a914e0731cac0341d0546d2e754379d1e74370e5d8bf88ac00000000";
+      var txForeign = "01000000024b29c7abd143582985ab746905cd79731fbe953b93413dcc486f0409b9ce62890000000000ffffffffc7052b97e8d78df0ec6cc17f96e645360835c9a1105963ef726fd879cc8271210000000000ffffffff02c09ee605000000001976a914f587db9cc12fb50bd877475d73a62a8059e7054388acc09ee605000000001976a9141db621e7447d279d4267f0517e58330d0f89e53d88ac00000000";
+      var tx1 = Bitcoin.Transaction.fromHex(txHex1);
+      var tx2 = Bitcoin.Transaction.fromHex(txHex2);
+      var tx3 = Bitcoin.Transaction.fromHex(txForeign);
+      // sanity checks
+      expect(tx1.getId()===tx2.getId()).toBe(false);
+      expect(tx2.getId()===tx3.getId()).toBe(false);
+      // test bare ids
+      expect(BtcUtils.getBareTxId(tx1)).toBe(BtcUtils.getBareTxId(tx2));
+      expect(BtcUtils.getBareTxId(tx1)===BtcUtils.getBareTxId(tx3)).toBe(false);
     });
   });
 });
