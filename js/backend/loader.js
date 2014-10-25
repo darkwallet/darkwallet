@@ -27,6 +27,8 @@ require.config({
     'async': "../vendors/async/lib/async",
     'convert': "util/convert",
     'bitcoinjs-lib': "../vendors/wrappers/bitcoinjs",
+    'bigi': "../vendors/wrappers/bigi",
+    'bs58check': "../vendors/wrappers/bs58check",
     'big': "../vendors/big.js/big.min",
 
     'bitcoinjs-lib-real': "../vendors/bitcoinjs-lib/bitcoinjs",
@@ -103,6 +105,14 @@ require.config({
     },
     'bitcoinjs-lib-real': {
       exports: 'Bitcoin'
+    },
+    'bigi': {
+      deps: ['bitcoinjs-lib'],
+      exports: 'BigInteger'
+    },
+    'bs58check': {
+      deps: ['bitcoinjs-lib'],
+      exports: 'base58check'
     },
     'bitcoinjs-lib': {
       deps: ['bitcoinjs-lib-real', 'convert'],
