@@ -94,13 +94,13 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
    */
   MultisigTrackService.prototype.processTx = function(serializedTx) {
       var identity = this.core.getCurrentIdentity();
-      var txHash = BtcUtils.hash256(serializedTx);
+      var txHash = BtcUtils.getBareTxId(Bitcoin.Transaction.fromHex(serializedTx));
 
       var tasks = identity.tasks.getTasks('multisig');
       tasks = tasks.concat(identity.tasks.getTasks('multisig-sign'));
 
       tasks.forEach(function(task) {
-            if ((task.tx === serializedTx) || (task.hash === txHash)) {
+            if ((task.tx === serializedTx) || (task.hash === txHash) || (BtcUtils.getBareTxId(Bitcoin.Transaction.fromHex(task.tx)) === txHash)) {
                 task.state = 'finished';
             }
       });
@@ -119,11 +119,11 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
 
       tasks.forEach(function(task) {
           // Generate the tx hash to check or get it from the task if available
-          var hash = task.hash || BtcUtils.hash256(task.tx);
+          var hash = task.hash || BtcUtils.getBareTxId(Bitcoin.Transaction.fromHex(task.tx));
 
           // Check if some row references this
           identity.history.history.some(function(row) {
-              if (row.hash === hash) {
+              if (row.bareid === hash) {
                   task.state = 'finished';
                   return true;
               }
@@ -214,7 +214,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
    */
   MultisigTrackService.prototype.sign = function(multisig, tx, sigHex) {
       var task = this.prepareTask({}, multisig);
-      task.hash = tx.getId();
+      task.hash = BtcUtils.getBareTxId(tx);
       task.signature = sigHex;
 
       // Add the task

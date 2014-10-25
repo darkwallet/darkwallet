@@ -147,7 +147,7 @@ define(['testUtils', 'bitcoinjs-lib'], function (testUtils, Bitcoin) {
 
     it('gets a spend', function() {
       var fund = new MultisigFund(multisig);
-      var spend = fund.getSpend("b1fbe6f084c97fb51550358a7569273507d3469754f75559b3e93a825af0b10e");
+      var spend = fund.getSpend("3f01e20c4b44745663bd6ef2c6b46aa6e344528d5e80af540085021acab2c17f");
       expect(spend.task.tx).toBe(txIn);
     });
 

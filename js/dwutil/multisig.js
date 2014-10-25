@@ -223,7 +223,7 @@ MultisigFund.prototype.importSignature = function(sigHex, spend) {
 MultisigFund.prototype.getSpend = function(txHash) {
     for(var i=0; i<this.tasks.length; i++) {
         var spend = this.tasks[i];
-        var hash = spend.tx.getId();
+        var hash = BtcUtils.getBareTxId(spend.tx); 
         if (hash === txHash) {
             return spend;
         }

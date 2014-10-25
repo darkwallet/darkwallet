@@ -145,7 +145,7 @@ History.prototype.buildHistoryRow = function(transaction, height) {
     }
     // Create a row representing this change (if already referenced will
     // be replaced)
-    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outAddresses: outAddresses, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket, impact: pocketImpact, label: this.identity.txdb.getLabel(txHash), internal: internal};
+    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outAddresses: outAddresses, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket, impact: pocketImpact, label: this.identity.txdb.getLabel(txHash), internal: internal, bareid: BtcUtils.getBareTxId(txObj)};
     return newRow;
 };
 
