@@ -113,7 +113,9 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
               }
           }
       });
-      notify.note(_('Sent {0} beacons', sent));
+      if (minLevel < -2) {
+          notify.note(_('Sent {0} beacons', sent));
+      }
   }
 
   // hide peers after 4 mins
