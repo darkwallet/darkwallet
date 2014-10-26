@@ -100,7 +100,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       tasks = tasks.concat(identity.tasks.getTasks('multisig-sign'));
 
       tasks.forEach(function(task) {
-            if ((task.tx === serializedTx) || (task.hash === txHash) || (BtcUtils.getBareTxId(Bitcoin.Transaction.fromHex(task.tx)) === txHash)) {
+            if ((task.tx === serializedTx) || (task.hash === txHash) || (task.tx && BtcUtils.getBareTxId(Bitcoin.Transaction.fromHex(task.tx)) === txHash)) {
                 task.state = 'finished';
             }
       });
