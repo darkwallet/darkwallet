@@ -283,7 +283,8 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
       hash : 'ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3',
       pubKeys: [
         {data: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd', type: 'address', pubKey: undefined, address: '1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd'}
-      ]
+      ],
+      trust : [ 0, 0, 0 ]
     };
     var store = {
       init: function(key, value) {
