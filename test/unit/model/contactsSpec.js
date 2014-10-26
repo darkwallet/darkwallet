@@ -49,13 +49,15 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
           name : 'DarkWallet team',
           pubKeys : [ { data : '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy', pubKey : undefined, type : 'address', address : '31oSGBBNrpCiENH3XMZpiP6GTC4tad4bMy' } ],
           mainKey : 0,
-          hash : '97ff6614bac3eab9ee8afdf4e7ced9f790a776c77f5b8c7a1e1b74763f616cd3'
+          hash : '97ff6614bac3eab9ee8afdf4e7ced9f790a776c77f5b8c7a1e1b74763f616cd3',
+          trust: [0,0,0]
         });
       expect(contacts.contacts[1].data).toEqual({
           name : 'libbitcoin team',
           pubKeys : [ { data : '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP', pubKey : undefined, type : 'address', address : '339Bsc4f6jeh4k15difzbr4TTfoeS9uEKP' } ],
           mainKey : 0,
-          hash : '627b0f3cea255982d98a3a9f2f1addda472bcb564505002a8ab7e43cd1f9bef6'
+          hash : '627b0f3cea255982d98a3a9f2f1addda472bcb564505002a8ab7e43cd1f9bef6',
+          trust: [0,0,0]
         });
     });
 

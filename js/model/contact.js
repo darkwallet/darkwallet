@@ -11,7 +11,47 @@ define([], function() {
 function Contact(data, contacts) {
   this.data = data;
   this.contacts = contacts;
+  this.initTrust();
   this.initContact();
+}
+
+/**
+ * Init trust for this contact
+ */
+Contact.prototype.initTrust = function() {
+  // initialize trust
+  if (!this.data.trust) {
+      // order is trust, opsec and validation
+      this.data.trust = [0, 0, 0];
+  }
+  this.trust = {};
+  var keys = ['trust', 'opsec', 'validation'];
+  var self = this;
+  this.data.trust.forEach(function(value, i) {
+      var key = keys[i];
+      self.trust[key] = value;
+  });
+}
+
+/**
+ * Set trust on a contact
+ * @param {Object} newTrust Mapping with keys to set
+ * keys are:
+ * - trust: -1 to 4
+ * - opsec: -2 to 4
+ * - validation: 0 to 3
+ */
+Contact.prototype.setTrust = function(newTrust) {
+  var self = this;
+  var keys = ['trust', 'opsec', 'validation'];
+  keys.forEach(function(key, i) {
+      var value = newTrust[key];
+      if (value !== undefined && value !== null) {
+          self.data.trust[i] = parseInt(value);
+          self.trust[key] = parseInt(value)
+      }
+  });
+  this.contacts.store.save();
 }
 
 /**
