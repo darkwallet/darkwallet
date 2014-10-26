@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['bitcoinjs-lib', 'convert', 'bigi', 'bs58check'], function(Bitcoin, Convert, BigInteger, base58check) {
+define(['bitcoinjs-lib', 'convert', 'bigi', 'bs58check', 'buffer'], function(Bitcoin, Convert, BigInteger, base58check, Buffer) {
 
 var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0);};
 
@@ -42,7 +42,7 @@ Stealth.stealthDH = function(e, decKey) {
     // start the second stage
     var S1;
     if (Stealth.quirk) {
-        S1 = new Bitcoin.Buffer([3].concat(point.affineX.toBuffer().toJSON().data));
+        S1 = new Buffer([3].concat(point.affineX.toBuffer().toJSON().data));
     } else {
         S1 = point.getEncoded(true);
     }
@@ -91,7 +91,7 @@ Stealth.formatAddress = function(scanPubKeyBytes, spendPubKeys, version) {
     stealth = stealth.concat([0]);
     // Encode in base58 and add version
     stealth = [version].concat(stealth);
-    return base58check.encode(new Bitcoin.Buffer(stealth));
+    return base58check.encode(new Buffer(stealth));
 };
 
 /*
@@ -268,7 +268,7 @@ Stealth.buildNonceScript = function(ephemKeyBytes, nonce, version) {
     var nonceBytes = Convert.numToBytes(nonce, 4);
     var ephemScript = [version];
     ephemScript = ephemScript.concat(nonceBytes.concat(ephemKeyBytes));
-    chunks.push(new Bitcoin.Buffer(ephemScript));    
+    chunks.push(new Buffer(ephemScript));    
 
     return Bitcoin.Script.fromChunks(chunks);
 };
@@ -350,7 +350,7 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
             var nonceBytes = Convert.numToBytes(nonce, 4);
 
             // Hash the nonce 
-            outHash = bufToArray(Bitcoin.crypto.hash160(nonceBytes.concat(ephemKey)));
+            outHash = bufToArray(Bitcoin.crypto.hash160(new Buffer(nonceBytes.concat(ephemKey))));
         } while(iters < maxNonce && !Stealth.checkPrefix(outHash, stealthPrefix));
 
     } while(!Stealth.checkPrefix(outHash, stealthPrefix));

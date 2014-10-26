@@ -29,6 +29,7 @@ require.config({
     'bitcoinjs-lib': "../vendors/wrappers/bitcoinjs",
     'bigi': "../vendors/wrappers/bigi",
     'bs58check': "../vendors/wrappers/bs58check",
+    'buffer': "../vendors/wrappers/buffer",
     'big': "../vendors/big.js/big.min",
 
     'bitcoinjs-lib-real': "../vendors/bitcoinjs-lib/bitcoinjs",
