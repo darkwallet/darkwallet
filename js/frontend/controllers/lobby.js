@@ -65,18 +65,9 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       var identity = DarkWallet.getIdentity();
       var request = $scope.selectedRequest;
 
-      var peerChannel = $scope.selectedRequest.peer.channel;
-      if (peerChannel.checkPairMessage(request)) {
-          // Add the contact if not already present
-          if (!identity.contacts.findByAddress(request.body.address)) {
-              if (!identity.contacts.searchKeys({data: request.body.pub})) {
-                  var data = {name: request.nick, address: request.body.address};
-                  var newContact = identity.contacts.addContact(data);
-                  newContact.addKey(request.body.pub);
-              }
-          }
+      var peerChannel = request.peer.channel;
+      if (peerChannel.acceptRequest(request)) {
           $scope.anyPaired = true;
-          $scope.selectedRequest.peer.nick = request.nick;
           notify.success(_('{0} added to contacts', request.nick));
       } else {
           notify.warning(_('Scam attempt'), _('Oops seems the signature was wrong'));
@@ -102,9 +93,8 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       var peer = $scope.selectedRequest.peer;
 
       // Send a beacon back to the contact
-      if (peer.channel && peer.contact) {
+      if (peer.channel && peer.channel.acceptBeacon($scope.selectedRequest)) {
           notify.note(_('Sent a beacon back to the contact'));
-          sendBeacon(peer.channel, peer.contact);
       }
 
       // now clear the request
@@ -112,12 +102,15 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   }
 
   // Send beacons for all contacts
-  $scope.sendBeacons = function() {
+  $scope.sendBeacons = function(minLevel) {
+      if (minLevel === undefined) {minLevel = -6};
       var identity = DarkWallet.getIdentity();
       var sent = 0;
       identity.contacts.contacts.forEach(function(contact) {
-          if (sendBeacon(currentChannel, contact)) {
-              sent += 1;
+          if (contact.trust.trust >= minLevel) {
+              if (sendBeacon(currentChannel, contact)) {
+                  sent += 1;
+              }
           }
       });
       notify.note(_('Sent {0} beacons', sent));
@@ -197,6 +190,8 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.canRemove = (['Trollbox', 'Trollnet', 'CoinJoin'].indexOf(name) !== 0);
       $scope.subscribed = channelLink.channel.channelHash;
       currentChannel = channelLink.channel;
+      // Send beacons with level 1 or more
+      $scope.sendBeacons(2);
 
       $scope.lastTimestamp = Date.now();
       if (!$scope.$$phase) {
@@ -276,6 +271,9 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
         connectChannel(channel.name);
         if (currentChannel) {
             currentChannel.sendOpening();
+            // Send beacons with level 1 or more
+            $scope.sendBeacons(2);
+              
         }
     };
 

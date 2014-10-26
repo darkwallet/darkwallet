@@ -431,10 +431,44 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       Port.post('contacts', {type: 'contact', peer: peer});
   };
 
+  Channel.prototype.acceptBeacon = function(request) {
+      var peer = request.peer;
+      if ((!peer.sentBeacon || (Date.now()-peer.sentBeacon>10000)) && peer.contact && peer.contact.trust.trust > 1) {
+          // send beacon to contact
+          var idKey = peer.contact.findIdentityKey();
+          if (idKey) {
+              var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).slice(1));
+              var beaconKey = keys.slice(0, 32);
+              this.sendBeacon(beaconKey, function() {});
+              peer.sentBeacon = Date.now();
+              return true;
+          }
+      }
+  };
+
+  Channel.prototype.acceptRequest = function(request) {
+      var identity = this.transport.identity;
+      if (this.checkPairMessage(request)) {
+          // Add the contact if not already present
+          if (!identity.contacts.findByAddress(request.body.address)) {
+              if (!identity.contacts.searchKeys({data: request.body.pub})) {
+                  var data = {name: request.nick, address: request.body.address};
+                  var newContact = identity.contacts.addContact(data);
+                  newContact.addKey(request.body.pub);
+              }
+          }
+          request.peer.nick = request.nick;
+          return true;
+      } else {
+          return false;
+      }
+  };
+
   Channel.prototype.onReceiveBeacon = function(decoded) {
       var self = this;
       // Find out which contact this is
       var valid = false;
+      var accepted = false;
       var identity = this.transport.identity;
       identity.contacts.contacts.forEach(function(contact) {
            var idKey = contact.findIdentityKey();
@@ -447,7 +481,13 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
                        decoded.body.nick = contact.data.name;
                        decoded.peer.nick = contact.data.name;
                        decoded.peer.contact = contact;
-                       self.onContactAvailable(decoded.peer, contact);
+                       contact.online = decoded.peer;
+                       if (contact.trust.trust > 1) {
+                           self.acceptBeacon(decoded);
+                           accepted = true;
+                       } else {
+                           self.onContactAvailable(decoded.peer, contact);
+                       }
                        valid = true;
                    } else {
                        console.log("checking!");   
@@ -455,7 +495,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
                }
            }
       });
-      if (valid) {
+      if (valid && !accepted) {
           this.peerRequests.push(decoded);
       }
       this.triggerCallbacks('Beacon', decoded);

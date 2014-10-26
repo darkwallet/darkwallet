@@ -4,7 +4,7 @@
    <!-- Contact info -->
   <div class="row">
         	<identicon icon-size="48" hash="vars.contact.data.hash" title="{{vars.contact.data.hash}}"></identicon>
-			<span class="contact-name">{{vars.contact.data.name}}</span>
+			<span class="contact-name">{{vars.contact.data.name}}</span> <span class="label radius" ng-show="vars.contact.online">online</span>
   </div>
 
   <!-- Options -->
@@ -26,67 +26,69 @@
   </div>
   
 <div class="row topmargin" ng-show="contactSection=='trust'">
-    <p>{{'You have no trust on this peer'|_}}</p>
+    <p ng-show="!vars.contact.trust.trust&&!vars.contact.trust.validation">{{'You have no trust on this peer'|_}}</p>
+    <p ng-show="vars.contact.trust.validation!==0||vars.contact.trust.trust!==0">Your trust level is {{vars.contact.trust.trust+vars.contact.trust.opsec+vars.contact.trust.validation}}</p>
+    <em ng-show="vars.contact.trust.trust>1">Beacons will be sent and received automatically [friend]</em>
     <h3>{{'Set trust'|_}}</h3>
     <em>{{'This describes the trust you have on this person.'|_}}</em>
     <div class="row">
         <div class="columns small-9">
-             <input type="radio" id="trust-distrust" name="contact-trust" />
+             <input type="radio" ng-model="vars.contact.trust.trust" value="-1" id="trust-distrust" name="contact-trust" ng-change="setTrust()" />
              <label for="trust-distrust">{{'Distrust'|_}}</label>
-             <input type="radio" id="trust-zero" name="contact-trust" checked />
+             <input type="radio" ng-model="vars.contact.trust.trust" value="0" id="trust-zero" name="contact-trust" ng-change="setTrust()" />
              <label for="trust-zero">{{'Zero'|_}}</label>
-             <input type="radio" id="trust-known" name="contact-trust" />
+             <input type="radio" ng-model="vars.contact.trust.trust" value="1" id="trust-known" name="contact-trust" ng-change="setTrust()" />
              <label for="trust-known">{{'Known'|_}}</label>
-             <input type="radio" id="trust-friend" name="contact-trust" />
+             <input type="radio" ng-model="vars.contact.trust.trust" value="2" id="trust-friend" name="contact-trust" ng-change="setTrust()" />
              <label for="trust-friend">{{'Friend'|_}}</label>
-             <input type="radio" id="trust-trusted" name="contact-trust" />
+             <input type="radio" ng-model="vars.contact.trust.trust" value="3" id="trust-trusted" ng-change="setTrust()" name="contact-trust" />
              <label for="trust-trusted">Trusted</label>
-             <input type="radio" id="trust-maximum" name="contact-trust" />
+             <input type="radio" ng-model="vars.contact.trust.trust" value="4" id="trust-maximum" name="contact-trust" ng-change="setTrust()" />
              <label for="trust-maximum">{{'Maximum'|_}}</label>
         </div>
-        <div class="columns small-3">
-            <a class="button fa fa-flask postfix" ng-click="">{{'Set trust'|_}}</a>
-        </div>
+       <!-- <div class="columns small-3">
+            <a class="button fa fa-flask postfix" ng-click="setTrust()">{{'Set trust'|_}}</a>
+        </div>-->
     </div>
     <h3>{{'Security level'|_}}</h3>
     <em>{{'This describes how conscious this person is about operational security.'|_}}</em>
     <div class="row">
         <div class="columns small-9">
-             <input type="radio" id="sec-sabotager" name="contact-sec" />
+             <input type="radio" ng-model="vars.contact.trust.opsec" value="-2" id="sec-sabotager" name="contact-sec" ng-change="setTrust()" />
              <label for="sec-sabotager">{{'Sabotager'|_}}</label>
-             <input type="radio" id="sec-careless" name="contact-sec" />
+             <input type="radio" ng-model="vars.contact.trust.opsec" value="-1" id="sec-careless" name="contact-sec" ng-change="setTrust()" />
              <label for="sec-careless">{{'Careless'|_}}</label>
-             <input type="radio" id="sec-unrated" name="contact-sec" checked />
+             <input type="radio" ng-model="vars.contact.trust.opsec" value="0" id="sec-unrated" name="contact-sec" ng-change="setTrust()" />
              <label for="sec-unrated">{{'Unrated'|_}}</label>
-             <input type="radio" id="sec-meticulous" name="contact-sec" />
+             <input type="radio" ng-model="vars.contact.trust.opsec" value="1" id="sec-meticulous" name="contact-sec" ng-change="setTrust()" />
              <label for="sec-meticulous">{{'Meticulous'|_}}</label>
-             <input type="radio" id="sec-expert" name="contact-sec" />
+             <input type="radio" ng-model="vars.contact.trust.opsec" value="2" id="sec-expert" name="contact-sec" ng-change="setTrust()" />
              <label for="sec-expert">{{'Expert'|_}}</label>
-             <input type="radio" id="sec-paranoid" name="contact-sec" />
+             <input type="radio" ng-model="vars.contact.trust.opsec" value="3" id="sec-paranoid" name="contact-sec" ng-change="setTrust()" />
              <label for="sec-paranoid">{{'Paranoid'|_}}</label>
-             <input type="radio" id="sec-snowden" name="contact-sec" />
+             <input type="radio" ng-model="vars.contact.trust.opsec" value="4" id="sec-snowden" name="contact-sec" ng-change="setTrust()" />
              <label for="sec-snowden">Snowden</label>
         </div>
-        <div class="columns small-3">
-            <a class="button fa fa-flask postfix" ng-click="">{{'Set level'|_}}</a>
-        </div>
+        <!--<div class="columns small-3">
+            <a class="button fa fa-flask postfix" ng-click="setTrust()">{{'Set level'|_}}</a>
+        </div>-->
     </div>
     <h3>{{'Set validation'|_}}</h3>
     <em ng-show="settings.advanced">{{'This should be per key but maybe is ok here if there is just one?...'|_}}</em>
     <div class="row">
         <div class="columns small-9">
-             <input type="radio" id="validation-no" name="contact-validation" checked />
+             <input type="radio" id="validation-no" name="contact-validation" ng-model="vars.contact.trust.validation" value="0" ng-change="setTrust()" />
              <label for="validation-no">{{'No validation'|_}}</label>
-             <input type="radio" id="validation-casual" name="contact-validation" />
+             <input type="radio" id="validation-casual" name="contact-validation"  ng-model="vars.contact.trust.validation" value="1"  ng-change="setTrust()" />
              <label for="validation-casual">{{'Casual checking'|_}}</label>
-             <input type="radio" id="validation-carefully" name="contact-validation" />
+             <input type="radio" id="validation-carefully" name="contact-validation" ng-model="vars.contact.trust.validation" value="2" ng-change="setTrust()" />
              <label for="validation-carefully">{{'Carefully checked'|_}}</label>
-             <input type="radio" id="validation-mathematic" name="contact-validation" />
-             <label for="validation-mathematic">{{'Mathematically checked'|_}}</label>
+             <input ng-disabled="true" type="radio" id="validation-mathematic" name="contact-validation" ng-model="vars.contact.trust.validation" value="3" ng-change="setTrust()" />
+             <label ng-disabled="true" for="validation-mathematic">{{'Mathematically checked'|_}}</label>
         </div>
-        <div class="columns small-3">
-            <a class="button fa fa-flask postfix" ng-click="">{{'Set validation'|_}}</a>
-        </div>
+        <!--<div class="columns small-3">
+            <a class="button fa fa-flask postfix" ng-click="setTrust()">{{'Set validation'|_}}</a>
+        </div>-->
     </div>
 
 </div>

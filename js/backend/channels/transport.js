@@ -54,6 +54,17 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
     this.initWorker();
   }
 
+  Transport.prototype.isOnline = function(contact) {
+    var found;
+    this.peers.some(function(peer) {
+        if (peer.contact === contact) {
+            found = peer;
+            return true;
+        }
+    });
+    return found;
+  }
+
   /**
    * Initialize a worker thread for processing transport data
    */

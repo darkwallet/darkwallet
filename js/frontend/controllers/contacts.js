@@ -18,7 +18,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
       if ($routeParams.contactId) {
           var id = parseInt($routeParams.contactId);
           if (identity.contacts.contacts[id]) {
-              $scope.vars = { contact: identity.contacts.contacts[id] }
+              $scope.vars = { contact: identity.contacts.contacts[id] };
           } else {
               $location.path('/contacts');
           }
@@ -236,6 +236,10 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         }
     }
     $scope.editingContact = false;
+  };
+
+  $scope.setTrust = function() {
+      $scope.vars.contact.setTrust($scope.vars.contact.trust);
   };
 
   // Set the name on a contact
