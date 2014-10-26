@@ -198,9 +198,14 @@ MultisigFund.prototype.importSignature = function(sigHex, spend) {
 
     var sig;
     try {
-       sig = Bitcoin.ECSignature.fromDER(new Bitcoin.Buffer(sigHex, 'hex'));
+       sig = Bitcoin.ECSignature.parseScriptSignature(new Bitcoin.Buffer(sigHex, 'hex')).signature;
     } catch(e) {
-       throw new Error('Malformed signature');
+       try {
+           sig = Bitcoin.ECSignature.fromDER(new Bitcoin.Buffer(sigHex, 'hex'));
+       } catch(e) {
+           console.log(e.stack)
+           throw new Error('Malformed signature');
+       }
     }
 
     // Check where this signature goes
