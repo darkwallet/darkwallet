@@ -176,17 +176,65 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
     });
 
     it('adds a contact key', function() {
-      contacts.addContact(satoshiForestNew);
-      var contact = contacts.findByAddress(satoshiForestAddress);
+      var contact = contacts.addContact(satoshiForestNew);
       contact.addKey('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
       expect(contact.pubKeys.length).toBe(2);
       
     });
 
-    it('adds a contact with no pubKeys', function() {
-      contacts.addContact(satoshiForestNew);
+    it('adds an id key', function() {
+      var contact = contacts.addContact(satoshiForestNew);
+      contact.addKey('PSIrBzXn2YDSFQjHS6Xj3vT2KHCcoyrta9bf92m14DCaCibWQoB4QfUobwbETDxM1fsZ7hVfKzEHGn1jKMV8L3mvzG4sGpbR', 'identity');
+      expect(contact.pubKeys.length).toBe(2);
+      expect(contact.data.idKey).toBe(1);
+      
+    });
 
-      var contact = contacts.findByAddress(satoshiForestAddress);
+
+    it('adds a contact key as main with label', function() {
+      var contact = contacts.addContact(satoshiForestNew);
+      contact.addKey('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW', 'satoshi forest', true);
+      expect(contact.pubKeys.length).toBe(2);
+      expect(contact.data.pubKeys[1].label).toBe('satoshi forest');
+      
+    });
+
+
+    it('removes a contact key', function() {
+      var contact = contacts.addContact(satoshiForestNew);
+      contact.addKey('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW');
+
+      contact.deleteKey(1);
+
+      expect(contact.pubKeys.length).toBe(1);
+      expect(contact.data.hash).toBe('ca308ce5eeda89f8a7607f4a3106eb4a3a52eddf84933b03afb8e1bc0799ecf3');
+    });
+
+    it('removes a contact key before the main key', function() {
+      var contact = contacts.addContact(satoshiForestNew);
+      contact.addKey('PSZVWeaa8shwLVGSCo9WZrM8zGtdJuFsBW', 'new', true);
+
+      contact.deleteKey(0);
+
+      expect(contact.pubKeys.length).toBe(1);
+      expect(contact.data.mainKey).toBe(0);
+      expect(contact.data.hash).toBe('c410cf311c6cda613d9b494164b304fa1dc413494dcc045477c65008361c47d8');
+    });
+
+
+    it('removes an id key', function() {
+      var contact = contacts.addContact(satoshiForestNew);
+      contact.addKey('PSIrBzXn2YDSFQjHS6Xj3vT2KHCcoyrta9bf92m14DCaCibWQoB4QfUobwbETDxM1fsZ7hVfKzEHGn1jKMV8L3mvzG4sGpbR', 'identity');
+
+      contact.deleteKey(1);
+      expect(contact.pubKeys.length).toBe(1);
+      expect(contact.data.idKey).toBeUndefined();
+    });
+
+
+    it('adds a contact with no pubKeys', function() {
+      var contact = contacts.addContact(satoshiForestNew);
+
       contact.pubKeys = [];
       contact.data.pubKeys = contact.pubKeys;
 
@@ -229,7 +277,7 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
 
     it('deletes contact', function() {
       var forest = contacts.addContact(satoshiForestNew);
-      contacts.deleteContact(forest);
+      forest.remove();
       expect(contacts.contacts).not.toContain(forest);
       expect(_store).not.toContain('Satoshi Forest');
 
@@ -239,6 +287,19 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
       }).toThrow();
 
     });
+
+    it('sets trust', function() {
+      var forest = contacts.addContact(satoshiForestNew);
+      expect(forest.data.trust).toEqual([0,0,0]);
+
+      forest.setTrust({opsec: 2, trust: 3, validation: 3})
+
+      expect(forest.data.trust).toEqual([3,2,3]);
+      expect(forest.trust.opsec).toBe(2);
+      expect(forest.trust.trust).toBe(3);
+      expect(forest.trust.validation).toBe(3);
+    });
+
   });
 
   /**
