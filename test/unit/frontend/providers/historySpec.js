@@ -1,12 +1,13 @@
 'use strict';
 
-define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
+define(['angular-mocks', 'testUtils', 'date-mock'], function(mocks, testUtils, dateMock) {
   describe('History provider', function() {
 
     var history, walletProvider, scope;
     
     var pocket, identity;
     beforeEach(function(done) {
+      dateMock.hook();
       pocket = {
         destroy: function() { this.destroyed=true;return [0, 1]; },
         getWalletAddresses: function() {return [];},
@@ -84,6 +85,7 @@ define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
     });
     
     afterEach(function() {
+      dateMock.restore();
       testUtils.reset();
     })
     
@@ -170,7 +172,7 @@ define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
       history.setHistoryFilter('monthly');
       identity.fillHistoryStub();
       var rows = history.chooseRows();
-      expect(rows.length).toEqual(70);
+      expect(rows.length).toEqual(76);
     });
 
     it('chooses rows weekly', function() {

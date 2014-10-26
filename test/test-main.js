@@ -13,6 +13,7 @@ requirejs.config({
     
     paths: {
       'angular-mocks': '../vendors/angular-mocks/angular-mocks',
+      'date-mock': '../test/mock/date',
       'chrome': '../test/mock/chrome_mock',
       'testUtils': '../test/mock/testUtils',
       'frontend/app': '../test/mock/frontend_app',
