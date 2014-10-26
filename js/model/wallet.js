@@ -432,7 +432,8 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId, type) {
         var high = utxo.filter(function(o) { return valueMatch(o.value, value); })
                        .sort(valuecompare);
         if (high.length > 0) { return [high[0]]; }
-        utxo.sort(valuecompare);
+        // here sort bigger first
+        utxo.sort(function(a, b) { return a.value < b.value; });
         var totalval = 0;
         for (var i = 0; i < utxo.length; i++) {
             totalval += utxo[i].value;
