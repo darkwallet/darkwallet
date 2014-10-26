@@ -114,7 +114,7 @@
         </div>
       </div>
       <div class="row collapse">
-          <p ng-show="vars.contact.pubKeys.length>1">{{'This contact has'|_}} <a ng-click="contactSection='addresses'">{{'{0} keys'|_:vars.contact.pubKeys.length}}</a><span ng-show="settings.advanced" > {{'and no'|_}} <a ng-click="contactSection='trust'">{{'trust defined'|_}}</a></span>.</p>
+          <p ng-show="vars.contact.pubKeys.length>1">{{'This contact has'|_}} <a ng-click="contactSection='addresses'">{{'{0} keys'|_:vars.contact.pubKeys.length}}</a><span ng-show="settings.advanced" > <span ng-show="!vars.contact.trust.trust&&!vars.contact.trust.opsec">{{'and no'|_}} <a ng-click="contactSection='trust'">{{'trust defined'|_}}</a></span><span ng-show="vars.contact.trust.trust||vars.contact.trust.opsec">{{'and'|_}} <a ng-click="contactSection='trust'">{{'level {0} trust'|_:vars.contact.trust.trust+vars.contact.trust.opsec+vars.contact.trust.verify}}</a></span></span>. <span class="label radius address" ng-show="vars.contact.trust.trust">Friend</span></span></p>
           
       </div>
     
