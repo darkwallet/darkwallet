@@ -10,15 +10,6 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   var monthNames = [ "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December" ];
 
-  // Get date 30 days ago
-  var prevmonth = new Date();
-  prevmonth.setDate(prevmonth.getDate()-30);
-
-  // Get date 7 days ago
-  var prevweek = new Date();
-  prevweek.setDate(prevweek.getDate()-7);
-
-
   /**
    * History provider class
    */ 
