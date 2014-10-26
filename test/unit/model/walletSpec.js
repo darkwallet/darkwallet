@@ -414,7 +414,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       
       expect(wallet.getUtxoToPay(9000, 0)).toEqual([history00]);
       expect(wallet.getUtxoToPay(400000, 0)).toEqual([history01]);
-      expect(wallet.getUtxoToPay(3040000, 0)).toEqual([history00, history01]);
+      expect(wallet.getUtxoToPay(3040000, 0)).toEqual([history01, history00]);
       
       
       expect(wallet.getUtxoToPay(9000, 1)).toEqual([history20]);
