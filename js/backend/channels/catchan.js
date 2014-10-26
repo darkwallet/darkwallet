@@ -400,7 +400,10 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   };
 
   Channel.prototype.onPairMessage = function(data) {
-      this.peerRequests.push(data);
+      var found = this.peerRequests.some(function(request){return request.body.pub===data.body.pub;});
+      if (!found) {
+          this.peerRequests.push(data);
+      }
   };
 
   Channel.prototype.checkPairMessage = function(decoded) {
@@ -496,7 +499,10 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
            }
       });
       if (valid && !accepted) {
-          this.peerRequests.push(decoded);
+          var found = this.peerRequests.some(function(request){return request.body.pub===decoded.body.pub;});
+          if (!found) {
+              this.peerRequests.push(decoded);
+          }
       }
       this.triggerCallbacks('Beacon', decoded);
       return decoded;
