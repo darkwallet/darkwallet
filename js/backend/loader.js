@@ -81,10 +81,6 @@ require.config({
     'crypto-js': {
       exports: 'CryptoJS'
     },
-    'convert': {
-      deps: ['crypto-js', 'bitcoinjs-lib-real'],
-      exports: 'Convert'
-    },
     'jsqrcode': {
       exports: 'qrcode'
     },
@@ -103,17 +99,6 @@ require.config({
     },
     'sjcl': {
       deps: ['sjcl-real']
-    },
-    'bitcoinjs-lib-real': {
-      exports: 'Bitcoin'
-    },
-    'bigi': {
-      deps: ['bitcoinjs-lib'],
-      exports: 'BigInteger'
-    },
-    'bs58check': {
-      deps: ['bitcoinjs-lib'],
-      exports: 'base58check'
     },
     'bitcoinjs-lib': {
       deps: ['bitcoinjs-lib-real', 'convert'],
