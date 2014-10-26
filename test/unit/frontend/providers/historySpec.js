@@ -172,7 +172,7 @@ define(['angular-mocks', 'testUtils', 'date-mock'], function(mocks, testUtils, d
       history.setHistoryFilter('monthly');
       identity.fillHistoryStub();
       var rows = history.chooseRows();
-      expect(rows.length).toEqual(76);
+      expect(rows.length).toEqual(70);
     });
 
     it('chooses rows weekly', function() {
@@ -180,7 +180,7 @@ define(['angular-mocks', 'testUtils', 'date-mock'], function(mocks, testUtils, d
       history.setHistoryFilter('weekly');
       identity.fillHistoryStub();
       var rows = history.chooseRows();
-      expect(rows.length).toEqual(304);
+      expect(rows.length).toEqual(302);
     });
 
     it('chooses rows for pocket', function() {

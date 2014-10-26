@@ -10,7 +10,7 @@ define([], function() {
     var realDate;
     function mockDate(val) {
         if (!val) {
-            this.date = new realDate(1414361574805);
+            this.date = new realDate(1413101574805);
         } else {
             this.date = new realDate(val);
         }
