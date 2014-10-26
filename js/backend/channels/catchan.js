@@ -470,7 +470,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   Channel.prototype.onReceiveBeacon = function(decoded) {
       var self = this;
       // Find out which contact this is
-      var valid = false;
+      var enqueue = false;
       var accepted = false;
       var identity = this.transport.identity;
       identity.contacts.contacts.forEach(function(contact) {
@@ -485,20 +485,23 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
                        decoded.peer.nick = contact.data.name;
                        decoded.peer.contact = contact;
                        contact.online = decoded.peer;
-                       if (contact.trust.trust > 1) {
-                           self.acceptBeacon(decoded);
-                           accepted = true;
+                       // answer automatically if trust 2 or greater, or already uncloaked
+                       if (contact.trust.trust > 1 || (contact.online === decoded.peer)) {
+                           // If online and trust is less than 0 we won't send another beacon but also won't queue
+                           if (contact.trust.trust >= 0) {
+                               self.acceptBeacon(decoded);
+                           }
                        } else {
                            self.onContactAvailable(decoded.peer, contact);
+                           enqueue = true;
                        }
-                       valid = true;
                    } else {
-                       console.log("checking!");   
+                       console.log("failed signature check!");   
                    }
                }
            }
       });
-      if (valid && !accepted) {
+      if (enqueue) {
           var found = this.peerRequests.some(function(request){return request.body.pub===decoded.body.pub;});
           if (!found) {
               this.peerRequests.push(decoded);
