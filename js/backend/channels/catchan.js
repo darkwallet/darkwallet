@@ -485,8 +485,8 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
                        decoded.peer.nick = contact.data.name;
                        decoded.peer.contact = contact;
                        contact.online = decoded.peer;
-                       // answer automatically if trust 2 or greater, or already uncloaked
-                       if (contact.trust.trust > 1 || (contact.online === decoded.peer)) {
+                       // answer automatically if trust 2 or greater, or already sent a beacon
+                       if (contact.trust.trust > 1 || decoded.peer.sentBeacon) {
                            // If online and trust is less than 0 we won't send another beacon but also won't queue
                            if (contact.trust.trust >= 0) {
                                self.acceptBeacon(decoded);
