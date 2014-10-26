@@ -82,6 +82,7 @@ require.config({
       exports: 'CryptoJS'
     },
     'convert': {
+      deps: ['crypto-js', 'bitcoinjs-lib-real'],
       exports: 'Convert'
     },
     'jsqrcode': {
