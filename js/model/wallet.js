@@ -13,7 +13,7 @@ function Wallet(store, identity) {
     this.store = store;
     this.network = store.init('network', 'bitcoin');
     this.initVersions(this.network);
-    this.fee = store.init('fee', 10000); // 0.1 mBTC
+    this.fee = store.init('fee', Bitcoin.networks[this.network].feePerKb); // 0.1 mBTC
     this.pubKeys = store.init('pubkeys', {});
     this.scanKeys = store.init('scankeys', []);
     this.idKeys = store.init('idkeys', []);

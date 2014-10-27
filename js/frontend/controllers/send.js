@@ -325,7 +325,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               var in_f = 148;
           }
           var txSize = (outs*34+ins*in_f)/1000;
-          $scope.txStats = {size: txSize.toFixed(2), fee: Math.ceil(txSize)*fee};
+          var feePerKb = Bitcoin.networks[identity.wallet.network].feePerKb;
+          $scope.txStats = {size: txSize.toFixed(2), fee: Math.ceil(txSize)*feePerKb};
           // console.log("size", txSize, "kB", Math.ceil(txSize)*sendForm.fee, "btc", ins, "outs")
           return true;
       } else {
