@@ -25,14 +25,14 @@
 				<div class="tri"></div>
 			</div>
             <!-- Pocket name and balance -->
-            <section class="middle tab-bar-section" ng-show="!(pocket.balance===undefined) && selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
+            <section class="middle tab-bar-section" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
 			    <h1 class="title lin">
 			        {{pocket.name}}
 			    </h1>
-				<div class="lin" tooltip="{{'Confirmed'|_}}: {{pocket.balance.confirmed | formatBtc}}">
+				<div class="lin" ng-if="pocket.balance" tooltip="{{'Confirmed'|_}}: {{pocket.balance.confirmed | formatBtc}}">
 					{{pocket.balance.current | formatBtc}}
 				</div>
-				<div class="lin">
+				<div class="lin" ng-if="pocket.balance">
 					{{pocket.balance.current | formatFiat}}
 				</div>
 				<div class="lin" ng-show="pocket.incoming">
