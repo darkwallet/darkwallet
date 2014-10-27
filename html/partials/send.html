@@ -62,6 +62,13 @@
       </div>
     </div>
 
+    <div class="row" ng-if="settings.advanced && !forms.send.sending && txStats">
+      <div class="small-12 columns">
+                <div ng-show="!txStats.notes" class="label address radius right">size: {{txStats.size}}kB fee: {{txStats.fee|formatBtc}}</div>
+                <div ng-show="txStats.notes" class="label alert radius right">{{txStats.notes}}</div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="small-12 columns send-advanced" ng-if="forms.send.advanced">
         <div class="row panel">

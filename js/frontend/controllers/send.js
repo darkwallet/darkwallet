@@ -66,6 +66,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           sendForm.sendPocketName = fund.name;
           sendForm.pocketIndex = fund.address;
       }
+      $scope.validateSendForm();
   };
 
  
@@ -157,6 +158,9 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           if ($scope.quicksend.contact) {
               $scope.quicksend.next = true;
           }
+      }
+      if (!$scope.quicksend.address) {
+          $scope.evalueTx();
       }
       var spend = prepareRecipients();
       var checkDust = spend.recipients.filter(function(r) { return r.amount < identity.wallet.dust; });
@@ -280,8 +284,56 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       }
   };
 
+  $scope.evalueTx = function() {
+      // Prepare recipients
+      var amount = 0;
+      var outs = 0;
+      sendForm.recipients.fields.forEach(function(recipient) {
+          if (recipient.amount) {
+              amount += CurrencyFormat.asSatoshis(recipient.amount);
+              outs += 1;
+          }
+      });
+      var totalAmount = amount;
+      var pocketIndex = sendForm.pocketIndex;
 
+      var identity = DarkWallet.getIdentity();
 
+      if (totalAmount < identity.wallet.dust) {
+          if (totalAmount > 0) {
+              $scope.txStats = {notes: "Below dust threshold", size: 0, fee: 0};
+          } else {
+              $scope.txStats = undefined;
+          }
+          return;
+      }
+
+      var fee = CurrencyFormat.asSatoshis(sendForm.fee);
+      try {
+          var txUtxo = identity.wallet.getUtxoToPay(totalAmount+fee, sendForm.pocketIndex);
+      } catch(e) {
+          $scope.txStats = {notes: "Not enough funds", size: 0, fee: 0};
+          return;
+      }
+      if (txUtxo && txUtxo.length) {
+          var ins = txUtxo.length;
+          if (typeof sendForm.pocketIndex === 'string') {
+              // this value should come from m and n: m*73 + n*34
+              var in_f = 389;
+          } else {
+              // standard compressed input size
+              var in_f = 148;
+          }
+          var txSize = (outs*34+ins*in_f)/1000;
+          $scope.txStats = {size: txSize.toFixed(2), fee: Math.ceil(txSize)*fee};
+          // console.log("size", txSize, "kB", Math.ceil(txSize)*sendForm.fee, "btc", ins, "outs")
+          return true;
+      } else {
+          $scope.txStats = {notes: "Not enough good inputs", size: 0, fee: 0};
+      }
+  };
+
+ 
   $scope.sendBitcoins = function() {
 
       // Prepare recipients
