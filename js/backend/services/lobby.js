@@ -1,7 +1,7 @@
 'use strict';
 
-define(['backend/port', 'backend/channels/transport', 'backend/channels/catchan', 'darkwallet'],
-function(Port, Transport, Channel, DarkWallet) {
+define(['backend/port', 'backend/channels/transport', 'darkwallet'],
+function(Port, Transport, DarkWallet) {
 
   function LobbyService(core) {
     this.lobbyTransport = false;
@@ -65,7 +65,7 @@ function(Port, Transport, Channel, DarkWallet) {
 
   LobbyService.prototype.connectTo = function(channel) {
     var self = this;
-    var ch = this.getLobbyTransport().initChannel(channel, Channel);
+    var ch = this.getLobbyTransport().initChannel(channel);
     console.log("[lobby] Connecting to "+channel+"...");
     ch.addCallback('Shout', function(_d) {self.onShout(channel, _d)});
   };

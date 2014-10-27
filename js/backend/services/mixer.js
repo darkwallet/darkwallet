@@ -1,7 +1,7 @@
 'use strict';
 
-define(['backend/port', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin', 'util/btc', 'crypto-js', 'sjcl'],
-function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS, sjcl) {
+define(['backend/port', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin', 'sjcl'],
+function(Port, Protocol, Bitcoin, CoinJoin, sjcl) {
 
   /*
    * Service managing mixing.
@@ -74,9 +74,9 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS, sjcl) {
     if (!this.channel) {
       var network = this.core.getIdentity().wallet.network;
       if (network === 'bitcoin') {
-          this.channel = lobbyTransport.initChannel('CoinJoin', Channel);
+          this.channel = lobbyTransport.initChannel('CoinJoin');
       } else {
-          this.channel = lobbyTransport.initChannel('CoinJoin:'+network, Channel);
+          this.channel = lobbyTransport.initChannel('CoinJoin:'+network);
       }
       this.channel.addCallback('CoinJoinOpen', function(_d) {self.onCoinJoinOpen(_d);});
       this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d, true);});
@@ -272,7 +272,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS, sjcl) {
     // Now do stuff with the task...
     switch(task.state) {
       case 'announce':
-        var id = CryptoJS.SHA256(Math.random()+'').toString();
+        var id = Bitcoin.crypto.sha256(Math.random()+'').toString('hex');
         console.log("[mixer] Announce join");
         var myTx = Bitcoin.Transaction.fromHex(task.tx);
         if (!task.timeout) {

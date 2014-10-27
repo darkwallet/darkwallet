@@ -1,7 +1,7 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'backend/channels/peer', 'util/djbec', 'util/encryption'],
-function (Bitcoin, Peer, Curve25519, Encryption) {
+define(['bitcoinjs-lib', 'backend/channels/peer', 'util/djbec', 'util/encryption', 'backend/channels/catchan'],
+function (Bitcoin, Peer, Curve25519, Encryption, Channel) {
 
 
   /************************************
@@ -145,14 +145,14 @@ function (Bitcoin, Peer, Curve25519, Encryption) {
   /**
    * Initialize a channel or get an existing channel if the name is registered
    */
-  Transport.prototype.initChannel = function(name, chanClass) {
+  Transport.prototype.initChannel = function(name) {
       var channel;
       console.log("[transport] init channel", name);
       if (this.channels.hasOwnProperty(name)) {
           channel = this.channels[name];
       } else {
           console.log("[transport] create channel", name);
-          channel = new chanClass(this, name);
+          channel = new Channel(this, name);
           this.channels[name] = channel;
       }
       channel.sendOpening();
