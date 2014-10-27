@@ -19,6 +19,17 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   $scope.anyPaired = false;
   $scope.canRemove = false;
 
+  // Peer timing
+  $scope.fadeTimeout = 240 * 1000;
+  $scope.lastTimestamp = Date.now();
+
+  $scope.refreshTimestamp = function(peer) {
+      peer.timestamp = Date.now();
+  }
+
+  /**
+   * Pairing requests
+   */
   var checkPaired = function(identity) {
       var identity = DarkWallet.getIdentity();
       var anyPaired = false;
@@ -48,7 +59,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.selectedRequest = false;
   }
 
-  $scope.sendPairing = function(peer) {
+  $scope.sendRequest = function(peer) {
       var identity = DarkWallet.getIdentity();
       var address = identity.wallet.getAddress([0]);
       var message = "Send identity information";
@@ -66,7 +77,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       var request = $scope.selectedRequest;
 
       var peerChannel = request.peer.channel;
-      if (peerChannel.acceptRequest(request)) {
+      if (peerChannel.acceptPairMessage(request)) {
           $scope.anyPaired = true;
           notify.success(_('{0} added to contacts', request.nick));
       } else {
@@ -77,6 +88,9 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.cancelRequest();
   }
 
+  /**
+   * Beacons
+   */
   // Send a beacon for the given contact over given channel
   var sendBeacon = function(channel, contact) {
       var idKey = contact.findIdentityKey();
@@ -118,14 +132,9 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       }
   }
 
-  // hide peers after 4 mins
-  $scope.fadeTimeout = 240 * 1000;
-  $scope.lastTimestamp = Date.now();
-
-  $scope.refreshTimestamp = function(peer) {
-      peer.timestamp = Date.now();
-  }
-
+  /**
+   * Channel links
+   */
   var updateChat = function() {
       $scope.lastTimestamp = Date.now();
       $timeout(function() {
@@ -202,157 +211,185 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       return channelLink;
   };
 
-  // Lobby service port
+  /**
+   * Lobby initialization
+   */
+  var onLobbyInitialized = function(port) {
+      // onCreate callback
+      transport = DarkWallet.getLobbyTransport();
+
+      // if no channel show transport cloak...
+      $scope.comms = transport.comms;
+
+      checkPaired(DarkWallet.getIdentity());
+
+      $scope.lobbyChannels = transport.channels;
+
+      $scope.pairCode = '';
+
+      // Initialize a channel
+      $scope.connectChannel = function(name) {
+          var transport = DarkWallet.getLobbyTransport();
+          var pairCodeHash = ChannelUtils.hashChannelName(name);
+
+          if (transport.getChannel(name)) {
+              // Channel exists, relink
+              linkChannel(name);
+          } else {
+              // Create if it doesn't exist
+              ChannelLink.start(name, port);
+          }
+      };
+
+      var availableChannels = Object.keys(transport.channels);
+      if (!selectedChannel && availableChannels.length) {
+          // should remember the last connected channel but for
+          // now reconnect the last
+          var lastChannel = transport.channels[availableChannels[availableChannels.length-1]];
+          selectedChannel = lastChannel.name;
+      }
+
+      $scope.subscribed = false;
+      $scope.shoutbox = '';
+      $scope.shoutboxLog = [];
+
+      // Initialize some own data
+      $scope.comms = transport.comms;
+      $scope.myself = transport.myself;
+      $scope.peers = transport.peers;
+      $scope.peerIds = transport.peerIds;
+      $scope.requests = transport.requests;
+
+      // Now reconnect or initialize
+      if (selectedChannel) {
+          $scope.connectChannel(selectedChannel);
+      }
+
+  }
+
+  /**
+   * Lobby port
+   */
   Port.connectNg('lobby', $scope, function(data) {
-    // onMesssage callback
-    if (data.type == 'initChannel') {
-        linkChannel(data.name);
-    }
+      // onMesssage callback
+      if (data.type == 'initChannel') {
+          linkChannel(data.name);
+      }
   }, function(port) {
-    // onCreate callback
-    transport = DarkWallet.getLobbyTransport();
+      onLobbyInitialized();
+      if (!$scope.$$phase) {
+          $scope.$apply();
+      }
+  });
 
-    // if no channel show transport cloak...
-    $scope.comms = transport.comms;
+  /**
+   * Peer and identity
+   */
+  var cleanPeer = function() {
+      if ($scope.selectedPeer) {
+          $scope.selectedPeer.chatLog.dirty = false;
+          $scope.selectedPeer = false;
+      }
+  }
 
-    checkPaired(DarkWallet.getIdentity());
-
-    $scope.lobbyChannels = transport.channels;
-
-    $scope.pairCode = '';
-
-    // Initialize a channel
-    var connectChannel = function(name) {
-        var pairCodeHash = ChannelUtils.hashChannelName(name);
-
-        if (transport.getChannel(name)) {
-            // Channel exists, relink
-            linkChannel(name);
-        } else {
-            // Create if it doesn't exist
-            ChannelLink.start(name, port);
-        }
-    };
-
-    var availableChannels = Object.keys(transport.channels);
-    if (!selectedChannel && availableChannels.length) {
-        // should remember the last connected channel but for
-        // now reconnect the last
-        var lastChannel = transport.channels[availableChannels[availableChannels.length-1]];
-        selectedChannel = lastChannel.name;
-    }
-
-    $scope.subscribed = false;
-    $scope.shoutbox = '';
-    $scope.shoutboxLog = [];
-
-    // Initialize some own data
-    $scope.comms = transport.comms;
-    $scope.myself = transport.myself;
-    $scope.peers = transport.peers;
-    $scope.peerIds = transport.peerIds;
-    $scope.requests = transport.requests;
-
-    // Now reconnect or initialize
-    if (selectedChannel) {
-        connectChannel(selectedChannel);
-    }
-
-    if (!$scope.$$phase) {
-        $scope.$apply();
-    }
-    var cleanPeer = function() {
-        if ($scope.selectedPeer) {
-            $scope.selectedPeer.chatLog.dirty = false;
-            $scope.selectedPeer = false;
-        }
-    }
-    $scope.selectChannel = function(channel) {
-        cleanPeer();
-        // Relink
-        connectChannel(channel.name);
-        if (currentChannel) {
-            currentChannel.sendOpening();
-            // Send beacons with level 1 or more
-            $scope.sendBeacons(2);
-              
-        }
-    };
-
-    $scope.newTempIdentity = function() {
+  $scope.newTempIdentity = function() {
       currentChannel.newSession();
       $scope.comms = currentChannel.comms;
       currentChannel.sendOpening();
-    };
+  };
 
-    // Action to start announcements and reception
-    $scope.joinChannel = function() {
-        cleanPeer();
-        // Relink
-        connectChannel($scope.pairCode);
-        $scope.pairCode = '';
-    };
-    $scope.removeChannel = function() {
-        cleanPeer();
-        var name = currentChannel.name;
-        if (channelLinks.hasOwnProperty(name)) {
-            // Channel is linked
-            channelLinks[name].disconnect();
-            delete channelLinks[name];
-            $scope.pairCode = '';
-            var transport = DarkWallet.getLobbyTransport();
-            transport.closeChannel(name);
-            currentChannel = undefined;
-            $scope.subscribed = undefined;
-        }
-    };
-    $scope.openPrivate = function(peer) {
-        cleanPeer();
-        $scope.selectedPeer = peer;
-        $scope.selectedPeer.chatLog.dirty = false;
-        $scope.shoutboxLog = peer.chatLog;
-    };
-    $scope.sendContact = function(peer) {
-        var identity = DarkWallet.getIdentity();
-        var msg = Protocol.ContactMsg(identity);
-        currentChannel.postDH(peer.pubKey, msg, function() {
-            notify.success(_('lobby'), _('pairing sent'));
-        });
-    };
-    $scope.sendText = function() {
-        var toSend = $scope.shoutbox;
-        // don't send empty shouts
-        if (toSend == '')
+  /**
+   * Channels
+   */
+  $scope.selectChannel = function(channel) {
+      cleanPeer();
+      // Relink
+      $scope.connectChannel(channel.name);
+      if (currentChannel) {
+          currentChannel.sendOpening();
+          // Send beacons with level 2 or more
+          $scope.sendBeacons(2);
+            
+      }
+  };
+
+  // Action to start announcements and reception
+  $scope.joinChannel = function() {
+      cleanPeer();
+      // Relink
+      $scope.connectChannel($scope.pairCode);
+      $scope.pairCode = '';
+  };
+  $scope.removeChannel = function() {
+      cleanPeer();
+      var name = currentChannel.name;
+      if (channelLinks.hasOwnProperty(name)) {
+          // Channel is linked
+          channelLinks[name].disconnect();
+          delete channelLinks[name];
+          $scope.pairCode = '';
+          var transport = DarkWallet.getLobbyTransport();
+          transport.closeChannel(name);
+          currentChannel = undefined;
+          $scope.subscribed = undefined;
+      }
+  };
+
+  /**
+   * Chat and messaging
+   */
+  $scope.openPrivate = function(peer) {
+      cleanPeer();
+      $scope.selectedPeer = peer;
+      $scope.selectedPeer.chatLog.dirty = false;
+      $scope.shoutboxLog = peer.chatLog;
+  };
+  $scope.sendText = function() {
+      var toSend = $scope.shoutbox;
+      // don't send empty shouts
+      if (toSend == '') {
           return;
-        $scope.shoutbox = '';
+      }
+      $scope.shoutbox = '';
 
-        var onSent = function(err, data) {
+      var onSent = function(err, data) {
           if (err) {
               notify.error(_('error sending'), err);
           }
-        }
+      }
 
-        var msg = Protocol.ShoutMsg(toSend);
-        if ($scope.selectedPeer) {
-            $scope.selectedPeer.channel.postDH($scope.selectedPeer.pubKey, msg, onSent);
-            msg.peer = currentChannel.comms;
-            $scope.selectedPeer.chatLog.splice(0,0,msg);
-            $scope.selectedPeer.chatLog.dirty = false;
-        } else {
-            currentChannel.postEncrypted(msg, onSent);
-        }
-    };
-    $scope.addNewContact = function(contact) {
-        var identity = DarkWallet.getIdentity();
-        var newContact = {name: contact.name, address: contact.stealth, fingerprint: contact.fingerprint};
-        if (!identity.contacts.findByAddress(contact.stealth)) {
-            identity.contacts.addContact(newContact);
-            notify.success(_('Contact added'));
-        } else {
-            notify.warning(_('Contact already present'));
-        }
-        $scope.newContact = null;
-    };
-  });
+      var msg = Protocol.ShoutMsg(toSend);
+      if ($scope.selectedPeer) {
+          $scope.selectedPeer.channel.postDH($scope.selectedPeer.pubKey, msg, onSent);
+          msg.peer = currentChannel.comms;
+          $scope.selectedPeer.chatLog.splice(0,0,msg);
+          $scope.selectedPeer.chatLog.dirty = false;
+      } else {
+          currentChannel.postEncrypted(msg, onSent);
+      }
+  };
+
+  /**
+   * Contact send and receive
+   */
+  $scope.sendContact = function(peer) {
+      var identity = DarkWallet.getIdentity();
+      var msg = Protocol.ContactMsg(identity);
+      currentChannel.postDH(peer.pubKey, msg, function() {
+          notify.success(_('lobby'), _('pairing sent'));
+      });
+  };
+  $scope.addNewContact = function(contact) {
+      var identity = DarkWallet.getIdentity();
+      var newContact = {name: contact.name, address: contact.stealth, fingerprint: contact.fingerprint};
+      if (!identity.contacts.findByAddress(contact.stealth)) {
+          identity.contacts.addContact(newContact);
+          notify.success(_('Contact added'));
+      } else {
+          notify.warning(_('Contact already present'));
+      }
+      $scope.newContact = null;
+  };
+
 }]);
 });

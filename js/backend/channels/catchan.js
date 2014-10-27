@@ -449,7 +449,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       }
   };
 
-  Channel.prototype.acceptRequest = function(request) {
+  Channel.prototype.acceptPairMessage = function(request) {
       var identity = this.transport.identity;
       if (this.checkPairMessage(request)) {
           // Add the contact if not already present

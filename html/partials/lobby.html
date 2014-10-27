@@ -93,7 +93,7 @@
           <h5>{{'Peers'|_}}</h5>
           <div ng-show="peer.timestamp + fadeTimeout > lastTimestamp" ng-repeat="peer in peers track by $index">
             <span><face icon-size="24" hash="peer.pubKeyHex" title="{{peer.pubKeyHex}}"></face> {{peer.nick||peer.name}}</span>
-            <a ng-show="peer.trusted" class="fa fa-link" ng-click="sendPairing(peer)" title="{{'Send identity information for long term pairing'|_}}"></a>
+            <a ng-show="peer.trusted" class="fa fa-link" ng-click="sendRequest(peer)" title="{{'Send identity information for long term pairing'|_}}"></a>
             <a ng-show="peer.trusted" class="fa" ng-class="{'fa-comment-o': !peer.chatLog.dirty, 'fa-comment': peer.chatLog.dirty}" ng-click="openPrivate(peer)" title="{{'Open a private chat with this peer'|_}}"></a>
           </div>
       </div>
