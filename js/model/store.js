@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'crypto-js', 'sjcl'], function(Bitcoin, CryptoJS) {
+define(['bitcoinjs-lib', 'crypto-js', 'sjcl'], function(Bitcoin, CryptoJS, sjcl) {
 /**
  * Mapping coordinating with the app's database.
  * @constructor

@@ -1,7 +1,7 @@
 'use strict';
 
 define(['bitcoinjs-lib', 'util/multiParty', 'util/stealth', 'util/djbec', 'crypto-js', 'sjcl'],
-function (Bitcoin, multiParty, Stealth, Curve25519, CryptoJS) {
+function (Bitcoin, multiParty, Stealth, Curve25519, CryptoJS, sjcl) {
   var BigInteger = Bitcoin.BigInteger;
   var convert = Bitcoin.convert;
 

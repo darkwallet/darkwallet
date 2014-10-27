@@ -4,7 +4,7 @@
 'use strict';
 
 define(['model/keyring', 'backend/port', 'dwutil/currencyformat', 'dwutil/tasks/transaction', 'bitcoinjs-lib', 'util/btc', 'util/stealth', 'sjcl'],
-function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, BtcUtils, Stealth) {
+function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, BtcUtils, Stealth, sjcl) {
 
   function WalletService(core) {
     var keyRing = new IdentityKeyRing();

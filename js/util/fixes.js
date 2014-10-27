@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['sjcl'], function() {
+define(['sjcl-real'], function(sjcl) {
 /*
  * Uncached version of apparently very frightening sjcl function
  * (gets called by sjcl.encrypt and sjcl.decrypt)
@@ -23,4 +23,6 @@ sjcl.misc.cachedPbkdf2 = function (password, obj) {
   var val = sjcl.misc.pbkdf2(password, obj.salt, obj.iter);
   return { key: val.slice(0), salt: obj.salt.slice(0) };
 };
+
+return sjcl;
 });

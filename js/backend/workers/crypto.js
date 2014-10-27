@@ -4,7 +4,7 @@ importScripts('/js/backend/workers/loader.js');
 // workaround for sjcl looking for window
 var window = self;
 
-require(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'sjcl'], function(Bitcoin, Curve25519, Encryption, Protocol) {
+require(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'sjcl'], function(Bitcoin, Curve25519, Encryption, Protocol, sjcl) {
 
   var BigInteger = Bitcoin.BigInteger;
 

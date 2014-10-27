@@ -98,9 +98,6 @@ require.config({
     'sjcl-real': {
       exports: 'sjcl'
     },
-    'sjcl': {
-      deps: ['sjcl-real']
-    },
     'bitcoinjs-lib': {
       deps: ['bitcoinjs-lib-real', 'convert'],
       exports: 'Bitcoin'

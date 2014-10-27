@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet) {
+define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet, sjcl) {
   controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', '$location', '_Filter', function($scope, modals, notify, $history, $location, _) {
 
     /**

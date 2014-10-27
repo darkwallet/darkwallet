@@ -1,7 +1,7 @@
 'use strict';
 
 define(['backend/port', 'backend/channels/catchan', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin', 'util/btc', 'crypto-js', 'sjcl'],
-function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
+function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS, sjcl) {
 
   /*
    * Service managing mixing.
