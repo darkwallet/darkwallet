@@ -50,5 +50,25 @@ f2aeea554b7fb7d145061efad4398879b9be88ac00000000";
       expect(txdb.transactions[txHash]).toEqual([trans]);
       expect(_store[txHash]).toEqual([trans]);
     });
+
+    it('updates a transaction', function() {
+      txdb.storeTransaction(txHash, null);
+      txdb.storeTransaction(txHash, trans);
+      expect(txdb.transactions[txHash]).toBeDefined();
+      expect(txdb.transactions[txHash]).toEqual([trans]);
+      expect(_store[txHash]).toEqual([trans]);
+    });
+
+    it('sets and gets label', function() {
+      txdb.setLabel(txHash, 'test tx');
+      expect(txdb.getLabel(txHash)).toBe('test tx');
+    });
+
+    it('gets a transaction body', function() {
+      txdb.storeTransaction(txHash, trans);
+      expect(txdb.getBody(txHash)).toBe(trans);
+    });
+
+
   });
 });
