@@ -102,7 +102,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
 
   // Tasks
 
-  MixerService.prototype.stopTasks = function(task) {
+  MixerService.prototype.stopTasks = function() {
     this.ongoing = {};
   };
 
@@ -110,7 +110,6 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
    * Check address - outputs pairs for funding
    */
   MixerService.prototype.checkOutputs = function(addresses, callback, msg) {
-      var identity = this.core.getCurrentIdentity();
       var client = this.core.getClient();
       var pending = addresses.length;
       var anySpent = false;
@@ -141,7 +140,6 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
   MixerService.prototype.isTransactionFunded = function(txHex, callback, msg) {
       var identity = this.core.getCurrentIdentity();
       var self  = this;
-      var identity = this.core.getCurrentIdentity();
       var client = this.core.getClient();
       var addresses = {};
       var tx = Bitcoin.Transaction.fromHex(txHex);
@@ -189,7 +187,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
                   console.log("[mixer]", funded.length, "tx after fund checking");
                   callback(funded[Math.floor(Math.random()*funded.length)]);
               }
-          }
+          };
           self.isTransactionFunded(msg.body.tx, onTxFunded, msg);
       });
       coinJoin.received = [];
@@ -244,7 +242,7 @@ function(Port, Channel, Protocol, Bitcoin, CoinJoin, BtcUtils, CryptoJS) {
    */
   MixerService.prototype.postRetry = function(msg) {
       var self = this;
-      this.channel.postEncrypted(msg, function(err, data) {
+      this.channel.postEncrypted(msg, function(err) {
           if (err) {
             console.log("[mixer] Error announcing join!");
           } else {

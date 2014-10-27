@@ -414,9 +414,9 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId, type) {
 
     var valueMatch = function(a, b) {
          // Make sure change isn't below dust threshold.
-         if (a == b || a >= (b+dust)) return true;
+         if (a == b || a >= (b+dust)) { return true; }
          return false;
-    }
+    };
 
     var getCandidateOutputs = function(w, value, hot) {
         var h = [];
@@ -634,7 +634,7 @@ Wallet.prototype.checkNewStealth = function(recipient, address, ephemKey, pubKey
         var walletAddress = this.storePublicKey(seq, pubKey, addrData);
         return walletAddress;
     }
-}
+};
 
 return Wallet;
 });

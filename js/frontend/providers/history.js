@@ -216,7 +216,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           var pocket = identity.wallet.pockets.getPocket(this.pocket.index, this.pocket.type);
           this.pocket.addresses = pocket.getWalletAddresses();
       }
-  }
+  };
 
   // Filters
   HistoryProvider.prototype.fillRowContact = function(contacts, row) {
@@ -433,7 +433,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   HistoryProvider.prototype.addressFilter = function(row) {
       // filter out pocket addresses with no inputs so the user never see them but can receive funds.
-      if (row.index.length === 1 && row.label === 'pocket' && !row.nOutputs) return false;
+      if (row.index.length === 1 && row.label === 'pocket' && !row.nOutputs) { return false; }
       switch(this.addrFilter) {
           case 'all':
               return true;
@@ -442,7 +442,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           case 'top':
               return row.balance>0;
           case 'labelled':
-              return ['unused', 'change'].indexOf(row.label) == -1;
+              return ['unused', 'change'].indexOf(row.label) === -1;
           default:
               break;
       }
@@ -466,7 +466,6 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
   };
 
   HistoryProvider.prototype.historyFilter = function(row, shownRows) {
-      var blockDiff = DarkWallet.service.wallet.blockDiff;
       if (!row.height) {
           shownRows.push(row.hash);
           return true;
