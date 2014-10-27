@@ -64,7 +64,7 @@
 
     <div class="row" ng-if="settings.advanced && !forms.send.sending && txStats">
       <div class="small-12 columns">
-                <div ng-show="!txStats.notes" class="label address radius right">size: {{txStats.size}}kB fee: {{txStats.fee|formatBtc}}</div>
+                <div ng-show="!txStats.notes" class="label address radius right" tooltip-append-to-body="true" tooltip="Priority: {{txStats.priority<0.01?txStats.priority.toFixed(3):txStats.priority.toFixed(2)}}">size: {{txStats.size}}kB <span ng-show="txStats.fee">fee: {{txStats.fee|formatBtc}}</span><span ng-show="!txStats.fee" >free</span></div></div>
                 <div ng-show="txStats.notes" class="label alert radius right">{{txStats.notes}}</div>
       </div>
     </div>

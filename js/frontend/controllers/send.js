@@ -324,10 +324,25 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               // standard compressed input size
               var in_f = 148;
           }
-          var txSize = (outs*34+ins*in_f)/1000;
+          var txSize = (outs*34+ins*in_f);
           var feePerKb = Bitcoin.networks[identity.wallet.network].feePerKb;
-          $scope.txStats = {size: txSize.toFixed(2), fee: Math.ceil(txSize)*feePerKb};
-          // console.log("size", txSize, "kB", Math.ceil(txSize)*sendForm.fee, "btc", ins, "outs")
+
+          // priority calculation
+          // see https://en.bitcoin.it/wiki/Transaction_fees
+          var minPriority = 57600000;
+          var currentHeight = DarkWallet.service.wallet.currentHeight;
+          var priority = 0;
+          txUtxo.forEach(function(utxo) {
+              priority += utxo.value*(currentHeight-utxo.height)
+          });
+          priority = (priority/txSize)/minPriority;
+
+          // evaluate if we qualify for a free tx
+          var txFee = (priority > 1 && txSize < 1000) ? 0.0 : Math.ceil(txSize/1000)*feePerKb;
+
+          // now set on scope
+          $scope.txStats = {size: (txSize/1000).toFixed(2), fee: txFee, priority: priority};
+
           return true;
       } else {
           $scope.txStats = {notes: "Not enough good inputs", size: 0, fee: 0};
