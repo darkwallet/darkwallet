@@ -1,6 +1,6 @@
 /**
  * Date mock object that works as if current time is fixed at 
- * Sun Oct 26 2014 23:12:54 GMT+0100 (CET)
+ * Sun Oct 12 2014 10:12:54 GMT+0200 (CEST)
  */
 
 'use strict';
