@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'backend/channels/peer', 'backend/channels/utils', 'backend/port', 'sjcl'],
+define(['bitcoinjs-lib', 'util/djbec', 'util/encryption', 'util/protocol', 'backend/channels/peer', 'backend/channels/utils', 'backend/port'],
 function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
 
   var convert = Bitcoin.convert;
