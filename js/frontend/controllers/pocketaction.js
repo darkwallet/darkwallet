@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet, sjcl) {
+define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (controllers, DarkWallet, CurrencyFormat, sjcl) {
   controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', '$location', '_Filter', function($scope, modals, notify, $history, $location, _) {
 
     /**
@@ -142,6 +142,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet, sj
         Object.keys(pocket.mixingOptions).forEach(function(name) {
             $scope.forms.mixingOptions[name] = pocket.mixingOptions[name];
         });
+        $scope.forms.mixingOptions.budget = CurrencyFormat.asBtc(pocket.mixingOptions.budget);
     };
 
     /**
@@ -152,7 +153,7 @@ define(['./module', 'darkwallet', 'sjcl'], function (controllers, DarkWallet, sj
         var walletPocket = identity.wallet.pockets.getPocket(pocket.index, 'hd').store;
 
         // now set options
-        walletPocket.mixingOptions.budget = parseInt(options.budget);
+        walletPocket.mixingOptions.budget = CurrencyFormat.asSatoshis(parseFloat(options.budget));
         walletPocket.mixingOptions.mixings = parseInt(options.mixings);
 
         // save
