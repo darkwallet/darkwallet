@@ -9,7 +9,8 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   controllers.controller('LobbyCtrl', ['$scope', 'notify', '$timeout', 'modals', '_Filter', function($scope, notify, $timeout, modals, _) {
 
-  var transport, currentChannel, lobbyPort;
+  var currentChannel, lobbyPort;
+  ChannelLink.links = {};
 
   /**
    * Peer Requests
@@ -161,8 +162,9 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       $scope.lastTimestamp = Date.now();
 
-      // Send beacons with level 1 or more
+      // Send beacons with level 2 or more
       $scope.sendBeacons(2);
+      currentChannel.sendOpening();
 
       // apply scope
       if (!$scope.$$phase) {
@@ -177,7 +179,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   var onLobbyInitialized = function(port) {
       lobbyPort = port;
       // onCreate callback
-      transport = DarkWallet.getLobbyTransport();
+      var transport = DarkWallet.getLobbyTransport();
 
       // if no channel show transport cloak...
       $scope.comms = transport.comms;
@@ -251,7 +253,6 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   // Initialize a channel
   $scope.connectChannel = function(name) {
       var transport = DarkWallet.getLobbyTransport();
-      var pairCodeHash = ChannelUtils.hashChannelName(name);
 
       if (transport.getChannel(name)) {
           // Channel exists, relink
@@ -266,12 +267,6 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       cleanPeer();
       // Relink
       $scope.connectChannel(channel.name);
-      if (currentChannel) {
-          currentChannel.sendOpening();
-          // Send beacons with level 2 or more
-          $scope.sendBeacons(2);
-            
-      }
   };
 
   // Action to start announcements and reception
@@ -306,29 +301,28 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       $scope.selectedPeer.chatLog.dirty = false;
       $scope.shoutboxLog = peer.chatLog;
   };
+
+  var onSent = function(err) {
+      if (err) {
+          notify.error(_('error sending'), err);
+      }
+  };
+
   $scope.sendText = function() {
-      var toSend = $scope.shoutbox;
-      // don't send empty shouts
-      if (toSend == '') {
+      if ($scope.shoutbox == '') {
           return;
       }
-      $scope.shoutbox = '';
-
-      var onSent = function(err, data) {
-          if (err) {
-              notify.error(_('error sending'), err);
-          }
-      }
-
-      var msg = Protocol.ShoutMsg(toSend);
-      if ($scope.selectedPeer) {
-          $scope.selectedPeer.channel.postDH($scope.selectedPeer.pubKey, msg, onSent);
+      var msg = Protocol.ShoutMsg($scope.shoutbox);
+      var peer = $scope.selectedPeer;
+      if (peer) {
+          peer.channel.postDH(peer.pubKey, msg, onSent);
           msg.peer = currentChannel.comms;
-          $scope.selectedPeer.chatLog.splice(0,0,msg);
-          $scope.selectedPeer.chatLog.dirty = false;
+          peer.chatLog.splice(0,0,msg);
+          peer.chatLog.dirty = false;
       } else {
           currentChannel.postEncrypted(msg, onSent);
       }
+      $scope.shoutbox = '';
   };
 
   /**
@@ -341,6 +335,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           notify.success(_('lobby'), _('pairing sent'));
       });
   };
+
   $scope.addNewContact = function(contact) {
       var identity = DarkWallet.getIdentity();
       var newContact = {name: contact.name, address: contact.stealth, fingerprint: contact.fingerprint};

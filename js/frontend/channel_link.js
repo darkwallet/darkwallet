@@ -39,30 +39,31 @@ define(['darkwallet'], function (DarkWallet) {
       if (ChannelLink.links.hasOwnProperty(name)) {
           // Channel is already linked
           channelLink = ChannelLink.links[name];
+          channelLink.scope = scope;
       } else {
           // Totally new channel, subscribe
           channelLink = new ChannelLink(name, scope);
           ChannelLink.links[name] = channelLink;
           channelLink.addCallback('subscribed', function() {
               notify.success(_('channel'), _('subscribed successfully'));
-              scope.lastTimestamp = Date.now();
+              channelLink.scope.lastTimestamp = Date.now();
               channelLink.channel.sendOpening();
-              if(!scope.$$phase) {
-                  scope.$apply();
+              if(!channelLink.scope.$$phase) {
+                  channelLink.scope.$apply();
               }
           });
           channelLink.addCallback('Contact', function(data) {
               notify.success(_('contact'), data.body.name);
               var peer = data.peer;
-              scope.newContact = data.body;
-              scope.newContact.pubKeyHex = peer.pubKeyHex;
-              scope.newContact.fingerprint = peer.fingerprint;
+              channelLink.scope.newContact = data.body;
+              channelLink.scope.newContact.pubKeyHex = peer.pubKeyHex;
+              channelLink.scope.newContact.fingerprint = peer.fingerprint;
           });
           channelLink.addCallback('Beacon', function(data) {
-              scope.updateChat();
+              channelLink.scope.updateChat();
           });
           channelLink.addCallback('Pair', function(data) {
-              scope.updateChat();
+              channelLink.scope.updateChat();
           });
           channelLink.addCallback('Shout', function(data) {
               var channel = channelLink.channel;
@@ -78,7 +79,7 @@ define(['darkwallet'], function (DarkWallet) {
               if (data.sender != channel.fingerprint) {
                   notify.note(data.peer.name, data.body.text);
               }
-              scope.updateChat();
+              channelLink.scope.updateChat();
           });
       }
       return channelLink;
