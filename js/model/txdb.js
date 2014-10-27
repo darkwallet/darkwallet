@@ -9,15 +9,6 @@ define(['darkwallet'], function(DarkWallet) {
 function TransactionDatabase(store) {
     this.transactions = store.init('transactions', {});
     this.store = store;
-    // Clean up incorrect transactions
-    var keys = Object.keys(this.transactions);
-    for(var idx=0; idx<keys.length; idx++) {
-        var item = this.transactions[keys[idx]];
-        if (Array.isArray(item[0]) && (item[0].length <= 20)) {
-            // Clear the transaction information
-            item[0] = undefined;
-        }
-    };
 }
 
 /**
