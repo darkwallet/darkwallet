@@ -36,6 +36,13 @@ define(['testUtils'], function(testUtils) {
             clear: function() {
               chrome_storage = {};
             },
+            getBytesInUse: function(name, cb) {
+              cb(42);
+            },
+            remove: function(key, callback) {
+              chrome_storage = {};
+              callback?callback():null;
+            },
             _: function() {
               return chrome_storage;
             }
@@ -53,6 +60,8 @@ define(['testUtils'], function(testUtils) {
       testUtils.stub('model/store', function(data, keyring) {
         this.store = data;
         this.keyring = keyring;
+        this.set = function(name) {this.name=name;};
+        this.save = function(cb) {keyring.availableIdentities.push(this.name); cb();};
       });
       
       testUtils.stub('model/upgrade', function(store) {
@@ -172,6 +181,54 @@ define(['testUtils'], function(testUtils) {
       var data = {};
       keyring.save('Satoshi', data, function() {
         expect(chrome.storage.local._()['dw:identity:Satoshi']).toBe(data);
+      });
+    });
+
+    it('saves new', function() { // private
+      var data = {name: 'Satoshi2'};
+      keyring.save('Satoshi2', data, function() {
+        expect(chrome.storage.local._()['dw:identity:Satoshi2']).toBe(data);
+      });
+    });
+
+
+    it('cant rename an identity that is not loaded', function() { // private
+      var data = {};
+      expect(function() {
+        keyring.rename('Satoshi', 'Alex', function() {
+        });
+      }).toThrow();
+    });
+
+    it('renames', function() { // private
+      keyring.load('Satoshi');
+      keyring.rename('Satoshi', 'Alex', function() {
+        expect(keyring.availableIdentities).toEqual(['Alex', 'Dorian']);
+      });
+    });
+
+    it('gets size', function() {
+      keyring.getSize('Satoshi', function(size) {
+        expect(size).toBe(42);
+      });
+    });
+
+    it('gets raw data', function() {
+      keyring.getRaw('Satoshi', function(data) {
+        expect(data["dw:identity:Satoshi"].name).toBe('Satoshi');
+      });
+    });
+
+    it('removes not existing', function() {
+      expect(function() {
+        keyring.remove('Alex', function(){});
+      }).toThrow();
+    });
+ 
+    it('removes', function() {
+      expect(keyring.availableIdentities.length).toBe(2);
+      keyring.remove('Satoshi', function() {
+        expect(keyring.availableIdentities.length).toBe(1);
       });
     });
     

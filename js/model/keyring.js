@@ -76,10 +76,10 @@ IdentityKeyRing.prototype.close = function(name) {
  */
 IdentityKeyRing.prototype.rename = function(name, newName, callback) {
     var self = this;
-    var store = this.identities[name].store;
-    if (!store) {
+    if (!this.identities[name]) {
         throw Error("Identity must be loaded to rename");
     }
+    var store = this.identities[name].store;
     var oldIdx = this.availableIdentities.indexOf(name);
     // First save under the new name
     store.set('name', newName);
