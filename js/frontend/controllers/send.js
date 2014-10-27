@@ -180,6 +180,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               } else {
                   notify.error(_('Error sending to mixer ({0})', amountNote), mixingTask.task.state + ' ' + err.message);
               }
+              sendForm.sending = false;
+              $scope.sendEnabled = true;
           } else {
               $scope.resetSendForm();
               notify.note(_('Sent to mixer ({0})', mixingTask.task.state), amountNote);
