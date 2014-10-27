@@ -1,23 +1,29 @@
+Big tasks:
+ - History cache
+ - Messaging system
+ - HD restructure
+ less priority:
+ - 2of2/2of3 wallets
+ - stealth multisig
+
 Immediate:
  + Review and stabilize gateway
  + Wallet
    - Cache address history and resume
    + Review sending
-   + CoinJoin Hardening
-     * Wait for several on announce DONE
-     * check balance of peer inputs DONE
-     * pocket mixing 'budget' or other controls DONE
+   + CoinJoin
      - match fee with the other peer (if within limits)
      - controls for cancelling mixer tasks
      - bip32 branch depth == mixing depth
    - Stealth multisig
    + Polish multisig mechanics
  - Lobby system
-   - Establish trust and reputation
-   - Automatic beacons (trust based)
-   - Per-channel cloaks (or selectable per-channel cloaks)
+   - Identity assertions (gpg, btc)
+   - Notifications: "contact is available"
+   - online status
+     - timeout: may use beacon timing of response
+     - make gui refresh with online status
  - Pocket actions:
-   * Move funds to another pocket DONE
    - Move funds to another identity
 
 Architecture/api:
@@ -26,7 +32,12 @@ Architecture/api:
  - Unify task/notification mechanics
  * Worker for communications encryption DONE
  + New modules to split model/wallet
- - Make a messenger service to manage delivery of messages to other contacts
+ - Messaging system
+   - Guaranteed delivery of messages to contacts
+   - Sent message to <contact>
+   - message will be sent when the contact appears
+     - ack message can be marked as sent
+     - maintain a queue of sent, repeat sending till ack
 - Frontend
  - Send provider
  - Review and improve angular usage
@@ -64,11 +75,18 @@ Done:
  * Wallet
    * Review balances and unconfirmed change management DONE
    * Polish stealth support DONE
+   + CoinJoin Hardening
+     * Wait for several on announce DONE
+     * check balance of peer inputs DONE
+     * pocket mixing 'budget' or other controls DONE
  * Lobby system
    * then finish CoinJoin DONE
    * Implement multiParty from cryptocat (ed25519 curves) DONE
    * link contacts using lobby (sync stealth, mpk...) DONE
    * Automatize multisig DONE
+   - Establish trust DONE and reputation
+   - Automatic beacons (trust based) DONE
+   - Per-channel cloaks (or selectable per-channel cloaks) DONE
  * Currency support
    * Select BTC/mBTC DONE
    * Show as EUR/USD/CNY... (prices from bitcoinaverage) DONE
