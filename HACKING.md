@@ -7,7 +7,7 @@ https://github.com/darkwallet/darkwallet
 
 For normal wallet development you can just modify the .js files, no need for fancy compilers :).
 
-Note the wallet has a long running background process, so after modifying files (specially for 
+Note the wallet has a long running background process, so after modifying files (specially for
 backend/ and model/ files) you may need to restart the background page.
 
 The background process ties up the wallet behaviour for any number of open tabs.
@@ -136,31 +136,25 @@ Read [bower documentation](http://bower.io) for more info.
 CSS Hacking:
 -----------
 
-To modify the CSS we use sass, so you need to mofify the sass files, then run
-the tasks below to generate the css the app needs.
+Our css is generated from the files in the *sass* folder, so any changes should be done there instead of in the *css* folder.
 
-### Setup your environment:
+### Setup your SASS compiling environment:
+
+Make sure you have nodejs installed, then on the darkwallet root folder, do:
 
 ```sh
-$ gem install foundation
-$ foundation update
+$ sudo npm install -g grunt-cli bower
+$ npm install
+$ bower update
+
 ```
 
-then you can do 'grunt build' or other tasks
-
-
-### Grunt tasks
-
-* `grunt` - watching (Sass, Server on 127.0.0.1:9000 with LiveReload)
-* `grunt build` - Sass
-* `grunt validate-js` - JSHint
-* `grunt publish` - dist directory
-* `grunt server-dist` - server on 127.0.0.1:9001 - dist directory (preview only)
+Then build with *grunt build* or just run *grunt* and it will keep watching for changes on the sass folder.
 
 Icon set:
 -----------
 
-You can use the following cheatsheet to look for icon codes: 
+You can use the following cheatsheet to look for icon codes:
 
  - http://fortawesome.github.io/Font-Awesome/cheatsheet/
 
