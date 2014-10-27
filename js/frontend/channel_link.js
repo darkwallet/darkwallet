@@ -43,6 +43,7 @@ define(['darkwallet'], function (DarkWallet) {
       } else {
           // Totally new channel, subscribe
           channelLink = new ChannelLink(name, scope);
+          channelLink.scope = scope;
           ChannelLink.links[name] = channelLink;
           channelLink.addCallback('subscribed', function() {
               notify.success(_('channel'), _('subscribed successfully'));
