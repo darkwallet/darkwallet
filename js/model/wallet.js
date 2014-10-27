@@ -509,8 +509,10 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
     // If it's a spend save the next output and spend height
     if (spend && !output.spend) {
         output.spend = spend;
-        output.spendheight = spendheight;
         output.spendpending = true;
+    }
+    if (spend) {
+        output.spendheight = spendheight;
     }
 };
 
