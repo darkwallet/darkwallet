@@ -45,6 +45,35 @@ define(['model/connections'], function(Connections) {
       expect(connections.selectedServer).toBe(1);
     });
 
+    it('sets the selected server', function() {
+      var sel = connections.getSelectedServer(1);
+      expect(sel).toEqual({ name : 'unsystem', type : 'gateway', address : 'wss://gateway.unsystem.net' });
+    });
+
+    it('cant remove the selected server', function() {
+      expect(connections.connections.servers.length).toBe(1);
+      connections.removeServer(connections.servers[0]);
+      expect(connections.connections.servers.length).toBe(1);
+    });
+
+    it('removes a server', function() {
+      connections.addServer('foo', 'bar', 'baz');
+      expect(connections.connections.servers.length).toBe(2);
+      connections.removeServer(connections.servers[1]);
+      expect(connections.connections.servers.length).toBe(1);
+      expect(connections.connections.selectedServer).toBe(0);
+    });
+
+    it('removes a server', function() {
+      connections.addServer('foo', 'bar', 'baz');
+      connections.setSelectedServer(1);
+      expect(connections.connections.servers.length).toBe(2);
+
+      connections.removeServer(connections.servers[0]);
+      expect(connections.connections.servers.length).toBe(1);
+      expect(connections.connections.selectedServer).toBe(0);
+    });
+
     it('sets always connect setting', function() {
       connections.setAlwaysConnect(1);
       expect(connections.alwaysConnect).toBe(1);
