@@ -427,13 +427,13 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId, type) {
         // remove unconfirmed (leave hot change if 'hot' is true)
         utxo = utxo.filter(function(x) { return (x.height || (hot&&x.change)); });
 
-        // organize and select
-        var valuecompare = function(a,b) { return a.value > b.value; };
+        // a.value < b.value does a fuzzy ordering here, using '-' enforces good order
+        var valuecompare = function(a,b) { return a.value - b.value; };
         var high = utxo.filter(function(o) { return valueMatch(o.value, value); })
                        .sort(valuecompare);
         if (high.length > 0) { return [high[0]]; }
         // here sort bigger first
-        utxo.sort(function(a, b) { return a.value < b.value; });
+        utxo.sort(function(a, b) { return b.value - a.value; });
         var totalval = 0;
         for (var i = 0; i < utxo.length; i++) {
             totalval += utxo[i].value;
