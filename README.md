@@ -12,6 +12,7 @@ Running
 
 You can load the extension into Chrome by going to _Extensions_, enabling _Development mode_ and clicking the _Load uncompressed extension_ button.
 
+
 Alpha!!!
 -----------
 We're still in [alpha](http://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha) state, that means we're still changing things a lot and it's not safe at all to use the wallet.
@@ -40,6 +41,13 @@ You are welcome to participate in the development by contributing or forking the
 
 More info about how to develop on the [HACKING.md](HACKING.md) document.
 
+### More Documentation
+The following pages on our wiki have important technical information:
+
+* [HD Structure](https://wiki.unsystem.net/en/index.php/DarkWallet/HDWallet)
+* [How to Help](https://wiki.unsystem.net/en/index.php/DarkWallet/HowToHelp)
+* [Debugging](https://wiki.unsystem.net/en/index.php/DarkWallet/Debug)
+
 Contact:
 -----------
 
@@ -66,15 +74,6 @@ Support our development efforts by donating to the darkwallet multisig:
 > I went to the store the other day to buy a bolt for our front door, for as I told the storekeeper, the governor was coming here. "Aye," said he, "and the Legislature too." "Then I will take two bolts," said I. He said that there had been a steady demand for bolts and locks of late, for our protectors were coming.
 >
 > -- <cite>Henry David Thoreau</cite>
-
-HDWallet restoration info
-------------
-The following page in our wiki documents our hd wallet paths:
-
-https://wiki.unsystem.net/en/index.php/DarkWallet/HDWallet
-
-You can use this with 3rd party tools to access your funds.
-
 
 - - -
 
