@@ -34,7 +34,7 @@ define(['darkwallet'], function (DarkWallet) {
       port.postMessage({'type': 'initChannel', name: name});
   };
 
-  ChannelLink.create = function(name, scope, notify) {
+  ChannelLink.create = function(name, scope, notify, _) {
       var channelLink;
       if (ChannelLink.links.hasOwnProperty(name)) {
           // Channel is already linked

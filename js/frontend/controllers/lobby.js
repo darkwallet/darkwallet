@@ -146,7 +146,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   }
 
   var createChannelLink = function(name) {
-      var channelLink = ChannelLink.create(name, $scope, notify);
+      var channelLink = ChannelLink.create(name, $scope, notify, _);
 
       // set controller variables
       selectedChannel = name; 
