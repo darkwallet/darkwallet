@@ -51,7 +51,7 @@ Use the following resources for communication with "the team"
 * [Mailing list](https://lists.unsystem.net/cgi-bin/mailman/listinfo/darkwallet)
 * IRC: #darkwallet (freenode)
 * [Forum](https://forum.unsystem.net/category/projects/darkwallet)
-* [Wiki](https://wiki.unsystem.net/en/index.php/DarkWallet)
+* [Wiki](https://wiki.unsystem.net/en/index.php/Darkwallet)
 
 
 License
