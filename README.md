@@ -43,7 +43,7 @@ More info about how to develop on the [HACKING.md](HACKING.md) document.
 
 Other useful documents are: [HD Structure](https://wiki.unsystem.net/en/index.php/DarkWallet/HDWallet), [How to Help](https://wiki.unsystem.net/en/index.php/DarkWallet/HowToHelp) and [Debugging](https://wiki.unsystem.net/en/index.php/DarkWallet/Debug)
 
-Contact:
+Contact
 -----------
 
 Use the following resources for communication with "the team"

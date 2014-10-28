@@ -162,7 +162,7 @@ $ bower update
 
 Then build with *grunt build* or just run *grunt* and it will keep watching for changes on the sass folder.
 
-Icon set:
+Icon set
 -----------
 
 You can use the following cheatsheet to look for icon codes:
