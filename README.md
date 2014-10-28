@@ -41,12 +41,7 @@ You are welcome to participate in the development by contributing or forking the
 
 More info about how to develop on the [HACKING.md](HACKING.md) document.
 
-### More Documentation
-The following pages on our wiki have important technical information:
-
-* [HD Structure](https://wiki.unsystem.net/en/index.php/DarkWallet/HDWallet)
-* [How to Help](https://wiki.unsystem.net/en/index.php/DarkWallet/HowToHelp)
-* [Debugging](https://wiki.unsystem.net/en/index.php/DarkWallet/Debug)
+Other useful documents are: [HD Structure](https://wiki.unsystem.net/en/index.php/DarkWallet/HDWallet), [How to Help](https://wiki.unsystem.net/en/index.php/DarkWallet/HowToHelp) and [Debugging](https://wiki.unsystem.net/en/index.php/DarkWallet/Debug)
 
 Contact:
 -----------
