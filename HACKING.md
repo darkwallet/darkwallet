@@ -99,7 +99,7 @@ Unit tests can be run using `karma`.
 
 ```sh
 $ npm -d install
-$ karma start
+$ karma start test/karma.conf.js
 ```
 
 Releasing
