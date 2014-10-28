@@ -12,13 +12,13 @@ backend/ and model/ files) you may need to restart the background page.
 
 The background process ties up the wallet behaviour for any number of open tabs.
 
-Debugging:
+Debugging
 -----------
 Check the following wiki page for information on getting to the debug consoles of the darkwallet:
 
  https://wiki.unsystem.net/index.php/DarkWallet/Debug
 
-Code organization:
+Code organization
 -----------
 
 The code is structured as follows:
@@ -39,7 +39,7 @@ js/			Code Root
     └── ng		Angular utils
 </pre>
 
-Frontend development:
+Frontend development
 -----------
 From the frontend, You use the DarkWallet global object to access main objects for the
 application.
@@ -47,14 +47,14 @@ application.
 The "main" files for the frontend are the js/frontend/controllers/ files, wallet.js is the
 top level controller at the moment.
 
-Backend development:
+Backend development
 -----------
 The "main" file for the backend is js/backend/main.js.
 
 The backend hosts several services (js/backend/services/) taking care of different aspects
 of the application.
 
-Frontend and backend communication:
+Frontend and backend communication
 -----------
 
 The frontend and backend processes use "Ports" for communication. The backend opens several service
@@ -93,15 +93,22 @@ $ tx push -s # Push the sources
 $ tx pull -t # Pull the translations
 
 Testing
--------
+-----------
 
-Unit tests can be run using `karma`.
+We use the tool `karma` to run the tests.
+
+All the following commands should be done from the darkwallet root folder.
+
+### Setup your environment
 
 ```sh
-# setup
 $ npm -d install
 $ npm install -g karma-cli # you may need sudo here
-# running the tests
+```
+
+### Running the tests
+
+```sh
 $ karma start test/karma.conf.js
 ```
 
@@ -121,7 +128,7 @@ We use git flow util in order to realize it. It can be downloaded using apt:
 $ sudo apt-get install git-flow
 ```
 
-Javascript tasks:
+Javascript tasks
 -----------
 
 To update or modify dependencies you may need the following information:
@@ -136,7 +143,7 @@ $ bower install angular --save # --save option modify bower.json file
 Read [bower documentation](http://bower.io) for more info.
 
 
-CSS Hacking:
+CSS Hacking
 -----------
 
 Our css is generated from the files in the *sass* folder, so any changes should be done there instead of in the *css* folder.
