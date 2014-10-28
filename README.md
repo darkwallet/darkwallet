@@ -24,7 +24,7 @@ You are *very welcome* to test, just remember the following:
  * You can do: "create new identity", choose same name as before and restore, this will upgrade your store (you will still need to re add pockets and addresses, contacts etc...)
  * If you notice strange behaviour after upgrading, you should:
     1. Restart the background process from darkwallet (from "manage extensions")
-    2. If that doesn't work: Clear DarkWallet storage, (from darkwallet settings), restart chromium
+    2. If that doesn't work: Clear Darkwallet storage, (from darkwallet settings), restart chromium
 
 We have been following this procedure since the wallet is under development without problems.
 
@@ -73,4 +73,4 @@ Support our development efforts by donating to the darkwallet multisig:
 
 - - -
 
-DarkWallet Team
+Darkwallet Team

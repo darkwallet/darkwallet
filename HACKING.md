@@ -41,7 +41,7 @@ js/			Code Root
 
 Frontend development
 -----------
-From the frontend, You use the DarkWallet global object to access main objects for the
+From the frontend, You use the Darkwallet global object to access main objects for the
 application.
 
 The "main" files for the frontend are the js/frontend/controllers/ files, wallet.js is the
@@ -62,7 +62,7 @@ ports, where the frontend areas can connect. This ensures callbacks are properly
 tabs are closed or controllers are destroyed, so we just get notifications from the backend on these
 ports.
 
-To command the backend, the frontend can access directly in most situations, so just start on DarkWallet
+To command the backend, the frontend can access directly in most situations, so just start on Darkwallet
 and move down.
 
 Internationalization
