@@ -288,6 +288,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           var transport = DarkWallet.getLobbyTransport();
           transport.closeChannel(name);
           currentChannel = undefined;
+          selectedChannel = undefined;
           $scope.subscribed = undefined;
       }
   };
