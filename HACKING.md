@@ -143,7 +143,7 @@ Our css is generated from the files in the *sass* folder, so any changes should 
 Make sure you have nodejs installed, then on the darkwallet root folder, do:
 
 ```sh
-$ sudo npm install -g grunt-cli bower
+$ npm install -g grunt-cli bower # you may need sudo here
 $ npm install
 $ bower update
 
