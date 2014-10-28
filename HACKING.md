@@ -91,6 +91,7 @@ Having transifex client downloaded and [configured](http://docs.transifex.com/de
 ```sh
 $ tx push -s # Push the sources
 $ tx pull -t # Pull the translations
+```
 
 Testing
 -----------
