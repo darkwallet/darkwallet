@@ -195,6 +195,15 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     it('gets a pocket', function() {
       expect(wallet.pockets.getPocket(1).store).toEqual(wallet.pockets.hdPockets[1]);
     });
+
+    it('gets an address pocket', function() {
+      var pocket1 = wallet.pockets.getAddressPocket({type: undefined, index: [0, 0]});
+      var pocket2 = wallet.pockets.getAddressPocket({type: undefined, index: [2, 0]});
+      expect(pocket1.type).toBe('hd');
+      expect(pocket1.getPocketId()).toBe(0);
+      expect(pocket2.type).toBe('hd');
+      expect(pocket2.getPocketId()).toBe(1);
+    });
     
     it('deletes a pocket', function() {
       expect(function() {
