@@ -1,7 +1,7 @@
 'use strict';
 
-define(['backend/port', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin', 'sjcl'],
-function(Port, Protocol, Bitcoin, CoinJoin, sjcl) {
+define(['backend/port', 'util/protocol', 'bitcoinjs-lib', 'util/coinjoin', 'sjcl', 'util/stealth'],
+function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
 
   /*
    * Service managing mixing.
@@ -462,10 +462,13 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl) {
           // derive this key
           var change = walletAddress.index[0]%2 === 1;
           var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
+          var seq = walletAddress.index.slice(0);
           if (walletAddress.type === 'stealth') {
-              privKeys[walletAddress.index] = pocket.deriveStealthPrivateKey(walletAddress.index.slice(1), change?changeKey:masterKey, {}).toBytes();
+              var pocketMaster = change?changeKey:masterKey;
+              var scanKey = this.getMyWallet().getScanKey(seq[0]);
+              privKeys[seq] = Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), pocketMaster.privKey.toBytes()).toBytes();
           } else {
-              privKeys[walletAddress.index] = pocket.deriveHDPrivateKey(walletAddress.index.slice(1), change?changeKey:masterKey).toBytes();
+              privKeys[seq] = pocket.deriveHDPrivateKey(seq.slice(1), change?changeKey:masterKey).toBytes();
           }
       }
       return privKeys;
