@@ -299,16 +299,6 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
         }
     }
 
-    // Precalculate stealth address and mpk for pockets (only main branch)
-    if ((seq.length === 1) && (seq[0]%2 === 0)) {
-        // Stealth
-        var scanKey = this.getScanKey(seq[0]);
-        var stealthAddress = Stealth.formatAddress(scanKey.pub.toBytes(), [pubKey], this.versions.stealth.address);
-        walletAddress.stealth = stealthAddress;
-        // Mpk
-        walletAddress.mpk = BtcUtils.deriveMpk(this.mpk, seq[0]);
-    }
-
     // add to internal bitcoinjs-lib wallet
     this.addToWallet(walletAddress);
     return walletAddress;
@@ -347,18 +337,8 @@ Wallet.prototype.getAddress = function(seq, label) {
         return this.pubKeys[seq];
     }
     else {
-        // derive from mpk
-        var mpKey = Bitcoin.HDNode.fromBase58(this.mpk);
-
-        // clone seq since we're mangling it
-        var workSeq = seq.slice(0);
-        // derive key seq
-        var childKey = mpKey;
-        while(workSeq.length) {
-            childKey = childKey.derive(workSeq.shift());
-        }
-        var properties = label ? {'label': label} : null;
-        return this.storePublicKey(seq, childKey.pubKey, properties);
+        var pocket = this.pockets.getPocket(Math.floor(seq[0]/2), 'hd');
+        return pocket.createAddress(seq, label);
     }
 };
 

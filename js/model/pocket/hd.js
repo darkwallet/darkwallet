@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'model/pocket/base'], function(Bitcoin, BasePocket) {
+define(['bitcoinjs-lib', 'model/pocket/base', 'util/stealth', 'util/btc'], function(Bitcoin, BasePocket, Stealth, BtcUtils) {
 
 /**
  * Hierarchical Deterministic Pocket functionality.
@@ -79,7 +79,51 @@ HdPocket.prototype.addToPocket = function(walletAddress) {
     // to the user and make it invisible.
     this.addresses.push(walletAddress.address);
     this.walletAddresses.push(walletAddress);
+
+    // Add pocket specific metadata to the address
+    // needed here in addition to createAddress since some
+    // metadata was not being added before
+    this.addPocketMetadata(walletAddress);
 };
+
+HdPocket.prototype.addPocketMetadata = function(walletAddress) {
+    var wallet = this.getMyWallet();
+    var seq = walletAddress.index;
+    // Precalculate stealth address and mpk for pockets (only main branch)
+    if ((seq.length === 1) && (seq[0]%2 === 0)) {
+        // Stealth
+        var scanKey = wallet.getScanKey(seq[0]);
+        var stealthAddress = Stealth.formatAddress(scanKey.pub.toBytes(), [walletAddress.pubKey], wallet.versions.stealth.address);
+        walletAddress.stealth = stealthAddress;
+        // Mpk
+        if (!walletAddress.mpk) {
+            walletAddress.mpk = BtcUtils.deriveMpk(wallet.mpk, seq[0]);
+        }
+    }
+
+}
+
+/**
+ * Create an address from the seq number
+ */
+HdPocket.prototype.createAddress = function(seq, label) {
+    var wallet = this.getMyWallet();
+    // derive from mpk
+    var mpKey = Bitcoin.HDNode.fromBase58(wallet.mpk);
+
+    // clone seq since we're mangling it
+    var workSeq = seq.slice(0);
+    // derive key seq
+    var childKey = mpKey;
+    while(workSeq.length) {
+        childKey = childKey.derive(workSeq.shift());
+    }
+    var properties = label ? {'label': label} : null;
+
+    // storePublicKey will call pocket.addToPocket, that will call addPocketMetadata
+    var walletAddress = wallet.storePublicKey(seq, childKey.pubKey, properties);
+    return walletAddress;
+}
 
 /**
  * Get a free address
