@@ -351,7 +351,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
                 try {
                     // Stealth backwards comp workaround, 0.4.0
                     Stealth.quirk = address.quirk;
-                    identity.wallet.getPrivateKey(address.index, password, function(privKey) {
+                    identity.wallet.getPrivateKey(address, password, function(privKey) {
                         privKeys[address.index] = privKey.toBytes().slice(0);
                     });
                     Stealth.quirk = false;

@@ -318,8 +318,7 @@ MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
     // find key
     this.participants.forEach(function(participant, pIdx) {
         if (participant.type === 'me') {
-            var seq = participant.address.index;
-            identity.wallet.getPrivateKey(seq, password, function(privKey) {
+            identity.wallet.getPrivateKey(participant.address, password, function(privKey) {
                 inputs.forEach(function(input, i) {
                     builder.sign(input.index, privKey, script, 1);
                     var sig = builder.signatures[input.index].signatures.slice(-1)[0];

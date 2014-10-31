@@ -157,6 +157,18 @@ Pockets.prototype.getAddressPocketId = function(walletAddress) {
 };
 
 /**
+ * Get the pocket for a wallet address
+ * @param {Object} walletAddress Address we're looking for. See {@link Wallet#getWalletAddress}.
+ * @return {Number|String} The pocket index
+ */
+Pockets.prototype.getAddressPocket = function(walletAddress) {
+    var type = this.getPocketType(walletAddress.type);
+    var id = this.addressTypes[walletAddress.type].getIndex(walletAddress);
+    return this.getPocket(id, type);
+};
+
+
+/**
  * Get all pockets of a certain type
  * @param {String} type The pocket type
  */

@@ -461,7 +461,12 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl) {
           }
           // derive this key
           var change = walletAddress.index[0]%2 === 1;
-          privKeys[walletAddress.index] = identity.wallet.deriveHDPrivateKey(walletAddress.index.slice(1), change?changeKey:masterKey).toBytes();
+          var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
+          if (walletAddress.type === 'stealth') {
+              privKeys[walletAddress.index] = pocket.deriveStealthPrivateKey(walletAddress.index.slice(1), change?changeKey:masterKey, {}).toBytes();
+          } else {
+              privKeys[walletAddress.index] = pocket.deriveHDPrivateKey(walletAddress.index.slice(1), change?changeKey:masterKey).toBytes();
+          }
       }
       return privKeys;
   };

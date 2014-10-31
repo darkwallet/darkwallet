@@ -178,65 +178,27 @@ Wallet.prototype.loadPubKeys = function() {
 
     // Initialize if empty before creating pocket keys
     this.initIfEmpty();
-
-    // Upgrade stealth addresses
-    this.pockets.hdPockets.forEach(function(pocket, i) {
-        var walletAddress = self.pubKeys[[i*2]];
-        if (walletAddress && pocket) {
-            var scanKey = self.getScanKey(i*2);
-            var spendKey = walletAddress.pubKey;
-            walletAddress.stealth = Stealth.formatAddress(scanKey.pub.toBytes(), [spendKey], self.versions.stealth.address);
-        }
-    });
     return false; // updated
-};
-
-Wallet.prototype.deriveHDPrivateKey = function(seq, masterKey) {
-    var key = masterKey;
-    // clone seq since we're mangling it
-    var workSeq = seq.slice(0);
-    while(workSeq.length) {
-        key = key.derive(workSeq.shift());
-    }
-    return key.privKey;
-};
-
-Wallet.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
-    var spendKey;
-    var scanKey = this.getScanKey(seq[0]);
-    var privData = keyStore.privKeys[seq.slice(0,1)];
-    if (privData) {
-        spendKey = Bitcoin.ECKey.fromBytes(privData, true);
-    } else {
-        // stealth address take the spend key from the pocket 0
-        spendKey = this.deriveHDPrivateKey(seq.slice(0,1), masterKey);
-    }
-    return Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), spendKey.toBytes());
 };
 
 /**
  * Get the private key for the given address index
- * @param {Array} seq Array for the bip32 sequence to retrieve address for
+ * @param {Object} walletAddress walletAddress to retrieve the private key for
  * @param {String} password Password to encrypt the private data
  * @param {Function} callback A callback where the private key will be provided.
  */
-Wallet.prototype.getPrivateKey = function(seq, password, callback) {
+Wallet.prototype.getPrivateKey = function(walletAddress, password, callback) {
+    var seq = walletAddress.index;
+    // First try from cache
     var data = this.store.getPrivateData(password);
     if (data.privKeys[seq]) {
         var key = Bitcoin.ECKey.fromBytes(data.privKeys[seq], true);
         callback(key);
         return;
     }
-    var masterKey = Bitcoin.HDNode.fromBase58(data.privKey);
-    var privKey;
-    if (seq.length > 1 && seq[1] === 's') {
-        privKey = this.deriveStealthPrivateKey(seq, masterKey, data);
-    } else {
-        privKey = this.deriveHDPrivateKey(seq, masterKey);
-        this.storePrivateKey(seq, password, privKey);
-    }
-   
-    callback(privKey);
+    // Otherwise get it from the pocket directly
+    var pocket = this.pockets.getAddressPocket(walletAddress);
+    pocket.getPrivateKey(walletAddress, password, data, callback);
 };
 
 /**

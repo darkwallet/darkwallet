@@ -91,7 +91,7 @@ HdPocket.prototype.addPocketMetadata = function(walletAddress) {
     var seq = walletAddress.index;
     // Precalculate stealth address and mpk for pockets (only main branch)
     if ((seq.length === 1) && (seq[0]%2 === 0)) {
-        // Stealth
+        // Stealth, do this always in case it needs to be upgraded
         var scanKey = wallet.getScanKey(seq[0]);
         var stealthAddress = Stealth.formatAddress(scanKey.pub.toBytes(), [walletAddress.pubKey], wallet.versions.stealth.address);
         walletAddress.stealth = stealthAddress;
@@ -146,6 +146,46 @@ HdPocket.prototype.getFreeAddress = function(change, label) {
        throw new Error("Generated an incorrect change address");
     }
     return walletAddress;
+};
+
+/**
+ * Key derivation
+ */
+HdPocket.prototype.deriveHDPrivateKey = function(seq, masterKey) {
+    var key = masterKey;
+    // clone seq since we're mangling it
+    var workSeq = seq.slice(0);
+    while(workSeq.length) {
+        key = key.derive(workSeq.shift());
+    }
+    return key.privKey;
+};
+
+HdPocket.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
+    var spendKey;
+    var scanKey = this.getMyWallet().getScanKey(seq[0]);
+    var privData = keyStore.privKeys[seq.slice(0,1)];
+    if (privData) {
+        spendKey = Bitcoin.ECKey.fromBytes(privData, true);
+    } else {
+        // stealth address take the spend key from the pocket 0
+        spendKey = this.deriveHDPrivateKey(seq.slice(0,1), masterKey);
+    }
+    return Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), spendKey.toBytes());
+};
+
+HdPocket.prototype.getPrivateKey = function(walletAddress, password, keyStore, callback) {
+    var seq = walletAddress.index;
+    var masterKey = Bitcoin.HDNode.fromBase58(keyStore.privKey);
+    var privKey;
+    if (walletAddress.type === 'stealth') {
+        privKey = this.deriveStealthPrivateKey(seq, masterKey, keyStore);
+    } else {
+        privKey = this.deriveHDPrivateKey(seq, masterKey);
+        this.getMyWallet().storePrivateKey(seq, password, privKey);
+    }
+
+    callback(privKey);
 };
 
 /****************

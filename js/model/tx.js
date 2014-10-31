@@ -126,14 +126,10 @@ Transaction.prototype.sign = function(newTx, txUtxo, password, callback) {
 
     // Signing
     for(var idx=0; idx<txUtxo.length; idx++) {
-        var seq;
         var utxo = txUtxo[idx];
 
 
         var outAddress = wallet.getWalletAddress(utxo.address);
-        if (outAddress) {
-            seq = outAddress.index;
-        }
         if (!outAddress || outAddress.type === 'multisig' || outAddress.type === 'readonly') {
             pending.push({output: utxo.receive, address: utxo.address, index: idx, signatures: {}, type: outAddress?outAddress.type:'signature'});
         } else {
@@ -141,7 +137,7 @@ Transaction.prototype.sign = function(newTx, txUtxo, password, callback) {
           // Stealth backwards comp workaround, 0.4.0
           Stealth.quirk = outAddress.quirk;
           try {
-            wallet.getPrivateKey(seq, password, function(outKey) {
+            wallet.getPrivateKey(outAddress, password, function(outKey) {
                 newTx.sign(idx, outKey);
             });
             Stealth.quirk = false;

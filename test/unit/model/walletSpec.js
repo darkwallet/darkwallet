@@ -271,7 +271,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
     
     it('gets private key', function() {
-      wallet.getPrivateKey([0,1], 'p4ssw0rd', function(priv) {
+      wallet.getPrivateKey({index: [0,1]}, 'p4ssw0rd', function(priv) {
         expect(priv.d[0]).toEqual(55140896);
         expect(priv.d[4]).toEqual(50599429);
         expect(priv.d[10]).toEqual(0);
@@ -293,7 +293,8 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       var masterKey = Bitcoin.HDNode.fromBase58(walletPocket.getMasterKey(0, 'p4ssw0rd'));
 
       var ephemKey = [2, 41, 140, 192, 149, 205, 83, 114, 37, 106, 0, 164, 123, 46, 88, 38, 11, 252, 215, 149, 236, 188, 150, 165, 89, 64, 40, 218, 206, 26, 13, 49, 27];
-      var stealth = wallet.deriveStealthPrivateKey([0, 's'].concat(ephemKey), masterKey, {privKeys: {}});
+      var pocket = wallet.pockets.getPocket(0);
+      var stealth = pocket.deriveStealthPrivateKey([0, 's'].concat(ephemKey), masterKey, {privKeys: {}});
       expect(stealth.pub.getAddress().toString()).toEqual("1GLYQWVd2Awgz4CkQC7jkenJue3nx2zLtU");
     });
  

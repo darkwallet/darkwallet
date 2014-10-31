@@ -22,7 +22,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
                   var walletAddress = identity.wallet.getWalletAddress(address);
                   // Make sure we only export normal and stealth keys
                   if (walletAddress && [undefined, 'stealth'].indexOf(walletAddress.type) > -1) {
-                      identity.wallet.getPrivateKey(walletAddress.index, password, function(privKey) {
+                      identity.wallet.getPrivateKey(walletAddress, password, function(privKey) {
                           output += address + ',' + privKey.toWif() + '\n';
                       } );
                   } else if (allAddresses.length == 1) {

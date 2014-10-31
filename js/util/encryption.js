@@ -52,8 +52,8 @@ function (Bitcoin, multiParty, Stealth, Curve25519, CryptoJS, sjcl) {
    * @param {Object} callback Callback receiving the decrypted data
    */
 
-  var stealthDecryptForIdentity = function(message, identity, seq, password, callback) {
-    identity.wallet.getPrivateKey(seq, password, function(privKey) {
+  var stealthDecryptForIdentity = function(message, identity, walletAddress, password, callback) {
+    identity.wallet.getPrivateKey(walletAddress, password, function(privKey) {
         callback(stealthDecrypt(privKey, message));
     });
   };

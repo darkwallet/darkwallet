@@ -135,7 +135,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
               try {
                   // Stealth backwards comp workaround, 0.4.0
                   Stealth.quirk = walletAddress.quirk;
-                  identity.wallet.getPrivateKey(walletAddress.index, password, function(privKey) {
+                  identity.wallet.getPrivateKey(walletAddress, password, function(privKey) {
                       var signature = signText(privKey, walletAddress.address, text);
                       $scope.tools.output = formatText(text, address, signature);
                       $scope.tools.status = 'ok';

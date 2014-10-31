@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx'], function(testUtils, Bitcoin, Wallet, CoinJoin, Transaction) {
+define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx', 'model/pocket/hd'], function(testUtils, Bitcoin, Wallet, CoinJoin, Transaction, HdPocket) {
 
   var BTC = 99000000;
   var mBTC = 100000;
@@ -92,7 +92,6 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
             settings: {},
             wallet: {
               get identity() {return core.getIdentity();},
-              deriveHDPrivateKey: Wallet.prototype.deriveHDPrivateKey,
               getWalletAddress: function() {return {index: [0,0], address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'};},
               wallet: {
                 outputs: {"8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'},
@@ -100,6 +99,9 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
               },
               pockets: {
                 hdPockets: hdPockets,
+                getAddressPocket: function() {
+                    return {deriveHDPrivateKey: HdPocket.prototype.deriveHDPrivateKey};
+                },
                 getPocket: function() {
                     return {
                         getChangeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}; },
