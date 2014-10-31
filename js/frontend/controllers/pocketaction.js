@@ -100,7 +100,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
                 var safe = DarkWallet.service.safe;
                 // get master private for the pockets since the mixer will need them
                 try {
-                    var privKey = identity.wallet.getPocketPrivate(pocket.index*2, password);
+                    var privKey = walletPocket.getMasterKey(0, password);
                 } catch(e) {
                     if ($scope.settings.advanced) {
                         notify.warning(_('Invalid password'), e.message || ""+e)
@@ -109,7 +109,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
                     }
                     return;
                 }
-                var changeKey = identity.wallet.getPocketPrivate((pocket.index*2)+1, password);
+                var changeKey = walletPocket.getMasterKey(1, password);
 
                 // Save some session passwords for the mixer
                 var pocketPassword = safe.set('mixer', 'pocket:'+pocket.index, password);

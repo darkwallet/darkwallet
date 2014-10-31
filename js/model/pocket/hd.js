@@ -148,5 +148,20 @@ HdPocket.prototype.getFreeAddress = function(change, label) {
     return walletAddress;
 };
 
+/****************
+ * Pocket specific functions
+ */
+
+/**
+ * Get the master private key for a pocket's branch (public or change)
+ */
+HdPocket.prototype.getMasterKey = function(change, password) {
+    var wallet = this.getMyWallet();
+    var data = wallet.store.getPrivateData(password);
+    var masterKey = Bitcoin.HDNode.fromBase58(data.privKey);
+    return masterKey.derive((this.getPocketId()*2)+change).toBase58(true);
+};
+
+
 return HdPocket;
 });

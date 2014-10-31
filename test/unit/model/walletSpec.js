@@ -282,13 +282,15 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
 
     it('gets a pocket private key', function() {
-      var priv = wallet.getPocketPrivate([0], 'p4ssw0rd');
+      var walletPocket = wallet.pockets.getPocket(0);
+      var priv = walletPocket.getMasterKey(0, 'p4ssw0rd');
 
       expect(priv).toBe("xprv9xJCM5XyE7ZVcYR7MEVPSXXG2pWNtoqKKNiAc54d9hYt1thwKHgbwCqF3tr3kwNVQzyRND5PojJHaDTT62iXfU67m91ZUdYzMqm7uKSjb6J");
     });
 
     it('gets a stealth private key', function() {
-      var masterKey = Bitcoin.HDNode.fromBase58(wallet.getPocketPrivate(0, 'p4ssw0rd'));
+      var walletPocket = wallet.pockets.getPocket(0);
+      var masterKey = Bitcoin.HDNode.fromBase58(walletPocket.getMasterKey(0, 'p4ssw0rd'));
 
       var ephemKey = [2, 41, 140, 192, 149, 205, 83, 114, 37, 106, 0, 164, 123, 46, 88, 38, 11, 252, 215, 149, 236, 188, 150, 165, 89, 64, 40, 218, 206, 26, 13, 49, 27];
       var stealth = wallet.deriveStealthPrivateKey([0, 's'].concat(ephemKey), masterKey, {privKeys: {}});

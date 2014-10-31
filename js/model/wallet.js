@@ -215,15 +215,6 @@ Wallet.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
 };
 
 /**
- * Get the master private key for a pocket
- */
-Wallet.prototype.getPocketPrivate = function(index, password) {
-    var data = this.store.getPrivateData(password);
-    var masterKey = Bitcoin.HDNode.fromBase58(data.privKey);
-    return masterKey.derive(index).toBase58(true);
-};
-
-/**
  * Get the private key for the given address index
  * @param {Array} seq Array for the bip32 sequence to retrieve address for
  * @param {String} password Password to encrypt the private data
