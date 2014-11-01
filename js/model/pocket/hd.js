@@ -182,7 +182,7 @@ HdPocket.prototype.getFreeAddress = function(change, label) {
     } while (walletAddress.nOutputs > 0);
 
     // This should have no type
-    if (walletAddress.type) {
+    if (walletAddress.type && walletAddress.type !== 'hd') {
        throw new Error("Generated an incorrect change address");
     }
     return walletAddress;
