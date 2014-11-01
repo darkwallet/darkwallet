@@ -107,7 +107,8 @@ define(['backend/port'], function(Port) {
             // prepare a requests for the worker
             identity.wallet.pockets.hdPockets.forEach(function(pocket, i) {
                 if (pocket) {
-                    var branchId = i*2;
+                    // From version five pocket id === main pocket branch id
+                    var branchId = (identity.store.get('version') > 4) ? i : i*2;
                     var request = {id: stealthJobIndex,
                                    type: 'stealth',
                                    pocketIndex: i,

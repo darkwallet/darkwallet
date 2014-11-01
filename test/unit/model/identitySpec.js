@@ -69,11 +69,18 @@ define(['model/identity'], function(Identity) {
     
     it('generates', function() { // private
       identity.generate('deba0a36765d68e54ba70f38ca9b63fb', 'p4ssw0rd');
+      expect(_store.scankeys[0].pub).toBe('xpub6CAanHj7Ah74red5SJ2zHL9weWnLcmXH4d9cC8qdmaoLzBBy1Y1d2CV495xGRxE2eAhxdCsPPNmeeEJh9nq4U18qMQWyv3hegY5AQRK74LJ');
+      expect(_store.scankeys[0].priv).toBe('xprv9yBENnCDLKYmeAYcLGVyvCDD6UwrDJoRhQE1PkS2DFGN7NrpTzhNUQAaHo5DBYZur3iQCxPTWzU97kuG5YbFJZKbr9jTE2C9xwSrpWt5rJ3');
+      expect(_store.idkeys[0].pub).toBe('xpub6CAanHj7Ah74vRc9KGJ5dbBMpMW6t5WewAKnqc2kmwYXGXrCrDZ7mQVecW9FcJLrnE4qMitdPNp1vfGkAXFMajhNKWHzteoV5aFqyLgPWR6');
+      expect(_store.idkeys[0].priv).toBe('xprv9yBENnCDLKYmhwXgDEm5GTEdGKfcUcnoZwQC3Dd9Dc1YPjX4JgEsDcBAmD82GoVTwoYZjVY6NdeUM9Aqpof83AgHBXUckSTMZYE3dz1XmrF');
+      expect(_store.mpk).toBe('xpub6BBXLyFMfg5GJBijJzLm8RsX8bDTbUSEh9Zd5iPdssA1qN8vYTjwZyPPZV3Hrip7wrHxmnuk94ThHcaUuFLzyeE9rGZ9u1UN84qiEhrFtCA');
+
+      /* v4
       expect(_store.scankeys[0].pub).toBe('xpub6BShZfzXJHmns5ySVJRbtfSUQ7F1yoW5JhSSieXk5TbUatLYvs6LzUPr7ucwmsAdkZpDENh8snvS6pMRAxGikQzCfiakdmHxH97wdcmRzdM');
       expect(_store.scankeys[0].priv).toBe('xprv9xTMAATdTvDVebtyPGtbXXVjr5QXaLnDwUWqvG88X84Vi61QPKn6Sg5NGe8bpTHcrXyERVQeYiVA8AkM4Xu28YcrvbSwXEt5kyGJQGgAdKX');
       expect(_store.idkeys[0].pub).toBe('xpub6BShZfzXJHmnv68RPbTKT1nCsCPtE2iBC6j3qCpfMYuy1KnnHJAhxqoCsPP2FVosrQJ4FEZPxSDdgR4vEDtwCULdwEANYwq7uDLqzK6UNuh');
       expect(_store.idkeys[0].priv).toBe('xprv9xTMAATdTvDVhc3xHZvK5sqUKAZPpZzKpsoT2pR3oDNz8XTdjkrTR3Uj26Rpy4CM46DDNb5Ae5Uf8ei1usbjK2qToDUFx97g8M2XduB7Cbe');
-      expect(_store.mpk).toBe('xpub67xpMzHwYtH8zxnfFWMRNuHd43bJYtjBjtTfWeubZq16h75DrnUtCZchBmwLZUTKvcYiyGL5LW6MiwjnLAx3kwpAkytrjSCyqvTtJMX8GNW');
+      expect(_store.mpk).toBe('xpub67xpMzHwYtH8zxnfFWMRNuHd43bJYtjBjtTfWeubZq16h75DrnUtCZchBmwLZUTKvcYiyGL5LW6MiwjnLAx3kwpAkytrjSCyqvTtJMX8GNW');*/
       expect(_store.pubkeys).toEqual({});
     });
   });

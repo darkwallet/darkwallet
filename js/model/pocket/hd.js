@@ -19,14 +19,18 @@ HdPocket.prototype = Object.create(BasePocket.prototype);
 
 // Pocket definition
 HdPocket.prototype.type = 'hd';
-HdPocket.prototype.types = [undefined, 'stealth'];
+HdPocket.prototype.types = [undefined, 'hd', 'pocket', 'stealth', 'oldstealth'];
 HdPocket.prototype.autoCreate = true;
 
 /**
  * Get the index for some address in this pocket
  */
-HdPocket.prototype.getIndex = function(walletAddress) {
-    return Math.floor(walletAddress.index[0]/2);
+HdPocket.prototype.getIndex = function(walletAddress, walletVersion) {
+    if ([undefined, 'oldstealth'].indexOf(walletAddress.type) > -1 || walletVersion < 5) {
+        return Math.floor(walletAddress.index[0]/2);
+    } else {
+        return walletAddress.index[0];
+    }
 };
 
 /**
@@ -38,7 +42,11 @@ HdPocket.prototype.getMainAddress = function() {
     if (index === -1) {
         throw new Error("Wrong hd pocket!");
     }
-    return wallet.getAddress([index*2]);
+    if (this.getMyWallet().store.get('version') > 4) {
+        return wallet.getAddress([index]);
+    } else {
+        return wallet.getAddress([index*2]);
+    }
 };
 
 /**
@@ -90,7 +98,7 @@ HdPocket.prototype.addPocketMetadata = function(walletAddress) {
     var wallet = this.getMyWallet();
     var seq = walletAddress.index;
     // Precalculate stealth address and mpk for pockets (only main branch)
-    if ((seq.length === 1) && (seq[0]%2 === 0)) {
+    if ((seq.length === 1) && (this.getMyWallet().store.get('version') > 4 || seq[0]%2 === 0)) {
         // Stealth, do this always in case it needs to be upgraded
         var scanKey = wallet.getScanKey(seq[0]);
         var stealthAddress = Stealth.formatAddress(scanKey.pub.toBytes(), [walletAddress.pubKey], wallet.versions.stealth.address);
@@ -118,7 +126,23 @@ HdPocket.prototype.createAddress = function(seq, label) {
     while(workSeq.length) {
         childKey = childKey.derive(workSeq.shift());
     }
-    var properties = label ? {'label': label} : null;
+    var properties = {};
+    var version = this.getMyWallet().store.get('version');
+    // set type
+    if (version > 4) {
+        // XXX should we do pocket with seq === 1 or seq === 2
+        var properties = { type: ((seq.length === 1) ? 'pocket' : 'hd') };
+    }
+    // set label
+    if (label) {
+        properties.label = label;
+    } else if (seq.length === 1) {
+        label = 'pocket';
+    } else if (version > 4 || seq[0] %2 === 1) {
+        label = 'change';
+    } else {
+        label = 'unused';
+    }
 
     // storePublicKey will call pocket.addToPocket, that will call addPocketMetadata
     var walletAddress = wallet.storePublicKey(seq, childKey.pubKey, properties);
@@ -131,13 +155,17 @@ HdPocket.prototype.createAddress = function(seq, label) {
 HdPocket.prototype.getFreeAddress = function(change, label) {
     var walletAddress;
     // normal address, get the address
-    var branchIndex = this.getPocketId()*2;
-    if (change) {
-        branchIndex += 1;
-    }
     var n = 0;
     do {
-        walletAddress = this.getMyWallet().getAddress([branchIndex, n], label);
+        if (this.getMyWallet().store.get('version') > 4) {
+            walletAddress = this.getMyWallet().getAddress([this.getPocketId(), change, n], label);
+        } else {
+            var branchIndex = this.getPocketId()*2;
+            if (change) {
+                branchIndex += 1;
+            }
+            walletAddress = this.getMyWallet().getAddress([branchIndex, n], label);
+        }
         n += 1;
     } while (walletAddress.nOutputs > 0);
 
@@ -180,7 +208,17 @@ HdPocket.prototype.getPrivateKey = function(walletAddress, password, keyStore, c
     var privKey;
     if (walletAddress.type === 'stealth') {
         privKey = this.deriveStealthPrivateKey(seq, masterKey, keyStore);
+    } else if (walletAddress.type === 'oldstealth') {
+        // TODO: This can be either new or old key...
+        masterKey = Bitcoin.HDNode.fromBase58(keyStore.oldPrivKey);
+        privKey = this.deriveStealthPrivateKey(seq, masterKey, keyStore);
+    } else if (['hd', 'pocket'].indexOf(walletAddress.type) > -1) {
+        privKey = this.deriveHDPrivateKey(seq, masterKey);
+        this.getMyWallet().storePrivateKey(seq, password, privKey);
     } else {
+        if (this.getMyWallet().store.get('version') > 4) {
+            masterKey = Bitcoin.HDNode.fromBase58(keyStore.oldPrivKey);
+        }
         privKey = this.deriveHDPrivateKey(seq, masterKey);
         this.getMyWallet().storePrivateKey(seq, password, privKey);
     }
@@ -199,7 +237,11 @@ HdPocket.prototype.getMasterKey = function(change, password) {
     var wallet = this.getMyWallet();
     var data = wallet.store.getPrivateData(password);
     var masterKey = Bitcoin.HDNode.fromBase58(data.privKey);
-    return masterKey.derive((this.getPocketId()*2)+change).toBase58(true);
+    if (this.getMyWallet().store.get('version') > 4) {
+        return masterKey.derive(this.getPocketId()).toBase58(true);
+    } else {
+        return masterKey.derive((this.getPocketId()*2)+change).toBase58(true);
+    }
 };
 
 

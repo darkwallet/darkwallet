@@ -153,7 +153,7 @@ Pockets.prototype.deletePocket = function(id, type) {
  * @return {Number|String} The pocket index
  */
 Pockets.prototype.getAddressPocketId = function(walletAddress) {
-    return this.addressTypes[walletAddress.type].getIndex(walletAddress);
+    return this.addressTypes[walletAddress.type].getIndex(walletAddress, this.wallet.store.get('version'));
 };
 
 /**
@@ -163,7 +163,7 @@ Pockets.prototype.getAddressPocketId = function(walletAddress) {
  */
 Pockets.prototype.getAddressPocket = function(walletAddress) {
     var type = this.getPocketType(walletAddress.type);
-    var id = this.addressTypes[walletAddress.type].getIndex(walletAddress);
+    var id = this.addressTypes[walletAddress.type].getIndex(walletAddress, this.wallet.store.get('version'));
     return this.getPocket(id, type);
 };
 

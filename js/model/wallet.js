@@ -58,9 +58,9 @@ Wallet.prototype.initIfEmpty = function() {
     // If empty generate two addresses and one change for each initial pocket
     if (!Object.keys(this.pubKeys).length) {
         this.pockets.hdPockets.forEach(function (pocket, i) {
-            self.getAddress([i*2,0]);
-            self.getAddress([i*2,1]);
-            self.getAddress([(i*2)+1,0]);
+            self.getAddress([i, 0, 0]);
+            self.getAddress([i, 0, 1]);
+            self.getAddress([i, 1, 0]);
         });
         self.store.save();
     }
@@ -227,13 +227,6 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
     var address = new Bitcoin.Address(pubKeyHash, this.versions.address);
 
     var label = 'unused';
-    if (seq.length === 1) {
-        label = 'pocket';
-    } else if (seq.length > 1 && (seq[0]%2 === 1)) {
-        label = 'change';
-    } else {
-        label = 'unused';
-    }
 
     var walletAddress = {
        'index': seq.slice(0),
