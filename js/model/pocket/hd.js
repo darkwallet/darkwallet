@@ -139,7 +139,7 @@ HdPocket.prototype.createAddress = function(seq, label) {
         childKey = childKey.derive(workSeq.shift());
     }
     var properties = {};
-    var version = this.getMyWallet().store.get('version');
+    var version = wallet.store.get('version');
     // set type
     if (version > 4) {
         // XXX should we do pocket with seq === 1 or seq === 2
@@ -150,7 +150,7 @@ HdPocket.prototype.createAddress = function(seq, label) {
         properties.label = label;
     } else if (seq.length === 1) {
         label = 'pocket';
-    } else if (version > 4 || seq[0] %2 === 1) {
+    } else if (version > 4 || (version < 5 && seq[0]%2) || (version > 4 && seq[1])) {
         label = 'change';
     } else {
         label = 'unused';
