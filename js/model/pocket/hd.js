@@ -252,9 +252,12 @@ HdPocket.prototype.getMasterKey = function(change, password) {
     var wallet = this.getMyWallet();
     var data = wallet.store.getPrivateData(password);
     var masterKey = Bitcoin.HDNode.fromBase58(data.privKey);
-    if (this.getMyWallet().store.get('version') > 4) {
-        return masterKey.derive(this.getPocketId()).toBase58(true);
+    if (wallet.store.get('version') > 4 && change === null) {
+        return masterKey.deriveHardened(this.getPocketId()).toBase58(true);
     } else {
+        if (wallet.store.get('version') > 4) {
+            masterKey = Bitcoin.HDNode.fromBase58(data.oldPrivKey);
+        }
         return masterKey.derive((this.getPocketId()*2)+change).toBase58(true);
     }
 };

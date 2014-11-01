@@ -39,13 +39,14 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
     var anyMixing = false;
     identity.wallet.pockets.hdPockets.forEach(function(pocket, i) {
       if (pocket && pocket.mixing) {
-        if (pocket.privKey || pocket.privChangeKey) {
+        if (pocket.privKey || pocket.oldPrivKey) {
             // do we still have access to the password?
             var password = safe.get('mixer', 'pocket:'+i);
             if (!password) {
                 console.log("[mixer] Disabling pocket because security context expired");
                 pocket.privKey = undefined;
-                pocket.privChangeKey = undefined;
+                pocket.oldPrivKey = undefined;
+                pocket.oldPrivChangeKey = undefined;
                 pocket.mixing = false;
             }
         }
@@ -434,8 +435,14 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
 
       // Load master keys for the pockets
       var pocket = identity.wallet.pockets.hdPockets[pocketIndex];
-      var masterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.privKey));
-      var changeKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.privChangeKey));
+      var masterKey, oldMasterKey, oldChangeKey;
+      if (pocket.privKey) {
+          masterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.privKey));
+      }
+      if (pocket.oldPrivKey) {
+          oldMasterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.oldPrivKey));
+          oldChangeKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.oldPrivChangeKey));
+      }
 
       // Iterate over tx inputs and load private keys
       var privKeys = {};
@@ -449,7 +456,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           var walletAddress = identity.wallet.getWalletAddress(output.address);
 
           // only normal addresses supported for now
-          if (!walletAddress || walletAddress.type) {
+          if (!walletAddress || ['stealth', 'hd', 'pocket', undefined].indexOf(walletAddress.type) === -1) {
               throw new Error("Invalid input in our join (bad address)");
           }
           // skip if we already got this key
@@ -463,12 +470,18 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           var change = walletAddress.index[0]%2 === 1;
           var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
           var seq = walletAddress.index.slice(0);
-          if (walletAddress.type === 'stealth') {
-              var pocketMaster = change?changeKey:masterKey;
+          if (walletAddress.type === 'stealth' && identity.store.get('version') > 4) {
               var scanKey = this.getMyWallet().getScanKey(seq[0]);
+              privKeys[seq] = Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), masterKey.privKey.toBytes()).toBytes();
+          } else if (walletAddress.type === 'oldstealth' || (walletAddress.type === 'stealth' && identity.store.get('version') < 5)) {
+              var pocketMaster = change?changeKey:masterKey;
+              // second parameter for getScanKey is so scankey will be different
+              var scanKey = this.getMyWallet().getScanKey(seq[0], true);
               privKeys[seq] = Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), pocketMaster.privKey.toBytes()).toBytes();
+          } else if (walletAddress.type === 'hd' || walletAddress.type === 'pocket') {
+              privKeys[seq] = pocket.deriveHDPrivateKey(seq.slice(1), masterKey).toBytes();
           } else {
-              privKeys[seq] = pocket.deriveHDPrivateKey(seq.slice(1), change?changeKey:masterKey).toBytes();
+              privKeys[seq] = pocket.deriveHDPrivateKey(seq.slice(1), change?oldChangeKey:oldMasterKey).toBytes();
           }
       }
       return privKeys;

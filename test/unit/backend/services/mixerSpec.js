@@ -62,6 +62,12 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
       core = {
         service: {
             wallet: {
+                store: {
+                  get: function() {
+                    // just return version
+                    return 4;
+                  }
+                },
                 fallbacks: [],
                 sendFallback: function(section, task) {core.service.wallet.fallbacks.push([section, task])},
                 broadcastTx: function(tx, task, cb) {broadcasted.push([tx, task, cb])}
@@ -78,6 +84,12 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
         },
         getCurrentIdentity: function() {
           return {
+            store: {
+              get: function() {
+                  // just return version
+                  return 4;
+              }
+            },
             tasks: {
               getTasks: function(section) { return tasks; }
             },
@@ -92,7 +104,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
             settings: {},
             wallet: {
               get identity() {return core.getIdentity();},
-              getWalletAddress: function() {return {index: [0,0], address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'};},
+              getWalletAddress: function() {return {index: [0,0], address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh', type: 'hd'};},
               wallet: {
                 outputs: {"8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'},
                           "217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}}
@@ -104,8 +116,8 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
                 },
                 getPocket: function() {
                     return {
-                        getChangeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}; },
-                        getFreeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}; }
+                        getChangeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh', type: 'hd'}; },
+                        getFreeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh', type: 'hd'}; }
                     }
                 }
               },

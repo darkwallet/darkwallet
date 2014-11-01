@@ -98,9 +98,16 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
         if (!walletPocket.mixing) {
             modals.password('Write the password for your pocket', function(password) {
                 var safe = DarkWallet.service.safe;
+                var version = identity.store.get('version');
                 // get master private for the pockets since the mixer will need them
+                var oldPrivKey, privKey, oldChangeKey;
                 try {
-                    var privKey = walletPocket.getMasterKey(0, password);
+                    // we get first the master key for new style, and the public branch key for old style
+                    if (version > 4) {
+                        privKey = walletPocket.getMasterKey(null, password);
+                    } else {
+                        oldPrivKey = walletPocket.getMasterKey(0, password);
+                    }
                 } catch(e) {
                     if ($scope.settings.advanced) {
                         notify.warning(_('Invalid password'), e.message || ""+e)
@@ -109,22 +116,34 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
                     }
                     return;
                 }
-                var changeKey = walletPocket.getMasterKey(1, password);
+                if (version < 5 || identity.wallet.oldMpk) {
+                    if (version > 4) {
+                        oldPrivKey = walletPocket.getMasterKey(0, password);
+                    }
+                    oldChangeKey = walletPocket.getMasterKey(1, password);
+                }
 
                 // Save some session passwords for the mixer
                 var pocketPassword = safe.set('mixer', 'pocket:'+pocket.index, password);
 
                 // Save the keys encrypted with the pocket
-                walletPocket.privKey = sjcl.encrypt(pocketPassword, privKey, {ks: 256, ts: 128});
-                walletPocket.privChangeKey = sjcl.encrypt(pocketPassword, changeKey, {ks: 256, ts: 128});
+                if (privKey) {
+                    walletPocket.privKey = sjcl.encrypt(pocketPassword, privKey, {ks: 256, ts: 128});
+                }
+
+                if (walletPocket.oldPrivKey) {
+                    walletPocket.oldPrivKey = sjcl.encrypt(pocketPassword, oldPrivKey, {ks: 256, ts: 128});
+                    walletPocket.oldPrivChangeKey = sjcl.encrypt(pocketPassword, oldChangeKey, {ks: 256, ts: 128});
+                }
 
                 // Finish setting the pocket mixing state
                 finishSetMixing();
             });
         } else {
             // Otherwise ensure we delete any private data from the pocket
+            walletPocket.oldPrivKey = undefined;
+            walletPocket.oldPrivChangeKey = undefined;
             walletPocket.privKey = undefined;
-            walletPocket.privChangeKey = undefined;
             finishSetMixing();
         }
     };

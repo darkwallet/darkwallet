@@ -16,10 +16,12 @@ function Wallet(store, identity) {
     this.fee = store.init('fee', Bitcoin.networks[this.network].feePerKb); // 0.1 mBTC
     this.pubKeys = store.init('pubkeys', {});
     this.scanKeys = store.init('scankeys', []);
+    this.oldScanKeys = store.get('old-scankeys');
     this.idKeys = store.init('idkeys', []);
     this.dust = Bitcoin.networks[this.network].dustThreshold;
 
     this.mpk = store.get('mpk');
+    this.oldMpk = store.get('old-mpk');
 
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
     this.multisig = new MultisigFunds(store, identity, this);
@@ -480,8 +482,14 @@ Wallet.prototype.processHistory = function(walletAddress, history, initial) {
  * @param {Number} n key index
  * @return {Object} The scanning key
  */
-Wallet.prototype.getScanKey = function(n) {
-    var scanMaster = this.scanKeys[0];
+Wallet.prototype.getScanKey = function(n, oldStyle) {
+    var scanMaster;
+    if (this.store.get('version') > 4 && oldStyle) {
+        // old stealth address on a new identity
+        scanMaster = this.oldScanKeys[0];
+    } else {
+        scanMaster = this.scanKeys[0];
+    }
     var scanMasterKey = Bitcoin.HDNode.fromBase58(scanMaster.priv);
     var childKey = scanMasterKey.derive(n);
     return childKey.privKey;
