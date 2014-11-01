@@ -24,9 +24,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'crypto-js'], function (contr
       };
       
       $scope.close = function() {
-        DarkWallet.service.content.highlightPreviousTab(function() {
           $window.close();
-        });
       };
       
       
