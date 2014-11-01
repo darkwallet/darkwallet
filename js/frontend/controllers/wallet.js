@@ -117,6 +117,10 @@ function (controllers, DarkWallet, Port) {
 
   });
 
+  $scope.clearAlert = function() {
+      $scope.alert = false;
+  };
+
   /**
    * Identity loaded, called when a new identity is loaded
    */
@@ -127,6 +131,8 @@ function (controllers, DarkWallet, Port) {
 
       if (identity.reseed) {
           $scope.alert = 'reseed';
+      } else {
+          $scope.alert = false;
       }
       $scope.status = DarkWallet.core.servicesStatus;
 
