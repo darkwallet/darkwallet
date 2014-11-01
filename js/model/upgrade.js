@@ -9,6 +9,80 @@ var DW_NS = 'dw:identity:';
 
 function Upgrade4To5(store, identity, password) {
     return false;
+    // 1. adapt private keys
+    var privData = identity.store.getPrivateData(password);
+    var oldPrivKey = privData.privKey;
+    var oldPrivKeys = privData.privKeys;
+    var oldScanKeys = identity.store.get('scankeys');
+    var oldIdKeys = identity.store.get('idkeys');
+    var oldMpk = identity.store.get('mpk');
+
+    identity.store.set('old-mpk', oldMpk);
+    identity.store.set('old-idkeys', oldIdKeys);
+    identity.store.set('old-scankeys', oldScanKeys);
+
+    // generate completely overwrites the private data, calls store.save()
+    identity.generate(privData.seed, password, identity.wallet.network);
+
+    // get private data again to add the old key
+    privData = identity.store.getPrivateData(password);
+    privData.oldPrivKey = oldPrivKey;
+    privData.privKeys = oldPrivKeys;
+
+    // save the updated private data
+    identity.store.setPrivateData(privData, password);
+
+    // update identity
+    identity.wallet.mpk = identity.store.get('mpk');
+    identity.wallet.oldMpk = identity.store.get('old-mpk');
+    identity.wallet.scanKeys = identity.store.get('scankeys');
+    identity.wallet.idKeys = identity.store.get('idkeys');
+    identity.wallet.oldScanKeys = identity.store.get('old-scankeys');
+
+    // set version so we can start creating new addresses
+    identity.store.set('version', 5)
+
+    // 2. upgrade the pocket addresses (index with length 1)
+    // ... user should not have funds in any pocket address since they will be deleted
+    Object.keys(identity.pubKeys).forEach(function(index) {
+        var walletAddress = identity.pubKeys[index];
+        index = walletAddress.index;
+        if (index.length === 1 && walletAddress.type === undefined) {
+            var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
+            // first remove the old address
+            pocket.removeAddress(walletAddress);
+            // and now create a new one
+            if (index[0]%2 === 0) {
+                pocket.createAddress([index[0]/2]);
+            }
+        }
+        // also set all stealth as oldstealth
+        if (walletAddress.type === 'stealth') {
+            walletAddress.type = 'oldstealth';
+        }
+    });
+
+    // 3. clean up old unused addresses
+    Object.keys(identity.pubKeys).forEach(function(index) {
+        var walletAddress = identity.pubKeys[index];
+        if (index.length > 1 && walletAddress.type === undefined) {
+            if (walletAddress.nOutputs === 0 && ['unused', 'pocket', 'change'].indexOf(walletAddress.label) > -1) {
+                var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
+                // remove it
+                try {
+                    pocket.removeAddress(walletAddress);
+                } catch (e) {
+                    console.log("error removing address", walletAddress);
+                }
+            }
+        }
+    });
+
+    // 4. should create some new addresses?
+
+    // 5. perform other long running cleanings
+
+    return true;
 }
 
 /**
