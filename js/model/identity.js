@@ -111,7 +111,10 @@ Identity.prototype.generate = function(seed, password, network) {
     this.store.set('mpks', [rootKey.deriveHardened(0).toBase58(false), rootKey.deriveHardened(1).toBase58(false), rootKey.deriveHardened(2).toBase58(false)]);
 
     this.store.set('mpk', pubKey);
-    this.store.set('pubkeys', {});
+    // don't overwrite if reseeding
+    if (!this.store.get('pubkeys')) {
+        this.store.set('pubkeys', {});
+    }
     this.store.save();
 };
 
