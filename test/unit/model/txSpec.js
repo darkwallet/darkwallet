@@ -26,6 +26,7 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
 
       // Store
       _store = {
+        mpks: ['mpk1', 'mpk2', 'mpk3'],
         mpk: 'xpub693Ab9Kv7vQjSJ9fZLKAWjqPUEjSyM7LidCCZW8wGosvZKi3Pf2ijiGe1MDTBmQnpXU795HNb4ebuW95tbLNuAzXndALZpRkRaRCbXDhafA',
         pubkeys: {
           "0": {

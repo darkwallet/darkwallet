@@ -81,10 +81,10 @@ Identity.prototype.generate = function(seed, password, network) {
     var key = Bitcoin.HDNode.fromSeedHex(seed, Bitcoin.networks[network]);
     var netId = (network==='bitcoin') ? 0 : 1;
     // m / purpose' / coin_type'
-    var identityKey = key.deriveHardened(44).deriveHardened(netId);
+    var rootKey = key.deriveHardened(44).deriveHardened(netId);
 
-    var pubKey = identityKey.toBase58(false);
-    var privKey = identityKey.toBase58(true);
+    var pubKey = rootKey.toBase58(false);
+    var privKey = rootKey.toBase58(true);
 
     var hardKey = key.deriveHardened(88).deriveHardened(netId);
     // Initialize the scan public key here for now...
@@ -106,6 +106,9 @@ Identity.prototype.generate = function(seed, password, network) {
     // they won't compromise the rest of the wallet.
     this.store.set('scankeys', [{pub: scanPubKey, priv: scanPrivKey}]);
     this.store.set('idkeys', [{pub: idPubKey, priv: idPrivKey}]);
+
+    // save some mpks for the pockets
+    this.store.set('mpks', [rootKey.deriveHardened(0).toBase58(false), rootKey.deriveHardened(1).toBase58(false), rootKey.deriveHardened(2).toBase58(false)]);
 
     this.store.set('mpk', pubKey);
     this.store.set('pubkeys', {});
