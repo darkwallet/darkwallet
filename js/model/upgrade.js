@@ -8,7 +8,6 @@ define(['util/btc'], function(BtcUtils) {
 var DW_NS = 'dw:identity:';
 
 function Upgrade4To5(store, identity, password) {
-    return false;
     // 1. adapt private keys
     var privData = identity.store.getPrivateData(password);
     var oldPrivKey = privData.privKey;
@@ -38,14 +37,16 @@ function Upgrade4To5(store, identity, password) {
     identity.wallet.scanKeys = identity.store.get('scankeys');
     identity.wallet.idKeys = identity.store.get('idkeys');
     identity.wallet.oldScanKeys = identity.store.get('old-scankeys');
+    identity.reseed = false;
 
     // set version so we can start creating new addresses
-    identity.store.set('version', 5)
+    identity.store.set('reseed', false);
+    identity.store.set('version', 5);
 
     // 2. upgrade the pocket addresses (index with length 1)
     // ... user should not have funds in any pocket address since they will be deleted
-    Object.keys(identity.pubKeys).forEach(function(index) {
-        var walletAddress = identity.pubKeys[index];
+    Object.keys(identity.wallet.pubKeys).forEach(function(index) {
+        var walletAddress = identity.wallet.pubKeys[index];
         index = walletAddress.index;
         if (index.length === 1 && walletAddress.type === undefined) {
             var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
@@ -63,8 +64,9 @@ function Upgrade4To5(store, identity, password) {
     });
 
     // 3. clean up old unused addresses
-    Object.keys(identity.pubKeys).forEach(function(index) {
-        var walletAddress = identity.pubKeys[index];
+    Object.keys(identity.wallet.pubKeys).forEach(function(index) {
+        var walletAddress = identity.wallet.pubKeys[index];
+        index = walletAddress.index;
         if (index.length > 1 && walletAddress.type === undefined) {
             if (walletAddress.nOutputs === 0 && ['unused', 'pocket', 'change'].indexOf(walletAddress.label) > -1) {
                 var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
@@ -81,6 +83,24 @@ function Upgrade4To5(store, identity, password) {
     // 4. should create some new addresses?
 
     // 5. perform other long running cleanings
+
+    Object.keys(identity.wallet.pubKeys).forEach(function(index) {
+        var walletAddress = identity.wallet.pubKeys[index];
+        // Cleanup if malformed
+        if (!walletAddress){
+            console.log("delete empty address", index);
+            delete identity.wallet.pubKeys[index];
+            return;
+        }
+        // Reindex // delete badly indexed
+        if (walletAddress.type === 'readonly' && walletAddress.index[0] === index) {
+            delete identity.wallet.pubKeys[index];
+            if (!identity.wallet.pubKeys[walletAddress.index]) {
+                // if it doesnt exist, relink it
+                identity.wallet.pubKeys[walletAddress.index.slice(0)] = walletAddress;
+            }
+        }
+    });
 
     return true;
 }

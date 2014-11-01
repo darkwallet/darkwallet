@@ -28,6 +28,52 @@ define(['model/upgrade'], function(Upgrade) {
       expect(store.reseed).toBe(true);
     });
 
+    it('reseeds from 4 to 5', function() {
+      var privData = {
+          privKey: 'somekey',
+          privKeys: 'bar',
+          seed: 'aaaaabbbbbbccccccc',
+      };
+      var identity = {
+          generate: function() {
+              privData.privKey = 'newkey';
+              identity.store.store.mpk = 'newmpk';
+          },
+          wallet: {
+              pubKeys: [],
+          },
+          store: {
+              get: function(name) { return this.store[name]; },
+              set: function(name, val) { this.store[name] = val; },
+              getPrivateData: function(pass) {return privData; },
+              setPrivateData: function(data, pass) {privData=data; },
+              store: {version: 4, mpk: 'somempk'}
+          }
+      }
+      // set version and trigger reseed request
+      store.version = 4;
+      var res = Upgrade(identity.store.store);
+      expect(identity.store.store.reseed).toBe(true);
+
+      // reseed
+      var res = Upgrade(identity.store.store, identity, 'pass');
+      expect(res).toBe(true);
+
+      // check private data
+      var newData = identity.store.getPrivateData();
+      expect(newData.privKey).toBe('newkey');
+      expect(newData.oldPrivKey).toBe('somekey');
+      expect(newData.privKeys).toBe(privData.privKeys);
+
+      // check identity
+      expect(identity.store.store['old-mpk']).toBe('somempk');
+      expect(identity.store.store['mpk']).toBe('newmpk');
+      expect(identity.store.store.reseed).toBe(false);
+      expect(identity.reseed).toBe(false);
+      expect(identity.wallet.mpk).toBe('newmpk');
+      expect(identity.wallet.oldMpk).toBe('somempk');
+    });
+
 
     it('runs with no mpk', function() {
       store.mpk = undefined;
