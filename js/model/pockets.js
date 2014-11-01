@@ -51,7 +51,8 @@ Pockets.prototype.registerType = function(pocketType) {
  * @private
  */
 Pockets.prototype.initPockets = function(store) {
-    this.hdPockets = store.init('pockets', [{name:'spending'}, {name: 'business'}, {name: 'savings'}]);
+    var mpks = store.get('mpks') || ((store.get('version') < 5) ? [] : null);
+    this.hdPockets = store.init('pockets', [{name:'spending', mpk: mpks[0]}, {name: 'business', mpk: mpks[1]}, {name: 'savings', mpk: mpks[2]}]);
 
     // Init pocket wallets (temporary cache for pockets)
     this.pockets = { 'hd': {}, 'multisig': {}, 'readonly': {} };
@@ -67,12 +68,25 @@ Pockets.prototype.initPockets = function(store) {
  * Create pocket with the given name
  * @param {String} name Name for the new pocket
  */
-Pockets.prototype.createPocket = function(name) {
+Pockets.prototype.createPocket = function(name, password) {
     // Raise exception if name exists
     if (this.search('hd', {'name': name})) {
         throw new Error("Pocket with that name already exists!");
     }
     var pocketStore = {'name': name};
+
+    // initialize mpk
+    if (this.wallet.store.get('version') > 4) {
+        var mpks = this.wallet.store.get('mpks');
+        if (!mpks[this.hdPockets.length]) {
+            var keyStore = this.wallet.store.getPrivateData(password);
+            var rootKey = Bitcoin.HDNode.fromBase58(keyStore.privKey);
+            mpks[this.hdPockets.length] = rootKey.deriveHardened(this.hdPockets.length).toBase58(false);
+        }
+        pocketStore.mpk = mpks[this.hdPockets.length];
+    }
+
+    // add the pocket
     this.hdPockets.push(pocketStore);
     this.initPocketWallet(this.hdPockets.length-1, 'hd', pocketStore);
     this.store.save();
