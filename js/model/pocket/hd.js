@@ -150,7 +150,7 @@ HdPocket.prototype.createAddress = function(seq, label) {
         properties.label = label;
     } else if (seq.length === 1) {
         label = 'pocket';
-    } else if (version > 4 || (version < 5 && seq[0]%2) || (version > 4 && seq[1])) {
+    } else if ((version < 5 && seq[0]%2) || (version > 4 && seq[1])) {
         label = 'change';
     } else {
         label = 'unused';

@@ -274,7 +274,12 @@ Wallet.prototype.getAddress = function(seq, label) {
         return this.pubKeys[seq];
     }
     else {
-        var pocket = this.pockets.getPocket(Math.floor(seq[0]/2), 'hd');
+        var pocket;
+        if (this.store.get('version') > 4) {
+            pocket = this.pockets.getPocket(seq[0], 'hd');
+        } else {
+            pocket = this.pockets.getPocket(Math.floor(seq[0]/2), 'hd');
+        }
         return pocket.createAddress(seq, label);
     }
 };
