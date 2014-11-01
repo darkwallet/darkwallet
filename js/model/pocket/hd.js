@@ -201,9 +201,9 @@ HdPocket.prototype.deriveHDPrivateKey = function(seq, masterKey) {
     return key.privKey;
 };
 
-HdPocket.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore) {
+HdPocket.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore, old) {
     var spendKey;
-    var scanKey = this.getMyWallet().getScanKey(seq[0]);
+    var scanKey = this.getMyWallet().getScanKey(seq[0], old);
     var privData = keyStore.privKeys[seq.slice(0,1)];
     if (privData) {
         spendKey = Bitcoin.ECKey.fromBytes(privData, true);
@@ -223,9 +223,8 @@ HdPocket.prototype.getPrivateKey = function(walletAddress, password, keyStore, c
     if (walletAddress.type === 'stealth') {
         privKey = this.deriveStealthPrivateKey(seq, masterKey, keyStore);
     } else if (walletAddress.type === 'oldstealth') {
-        // TODO: This can be either new or old key...
         masterKey = Bitcoin.HDNode.fromBase58(keyStore.oldPrivKey);
-        privKey = this.deriveStealthPrivateKey(seq, masterKey, keyStore);
+        privKey = this.deriveStealthPrivateKey(seq, masterKey, keyStore, true);
     } else if (['hd', 'pocket'].indexOf(walletAddress.type) > -1) {
         masterKey = masterKey.deriveHardened(seq[0]);
         privKey = this.deriveHDPrivateKey(seq.slice(1), masterKey);
