@@ -7,6 +7,10 @@ define(['util/btc'], function(BtcUtils) {
 // DarkWallet namespace for the local storage.
 var DW_NS = 'dw:identity:';
 
+function Upgrade4To5(store, identity, password) {
+    return false;
+}
+
 /**
  * Upgrade version 3 to version 4
  */
@@ -99,12 +103,12 @@ function Upgrade1To2(store) {
  * Upgrade a given store
  * @return true of false if the store was changed and should be saved
  */
-function Upgrade(store) {
-    if (store.version == 4) {
+function Upgrade(store, identity, password) {
+    if (store.version == 5) {
         return false;
     }
 
-    console.log("[upgrade] Upgrading to version 3")
+    console.log("[upgrade] Upgrading to version 5")
 
     // 0 to 1
     if (!store.version) {
@@ -124,6 +128,17 @@ function Upgrade(store) {
     if ((store.version == 3) && Upgrade3To4(store)) {
         store.version = 4;
         console.log("[upgrade] Upgraded to version 4")
+    }
+    if (store.version == 4) {
+        if (identity) {
+            // Upgrade of 4 to 5 needs reseeding with live identity and password
+            if (Upgrade4To5(store, identity, password)) {
+                store.version = 5
+                console.log("[upgrade] Upgraded to version 5")
+            }
+        } else {
+            store.reseed = true;
+        }
     }
     return true;
 }

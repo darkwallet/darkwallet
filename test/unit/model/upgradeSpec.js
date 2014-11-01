@@ -16,10 +16,18 @@ define(['model/upgrade'], function(Upgrade) {
     });
 
     it('checks for no upgrade', function() {
-      store.version = 4;
+      store.version = 5;
       var res = Upgrade(store);
       expect(res).toBe(false);
     });
+
+    it('checks for reseed from 4 to 5', function() {
+      store.version = 4;
+      var res = Upgrade(store);
+      expect(res).toBe(true);
+      expect(store.reseed).toBe(true);
+    });
+
 
     it('runs with no mpk', function() {
       store.mpk = undefined;

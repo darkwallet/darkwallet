@@ -16,6 +16,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       Wallet.prototype.initIfEmpty = function() {};
       // Store
       _store = {
+        version: 4,
         mpk: 'xpub693Ab9Kv7vQjSJ9fZLKAWjqPUEjSyM7LidCCZW8wGosvZKi3Pf2ijiGe1MDTBmQnpXU795HNb4ebuW95tbLNuAzXndALZpRkRaRCbXDhafA',
         pubkeys: {
           "0": {
@@ -121,11 +122,10 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
 
     it('creates an empty wallet correctly', function() {
-      _store = {mpk: _store.mpk};
       Wallet.prototype.initIfEmpty = initIfEmpty;
       var myWallet = new Wallet(identity.store, identity);
       expect(Object.keys(myWallet.pubKeys).length).toBe(9);
-      expect(Object.keys(myWallet.pubKeys)).toEqual(['0,0', '0,1', '1,0', '2,0', '2,1', '3,0', '4,0', '4,1', '5,0']);
+      expect(Object.keys(myWallet.pubKeys)).toEqual(['0,0,0', '0,0,1', '0,1,0', '1,0,0', '1,0,1', '1,1,0', '2,0,0', '2,0,1', '2,1,0']);
     });
 
     it('is created properly', function() {
@@ -144,7 +144,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       expect(wallet.wallet).toBeDefined();
       expect(wallet.multisig).toBeDefined();
 
-      _store = {};
+      _store = {version: 4};
       _private = {};
       wallet = new Wallet(identity.store, identity);
       expect(wallet.identity).toBe(identity);
@@ -217,6 +217,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
     
     it('get pocket index for an address', function() {
+      _store.version = 4;
       expect(wallet.pockets.getAddressPocketId({index: [0]})).toBe(0);
       expect(wallet.pockets.getAddressPocketId({index: [1]})).toBe(0);
       expect(wallet.pockets.getAddressPocketId({index: [2]})).toBe(1);
@@ -231,10 +232,32 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       expect(wallet.pockets.getAddressPocketId({index: ['hi'], type: 'multisig'})).toBe('hi');
       expect(wallet.pockets.getAddressPocketId({index: ['32...'], type: 'multisig'})).toBe('32...');
       expect(wallet.pockets.getAddressPocketId({index: [3], type: 'multisig'})).toBe(3);
+
+      _store.version = 5;
+      expect(wallet.pockets.getAddressPocketId({index: [0]})).toBe(0);
+      expect(wallet.pockets.getAddressPocketId({index: [1]})).toBe(0);
+      expect(wallet.pockets.getAddressPocketId({index: [2]})).toBe(1);
+      expect(wallet.pockets.getAddressPocketId({index: [3]})).toBe(1);
+
+       expect(wallet.pockets.getAddressPocketId({index: [0], type: 'hd'})).toBe(0);
+      expect(wallet.pockets.getAddressPocketId({index: [1], type: 'pocket'})).toBe(1);
+      expect(wallet.pockets.getAddressPocketId({index: [2], type: 'hd'})).toBe(2);
+      expect(wallet.pockets.getAddressPocketId({index: [3], type: 'pocket'})).toBe(3);
+      
+      expect(wallet.pockets.getAddressPocketId({index: [0], type: 'stealth'})).toBe(0);
+      expect(wallet.pockets.getAddressPocketId({index: [1], type: 'stealth'})).toBe(1);
+      expect(wallet.pockets.getAddressPocketId({index: [2], type: 'stealth'})).toBe(2);
+      expect(wallet.pockets.getAddressPocketId({index: [3], type: 'stealth'})).toBe(3);
+      
+      expect(wallet.pockets.getAddressPocketId({index: [0], type: 'multisig'})).toBe(0);
+      expect(wallet.pockets.getAddressPocketId({index: ['hi'], type: 'multisig'})).toBe('hi');
+      expect(wallet.pockets.getAddressPocketId({index: ['32...'], type: 'multisig'})).toBe('32...');
+      expect(wallet.pockets.getAddressPocketId({index: [3], type: 'multisig'})).toBe(3);
+
     });
     
     it('adds an address to a pocket', function() {
-      _store = {};
+      _store = {version: 4};
       _private = {};
       wallet = new Wallet(identity.store, identity);
       
@@ -247,7 +270,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
     
     it('adds an addres to itself', function() {
-      _store = {};
+      _store = {version: 4};
       _private = {};
       wallet = new Wallet(identity.store, identity);
       
@@ -308,7 +331,7 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     });
  
     it('stores private key', function() {
-      _store = {};
+      _store = {version: 4};
       _private = {privKeys: {}};
       wallet = new Wallet(identity.store, identity);
       
@@ -337,12 +360,12 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
       
       // change
       walletAddress = wallet.storePublicKey([1,6], key);
-      expect(walletAddress.label).toEqual('change');
+      expect(walletAddress.label).toEqual('unused');
       expect(walletAddress.stealth).toBeUndefined();
       
       // pocket
       walletAddress = wallet.storePublicKey([0], key);
-      expect(walletAddress.label).toEqual('pocket');
+      expect(walletAddress.label).toEqual('unused');
       expect(walletAddress.stealth).toBe('vJmyLmVSTiTQYdMnXGe1SasS5sbkUMEqNqbkCFdFWWB1NxvyxGN4Ku9D2mxy9VA9KGXuFNpz8idDrtpAGPeu5qzWbgHmrmdDAKnYZH');
     });
     
