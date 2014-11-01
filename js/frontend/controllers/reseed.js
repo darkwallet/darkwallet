@@ -7,6 +7,7 @@ define(['./module', 'darkwallet', 'model/upgrade'], function (controllers, DarkW
         modals.password('Write your password to reseed', function(password) {
             if (Upgrade(identity.store.store, identity, password)) {
                 if (identity.store.get('version') === 5) {
+                    identity.store.save();
                     notify.warning('Reseed successfull ' + identity.store.get('version'));
                 } else {
                     notify.warning('Could not finish reseeding');
