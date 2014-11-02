@@ -471,12 +471,12 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
           var seq = walletAddress.index.slice(0);
           if (walletAddress.type === 'stealth' && identity.store.get('version') > 4) {
-              var scanKey = this.getMyWallet().getScanKey(seq[0]);
+              var scanKey = identity.wallet.getScanKey(seq[0]);
               privKeys[seq] = Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), masterKey.privKey.toBytes()).toBytes();
           } else if (walletAddress.type === 'oldstealth' || (walletAddress.type === 'stealth' && identity.store.get('version') < 5)) {
               var pocketMaster = change?oldChangeKey:oldMasterKey;
               // second parameter for getScanKey is so scankey will be different
-              var scanKey = this.getMyWallet().getScanKey(seq[0], true);
+              var scanKey = identity.wallet.getScanKey(seq[0], true);
               privKeys[seq] = Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), pocketMaster.privKey.toBytes()).toBytes();
           } else if (walletAddress.type === 'hd' || walletAddress.type === 'pocket') {
               privKeys[seq] = pocket.deriveHDPrivateKey(seq.slice(1), masterKey).toBytes();
