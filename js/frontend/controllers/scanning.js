@@ -26,21 +26,44 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
   };
 
   // Create addresses for the given results
-  var createAddresses = function(results, pocketAddressesUsed) {
+  var createAddresses = function(results, pocketAddressesUsed, password) {
+      var keyStore, rootKey, mpks, oldStyle=true;
       var identity = DarkWallet.getIdentity();
+      var version = identity.store.get('version');
+      if (version > 4 && !$scope.scanParams.scanOld) {
+          keyStore = identity.store.getPrivateData(password);
+          rootKey = Bitcoin.HDNode.fromBase58(keyStore.privKey);
+          mpks = identity.store.get('mpks');
+          oldStyle = false;
+      }
       var pockets = identity.wallet.pockets;
       var maxIndex = {};
+
       // Initialize pockets and check last index for each pocket
       results.forEach(function(seq) {
-          var pocketIndex = Math.floor(seq[0]/2);
-          if (!maxIndex.hasOwnProperty(seq[0])) {
-              maxIndex[seq[0]] = seq[1]||0;
+          // get indexes depending on new or old style scanning
+          var pocketIndex =  oldStyle ? Math.floor(seq[0]/2) : seq[0];
+          var branchId = oldStyle ? seq[0] : (seq[0]*2)+seq[1];
+          var addrIndex = oldStyle ? seq[1] : seq[2];
+
+          // Set the maximum index used for the pocket
+          if (!maxIndex.hasOwnProperty(branchId)) {
+              maxIndex[branchId] = addrIndex||0;
           } else {
-              maxIndex[seq[0]] = Math.max(seq[1]||0, maxIndex[seq[0]]);
+              maxIndex[branchId] = Math.max(addrIndex||0, maxIndex[branchId]);
           }
+          // Initialize the pocket if it doesn't exist
           if (!pockets.hdPockets[pocketIndex]) {
               // Manual initialization of specific pocket
               pockets.hdPockets[pocketIndex] = {name: "Pocket " + pocketIndex};
+              if (!oldStyle) {
+                  // Set pocket mpk for new pockets
+                  if (!mpks[pocketIndex]) {
+                      mpks[pocketIndex] = rootKey.deriveHardened(pocketIndex).toBase58(false);
+                  }
+                  pockets.hdPockets[pocketIndex].mpk = mpks[pocketIndex];
+              }
+              // Create the pocket
               pockets.initPocketWallet(pocketIndex, 'hd', pockets.hdPockets[pocketIndex]);
           }
       });
@@ -54,9 +77,9 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       Object.keys(maxIndex).forEach(function(branchId) {
           var pocketIndex = Math.floor(branchId/2);
           for(var i=0; i<=maxIndex[branchId]; i++) {
-              var seq = [branchId, i];
+              var seq = oldStyle ? [branchId, i] : [pocketIndex, branchId%2, i];
               if (!identity.wallet.pubKeys[seq]) {
-                  $wallet.generateAddress(seq[0], seq[1]);
+                  $wallet.generateAddress(pocketIndex, i, branchId%2);
               } else {
                   console.log("Already exists!");
               }
@@ -75,14 +98,14 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
   };
 
   // Scan finished callback
-  var onScanFinish = function(err, results, pocketAddressesUsed) {
+  var onScanFinish = function(err, results, pocketAddressesUsed, password) {
       if (err) {
           notify.error(_('Scanning'), err.message || ""+err);
       } else {
           $scope.scanning = false;
           $scope.scanStatus = $scope.scanner.status;
           $scope.scanner = undefined;
-          createAddresses(results, pocketAddressesUsed);
+          createAddresses(results, pocketAddressesUsed, password);
 
           notify.success(_('Scanning'), _('Finished. Found {0} addresses', results.length));
       }
@@ -99,7 +122,8 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
            scanMaster = $scope.scanParams.scanMaster;
       }
       var scanner = new Scanner(client, identity, masterKey,
-                                onScanFinish, onScanUpdate, scanMaster);
+                                function (par1, par2, par3) { onScanFinish(par1, par2, par3, password); },
+                                onScanUpdate, scanMaster);
 
       scanner.setMargins(parseInt($scope.scanParams.pockets||5),
                              parseInt($scope.scanParams.addresses||10));

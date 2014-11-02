@@ -64,12 +64,13 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
    * @param {Integer} n
    * @returns {Object} Wallet address struct
    */
-  WalletProvider.prototype.generateAddress = function(pocketId, n) {
+  WalletProvider.prototype.generateAddress = function(pocketId, n, change) {
+      change = change || 0;
       var identity = DarkWallet.getIdentity();
       if (!pocketId) {
           pocketId = 0;
       }
-      var branchId = pocketId*2;
+      var branchId = (pocketId*2)+change;
       if (!this.addresses[branchId]) {
           this.addresses[branchId] = [];
       }
