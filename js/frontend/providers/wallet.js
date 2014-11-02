@@ -89,7 +89,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       }
       var seq;
       if (identity.store.get('version') > 4) {
-          seq = [pocketId, 0, n];
+          seq = [pocketId, change, n];
       } else {
           seq = [branchId, n];
       }
