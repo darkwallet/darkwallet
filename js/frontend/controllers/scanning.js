@@ -143,7 +143,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       var client = DarkWallet.getClient();
       if (client) {
           var identity = DarkWallet.getIdentity();
-          if (identity.store.get('version') > 4 && !scope.scanParams.scanOld) {
+          if (identity.store.get('version') > 4 && !$scope.scanParams.scanOld) {
               modals.password(_('Write your password for scanning'), function(password) {
                   runScanner(client, identity, password);
               });
