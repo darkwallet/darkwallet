@@ -3,11 +3,13 @@
 define(['bitcoinjs-lib'], function(Bitcoin) {
 
   // Address scanner
-  function Scanner(client, identity, finishCb, updateCb, scanMain) {
+  function Scanner(client, identity, masterKey, finishCb, updateCb, scanMain) {
       this.network = identity.wallet.network;
       this.client = client;
+      this.masterKey = masterKey ? Bitcoin.HDNode.fromBase58(masterKey) : false;
+      this.oldStyle = !this.masterKey;
 
-      var mpk = identity.wallet.mpk;
+      var mpk = (this.oldStyle && identity.store.get('version') > 4) ? identity.wallet.oldMpk : identity.wallet.mpk;
       this.mpKey = Bitcoin.HDNode.fromBase58(mpk);
 
       this.scanMain = scanMain;
@@ -37,7 +39,12 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       if (this.pocketCache.hasOwnProperty(pocket)) {
           childKey = this.pocketCache[pocket];
       } else {
-          childKey = childKey.derive(pocket);
+          if (this.oldStyle) {
+              childKey = childKey.derive(pocket);
+          } else {
+              childKey = this.masterKey.deriveHardened(Math.floor(pocket/2));
+              childKey = childKey.derive(pocket%2);
+          }
           this.pocketCache[pocket] = childKey;
       }
       // Derive address key (-1 means master)
@@ -83,13 +90,15 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
           if (seq.length == 1) {
               this.pocketAddressesUsed += 1;
           }
-          if (seq[0]+1 > this.lastPocketUsed) {
-              this.target += ((seq[0]+1)-this.lastPocketUsed)*this.addressMargin;
-              this.lastPocketUsed = seq[0] + 1;
+          var pocketIdx = this.oldStyle ? seq[0] : (seq[0]*2)+seq[1];
+          if (pocketIdx+1 > this.lastPocketUsed) {
+              this.target += ((pocketIdx+1)-this.lastPocketUsed)*this.addressMargin;
+              this.lastPocketUsed = pocketIdx + 1;
           }
-          if (seq[1] + 1 > this.lastAddressUsed[seq[0]]) {
-              this.target += ((seq[1]+1)-this.lastAddressUsed[seq[0]]);
-              this.lastAddressUsed[seq[0]] = seq[1] + 1;
+          var addressIdx = this.oldStyle ? seq[1] : seq[2];
+          if (addressIdx + 1 > this.lastAddressUsed[pocketIdx]) {
+              this.target += (addressIdx+1-this.lastAddressUsed[pocketIdx]);
+              this.lastAddressUsed[pocketIdx] = addressIdx + 1;
           }
       }
       this.scanNext();
@@ -102,7 +111,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
 
   Scanner.prototype.scan = function() {
       var self = this;
-      var seq = [this.currentPocket];
+      var seq = this.oldStyle ? [this.currentPocket] : [Math.floor(this.currentPocket/2), this.currentPocket%2];
       // -1 means pocket address
       if (this.currentAddress > -1) {
           seq.push(this.currentAddress);
