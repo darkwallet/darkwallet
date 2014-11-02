@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
+define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkWallet, Bitcoin) {
 
   // Controller
   controllers.controller('ExportingCtrl', ['$scope', 'notify', 'modals', '_Filter', function($scope, notify, modals, _) {
@@ -23,7 +23,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
                   // Make sure we only export normal and stealth keys
                   if (walletAddress && [undefined, 'stealth'].indexOf(walletAddress.type) > -1) {
                       identity.wallet.getPrivateKey(walletAddress, password, function(privKey) {
-                          output += address + ',' + privKey.toWif() + '\n';
+                          output += address + ',' + privKey.toWIF(Bitcoin.networks[identity.wallet.network]) + '\n';
                       } );
                   } else if (allAddresses.length == 1) {
                       notify.error(_('Address not from this wallet'));
