@@ -21,10 +21,6 @@ define(['util/scanner'], function(Scanner) {
      }
    };
 
-   beforeEach(function(done) {
-       done();
-   });
-
    describe('HD Scanner new style', function() { 
      it('is created properly', function() {
        var updateCb = function() {};
