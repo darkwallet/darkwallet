@@ -5,16 +5,15 @@
 
 define(['./module', 'util/btc', 'darkwallet', 'dwutil/multisig'],
 function (providers, BtcUtils, DarkWallet, MultisigFund) {
-  providers.factory('$history', ['$rootScope', '$wallet', '$location', function($rootScope, $wallet, $location) {
-
-  var monthNames = [ "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December" ];
+  providers.factory('$history', ['$rootScope', '$wallet', '$location', '_Filter', function($rootScope, $wallet, $location, _) {
+  var monthNames = [ _('January'), _('February'), _('March'), _('April'), _('May'), _('June'),
+    _('July'), _('August'), _('September'), _('October'), _('November'), _('December') ];
 
   /**
    * History provider class
    */ 
   function HistoryProvider($scope, $wallet) {
-      this.pocket = {index: undefined, name: 'All Pockets', mpk: undefined, addresses: $wallet.allAddresses, isAll: true, type: 'init', incoming: 0, outgoing: 0};
+      this.pocket = {index: undefined, name: _('All Pockets'), mpk: undefined, addresses: $wallet.allAddresses, isAll: true, type: 'init', incoming: 0, outgoing: 0};
       this.txFilter = 'last';
       this.addrFilter = 'unused';
       this.$wallet = $wallet;
@@ -129,7 +128,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   HistoryProvider.prototype.selectAll = function() {
       var identity = DarkWallet.getIdentity();
-      this.pocket.name = "All Pockets";
+      this.pocket.name = _('All Pockets');
       this.pocket.index = undefined;
       this.pocket.mpk = undefined;
       this.pocket.type = 'all';

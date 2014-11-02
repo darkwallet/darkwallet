@@ -11,6 +11,7 @@ define(['angular-mocks', 'frontend/providers/tabs'], function(mocks) {
       mocks.module(function($provide) {
         // Override services
         $provide.value('$route', {});
+        $provide.value('_Filter', function(s, x, y) {return s.replace(/\{0\}/, x);});
       });
       mocks.inject([ '$templateCache', '$http', '$location', '$route', '$tabs', function(_$templateCache_, _$http_, _$location_, _$route_, _$tabs_) {
         $templateCache = _$templateCache_;

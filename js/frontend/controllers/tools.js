@@ -50,7 +50,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   }
 
   $scope.clearStorage = function() {
-      modals.open('confirm-delete', {name: 'Your WHOLE storage', object: {}}, finishClearStorage)
+      modals.open('confirm-delete', {name: _('Your WHOLE storage'), object: {}}, finishClearStorage)
   };
   
   // Clear all tasks

@@ -54,7 +54,7 @@ define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port,
     };
 
     $scope.deleteIdentity = function(identityName) {
-        modals.open('confirm', {message: 'Are you sure you want to delete ' + identityName + '?', detail: "This action can't be reverted!"}, function() {
+        modals.open('confirm', {message: _('Are you sure you want to delete {0}?', identityName), detail: _('This action can\'t be reverted!')}, function() {
             confirmDeleteIdentity(identityName);
         });
     };

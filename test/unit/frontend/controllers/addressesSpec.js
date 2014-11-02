@@ -50,11 +50,15 @@ describe('Addresses controller', function() {
             copy: function() {}
           };
           spyOn(clipboard, 'copy');
+          var _ = function(s) {
+            return s;
+          }
           addressesController = $controller('AddressesCtrl', {
             $scope: scope,
             $wallet: wallet,
             $history: history,
-            clipboard: clipboard
+            clipboard: clipboard,
+            _Filter: _
           });
           done();
         }]);

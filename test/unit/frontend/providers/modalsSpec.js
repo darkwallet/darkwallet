@@ -25,6 +25,7 @@ define(['angular-mocks', 'testUtils'], function(mocks, testUtils) {
           $provide.value('$timeout', function(callback) {callback();});
           $provide.value('notify', {});
           $provide.value('sounds', {});
+          $provide.value('_Filter', function(s, x) {return s.replace(/\{0\}/, x);});
         });
         
         mocks.inject(['modals', '$modal', '$timeout', '$window', 'notify', 'sounds', '$templateCache',

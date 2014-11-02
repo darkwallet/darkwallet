@@ -46,7 +46,7 @@
           <input id="checkbox-outtx" ng-model="settings.notifications.send" type="checkbox"><label for="checkbox-outtx"> {{'For outgoing transactions'|_}}</label><br>
           <input id="checkbox-intx" ng-model="settings.notifications.receive" type="checkbox"><label for="checkbox-intx">{{'For incoming transactions'|_}}</label><br>
           <input id="checkbox-multisig" ng-model="settings.notifications.multisig" type="checkbox"><label for="checkbox-multisig">{{'For multisig spend requests'|_}}</label><br>
-          <input id="checkbox-notify" ng-model="settings.notifications.popup" type="checkbox" ng-change="storeSettings()"><label for="checkbox-notify">{{'Show chat notifications'|_}}</label><br>
+          <input id="checkbox-notify" ng-model="settings.notifications.popup" type="checkbox" ng-change="storeSettings()"><label for="checkbox-notify">{{'For chat messages'|_}}</label><br>
           <h5>{{'Language'|_}}</h5>
           <select id="select-language" ng-model="settings.language" ng-change="languageChanged()" ng-options="language.code as language.name for language in languages"></select>
         </div>
@@ -80,7 +80,11 @@
                   <a ng-disabled="selectedServer===servers[selectedServerIdx]" ng-click="removeServer()" class="button small alert radius expand">{{'Delete'|_}}</a>
                 </div>
               </div>
-              <h6>{{'{0} to {1} @ {2}'|_:connectionStatus:selectedServer.name:selectedServer.address}}</h6>
+              <h6>{{connectionStatus == "Connected" ? 
+                  ('Connected to {0} @ {1}'|_:selectedServer.name:selectedServer.address) : 
+                      connectionStatus == "Connecting" ?
+                          ('Connecting to {0} @ {1}'|_:selectedServer.name:selectedServer.address) : 
+                          ('Disconnected from {0} @ {1}'|_:selectedServer.name:selectedServer.address)}}</h6>
               <div ng-show="connectionStatus == 'Connected'">
                 <div>{{'gateway'|_}}: {{servicesStatus.gateway}}</div>
                 <div>obelisk: {{servicesStatus.obelisk}}</div>

@@ -13,11 +13,11 @@
               <input ng-model="pairCode" type="password" class="password" value="" placeholder="{{'Enter channel name'|_}}" />
             </label>
             <button class="button small radius expand">
-              Join
+              {{'Join'|_}}
             </button>
           </form>
             <button ng-click="removeChannel()" ng-show="subscribed && canRemove && !selectedPeer" class="button small radius expand alert">
-              Leave
+              {{'Leave'|_}}
             </button>
           <h4 ng-show="peerRequests.length">{{'Requests'|_}}</h4>
           <div ng-show="peerRequests.length">
@@ -82,7 +82,7 @@
           </div>
           <h5>{{'Your permanent identity'|_}}</h5>
           <div class="wrapper"><identicon title="{{myself.pubKeyHex}}" hash="myself.pubKeyHex" icon-size="32"></identicon> {{myself.name}}</div>
-          <h5 title="{{'Your temporary identity'|_}}">Cloak 
+          <h5 title="{{'Your temporary identity'|_}}">{{'Cloak'|_}} 
               <a class="fa fa-refresh" title="{{'Change cloak'|_}}" ng-click="newTempIdentity()"></a>
 	  </h5>
           <div class="row">

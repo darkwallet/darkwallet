@@ -14,7 +14,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
           allAddresses = identity.wallet.getPocketAddresses('all');
       }
 
-      modals.password('Unlock password', function(password) {
+      modals.password(_('Write your password'), function(password) {
           try {
 	      var output = '';
               for (var i = 0; i < allAddresses.length; i++) {

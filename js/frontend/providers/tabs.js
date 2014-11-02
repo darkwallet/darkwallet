@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module'], function (providers) {
-  providers.factory('$tabs', ['$templateCache', '$http', '$location', '$route', function($templateCache, $http, $location, $route) {
+  providers.factory('$tabs', ['$templateCache', '$http', '$location', '$route', '_Filter', function($templateCache, $http, $location, $route, _) {
 
   var tabs = {};
 
@@ -73,12 +73,12 @@ define(['./module'], function (providers) {
   };
   
   tabs.pages = [
-      new Tab('Overview', 'dashboard'),
-      new Tab('History', 'history'),
-      new Tab('Fund', 'fund'),
-      new Tab('Addresses', 'addresses'),
-      new Tab('Tasks', 'tasks'),
-      new Tab('Actions', 'actions')
+      new Tab(_('Overview'), 'dashboard'),
+      new Tab(_('History'), 'history'),
+      new Tab(_('Fund'), 'fund'),
+      new Tab(_('Addresses'), 'addresses'),
+      new Tab(_('Tasks'), 'tasks'),
+      new Tab(_('Actions'), 'actions')
   ];
   
   tabs.visible = [0, 1, 3]; // Overview, history and addresses

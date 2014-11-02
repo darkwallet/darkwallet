@@ -1,20 +1,20 @@
-<h3 ng-show="!tools.open || tools.exportOpen">Key management</h3>
-<a class="button fa fa-upload postfix" ng-click="tools.open=true;tools.exportOpen=true" ng-show="!tools.open" novalidate>Export private keys</a>
+<h3 ng-show="!tools.open || tools.exportOpen">{{'Key management'|_}}</h3>
+<a class="button fa fa-upload postfix" ng-click="tools.open=true;tools.exportOpen=true" ng-show="!tools.open" novalidate>{{'Export private keys'|_}}</a>
 <form name="exportingForm" ng-show="tools.exportOpen" ng-submit="exportKeys()">
-    <label ng-show="!tools.exportAddress">All private keys will be exported (this might take a while).</label>
-    <p ng-show="!tools.exportAddress">Write an address to export just one.</p>
+    <label ng-show="!tools.exportAddress">{{'All private keys will be exported (this might take a while).'|_}}</label>
+    <p ng-show="!tools.exportAddress">{{'Write an address to export just one.'|_}}</p>
     <div class="row collapse">
       <div class="medium-12 columns">
-         <label>Address:</label>
-         <input type="text" ng-model="tools.exportAddress" placeholder="Address to export..."></input>
+         <label>{{'Address'|_}}:</label>
+         <input type="text" ng-model="tools.exportAddress" placeholder="{{'Address to export...'|_}}"></input>
       </div>
     </div>
     <div class="row collapse">
       <div class="medium-6 columns">
-        <button type="submit" class="button fa fa-pencil postfix">Export</button>
+        <button type="submit" class="button fa fa-pencil postfix">{{'Export'|_}}</button>
       </div>
       <div class="medium-6 columns">
-        <a class="button alert fa fa-times postfix" ng-click="tools.exportOpen=false;tools.open=false;">Cancel</a>
+        <a class="button alert fa fa-times postfix" ng-click="tools.exportOpen=false;tools.open=false;">{{'Cancel'|_}}</a>
       </div>
     </div>
 </form>

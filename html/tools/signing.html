@@ -1,4 +1,4 @@
-<h3 ng-show="!tools.open || tools.signOpen">{{'Signing'|_}}</h3>
+<h3 ng-show="!tools.open || tools.signOpen">{{'Sign message'|_}}</h3>
 <a class="button fa fa-pencil postfix" ng-click="tools.open=true;tools.signOpen=true" ng-show="!tools.open" novalidate>{{'Sign'|_}}</a>
 <form name="signingForm" ng-show="tools.signOpen" ng-submit="signText()">
     <label>{{'Text'|_}}:</label>

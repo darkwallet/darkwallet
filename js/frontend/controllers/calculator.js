@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'frontend/port', 'util/fiat', 'dwutil/currencyformat'], function (controllers, DarkWallet, Port, FiatCurrencies, CurrencyFormat) {
-  controllers.controller('CalculatorCtrl', ['$scope', function($scope) {
+  controllers.controller('CalculatorCtrl', ['$scope', '_Filter', function($scope, _) {
   var firstTime = true;
   $scope.calculator = {
      amount: 1,
@@ -39,7 +39,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'util/fiat', 'dwutil/currency
     }
     firstTime = false;
     if (!tickerService.rates.hasOwnProperty(fiatCurrency)) {
-        $scope.calculator.converted = 'no rates';
+        $scope.calculator.converted = _('no rates');
         return;
     }
     $scope.calculator.converted = CurrencyFormat.btcToFiat($scope.calculator.amount, currency, fiatCurrency);

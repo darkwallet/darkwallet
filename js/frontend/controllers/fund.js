@@ -130,7 +130,7 @@ function (controllers, DarkWallet) {
       var inputs = fund.getValidInputs(task.tx);
 
       if (inputs.length) {
-          modals.password('Unlock password', function(password) { finishSignFundTx(password, fund, task, inputs); } );
+          modals.password(_('Write your password'), function(password) { finishSignFundTx(password, fund, task, inputs); } );
       } else {
           notify.error(_('Error importing'), _('Transaction is not for this multisig'));
       }

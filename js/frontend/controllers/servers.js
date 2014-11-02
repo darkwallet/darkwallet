@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  controllers.controller('ServersCtrl', ['$scope', function($scope) {
+  controllers.controller('ServersCtrl', ['$scope', '_Filter', function($scope, _) {
 
   $scope.newServer = {address: '', name: '', next: false};
   $scope.addServerError = '';
@@ -67,7 +67,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   $scope.addServer = function() {
       var newServer = $scope.newServer;
       if (!newServer.name || !newServer.address) {
-          $scope.addServerError = 'Missing name or address';
+          $scope.addServerError = _('Missing name or address');
           return;
       }
       var identity = DarkWallet.getIdentity();

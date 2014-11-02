@@ -63,8 +63,8 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   $scope.sendRequest = function(peer) {
       var identity = DarkWallet.getIdentity();
       var address = identity.wallet.getAddress([0]);
-      var message = "Send identity information";
-      var detail = "This will send long term pairing information and identity pubkeys, are you sure?";
+      var message = _('Send identity information');
+      var detail = _('This will send long term pairing information and identity pubkeys, are you sure?');
       modals.open('confirm', {message: message, detail: detail}, function() {
           currentChannel.sendPairing(identity.name, peer, address.stealth, function() {
               notify.success(_('lobby'), _('pairing sent'));
