@@ -72,13 +72,16 @@ define(['./module'], function (providers) {
       }
   };
   
+  /* To get with npm run i18n-update:
+   * _('Overview'), _('History'), _('Fund'), _('Addresses'), _('Tasks'), _('Actions');
+   */
   tabs.pages = [
-      new Tab(_('Overview'), 'dashboard'),
-      new Tab(_('History'), 'history'),
-      new Tab(_('Fund'), 'fund'),
-      new Tab(_('Addresses'), 'addresses'),
-      new Tab(_('Tasks'), 'tasks'),
-      new Tab(_('Actions'), 'actions')
+      new Tab('Overview', 'dashboard'),
+      new Tab('History', 'history'),
+      new Tab('Fund', 'fund'),
+      new Tab('Addresses', 'addresses'),
+      new Tab('Tasks', 'tasks'),
+      new Tab('Actions', 'actions')
   ];
   
   tabs.visible = [0, 1, 3]; // Overview, history and addresses
