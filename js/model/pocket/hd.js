@@ -162,9 +162,12 @@ HdPocket.prototype.createAddress = function(seq, label) {
 
 /**
  * Get a free address
+ * {Number} change Change branch
+ * {String} label label for the address
  */
 HdPocket.prototype.getFreeAddress = function(change, label) {
     var walletAddress;
+    change = change || 0;
     // normal address, get the address
     var n = 0;
     do {
@@ -172,9 +175,7 @@ HdPocket.prototype.getFreeAddress = function(change, label) {
             walletAddress = this.getMyWallet().getAddress([this.getPocketId(), change, n], label);
         } else {
             var branchIndex = this.getPocketId()*2;
-            if (change) {
-                branchIndex += 1;
-            }
+            branchIndex += change;
             walletAddress = this.getMyWallet().getAddress([branchIndex, n], label);
         }
         n += 1;

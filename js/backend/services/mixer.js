@@ -109,6 +109,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
 
   /*
    * Check address - outputs pairs for funding
+   * TODO: does not detect if output does not exist!
    */
   MixerService.prototype.checkOutputs = function(addresses, callback, msg) {
       var client = this.core.getClient();
@@ -366,7 +367,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
       var pocket = identity.wallet.pockets.getPocket(pocketIndex, 'hd');
       // Prepare arguments for preparing the tx
       var changeAddress = pocket.getChangeAddress('mixing');
-      var destAddress = pocket.getFreeAddress(false, 'mixing');
+      var destAddress = pocket.getFreeAddress(0, 'mixing');
 
       var recipient = {address: destAddress.address, amount: opening.amount};
 

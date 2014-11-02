@@ -126,7 +126,7 @@ BasePocket.prototype.destroy = function() {
 };
 
 BasePocket.prototype.getChangeAddress = function(label) {
-    return this.getFreeAddress(true, label);
+    return this.getFreeAddress(1, label);
 };
 
 return BasePocket;
