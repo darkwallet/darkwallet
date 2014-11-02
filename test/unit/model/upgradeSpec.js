@@ -44,7 +44,9 @@ define(['model/upgrade'], function(Upgrade) {
                         "0,0": {index: [0,0], label: 'unused', nOutputs: 0},
                         "0": {index: [0], label: 'pocket', nOutputs: 0},
                         "1": {index: [1], label: 'pocket', nOutputs: 0},
-                        "readonly:bla": {index: ["readonly:bla", "b"], type: 'readonly'}},
+                        "readonly:bla": {index: ["readonly:bla", "b"], type: 'readonly'},
+                        "1,0": {index: false},
+                        "malformed": null},
               pockets: {
                   hdPockets: [{name: 'a'},{name: 'b'},{name: 'c'}],
                   getAddressPocket: function() {

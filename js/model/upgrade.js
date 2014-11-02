@@ -56,6 +56,17 @@ function Upgrade4To5(store, identity, password) {
     identity.store.set('reseed', false);
     identity.store.set('version', 5);
 
+
+    // Safety cleanup of malformed
+    Object.keys(identity.wallet.pubKeys).forEach(function(index) {
+        var walletAddress = identity.wallet.pubKeys[index];
+        // Cleanup if malformed
+        if (!walletAddress || !walletAddress.index){
+            console.log("delete bad address", index);
+            delete identity.wallet.pubKeys[index];
+        }
+    });
+
     // 3. upgrade the pocket addresses (index with length 1)
     // ... user should not have funds in any pocket address since they will be deleted
     Object.keys(identity.wallet.pubKeys).forEach(function(index) {
@@ -99,12 +110,6 @@ function Upgrade4To5(store, identity, password) {
 
     Object.keys(identity.wallet.pubKeys).forEach(function(index) {
         var walletAddress = identity.wallet.pubKeys[index];
-        // Cleanup if malformed
-        if (!walletAddress){
-            console.log("delete empty address", index);
-            delete identity.wallet.pubKeys[index];
-            return;
-        }
         // Reindex // delete badly indexed
         if (walletAddress.type === 'readonly' && walletAddress.index[0] === index) {
             delete identity.wallet.pubKeys[index];
