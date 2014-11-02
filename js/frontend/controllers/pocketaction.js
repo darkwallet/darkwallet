@@ -77,16 +77,17 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
      */
     $scope.setMixing = function(pocket) {
         var identity = DarkWallet.getIdentity();
-        var walletPocket = identity.wallet.pockets.getPocket(pocket.index, 'hd').store;
+        var walletPocket = identity.wallet.pockets.getPocket(pocket.index, 'hd');
+        var pocketStore = walletPocket.store;
         // Finish setting mixing in the pocket
         // this can happen after requesting the password
         var finishSetMixing = function() {
-            walletPocket.mixing = !walletPocket.mixing;
-            pocket.mixing = walletPocket.mixing;
+            pocketStore.mixing = !pocketStore.mixing;
+            pocket.mixing = pocketStore.mixing;
             // mixing options
-            if (pocket.mixing && !walletPocket.mixingOptions) {
-                walletPocket.mixingOptions = {budget: 100000, spent: 0, mixings: 5};
-                pocket.mixingOptions = walletPocket.mixingOptions;
+            if (pocket.mixing && !pocketStore.mixingOptions) {
+                pocketStore.mixingOptions = {budget: 100000, spent: 0, mixings: 5};
+                pocket.mixingOptions = pocketStore.mixingOptions;
             }
             // save store
             identity.wallet.store.save();
@@ -95,7 +96,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
         }
 
         // We're going to enable mixing so request the password to gather the key for the pocket
-        if (!walletPocket.mixing) {
+        if (!pocketStore.mixing) {
             modals.password(_('Write the password for your pocket'), function(password) {
                 var safe = DarkWallet.service.safe;
                 var version = identity.store.get('version');
@@ -128,12 +129,12 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
 
                 // Save the keys encrypted with the pocket
                 if (privKey) {
-                    walletPocket.privKey = sjcl.encrypt(pocketPassword, privKey, {ks: 256, ts: 128});
+                    pocketStore.privKey = sjcl.encrypt(pocketPassword, privKey, {ks: 256, ts: 128});
                 }
 
-                if (walletPocket.oldPrivKey) {
-                    walletPocket.oldPrivKey = sjcl.encrypt(pocketPassword, oldPrivKey, {ks: 256, ts: 128});
-                    walletPocket.oldPrivChangeKey = sjcl.encrypt(pocketPassword, oldChangeKey, {ks: 256, ts: 128});
+                if (pocketStore.oldPrivKey) {
+                    pocketStore.oldPrivKey = sjcl.encrypt(pocketPassword, oldPrivKey, {ks: 256, ts: 128});
+                    pocketStore.oldPrivChangeKey = sjcl.encrypt(pocketPassword, oldChangeKey, {ks: 256, ts: 128});
                 }
 
                 // Finish setting the pocket mixing state
@@ -141,9 +142,9 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
             });
         } else {
             // Otherwise ensure we delete any private data from the pocket
-            walletPocket.oldPrivKey = undefined;
-            walletPocket.oldPrivChangeKey = undefined;
-            walletPocket.privKey = undefined;
+            pocketStore.oldPrivKey = undefined;
+            pocketStore.oldPrivChangeKey = undefined;
+            pocketStore.privKey = undefined;
             finishSetMixing();
         }
     };
