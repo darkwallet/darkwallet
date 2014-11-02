@@ -4,19 +4,19 @@
                        <form name="newPocketForm" ng-submit="createPocket()">
 			<div class="row">
 				<div class="small-12 columns">
-					<h6>Pockets allow organizing your wallet in different privacy zones</h6>
+					<h6>{{'Pockets allow organizing your wallet in different privacy zones'|_}}</h6>
 				</div>
 			</div>
 			<div class="row">
 				<div class="small-6 columns">
-                                          <input type="text" auto-focus ng-model="newPocket.name" placeholder="Name your pocket..." />
+                                          <input type="text" auto-focus ng-model="newPocket.name" placeholder="{{'Name your pocket...'|_}}" />
 				</div>
 				
 				<div class="small-3 columns">
-                                          <input type="submit" class="button small expand radius" value="Create" ng-click="createPocket()"/>
+                                          <input type="submit" class="button small expand radius" value="{{'Create'|_}}" ng-click="createPocket()"/>
 				</div>
 				<!--<div class="small-3 columns">
-                                          <input type="submit" class="button small alert expand radius" value="Cancel" ng-click="selectPocket()"/>
+                                          <input type="submit" class="button small alert expand radius" value="{{'Cancel'|_}}" ng-click="selectPocket()"/>
 				</div>-->
 			</div>
                        </form>

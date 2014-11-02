@@ -14,6 +14,7 @@ filters.filter('_', ['translateFilter', '$sce', function(translateFilter, $sce) 
     });
     string = string.replace(/\*\*(.+)\*\*/g, '<strong>$1</strong>');
     string = string.replace(/\*(.+)\*/g, '<em>$1</em>');
+    string = string.replace(/\{[\w ]+\}/g, '');
     return $sce.trustAsHtml(string);
   };
   

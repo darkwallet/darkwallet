@@ -93,7 +93,7 @@
           <li ng-repeat="pocket in hdPockets track by $index" ng-show="pocket">
             <a ng-click="setPocket($index)">{{pocket.name}}</a>
           </li>
-          <li><a ng-click="setPocket('any')">Any</a></li>
+          <li><a ng-click="setPocket('any')">{{'Any'|_}}</a></li>
           <li class="colorhead"><h6>{{'Multisig funds'|_}}</h6></li>
           <li ng-repeat="fund in allFunds track by $index">
             <a ng-click="setPocket(fund.address)">{{fund.name}}</a>

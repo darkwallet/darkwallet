@@ -21,10 +21,10 @@
 		<div class="panel radius">
 		    <dl class="sub-nav">
 		        <dt>{{'Filter'|_}}:</dt>
-		        <dd ng-class="{active: 'unused'===addrFilter}"><a ng-click="setAddressFilter('unused')">{{'Unused'|_}}</a></dd>
-		        <dd ng-class="{active: 'labelled'===addrFilter}"><a ng-click="setAddressFilter('labelled')">{{'Labelled'|_}}</a></dd>
-		        <dd ng-class="{active: 'top'===addrFilter}"><a ng-click="setAddressFilter('top')">{{'Top'|_}}</a></dd>
-		        <dd ng-class="{active: 'all'===addrFilter}"><a ng-click="setAddressFilter('all')">{{'All'|_}}</a></dd>
+		        <dd ng-class="{active: 'unused'===addrFilter}"><a ng-click="setAddressFilter('unused')">{{'Unused{ addresses}'|_}}</a></dd>
+		        <dd ng-class="{active: 'labelled'===addrFilter}"><a ng-click="setAddressFilter('labelled')">{{'Labelled{ addresses}'|_}}</a></dd>
+		        <dd ng-class="{active: 'top'===addrFilter}"><a ng-click="setAddressFilter('top')">{{'Top{ addresses}'|_}}</a></dd>
+		        <dd ng-class="{active: 'all'===addrFilter}"><a ng-click="setAddressFilter('all')">{{'All{ addresses}'|_}}</a></dd>
 		    </dl>
 			        <ul id="address-actions" class="f-dropdown">
 			          <li>
@@ -45,7 +45,7 @@
 		        <div class="small-4 columns ellipsis">
 		            <a ng-click="setCurrentAddress(address, textBtnForm)" dropdown-toggle="#address-actions" class="fa button square lefted fa-chevron-circle-down"></a>
 		            <span class="address-label" editable-text="address.label" e-form="textBtnForm" buttons="no" onaftersave="saveStore()">
-		                {{address.label}}
+		                {{address.label != 'unused' && address.label != 'change' ? address.label : (address.label|_)}} <!-- {{'unused'|_}} {{'change'|_}} -->
 		            </span>
 		        </div>
 
@@ -53,7 +53,7 @@
 		            {{address.address}}
 		            <div class="labels">
 		                <span class="label radius" ng-show="address.type=='stealth'">
-		                    <div class="fa fa-fighter-jet"></div> stealth
+		                    <div class="fa fa-fighter-jet"></div> {{'stealth'|_}}
 		                </span>
 		                <span class="label radius" title="{{'Number of times this address has been used'|_}}" ng-show="address.nOutputs">
 		                    {{address.nOutputs}}
