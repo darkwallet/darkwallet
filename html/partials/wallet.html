@@ -78,7 +78,7 @@
 						<div class="small-12 columns">
 	        				<dl class="tabs">
 	          				  	<dd ng-show="tab.isVisible()" ng-class="{active: tab.isActive()}" ng-repeat="tab in tabs.pages">
-	              <a ng-click="tab.select()">{{tab.heading}}</a>
+	              <a ng-click="tab.select()">{{tab.heading|_}}</a>
 	          					</dd>
 	        				</dl>
 						</div>

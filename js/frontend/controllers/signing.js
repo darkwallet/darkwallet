@@ -17,19 +17,19 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
       var initHead = text.indexOf(SIGHEADER);
 
       if (initHead == -1) {
-          throw Error('Not a bitcoin signed message');
+          throw Error(_('Not a bitcoin signed message'));
       }
       var message = text.substring(initHead);
       var initText = message.indexOf('\n\n');
       var initSigHead = message.indexOf(SIGINIT);
       if (initSigHead == -1) {
-          throw Error('Message is incomplete');
+          throw Error(_('Message is incomplete'));
       }
       var initSig = message.substring(initSigHead).indexOf('\n\n');
       var endSig = message.indexOf(SIGEND);
 
       if (endSig == -1) {
-          throw Error('Message is incomplete');
+          throw Error(_('Message is incomplete'));
       }
       var initAddress = message.indexOf('Address: ');
       var endAddress = message.substring(initAddress).indexOf('\n');
@@ -93,10 +93,10 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
       var sig = Bitcoin.convert.base64ToBytes(sigText);
       var res = Bitcoin.Message.verify(address, sig, text);
       if (res) {
-          $scope.tools.status = 'signature ok by ' + address;
+          $scope.tools.status = _('signature ok by {0}', address);
           notify.success(_('Signature ok'));
       } else {
-          $scope.tools.status = 'invalid signature';
+          $scope.tools.status = _('invalid signature');
           notify.warning(_('Invalid signature'));
       }
       $scope.tools.output = '';
@@ -131,9 +131,9 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
       } else if (walletAddress.type == 'readonly' || walletAddress.type == 'multisig') {
           notify.warning(_('Can\'t sign with readonly or multisig addresses'));
       } else {
-          modals.password('Unlock password', function(password) {
+          modals.password(_('Write your password'), function(password) {
               try {
-                  // Stealth backwards comp workaround, 0.4.0
+                  // Stealth backwards compatibility workaround, 0.4.0
                   Stealth.quirk = walletAddress.quirk;
                   identity.wallet.getPrivateKey(walletAddress, password, function(privKey) {
                       var signature = signText(privKey, walletAddress.address, text);

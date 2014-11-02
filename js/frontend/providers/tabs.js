@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module'], function (providers) {
-  providers.factory('$tabs', ['$templateCache', '$http', '$location', '$route', function($templateCache, $http, $location, $route) {
+  providers.factory('$tabs', ['$templateCache', '$http', '$location', '$route', '_Filter', function($templateCache, $http, $location, $route, _) {
 
   var tabs = {};
 
@@ -72,6 +72,9 @@ define(['./module'], function (providers) {
       }
   };
   
+  /* To get with npm run i18n-update:
+   * _('Overview'), _('History'), _('Fund'), _('Addresses'), _('Tasks'), _('Actions');
+   */
   tabs.pages = [
       new Tab('Overview', 'dashboard'),
       new Tab('History', 'history'),

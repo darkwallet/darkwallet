@@ -10,6 +10,7 @@ define(['angular-mocks', 'frontend/providers/clipboard'], function(mocks) {
       mocks.module(function($provide) {
         // Override services
         $provide.value('notify', {});
+        $provide.value('_Filter', function(s) {return s;});
       });
     });
     beforeEach(mocks.inject(['clipboard', '$window', 'notify', function(_clipboard_, _$window_, _notify_) {

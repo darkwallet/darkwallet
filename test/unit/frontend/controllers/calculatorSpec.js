@@ -47,7 +47,10 @@ function (mocks, testUtils) {
         mocks.module("DarkWallet.controllers");
         mocks.inject(["$rootScope", "$controller", function ($rootScope, $controller) {
           scope = $rootScope.$new();
-          calculatorController = $controller('CalculatorCtrl', {$scope: scope});
+          var _ = function(s) {
+            return s;
+          }
+          calculatorController = $controller('CalculatorCtrl', {$scope: scope, _Filter: _});
           done();
         }]);
       });

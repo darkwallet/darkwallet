@@ -96,7 +96,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
 
         // We're going to enable mixing so request the password to gather the key for the pocket
         if (!walletPocket.mixing) {
-            modals.password('Write the password for your pocket', function(password) {
+            modals.password(_('Write the password for your pocket'), function(password) {
                 var safe = DarkWallet.service.safe;
                 var version = identity.store.get('version');
                 // get master private for the pockets since the mixer will need them
@@ -199,7 +199,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
             to = pocket.name;
             address = pocket.getFreeAddress().address;
         } else {
-            throw Error('Invalid type while moving funds!');
+            throw Error(_('Invalid type while moving funds!'));
         }
 
         // Prepare transaction
@@ -211,8 +211,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
         var metadata = identity.tx.prepare($scope.pocket.index, recipients, null, fee);
  
         // Request password for signing
-        var message = "Are you sure you want to move all ";
-        message += $scope.pocket.name + " funds to " + to + "?";
+        var message = _('Are you sure you want to move all {0} funds to {1}?', $scope.pocket.name, to);
         modals.password(message, function(password) {
            // Sign and broadcast
            var walletService = DarkWallet.service.wallet;

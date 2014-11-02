@@ -55,7 +55,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
   $scope.setPocket = function(pocket) {
       var identity = DarkWallet.getIdentity();
       if (pocket == 'any') {
-          sendForm.sendPocketName = 'Any';
+          sendForm.sendPocketName = _('Any');
           // TODO: Any is only using default pocket right now.
           sendForm.pocketIndex = 0;
       } else if (typeof pocket == 'number') {
@@ -252,7 +252,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       var onSendTimeout = function() {
           if (sendTimeout == 6) {
               timeoutId = undefined;
-              onUpdateRadar(radarCache.radar, radarCache, 'Timeout broadcasting, total: ' + (radarCache.radar*100).toFixed(2) + '%');
+              onUpdateRadar(radarCache.radar, radarCache, _('Timeout broadcasting, total: ') + (radarCache.radar*100).toFixed(2) + '%');
               enableSending(radarCache.radar>0.0);
 
               // Since it didn't go out at all, let's undo the transaction.
@@ -301,7 +301,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
       if (totalAmount < identity.wallet.dust) {
           if (totalAmount > 0) {
-              $scope.txStats = {notes: "Below dust threshold", size: 0, fee: 0};
+              $scope.txStats = {notes: _('Below dust threshold'), size: 0, fee: 0};
           } else {
               $scope.txStats = undefined;
           }
@@ -312,7 +312,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       try {
           var txUtxo = identity.wallet.getUtxoToPay(totalAmount+fee, sendForm.pocketIndex);
       } catch(e) {
-          $scope.txStats = {notes: "Not enough funds", size: 0, fee: 0};
+          $scope.txStats = {notes: _('Not enough funds'), size: 0, fee: 0};
           return;
       }
       if (txUtxo && txUtxo.length) {
@@ -345,7 +345,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
           return true;
       } else {
-          $scope.txStats = {notes: "Not enough good inputs", size: 0, fee: 0};
+          $scope.txStats = {notes: _('Not enough good inputs'), size: 0, fee: 0};
       }
   };
 
@@ -428,7 +428,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       var pocket = identity.wallet.pockets.getPocket(pocketIndex, pocketType);
 
       // Now ask for the password before continuing with the next step   
-      modals.confirmSend('Unlock password', {pocket: pocket, metadata: metadata}, spend.contacts, function(password) {
+      modals.confirmSend(_('Write your password'), {pocket: pocket, metadata: metadata}, spend.contacts, function(password) {
           // Run the password callback
           onPassword(metadata, amountNote, password);
       }, function() {

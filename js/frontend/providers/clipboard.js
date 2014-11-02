@@ -2,7 +2,7 @@
 
 define(['./module'], function (providers) {
 
-providers.factory('clipboard', ['notify', '$window', function(notify, $window) {
+providers.factory('clipboard', ['notify', '$window', '_Filter', function(notify, $window, _) {
 
 var clipboard = {
 
@@ -19,7 +19,7 @@ var clipboard = {
     $window.document.execCommand("Copy", false, null);
     $window.document.getElementById('fixed').removeChild(copyDiv);
     
-    notification = notification || 'Copied to clipboard';
+    notification = notification || _('Copied to clipboard');
     notify.note(notification);
   },
   

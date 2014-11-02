@@ -2,7 +2,7 @@
 
 define(['./module', 'util/btc', 'darkwallet', 'dwutil/currencyformat'], function (providers, BtcUtils, DarkWallet, CurrencyFormat) {
 
-providers.factory('modals', ['$window', 'notify', 'sounds', '$templateCache', '$http', '$timeout', function($window, notify, sounds, $templateCache, $http, $timeout) {
+providers.factory('modals', ['$window', 'notify', 'sounds', '$templateCache', '$http', '$timeout', '_Filter', function($window, notify, sounds, $templateCache, $http, $timeout, _) {
 
 var modals = {
 
@@ -61,7 +61,7 @@ var modals = {
     sounds.play('keygenEnd');
     var pars = BtcUtils.parseURI(data);
     if (!pars || !pars.address) {
-      notify.warning('URI not supported'); 
+      notify.warning(_('URI not supported'));
       return;
     }
     if (pars.amount !== undefined && DarkWallet.getIdentity().settings.currency === 'mBTC') {
@@ -83,7 +83,7 @@ var modals = {
 
   onQrCancel: function(data) {
     if (data && data.name === 'PermissionDeniedError') {
-      notify.error('Your camera is disabled');
+      notify.error(_('Your camera is disabled'));
     }
   },
 

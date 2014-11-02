@@ -14,15 +14,14 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
               return;
           }
           // Add all addresses to scope
-          var identity = DarkWallet.getIdentity();
           if (addresses && addresses.length) {
               addresses.forEach(function(walletAddress) {
                   // TODO: should be added to scope in response to some event
                   $wallet.addToScope(walletAddress);
               })
-              notify.success(_('stealth ok'), _('{0} payments detected', addresses.length));
+              notify.success(_('Stealth transactions processed'), _('{0} payments detected', addresses.length));
           } else {
-              notify.success(_('stealth ok'));
+              notify.success(_('Stealth transactions processed'));
           }
       }
 

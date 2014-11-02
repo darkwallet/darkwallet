@@ -22,25 +22,25 @@
 	        <li class="name">
 	          <h1 class="hide-for-medium"><a ng-click="titleClick()" id="maintitle"><img id="logo" src="../images/logo.svg" width="32" height="32" ng-class="{'busy': status.syncing}" /> Darkwallet</a></h1>
 	        </li>
-	        <li toggle-top-bar class="menu-icon"><a>Menu</a></li>
+	        <li toggle-top-bar class="menu-icon"><a>{{'Menu'|_}}</a></li>
 	      </ul>
     
 	      <top-bar-section>
   	        <ul class="right">
-  		  <li title="Gateway: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i></a></li>
-  		  <li ng-show="settings.advanced && status.syncing" title="Fetching data from obelisk!"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
-  		  <li ng-show="settings.advanced" title="Current height"><a><i> {{currentHeight}}</i></a></li>
-  		  <li ng-show="settings.advanced" title="Block explorer" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i></a></li>
+  		  <li title="{{'Gateway'|_}}: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i></a></li>
+  		  <li ng-show="settings.advanced && status.syncing" title="{{'Fetching data from obelisk!'|_}}"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
+  		  <li ng-show="settings.advanced" title="{{'Current height'|_}}"><a><i> {{currentHeight}}</i></a></li>
+  		  <li ng-show="settings.advanced" title="{{'Block explorer'|_}}" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i></a></li>
           
 		  
 		  
-  			  <li ng-show="settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings" class="fa fa-cog"></a></li>
+  			  <li ng-show="settings.advanced" title="{{'Settings'|_}}" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings" class="fa fa-cog"></a></li>
           
 		  
-  			  <li ng-show="!settings.advanced" title="settings" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> {{'Settings'|_}}</a></li>
+  			  <li ng-show="!settings.advanced" title="{{'Settings'|_}}" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> {{'Settings'|_}}</a></li>
           
 		  
-  			  <li title="identities" ng-class="{active:isActive('/identities')}"><a ng-show="identityName" href="#identities"><i class="icon-profile"></i> {{identityName}}</a></li>
+  			  <li title="{{'Identities'|_}}" ng-class="{active:isActive('/identities')}"><a ng-show="identityName" href="#identities"><i class="icon-profile"></i> {{identityName}}</a></li>
   	        </ul>
 	        <ul class="left">
 	          <li ng-class="{active:isActive('/wallet')}"><a ng-click="openWallet()"><i class="icon-wallet"></i> {{'Wallet'|_}}</a></li>

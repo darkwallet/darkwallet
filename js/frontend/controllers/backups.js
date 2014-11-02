@@ -18,7 +18,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
     }
 
     $scope.backupIdentity = function(identityName) {
-        modals.password('Password for encrypting the backups', function(password) {
+        modals.password(_('Password for encrypting the backups'), function(password) {
             var keyRing = DarkWallet.getKeyRing();
             keyRing.getRaw(identityName, function(obj) {
                 var fileName = identityName || 'all';
@@ -114,14 +114,14 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
         try {
             data = sjcl.decrypt($scope.password, backupFile);
         } catch(e) {
-            $scope.error = "Bad password: "+e.message;
+            $scope.error = _('Bad password: ') + e.message;
             return;
         }
         // Stage 2: Parse json
         try {
             data = JSON.parse(data);
         } catch(e) {
-            $scope.error = "Bad file";
+            $scope.error = _('Bad file');
             return;
         }
         $scope.step = 'select';
@@ -151,7 +151,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
 
         // Stage 4: Check if we actually loaded anything
         if (!$scope.toLoad.length) {
-             $scope.error = "No identities found";
+             $scope.error = _('No identities found');
         }
     };
 

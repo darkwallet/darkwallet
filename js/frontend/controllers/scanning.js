@@ -93,7 +93,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       $scope.scanning = true;
       notify.note(_('Start Scanning'));
       $scope.scanned = {max: 100, scanned: 0};
-      $scope.scanStatus = "Scanning...";
+      $scope.scanStatus = _('Scanning...');
       $scope.scanProgress = 0;
       var client = DarkWallet.getClient();
       if (client) {

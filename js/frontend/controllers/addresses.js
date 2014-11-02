@@ -5,7 +5,7 @@
 
 define(['./module', 'bitcoinjs-lib', 'darkwallet'],
 function (controllers, Bitcoin, DarkWallet) {
-  controllers.controller('AddressesCtrl', ['$scope', '$history', '$wallet', 'clipboard', function($scope, $history, $wallet, clipboard) {
+  controllers.controller('AddressesCtrl', ['$scope', '$history', '$wallet', 'clipboard', '_Filter', function($scope, $history, $wallet, clipboard, _) {
 
   // Filters
   $scope.addrFilter = $history.addrFilter;
@@ -70,7 +70,7 @@ function (controllers, Bitcoin, DarkWallet) {
   $scope.copyClipboardPublic = function(walletAddress) {
       var pubKey = Bitcoin.ECPubKey.fromBytes(walletAddress.pubKey);
       var publicHex = pubKey.toHex();
-      clipboard.copy(publicHex, 'Copied public key to clipboard');
+      clipboard.copy(publicHex, _('Copied public key to clipboard'));
   };
 
   /**

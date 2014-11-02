@@ -109,7 +109,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require']
 
   $scope.signTask = function(guiTask) {
       // import transaction here
-      modals.password('Unlock password', function(password) {
+      modals.password(_('Write your password'), function(password) {
           finishSignFundTx(password, guiTask);
       });
   }

@@ -29,8 +29,8 @@ define(['angular-mocks', 'testUtils', 'bitcoinjs-lib'], function (mocks, testUti
         notify = {};
         scope = $rootScope.$new();
         notify.success = function() {};
-        var _ = function(s) {
-          return s;
+        var _ = function(s, x) {
+          return s.replace(/\{0\}/, x);
         };
         signController = $controller('SigningCtrl', {$scope: scope, notify: notify, _Filter: _, modals: modals});
       }]);
