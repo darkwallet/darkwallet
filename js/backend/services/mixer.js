@@ -474,7 +474,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
               var scanKey = this.getMyWallet().getScanKey(seq[0]);
               privKeys[seq] = Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), masterKey.privKey.toBytes()).toBytes();
           } else if (walletAddress.type === 'oldstealth' || (walletAddress.type === 'stealth' && identity.store.get('version') < 5)) {
-              var pocketMaster = change?changeKey:masterKey;
+              var pocketMaster = change?oldChangeKey:oldMasterKey;
               // second parameter for getScanKey is so scankey will be different
               var scanKey = this.getMyWallet().getScanKey(seq[0], true);
               privKeys[seq] = Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), pocketMaster.privKey.toBytes()).toBytes();
