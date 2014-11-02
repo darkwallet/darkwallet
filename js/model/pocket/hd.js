@@ -42,7 +42,7 @@ HdPocket.prototype.getMainAddress = function() {
     if (index === -1) {
         throw new Error("Wrong hd pocket!");
     }
-    if (this.getMyWallet().store.get('version') > 4) {
+    if (wallet.store.get('version') > 4) {
         return wallet.getAddress([index]);
     } else {
         return wallet.getAddress([index*2]);
@@ -142,7 +142,6 @@ HdPocket.prototype.createAddress = function(seq, label) {
     var version = wallet.store.get('version');
     // set type
     if (version > 4) {
-        // XXX should we do pocket with seq === 1 or seq === 2
         var properties = { type: ((seq.length === 1) ? 'pocket' : 'hd') };
     }
     // set label
@@ -181,7 +180,7 @@ HdPocket.prototype.getFreeAddress = function(change, label) {
         n += 1;
     } while (walletAddress.nOutputs > 0);
 
-    // This should have no type
+    // This should have no type (old style) or type 'hd' (new style)
     if (walletAddress.type && walletAddress.type !== 'hd') {
        throw new Error("Generated an incorrect change address");
     }
