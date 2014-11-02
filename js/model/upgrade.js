@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['util/btc'], function(BtcUtils) {
+define(['util/btc', 'bitcoinjs-lib'], function(BtcUtils, Bitcoin) {
 // DarkWallet namespace for the local storage.
 var DW_NS = 'dw:identity:';
 
@@ -37,13 +37,26 @@ function Upgrade4To5(store, identity, password) {
     identity.wallet.scanKeys = identity.store.get('scankeys');
     identity.wallet.idKeys = identity.store.get('idkeys');
     identity.wallet.oldScanKeys = identity.store.get('old-scankeys');
-    identity.reseed = false;
+
+
+    // 2.b Add mpk to previous pockets
+    var mpks = identity.store.get('mpks');
+    var rootKey = Bitcoin.HDNode.fromBase58(privData.privKey);
+    identity.wallet.pockets.hdPockets.forEach(function(pocketStore, i) {
+        if (pocketStore) {
+            if (!mpks[i]) {
+                mpks[i] = rootKey.deriveHardened(i).toBase58(false);
+            }
+            pocketStore.mpk = mpks[i];
+        }
+    });
 
     // set version so we can start creating new addresses
+    identity.reseed = false;
     identity.store.set('reseed', false);
     identity.store.set('version', 5);
 
-    // 2. upgrade the pocket addresses (index with length 1)
+    // 3. upgrade the pocket addresses (index with length 1)
     // ... user should not have funds in any pocket address since they will be deleted
     Object.keys(identity.wallet.pubKeys).forEach(function(index) {
         var walletAddress = identity.wallet.pubKeys[index];
@@ -63,7 +76,7 @@ function Upgrade4To5(store, identity, password) {
         }
     });
 
-    // 3. clean up old unused addresses
+    // 4. clean up old unused addresses
     Object.keys(identity.wallet.pubKeys).forEach(function(index) {
         var walletAddress = identity.wallet.pubKeys[index];
         index = walletAddress.index;
@@ -80,9 +93,9 @@ function Upgrade4To5(store, identity, password) {
         }
     });
 
-    // 4. should create some new addresses?
+    // 5. should create some new addresses?
 
-    // 5. perform other long running cleanings
+    // 6. perform other long running cleanings
 
     Object.keys(identity.wallet.pubKeys).forEach(function(index) {
         var walletAddress = identity.wallet.pubKeys[index];

@@ -4,7 +4,7 @@
 'use strict';
 
 define(['model/upgrade'], function(Upgrade) {
- 
+
   /**
    * Model upgrade original version, just wipes out the store
    */
@@ -30,24 +30,27 @@ define(['model/upgrade'], function(Upgrade) {
 
     it('reseeds from 4 to 5', function() {
       var privData = {
-          privKey: 'somekey',
+          privKey: 'oldkey',
           privKeys: 'bar',
           seed: 'aaaaabbbbbbccccccc',
       };
       var identity = {
           generate: function() {
-              privData.privKey = 'newkey';
-              identity.store.store.mpk = 'newmpk';
+              privData.privKey = 'xprv9xTMAATdTvDVhc3xHZvK5sqUKAZPpZzKpsoT2pR3oDNz8XTdjkrTR3Uj26Rpy4CM46DDNb5Ae5Uf8ei1usbjK2qToDUFx97g8M2XduB7Cbe';
+              identity.store.store.mpk = 'xpub6AANPpdT4JoeTLrgN159eHQXT4X1YiCtXnAJLV5zF48K2iDWWc1S7eYNFGe3oT2W5vDeFYHpWS8Y3Jr3xXeXFn18W6jMU9DhE3VG9mhyayG';
           },
           wallet: {
               pubKeys: [],
+              pockets: {
+                  hdPockets: [{name: 'a'},{name: 'b'},{name: 'c'}]
+              }
           },
           store: {
               get: function(name) { return this.store[name]; },
               set: function(name, val) { this.store[name] = val; },
               getPrivateData: function(pass) {return privData; },
               setPrivateData: function(data, pass) {privData=data; },
-              store: {version: 4, mpk: 'somempk'}
+              store: {version: 4, mpk: 'somempk', mpks: ['mpk1', 'mpk2']}
           }
       }
       // set version and trigger reseed request
@@ -61,17 +64,20 @@ define(['model/upgrade'], function(Upgrade) {
 
       // check private data
       var newData = identity.store.getPrivateData();
-      expect(newData.privKey).toBe('newkey');
-      expect(newData.oldPrivKey).toBe('somekey');
+      expect(newData.privKey).toBe('xprv9xTMAATdTvDVhc3xHZvK5sqUKAZPpZzKpsoT2pR3oDNz8XTdjkrTR3Uj26Rpy4CM46DDNb5Ae5Uf8ei1usbjK2qToDUFx97g8M2XduB7Cbe');
+      expect(newData.oldPrivKey).toBe('oldkey');
       expect(newData.privKeys).toBe(privData.privKeys);
 
       // check identity
       expect(identity.store.store['old-mpk']).toBe('somempk');
-      expect(identity.store.store['mpk']).toBe('newmpk');
+      expect(identity.store.store['mpk']).toBe('xpub6AANPpdT4JoeTLrgN159eHQXT4X1YiCtXnAJLV5zF48K2iDWWc1S7eYNFGe3oT2W5vDeFYHpWS8Y3Jr3xXeXFn18W6jMU9DhE3VG9mhyayG');
       expect(identity.store.store.reseed).toBe(false);
       expect(identity.reseed).toBe(false);
-      expect(identity.wallet.mpk).toBe('newmpk');
+      expect(identity.wallet.mpk).toBe('xpub6AANPpdT4JoeTLrgN159eHQXT4X1YiCtXnAJLV5zF48K2iDWWc1S7eYNFGe3oT2W5vDeFYHpWS8Y3Jr3xXeXFn18W6jMU9DhE3VG9mhyayG');
       expect(identity.wallet.oldMpk).toBe('somempk');
+      expect(identity.wallet.pockets.hdPockets[0].mpk).toBe('mpk1');
+      expect(identity.wallet.pockets.hdPockets[1].mpk).toBe('mpk2');
+      expect(identity.wallet.pockets.hdPockets[2].mpk).toBe('xpub6DDP5BrWcCBACU8FaDYA73N6gFUhM7sBR4zAX9WDvYByRcak3sjMkRTM5xMYXpKk8vMUEyqek4TA9TkBQmCvsVgxR23Cgw2PyfWk5EErhhG');
     });
 
 
