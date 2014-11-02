@@ -40,9 +40,19 @@ define(['model/upgrade'], function(Upgrade) {
               identity.store.store.mpk = 'xpub6AANPpdT4JoeTLrgN159eHQXT4X1YiCtXnAJLV5zF48K2iDWWc1S7eYNFGe3oT2W5vDeFYHpWS8Y3Jr3xXeXFn18W6jMU9DhE3VG9mhyayG';
           },
           wallet: {
-              pubKeys: [],
+              pubKeys: {"1,2": {index: [1,2], label: 'change', nOutputs: 0},
+                        "0,0": {index: [0,0], label: 'unused', nOutputs: 0},
+                        "0": {index: [0], label: 'pocket', nOutputs: 0},
+                        "1": {index: [1], label: 'pocket', nOutputs: 0},
+                        "readonly:bla": {index: ["readonly:bla", "b"], type: 'readonly'}},
               pockets: {
-                  hdPockets: [{name: 'a'},{name: 'b'},{name: 'c'}]
+                  hdPockets: [{name: 'a'},{name: 'b'},{name: 'c'}],
+                  getAddressPocket: function() {
+                      return {
+                           removeAddress: function(address) { delete identity.wallet.pubKeys[address.index]; },
+                           createAddress: function(seq) {identity.wallet.pubKeys[seq] = {index: seq};}
+                      };
+                  }
               }
           },
           store: {
@@ -78,6 +88,7 @@ define(['model/upgrade'], function(Upgrade) {
       expect(identity.wallet.pockets.hdPockets[0].mpk).toBe('mpk1');
       expect(identity.wallet.pockets.hdPockets[1].mpk).toBe('mpk2');
       expect(identity.wallet.pockets.hdPockets[2].mpk).toBe('xpub6DDP5BrWcCBACU8FaDYA73N6gFUhM7sBR4zAX9WDvYByRcak3sjMkRTM5xMYXpKk8vMUEyqek4TA9TkBQmCvsVgxR23Cgw2PyfWk5EErhhG');
+      expect(Object.keys(identity.wallet.pubKeys)).toEqual(['0', 'readonly:bla,b']);
     });
 
 
