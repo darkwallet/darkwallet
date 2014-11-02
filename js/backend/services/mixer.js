@@ -145,9 +145,11 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
       var tx = Bitcoin.Transaction.fromHex(txHex);
       var pending = tx.ins.length;
       tx.ins.forEach(function(anIn) {
-           console.log("[mixer] check tx", Bitcoin.bufferutils.reverse(anIn.hash).toString('hex'));
-           if (identity.wallet.wallet.outputs[Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.outpoint.index]) {
+           var index = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index;
+           console.log("[mixer] check tx", index);
+           if (identity.wallet.wallet.outputs[index]) {
                // this is our own input
+               pending -= 1;
                return;
            }
            client.fetch_transaction(Bitcoin.bufferutils.reverse(anIn.hash).toString('hex'), function(err, txBody) {
@@ -156,7 +158,6 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
                if (!addresses.hasOwnProperty(address)) {
                    addresses[address] = [];
                }
-               var index = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index;
                if (addresses[address].indexOf(index) === -1) {
                    addresses[address].push(index);
                }
