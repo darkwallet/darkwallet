@@ -465,7 +465,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           var seq = walletAddress.index.slice(0);
           if (walletAddress.type === 'stealth') {
               var pocketMaster = change?changeKey:masterKey;
-              var scanKey = this.getMyWallet().getScanKey(seq[0]);
+              var scanKey = identity.wallet.getScanKey(seq[0]);
               privKeys[seq] = Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), pocketMaster.privKey.toBytes()).toBytes();
           } else {
               privKeys[seq] = pocket.deriveHDPrivateKey(seq.slice(1), change?changeKey:masterKey).toBytes();
