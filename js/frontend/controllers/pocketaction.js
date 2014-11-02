@@ -132,7 +132,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
                     pocketStore.privKey = sjcl.encrypt(pocketPassword, privKey, {ks: 256, ts: 128});
                 }
 
-                if (pocketStore.oldPrivKey) {
+                if (oldPrivKey) {
                     pocketStore.oldPrivKey = sjcl.encrypt(pocketPassword, oldPrivKey, {ks: 256, ts: 128});
                     pocketStore.oldPrivChangeKey = sjcl.encrypt(pocketPassword, oldChangeKey, {ks: 256, ts: 128});
                 }
