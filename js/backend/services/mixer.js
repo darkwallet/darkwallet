@@ -154,7 +154,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
            }
            client.fetch_transaction(Bitcoin.bufferutils.reverse(anIn.hash).toString('hex'), function(err, txBody) {
                var outTx = Bitcoin.Transaction.fromHex(txBody);
-               var address = Bitcoin.Address.fromOutputScript(outTx.outs[anIn.index], Bitcoin.networks(identity.wallet.network)).toString();
+               var address = Bitcoin.Address.fromOutputScript(outTx.outs[anIn.index].script, Bitcoin.networks[identity.wallet.network]).toString();
                if (!addresses.hasOwnProperty(address)) {
                    addresses[address] = [];
                }
