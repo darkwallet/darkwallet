@@ -13,10 +13,16 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   $scope.editingContact = false;
   $scope.contactSection = $routeParams.section || 'overview';
 
+  // Online timing (5 min)
+  $scope.fadeTimeout = 300 * 1000;
+  $scope.lastTimestamp = Date.now();
+
   // Check the route to see if we have to connect some contact
   var initRouteContact = function(identity) {
       if ($routeParams.contactId) {
           var id = parseInt($routeParams.contactId);
+          // Update timestamp on section change
+          $scope.lastTimestamp = Date.now();
           if (identity.contacts.contacts[id]) {
               $scope.vars = { contact: identity.contacts.contacts[id] };
           } else {
@@ -34,6 +40,8 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
               $scope.contactSection = $route.current.pathParams.section || 'overview';
               // Overwrite the route so the template doesn't reload
               $route.current = lastRoute;
+              // Update timestamp on section change
+              $scope.lastTimestamp = Date.now();
           }
       });
   }

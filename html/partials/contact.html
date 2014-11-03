@@ -4,7 +4,7 @@
    <!-- Contact info -->
   <div class="row">
         	<identicon icon-size="48" hash="vars.contact.data.hash" title="{{vars.contact.data.hash}}"></identicon>
-			<span class="contact-name">{{vars.contact.data.name}}</span> <span class="label radius" ng-show="vars.contact.online">online</span>
+			<span class="contact-name">{{vars.contact.data.name}}</span> <span class="label radius" ng-show="vars.contact.online && vars.contact.online.timestamp + fadeTimeout > lastTimestamp">online</span>
   </div>
 
   <!-- Options -->
