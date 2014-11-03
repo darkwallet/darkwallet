@@ -114,7 +114,7 @@
              	 {{(row.partial) | amountFilter}}
              </div>
              <div class="hide-for-small medium-3 large-2 columns text-right">
-              {{row.current | asBtc}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span>
+              {{row.current | formatBtc:true}} <span ng-show="row.unconfirmed">({{row.unconfirmed | amountFilter}})</span>
              </div>
             </div>
           </div>

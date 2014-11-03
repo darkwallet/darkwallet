@@ -64,7 +64,7 @@
 		            </div>
 		        </div>
 		        <div class="small-2 columns text-right">
-		           {{address.balance | asBtc}} {{settings.currency}}
+		           {{address.balance | formatBtc:true}} {{settings.currency}}
 		        </div>
 		    </div>
 		   <div ng-if="nPages>1" class="pagination-centered topmargin">

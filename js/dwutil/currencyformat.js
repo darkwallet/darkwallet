@@ -50,16 +50,13 @@ CurrencyFormatting.asBtc = function(satoshis, unit) {
 /**
  * Convert satoshis to user fiat unit
  */
-CurrencyFormatting.asFiat = function(satoshis, fiatCurrency) {
-    if (!fiatCurrency) fiatCurrency = DarkWallet.getIdentity().settings.fiatCurrency;
+CurrencyFormatting.asFiat = function(satoshis, fiatCurrency, locale) {
 
     var tickerService = DarkWallet.service.ticker;
-    var decimalDigits = FiatCurrencies[fiatCurrency].decimal_digits;
 
     var rate = tickerService.rates[fiatCurrency];
     if (rate) {
-      var converted = (satoshis * rate / Math.pow(10, 8));
-      return converted.toLocaleString(undefined, {minimumFractionDigits: decimalDigits, maximumFractionDigits: decimalDigits});
+      return (satoshis * rate / Math.pow(10, 8));
     }
 }
 
@@ -100,7 +97,7 @@ CurrencyFormatting.fiatToBtc = function(amount, currency, fiatCurrency) {
 /**
  * Format satoshis into user unit
  */
-CurrencyFormatting.formatBtc = function(satoshis, unit) {
+CurrencyFormatting.formatBtc = function(satoshis, unit, hideSymbol, locale) {
     if (unit === 'smart') {
       if (String(satoshis).length > 8) {
         unit = 'BTC';
@@ -111,21 +108,29 @@ CurrencyFormatting.formatBtc = function(satoshis, unit) {
       }
     }
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
+    if (!locale) locale = DarkWallet.getIdentity().settings.language.replace('_', '-');
 
     var btcPrice = this.asBtc(satoshis, unit);
-    return btcPrice.toLocaleString() + " " + symbol[unit];
+    btcPrice = btcPrice.toLocaleString(locale);
+    if (!hideSymbol) btcPrice +=  " " + symbol[unit];
+    return btcPrice;
 }
 
 /**
  * Format satoshis to user fiat
  */
-CurrencyFormatting.formatFiat = function(satoshis, fiatCurrency) {
+CurrencyFormatting.formatFiat = function(satoshis, fiatCurrency, hideSymbol, locale) {
     if (!fiatCurrency) fiatCurrency = DarkWallet.getIdentity().settings.fiatCurrency;
+    if (!locale) locale = DarkWallet.getIdentity().settings.language.replace('_', '-');
+    
+    var decimalDigits = FiatCurrencies[fiatCurrency].decimal_digits;
 
     var converted = this.asFiat(satoshis, fiatCurrency);
     if (!(converted === undefined)) {
+        converted = converted.toLocaleString(locale, {minimumFractionDigits: decimalDigits, maximumFractionDigits: decimalDigits});
         var currency = FiatCurrencies[fiatCurrency];
-        return converted+" "+currency.symbol_native;
+        if (!hideSymbol) converted += " "+currency.symbol_native;
+        return converted;
     }
 }
 
