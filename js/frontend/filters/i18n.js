@@ -3,7 +3,7 @@
 define(['./module'], function (filters) {
 
 // Filter for presenting a satoshi amount into selected btc unit with unit label
-filters.filter('_', ['translateFilter', '$sce', function(translateFilter, $sce) {
+filters.filter('_', ['translateFilter', '$translate', '$sce', function(translateFilter, $translate, $sce) {
   
   var format = function(format, args) {
     var string = format.replace(/{(\d+)}/g, function(match, number) { 
@@ -19,6 +19,9 @@ filters.filter('_', ['translateFilter', '$sce', function(translateFilter, $sce) 
   };
   
   return function(input) {
+    if (input === undefined) {
+      return $translate.use().replace('_', '-');
+    }
     var args = Array.prototype.slice.call(arguments, 1);
     input = translateFilter(input);
     return format(input, args);

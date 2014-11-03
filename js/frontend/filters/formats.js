@@ -5,18 +5,20 @@ define(['./module', 'bitcoinjs-lib', 'util/btc', 'moment', 'darkwallet'], functi
 var convert = Bitcoin.convert;
 
 // Filter for presenting a block height as date
-filters.filter('heightToDate', function() {
+filters.filter('heightToDate', ['_Filter', function(_) {
   return function(input, format) {
     var m = moment(BtcUtils.heightToTimestamp(input, DarkWallet.service.wallet.blockDiff));
+    var identity = DarkWallet.getIdentity();
+    m.lang(identity.settings.language);
     if (format === 'calendar') {
       return m.calendar();
     }
     if (m.isAfter(Date.now()-60000)) {
-        return 'Just now';
+        return _('just now');
     }
     return m.fromNow();
   };
-});
+}]);
 
 
 moment.lang('en', {
