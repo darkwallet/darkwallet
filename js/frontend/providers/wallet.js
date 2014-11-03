@@ -80,7 +80,10 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
           n = -1;
           this.addresses[branchId].forEach(function(address) {
               if (identity.store.get('version') > 4) {
-                  n = Math.max(n, address.index[2]||0);
+                  // only count addresses of new type
+                  if (address.type === 'hd') {
+                      n = Math.max(n, address.index[2]||0);
+                  }
               } else {
                   n = Math.max(n, address.index[1]||0);
               }
