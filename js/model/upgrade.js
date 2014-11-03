@@ -79,7 +79,7 @@ function Upgrade4To5(store, identity, password) {
                 pocket.removeAddress(walletAddress);
                 // and now create a new one
                 // only for main branch and if the pocket exists
-                if (index[0]%2 === 0 && identity.wallet.pockets.hdPockets[index[0]/2]) {
+                if (index[0]%2 === 0) {
                     pocket.createAddress([index[0]/2]);
                 }
             }
