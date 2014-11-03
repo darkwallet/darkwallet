@@ -26,8 +26,7 @@ recursive('html', function (err, htmlFiles) {
         arr = arr.concat(inErrors);
       }
     });
-    arr.sort();
-    arr.forEach(function(str) {
+    arr.forEach(function(str, key) {
     if (str.indexOf('_(') >= 0) {
         str = str.slice(4,str.length-1)
     } else if (/\WError\(\[?'/.test(str)) {
@@ -36,7 +35,10 @@ recursive('html', function (err, htmlFiles) {
     } else {
         str = str.slice(2,str.length-3);
     }
-    str = str.replace("@replace@", "'");
+    arr[key] = str.replace("@replace@", "'");
+    });
+    arr.sort();
+    arr.forEach(function(str) {
       obj[str] = str;
     });
     console.log(beautify(JSON.stringify(obj)));
