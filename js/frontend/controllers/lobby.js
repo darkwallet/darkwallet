@@ -192,10 +192,13 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       var availableChannels = Object.keys(transport.channels);
       if (!selectedChannel && availableChannels.length) {
-          // should remember the last connected channel but for
-          // now reconnect the last
-          var lastChannel = transport.channels[availableChannels[availableChannels.length-1]];
-          selectedChannel = lastChannel.name;
+          // connect to the first not called coinjoin
+          availableChannels.some(function(name, i) {
+              if (name.slice(0, 8) !== 'CoinJoin') {
+                  selectedChannel = name;
+                  return true;
+              }
+          });
       }
 
       $scope.subscribed = false;
