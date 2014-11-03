@@ -8,7 +8,7 @@ filters.filter('amountFilter', function() {
     var value = CurrencyFormatting.asBtc(input);
 
     var prefix = (value>=0) ? '+' : '-';
-    return prefix + CurrencyFormatting.addThousands(Math.abs(value));
+    return prefix + Math.abs(value).toLocaleString();
   };
 });
 
@@ -23,7 +23,7 @@ filters.filter('asFiat', function() {
 // Filter for presenting a satoshi amount into selected btc unit
 filters.filter('asBtc', function() {
   return function(input) {
-    return CurrencyFormatting.addThousands(CurrencyFormatting.asBtc(input));
+    return CurrencyFormatting.asBtc(input).toLocaleString();
   };
 });
 
