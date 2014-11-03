@@ -82,7 +82,7 @@ Desktop.ini
 /vendors/moment/*
 !/vendors/moment/min/
 /vendors/moment/min/*
-!/vendors/moment/min/moment-with-langs.min.js
+!/vendors/moment/min/moment-with-locales.min.js
 /vendors/big.js/*
 !/vendors/big.js/big.min.js
 

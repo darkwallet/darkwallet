@@ -9,7 +9,7 @@ filters.filter('heightToDate', ['_Filter', function(_) {
   return function(input, format) {
     var m = moment(BtcUtils.heightToTimestamp(input, DarkWallet.service.wallet.blockDiff));
     var identity = DarkWallet.getIdentity();
-    m.lang(identity.settings.language);
+    m.locale(identity.settings.language);
     if (format === 'calendar') {
       return m.calendar();
     }
@@ -21,7 +21,7 @@ filters.filter('heightToDate', ['_Filter', function(_) {
 }]);
 
 
-moment.lang('en', {
+moment.localeData('en', {
     relativeTime : {
         future: "in %s",
         past:   "%s ago",

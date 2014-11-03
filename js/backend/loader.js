@@ -14,7 +14,7 @@ require.config({
     'angular-xeditable': '../vendors/angular-xeditable/dist/js/xeditable.min',
     'angular-translate': '../vendors/angular-translate/angular-translate.min',
     'angular-translate-loader-static-file': '../vendors/angular-translate-loader-static-files/angular-translate-loader-static-files.min',
-    'moment': '../vendors/moment/min/moment-with-langs.min',
+    'moment': '../vendors/moment/min/moment-with-locales.min',
     'angular-moment': '../vendors/angular-moment/angular-moment.min',
     'mnemonicjs': "../vendors/mnemonic.js/mnemonic",
     'ngProgress': "../vendors/ngprogress/build/ngProgress",
