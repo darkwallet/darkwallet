@@ -8,7 +8,7 @@ define(['./module', 'darkwallet', 'model/upgrade'], function (controllers, DarkW
             if (Upgrade(identity.store.store, identity, password)) {
                 if (identity.store.get('version') === 5) {
                     identity.store.save();
-                    notify.warning('Reseed successfull');
+                    notify.success('Reseed successfull');
                     $scope.clearAlert();
                 } else {
                     notify.warning('Could not finish reseeding');
