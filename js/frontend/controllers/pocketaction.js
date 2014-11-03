@@ -4,13 +4,14 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (controllers, DarkWallet, CurrencyFormat, sjcl) {
-  controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', '$location', '_Filter', function($scope, modals, notify, $history, $location, _) {
+  controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', '$location', '_Filter', 'pocketFilter',
+      function($scope, modals, notify, $history, $location, _, pocketFilter) {
 
     /**
      * Delete pocket
      */
     $scope.deletePocket = function(pocket) {
-        modals.open('confirm-delete', {name: pocket.name, object: pocket}, $scope.deletePocketFinish)
+        modals.open('confirm-delete', {name: pocketFilter(pocket.name), object: pocket}, $scope.deletePocketFinish)
     };
 
     /**

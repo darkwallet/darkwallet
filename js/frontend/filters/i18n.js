@@ -28,4 +28,14 @@ filters.filter('_', ['translateFilter', '$translate', '$sce', function(translate
   };
 }]);
 
+filters.filter('pocket', ['_Filter', function(_) {
+    return function(input) {
+        // _('spending'), _('business'), _('savings')
+        if(['spending', 'business', 'savings'].indexOf(input) >= 0) {
+            input = _(input);
+        }
+        return input;
+    };
+}]);
+
 });
