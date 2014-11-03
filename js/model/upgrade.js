@@ -8,6 +8,10 @@ define(['util/btc', 'bitcoinjs-lib'], function(BtcUtils, Bitcoin) {
 var DW_NS = 'dw:identity:';
 
 function Upgrade4To5(store, identity, password) {
+    if (identity.store.get('old-mpk')) {
+        console.log("Double reseed?");
+        return false;
+    }
     // 1. adapt private keys
     var privData = identity.store.getPrivateData(password);
     var oldPrivKey = privData.privKey;
