@@ -125,8 +125,13 @@ HdPocket.prototype.createAddress = function(seq, label) {
     // clone seq since we're mangling it
     var workSeq = seq.slice(0);
 
+    // still allow creating old addresses for compat reasons
+    var oldStyle = (seq.length === 2);
+
+    var version = wallet.store.get('version');
+
     // derive from mpk
-    if (wallet.store.get('version') > 4) {
+    if (version > 4 && !oldStyle) {
         mpKey = Bitcoin.HDNode.fromBase58(this.store.mpk);
         workSeq.shift(); // starting from the pocket node
     } else {
@@ -139,9 +144,8 @@ HdPocket.prototype.createAddress = function(seq, label) {
         childKey = childKey.derive(workSeq.shift());
     }
     var properties = {};
-    var version = wallet.store.get('version');
     // set type
-    if (version > 4) {
+    if (version > 4 && !oldStyle) {
         var properties = { type: ((seq.length === 1) ? 'pocket' : 'hd') };
     }
     // set label
