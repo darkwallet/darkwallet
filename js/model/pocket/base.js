@@ -40,7 +40,7 @@ BasePocket.prototype.removeAddress = function(walletAddress) {
         this.walletAddresses.splice(i, 1);
         if (this.addresses[i] !== walletAddress.address) {
             // consistency must be maintained
-            throw new Error("pocket index mismatch!");
+            throw new Error('pocket index mismatch!');
         }
         this.addresses.splice(i, 1);
     }

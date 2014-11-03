@@ -189,7 +189,7 @@ Contacts.prototype.addContact = function (contact) {
 Contacts.prototype.deleteContact = function (contact) {
   var i = this.contacts.indexOf(contact);
   if (i === -1) {
-    throw new Error("Contact does not exist!");
+    throw new Error('Contact does not exist!');
   }
   this._contacts.splice(this._contacts.indexOf(contact.data), 1);
   this.contacts.splice(i, 1);

@@ -23,7 +23,7 @@ define(function () {
                   port.postMessage({type: 'portConnected'});
                 }, onDisconnect: onDisconnect};
             } else {
-                throw Error("Service with duplicate name!");
+                throw Error('Service with duplicate name!');
             }
             chrome.runtime.onConnect.addListener(function(port) {
               if (port.name == name) {

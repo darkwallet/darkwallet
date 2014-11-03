@@ -145,7 +145,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
    */
   Channel.prototype.requestPublicKey = function(fingerprint) {
       if (fingerprint === this.fingerprint) {
-          throw new Error("Requesting my own public key");
+          throw new Error('Requesting my own public key');
       }
       if (this.requested.indexOf(fingerprint) > -1) {
           console.log("[catchan] dropping request since already requested");

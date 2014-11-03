@@ -17,19 +17,19 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
       var initHead = text.indexOf(SIGHEADER);
 
       if (initHead == -1) {
-          throw Error(_('Not a bitcoin signed message'));
+          throw Error('Not a bitcoin signed message');
       }
       var message = text.substring(initHead);
       var initText = message.indexOf('\n\n');
       var initSigHead = message.indexOf(SIGINIT);
       if (initSigHead == -1) {
-          throw Error(_('Message is incomplete'));
+          throw Error('Message is incomplete');
       }
       var initSig = message.substring(initSigHead).indexOf('\n\n');
       var endSig = message.indexOf(SIGEND);
 
       if (endSig == -1) {
-          throw Error(_('Message is incomplete'));
+          throw Error('Message is incomplete');
       }
       var initAddress = message.indexOf('Address: ');
       var endAddress = message.substring(initAddress).indexOf('\n');

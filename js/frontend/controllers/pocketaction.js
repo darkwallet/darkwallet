@@ -201,7 +201,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
             to = pocket.name;
             address = pocket.getFreeAddress().address;
         } else {
-            throw Error(_('Invalid type while moving funds!'));
+            throw Error('Invalid type while moving funds!');
         }
 
         // Prepare transaction

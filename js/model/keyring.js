@@ -26,7 +26,7 @@ IdentityKeyRing.prototype.get = function(name, callback) {
     } else if (this.availableIdentities.indexOf(name) != -1) {
         this.load(name, callback);
     } else {
-        throw Error("Identity doesn't exist");
+        throw Error('Identity doesn\'t exist');
     }
 };
 
@@ -39,7 +39,7 @@ IdentityKeyRing.prototype.remove = function(name, callback) {
     var self = this;
     var idx = this.availableIdentities.indexOf(name);
     if (idx == -1) {
-        throw Error("The identity doesn't exist!");
+        throw Error('The identity doesn\'t exist!');
     }
     // Close the identity
     if (this.identities[name]) {
@@ -77,7 +77,7 @@ IdentityKeyRing.prototype.close = function(name) {
 IdentityKeyRing.prototype.rename = function(name, newName, callback) {
     var self = this;
     if (!this.identities[name]) {
-        throw Error("Identity must be loaded to rename");
+        throw Error('Identity must be loaded to rename');
     }
     var store = this.identities[name].store;
     var oldIdx = this.availableIdentities.indexOf(name);
@@ -167,7 +167,7 @@ IdentityKeyRing.prototype.load = function(name, callback) {
             } catch(e) {
                 // show the inner exception
                 console.log(e.stack);
-                throw Error("Critical Error: Loading Identity")
+                throw Error('Critical error loading identity')
             }
             if (callback) {
                 callback(self.identities[name]);

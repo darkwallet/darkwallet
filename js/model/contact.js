@@ -146,7 +146,7 @@ Contact.prototype.addKey = function (data, label, main) {
  */
 Contact.prototype.setMainKey = function (index) {
     if (index >= this.pubKeys.length) {
-       throw new Error("Key does not exist");
+       throw new Error('Key does not exist');
     }
     this.data.mainKey = index;
     this.updateHash();
@@ -180,7 +180,7 @@ Contact.prototype.updateKey = function (data, index) {
 
   if (!this.pubKeys.length) {
       if (index) {
-          throw new Error("Trying to update key with index from contact with no keys");
+          throw new Error('Trying to update key with index from contact with no keys');
       }
       this.pubKeys.push(newKey);
   } else {

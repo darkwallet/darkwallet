@@ -233,7 +233,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       var address = pending[0].address;
       var multisig = identity.wallet.multisig.search({address: address});
       if (!multisig) {
-          throw new Error("The selected multisig does not exist");
+          throw new Error('The selected multisig does not exist');
       }
       var task = this.prepareTask({}, multisig);
       task.tx = txHex;
@@ -322,7 +322,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       var multisig = identity.wallet.multisig.search({address: address});
       if (!multisig) {
           return;
-          // throw Error("The selected multisig does not exist");
+          // throw Error('The selected multisig does not exist');
       }
       var fund = new MultisigFund(multisig);
 
@@ -348,7 +348,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       var multisig = identity.wallet.multisig.search({address: address});
       if (!multisig) {
           return;
-          // throw Error("The selected multisig does not exist");
+          // throw Error('The selected multisig does not exist');
       }
       var prev = identity.tasks.search('multisig', 'tx', txHex);
       if (!prev) {

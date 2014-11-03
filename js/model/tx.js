@@ -57,7 +57,7 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
             throw new Error(e);
         } else {
             // Otherwise it must be a javascript error
-            throw new Error('Error sending: ' + e);
+            throw new Error(['Error sending: {0}', e.message]);
         }
     }
 
@@ -175,7 +175,7 @@ Transaction.prototype.signMyInputs = function(inputs, newTx, privKeys) {
             continue;
         }
         if (found.length !== 1) {
-            throw new Error("Duplicate input found!");
+            throw new Error('Duplicate input found!');
         }
         var inId = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index;
         if (wallet.wallet.outputs[inId]) {

@@ -31,7 +31,7 @@ define(['bitcoinjs-lib', 'util/stealth', 'crypto-js'], function(Bitcoin, Stealth
      * Get the address for an input
      */
     getInputAddress: function(anIn, versions) {
-        if (!versions) throw Error("No versions!");
+        if (!versions) throw ReferenceError('versions is not defined');
         var address = Bitcoin.Address.fromInputScript(anIn.script, Bitcoin.networks[versions.network]);
         return address ? address.toString() : address;
     },
@@ -194,7 +194,7 @@ define(['bitcoinjs-lib', 'util/stealth', 'crypto-js'], function(Bitcoin, Stealth
             bytes = mpKey.pubKey.toBytes(false);
         } else {
             // Unknown
-            throw Error("Can't decode address for multisig with length " + address.length);
+            throw Error(['Can\'t decode address for multisig with length {0}', address.length]);
         }
         // Decompress if needed
         if (!compressed && bytes.length == 33) {

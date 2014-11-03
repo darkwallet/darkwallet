@@ -453,20 +453,20 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           var output = identity.wallet.wallet.outputs[Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index];
           // we're only adding keyhash inputs for now
           if (!output) {
-              throw new Error("Invalid input in our join (no output)");
+              throw new Error('Invalid input in our join (no output)');
           }
           var walletAddress = identity.wallet.getWalletAddress(output.address);
 
           // only normal addresses supported for now
           if (!walletAddress || ['stealth', 'hd', 'pocket', undefined].indexOf(walletAddress.type) === -1) {
-              throw new Error("Invalid input in our join (bad address)");
+              throw new Error('Invalid input in our join (bad address)');
           }
           // skip if we already got this key
           if (privKeys[walletAddress.index]) {
               continue;
           }
           if (Math.floor(walletAddress.index[0]/2) !== pocketIndex) {
-              throw new Error("Address from an invalid pocket");
+              throw new Error('Address from an invalid pocket');
           }
           // derive this key
           var change = walletAddress.index[0]%2 === 1;

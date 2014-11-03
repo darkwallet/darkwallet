@@ -15,16 +15,27 @@ recursive('html', function (err, htmlFiles) {
       data = data.replace(/\\'/g, "@replace@");
       var inHtml = data.match(/[\{\(]'[^']*'\|_/g);
       var inJs = data.match(/\W_\('[^']*'/g);
+      var inErrors = data.match(/\WError\(\[?'[^']*'/g)
       if (inHtml) {
         arr = arr.concat(inHtml);
       }
       if (inJs) {
         arr = arr.concat(inJs);
       }
+      if (inErrors) {
+        arr = arr.concat(inErrors);
+      }
     });
     arr.sort();
     arr.forEach(function(str) {
-    str = str.indexOf('_(') >= 0 ? str.slice(4,str.length-1): str.slice(2,str.length-3);
+    if (str.indexOf('_(') >= 0) {
+        str = str.slice(4,str.length-1)
+    } else if (/\WError\(\[?'/.test(str)) {
+        str = str.slice(0,str.length-1);
+        str = str.replace(/^\WError\(\[?'/, '');
+    } else {
+        str = str.slice(2,str.length-3);
+    }
     str = str.replace("@replace@", "'");
       obj[str] = str;
     });
