@@ -79,7 +79,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
           for(var i=0; i<=maxIndex[branchId]; i++) {
               var seq = oldStyle ? [branchId, i] : [pocketIndex, branchId%2, i];
               if (!identity.wallet.pubKeys[seq]) {
-                  $wallet.generateAddress(pocketIndex, i, branchId%2);
+                  $wallet.generateAddress(pocketIndex, i, branchId%2, oldStyle);
               } else {
                   console.log("Already exists!");
               }

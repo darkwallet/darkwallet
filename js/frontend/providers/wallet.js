@@ -62,9 +62,10 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
    * Generates (or load from cache) a new address
    * @param {Integer} branchId
    * @param {Integer} n
+   * @param {Boolean} oldStyle generate old style address
    * @returns {Object} Wallet address struct
    */
-  WalletProvider.prototype.generateAddress = function(pocketId, n, change) {
+  WalletProvider.prototype.generateAddress = function(pocketId, n, change, oldStyle) {
       change = change || 0;
       var identity = DarkWallet.getIdentity();
       if (!pocketId) {
@@ -91,7 +92,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
           n += 1;
       }
       var seq;
-      if (identity.store.get('version') > 4) {
+      if (identity.store.get('version') > 4 && !oldStyle) {
           seq = [pocketId, change, n];
       } else {
           seq = [branchId, n];
