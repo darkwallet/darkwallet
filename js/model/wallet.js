@@ -275,7 +275,7 @@ Wallet.prototype.getAddress = function(seq, label) {
     }
     else {
         var pocket;
-        if (this.store.get('version') > 4) {
+        if (this.store.get('version') > 4 && seq.length !== 2) {
             pocket = this.pockets.getPocket(seq[0], 'hd');
         } else {
             pocket = this.pockets.getPocket(Math.floor(seq[0]/2), 'hd');
