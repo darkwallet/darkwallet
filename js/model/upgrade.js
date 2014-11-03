@@ -74,12 +74,18 @@ function Upgrade4To5(store, identity, password) {
         index = walletAddress.index;
         if (index.length === 1 && walletAddress.type === undefined) {
             var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
-            // first remove the old address
-            pocket.removeAddress(walletAddress);
-            // and now create a new one
-            // only for main branch and if the pocket exists
-            if (index[0]%2 === 0 && identity.wallet.pockets.hdPockets[index[0]/2]) {
-                pocket.createAddress([index[0]/2]);
+            if (pocket) {
+                // first remove the old address
+                pocket.removeAddress(walletAddress);
+                // and now create a new one
+                // only for main branch and if the pocket exists
+                if (index[0]%2 === 0 && identity.wallet.pockets.hdPockets[index[0]/2]) {
+                    pocket.createAddress([index[0]/2]);
+                }
+            }
+            else {
+                // if the pocket doesn't exist just delete the address
+                identity.wallet.deleteAddress(index);
             }
         }
         // also set all stealth as oldstealth
