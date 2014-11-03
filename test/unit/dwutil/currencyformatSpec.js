@@ -12,7 +12,8 @@ define(['testUtils'], function (testUtils) {
           return {
             settings: {
               currency: 'BTC',
-              fiatCurrency: 'EUR'
+              fiatCurrency: 'EUR',
+              language: 'en_US'
             }
           };
         },
@@ -48,8 +49,8 @@ define(['testUtils'], function (testUtils) {
     });
      
     it('converts satoshis to user fiat unit', function() {
-      expect(CurrencyFormatting.asFiat(400000)).toBe('1.40');
-      expect(CurrencyFormatting.asFiat(400000, 'USD')).toBe('1.93');
+      expect(CurrencyFormatting.asFiat(400000)).toBe(1.4);
+      expect(CurrencyFormatting.asFiat(400000, 'USD')).toBe(1.928);
     });
     
     it('converts btc to fiat', function() {

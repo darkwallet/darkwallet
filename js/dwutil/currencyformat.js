@@ -55,8 +55,9 @@ CurrencyFormatting.asBtc = function(satoshis, unit) {
 /**
  * Convert satoshis to user fiat unit
  */
-CurrencyFormatting.asFiat = function(satoshis, fiatCurrency, locale) {
-
+CurrencyFormatting.asFiat = function(satoshis, fiatCurrency) {
+    if (!fiatCurrency) fiatCurrency = DarkWallet.getIdentity().settings.fiatCurrency;
+    
     var tickerService = DarkWallet.service.ticker;
 
     var rate = tickerService.rates[fiatCurrency];

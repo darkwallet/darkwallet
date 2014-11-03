@@ -74,7 +74,7 @@ define(['angular-mocks', 'testUtils', 'date-mock'], function(mocks, testUtils, d
           $provide.value('$wallet', walletProvider);
           $provide.value('$rootScope', {$new: function() {return scope;}});
           $provide.value('$location', {});
-          $provide.value('_Filter', function(s, x, y) {return s.replace(/\{0\}/, x);});
+          $provide.value('_Filter', function(s, x, y) { if(s) return s.replace(/\{0\}/, x);});
         });
         
         mocks.inject(['$history', '$wallet', '$rootScope',
