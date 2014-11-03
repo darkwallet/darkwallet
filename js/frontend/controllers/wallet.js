@@ -129,6 +129,11 @@ function (controllers, DarkWallet, Port) {
           return false;
       }
 
+      if (DarkWallet.core.servicesStatus.apiVersion !== DarkWallet.apiVersion) {
+          $scope.alert = 'api'
+          return false;
+      }
+
       if (identity.reseed) {
           $scope.alert = 'reseed';
       } else {

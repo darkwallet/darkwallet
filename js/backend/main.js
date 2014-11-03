@@ -4,6 +4,7 @@
 'use strict';
 
 require([
+    'darkwallet',
     'backend/port',
     'backend/services/crypto',
     'backend/services/lobby',
@@ -19,9 +20,9 @@ require([
     'backend/services/notifier',
     'backend/services/content',
     'backend/services/ctxmenus'],
-    function(Port) {
+    function(DarkWallet, Port) {
 
-var serviceClasses = [].splice.call(arguments, 1);
+var serviceClasses = [].splice.call(arguments, 2);
 
 function DarkWalletService(serviceClasses) {
     var self = this;
@@ -130,8 +131,9 @@ DarkWalletService.prototype.initializeServices = function(serviceClasses) {
             }()
         });
     };
-    
-    this.servicesStatus = { gateway: 'offline', obelisk: 'offline' };
+
+    // We save the apiVersion here so we can check what version the backend is running
+    this.servicesStatus = { gateway: 'offline', obelisk: 'offline', apiVersion: DarkWallet.apiVersion };
     return services;
 };
 

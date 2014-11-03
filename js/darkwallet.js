@@ -8,6 +8,15 @@ define(function() {
 var DarkWallet = {
 
     /**
+     * Internal api version. Gets saved by the backend as servicesStatus.apiVersion,
+     * so frontend code can see if the backend needs to be restarted.
+     * check like:
+     *
+     *  DarkWallet.apiVersion === DarkWallet.core.servicesStatus.apiVersion
+     */
+    apiVersion: 5,
+
+    /**
      * Get the wallet service.
      * 
      * @returns {Object}
