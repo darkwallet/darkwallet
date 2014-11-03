@@ -111,7 +111,40 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       }
   };
 
+  var generateOldKeys = function(identity, password) {
+      // generate old dw style keyring mpk and privkey
+      var keyStore = identity.store.getPrivateData(password);
+      var seed = keyStore.seed;
+      var mKey = Bitcoin.HDNode.fromSeedHex(seed, Bitcoin.networks[identity.wallet.network]);
+      var rootKey = rootKey.deriveHardened(0);
+
+      var pubKey = rootKey.toBase58(false);
+      var privKey = rootKey.toBase58(true);
+
+      // Initialize the scan public key here for now...
+      var scanKey = rootKey.deriveHardened(0);
+      var scanPubKey = scanKey.toBase58(false);
+      var scanPrivKey = scanKey.toBase58(true);
+
+      // save the old private master on the keyring
+      keyStore.oldPrivKey = privKey;
+      identity.store.setPrivateData(keyStore, password);
+
+      // set old mpk and scankeys on identity
+      identity.wallet.oldMpk = pubKey;
+      identity.wallet.oldScanKeys = [{pub: scanPubKey, priv: scanPrivKey}];
+
+      // set on store
+      this.store.set('old-scankeys', identity.wallet.oldScanKeys);
+      this.store.set('old-mpk', identity.wallet.oldMpk);
+  };
+
   var runScanner = function(client, identity, password) {
+      // if scanning for old keys on a bip44 keyring need to generate the oldMpk
+      if (identity.store.get('version') > 4 && $scope.scanParams.scanOld && !identity.wallet.oldMpk) {
+          generateOldKeys(identity, password);
+      }
+      // Now setup the scanner
       var scanMaster = false, masterKey = null;
       if (identity.store.get('version') > 4 && !$scope.scanParams.scanOld) {
            // new style
@@ -143,7 +176,9 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       var client = DarkWallet.getClient();
       if (client) {
           var identity = DarkWallet.getIdentity();
-          if (identity.store.get('version') > 4 && !$scope.scanParams.scanOld) {
+          // we need to ask for password if scanning bip44 keyring, or first time scanning for
+          // old addresses if we don't have the old mpk available
+          if ((identity.store.get('version') > 4 && !$scope.scanParams.scanOld) || (identity.store.get('version') > 4 && $scope.scanParams.scanOld && !identity.wallet.oldMpk)) {
               modals.password(_('Write your password for scanning'), function(password) {
                   runScanner(client, identity, password);
               });
