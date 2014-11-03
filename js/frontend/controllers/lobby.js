@@ -305,7 +305,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   var onSent = function(err) {
       if (err) {
-          notify.error(_('error sending'), err);
+          notify.error(_('error sending'), _(err));
       }
   };
 

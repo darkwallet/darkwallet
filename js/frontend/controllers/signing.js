@@ -77,7 +77,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
           try {
               parsed = parseText(text);
           } catch(e) {
-              notify.error(_('Error decoding'), e.message);
+              notify.error(_('Error decoding'), _(e.message));
               return;
           }
           sigText = parsed.signature;
@@ -146,7 +146,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'util/stealth'], function (co
                   Stealth.quirk = false;
               } catch (e) {
                   Stealth.quirk = false;
-                  notify.error(_('Incorrect password'), e.message);
+                  notify.error(_('Incorrect password'), _(e.message));
               }
           } );
       }

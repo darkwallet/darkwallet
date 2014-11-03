@@ -36,19 +36,19 @@ define(['./module', 'frontend/port'], function (controllers, Port) {
           $scope.currentHeight = data.value;
       }
       else if (data.type == 'text' || data.type == 'note') {
-          notify.note('gui', data.text);
+          notify.note('gui', _(data.text));
       }
       else if (data.type == 'error') {
-          notify.error(data.title || 'gui', data.text);
+          notify.error(_(data.title) || 'gui', _(data.text));
       }
       else if (data.type == 'mixer') {
-          notify.note(_('mixing'), data.state);
+          notify.note(_('mixing'), _(data.state));
           if (!$scope.$$phase) {
               $scope.$apply();
           }
       }
       else if (data.type == 'warning') {
-          notify.warning('gui', data.text);
+          notify.warning('gui', _(data.text));
       }
       if (['height', 'balance', 'timestamps'].indexOf(data.type) > -1) {
           scheduleRefresh();

@@ -112,7 +112,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
                     }
                 } catch(e) {
                     if ($scope.settings.advanced) {
-                        notify.warning(_('Invalid password'), e.message || ""+e)
+                        notify.warning(_('Invalid password'), _(e))
                     } else {
                         notify.warning(_('Invalid Password'))
                     }
@@ -220,7 +220,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
            var sent = false;
            walletService.signTransaction(metadata.tx, metadata, password, function(err, count) {
                if (err) {
-                   notify.error(err.message || ""+err);
+                   notify.error(_(err));
                }
                if (count>0.2 && !sent) {
                    sent = true;

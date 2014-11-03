@@ -22,6 +22,9 @@ filters.filter('_', ['translateFilter', '$translate', '$sce', function(translate
     if (input === undefined) {
       return $translate.use().replace('_', '-');
     }
+    if (typeof input !== 'string' && input.message) {
+      input = input.message;
+    }
     var args = Array.prototype.slice.call(arguments, 1);
     input = translateFilter(input);
     return format(input, args);

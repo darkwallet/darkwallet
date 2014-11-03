@@ -100,7 +100,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
   // Scan finished callback
   var onScanFinish = function(err, results, pocketAddressesUsed, password) {
       if (err) {
-          notify.error(_('Scanning'), err.message || ""+err);
+          notify.error(_('Scanning'), _(err));
       } else {
           $scope.scanning = false;
           $scope.scanStatus = $scope.scanner.status;

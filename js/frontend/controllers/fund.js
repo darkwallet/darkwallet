@@ -31,7 +31,7 @@ function (controllers, DarkWallet) {
       try {
           added = fund.importSignature(form.text, task);
       } catch(e) {
-          notify.error(e.message);
+          notify.error(_(e.message));
           return;
       }
 
@@ -62,7 +62,7 @@ function (controllers, DarkWallet) {
       try {
           frontTask = fund.importTransaction(form.newTx);
       } catch(e) {
-          notify.error(_('Error importing'), e.message);
+          notify.error(_('Error importing'), _(e.message));
           return;
       }
 
@@ -105,7 +105,7 @@ function (controllers, DarkWallet) {
       try {
           signed = fund.signTxForeign(foreignKey, task);
       } catch (e) {
-          notify.error(_('Error importing'), e.message);
+          notify.error(_('Error importing'), _(e.message));
       }
 
       if (!signed) {

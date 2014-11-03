@@ -114,7 +114,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
         try {
             data = sjcl.decrypt($scope.password, backupFile);
         } catch(e) {
-            $scope.error = _('Bad password: ') + e.message;
+            $scope.error = _('Bad password: ') + _(e.message);
             return;
         }
         // Stage 2: Parse json

@@ -4,12 +4,12 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   controllers.controller('ReceiveStealthCtrl', ['$scope', 'notify', '$wallet', '_Filter', function($scope, notify, $wallet, _) {
   // function to receive stealth information
   $scope.receiveStealth = function() {
-      notify.note("stealth", "initializing");
+      notify.note(_('fetching stealth'), _('initializing'));
 
       // Callback for detected addresses
       var onStealth = function(error, addresses) {
           if (error) {
-              notify.error(_('Error fetching stealth'), error.message||error);
+              notify.error(_('Error fetching stealth'), _(error));
               //write_to_screen('<span style="color: red;">ERROR:</span> ' + error);
               return;
           }

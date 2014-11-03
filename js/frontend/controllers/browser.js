@@ -78,7 +78,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
   var onFetchTransaction = function(err, data) {
       $scope.fetching = false;
       if (err) {
-          notify.warning(_('Transaction not found'), err.message);
+          notify.warning(_('Transaction not found'), _(err.message));
           return;
       } else {
           $scope.txName = $scope.txHash;
@@ -124,7 +124,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
   var onFetchHistory = function(err, history) {
       $scope.fetching = false;
       if (err) {
-          notify.warning(_('Address not found!'), err.message);
+          notify.warning(_('Address not found!'), _(err.message));
           return;
       } else {
           $scope.txName = '';
