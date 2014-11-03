@@ -44,10 +44,10 @@
           <a class="button fa fa-sitemap postfix" href="#browser">{{'Browser'|_}}</a>
           <h5>{{'Stealth'|_}}</h5>
         <div ng-controller="ReceiveStealthCtrl">
-          <a class="button fa fa-fighter-jet postfix" ng-click="modals.open('confirm', {message: 'Scan complete stealth history', detail: 'This can take a long time, are you sure?'}, receiveStealth);">Receive Stealth</a>
+          <a class="button fa fa-fighter-jet postfix" ng-click="modals.open('confirm', {message: 'Scan complete stealth history', detail: 'This can take a long time, are you sure?'}, receiveStealth);">{{'Receive Stealth'|_}}</a>
         </div>
           <h5>{{'Storage'|_}}</h5>
-          <a class="button fa fa-eraser postfix" ng-click="modals.open('confirm', {message: 'Clear notifications', detail: 'This will clear all pending notifications, are you sure?'}, clearTasks);">Clear Notifications</a>
+          <a class="button fa fa-eraser postfix" ng-click="modals.open('confirm', {message: 'Clear notifications', detail: 'This will clear all pending notifications, are you sure?'}, clearTasks);">{{'Clear Notifications'|_}}</a>
           <a class="button fa fa-trash-o postfix alert" ng-click="clearStorage();">{{'Clear Storage'|_}}</a>
 
       </div>
