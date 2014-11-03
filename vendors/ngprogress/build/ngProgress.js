@@ -1,9 +1,9 @@
 /*
-ngProgress 1.0.3 - slim, site-wide progressbar for AngularJS 
+ngProgress 1.0.7 - slim, site-wide progressbar for AngularJS 
 (C) 2013 - Victor Bjelkholm 
 License: MIT 
 Source: https://github.com/VictorBjelkholm/ngProgress 
-Date Compiled: 2013-09-13 
+Date Compiled: 2014-09-26 
 */
 angular.module('ngProgress.provider', ['ngProgress.directive'])
     .provider('ngProgress', function () {
@@ -23,12 +23,12 @@ angular.module('ngProgress.provider', ['ngProgress.directive'])
                 height = this.height,
                 color = this.color,
                 $scope = $rootScope,
-                $body = $document.find('body');
+                parent = $document.find('body')[0];
 
             // Compile the directive
             var progressbarEl = $compile('<ng-progress></ng-progress>')($scope);
             // Add the element to body
-            $body.append(progressbarEl);
+            parent.appendChild(progressbarEl[0]);
             // Set the initial height
             $scope.count = count;
             // If height or color isn't undefined, set the height, background-color and color.
@@ -41,6 +41,7 @@ angular.module('ngProgress.provider', ['ngProgress.directive'])
             }
             // The ID for the interval controlling start()
             var intervalCounterId = 0;
+            var animation;
             return {
                 // Starts the animation and adds between 0 - 5 percent to loading
                 // each 400 milliseconds. Should always be finished with progressbar.complete()
@@ -50,6 +51,7 @@ angular.module('ngProgress.provider', ['ngProgress.directive'])
                     // https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame
                     this.show();
                     var self = this;
+                    clearInterval(intervalCounterId);
                     intervalCounterId = setInterval(function () {
                         if (isNaN(count)) {
                             clearInterval(intervalCounterId);
@@ -95,17 +97,24 @@ angular.module('ngProgress.provider', ['ngProgress.directive'])
                 hide: function () {
                     progressbarEl.children().css('opacity', '0');
                     var self = this;
-                    $timeout(function () {
+                    self.animate(function () {
                         progressbarEl.children().css('width', '0%');
-                        $timeout(function () {
+                        self.animate(function () {
                             self.show();
                         }, 500);
                     }, 500);
                 },
                 show: function () {
-                    $timeout(function () {
+                    var self = this;
+                    self.animate(function () {
                         progressbarEl.children().css('opacity', '1');
                     }, 100);
+                },
+                // Cancel any prior animations before running new ones.
+                // Multiple simultaneous animations just look weird.
+                animate: function(fn, time) {
+                    if(animation) { $timeout.cancel(animation); }
+                    animation = $timeout(fn, time);
                 },
                 // Returns on how many percent the progressbar is at. Should'nt be needed
                 status: function () {
@@ -140,6 +149,7 @@ angular.module('ngProgress.provider', ['ngProgress.directive'])
                     count = 100;
                     this.updateCount(count);
                     var self = this;
+                    clearInterval(intervalCounterId);
                     $timeout(function () {
                         self.hide();
                         $timeout(function () {
@@ -148,14 +158,31 @@ angular.module('ngProgress.provider', ['ngProgress.directive'])
                         }, 500);
                     }, 1000);
                     return count;
+                },
+                //set the parent of the directive, sometimes body is not sufficient
+                setParent: function(newParent) {
+                    if(newParent === null || newParent === undefined) {
+                        throw new Error('Provide a valid parent of type HTMLElement');
+                    }
+                    
+                    if(parent !== null && parent !== undefined) {
+                        parent.removeChild(progressbarEl[0]);
+                    }   
+
+                    parent = newParent;
+                    parent.appendChild(progressbarEl[0]);
+                },
+                getDomElement: function () {
+                    return progressbarEl;
                 }
             };
         }];
-
+        
         this.setColor = function (color) {
             if (color !== undefined) {
                 this.color = color;
             }
+            
             return this.color;
         };
 
@@ -163,6 +190,7 @@ angular.module('ngProgress.provider', ['ngProgress.directive'])
             if (height !== undefined) {
                 this.height = height;
             }
+            
             return this.height;
         };
     });
