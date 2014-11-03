@@ -57,7 +57,7 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
             throw new Error(e);
         } else {
             // Otherwise it must be a javascript error
-            throw new Error(['Error sending: {0}', e.message]);
+            throw new Error('Error sending: {0}|'+ e.message);
         }
     }
 

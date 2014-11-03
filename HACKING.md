@@ -80,7 +80,13 @@ You can use **strong** and *emphasis* markdown formatting syntax:
 <p ng-bind-html="('I love *darkwallet*'|_)"></p>
 ```
 
-When you add or modify a new language string, run the following command:
+Javascript errors are also translatable, separing the parameters using | inside the same string.
+
+```js
+throw new Error('Test error with some colors: {0}, {1} and {2}|'+['red', 'green', 'blue'].join('|'));
+```
+
+When you add or modify a language string, run the following command:
 
 ```sh
 $ npm run i18n-update

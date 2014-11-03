@@ -23,9 +23,15 @@ filters.filter('_', ['translateFilter', '$translate', '$sce', function(translate
       return $translate.use().replace('_', '-');
     }
     if (typeof input !== 'string' && input.message) {
-      input = input.message;
+        input = input.message;
     }
-    var args = Array.prototype.slice.call(arguments, 1);
+    
+    var args;
+    if (input.indexOf('|')) {
+      args = input.split('|');
+      input = args.shift();
+    }
+    args = args || Array.prototype.slice.call(arguments, 1);
     input = translateFilter(input);
     return format(input, args);
   };

@@ -15,7 +15,7 @@ recursive('html', function (err, htmlFiles) {
       data = data.replace(/\\'/g, "@replace@");
       var inHtml = data.match(/[\{\(]'[^']*'\|_/g);
       var inJs = data.match(/\W_\('[^']*'/g);
-      var inErrors = data.match(/\WError\(\[?'[^']*'/g)
+      var inErrors = data.match(/\WError\(\'[^'|]*['|]/g)
       if (inHtml) {
         arr = arr.concat(inHtml);
       }
@@ -29,9 +29,8 @@ recursive('html', function (err, htmlFiles) {
     arr.forEach(function(str, key) {
     if (str.indexOf('_(') >= 0) {
         str = str.slice(4,str.length-1)
-    } else if (/\WError\(\[?'/.test(str)) {
-        str = str.slice(0,str.length-1);
-        str = str.replace(/^\WError\(\[?'/, '');
+    } else if (/\WError\(\'/.test(str)) {
+        str = str.slice(8,str.length-1);
     } else {
         str = str.slice(2,str.length-3);
     }

@@ -194,7 +194,7 @@ define(['bitcoinjs-lib', 'util/stealth', 'crypto-js'], function(Bitcoin, Stealth
             bytes = mpKey.pubKey.toBytes(false);
         } else {
             // Unknown
-            throw Error(['Can\'t decode address for multisig with length {0}', address.length]);
+            throw Error('Can\'t decode address for multisig with length {0}|'+ address.length);
         }
         // Decompress if needed
         if (!compressed && bytes.length == 33) {

@@ -191,7 +191,7 @@ Pockets.prototype.getPockets = function(type) {
     type = type ? type : 'hd';
     var pockets = this.pockets[type];
     if (!pockets) {
-        throw new Error(['Unknown address type! {0}', type]);
+        throw new Error('Unknown address type! {0}|'+ type);
     }
     return pockets;
 }
