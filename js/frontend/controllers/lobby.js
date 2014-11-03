@@ -244,6 +244,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   $scope.newTempIdentity = function() {
       currentChannel.newSession();
       $scope.comms = currentChannel.comms;
+      $scope.sendBeacons(2);
       currentChannel.sendOpening();
   };
 
