@@ -482,8 +482,16 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
                    var toCheck = decoded.body.ephem+decoded.body.pub;
                    if (Curve25519.checksig(decoded.body.sig, toCheck, keys.slice(32))) {
                        decoded.body.nick = contact.data.name;
-                       decoded.peer.nick = contact.data.name;
+                       // clear contact from other peers
+                       self.transport.peers.forEach(function(aPeer) {
+                           if (aPeer.contact === contact && aPeer.channel === self) {
+                               delete aPeer.contact;
+                               delete aPeer.nick;
+                           }
+                       });
+                       // assign the contact to the message
                        decoded.peer.contact = contact;
+                       decoded.peer.nick = contact.data.name;
                        contact.online = decoded.peer;
                        // answer automatically if trust 2 or greater, or already sent a beacon
                        if (contact.trust.trust > 1 || decoded.peer.sentBeacon) {
