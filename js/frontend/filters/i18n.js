@@ -27,7 +27,7 @@ filters.filter('_', ['translateFilter', '$translate', '$sce', function(translate
     }
     
     var args;
-    if (input.indexOf('|')) {
+    if (input.indexOf('|') >= 0) {
       args = input.split('|');
       input = args.shift();
     }
