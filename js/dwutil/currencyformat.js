@@ -12,6 +12,11 @@ var symbol = {
   'mBTC': 'm฿',
   'bits': 'bits'
 }
+var units = {
+  'BTC': 8,
+  'mBTC': 5,
+  'bits': 2
+}
 
 /**
  * Convert user amount (from input) to satoshis
@@ -111,7 +116,7 @@ CurrencyFormatting.formatBtc = function(satoshis, unit, hideSymbol, locale) {
     if (!locale) locale = DarkWallet.getIdentity().settings.language.replace('_', '-');
 
     var btcPrice = this.asBtc(satoshis, unit);
-    btcPrice = btcPrice.toLocaleString(locale);
+    btcPrice = btcPrice.toLocaleString(locale, {maximumFractionDigits: units[unit]});
     if (!hideSymbol) btcPrice +=  " " + symbol[unit];
     return btcPrice;
 }

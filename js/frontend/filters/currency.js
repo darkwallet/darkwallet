@@ -3,14 +3,14 @@
 define(['./module', 'dwutil/currencyformat'], function (filters, CurrencyFormatting) {
 
 // Filter like currencyFilter adding the + sign for positive amounts.
-filters.filter('amountFilter', ['_Filter', function(_) {
+filters.filter('amountFilter', function() {
   return function(input) {
     var value = CurrencyFormatting.asBtc(input);
 
     var prefix = (value>=0) ? '+' : '-';
-    return prefix + Math.abs(value).toLocaleString(_());
+    return prefix + CurrencyFormatting.formatBtc(Math.abs(input), undefined, true);
   };
-}]);
+});
 
 // Filter for presenting a satoshi amount into selected btc unit
 filters.filter('formatBtc', function() {
