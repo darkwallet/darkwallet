@@ -101,7 +101,7 @@
 	<label>{{'The main address for this contact is'|_}}</label>	
       <div class="row collapse">
 		<div class="medium-1 columns">
-			<span class="prefix radius fa" title="{{'Type of address'|_}}" ng-class="{'fa-btc': vars.contact.mainKey.type=='address', 'fa-key': vars.contact.mainKey.type=='pubkey', 'fa-fighter-jet': vars.contact.mainKey.type=='stealth'}"> {{vars.contact.mainKey.type}}</span>
+			<span class="prefix radius fa" title="{{'Type of address'|_}}" ng-class="{'fa-btc': vars.contact.mainKey.type=='address', 'fa-key': vars.contact.mainKey.type=='pubkey', 'fa-fighter-jet': vars.contact.mainKey.type=='stealth'}"> {{vars.contact.mainKey.type|_}}<!-- {{'address'|_}}{{'pubkey'|_}}{{'stealth'|_}}--></span>
 		</div>
         <div class="large-9 medium-7 columns">
           <input type="text" readonly value="{{vars.contact.mainKey.address}}" />
@@ -151,7 +151,7 @@
 	               <div class="fa" 
 	                 ng-class="{'fa-question-circle': pubKey.type=='unknown', 'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth', 'fa-user': pubKey.type=='id'}">
 	               </div>
-				   {{pubKey.type}} 
+				   {{pubKey.type|_}} <!--{{'unknown'|_}}{{'address'|_}}{{'pubkey'|_}}{{'stealth'|_}}{{'id'|_}}{{'revoked'|_}}-->
 				 </span>
 				 <identicon icon-size="32" data="pubKey.address"></identicon>
 	            	<span title="{{pubKey.address||pubKey.data}}">{{pubKey.label||pubKey.address||pubKey.data}}</span>
