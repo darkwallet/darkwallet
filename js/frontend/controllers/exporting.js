@@ -36,7 +36,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
               $scope.tools.open = false;
               notify.success(_('Exported'));
           } catch (e) {
-              notify.error(_('Incorrect password'), e.message);
+              notify.error(_('Incorrect password'), _(e.message));
           }
       } );
   }

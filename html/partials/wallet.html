@@ -29,7 +29,7 @@
             <!-- Pocket name and balance -->
             <section class="middle tab-bar-section" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
 			    <h1 class="title lin">
-			        {{pocket.name}}
+			        {{pocket.name | pocket}}
 			    </h1>
 				<div class="lin" ng-if="pocket.balance" tooltip="{{'Confirmed'|_}}: {{pocket.balance.confirmed | formatBtc}}">
 					{{pocket.balance.current | formatBtc}}

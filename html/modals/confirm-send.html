@@ -23,7 +23,7 @@
 			    <a class="button alert small radius fa fa-times" ng-click="cancel()"> {{'Cancel'|_}}</a>
 			</div>
 			<div class="medium-6 columns">
-			    <h5>{{'Sending {0} from {1}'|_:(vars.spend.metadata.total+spend.metadata.fee |formatBtc):vars.spend.pocket.name}}</h5>
+			    <h5>{{'Sending {0} from {1}'|_:(vars.spend.metadata.total+spend.metadata.fee |formatBtc):(vars.spend.pocket.name |pocket)}}</h5>
 			    <h5 ng-repeat="recipient in vars.recipients">
 					{{recipient.amount | formatBtc}} ({{recipient.amount | formatFiat}}) <i class="fa fa-arrow-right"></i> 
 			         <identicon icon-size="36" hash="recipient.contact.data.hash"></identicon>

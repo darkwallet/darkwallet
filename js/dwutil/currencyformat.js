@@ -12,6 +12,11 @@ var symbol = {
   'mBTC': 'm฿',
   'bits': 'bits'
 }
+var units = {
+  'BTC': 8,
+  'mBTC': 5,
+  'bits': 2
+}
 
 /**
  * Convert user amount (from input) to satoshis
@@ -52,14 +57,12 @@ CurrencyFormatting.asBtc = function(satoshis, unit) {
  */
 CurrencyFormatting.asFiat = function(satoshis, fiatCurrency) {
     if (!fiatCurrency) fiatCurrency = DarkWallet.getIdentity().settings.fiatCurrency;
-
+    
     var tickerService = DarkWallet.service.ticker;
-    var decimalDigits = FiatCurrencies[fiatCurrency].decimal_digits;
 
     var rate = tickerService.rates[fiatCurrency];
     if (rate) {
-      var converted = (satoshis * rate / Math.pow(10, 8));
-      return CurrencyFormatting.addThousands(converted, converted.toFixed(decimalDigits));
+      return (satoshis * rate / Math.pow(10, 8));
     }
 }
 
@@ -98,23 +101,9 @@ CurrencyFormatting.fiatToBtc = function(amount, currency, fiatCurrency) {
 };
 
 /**
- * Add dots for thousands if needed
- */
-CurrencyFormatting.addThousands = function(value, formatted) {
-    formatted = formatted || new Big(value).toFixed();
-    if (value>=1000) {
-        var parts = formatted.split(".");
-        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        value = parts.join(".");
-        return value;
-    }
-    return formatted;
-}
-
-/**
  * Format satoshis into user unit
  */
-CurrencyFormatting.formatBtc = function(satoshis, unit) {
+CurrencyFormatting.formatBtc = function(satoshis, unit, hideSymbol, locale) {
     if (unit === 'smart') {
       if (String(satoshis).length > 8) {
         unit = 'BTC';
@@ -125,21 +114,29 @@ CurrencyFormatting.formatBtc = function(satoshis, unit) {
       }
     }
     if (!unit) unit = DarkWallet.getIdentity().settings.currency;
+    if (!locale) locale = DarkWallet.getIdentity().settings.language.replace('_', '-');
 
     var btcPrice = this.asBtc(satoshis, unit);
-    return CurrencyFormatting.addThousands(btcPrice) + " " + symbol[unit];
+    btcPrice = btcPrice.toLocaleString(locale, {maximumFractionDigits: units[unit]});
+    if (!hideSymbol) btcPrice +=  " " + symbol[unit];
+    return btcPrice;
 }
 
 /**
  * Format satoshis to user fiat
  */
-CurrencyFormatting.formatFiat = function(satoshis, fiatCurrency) {
+CurrencyFormatting.formatFiat = function(satoshis, fiatCurrency, hideSymbol, locale) {
     if (!fiatCurrency) fiatCurrency = DarkWallet.getIdentity().settings.fiatCurrency;
+    if (!locale) locale = DarkWallet.getIdentity().settings.language.replace('_', '-');
+    
+    var decimalDigits = FiatCurrencies[fiatCurrency].decimal_digits;
 
     var converted = this.asFiat(satoshis, fiatCurrency);
     if (!(converted === undefined)) {
+        converted = converted.toLocaleString(locale, {minimumFractionDigits: decimalDigits, maximumFractionDigits: decimalDigits});
         var currency = FiatCurrencies[fiatCurrency];
-        return converted+" "+currency.symbol_native;
+        if (!hideSymbol) converted += " "+currency.symbol_native;
+        return converted;
     }
 }
 

@@ -4,13 +4,14 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (controllers, DarkWallet, CurrencyFormat, sjcl) {
-  controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', '$location', '_Filter', function($scope, modals, notify, $history, $location, _) {
+  controllers.controller('PocketActionCtrl', ['$scope', 'modals', 'notify', '$history', '$location', '_Filter', 'pocketFilter',
+      function($scope, modals, notify, $history, $location, _, pocketFilter) {
 
     /**
      * Delete pocket
      */
     $scope.deletePocket = function(pocket) {
-        modals.open('confirm-delete', {name: pocket.name, object: pocket}, $scope.deletePocketFinish)
+        modals.open('confirm-delete', {name: pocketFilter(pocket.name), object: pocket}, $scope.deletePocketFinish)
     };
 
     /**
@@ -111,7 +112,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
                     }
                 } catch(e) {
                     if ($scope.settings.advanced) {
-                        notify.warning(_('Invalid password'), e.message || ""+e)
+                        notify.warning(_('Invalid password'), _(e))
                     } else {
                         notify.warning(_('Invalid Password'))
                     }
@@ -200,7 +201,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
             to = pocket.name;
             address = pocket.getFreeAddress().address;
         } else {
-            throw Error(_('Invalid type while moving funds!'));
+            throw Error('Invalid type while moving funds!');
         }
 
         // Prepare transaction
@@ -219,7 +220,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat', 'sjcl'], function (co
            var sent = false;
            walletService.signTransaction(metadata.tx, metadata, password, function(err, count) {
                if (err) {
-                   notify.error(err.message || ""+err);
+                   notify.error(_(err));
                }
                if (count>0.2 && !sent) {
                    sent = true;

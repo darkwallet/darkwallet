@@ -37,7 +37,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
               }
               break;
           case 'connectionError':
-              notify.error(_('Error connecting'), data.error);
+              notify.error(_('Error connecting'), _(data.error));
       }
   });
 

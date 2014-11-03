@@ -6,8 +6,6 @@
 define(['./module', 'util/btc', 'darkwallet', 'dwutil/multisig'],
 function (providers, BtcUtils, DarkWallet, MultisigFund) {
   providers.factory('$history', ['$rootScope', '$wallet', '$location', '_Filter', function($rootScope, $wallet, $location, _) {
-  var monthNames = [ _('January'), _('February'), _('March'), _('April'), _('May'), _('June'),
-    _('July'), _('August'), _('September'), _('October'), _('November'), _('December') ];
 
   /**
    * History provider class
@@ -268,7 +266,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       var monthStart = new Date(now.valueOf() - ((d===1?0:d-1)*86400000)); //rewind to start day
       var monthEnd;
       var getLabel = function(dateStart, dateEnd) {
-         return monthNames[dateEnd.getMonth()]+"/"+dateEnd.getFullYear();
+         return dateEnd.toLocaleDateString(_(), {month: 'long', year: 'numeric'});
       };
       var month = {index: 0, incoming: 0, outgoing: 0, transactions: 0, label: getLabel(monthStart, monthStart)};
       var result = [month];
@@ -309,8 +307,8 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       weekStart -= now.getMinutes()*60000;
 
       var getLabel = function(dateStart, dateEnd) {
-         var start = dateStart.toLocaleDateString();
-         var end = dateEnd.toLocaleDateString();
+         var start = dateStart.toLocaleDateString(_());
+         var end = dateEnd.toLocaleDateString(_());
          //return monthNames[weekStart.getMonth()]+"-"+(Math.floor(weekStart.getDate()/7)+1);
          return start + "-" + end;
       };

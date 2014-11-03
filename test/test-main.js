@@ -34,3 +34,9 @@ requirejs.config({
     // start test run, once Require.js is done
     callback: window.__karma__.start
 });
+
+// Overriding toLocaleString to simulate an en-US browser
+var toLocaleString = Number.prototype.toLocaleString;
+Number.prototype.toLocaleString = function(locales, options) {
+    return toLocaleString.apply(this, ['en-US', options]);
+};

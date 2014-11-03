@@ -164,7 +164,7 @@ function (Bitcoin, Peer, Curve25519, Encryption, Channel) {
    */
   Transport.prototype.closeChannel = function(name) {
       if (!this.channels.hasOwnProperty(name)) {
-          throw new Error("Channel does not exist");
+          throw new Error('Channel does not exist');
       }
       console.log("[transport] close channel", name);
       this.channels[name].disconnect();

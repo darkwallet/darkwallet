@@ -8,34 +8,20 @@ filters.filter('amountFilter', function() {
     var value = CurrencyFormatting.asBtc(input);
 
     var prefix = (value>=0) ? '+' : '-';
-    return prefix + CurrencyFormatting.addThousands(Math.abs(value));
+    return prefix + CurrencyFormatting.formatBtc(Math.abs(input), undefined, true);
   };
 });
 
 // Filter for presenting a satoshi amount into selected btc unit
-filters.filter('asFiat', function() {
-  return function(input) {
-    return CurrencyFormatting.asFiat(input);
-  };
-});
-
-
-// Filter for presenting a satoshi amount into selected btc unit
-filters.filter('asBtc', function() {
-  return function(input) {
-    return CurrencyFormatting.addThousands(CurrencyFormatting.asBtc(input));
-  };
-});
-
 filters.filter('formatBtc', function() {
-  return function(input) {
-    return CurrencyFormatting.formatBtc(input);
+  return function(input, hideSymbol) {
+    return CurrencyFormatting.formatBtc(input, undefined, hideSymbol);
   };
 });
 
 filters.filter('formatFiat', function() {
-  return function(input) {
-    return CurrencyFormatting.formatFiat(input);
+  return function(input, hideSymbol) {
+    return CurrencyFormatting.formatFiat(input, undefined, hideSymbol);
   };
 });
 

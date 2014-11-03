@@ -96,7 +96,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           // if the controller is still here and button still active, reset
           if (button && button.classList.contains('working')) {
               if (warning) {
-                  notify.warning(warning);
+                  notify.warning(_(warning));
               } else {
                   notify.success(_('Transaction finished propagating'));
               }
@@ -180,15 +180,15 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       var onMixing = function(err, mixingTask) {
           if (err) {
               if (err.type == 'password') {
-                  notify.warning(err.message);
+                  notify.warning(_(err));
               } else {
-                  notify.error(_('Error sending to mixer ({0})', amountNote), mixingTask.task.state + ' ' + err.message);
+                  notify.error(_('Error sending to mixer ({0})', amountNote), _(mixingTask.task.state) + ' ' + _(err));
               }
               sendForm.sending = false;
               $scope.sendEnabled = true;
           } else {
               $scope.resetSendForm();
-              notify.note(_('Sent to mixer ({0})', mixingTask.task.state), amountNote);
+              notify.note(_('Sent to mixer ({0})', _(mixingTask.task.state)), amountNote);
           }
       };
 
@@ -225,14 +225,13 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           }
           if (error) { 
               if (error.type == 'password') {
-                  notify.warning(error.message);
+                  notify.warning(_(error.message));
               } else {
-                  var errorMessage = error.message || ''+error;
-                  notify.error(_('Error broadcasting'), errorMessage);
+                  notify.error(_('Error broadcasting'), _(error));
               }
               enableSending();
           } else if (task && task.type == 'signatures') {
-              notify.note(_('Signatures pending'), amountNote)
+              notify.note(_('Signatures pending'), _(amountNote))
               enableSending();
           } else if (task && task.type == 'radar') {
               if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {
@@ -242,7 +241,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
                   };
               }
               if (!isBroadcasted) {
-                  notify.success(_('Transaction sent'), amountNote);
+                  notify.success(_('Transaction sent'), _(amountNote));
                   isBroadcasted = true;
               }
           }
@@ -410,7 +409,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
                                          fee);
       } catch (error) {
           var errorMessage = error.message || ''+error;
-          notify.error(_('Failed preparing transaction'), errorMessage);
+          notify.error(_('Failed preparing transaction'), _(errorMessage));
           sendForm.sending = false;
           return;
       }

@@ -82,7 +82,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
     this.reloadIdentity = function(store, callback) {
         if (store.name !== currentIdentity) {
-            throw new Error("This is not the running identity!");
+            throw new Error('This is not the running identity!');
         }
         Port.post('wallet', {'type': 'closing', 'identity': currentIdentity});
         keyRing.close(store.name);

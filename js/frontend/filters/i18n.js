@@ -3,7 +3,7 @@
 define(['./module'], function (filters) {
 
 // Filter for presenting a satoshi amount into selected btc unit with unit label
-filters.filter('_', ['translateFilter', '$sce', function(translateFilter, $sce) {
+filters.filter('_', ['translateFilter', '$translate', '$sce', function(translateFilter, $translate, $sce) {
   
   var format = function(format, args) {
     var string = format.replace(/{(\d+)}/g, function(match, number) { 
@@ -19,10 +19,32 @@ filters.filter('_', ['translateFilter', '$sce', function(translateFilter, $sce) 
   };
   
   return function(input) {
-    var args = Array.prototype.slice.call(arguments, 1);
+    if (input === undefined) {
+      return $translate.use().replace('_', '-');
+    }
+    if (typeof input !== 'string' && input.message) {
+        input = input.message;
+    }
+    
+    var args;
+    if (input.indexOf('|')) {
+      args = input.split('|');
+      input = args.shift();
+    }
+    args = args || Array.prototype.slice.call(arguments, 1);
     input = translateFilter(input);
     return format(input, args);
   };
+}]);
+
+filters.filter('pocket', ['_Filter', function(_) {
+    return function(input) {
+        // _('spending'), _('business'), _('savings')
+        if(['spending', 'business', 'savings'].indexOf(input) >= 0) {
+            input = _(input);
+        }
+        return input;
+    };
 }]);
 
 });

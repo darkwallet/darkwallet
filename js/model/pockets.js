@@ -71,7 +71,7 @@ Pockets.prototype.initPockets = function(store) {
 Pockets.prototype.createPocket = function(name, password) {
     // Raise exception if name exists
     if (this.search('hd', {'name': name})) {
-        throw new Error("Pocket with that name already exists!");
+        throw new Error('Pocket with that name already exists!');
     }
     var pocketStore = {'name': name};
 
@@ -191,7 +191,7 @@ Pockets.prototype.getPockets = function(type) {
     type = type ? type : 'hd';
     var pockets = this.pockets[type];
     if (!pockets) {
-        throw new Error("Unknown address type! " + type);
+        throw new Error('Unknown address type! {0}|'+ type);
     }
     return pockets;
 }

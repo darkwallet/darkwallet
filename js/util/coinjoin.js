@@ -73,7 +73,7 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
               // now set it in place
               newTx.outs.splice(index, 0, newTx.outs.pop());
           } else {
-              throw Error("Cant add output");
+              throw Error('Can\'t add output');
           }
       });
 

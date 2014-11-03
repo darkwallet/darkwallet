@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['model/identity'], function(Identity) {
+define(['model/identity', 'util/fiat'], function(Identity, FiatCurrency) {
   describe('Identity model', function() {
     
     var identity, store, _store, _password;
@@ -40,7 +40,7 @@ define(['model/identity'], function(Identity) {
       expect(identity.name).toBe("Sean's Outpost");
       expect(identity.settings).toEqual({
         currency: 'BTC',
-        fiatCurrency: 'USD',
+        fiatCurrency: FiatCurrency.getDefault(),
         animations: {
           enabled: true
         },

@@ -13,7 +13,7 @@
               </div>
               <div class="large-2 medium-3 columns">
                 <h6>{{'Sending from'|_}}</h6>
-                <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{forms.send.sendPocketName}}</a>
+                <a href="" dropdown-toggle="#wallets" class="fa button postfix radius fa-chevron-circle-down">{{forms.send.sendPocketName | pocket}}</a>
               </div>
         </div>
       </div>
@@ -91,7 +91,7 @@
         <ul id="wallets" class="f-dropdown">
           <li class="colorhead"><h6>{{'My pockets'|_}}</h6></li>
           <li ng-repeat="pocket in hdPockets track by $index" ng-show="pocket">
-            <a ng-click="setPocket($index)">{{pocket.name}}</a>
+            <a ng-click="setPocket($index)">{{pocket.name | pocket}}</a>
           </li>
           <li><a ng-click="setPocket('any')">{{'Any'|_}}</a></li>
           <li class="colorhead"><h6>{{'Multisig funds'|_}}</h6></li>

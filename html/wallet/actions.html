@@ -47,7 +47,7 @@
 	    <ul id="pockets" class="f-dropdown">
 	      <li class="colorhead"><h6>{{'My pockets'|_}}</h6></li>
           <li ng-show="aPocket && $index != pocket.index" ng-repeat="aPocket in hdPockets track by $index">
-            <a ng-click="moveFunds('hd', $index)">{{aPocket.name}}</a>
+            <a ng-click="moveFunds('hd', $index)">{{aPocket.name | pocket}}</a>
 	      </li>
 	      <li class="colorhead"><h6>{{'Multisig funds'|_}}</h6></li>
 	      <li ng-repeat="fund in allFunds track by $index">

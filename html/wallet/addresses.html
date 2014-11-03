@@ -55,7 +55,7 @@
 		                <span class="label radius" ng-show="address.type=='stealth'||address.type=='oldstealth'">
 		                    <div class="fa fa-fighter-jet"></div> {{'stealth'|_}}
 		                </span>
-		                <span title="this address is from pre-bip44 wallet format, please dont use this address" class="label radius" ng-show="!address.type">
+		                <span title="{{'This address is from pre-bip44 wallet format, please don\'t use this address'|_}}" class="label radius" ng-show="!address.type">
 		                    {{'old'|_}}
 		                </span>
 		                <span class="label radius" title="{{'Number of times this address has been used'|_}}" ng-show="address.nOutputs">
@@ -64,7 +64,7 @@
 		            </div>
 		        </div>
 		        <div class="small-2 columns text-right">
-		           {{address.balance | asBtc}} {{settings.currency}}
+		           {{address.balance | formatBtc}}
 		        </div>
 		    </div>
 		   <div ng-if="nPages>1" class="pagination-centered topmargin">

@@ -40,7 +40,7 @@ HdPocket.prototype.getMainAddress = function() {
     var wallet = this.getMyWallet();
     var index = wallet.pockets.hdPockets.indexOf(this.store);
     if (index === -1) {
-        throw new Error("Wrong hd pocket!");
+        throw new Error('Wrong hd pocket!');
     }
     if (wallet.store.get('version') > 4) {
         return wallet.getAddress([index]);
@@ -183,7 +183,7 @@ HdPocket.prototype.getFreeAddress = function(change, label) {
 
     // This should have no type (old style) or type 'hd' (new style)
     if (walletAddress.type && walletAddress.type !== 'hd') {
-       throw new Error("Generated an incorrect change address");
+       throw new Error('Generated an incorrect change address');
     }
     return walletAddress;
 };

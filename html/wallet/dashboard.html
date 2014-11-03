@@ -34,7 +34,7 @@
 	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
 			<li ng-repeat="pocket in allPockets" ng-click="selectGridPocket(pocket)">
 				<div class="panel radius pocket-square">
-	           		<h5>{{pocket.name}} <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small></h5>
+	           		<h5>{{pocket.name | pocket}} <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small></h5>
         
 	           		<span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.confirmed | formatFiat}}</span></span>
 	           		<span ng-show="!pocket.balance.confirmed">{{'No coins'|_}}</span>
@@ -76,7 +76,7 @@
              {{row.partial | amountFilter}}
              </div>
              <div class="hide-for-small medium-3 large-2 columns text-right">
-              {{row.current | asBtc}}
+              {{row.current | formatBtc:true}}
              </div>
             </div>
   
