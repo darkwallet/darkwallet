@@ -78,6 +78,9 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
             });
         } else {
             keyRing.save(identity.name, identity, function(){ });
+            if (keyRing.identities[identity.name]) {
+                keyRing.close(identity.name);
+            }
                // identity reloaded
         }
     };
