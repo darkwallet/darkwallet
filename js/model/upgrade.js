@@ -78,7 +78,7 @@ function Upgrade4To5(store, identity, password) {
         index = walletAddress.index;
         if (index.length === 1 && walletAddress.type === undefined) {
             var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
-            if (pocket) {
+            if (pocket && pocket.store.mpk) {
                 // first remove the old address
                 pocket.removeAddress(walletAddress);
                 // and now create a new one
@@ -88,6 +88,12 @@ function Upgrade4To5(store, identity, password) {
                 }
             }
             else {
+                if (!pocket.store.mpk) {
+                    // autocreated pocket for not deleted addresses
+                    // we dont call pocket.destroy because we dont want
+                    // to trigger pocket cleanup.
+                    delete identity.wallet.pockets.pockets.hd[pocket.getPocketId()];
+                }
                 // if the pocket doesn't exist just delete the address
                 identity.wallet.deleteAddress(index);
             }
