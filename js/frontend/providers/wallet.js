@@ -104,15 +104,22 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       return walletAddress;
   };
 
-  // initialize an address on the scope and the backend
+  // remove an address from the scope and the backend
   WalletProvider.prototype.removeAddress = function(walletAddress) {
       // remove from scope
-      var thisCache = this.addresses[walletAddress.index[0]];
+      var branchId;
+      if (walletAddress.type === 'hd') {
+          branchId = (walletAddress.index[0]*2)+walletAddress.index[1];
+      } else {
+          branchId = walletAddress.index[0];
+      }
+
+      var thisCache = this.addresses[branchId];
       var allCache = this.allAddresses;
       [thisCache, allCache].forEach(function(cache) {
           if (cache) { 
               var idx = cache.indexOf(walletAddress);
-              if (idx > 0) {
+              if (idx >= 0) {
                   cache.splice(idx, 1);
               }
           }
