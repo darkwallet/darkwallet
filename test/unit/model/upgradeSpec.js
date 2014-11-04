@@ -51,6 +51,7 @@ define(['model/upgrade'], function(Upgrade) {
                   hdPockets: [{name: 'a'},{name: 'b'},{name: 'c'}],
                   getAddressPocket: function() {
                       return {
+                           store: identity.wallet.pockets.hdPockets[0],
                            removeAddress: function(address) { delete identity.wallet.pubKeys[address.index]; },
                            createAddress: function(seq) {identity.wallet.pubKeys[seq] = {index: seq};}
                       };
