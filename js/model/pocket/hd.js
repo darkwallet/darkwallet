@@ -211,7 +211,7 @@ HdPocket.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore, 
     var privData = keyStore.privKeys[seq.slice(0,1)];
     if (privData) {
         spendKey = Bitcoin.ECKey.fromBytes(privData, true);
-    } else if (this.getMyWallet().store.get('version') > 4) {
+    } else if (this.getMyWallet().store.get('version') > 4 && !old) {
         // stealth address take the spend key from the pocket 0 node
         spendKey = masterKey.deriveHardened(seq[0]).privKey;
     } else {
