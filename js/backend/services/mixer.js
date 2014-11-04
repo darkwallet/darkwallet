@@ -333,10 +333,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
     var pockets = identity.wallet.pockets.hdPockets;
     for(var i=0; i<pockets.length; i++) {
       var pocket = pockets[i];
-      if (!pocket) {
-          continue;
-      }
-      if (pocket.mixing) {
+      if (pocket && pocket.mixing) {
         var balance = identity.wallet.getBalance(i, 'hd').confirmed;
         if (balance >= amount) {
             return i;
@@ -464,15 +461,18 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           // skip if we already got this key
           if (privKeys[walletAddress.index]) {
               continue;
-          }
-          if (Math.floor(walletAddress.index[0]/2) !== pocketIndex) {
+
+          var isNewStealth = (walletAddress.type === 'stealth' && identity.store.get('version') > 4);
+          var isNewHd = (walletAddress.type === 'hd');
+          var walletPocketIdx = (isNewHd || isNewStealth) ? walletAddress.index[0] : Math.floor(walletAddress.index[0]/2);
+          if (walletPocketIdx !== pocketIndex) {
               throw new Error('Address from an invalid pocket');
           }
           // derive this key
-          var change = walletAddress.index[0]%2 === 1;
+          var change = isNewHd ? walletAddress.index[1] : (isNewStealth ? false : walletAddress.index[0]%2);
           var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
           var seq = walletAddress.index.slice(0);
-          if (walletAddress.type === 'stealth' && identity.store.get('version') > 4) {
+          if (isNewStealth) {
               var scanKey = identity.wallet.getScanKey(seq[0]);
               privKeys[seq] = Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), masterKey.privKey.toBytes()).toBytes();
           } else if (walletAddress.type === 'oldstealth' || (walletAddress.type === 'stealth' && identity.store.get('version') < 5)) {
