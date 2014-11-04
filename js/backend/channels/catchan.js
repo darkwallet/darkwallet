@@ -219,7 +219,6 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   // Post to given channel
   Channel.prototype.post = function(data, callback) {
       var client = this.transport.getClient();
-      data.sender = this.fingerprint;
       if (client.connected) {
           client.chan_post("b", this.channelHash, data, callback);
       }
