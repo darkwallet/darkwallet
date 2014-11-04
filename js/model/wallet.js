@@ -514,18 +514,7 @@ Wallet.prototype.processStealthMatch = function(pocketIndex, ephemKey, pubKey, a
     var branchId = this.store.get('version') > 4 ? pocketIndex : pocketIndex*2;
     var seq = [branchId, 's'].concat(ephemKey);
     var walletAddress = this.pubKeys[seq];
-    // Check for bad addresses and put them in the right pocket if found. (0.2.0)
-    if (!walletAddress && branchId > 0) {
-        var badIndex = [0, 's'].concat(ephemKey);
-        var badAddress = this.pubKeys[badIndex];
-        if (badAddress) {
-            // The address was originally placed in the wrong pocket. need to relink it.
-            delete this.pubKeys[badIndex];
-            badAddress.index = seq.slice(0);
-            this.pubKeys[seq] = badAddress;
-            walletAddress = badAddress;
-        }
-    }
+
     // If we don't have an address, create it.
     if (!walletAddress) {
         walletAddress = this.storePublicKey(seq, pubKey, {'type': 'stealth', 'ephemKey': ephemKey, 'address': address, 'quirk': quirk});
