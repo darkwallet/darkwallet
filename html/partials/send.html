@@ -23,8 +23,8 @@
       <div class="small-12 columns">
         <div class="row collapse">
           <div class="small-2 columns">
-            <input ng-hide="field.isFiatShown" ng-disabled="forms.send.sending" type="text" class="prefix radius" ng-model="field.amount" ng-change="validateSendForm();" placeholder="{{'Enter amount'|_}}" />
-            <input ng-show="field.isFiatShown" ng-disabled="forms.send.sending" type="text" class="prefix radius" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="{{'Enter amount'|_}}" />
+            <input ng-hide="field.isFiatShown" ng-disabled="forms.send.sending" type="number" min="0" step="any" class="prefix radius" ng-model="field.amount" ng-change="validateSendForm();" placeholder="{{'Enter amount'|_}}" />
+            <input ng-show="field.isFiatShown" ng-disabled="forms.send.sending" type="number" min="0" step="any" class="prefix radius" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="{{'Enter amount'|_}}" />
           </div>
 
           <div class="small-1 columns">
@@ -75,7 +75,7 @@
             <div class="small-4 columns">
               <a class="button radius prefix fa fa-plus" ng-click="enableAutoAddFields()"> {{'Add another recipient'|_}}</a>
               <h6>{{'Fee'|_}}</h6>
-              <input ng-model="forms.send.fee" type="text" ng-change="validateSendForm()" class="radius" />
+              <input ng-model="forms.send.fee" type="number" min="0" step="any" ng-change="validateSendForm()" class="radius" />
             </div>
             <div class="small-8 columns">
               <a ng-click="toggleCoinJoin()" ng-class="{'fa-square-o':!forms.send.mixing, 'fa-check-square-o': forms.send.mixing}" class="fa button postfix radius">{{forms.send.mixing?('CoinJoin mixing enabled'|_):('CoinJoin mixing disabled'|_)}}</a>

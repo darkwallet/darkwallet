@@ -89,26 +89,25 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
    * Listen to events
    */
   Port.connectNg('wallet', $scope, function(data) {
-      if (data.type == 'ready' && data.identity != loaded) {
+      if (data.type === 'ready' && data.identity !== loaded) {
           // Ready event, recalculate balances and cleanup pockets
           loaded = data.identity;
           $scope.allPockets.splice(0, $scope.allPockets.length);
           calculateBalances();
       }
-      else if (data.type == 'height') {
+      else if (data.type === 'height') {
           // We may want to recalculate something on height
           $scope.currentHeight = data.value;
           calculateBalances();
       }
-      else if (data.type == 'rename') {
+      else if (data.type === 'rename') {
           loaded = data.newName;
       }
   });
 
   Port.connectNg('gui', $scope, function(data) {
-      if (data.type == 'balance') {
+      if (data.type === 'balance') {
           // Balance event
-          $scope.rates[data.currency] = data.rate;
           calculateBalances();
       }
   });
