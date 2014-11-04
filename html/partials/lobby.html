@@ -22,14 +22,14 @@
           <h4 ng-show="peerRequests.length">{{'Requests'|_}}</h4>
           <div ng-show="peerRequests.length">
               <select class="select-list" size="10">
-              <option ng-click="openRequest(request)" ng-selected="selectedRequest == request" ng-repeat="request in peerRequests">{{'{0} from {1}'|_:request.type:request.body.nick}}</option>
+              <option ng-click="openRequest(request)" ng-selected="selectedRequest == request" ng-repeat="request in peerRequests">{{request.type == 'Pair' ? ('Pair from {0}'|_:request.body.nick) : ('Beacon from {0}'|_:request.body.nick)}}</option>
               </select>
           </div>
       </div>
 
       <!-- Request window -->
       <div ng-show="selectedRequest && (selectedRequest.type == 'Pair')" class="medium-7 columns">
-          <h2>{{selectedRequest.type}} {{'Request'|_}}</h2>
+          <h2>{{'Pair request'|_}}</h2>
           <form>
           <div class="wrapper"><face title="{{selectedRequest.peer.name}}" hash="selectedRequest.peer.pubKeyHex" icon-size="32"></face> <input type="text" ng-model="selectedRequest.nick"></input></div>
           </form>
