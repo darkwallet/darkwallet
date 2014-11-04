@@ -50,6 +50,9 @@ function (controllers, Bitcoin, DarkWallet) {
   };
 
   $scope.setPage = function(page) {
+      if (page < 0 || page >= $scope.nPages) {
+          return;
+      }
       $scope.page = page;
       $scope.addresses = $scope.allAddresses.slice($scope.page*limit, ($scope.page*limit) + limit);
   };
