@@ -16,7 +16,7 @@
 		  <dd ng-class="{active: contactSection=='addresses'}">
 			  <a ng-click="setContactSection('addresses')">{{'Addresses'|_}}</a>
 		  </dd>
-		  <dd ng-show="settings.advanced" ng-class="{active: contactSection=='trust'}">
+		  <dd ng-class="{active: contactSection=='trust'}">
 		  	  <a ng-click="setContactSection('trust')">{{'Trust'|_}}</a>
 		  </dd>
 	  <!--<dd>
@@ -27,7 +27,7 @@
   
 <div class="row topmargin" ng-show="contactSection=='trust'">
     <p ng-show="!vars.contact.trust.trust&&!vars.contact.trust.validation">{{'You have no trust on this peer'|_}}</p>
-    <p ng-show="vars.contact.trust.validation!==0||vars.contact.trust.trust!==0">{{'Your trust level is {0}'|_:vars.contact.trust.trust+vars.contact.trust.opsec+vars.contact.trust.validation}}</p>
+    <p ng-show="settings.advanced&&vars.contact.trust.validation!==0||vars.contact.trust.trust!==0">{{'Your trust level is {0}'|_:vars.contact.trust.trust+vars.contact.trust.opsec+vars.contact.trust.validation}}</p>
     <em ng-show="vars.contact.trust.trust>1">{{'Beacons will be sent and received automatically [friend]'|_}}</em>
     <h3>{{'Set trust'|_}}</h3>
     <em>{{'This describes the trust you have on this person.'|_}}</em>
@@ -50,9 +50,9 @@
             <a class="button fa fa-flask postfix" ng-click="setTrust()">{{'Set trust'|_}}</a>
         </div>-->
     </div>
-    <h3>{{'Security level'|_}}</h3>
-    <em>{{'This describes how conscious this person is about operational security.'|_}}</em>
-    <div class="row">
+    <h3 ng-show="settings.advanced">{{'Security level'|_}}</h3>
+    <em ng-show="settings.advanced">{{'This describes how conscious this person is about operational security.'|_}}</em>
+    <div ng-show="settings.advanced" class="row">
         <div class="columns small-9">
              <input type="radio" ng-model="vars.contact.trust.opsec" value="-2" id="sec-sabotager" name="contact-sec" ng-change="setTrust()" />
              <label for="sec-sabotager">{{'Sabotager'|_}}</label>
@@ -73,9 +73,9 @@
             <a class="button fa fa-flask postfix" ng-click="setTrust()">{{'Set level'|_}}</a>
         </div>-->
     </div>
-    <h3>{{'Set validation'|_}}</h3>
+    <h3 ng-show="settings.advanced">{{'Set validation'|_}}</h3>
     <em ng-show="settings.advanced">{{'This should be per key but maybe is ok here if there is just one?...'|_}}</em>
-    <div class="row">
+    <div ng-show="settings.advanced" class="row">
         <div class="columns small-9">
              <input type="radio" id="validation-no" name="contact-validation" ng-model="vars.contact.trust.validation" value="0" ng-change="setTrust()" />
              <label for="validation-no">{{'No validation'|_}}</label>
@@ -114,7 +114,7 @@
         </div>
       </div>
       <div class="row collapse">
-          <p ng-show="vars.contact.pubKeys.length>1">{{'This contact has'|_}} <a ng-click="contactSection='addresses'">{{'{0} keys'|_:vars.contact.pubKeys.length}}</a><span ng-show="settings.advanced" > <span ng-show="!vars.contact.trust.trust&&!vars.contact.trust.opsec">{{'and no'|_}} <a ng-click="contactSection='trust'">{{'trust defined'|_}}</a></span><span ng-show="vars.contact.trust.trust||vars.contact.trust.opsec">{{'and'|_}} <a ng-click="contactSection='trust'">{{'level {0} trust'|_:vars.contact.trust.trust+vars.contact.trust.opsec+vars.contact.trust.verify}}</a></span></span>. <span class="label radius address" ng-show="vars.contact.trust.trust">{{'Friend'|_}}</span></span></p>
+          <p ng-show="vars.contact.pubKeys.length>1">{{'This contact has'|_}} <a ng-click="setContactSection('addresses')">{{'{0} keys'|_:vars.contact.pubKeys.length}}</a> <span ng-show="!vars.contact.trust.trust&&!vars.contact.trust.opsec">{{'and no'|_}} <a ng-click="setContactSection('trust')">{{'trust defined'|_}}</a></span><span ng-show="vars.contact.trust.trust||vars.contact.trust.opsec">{{'and'|_}} <a ng-click="setContactSection('trust')">{{'level {0} trust'|_:vars.contact.trust.trust+vars.contact.trust.opsec+vars.contact.trust.verify}}</a></span>. <span class="label radius address" ng-show="vars.contact.trust.trust">{{'Friend'|_}}</span></p>
           
       </div>
     
