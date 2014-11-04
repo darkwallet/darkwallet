@@ -2,6 +2,7 @@
     <div class="row">You need to reseed your wallet to finish the upgrade</div>
     <div ng-show="status.syncing||status.gateway!=='ok'" class="row">(Wait for wallet to sync to reseed)</div>
     <div ng-show="!status.syncing&&status.gateway==='ok'" class="row"><b>Please <a ng-click="reseedIdentity()">click here to reseed</a>.</b></div>
-    <div class="row topmargin"><em>sorry for the inconvenience.</em></div>
+    <div class="row topmargin"><em>We recommend making a backup and making sure you have access to your funds before reseed.</em></div>
+    <div class="row">Check <a href="https://wiki.unsystem.net/en/index.php/DarkWallet/Bip44Reseed">More information</a>.</div>
     <a ng-click="alert=false" class="close">&times;</a>
 </div>
