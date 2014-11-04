@@ -88,7 +88,7 @@ function Upgrade4To5(store, identity, password) {
                 }
             }
             else {
-                if (!pocket.store.mpk) {
+                if (pocket && !pocket.store.mpk) {
                     // autocreated pocket for not deleted addresses
                     // we dont call pocket.destroy because we dont want
                     // to trigger pocket cleanup.
