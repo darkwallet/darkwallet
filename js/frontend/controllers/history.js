@@ -19,6 +19,9 @@ function (controllers, DarkWallet, Port) {
   var limit = 10;
 
   $scope.setPage = function(page, updatePage) {
+      if (page < 0 || page >= $scope.nPages) {
+          return;
+      }
       if (updatePage) {
           $scope.page = page;
       }
