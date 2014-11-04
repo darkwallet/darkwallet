@@ -461,6 +461,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           // skip if we already got this key
           if (privKeys[walletAddress.index]) {
               continue;
+          }
 
           var isNewStealth = (walletAddress.type === 'stealth' && identity.store.get('version') > 4);
           var isNewHd = (walletAddress.type === 'hd');
