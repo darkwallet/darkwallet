@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('PocketCreateCtrl', ['$scope', '$wallet', '$history', 'watch', '$tabs', 'modals', function($scope, $wallet, $history, watch, $tabs, modals) {
+  controllers.controller('PocketCreateCtrl', ['$scope', '$wallet', '$history', 'watch', '$tabs', 'modals', 'notify', '_Filter', function($scope, $wallet, $history, watch, $tabs, modals, notify, _) {
 
     /**
      * Scope variables
@@ -23,7 +23,16 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
             askPassword('Write your unlock password', function(password) {
 
                 // create pocket
-                identity.wallet.pockets.createPocket($scope.newPocket.name, password);
+                try {
+                    identity.wallet.pockets.createPocket($scope.newPocket.name, password);
+                } catch (e) {
+                    if (e.message.slice(0,4)==='ccm:') {
+                        notify.warning(_('Invalid Password'));
+                    } else {
+                        notify.warning(e.message);
+                    }
+                    return;
+                }
                 var pocketIndex = identity.wallet.pockets.hdPockets.length-1;
 
                 // initialize pocket on angular
