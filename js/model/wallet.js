@@ -511,7 +511,7 @@ Wallet.prototype.getIdentityKey = function(n) {
  * @param {String} Address resulting address as string
  */
 Wallet.prototype.processStealthMatch = function(pocketIndex, ephemKey, pubKey, address, quirk) {
-    var branchId = pocketIndex*2;
+    var branchId = this.store.get('version') > 4 ? pocketIndex : pocketIndex*2;
     var seq = [branchId, 's'].concat(ephemKey);
     var walletAddress = this.pubKeys[seq];
     // Check for bad addresses and put them in the right pocket if found. (0.2.0)
