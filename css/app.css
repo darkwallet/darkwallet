@@ -5414,3 +5414,12 @@ form.send {
 ::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background: rgba(30, 190, 90, 0.9); }
+
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
