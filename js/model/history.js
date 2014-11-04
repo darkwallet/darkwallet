@@ -128,8 +128,11 @@ History.prototype.buildHistoryRow = function(transaction, height) {
             myOutValue += anOut.value;
             var _outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
             var outPocketType = identity.wallet.pockets.getPocketType(outWalletAddress.type);
+            // check if this is change, seq[0] for oldstealth and old hd, seq[1] for new hd
+            var isChange = ['oldstealth', undefined].indexOf(outWalletAddress.type) ? (outWalletAddress.index[0]%2) : false;
+            isChange = isChange || ((outWalletAddress.type == 'hd') ? outWalletAddress.index[1] : false); 
             // save out pocket (don't set if it's change or same as input)
-            if (inPocket !== _outPocket && !((typeof outWalletAddress.index[0] === 'number') && (outWalletAddress.index[0]%2 == 1))) {
+            if (inPocket !== _outPocket && !isChange) {
                 outPocket = _outPocket;
             }
             addPocketImpact(_outPocket, outPocketType, anOut.value);
