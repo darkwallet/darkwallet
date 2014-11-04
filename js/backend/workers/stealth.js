@@ -13,7 +13,7 @@ require(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
   self.onmessage = function (oEvent) {
     if (oEvent.data.type == 'stealth') {
         var data = oEvent.data;
-        var matches = processPocketStealth(data.stealthArray, data.pocketIndex, data.scanKey, data.spendKey, data.versions);
+        var matches = processPocketStealth(data.stealthArray, data.pocketIndex, data.scanKey, data.spendKey, data.versions, data.oldMode);
         postMessage({type: 'stealth', matches: matches, id: data.id, height: data.height});
     } else {
         console.log("Message not recognized " + oEvent.data);
@@ -24,7 +24,7 @@ require(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
   /**
    * Process a stealth array for a pocket
    */
-  function processPocketStealth(stealthArray, pocketIndex, scanKey, spendKey, versions) {
+  function processPocketStealth(stealthArray, pocketIndex, scanKey, spendKey, versions, oldMode) {
       var matches = [];
 
       // Stealth cache can't have more items than stealth array otherwise is invalid
@@ -53,8 +53,9 @@ require(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
 
           if (address == myAddress.toString()) {
               matches.push({address: address, ephemKey: ephemKey, pocketIndex: pocketIndex, pubKey: myKeyBuf.toJSON().data});
-          } else {
-              // Backwards compatibility introduced in 0.4.0, remove later...
+          } else if (oldMode) {
+              // Backwards compatibility introduced in 0.4.0, remove later... we don't do this from v5 (bip44) store on,
+              // since scanning old stealth addresses is discontinued anyways (starting on 0.7.0).
               // Try out the stealth row
               Stealth.quirk = true;
               var myKeyBuf2 = Stealth.uncoverPublic(scanKey, ephemKey, spendKey);

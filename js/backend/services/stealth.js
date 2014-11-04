@@ -116,6 +116,7 @@ define(['backend/port'], function(Port) {
                                    scanKey: identity.wallet.getScanKey(branchId).toBytes(),
                                    spendKey: identity.wallet.getAddress([branchId]).pubKey,
                                    versions: identity.wallet.versions,
+                                   oldMode: identity.store.get('version') < 5,
                                    height: height};
 
                     // Save information about the job here so we can keep track of it
