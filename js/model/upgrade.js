@@ -90,9 +90,11 @@ function Upgrade4To5(store, identity, password) {
             else {
                 if (pocket && !pocket.store.mpk) {
                     // autocreated pocket for not deleted addresses
+                    // dont use pocket.getPocketId because it depends on pocket.store
+                    var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
                     // we dont call pocket.destroy because we dont want
                     // to trigger pocket cleanup.
-                    delete identity.wallet.pockets.pockets.hd[pocket.getPocketId()];
+                    delete identity.wallet.pockets.pockets.hd[pocketId];
                 }
                 // if the pocket doesn't exist just delete the address
                 identity.wallet.deleteAddress(index);
