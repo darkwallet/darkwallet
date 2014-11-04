@@ -7,7 +7,9 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
 
   $scope.scanning = false;
   $scope.scanStatus = "";
-  $scope.scanParams = {addresses: 10, pockets: 5, scanMaster: false, scanOld: false};
+  var identity = DarkWallet.getIdentity();
+  var version = identity ? identity.store.get('version') : 5;
+  $scope.scanParams = {addresses: 10, pockets: 5, scanMaster: false, scanOld: false, version: version};
 
   // Initialize the master pocket address for pockets
   var createMasterAddresses = function(results) {
@@ -151,8 +153,10 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
            // we never scanMaster here
            masterKey = identity.store.getPrivateData(password).privKey;
       } else {
-           // old style
-           scanMaster = $scope.scanParams.scanMaster;
+           // old style, only scan pocket addresses if we're on version 4
+           if (identity.store.get('version') < 5) {
+               scanMaster = $scope.scanParams.scanMaster;
+           }
       }
       var scanner = new Scanner(client, identity, masterKey,
                                 function (par1, par2, par3) { onScanFinish(par1, par2, par3, password); },
