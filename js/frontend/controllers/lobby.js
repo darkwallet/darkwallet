@@ -5,7 +5,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0)};
 
-  var selectedChannel;
+  var selectedChannel, selectedPeer;
 
   controllers.controller('LobbyCtrl', ['$scope', 'notify', '$timeout', 'modals', '_Filter', function($scope, notify, $timeout, modals, _) {
 
@@ -200,7 +200,6 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
               }
           });
       }
-
       $scope.subscribed = false;
       $scope.shoutbox = '';
       $scope.shoutboxLog = [];
@@ -239,6 +238,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
    */
   var cleanPeer = function() {
       if ($scope.selectedPeer) {
+          selectedPeer = false;
           $scope.selectedPeer.chatLog.dirty = false;
           $scope.selectedPeer = false;
       }
@@ -261,6 +261,10 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       if (transport.getChannel(name)) {
           // Channel exists, relink
           createChannelLink(name);
+          // Resume peer chat
+          if (selectedPeer && transport.peerIds.indexOf(selectedPeer) > -1) {
+              $scope.openPrivate(transport.peers[transport.peerIds.indexOf(selectedPeer)]);
+          }
       } else {
           // Create if it doesn't exist
           ChannelLink.start(name, lobbyPort);
@@ -302,6 +306,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
    */
   $scope.openPrivate = function(peer) {
       cleanPeer();
+      selectedPeer = peer.fingerprint;
       $scope.selectedPeer = peer;
       $scope.selectedPeer.chatLog.dirty = false;
       $scope.shoutboxLog = peer.chatLog;
