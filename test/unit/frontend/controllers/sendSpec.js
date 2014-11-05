@@ -70,8 +70,9 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         var wallet = {addToScope: function() {}, getChangeAddress: function() {return {address: '17a7r4qa5FPCHiPwXYuH9nqZ1AobTkMVub'};}};
         var timeout = function() { };
         var _window = function() { };
+        var tabs = {updateTabs: function() {}};
         timeout.cancel = function() {};
-        sendController = $controller('WalletSendCtrl', {$scope: scope, $wallet: wallet, $timeout: timeout, $window: _window, $history: history, notify: notify, _Filter: _, modals: modals});
+        sendController = $controller('WalletSendCtrl', {$scope: scope, $wallet: wallet, $timeout: timeout, $window: _window, $history: history, notify: notify, _Filter: _, modals: modals, $tabs: tabs});
       }]);
     };
     

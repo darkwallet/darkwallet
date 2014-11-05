@@ -2,8 +2,8 @@
 
 define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat', 'bitcoinjs-lib'],
 function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
-  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', '$history', '_Filter',
-      function($scope, $window, notify, modals, $wallet, $timeout, $history, _) {
+  controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', '$history', '$tabs', '_Filter',
+      function($scope, $window, notify, modals, $wallet, $timeout, $history, $tabs, _) {
   
   var sendForm = $scope.forms.send;
 
@@ -233,6 +233,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           } else if (task && task.type == 'signatures') {
               notify.note(_('Signatures pending'), _(amountNote))
               enableSending();
+              $tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
+
           } else if (task && task.type == 'radar') {
               if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {
                   enableSending(true);
