@@ -71,12 +71,12 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
 
   $scope.contactSearch = '';
 
-  var filterType = $scope.vars ? $scope.vars.type : false;
+  var filterType = $scope.vars ? $scope.vars.type : 'any';
 
   var getContactTypes = function() {
     var types;
     if (filterType === 'any') {
-        types = ['stealth', 'address', 'pubkey', 'id'];
+        types = ['stealth', 'address', 'pubkey', 'id', 'oldstealth'];
     } else if (filterType === 'pubKey') {
         types = ['pubkey', 'stealth'];
     } else if (filterType === 'idKey') {
@@ -111,6 +111,10 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         $scope.ok(contact);
         return;
     }
+    // See if the main key is among the wanted types
+    if (contact.mainKey && types.indexOf(contact.mainKey.type) > -1) {
+        key = contact.mainKey;
+    }
     // If we don't have a key yet look for one of the right types
     if (!key) {
         types.some(function(type) {
@@ -122,7 +126,7 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
         });
     }
     // Get the 'address' field for address search, otherwise get the data field
-    var field = filterType ? 'data' : 'address';
+    var field = (filterType === 'address') ? 'data' : 'address';
 
     // Run the modal ok method
     $scope.ok(key[field]);
