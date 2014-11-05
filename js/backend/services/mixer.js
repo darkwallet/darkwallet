@@ -343,6 +343,25 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
     return -1;
   };
 
+  MixerService.prototype.getMixingLevel = function(totalAmount, pocketIndex) {
+    var identity = this.core.getCurrentIdentity();
+      var utxo = identity.wallet.getUtxoToPay(totalAmount, pocketIndex);
+      var mixingLevel = 5; // target
+      utxo.forEach(function(output) {
+          var walletAddress = identity.wallet.getWalletAddress(output.address);
+          if (walletAddress.type === 'hd') {
+              mixingLevel = Math.min(mixingLevel, walletAddress.index[1]);
+          } else if (walletAddress.type === undefined) {
+              mixingLevel = Math.min(mixingLevel, walletAddress.index[0]%2);
+          } else {
+              // other addresses get 0 (we treat them like a public address)
+              mixingLevel = 0;
+          }
+          
+      });
+      return mixingLevel;
+  };
+
   /*
    * Evaluate a coinjoin opening and respond if appropriate.
    */
@@ -362,14 +381,16 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
     // If we found a pocket, continue with the protocol.
     if (pocketIndex !== -1) {
       var pocket = identity.wallet.pockets.getPocket(pocketIndex, 'hd');
-      // Prepare arguments for preparing the tx
-      var changeAddress = pocket.getChangeAddress('mixing');
-      var destAddress = pocket.getFreeAddress(0, 'mixing');
-
-      var recipient = {address: destAddress.address, amount: opening.amount};
+      var mixingLevel = this.getMixingLevel(opening.amount+fee, pocketIndex);
 
       // Build the tx
+      var changeAddress = pocket.getChangeAddress('mixing');
+      var destAddress = pocket.getFreeAddress(Math.max(mixingLevel+1, 2), 'mixing');
+      var recipient = {address: destAddress.address, amount: opening.amount};
+
+      console.log("[mixer] mixing to level", mixingLevel);
       var metadata = identity.tx.prepare(pocketIndex, [recipient], changeAddress, fee);
+
       var guestTx = metadata.tx.clone();
       this.ongoing[opening.id] = new CoinJoin(this.core, 'guest', 'accepted', guestTx, opening.amount, fee, peer);
       this.ongoing[opening.id].pocket = pocketIndex;
