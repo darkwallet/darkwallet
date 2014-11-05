@@ -39,8 +39,9 @@
             </div>
           </div>
           <div class="row">
-            <div class="small-6 columns"><input type="password" ng-model="form.passwd" placeholder="{{'Password'|_}}" ng-required="true" /></div>
-            <div class="small-6 columns"><input type="password" ng-model="form.passwd2" placeholder="{{'Repeat password'|_}}" ng-required="true" /></div>
+            <div class="small-4 columns"><input type="password" ng-model="form.passwd" placeholder="{{'Password'|_}}" ng-required="true" /></div>
+            <div class="small-4 columns"><input type="password" ng-model="form.passwd2" placeholder="{{'Repeat password'|_}}" ng-required="true" /></div>
+            <div class="small-4 columns"><password-strength-meter password="form.passwd"></div>
           </div>
           <div class="row" ng-if="message">
              {{message}}

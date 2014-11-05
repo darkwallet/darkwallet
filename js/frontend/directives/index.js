@@ -11,5 +11,6 @@ define([
     './qr-scanner',
     './safebrowser',
     './slider',
+    './password-strength-meter',
     './validation'
 ], function () {});

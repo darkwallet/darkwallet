@@ -31,6 +31,7 @@ require.config({
     'bs58check': "../vendors/wrappers/bs58check",
     'buffer': "../vendors/wrappers/buffer",
     'big': "../vendors/big.js/big.min",
+    'zxcvbn': "../vendors/zxcvbn/zxcvbn",
 
     'bitcoinjs-lib-real': "../vendors/bitcoinjs-lib/bitcoinjs",
     'sjcl-real': "../vendors/sjcl/sjcl",
@@ -101,6 +102,9 @@ require.config({
     'bitcoinjs-lib': {
       deps: ['bitcoinjs-lib-real', 'convert'],
       exports: 'Bitcoin'
+    },
+    'zxcvbn': {
+      exports: 'zxcvbn'
     }
   }
 });
