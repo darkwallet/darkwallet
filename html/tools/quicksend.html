@@ -25,8 +25,8 @@
         <a ng-click="quicksend.next = false" class="button nomarginbottom prefix radius fa fa-arrow-left"></a>
       </div>
       <div class="small-5 columns">
-        <input ng-hide="quicksend.isFiatShown" ng-disabled="send.sending" type="number" min="0" step="any" ng-model="quicksend.amount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="{{'Enter amount'|_}}" autofocus class="nomarginbottom" />
-        <input ng-show="quicksend.isFiatShown" ng-disabled="send.sending" type="number" min="0" step="any" ng-model="quicksend.fiatAmount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="{{'Enter amount'|_}}" autofocus class="nomarginbottom" />
+        <input ng-hide="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.amount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="{{'Enter amount'|_}}" autofocus class="nomarginbottom" />
+        <input ng-show="quicksend.isFiatShown" ng-disabled="send.sending" type="text" ng-model="quicksend.fiatAmount" ng-change="updateBtcFiat(quicksend); validateSendForm();" placeholder="{{'Enter amount'|_}}" autofocus class="nomarginbottom" />
       </div>
       <div class="small-2 columns">
         <a class="button postfix nomarginbottom" tooltip-append-to-body="true" tooltip="{{'click to switch to {0}'|_:(!quicksend.isFiatShown? settings.fiatCurrency : settings.currency)}}" ng-click="updateBtcFiat(quicksend); quicksend.isFiatShown=!quicksend.isFiatShown">{{quicksend.isFiatShown? settings.fiatCurrency : settings.currency}}</a>

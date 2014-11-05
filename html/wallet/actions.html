@@ -33,7 +33,7 @@
 		<form name="mixingOptionsForm" ng-show="pocket.mixing" ng-submit="setMixingOptions(pocket, forms.mixingOptions)">
                         
  		        {{'Budget'|_}}:
-			<input type="number" min="0" step="any" autofocus ng-model="forms.mixingOptions.budget" tooltip="{{'Maximum budget to spend on fees ({0})'|_:settings.currency}}">
+			<input type="text" autofocus ng-model="forms.mixingOptions.budget" tooltip="{{'Maximum budget to spend on fees ({0})'|_:settings.currency}}">
  		        <p tooltip="{{'Amount already spent mixing'|_}}">{{'Spent'|_}}: {{forms.mixingOptions.spent|formatBtc}}</p>
  		        <p tooltip="{{'Target number of mixings'|_}}">{{'Target mixings'|_}}: {{forms.mixingOptions.mixings}}</p>
 			<button class="button postfix fa fa-check" type="submit" ng-disabled="pocket.mixingOptions.budget===forms.mixingOptions.budget">{{'Save'|_}}</button>
