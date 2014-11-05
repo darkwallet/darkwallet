@@ -105,6 +105,7 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
             wallet: {
               get identity() {return core.getIdentity();},
               getWalletAddress: function() {return {index: [0,0], address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh', type: 'hd'};},
+              getUtxoToPay: function() { return []; },
               wallet: {
                 outputs: {"8962ceb909046f48cc3d41933b95be1f7379cd056974ab85295843d1abc7294b:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'},
                           "217182cc79d86f72ef635910a1c935083645e6967fc16cecf08dd7e8972b05c7:0": {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh'}}

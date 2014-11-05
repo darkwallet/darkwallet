@@ -28,7 +28,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
   }
 
   Scanner.prototype.setMargins = function(pocketMargin, addressMargin, breadth) {
-      breadth = this.oldStyle ? 2 : Math.max(2, breadth);
+      breadth = this.oldStyle ? 2 : Math.max(2, breadth||2);
       this.pocketMargin = pocketMargin*breadth;
       this.addressMargin = addressMargin;
       this.breadth = breadth;
