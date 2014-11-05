@@ -1,5 +1,5 @@
 <h3 ng-show="!tools.open || tools.verifyOpen">{{'Verify signed message'|_}}</h3>
-<a class="button fa fa-check-square-o postfix" ng-click="tools.open=true;tools.verifyOpen=true" ng-show="!tools.open" novalidate>{{'Verify'|_}}</a>
+<a class="button fa fa-check-square-o postfix ng-animate-disabled" ng-click="tools.open=true;tools.verifyOpen=true" ng-show="!tools.open" novalidate>{{'Verify'|_}}</a>
 <form name="verifyForm" ng-show="tools.verifyOpen" ng-submit="verifyText()">
     <label>{{'Text'|_}}:</label>
     <textarea required ng-model="tools.verifyText" rows="4" cols="50"></textarea>

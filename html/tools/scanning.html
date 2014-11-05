@@ -1,7 +1,7 @@
 <div ng-controller="ScanningCtrl">
   <h3>{{'Seed Scanning'|_}}</h3>
   <div ng-show="!scanning">
-    <a class="button fa fa-pencil postfix" ng-show="!tools.scanOpen" ng-click="tools.open=true;tools.scanOpen=true" novalidate>{{'Scan'|_}}</a>
+    <a class="button fa fa-pencil postfix ng-animate-disabled" ng-show="!tools.scanOpen" ng-click="tools.open=true;tools.scanOpen=true" novalidate>{{'Scan'|_}}</a>
     <p>{{scanStatus}}<p>
     <form name="scanningForm" ng-show="tools.scanOpen" ng-submit="scanSeed()">
         <label>{{'Address margin'|_}}</label>

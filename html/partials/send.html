@@ -23,8 +23,8 @@
       <div class="small-12 columns">
         <div class="row collapse">
           <div class="small-2 columns">
-            <input ng-hide="field.isFiatShown" ng-disabled="forms.send.sending" type="text" currency-amount class="prefix radius" ng-model="field.amount" ng-change="validateSendForm();" placeholder="{{'Enter amount'|_}}" />
-            <input ng-show="field.isFiatShown" ng-disabled="forms.send.sending" type="text" currency-amount class="prefix radius" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="{{'Enter amount'|_}}" />
+            <input ng-hide="field.isFiatShown" ng-disabled="forms.send.sending" type="text" currency-amount class="prefix radius ng-animate-disabled" ng-model="field.amount" ng-change="validateSendForm();" placeholder="{{'Enter amount'|_}}" />
+            <input ng-show="field.isFiatShown" ng-disabled="forms.send.sending" type="text" currency-amount class="prefix radius ng-animate-disabled" ng-model="field.fiatAmount" ng-change="updateBtcFiat(field); validateSendForm();" placeholder="{{'Enter amount'|_}}" />
           </div>
 
           <div class="small-1 columns">

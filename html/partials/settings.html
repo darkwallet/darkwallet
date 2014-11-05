@@ -5,7 +5,7 @@
       <div class="large-4 columns">
         <div class="panel setback seed">
           <h5>{{'Security'|_}}</h5>
-          <button class="expand" ng-show="!seedTool&&!passTool" ng-click="seedError='';seedTool=true">{{'Show seed'|_}}</button>
+          <button class="expand ng-animate-disabled" ng-show="!seedTool&&!passTool" ng-click="seedError='';seedTool=true">{{'Show seed'|_}}</button>
           <div ng-show="seedTool">
             <label>{{'Enter your current password'|_}}</label>
             <input type="password" class="password" ng-model="seedPassword">
@@ -17,7 +17,7 @@
             <button class="small radius" ng-click="showSeed();">{{'Show seed'|_}}</button>
             <button class="small alert radius" ng-click="seedTool=false;">{{'Cancel'|_}}</button>
           </div>
-        <button class="expand" ng-show="!passTool&&!seedTool" ng-click="incorrectPassword=false;passTool=true">{{'Change password'|_}}</button>
+        <button class="expand ng-animate-disabled" ng-show="!passTool&&!seedTool" ng-click="incorrectPassword=false;passTool=true">{{'Change password'|_}}</button>
         <form ng-show="passTool" name="passwordForm" ng-submit="passwordChanged()" novalidate>
           <h5>{{'Change your password'|_}}</h5>
           <label>{{'Enter your current password'|_}}</label>

@@ -42,6 +42,9 @@ define([
       });
       $translateProvider.preferredLanguage(AvailableLanguages.preferedLanguage());
     });
+    app.config(function($animateProvider) {
+      $animateProvider.classNameFilter(/^(?:(?!ng-animate-disabled).)*$/);
+    });
     // In case we need to initialize something after the application is created.
     app.initialize = function() {
     };

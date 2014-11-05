@@ -1,5 +1,5 @@
 <h3 ng-show="!tools.open || tools.exportOpen">{{'Key management'|_}}</h3>
-<a class="button fa fa-upload postfix" ng-click="tools.open=true;tools.exportOpen=true" ng-show="!tools.open" novalidate>{{'Export private keys'|_}}</a>
+<a class="button fa fa-upload postfix ng-animate-disabled" ng-click="tools.open=true;tools.exportOpen=true" ng-show="!tools.open" novalidate>{{'Export private keys'|_}}</a>
 <form name="exportingForm" ng-show="tools.exportOpen" ng-submit="exportKeys()">
     <label ng-show="!tools.exportAddress">{{'All private keys will be exported (this might take a while).'|_}}</label>
     <p ng-show="!tools.exportAddress">{{'Write an address to export just one.'|_}}</p>
