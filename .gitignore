@@ -85,6 +85,8 @@ Desktop.ini
 !/vendors/moment/min/moment-with-locales.min.js
 /vendors/big.js/*
 !/vendors/big.js/big.min.js
+/vendors/zxcvbn/*
+!/vendors/zxcvbn/zxcvbn.js
 
 # Ignore Node Modules (install them only if you need to edit scss)
 /node_modules/*
