@@ -51,6 +51,7 @@ directives.directive('currencyAmount', function() {
     link: function(scope, elm, attrs, ctrl) {
       var f = function(viewValue) {
         if (viewValue) {
+          viewValue = ''+viewValue;
           var res = /^[0-9]*([\,\.][0-9]+)?$/.test(viewValue);
           ctrl.$setValidity('amount', res);
           return viewValue.replace(',', '.');
