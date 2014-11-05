@@ -37,8 +37,8 @@
 
           <div class="small-8 columns">
 
-                <input ng-show="!field.contact" type="text" class="address-buttons" required btc-address ng-disabled="forms.send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="{{'Enter a bitcoin address here or use the buttons on the right.'|_}}" />
-                <span class="postfix" ng-show="field.contact" title="{{field.address}}">
+                <input ng-show="!field.contact" type="text" class="ng-animate-disabled address-buttons" required btc-address ng-disabled="forms.send.sending" ng-model="field.address" ng-change="validateSendForm()" placeholder="{{'Enter a bitcoin address here or use the buttons on the right.'|_}}" />
+                <span class="ng-animate-disabled postfix" ng-show="field.contact" title="{{field.address}}">
                    <identicon icon-size="36" hash="field.contact.data.hash"></identicon>
                    {{field.contact.data.name}}
                 </span>
