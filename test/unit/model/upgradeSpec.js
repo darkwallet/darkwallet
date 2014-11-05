@@ -39,6 +39,13 @@ define(['model/upgrade'], function(Upgrade) {
               privData.privKey = 'xprv9xTMAATdTvDVhc3xHZvK5sqUKAZPpZzKpsoT2pR3oDNz8XTdjkrTR3Uj26Rpy4CM46DDNb5Ae5Uf8ei1usbjK2qToDUFx97g8M2XduB7Cbe';
               identity.store.store.mpk = 'xpub6AANPpdT4JoeTLrgN159eHQXT4X1YiCtXnAJLV5zF48K2iDWWc1S7eYNFGe3oT2W5vDeFYHpWS8Y3Jr3xXeXFn18W6jMU9DhE3VG9mhyayG';
           },
+          contacts: {
+              contacts: [
+                  {pubKeys: [{type: 'id'}]},
+                  {pubKeys: [{type: 'address'}, {type: 'stealth'}]},
+                  {pubKeys: [{type: 'stealth'}]}
+              ]
+          },
           wallet: {
               pubKeys: {"1,2": {index: [1,2], label: 'change', nOutputs: 0},
                         "0,0": {index: [0,0], label: 'unused', nOutputs: 0},
@@ -90,6 +97,10 @@ define(['model/upgrade'], function(Upgrade) {
       expect(identity.wallet.oldMpk).toBe('somempk');
       expect(identity.wallet.pockets.hdPockets[0].mpk).toBe('mpk1');
       expect(identity.wallet.pockets.hdPockets[1].mpk).toBe('mpk2');
+      expect(identity.contacts.contacts[0].pubKeys[0].type).toBe('id');
+      expect(identity.contacts.contacts[1].pubKeys[0].type).toBe('address');
+      expect(identity.contacts.contacts[1].pubKeys[1].type).toBe('oldstealth');
+      expect(identity.contacts.contacts[2].pubKeys[0].type).toBe('oldstealth');
       expect(identity.wallet.pockets.hdPockets[2].mpk).toBe('xpub6DDP5BrWcCBACU8FaDYA73N6gFUhM7sBR4zAX9WDvYByRcak3sjMkRTM5xMYXpKk8vMUEyqek4TA9TkBQmCvsVgxR23Cgw2PyfWk5EErhhG');
       expect(Object.keys(identity.wallet.pubKeys)).toEqual(['0', 'readonly:bla,b']);
     });

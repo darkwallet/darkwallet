@@ -125,7 +125,18 @@ function Upgrade4To5(store, identity, password) {
 
     // 5. should create some new addresses?
 
-    // 6. perform other long running cleanings
+    // 6. Mark contact stealth addresses as revoked
+    // The addresses might be legit for some users, but in most cases are
+    // obsolete since they're from other darkwallets
+    identity.contacts.contacts.forEach(function(contact) {
+        contact.pubKeys.forEach(function(pubKey) {
+            if (pubKey.type === 'stealth') {
+                pubKey.type = 'oldstealth';
+            }
+        });
+    });
+
+    // 7. perform other long running cleanings
 
     Object.keys(identity.wallet.pubKeys).forEach(function(index) {
         var walletAddress = identity.wallet.pubKeys[index];
