@@ -68,6 +68,12 @@ and move down.
 Internationalization
 --------------------
 
+### Translating
+
+If you want to help translating the app to more languages go to our [transifex project](https://www.transifex.com/projects/p/darkwallet/)
+
+### Developers
+
 You can make a string translatable using the "_" filter:
 
 ```html
