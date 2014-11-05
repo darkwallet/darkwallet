@@ -5,6 +5,7 @@ directives.directive('passwordStrengthMeter', function() {
   return {
     restrict: 'E',
     template: '<div></div>',
+    replace: true,
     scope: {
       password: '='
     },
@@ -20,14 +21,7 @@ directives.directive('passwordStrengthMeter', function() {
           element[0].setAttribute('data-score', '');
           element[0].setAttribute('data-crack-time', '');
         }
-        console.log($scope.password)
       });
-        //require(['zxcvbn'], function(zxcvbn) {
-        
-        //if(ctrl.$viewValue) {
-        //    
-        //})
-      //}
     }
   };
 });
