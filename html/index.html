@@ -25,7 +25,7 @@
 	        <li toggle-top-bar class="menu-icon"><a>{{'Menu'|_}}</a></li>
 	      </ul>
     
-	      <top-bar-section>
+	      <top-bar-section ng-if="identityName">
   	        <ul class="right">
   		  <li title="{{'Gateway'|_}}: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i></a></li>
   		  <li ng-show="settings.advanced && status.syncing" title="{{'Fetching data from obelisk!'|_}}"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
@@ -52,7 +52,7 @@
 	    </top-bar>
 	    
  <!--     <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include> -->
-      <div class="scroller off-canvas-wrap" ng-view>
+      <div class="scroller off-canvas-wrap" ng-if="identityName||isActive('/new_wallet')" ng-view>
       </div>
     </div>
     <!-- Notification Controllers -->
