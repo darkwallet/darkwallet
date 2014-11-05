@@ -45,5 +45,22 @@ directives.directive('contactAddress', function() {
   };
 });
 
+directives.directive('currencyAmount', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, elm, attrs, ctrl) {
+      var f = function(viewValue) {
+        if (viewValue) {
+          var res = /^[0-9]*([\,\.][0-9]+)?$/.test(viewValue);
+          ctrl.$setValidity('amount', res);
+          return viewValue.replace(',', '.');
+        }
+        return viewValue;
+      };
+      ctrl.$parsers.unshift(f);
+      ctrl.$formatters.unshift(f);
+    }
+  };
+});
 
 });
