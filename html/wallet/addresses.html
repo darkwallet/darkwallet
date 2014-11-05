@@ -55,6 +55,9 @@
 		                <span class="label radius" ng-show="address.type=='stealth'||address.type=='oldstealth'">
 		                    <div class="fa fa-fighter-jet"></div> {{'stealth'|_}}
 		                </span>
+		                <span class="label radius" ng-show="address.type=='hd'&&address.index[1]>1">
+		                    mixed: {{address.index[1]-1}}
+		                </span>
 		                <span title="{{'This address is from pre-bip44 wallet format, please don\'t use this address'|_}}" class="label radius" ng-show="!address.type||address.type==='oldstealth'">
 		                    {{'old'|_}}
 		                </span>
