@@ -77,7 +77,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require']
 
           var fund = new MultisigFund(guiTask.fund);
 
-          var fundTask = fund.getFundTask(guiTask.store);
+          var fundTask = fund.findFundTask(guiTask.store);
 
           var inputs = fund.getValidInputs(fundTask.tx);
 
