@@ -35,9 +35,6 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
                 }
                 var pocketIndex = identity.wallet.pockets.hdPockets.length-1;
 
-                // initialize pocket on angular
-                $wallet.initPocket(pocketIndex);
-
                 // generate an address
                 $wallet.generateAddress(pocketIndex, 0);
 

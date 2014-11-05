@@ -3,12 +3,10 @@
 define(['./module', 'darkwallet'], function (providers, DarkWallet) {
 
   function WalletProvider($scope) {
-      this.addresses = {};
       this.allAddresses = [];
   }
 
   WalletProvider.prototype.onIdentityLoaded = function(identity) {
-      this.addresses = {};
       this.allAddresses.splice(0, this.allAddresses.length);
 
       // load addresses for this identity
@@ -17,29 +15,12 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
 
   WalletProvider.prototype.loadAddresses = function(identity) {
       var self = this;
-      // Init pockets
-      for(var idx=0; idx<identity.wallet.pockets.hdPockets.length; idx++) {
-          self.initPocket(idx);
-      };
+
       /* Load addresses into angular */
       Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
           var walletAddress = identity.wallet.getAddress(pubKeyIndex);
-          // Regular addresses
           // add to scope
-          var branchId;
-          if (walletAddress.type === 'hd') {
-              branchId = (walletAddress.index[0]*2)+walletAddress.index[1];
-          } else {
-              branchId = walletAddress.index[0];
-          }
-          if (!self.addresses[branchId]) {
-              self.addresses[branchId] = [];
-          }
-          var addressArray = self.addresses[branchId];
-          if (self.allAddresses.indexOf(walletAddress) == -1) {
-              addressArray.push(walletAddress);
-              self.allAddresses.push(walletAddress);
-          }
+          self.addToScope(walletAddress);
       });
   }
 
@@ -71,25 +52,15 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       if (!pocketId) {
           pocketId = 0;
       }
-      var branchId = (pocketId*2)+change;
-      if (!this.addresses[branchId]) {
-          this.addresses[branchId] = [];
-      }
-      var addressArray = this.addresses[branchId];
       if (n === undefined || n === null) {
-          // iterate over available addresses to find out next n
-          n = -1;
-          this.addresses[branchId].forEach(function(address) {
-              if (identity.store.get('version') > 4) {
-                  // only count addresses of new type
-                  if (address.type === 'hd') {
-                      n = Math.max(n, address.index[2]||0);
-                  }
-              } else {
-                  n = Math.max(n, address.index[1]||0);
-              }
-          });
-          n += 1;
+          var address, currSeq;
+          n = 0;
+          do {
+              currSeq = (identity.store.get('version') > 4 && !oldStyle) ? [pocketId, change, n] : [(pocketId*2)+change, n]; 
+              address = identity.wallet.pubKeys[currSeq];
+              n += 1;
+          } while (address);
+          n -= 1;
       }
       var seq;
       if (identity.store.get('version') > 4 && !oldStyle) {
@@ -106,24 +77,11 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
 
   // remove an address from the scope and the backend
   WalletProvider.prototype.removeAddress = function(walletAddress) {
-      // remove from scope
-      var branchId;
-      if (walletAddress.type === 'hd') {
-          branchId = (walletAddress.index[0]*2)+walletAddress.index[1];
-      } else {
-          branchId = walletAddress.index[0];
+      // remove from global list
+      var idx = this.allAddresses.indexOf(walletAddress);
+      if (idx >= 0) {
+          this.allAddresses.splice(idx, 1);
       }
-
-      var thisCache = this.addresses[branchId];
-      var allCache = this.allAddresses;
-      [thisCache, allCache].forEach(function(cache) {
-          if (cache) { 
-              var idx = cache.indexOf(walletAddress);
-              if (idx >= 0) {
-                  cache.splice(idx, 1);
-              }
-          }
-      });
 
       // remove from backend
       DarkWallet.service.wallet.removeAddress(walletAddress);
@@ -152,37 +110,9 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       return changeAddress;
   };
 
-  // Initialize pocket structures.
-  WalletProvider.prototype.initPocket = function(pocketId) {
-      var branchId = pocketId*2;
-      if (!this.addresses[branchId]) {
-          this.addresses[branchId] = [];
-      }
-      if (!this.addresses[branchId+1]) {
-          this.addresses[branchId+1] = [];
-      }
-  };
-
   // Add a wallet address to scope
   WalletProvider.prototype.addToScope = function(walletAddress) {
-    var identity = DarkWallet.getIdentity();
-    var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
-    var branchId;
-    if (walletAddress.type === 'hd') {
-        branchId = (walletAddress.index[0]*2)+walletAddress.index[1];
-    } else {
-        branchId = walletAddress.index[0];
-    }
-    if (!walletAddress.type) {
-        this.initPocket(pocketId);
-    } else {
-        if (!this.addresses[branchId]) {
-            this.addresses[branchId] = [];
-        }
-    }
-    var addressArray = this.addresses[branchId];
     if (this.allAddresses.indexOf(walletAddress) == -1) {
-        addressArray.push(walletAddress);
         this.allAddresses.push(walletAddress);
     }
   };
