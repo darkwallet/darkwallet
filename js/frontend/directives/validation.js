@@ -54,6 +54,9 @@ directives.directive('currencyAmount', function() {
           viewValue = ''+viewValue;
           var res = /^[0-9]*([\,\.][0-9]+)?$/.test(viewValue);
           ctrl.$setValidity('amount', res);
+          if (!res) {
+              return 0;
+          }
           return viewValue.replace(',', '.');
         }
         return viewValue;
