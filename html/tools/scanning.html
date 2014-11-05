@@ -8,6 +8,8 @@
         <input ng-model="scanParams.addresses" type="number"></input>
         <label>{{'Pocket margin'|_}}</label>
         <input ng-model="scanParams.pockets" type="number"></input>
+        <label ng-show="settings.advanced&&scanParams.version>4&&!scanParams.scanOld">{{'Breadth'|_}}</label>
+        <input ng-show="settings.advanced&&scanParams.version>4&&!scanParams.scanOld" ng-model="scanParams.breadth" type="number"></input>
         <input id="checkbox-animations" ng-show="scanParams.version>4" ng-model="scanParams.scanOld" type="checkbox"><label for="checkbox-animations">{{'Scan old style addresses (only)'|_}}</label><br>
         <input id="checkbox-animations" ng-show="scanParams.version<5" ng-model="scanParams.scanMaster" type="checkbox"><label ng-show="scanParams.version<5" for="checkbox-animations">{{'Scan pocket master'|_}}</label><br>
         <div class="row collapse">

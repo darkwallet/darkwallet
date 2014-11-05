@@ -19,7 +19,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       this.lastAddressUsed = {0: 0};
       this.lastPocketUsed = 0;
       this.pocketAddressesUsed = 0;
-      this.setMargins(5, 10);
+      this.setMargins(5, 10, 2);
       this.scanned = 0;
       this.pocketCache = {};
       this.status = '';
@@ -27,9 +27,11 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
       this.updateCb = updateCb;
   }
 
-  Scanner.prototype.setMargins = function(pocketMargin, addressMargin) {
-      this.pocketMargin = pocketMargin*2;
+  Scanner.prototype.setMargins = function(pocketMargin, addressMargin, breadth) {
+      breadth = this.oldStyle ? 2 : Math.max(2, breadth);
+      this.pocketMargin = pocketMargin*breadth;
       this.addressMargin = addressMargin;
+      this.breadth = breadth;
       this.target = this.pocketMargin*this.addressMargin;
   };
 
@@ -42,8 +44,8 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
           if (this.oldStyle) {
               childKey = childKey.derive(pocket);
           } else {
-              childKey = this.masterKey.deriveHardened(Math.floor(pocket/2));
-              childKey = childKey.derive(pocket%2);
+              childKey = this.masterKey.deriveHardened(Math.floor(pocket/this.breadth));
+              childKey = childKey.derive(pocket%this.breadth);
           }
           this.pocketCache[pocket] = childKey;
       }
@@ -90,7 +92,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
           if (seq.length == 1) {
               this.pocketAddressesUsed += 1;
           }
-          var pocketIdx = this.oldStyle ? seq[0] : (seq[0]*2)+seq[1];
+          var pocketIdx = this.oldStyle ? seq[0] : (seq[0]*this.breadth)+seq[1];
           if (pocketIdx+1 > this.lastPocketUsed) {
               this.target += ((pocketIdx+1)-this.lastPocketUsed)*this.addressMargin;
               this.lastPocketUsed = pocketIdx + 1;
@@ -111,7 +113,7 @@ define(['bitcoinjs-lib'], function(Bitcoin) {
 
   Scanner.prototype.scan = function() {
       var self = this;
-      var seq = this.oldStyle ? [this.currentPocket] : [Math.floor(this.currentPocket/2), this.currentPocket%2];
+      var seq = this.oldStyle ? [this.currentPocket] : [Math.floor(this.currentPocket/this.breadth), this.currentPocket%this.breadth];
       // -1 means pocket address
       if (this.currentAddress > -1) {
           seq.push(this.currentAddress);

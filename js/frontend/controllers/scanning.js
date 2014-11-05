@@ -9,7 +9,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
   $scope.scanStatus = "";
   var identity = DarkWallet.getIdentity();
   var version = identity ? identity.store.get('version') : 5;
-  $scope.scanParams = {addresses: 10, pockets: 5, scanMaster: false, scanOld: false, version: version};
+  $scope.scanParams = {addresses: 10, pockets: 5, scanMaster: false, scanOld: false, version: version, breadth: 2};
 
   // Initialize the master pocket address for pockets
   var createMasterAddresses = function(results) {
@@ -163,7 +163,8 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
                                 onScanUpdate, scanMaster);
 
       scanner.setMargins(parseInt($scope.scanParams.pockets||5),
-                             parseInt($scope.scanParams.addresses||10));
+                         parseInt($scope.scanParams.addresses||10),
+                         parseInt($scope.scanParams.breadth||2));
       $scope.scanner = scanner;
 
       // Start scanner
