@@ -6,7 +6,7 @@
 define(['./module', 'darkwallet'],
 function (controllers, DarkWallet) {
 
-  controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', '$brc', '_Filter', function($scope, modals, notify, $brc, _) {
+  controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', '$brc', '$tabs', '_Filter', function($scope, modals, notify, $brc, $tabs, _) {
 
   $scope.Object = Object;
 
@@ -65,6 +65,8 @@ function (controllers, DarkWallet) {
           notify.error(_('Error importing'), _(e.message));
           return;
       }
+
+      $tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
 
       // Add to tasks
       notify.success(_('Added transaction'));
