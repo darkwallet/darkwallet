@@ -27,6 +27,7 @@ require.config({
     'async': "../vendors/async/lib/async",
     'convert': "util/convert",
     'bitcoinjs-lib': "../vendors/wrappers/bitcoinjs",
+    'bip39': "../vendors/bip39/bip39.min",
     'bigi': "../vendors/wrappers/bigi",
     'bs58check': "../vendors/wrappers/bs58check",
     'buffer': "../vendors/wrappers/buffer",

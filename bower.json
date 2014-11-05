@@ -44,6 +44,7 @@
     "angular-moment": "~0.7.0",
     "big.js": "~2.5.0",
     "angular-translate": "~2.2.0",
-    "angular-translate-loader-static-files": "~2.2.0"
+    "angular-translate-loader-static-files": "~2.2.0",
+    "bip39": "https://github.com/weilu/bip39.git#~2.1.1"
   }
 }

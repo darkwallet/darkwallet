@@ -66,6 +66,15 @@
             <h6 ng-show="form.create_or_restore=='create'">{{'To confirm you\'ve written down your seed correctly, please type it here:'|_}}</h6>
             <h6 ng-show="form.create_or_restore=='restore'">{{'Write your seed then click finish:'|_}}</h6>
             <input type="text" class="seed" placeholder="{{'Write the 12 words here...'|_}}" ng-model="form.mnemonic2" />
+            <div ng-show="form.create_or_restore=='restore'">
+                <a ng-click="showOptions=true" ng-hide="showOptions">{{'Show options...'|_}}</a>
+                <div ng-show="showOptions || form.seed_type=='electrum'">
+                    <input ng-model="form.seed_type" value="electrum" type="radio" id="electrum"><label tooltip="{{'For pre-0.8.0 seeds'|_}}" for="electrum">Electrum</label>
+                    <input ng-model="form.seed_type" value="bip39" type="radio" id="bip39"><label tooltip="{{'For 0.8.0 or later seeds'|_}}" for="bip39">BIP-39</label>
+                    <p ng-show="form.seed_type=='electrum' && form.mnemonic2">{{'You should not store Electrum seed type any more. Please, store its BIP-39 version instead:'|_}}<br><code>{{electrumToBIP39(form.mnemonic2)}}</code></p>
+                    
+                </div>
+            </div>
             <p>{{message2}}</p>
             <h6 ng-show="form.create_or_restore=='create'">{{'After you finish, please store the piece of paper in a safe place, and never type it on a computer unless you need to recover your lost wallet!'|_}}</h6>
             <div class="text-right">

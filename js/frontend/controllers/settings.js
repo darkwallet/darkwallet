@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyformat', 'available_languages'], function (controllers, DarkWallet, FiatCurrencies,  Mnemonic, CurrencyFormat, AvailableLanguages) {
+define(['./module', 'darkwallet', 'util/fiat', 'bip39', 'dwutil/currencyformat', 'available_languages'], function (controllers, DarkWallet, FiatCurrencies, BIP39, CurrencyFormat, AvailableLanguages) {
 
   // Controller
   controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', '$animate', '$translate', '_Filter', function($scope, notify, $animate, $translate, _) {
@@ -93,16 +93,10 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
         return false;
       }
       var seed = private_data.seed;
-      var random = [];
-      for(var i=0;i<seed.length/8;i++){
-        var integer = parseInt(seed.slice(8*i,i*8+8),16);
-        random.push(integer);
-      }
-      var m  = new Mnemonic();
-      m.random = random;
+      
       $scope.yourSeed = true;
       $scope.yourSeedHex = seed;
-      $scope.yourSeedWords = m.toWords().join(' ');
+      $scope.yourSeedWords = BIP39.entropyToMnemonic(seed);
   };
 }]);
 });

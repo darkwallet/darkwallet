@@ -9,7 +9,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function (controllers, DarkWallet, Mnemonic, AvailableLanguages) {
+define(['./module', 'darkwallet', 'mnemonicjs', 'bip39', 'available_languages'], function (controllers, DarkWallet, Mnemonic, BIP39, AvailableLanguages) {
   controllers.controller('NewWalletCtrl', ['$scope', '$location', 'notify', '$translate', '_Filter', function($scope, $location, notify, $translate, _) {
 
   $scope.step = 1;
@@ -17,7 +17,8 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function
   $scope.form = {
     create_or_restore: 'create',
     network: 'bitcoin',
-    language: AvailableLanguages.preferedLanguage()
+    language: AvailableLanguages.preferedLanguage(),
+    seed_type: 'bip39'
   };
 
   $scope.nextStep = function() {
@@ -31,6 +32,12 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function
   $scope.changeLanguage = function() {
     $translate.use($scope.form.language);
   };
+  
+  $scope.electrumToBIP39 = function(words) {
+    var mnemonic = new Mnemonic(words.split(' '));
+    var seed = mnemonic.toHex();
+    return BIP39.entropyToMnemonic(seed);
+  };
 
   $scope.passwordSubmit = function() {
     // Check that passwords match.
@@ -40,8 +47,7 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function
     }
 
     if ($scope.form.create_or_restore == 'create') {
-      var mnemonic = new Mnemonic(128);
-      $scope.form.mnemonic = mnemonic.toWords().join(' ');
+      $scope.form.mnemonic = BIP39.generateMnemonic(128);
       $scope.step++;
     } else {
       $scope.step += 2;
@@ -54,21 +60,27 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'available_languages'], function
       return;
     }
     
-    var words = $scope.form.mnemonic2.split(' ');
-
-    /* check that it's a valid mnemonic */
-    for (var i = 0; i < 12; i++) {
+    var words = $scope.form.mnemonic2;
+    
+    var seed;
+    if ($scope.form.seed_type == 'bip39') {
+      seed = BIP39.mnemonicToEntropy(words);
+    } else {  
+      words = words.split(' ');
+      /* check that it's a valid mnemonic */
+      for (var i = 0; i < 12; i++) {
         if (Mnemonic.words.indexOf(words[i]) == -1) {
             notify.error(_('invalid mnemonic'));
             return;
         }
+      }
+      var mnemonic = new Mnemonic(words);
+      seed = mnemonic.toHex();
     }
-
-    var mnemonic = new Mnemonic(words);
 
     var walletService = DarkWallet.service.wallet;
 
-    walletService.createIdentity($scope.form.name, $scope.form.network, mnemonic.toHex(), $scope.form.passwd, function(identity) {
+    walletService.createIdentity($scope.form.name, $scope.form.network, seed, $scope.form.passwd, function(identity) {
         identity.settings.language = $scope.form.language;
         identity.store.save();
         $location.path('#dashboard');

@@ -83,6 +83,8 @@ Desktop.ini
 !/vendors/moment/min/
 /vendors/moment/min/*
 !/vendors/moment/min/moment-with-locales.min.js
+/vendors/bip39/*
+!/vendors/bip39/bip39.min.js
 /vendors/big.js/*
 !/vendors/big.js/big.min.js
 
