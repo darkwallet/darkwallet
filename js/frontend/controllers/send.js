@@ -275,8 +275,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       walletService.signTransaction(metadata.tx, metadata, password, onBroadcast, true);
   };
 
-  var onPassword = function(metadata, amountNote, password) {
-      if (sendForm.mixing) {
+  var onPassword = function(metadata, amountNote, password, pocketType) {
+      if (sendForm.mixing && pocketType !== 'multisig') {
           finishMix(metadata, amountNote, password);
       } else {
           finishSign(metadata, amountNote, password);
@@ -429,7 +429,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       // Now ask for the password before continuing with the next step   
       modals.confirmSend(_('Write your password'), {pocket: pocket, metadata: metadata}, spend.contacts, function(password) {
           // Run the password callback
-          onPassword(metadata, amountNote, password);
+          onPassword(metadata, amountNote, password, pocketType);
       }, function() {
           sendForm.sending = false;
       });
