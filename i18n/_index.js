@@ -19,6 +19,8 @@ define(function() {
         {"name": "Nederlands (België)", "code": "nl_BE"},
         {"name": "日本語", "code": "ja"},
         {"name": "English (UK)", "code": "en_GB"},
+        {"name": "English (Belgium)", "code": "en_BE"},
+        {"name": "Svenska", "code": "sv"},
         {"name": "עִבְרִית", "code": "he"}
     ];
     
