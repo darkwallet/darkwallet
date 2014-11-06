@@ -68,7 +68,7 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'bip39', 'available_languages'],
             return;
         }
       }
-      var mnemonic = new Mnemonic(words);
+      var mnemonic = new Mnemonic(_words);
       seed = mnemonic.toHex();
     }
 

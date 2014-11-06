@@ -18,7 +18,7 @@ function (mocks, testUtils) {
                 pars.network = network;
                 pars.secret = secret;
                 pars.password = password;
-                callback({settings:{}, store:{save:function(){}}});
+                callback({settings:{}, store:{save:function(){}, insertPrivateData:function(){}}});
             }
           }
         }
@@ -101,10 +101,11 @@ function (mocks, testUtils) {
       expect(scope.message2).toBeDefined();
     });
     
-    it('generates a new identity when a mnemonic is provided', function() {
+    it('generates a new identity when an Electrum-type mnemonic is provided', function() {
       scope.form.name = 'Satoshi';
       scope.form.passwd = 'p4ssw0rd';
       scope.form.mnemonic2 = "king government grown apologize bowl precious eternal ceiling satisfy just silently control";
+      scope.form.seed_type = 'electrum';
       scope.mnemonicSubmit();
 
       expect(_location).toBe('#dashboard');
@@ -114,6 +115,23 @@ function (mocks, testUtils) {
       expect(pars.name).toBe(scope.form.name);
       expect(pars.network).toBe(scope.form.network);
       expect(pars.secret).toBe('be21b135c24c58c0fd72182db940af8d');
+      expect(pars.password).toBe(scope.form.passwd);
+    });
+    
+    it('generates a new identity when a BIP39-type mnemonic is provided', function() {
+      scope.form.name = 'Satoshi';
+      scope.form.passwd = 'p4ssw0rd';
+      scope.form.mnemonic2 = "legal winner thank year wave sausage worth useful legal winner thank yellow";
+      scope.form.seed_type = 'bip39';
+      scope.mnemonicSubmit();
+
+      expect(_location).toBe('#dashboard');
+
+      expect(scope.message2).toBeUndefined();
+
+      expect(pars.name).toBe(scope.form.name);
+      expect(pars.network).toBe(scope.form.network);
+      expect(pars.secret).toBe('878386efb78845b3355bd15ea4d39ef97d179cb712b77d5c12b6be415fffeffe5f377ba02bf3f8544ab800b955e51fbff09828f682052a20faa6addbbddfb096');
       expect(pars.password).toBe(scope.form.passwd);
     });
   });
