@@ -32,12 +32,6 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'bip39', 'available_languages'],
   $scope.changeLanguage = function() {
     $translate.use($scope.form.language);
   };
-  
-  $scope.electrumToBIP39 = function(words) {
-    var mnemonic = new Mnemonic(words.split(' '));
-    var seed = mnemonic.toHex();
-    return BIP39.entropyToMnemonic(seed);
-  };
 
   $scope.passwordSubmit = function() {
     // Check that passwords match.
@@ -64,12 +58,12 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'bip39', 'available_languages'],
     
     var seed;
     if ($scope.form.seed_type == 'bip39') {
-      seed = BIP39.mnemonicToEntropy(words);
+      seed = BIP39.mnemonicToSeedHex(words);
     } else {  
-      words = words.split(' ');
+      var _words = words.split(' ');
       /* check that it's a valid mnemonic */
       for (var i = 0; i < 12; i++) {
-        if (Mnemonic.words.indexOf(words[i]) == -1) {
+        if (Mnemonic.words.indexOf(_words[i]) == -1) {
             notify.error(_('invalid mnemonic'));
             return;
         }
@@ -82,6 +76,7 @@ define(['./module', 'darkwallet', 'mnemonicjs', 'bip39', 'available_languages'],
 
     walletService.createIdentity($scope.form.name, $scope.form.network, seed, $scope.form.passwd, function(identity) {
         identity.settings.language = $scope.form.language;
+        identity.store.insertPrivateData({mnemonic: words, seed_type: $scope.form.seed_type}, $scope.form.passwd);
         identity.store.save();
         $location.path('#dashboard');
     });

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'util/fiat', 'bip39', 'dwutil/currencyformat', 'available_languages'], function (controllers, DarkWallet, FiatCurrencies, BIP39, CurrencyFormat, AvailableLanguages) {
+define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyformat', 'available_languages'], function (controllers, DarkWallet, FiatCurrencies, Mnemonic, CurrencyFormat, AvailableLanguages) {
 
   // Controller
   controllers.controller('WalletSettingsCtrl', ['$scope', 'notify', '$animate', '$translate', '_Filter', function($scope, notify, $animate, $translate, _) {
@@ -92,11 +92,30 @@ define(['./module', 'darkwallet', 'util/fiat', 'bip39', 'dwutil/currencyformat',
         }
         return false;
       }
-      var seed = private_data.seed;
       
+      var seed = private_data.seed;
+      var words;
+      var type;
+      
+      if (private_data.mnemonic) {
+        words = private_data.mnemonic;
+        type = private_data.seed_type;
+      } else {
+        // pre-0.8.0 compatibility
+        var random = [];
+        for(var i=0;i<seed.length/8;i++){
+          var integer = parseInt(seed.slice(8*i,i*8+8),16);
+          random.push(integer);
+        }
+        var m  = new Mnemonic();
+        m.random = random;
+        words = m.toWords().join(' ');
+        type = 'electrum';
+      }
       $scope.yourSeed = true;
       $scope.yourSeedHex = seed;
-      $scope.yourSeedWords = BIP39.entropyToMnemonic(seed);
+      $scope.yourSeedWords = words;
+      $scope.yourSeedType = type;
   };
 }]);
 });

@@ -89,5 +89,19 @@ Store.prototype.setPrivateData = function(data, password) {
     this.set('private', privData);
 };
 
+/**
+ * Wrapper for get and set private data.
+ * @param {Object} data
+ * @param {String} password
+ * @returns {undefined}
+ */
+Store.prototype.insertPrivateData = function(data, password) {
+    var priv = this.getPrivateData(password);
+    for (var key in data) {
+        priv[key] = data[key];
+    }
+    this.setPrivateData(priv, password);
+};
+
 return Store;
 });

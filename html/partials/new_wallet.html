@@ -71,8 +71,6 @@
                 <div ng-show="showOptions || form.seed_type=='electrum'">
                     <input ng-model="form.seed_type" value="electrum" type="radio" id="electrum"><label tooltip="{{'For pre-0.8.0 seeds'|_}}" for="electrum">Electrum</label>
                     <input ng-model="form.seed_type" value="bip39" type="radio" id="bip39"><label tooltip="{{'For 0.8.0 or later seeds'|_}}" for="bip39">BIP-39</label>
-                    <p ng-show="form.seed_type=='electrum' && form.mnemonic2">{{'You should not store Electrum seed type any more. Please, store its BIP-39 version instead:'|_}}<br><code>{{electrumToBIP39(form.mnemonic2)}}</code></p>
-                    
                 </div>
             </div>
             <p>{{message2}}</p>

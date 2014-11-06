@@ -11,9 +11,10 @@
             <input type="password" class="password" ng-model="seedPassword">
             <input type="text" ng-model="yourSeedHex" ng-show="yourSeed && !seedError">
             <input type="text" ng-model="yourSeedWords" ng-show="yourSeed && !seedError">
-            <div ng-show="seedError">
+            <p ng-show="yourSeed && !seedError && yourSeedType=='electrum'" ng-bind-html="('*NOTE:* This is an Electrum style seed'|_)"></p>
+            <p ng-show="seedError">
              {{'Incorrect password'|_}}
-            </div>
+            </p>
             <button class="small radius" ng-click="showSeed();">{{'Show seed'|_}}</button>
             <button class="small alert radius" ng-click="seedTool=false;">{{'Cancel'|_}}</button>
           </div>
