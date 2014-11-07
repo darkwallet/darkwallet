@@ -21,7 +21,8 @@ define(function() {
         {"name": "English (UK)", "code": "en_GB"},
         {"name": "English (Belgium)", "code": "en_BE"},
         {"name": "Svenska", "code": "sv"},
-        {"name": "עִבְרִית", "code": "he"}
+        {"name": "עִבְרִית", "code": "he"},
+        {"name": "Esperanto", "code": "eo"}
     ];
     
     var fallbacks = {
