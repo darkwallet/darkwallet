@@ -43,6 +43,16 @@ More info about how to develop on the [HACKING.md](HACKING.md) document.
 
 Other useful documents are: [HD Structure](https://wiki.unsystem.net/en/index.php/DarkWallet/HDWallet), [How to Help](https://wiki.unsystem.net/en/index.php/DarkWallet/HowToHelp) and [Debugging](https://wiki.unsystem.net/en/index.php/DarkWallet/Debug)
 
+
+Translations
+-----------
+Changes to translations as well as new translations can be submitted to [Darkwallet's Transifex page](https://www.transifex.com/projects/p/darkwallet/).
+
+Translations are periodically pulled from Transifex and merged into the git repository.
+
+**Important**: We do not accept translation changes as GitHub pull requests because the next pull from Transifex would automatically overwrite them again.
+
+
 Contact
 -----------
 
