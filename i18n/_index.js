@@ -9,6 +9,7 @@ define(function() {
         {"name": "Català", "code": "ca"},
         {"name": "Português (Brasil)", "code": "pt_BR"},
         {"name": "Norsk", "code": "no"},
+        {"name": "Norsk bokmål", "code": "nb"},
         {"name": "Português", "code": "pt_PT"},
         {"name": "Deutsch", "code": "de"},
         {"name": "Italiano", "code": "it_IT"},
