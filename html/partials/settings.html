@@ -100,7 +100,7 @@
           <div class="row" ng-show="identitySettings">
               <form name="identityNameForm" ng-submit="setIdentityName(identityNameForm.name)">
                   <div class="columns small-6">
-                      <input type="text" placeholder="{{'New name...'|_}}" ng-model="identityNameForm.name" value="{{currentIdentity}}">
+                      <input type="text" placeholder="{{'New name...'|_}}" ng-model="identityNameForm.name" value="{{currentIdentity}}" required>
                   </div>
                   <div class="columns small-6">
                       <button type="submit">{{'Change name'|_}}</button>
