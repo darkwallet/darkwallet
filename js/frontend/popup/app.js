@@ -9,13 +9,14 @@ define([
     'angular-animate',
     'mm.foundation',
     'angular-translate',
-    'angular-translate-loader-static-file',
+    'angular-translate-loader-partial',
     'frontend/popup/controller',
     'frontend/popup/providers',
     'frontend/controllers/calculator',
     'frontend/controllers/send',
     'frontend/controllers/notifications',
     'frontend/controllers/ngmodal',
+    'frontend/controllers/translator',
     'frontend/filters/currency',
     'frontend/filters/i18n',
     'frontend/providers/wallet',
@@ -35,11 +36,11 @@ define([
       'DarkWallet.directives'
     ]);
     // angular-translate configuration.
-    app.config(function($translateProvider) {
-      $translateProvider.useStaticFilesLoader({
-        prefix: '../i18n/',
-        suffix: '.json'
+    app.config(function($translateProvider, $translatePartialLoaderProvider) {
+      $translateProvider.useLoader('$translatePartialLoader', {
+          urlTemplate: "{part}/{lang}.json"
       });
+      $translatePartialLoaderProvider.addPart('../i18n');
       $translateProvider.preferredLanguage(AvailableLanguages.preferedLanguage());
     });
     app.config(function($animateProvider) {

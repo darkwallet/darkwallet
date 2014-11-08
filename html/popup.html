@@ -45,6 +45,7 @@
       </div>
 
       <!-- Tools -->
+      <div ng-show="settings.translator && settings.language !='en'" ng-controller="TranslatorCtrl" ng-init="updateTranslations()"></div>
       <dl ng-show="settings.advanced" ng-cloak ng-show="connected && identities.length" class="row tabs collapse">
        <dd class="" title="Calculator" ng-class="{active:tab==1}" ng-click="tab=1">
          <a><span class="fa fa-exchange"></span></a>

@@ -14,7 +14,7 @@ define([
     'mm.foundation',
     'angular-xeditable',
     'angular-translate',
-    'angular-translate-loader-static-file',
+    'angular-translate-loader-partial',
     'ngProgress',
     'toaster',
     'frontend/controllers/index',
@@ -35,11 +35,11 @@ define([
         angular.bootstrap(document, ['DarkWallet']);
     });
     // angular-translate configuration.
-    app.config(function($translateProvider) {
-      $translateProvider.useStaticFilesLoader({
-        prefix: '../i18n/',
-        suffix: '.json'
+    app.config(function($translateProvider, $translatePartialLoaderProvider) {
+      $translateProvider.useLoader('$translatePartialLoader', {
+          urlTemplate: "{part}/{lang}.json"
       });
+      $translatePartialLoaderProvider.addPart('../i18n');
       $translateProvider.preferredLanguage(AvailableLanguages.preferedLanguage());
     });
     app.config(function($animateProvider) {

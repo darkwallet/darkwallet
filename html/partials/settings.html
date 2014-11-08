@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="large-5 columns">
-        <div class="panel setback notifications">
+        <div class="panel setback notifications" ng-controller="TranslatorCtrl" ng-init="updateAvailableLanguages()">
           <h5>{{'Interface'|_}}</h5>
           <input id="checkbox-animations" ng-model="settings.animations.enabled" type="checkbox" ng-change="animationsChanged()"><label for="checkbox-animations">{{'Enable animations'|_}}</label><br>
           <h5>{{'Notifications'|_}}</h5>

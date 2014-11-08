@@ -44,6 +44,6 @@
     "angular-moment": "~0.7.0",
     "big.js": "~2.5.0",
     "angular-translate": "~2.2.0",
-    "angular-translate-loader-static-files": "~2.2.0"
+    "angular-translate-loader-partial": "~2.2.0"
   }
 }

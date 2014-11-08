@@ -43,6 +43,9 @@
 		  
   			  <li title="{{'Identities'|_}}" ng-class="{active:isActive('/identities')}"><a ng-show="identityName" href="#identities"><i class="icon-profile"></i> {{identityName}}</a></li>
   	        </ul>
+                <ul class="right" ng-show="settings.translator && settings.language !='en'" ng-controller="TranslatorCtrl" ng-init="updateTranslations()">
+                    <li title="{{englishLanguage ? ('Switch to native language ({0})'|_:settings.language) : ('Switch to English'|_)}}"><a ng-click="switchLanguage()"><i ng-class="['fa', englishLanguage ? 'fa-flag-o' : 'fa-flag']"></i></a></li>
+                </ul>
 	        <ul class="left">
 	          <li ng-class="{active:isActive('/wallet')}"><a ng-click="openWallet()"><i class="icon-wallet"></i> {{'Wallet'|_}}</a></li>
 	          <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="icon-rocket"></i> {{'Send'|_}}</a></li>

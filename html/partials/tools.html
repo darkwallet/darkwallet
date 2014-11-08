@@ -33,6 +33,7 @@
         </div>
         <div class="panel setback seed">
           <h4>{{'Advanced settings'|_}}</h4>
+          <input id="checkbox-tramode" ng-model="settings.translator" ng-change="setAdvanced()" type="checkbox"><label for="checkbox-tramode">{{'Enable translator mode'|_}}</label><br>
           <input id="checkbox-devmode" ng-model="settings.advanced" ng-change="setAdvanced()" type="checkbox"><label for="checkbox-devmode">{{'Enable developer mode'|_}}</label><br>
           <input ng-show="settings.scanPocketMaster" id="checkbox-scanmaster" ng-model="settings.scanPocketMaster" type="checkbox"><label ng-show="settings.scanPocketMaster" for="checkbox-scanmaster">{{'Scan for pocket master address'|_}}</label><br>
         </div>

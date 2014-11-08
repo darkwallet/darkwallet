@@ -37,5 +37,6 @@ define([
     './tools',
     './signing',
     './exporting',
+    './translator',
     './rcv_stealth'
 ], function () {});
