@@ -17,7 +17,7 @@ define(['./module', 'available_languages'], function (controllers, AvailableLang
         if (!$scope.settings.translator) { return; }
         $timeout(function() {
             $translate.use($scope.settings.language);
-            $translatePartialLoader.addPart('https://darkwallet-i18n.herokuapp.com');
+            $translatePartialLoader.addPart('https://i18n-darkwallet.rhcloud.com');
             $translatePartialLoader.deletePart('../i18n');
             $translate.use($scope.settings.language);
             $translate.refresh();
