@@ -21,7 +21,7 @@
         <button ng-click="modals.showQr(task.task.tx)" class="button postfix radius fa fa-qrcode">QR</button>
       </div>
       <div ng-show="task.broadcasting">{{'Broadcasting...'|_}}</div>
-      <div ng-show="task.broadcasted">{{'Broadcasted'|_}} ({{task.radar}}%)</div>
+      <div ng-show="task.broadcasted">{{'Broadcasted'|_}} ({{task.radar*100}}%)</div>
     </div>
     <div ng-show="showTx"><code>{{task.task.tx}}</code></div>
     <div class="row">
