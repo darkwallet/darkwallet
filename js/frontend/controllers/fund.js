@@ -8,7 +8,7 @@ function (controllers, DarkWallet) {
 
   controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', '$brc', '$tabs', '_Filter', function($scope, modals, notify, $brc, $tabs, _) {
 
-  $scope.Object = Object;
+  $scope.jsObjectKeys = Object.keys;
 
   /**
    * Check if we have enough signatures and put them into the transaction

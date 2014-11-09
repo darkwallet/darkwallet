@@ -30,8 +30,8 @@
       <div class="large-10 columns">
             <p> <b>{{'Signed'|_}}: </b>
             <span ng-repeat="pending in task.task.pending" title="{{pending.output}}">
-              [{{Object.keys(pending.signatures).length}}/{{pocket.fund.multisig.m}}]
-              <div>{{pending.signatures}}</div>
+              [{{jsObjectKeys(pending.signatures).length}}/{{pocket.fund.multisig.m}}]
+              <div> {{pending.address}}</div>
             </span>
             </p>
             <!-- Sign -->
