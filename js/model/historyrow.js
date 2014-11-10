@@ -2,6 +2,13 @@
 
 define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 
+/**
+ * HistoryRow properties and data.
+ * @param {String} hash Transaction hash this row references
+ * @param {Identity} Identity for this row
+ * @param {Transaction} Transaction object if available (optional)
+ * @constructor
+ */
 function HistoryRow(hash, identity, txObj) {
     this.identity = identity;
     this._tx = txObj;
@@ -12,6 +19,10 @@ function HistoryRow(hash, identity, txObj) {
     this.isStealth = this.outAddresses.some(function(walletAddress) { return walletAddress && walletAddress.type === 'stealth';});
 }
 
+/**
+ * Generate a label for the pocket (pocketA to pocketB format)
+ * @private
+ */
 HistoryRow.prototype.getTransferLabel = function() {
     var identity = this.identity;
     var pocketImpact = this.impact;
@@ -34,6 +45,9 @@ HistoryRow.prototype.getTransferLabel = function() {
     }
 };
 
+/**
+ * Loaded transaction object (Bitcoin.Transaction)
+ */
 Object.defineProperty(HistoryRow.prototype, 'tx', {
     get: function() {
         if (!this._tx) {
@@ -44,10 +58,16 @@ Object.defineProperty(HistoryRow.prototype, 'tx', {
     }
 });
 
+/**
+ * Any inputs are mine (Boolean)
+ */
 Object.defineProperty(HistoryRow.prototype, 'inMine', {
     get: function() { return this.myInValue>0; }
 });
 
+/**
+ * Formatted heuristic origin or destination address (String)
+ */
 Object.defineProperty(HistoryRow.prototype, 'address', {
     // TODO: Probably don't want this here any more!
     get: function() {
@@ -61,10 +81,16 @@ Object.defineProperty(HistoryRow.prototype, 'address', {
     set: function(val) { this.identity.txdb.setAddress(this.hash, val); }
 });
 
+/**
+ * Total outgoing value (Number)
+ */
 Object.defineProperty(HistoryRow.prototype, 'total', {
     get: function() { return this.myOutValue-this.myInValue; }
 });
 
+/**
+ * First out pocket (String)
+ */
 Object.defineProperty(HistoryRow.prototype, 'outPocket', {
     get: function() {
         var impactkeys = Object.keys(this.impact);
@@ -76,6 +102,9 @@ Object.defineProperty(HistoryRow.prototype, 'outPocket', {
     }
 });
 
+/**
+ * First in pocket (String)
+ */
 Object.defineProperty(HistoryRow.prototype, 'inPocket', {
     get: function() {
         var impactkeys = Object.keys(this.impact);
@@ -88,18 +117,31 @@ Object.defineProperty(HistoryRow.prototype, 'inPocket', {
     }
 });
 
+/**
+ * User set label for the transaction (String)
+ */
 Object.defineProperty(HistoryRow.prototype, 'label', {
     get: function() { return this.identity.txdb.getLabel(this.hash); }
 });
 
+/**
+ * Per pocket impact for the transaction (Object)
+ */
 Object.defineProperty(HistoryRow.prototype, 'impact', {
     get: function() { return this.identity.txdb.getImpact(this.hash); }
 });
 
+/**
+ * Is the transaction internal?
+ */
 Object.defineProperty(HistoryRow.prototype, 'internal', {
     get: function() { return (this.myInValue === this.myOutValue); }
 });
 
+/**
+ * bareid for the transactiona (String)
+ * (hash of the transaction without signatures)
+ */
 Object.defineProperty(HistoryRow.prototype, 'bareid', {
     get: function() {
         if (!this._bareid) {
@@ -109,6 +151,9 @@ Object.defineProperty(HistoryRow.prototype, 'bareid', {
     }
 });
 
+/**
+ * Total value of my inputs (Number)
+ */
 Object.defineProperty(HistoryRow.prototype, 'myInValue', {
     get: function() {
         var res = 0;
@@ -121,6 +166,9 @@ Object.defineProperty(HistoryRow.prototype, 'myInValue', {
     }
 });
 
+/**
+ * Total value of my outputs (Number)
+ */
 Object.defineProperty(HistoryRow.prototype, 'myOutValue', {
     get: function() {
         var res = 0;
@@ -133,6 +181,9 @@ Object.defineProperty(HistoryRow.prototype, 'myOutValue', {
     }
 });
 
+/**
+ * Height for this row in the blockchain (Number)
+ */
 Object.defineProperty(HistoryRow.prototype, 'height', {
     // TODO: getHeight not implemented yet...
     get: function() { return this.identity.txdb.getHeight(this.hash); },
