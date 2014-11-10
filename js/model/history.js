@@ -121,12 +121,13 @@ History.prototype.buildHistoryRow = function(transaction, height) {
         try {
             outAddress = Bitcoin.Address.fromOutputScript(anOut.script, Bitcoin.networks[this.identity.wallet.network]).toString();
         } catch(e) {
+            continue;
         }
         var outWalletAddress = identity.wallet.getWalletAddress(outAddress);
         if (outWalletAddress) {
             var output = btcWallet.outputs[txHash+":"+idx];
-            if (outAddresses.indexOf(outWalletAddress) == -1) {
-                outAddresses.push(outWalletAddress);
+            if (outAddresses.indexOf(outWalletAddress.address) == -1) {
+                outAddresses.push(outWalletAddress.address);
             }
             var outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
             var outPocketType = identity.wallet.pockets.getPocketType(outWalletAddress.type);
