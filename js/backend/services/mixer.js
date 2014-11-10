@@ -454,14 +454,14 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
       var password = safe.get('mixer', 'pocket:'+pocketIndex);
 
       // Load master keys for the pockets
-      var pocket = identity.wallet.pockets.hdPockets[pocketIndex];
+      var pocket = identity.wallet.pockets.getPocket(pocketIndex, 'hd');
       var masterKey, oldMasterKey, oldChangeKey;
-      if (pocket.privKey) {
-          masterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.privKey));
+      if (pocket.store.privKey) {
+          masterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.store.privKey));
       }
-      if (pocket.oldPrivKey) {
-          oldMasterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.oldPrivKey));
-          oldChangeKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.oldPrivChangeKey));
+      if (pocket.store.oldPrivKey) {
+          oldMasterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.store.oldPrivKey));
+          oldChangeKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.store.oldPrivChangeKey));
       }
 
       // Iterate over tx inputs and load private keys
@@ -492,7 +492,6 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           }
           // derive this key
           var change = isNewHd ? walletAddress.index[1] : (isNewStealth ? false : walletAddress.index[0]%2);
-          var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
           var seq = walletAddress.index.slice(0);
           if (isNewStealth) {
               var scanKey = identity.wallet.getScanKey(seq[0]);
