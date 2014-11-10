@@ -1,9 +1,9 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'frontend/port', 'frontend/channel_link', 'bitcoinjs-lib', 'util/protocol', 'backend/channels/utils'],
-function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, ChannelUtils) {
+define(['./module', 'darkwallet', 'frontend/port', 'frontend/channel_link', 'bitcoinjs-lib', 'util/protocol'],
+function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol) {
 
-  var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0)};
+  var bufToArray = function(obj) {return Array.prototype.slice.call(obj, 0);};
 
   var selectedChannel, selectedPeer;
 
@@ -26,20 +26,19 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   $scope.refreshTimestamp = function(peer) {
       peer.timestamp = Date.now();
-  }
+  };
 
   /**
    * Pairing requests
    */
   var checkPaired = function(identity) {
       var identity = DarkWallet.getIdentity();
-      var anyPaired = false;
       $scope.anyPaired = identity.contacts.contacts.some(function(contact) {
           if (contact.findIdentityKey()) {
               return true;
           }
       });
-  }
+  };
 
   // Open a request from the request list
   $scope.openRequest = function(request) {
@@ -49,7 +48,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           // original body (so we can check the signature later).
           $scope.selectedRequest.nick = $scope.selectedRequest.body.nick;
       }
-  }
+  };
 
   // Cancel a request when already opened
   $scope.cancelRequest = function() {
@@ -58,7 +57,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           $scope.peerRequests.splice(reqIndex, 1);
       }
       $scope.selectedRequest = false;
-  }
+  };
 
   $scope.sendRequest = function(peer) {
       var identity = DarkWallet.getIdentity();
@@ -74,7 +73,6 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
   // Accept a request when already opened
   $scope.acceptRequest = function() {
-      var identity = DarkWallet.getIdentity();
       var request = $scope.selectedRequest;
 
       var peerChannel = request.peer.channel;
@@ -87,7 +85,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       // For now just cancel
       $scope.cancelRequest();
-  }
+  };
 
   /**
    * Beacons
@@ -114,11 +112,11 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
 
       // now clear the request
       $scope.cancelRequest();
-  }
+  };
 
   // Send beacons for all contacts
   $scope.sendBeacons = function(minLevel) {
-      if (minLevel === undefined) {minLevel = -6};
+      if (minLevel === undefined) {minLevel = -6;}
       var identity = DarkWallet.getIdentity();
       var sent = 0;
       identity.contacts.contacts.forEach(function(contact) {
@@ -131,7 +129,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       if (minLevel < -2) {
           notify.note(_('Sent {0} beacons', sent));
       }
-  }
+  };
 
   /**
    * Channel links
@@ -143,7 +141,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
               $scope.$apply();
           }
       });
-  }
+  };
 
   var createChannelLink = function(name) {
       var channelLink = ChannelLink.create(name, $scope, notify, _);
@@ -193,7 +191,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
       var availableChannels = Object.keys(transport.channels);
       if (!selectedChannel && availableChannels.length) {
           // connect to the first not called coinjoin
-          availableChannels.some(function(name, i) {
+          availableChannels.some(function(name) {
               if (name.slice(0, 8) !== 'CoinJoin') {
                   selectedChannel = name;
                   return true;
@@ -216,14 +214,14 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           $scope.connectChannel(selectedChannel);
       }
 
-  }
+  };
 
   /**
    * Lobby port
    */
   Port.connectNg('lobby', $scope, function(data) {
       // onMesssage callback
-      if (data.type == 'initChannel') {
+      if (data.type === 'initChannel') {
           createChannelLink(data.name);
       }
   }, function(port) {
@@ -242,7 +240,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
           $scope.selectedPeer.chatLog.dirty = false;
           $scope.selectedPeer = false;
       }
-  }
+  };
 
   $scope.newTempIdentity = function() {
       currentChannel.newSession();
@@ -319,7 +317,7 @@ function (controllers, DarkWallet, Port, ChannelLink, Bitcoin, Protocol, Channel
   };
 
   $scope.sendText = function() {
-      if ($scope.shoutbox == '') {
+      if ($scope.shoutbox === '') {
           return;
       }
       var msg = Protocol.ShoutMsg($scope.shoutbox);
