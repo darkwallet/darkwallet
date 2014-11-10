@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
+define(['bitcoinjs-lib', 'util/btc', 'model/historyrow'], function(Bitcoin, BtcUtils, HistoryRow) {
 
 /**
  * User oriented history view.
@@ -11,6 +11,12 @@ define(['bitcoinjs-lib', 'util/btc'], function(Bitcoin, BtcUtils) {
 function History(store, identity) {
     this.history = [];
     this.identity = identity;
+    var self = this;
+    Object.keys(identity.txdb.transactions).forEach(function(txId) {
+        if (identity.txdb.getImpact(txId)) {
+            self.history.push(new HistoryRow(txId, identity));
+        }
+    });
 }
 
 /**
@@ -45,6 +51,21 @@ History.prototype.addHistoryRow = function(newRow) {
     return 0;
 };
 
+/**
+ * Add impact for input or output to an impact dictionary.
+ * @private
+ */
+History.prototype.addPocketImpact = function(impact, pocketId, outPocketType, amount) {
+    if (!impact.hasOwnProperty(pocketId)) {
+        impact[pocketId] = {ins: 0, outs: 0, total: 0, type: outPocketType};
+    }
+    if (amount > 0) {
+        impact[pocketId].outs += amount;
+    } else {
+        impact[pocketId].ins -= amount;
+    }
+    impact[pocketId].total += amount;
+};
 
 /**
  * Build a history row from a transaction.
@@ -56,48 +77,35 @@ History.prototype.addHistoryRow = function(newRow) {
 History.prototype.buildHistoryRow = function(transaction, height) {
     var identity = this.identity,
         btcWallet = identity.wallet.wallet,
-        inMine = 0,
         outAddresses = [],
-        myInValue = 0,
-        myOutValue = 0,
+        inMine = 0,
         txAddr = "",
         txObj = Bitcoin.Transaction.fromHex(transaction);
-    var isStealth = false;
     var txHash = txObj.getId();
 
     var pocketImpact = {};
-    var addPocketImpact = function(pocketId, outPocketType, amount) {
-        if (!pocketImpact.hasOwnProperty(pocketId)) {
-            pocketImpact[pocketId] = {ins: 0, outs: 0, total: 0, type: outPocketType};
-        }
-        if (amount > 0) {
-            pocketImpact[pocketId].outs += amount;
-        } else {
-            pocketImpact[pocketId].ins -= amount;
-        }
-        pocketImpact[pocketId].total += amount;
-    };
 
-    var inAddress, inPocket, outPocket, internal;
+    var inAddress;
 
     // Check inputs
     for(var idx=0; idx<txObj.ins.length; idx++) {
         var anIn = txObj.ins[idx];
         var outIdx = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index;
-        if (btcWallet.outputs[outIdx]) {
-            var output = btcWallet.outputs[outIdx];
+        var output = btcWallet.outputs[outIdx];
+        if (output) {
             // save in pocket
             var inWalletAddress = identity.wallet.getWalletAddress(output.address);
-            inPocket = identity.wallet.pockets.getAddressPocketId(inWalletAddress);
+            var inPocket = identity.wallet.pockets.getAddressPocketId(inWalletAddress);
             var inPocketType = identity.wallet.pockets.getPocketType(inWalletAddress.type);
             // counters
+            this.addPocketImpact(pocketImpact, inPocket, inPocketType, -output.value);
             inMine += 1;
-            myInValue += output.value;
-            addPocketImpact(inPocket, inPocketType, -output.value);
         } else {
             try {
-                var address = BtcUtils.getInputAddress(anIn, this.identity.wallet.versions);
-                inAddress = address || inAddress;
+                if (!inAddress) {
+                    var address = BtcUtils.getInputAddress(anIn, this.identity.wallet.versions);
+                    inAddress = address || inAddress;
+                }
             } catch (e) {
                 console.log("error decoding input", anIn);
             }
@@ -108,70 +116,37 @@ History.prototype.buildHistoryRow = function(transaction, height) {
     }
     // Check outputs
     for(var idx=0; idx<txObj.outs.length; idx++) {
-        var outAddress;
+        var outAddress = "";
         var anOut = txObj.outs[idx];
         try {
-            outAddress = Bitcoin.Address.fromOutputScript(anOut.script, Bitcoin.networks[this.identity.wallet.network]);
+            outAddress = Bitcoin.Address.fromOutputScript(anOut.script, Bitcoin.networks[this.identity.wallet.network]).toString();
         } catch(e) {
-            outAddress = "";
         }
-        var outWalletAddress = identity.wallet.getWalletAddress(outAddress.toString());
+        var outWalletAddress = identity.wallet.getWalletAddress(outAddress);
         if (outWalletAddress) {
             var output = btcWallet.outputs[txHash+":"+idx];
-            // TODO: mark also when input is mine and output not
-            if (output && output.stealth) {
-                isStealth = true;
-            }
             if (outAddresses.indexOf(outWalletAddress) == -1) {
                 outAddresses.push(outWalletAddress);
             }
-            myOutValue += anOut.value;
-            var _outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
+            var outPocket = identity.wallet.pockets.getAddressPocketId(outWalletAddress);
             var outPocketType = identity.wallet.pockets.getPocketType(outWalletAddress.type);
-            // check if this is change, seq[0] for oldstealth and old hd, seq[1] for new hd
-            var isChange = (['oldstealth', undefined].indexOf(outWalletAddress.type) > -1) ? (outWalletAddress.index[0]%2) : false;
-            isChange = isChange || ((outWalletAddress.type == 'hd') ? outWalletAddress.index[1] : false); 
-            // save out pocket (don't set if it's change or same as input)
-            if (inPocket !== _outPocket && !isChange) {
-                outPocket = _outPocket;
-            }
-            addPocketImpact(_outPocket, outPocketType, anOut.value);
+            this.addPocketImpact(pocketImpact, outPocket, outPocketType, anOut.value);
         } else {
             if (inMine) {
-                txAddr = outAddress.toString();
+                txAddr = outAddress;
             }
         }
     }
-    if (!txAddr) {
-        txAddr = this.getTransferLabel(pocketImpact);
-        internal = true;
-    }
     // Create a row representing this change (if already referenced will
     // be replaced)
-    var newRow = {hash: txHash, tx: txObj, inMine: inMine, outAddresses: outAddresses, myInValue: myInValue, myOutValue: myOutValue, height: height, address: txAddr, isStealth: isStealth, total: myOutValue-myInValue, outPocket: outPocket, inPocket: inPocket, impact: pocketImpact, label: this.identity.txdb.getLabel(txHash), internal: internal, bareid: BtcUtils.getBareTxId(txObj)};
-    return newRow;
+    this.identity.txdb.setHeight(txHash, height);
+    this.identity.txdb.setImpact(txHash, pocketImpact);
+    this.identity.txdb.setOutAddresses(txHash, outAddresses);
+    this.identity.txdb.setAddress(txHash, txAddr);
+
+    // Start row
+    return new HistoryRow(txHash, this.identity, txObj)
 };
-
-History.prototype.getTransferLabel = function(pocketImpact) {
-    var identity = this.identity;
-    var keys = Object.keys(pocketImpact);
-
-    // Input pockets
-    var inKeys = keys.filter(function(key) { return pocketImpact[key].ins!==0; } );
-    inKeys = inKeys.map(function(key) { return identity.wallet.pockets.getPocket(key, pocketImpact[key].type).name; });
-
-    // Output pockets (minus change pockets)
-    var outKeys = keys.filter(function(key) { return pocketImpact[key].outs!==0 && pocketImpact[key].ins===0; } );
-    outKeys = outKeys.map(function(key) { return identity.wallet.pockets.getPocket(key, pocketImpact[key].type).name; });
-
-    // Compose the final label
-    var label = inKeys.join(' ,');
-    if (outKeys.length) {
-        return label + " to " + outKeys.join(' ,');
-    } else {
-        return 'internal on ' + label;
-    }
-}
 
 /**
  * Callback to fill missing input (depending on another transaction)
@@ -233,7 +208,7 @@ History.prototype.fillHistory = function(history) {
         txdb = this.identity.txdb;
     history.forEach(function(tx) {
         var outTxHash = tx[0],
-            inTxHash = tx[4];
+        inTxHash = tx[4];
         if (inTxHash) {
             // fetch a row for the spend
             txdb.fetchTransaction(inTxHash, function(_a, _b) {self.txFetched(_a, _b);}, tx[6]);

@@ -187,7 +187,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
     /***************************************
     /* History and address subscription
      */
-    function historyFetched(err, walletAddress, history) {
+    function historyFetched(err, walletAddress, history, fromHeight) {
         if (err) {
             core.servicesStatus.syncing -= 1;
             core.servicesStatus.obelisk = 'error';
@@ -199,15 +199,16 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         var identity = self.getCurrentIdentity();
 
         // pass to the wallet to process outputs
-        identity.wallet.processHistory(walletAddress, history);
+        if (history.length) {
+            identity.wallet.processHistory(walletAddress, history);
 
-        // start filling history
-        identity.history.fillHistory(history);
+            // start filling history
+            identity.history.fillHistory(history);
 
-        if (TransactionTasks.processHistory(history, self.currentHeight)) {
-            // some task was updated
+            if (TransactionTasks.processHistory(history, self.currentHeight)) {
+                // some task was updated
+            }
         }
-
         // now subscribe the address for notifications
         client.subscribe(walletAddress.address, function(err, res) {
             core.servicesStatus.syncing -= 1;
@@ -230,15 +231,16 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         var identity = self.getCurrentIdentity();
 
         // Load history cache
-        if (walletAddress.history) {
+        /*if (walletAddress.history) {
             identity.history.fillHistory(walletAddress.history);
-        }
+        }*/
         if (!core.servicesStatus.syncing) {
             core.servicesStatus.syncing = 0;
         }
         core.servicesStatus.syncing += 1;
+        var fromHeight = walletAddress.height+1;
         // Now fetch history
-        client.fetch_history(walletAddress.address, 0 /*walletAddress.height*/, function(err, res) { historyFetched(err, walletAddress, res); });
+        client.fetch_history(walletAddress.address, fromHeight, function(err, res) { historyFetched(err, walletAddress, res, fromHeight); });
     };
 
     // Unsusbscribe an address from the backend

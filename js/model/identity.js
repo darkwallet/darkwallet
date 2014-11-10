@@ -40,6 +40,7 @@ function Identity(store, seed, password) {
     if (seed && password) {
         this.generate(seed, password, store.get('network'));
     }
+    var inittime = Date.now();
     this.tx = new Transaction(store, this);
     this.txdb = new TransactionDatabase(store);
     this.wallet = new Wallet(store, this);
@@ -48,6 +49,7 @@ function Identity(store, seed, password) {
     this.connections = new Connections(store, this);
     this.tasks = new Tasks(store, this);
     this.reseed = store.get('reseed');
+    console.log("init identity", (Date.now()-inittime)/1000);
 }
 
 /**

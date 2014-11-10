@@ -1,7 +1,7 @@
 'use strict';
 
-define(['util/stealth', 'bitcoinjs-lib', 'model/multisig', 'model/pockets', 'util/btc'],
-function(Stealth, Bitcoin, MultisigFunds, Pockets, BtcUtils) {
+define(['util/stealth', 'bitcoinjs-lib', 'model/multisig', 'model/pockets', 'util/btc', 'model/output'],
+function(Stealth, Bitcoin, MultisigFunds, Pockets, BtcUtils, Output) {
 /**
  * Access to the identity bitcoin keys.
  * @param {Object} store Store for the object.
@@ -19,6 +19,7 @@ function Wallet(store, identity) {
     this.oldScanKeys = store.get('old-scankeys');
     this.idKeys = store.init('idkeys', []);
     this.dust = Bitcoin.networks[this.network].dustThreshold;
+    this.addresses = {};
 
     this.mpk = store.get('mpk');
     this.oldMpk = store.get('old-mpk');
@@ -26,9 +27,11 @@ function Wallet(store, identity) {
     // internal bitcoinjs-lib wallet to keep track of utxo (for now)
     this.multisig = new MultisigFunds(store, identity, this);
     this.pockets = new Pockets(store, identity, this);
-    this.wallet = { addresses: [], outputs: {} };
+    this.wallet = { addresses: [], outputs: {}, _outputs: store.init('outputs', []) };
 
+    // Load pubkeys and outputs
     this.loadPubKeys();
+    this.loadOutputs();
 
     // store balance
     this.balance = this.getBalance();
@@ -137,12 +140,51 @@ Wallet.prototype.getBalance = function(pocketId, type) {
     return balances;
 };
 
+Wallet.prototype.resetHistory = function() {
+    console.log("Reseting history");
+    var self = this;
+    // delete address.outputs
+    Object.keys(this.pubKeys).forEach(function(seq) {
+        var walletAddress = self.pubKeys[seq];
+        walletAddress.outputs = [];
+        walletAddress.nOutputs = 0;
+        walletAddress.balance = 0;
+        walletAddress.height = 0;
+    });
+    // delete this.wallet._outputs
+    this.store.set('outputs', []);
+    this.wallet._outputs = this.store.get('outputs');
+
+    // delete this.wallet.outputs (not initialized yet yet)
+    /*Object.keys(this.wallet.outputs).forEach(function(outId) {
+        delete self.wallet.outputs[outId];
+    });*/
+    
+    // delete this.identity.history.history ?
+    // this.identity.history.history = [];
+    // delete this.txdb.transactions[...][2,3,4,5] (height...address)
+};
+
+Wallet.prototype.loadOutputs = function() {
+    var self = this;
+    // Load outputs
+    this.wallet._outputs.forEach(function(output) {
+        self.wallet.outputs[output[0]] = new Output(output);
+        var walletAddress = self.getWalletAddress(output[2]);
+        if (walletAddress && walletAddress.outputs.indexOf(output[0]) === -1) {
+            walletAddress.outputs.push(output[0]);
+        }
+    });
+};
+
+
 /**
  * Load wallet addresses into internal Bitcoin.Wallet
  * @private
  */
 Wallet.prototype.loadPubKeys = function() {
     var self = this;
+
     Object.keys(this.pubKeys).forEach(function(index) {
         var walletAddress = self.pubKeys[index];
 
@@ -155,6 +197,7 @@ Wallet.prototype.loadPubKeys = function() {
         // Add all to the wallet
         self.wallet.addresses.push(walletAddress.address);
         self.pockets.addToPocket(walletAddress);
+        self.addresses[walletAddress.address] = walletAddress;
 
         // TODO: Don't process previous history so we can cache
         // properly later
@@ -163,7 +206,11 @@ Wallet.prototype.loadPubKeys = function() {
               walletAddress.balance = 0;
               walletAddress.nOutputs = 0;
               walletAddress.height = 0;
-              self.processHistory(walletAddress, walletAddress.history, true);
+              delete walletAddress.history;
+              // self.processHistory(walletAddress, walletAddress.history, true);
+        }
+        if (!walletAddress.outputs) {
+           walletAddress.outputs = [];
         }
     });
 
@@ -171,6 +218,24 @@ Wallet.prototype.loadPubKeys = function() {
     this.initIfEmpty();
     return false; // updated
 };
+
+Wallet.prototype.packOutputs = function() {
+    var self = this;
+    var res = [];
+    Object.keys(this.wallet.outputs).forEach(function(outId) {
+        var output = self.wallet.outputs[outId];
+        res.push([outId, output.height, output.spend, output.counted, output.spendpending, output.address]);
+    });
+    console.log(JSON.stringify(res).length);
+    console.log(JSON.stringify(this.wallet.outputs).length);
+    res = [];
+    this.identity.history.history.forEach(function(row) {
+        res.push([row.hash, row.impact, res.label]);
+    });
+    console.log(JSON.stringify(res).length);
+    console.log(JSON.stringify(this.wallet.outputs).length);
+
+}
 
 /**
  * Get the private key for the given address index
@@ -246,6 +311,7 @@ Wallet.prototype.storePublicKey = function(seq, key, properties) {
  * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}.
  */
 Wallet.prototype.addToWallet = function(walletAddress) {
+    this.addresses[walletAddress.address] = walletAddress;
     this.wallet.addresses.push(walletAddress.address);
     this.pubKeys[walletAddress.index.slice()] = walletAddress;
     this.pockets.addToPocket(walletAddress);
@@ -262,6 +328,7 @@ Wallet.prototype.deleteAddress = function(seq) {
     var walletAddress = this.pubKeys[seq];
     this.wallet.addresses.splice(this.wallet.addresses.indexOf(walletAddress.address), 1);
     delete this.pubKeys[seq];
+    delete this.addresses[walletAddress.address];
 };
 
 /**
@@ -298,6 +365,7 @@ Wallet.prototype.getAddress = function(seq, label) {
  * @return {Object} The wallet address structure
  */
 Wallet.prototype.getWalletAddress = function(address) {
+    return this.addresses[address];
     var keys = Object.keys(this.pubKeys);
     for (var idx=0; idx<keys.length; idx++) {
          var walletAddress = this.pubKeys[keys[idx]];
@@ -400,12 +468,14 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
     var output = wallet.outputs[outId];
     // If it doesn't exist create a new one
     if (!output) {
-        output = { receive: outId,
-                   value: value,
-                   counted: false,
-                   address: walletAddress.address };
+        var store = [];
+        wallet._outputs.push(store);
+        output = new Output(store, outId, value, walletAddress.address);
         wallet.outputs[outId] = output;
         walletAddress.nOutputs += 1;
+        if (walletAddress.outputs.indexOf(outId) === -1) {
+            walletAddress.outputs.push(outId);
+        }
     }
     // Set as change
     /*if (!height && output.change === undefined) {
@@ -447,7 +517,7 @@ Wallet.prototype.processHistory = function(walletAddress, history, initial) {
     var self = this;
 
     // only supported getting (and caching) all history for now
-    walletAddress.history = history;
+    // walletAddress.history = history;
 
     // process history
     history.forEach(function(tx) {
@@ -461,12 +531,13 @@ Wallet.prototype.processHistory = function(walletAddress, history, initial) {
                 walletAddress.height = Math.max(outHeight, walletAddress.height);
             }
         } else {
+            walletAddress.height = Math.max(tx[6]||outHeight, walletAddress.height);
             spend = inTxHash + ":" + tx[5];
         }
         // pass on to internal Bitcoin.Wallet
         self.processOutput(walletAddress, outTxHash, tx[1], tx[3], outHeight, spend, tx[6]);
     });
-    if (!initial) {
+    if (!initial && history.length) {
         this.store.save();
     }
 };
