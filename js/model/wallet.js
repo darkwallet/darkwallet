@@ -452,6 +452,9 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
         output = new Output(store, outId, value, walletAddress.address);
         wallet.outputs[outId] = output;
         walletAddress.nOutputs += 1;
+        if (!walletAddress.outputs) {
+            walletAddress.outputs = [];
+        }
         if (walletAddress.outputs.indexOf(outId) === -1) {
             walletAddress.outputs.push(outId);
         }
