@@ -20,10 +20,15 @@ function Output(store, outId, value, address) {
     // [outId, value, address, height, spend, counted, spendpending, spendheight, stealth]
 }
 
-Output.prototype.markSpend = function(outId) {
-    this.spend = outId;
-    this.spendpending = true;
-    this.spendheight = 0;
+/**
+ * Mark the output as spent
+ */
+Output.prototype.markSpend = function(outId, height) {
+    if (!this.spend) {
+        this.spend = outId;
+        this.spendpending = true;
+    }
+    this.spendheight = height || 0;
 }
 
 /**

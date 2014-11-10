@@ -337,11 +337,7 @@ Transaction.prototype.process = function(serializedTx, height) {
       var op = txIn;
       var o = wallet.wallet.outputs[Bitcoin.bufferutils.reverse(op.hash).toString('hex')+':'+op.index];
       if (o) {
-        if (!o.spend) {
-            o.spend = txHash+':'+i;
-            o.spendpending = true;
-        }
-        o.spendheight = height;
+        o.markSpend(txHash+':'+i, height);
         if (height) {
             if (o.spendpending) {
                 var inputAddress = wallet.getWalletAddress(o.address);
