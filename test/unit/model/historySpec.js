@@ -31,6 +31,7 @@ c09fd9179e635bcfd95a2b989fc16b1e88ac00000000";
           }
         },
         txdb: {
+          transactions: [],
           fetchTransaction: function(hash, callback, data) {
             var tx = {
               "a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329": transaction,
