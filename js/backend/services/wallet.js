@@ -187,7 +187,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
     /***************************************
     /* History and address subscription
      */
-    function historyFetched(err, walletAddress, history, fromHeight) {
+    function historyFetched(err, walletAddress, history, doSubscribe) {
         if (err) {
             core.servicesStatus.syncing -= 1;
             core.servicesStatus.obelisk = 'error';
@@ -208,6 +208,9 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             if (TransactionTasks.processHistory(history, self.currentHeight)) {
                 // some task was updated
             }
+        }
+        if (!doSubscribe) {
+            return;
         }
         // now subscribe the address for notifications
         client.subscribe(walletAddress.address, function(err, res) {
@@ -240,7 +243,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         core.servicesStatus.syncing += 1;
         var fromHeight = walletAddress.height+1;
         // Now fetch history
-        client.fetch_history(walletAddress.address, fromHeight, function(err, res) { historyFetched(err, walletAddress, res, fromHeight); });
+        client.fetch_history(walletAddress.address, fromHeight, function(err, res) { historyFetched(err, walletAddress, res, true); });
     };
 
     // Unsusbscribe an address from the backend
@@ -263,9 +266,29 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         Port.post('gui', {type: 'timestamps', value: lastTimestamp});
     }
 
+    function fetchMissingHistory(prevHeight, newHeight) {
+        console.log("[wallet] requesting missing history", prevHeight, newHeight);
+        var identity = self.getCurrentIdentity();
+        // get balance for addresses
+        Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
+            var walletAddress = identity.wallet.pubKeys[pubKeyIndex];
+            if (identity.settings.scanPocketMaster || walletAddress.index.length > 1) {
+                var fromHeight = walletAddress.height+1;
+                // Now fetch history
+                client.fetch_history(walletAddress.address, fromHeight, function(err, res) { historyFetched(err, walletAddress, res, false); });
+            }
+        });
+
+    }
+
     // Handle height arriving from obelisk
     function handleHeight(err, height) {
         if (height !== self.currentHeight) {
+            // If new height is more than 2 previous height we will
+            // request history from obelisk
+            if (self.currentHeight && height > self.currentHeight+2) {
+                fetchMissingHistory(self.currentHeight, height);
+            }
             self.currentHeight = height;
             console.log("[wallet] height fetched", height);
             TransactionTasks.processHeight(height);
