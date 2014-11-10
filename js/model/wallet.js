@@ -163,8 +163,13 @@ Wallet.prototype.resetHistory = function() {
     // delete history
     this.identity.history.history = [];
 
-    // delete tx metadata?
-    // delete this.txdb.transactions[...][2,3,4,5] (height...address)
+    // delete tx metadata
+    Object.keys(this.identity.txdb.transactions).forEach(function(txId) {
+        [2, 3, 4, 5].forEach(function(idx) {
+            delete self.identity.txdb.transactions[idx];
+        });
+    });
+    this.store.save();
 };
 
 Wallet.prototype.loadOutputs = function() {
