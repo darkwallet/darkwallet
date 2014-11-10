@@ -1,7 +1,5 @@
 Big tasks:
- - History cache
  - Messaging system
- - HD restructure
  less priority:
  - 2of2/2of3 wallets
  - stealth multisig
@@ -9,20 +7,17 @@ Big tasks:
 Immediate:
  + Review and stabilize gateway
  + Wallet
-   - Cache address history and resume
+   - Cache address history and resume DONE
    + Review sending
    + CoinJoin
      - match fee with the other peer (if within limits)
      - controls for cancelling mixer tasks
-     - bip32 branch depth == mixing depth
+     - bip32 branch depth == mixing depth DONE
    - Stealth multisig
    + Polish multisig mechanics
  - Lobby system
    - Identity assertions (gpg, btc)
    - Notifications: "contact is available"
-   - online status
-     - timeout: may use beacon timing of response
-     - make gui refresh with online status
  - Pocket actions:
    - Move funds to another identity
 
@@ -87,6 +82,9 @@ Done:
    - Establish trust DONE and reputation
    - Automatic beacons (trust based) DONE
    - Per-channel cloaks (or selectable per-channel cloaks) DONE
+   - online status
+     - timeout: may use beacon timing of response DONE
+     - make gui refresh with online status DONE?
  * Currency support
    * Select BTC/mBTC DONE
    * Show as EUR/USD/CNY... (prices from bitcoinaverage) DONE
