@@ -233,10 +233,6 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         }
         var identity = self.getCurrentIdentity();
 
-        // Load history cache
-        /*if (walletAddress.history) {
-            identity.history.fillHistory(walletAddress.history);
-        }*/
         if (!core.servicesStatus.syncing) {
             core.servicesStatus.syncing = 0;
         }
