@@ -23,7 +23,11 @@ define(function() {
         {"name": "English (Belgium)", "code": "en_BE"},
         {"name": "Svenska", "code": "sv"},
         {"name": "עִבְרִית", "code": "he"},
-        {"name": "Esperanto", "code": "eo"}
+        {"name": "Esperanto", "code": "eo"},
+        {"name": "Dansk", "code": "da"},
+        {"name": "ελληνικά", "code": "el"},
+        {"name": "Język polski", "code": "pl"},
+        {"name": "Türkçe", "code": "tr"}
     ];
     
     var fallbacks = {
