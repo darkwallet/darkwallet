@@ -411,8 +411,17 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
   /*
    * Check join state to see if we need to delete, and do it
    */
-  MixerService.prototype.checkDelete = function(id) {
-      var coinJoin = this.ongoing[id];
+  MixerService.prototype.checkFinished = function(id, coinJoin) {
+      // Check state and perform appropriate tasks
+      if (coinJoin.state === 'finished' && coinJoin.task) {
+          var onBroadcast = function(error, data) {
+              console.log("broadcasting!", error, data);
+          };
+          var walletService = this.core.service.wallet;
+          coinJoin.task.tx = coinJoin.tx.toHex();
+          walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
+      }
+      // Now remove if we're on an end state
       if (['finished', 'cancelled'].indexOf(coinJoin.state) !== -1) {
           console.log("[mixer] Deleting coinjoin because " + coinJoin.state);
           delete this.ongoing[id];
@@ -571,29 +580,17 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           if (updatedTx) {
               Port.post('gui', {type: 'mixer', state: coinJoin.state});
           }
-          if (coinJoin.state === 'sign') {
-              console.log("task requires signing from user!");
-          }
           // copy coinjoin state to the store
           if (coinJoin.task) {
               coinJoin.task.ping = Date.now()/1000;
               coinJoin.task.state = coinJoin.state;
-          }
-          // Check state and perform appropriate tasks
-          if (coinJoin.state === 'finished' && coinJoin.task) {
-              var onBroadcast = function(_error, _data) {
-                  console.log("broadcasting!", _error, _data);
-              };
-              var walletService = this.core.service.wallet;
-              coinJoin.task.tx = coinJoin.tx.toHex();
-              walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
           }
           // Update budget (only guest applies budgeting)
           if (coinJoin.state === 'finished' && prevState !== 'finished' && coinJoin.role === 'guest') {
               this.trackBudget(coinJoin);
           }
           // Check for deletion
-          this.checkDelete(msg.body.id);
+          this.checkFinished(msg.body.id, coinJoin);
 
           // See if we should desactivate mixing
           this.checkMixing();
@@ -610,7 +607,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
       var coinJoin = this.getOngoing(msg);
       if (coinJoin) {
         coinJoin.kill(msg.body, msg.peer);
-        this.checkDelete(msg.body.id);
+        this.checkFinished(msg.body.id, coinJoin);
       }
     }
   };
