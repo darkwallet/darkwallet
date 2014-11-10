@@ -151,17 +151,19 @@ Wallet.prototype.resetHistory = function() {
         walletAddress.balance = 0;
         walletAddress.height = 0;
     });
-    // delete this.wallet._outputs
+    // delete store outputs
     this.store.set('outputs', []);
     this.wallet._outputs = this.store.get('outputs');
 
-    // delete this.wallet.outputs (not initialized yet yet)
-    /*Object.keys(this.wallet.outputs).forEach(function(outId) {
+    // delete wallet outputs
+    Object.keys(this.wallet.outputs).forEach(function(outId) {
         delete self.wallet.outputs[outId];
-    });*/
+    });
     
-    // delete this.identity.history.history ?
-    // this.identity.history.history = [];
+    // delete history
+    this.identity.history.history = [];
+
+    // delete tx metadata?
     // delete this.txdb.transactions[...][2,3,4,5] (height...address)
 };
 
@@ -218,24 +220,6 @@ Wallet.prototype.loadPubKeys = function() {
     this.initIfEmpty();
     return false; // updated
 };
-
-Wallet.prototype.packOutputs = function() {
-    var self = this;
-    var res = [];
-    Object.keys(this.wallet.outputs).forEach(function(outId) {
-        var output = self.wallet.outputs[outId];
-        res.push([outId, output.height, output.spend, output.counted, output.spendpending, output.address]);
-    });
-    console.log(JSON.stringify(res).length);
-    console.log(JSON.stringify(this.wallet.outputs).length);
-    res = [];
-    this.identity.history.history.forEach(function(row) {
-        res.push([row.hash, row.impact, res.label]);
-    });
-    console.log(JSON.stringify(res).length);
-    console.log(JSON.stringify(this.wallet.outputs).length);
-
-}
 
 /**
  * Get the private key for the given address index
