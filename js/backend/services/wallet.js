@@ -269,6 +269,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
             var walletAddress = identity.wallet.pubKeys[pubKeyIndex];
             if (identity.settings.scanPocketMaster || walletAddress.index.length > 1) {
+                var client = core.getClient();
                 var fromHeight = walletAddress.height+1;
                 // Now fetch history
                 client.fetch_history(walletAddress.address, fromHeight, function(err, res) { historyFetched(err, walletAddress, res, false); });
