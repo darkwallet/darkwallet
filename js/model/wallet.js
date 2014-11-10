@@ -456,18 +456,11 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
             walletAddress.outputs.push(outId);
         }
     }
-    // Set as change
-    /*if (!height && output.change === undefined) {
-        // no 0 confirm spends for now
-        output.change = this.identity.tx.inputsMine(txHash, tx);
-    }*/
     // If confirmed or inputs are mine and not spent add balance
-    if ((output.change || height) && !output.height && !spend) {
+    if (height && !spend && !output.counted) {
         // Add if we didn't add it yet
-        if (!output.counted) {
-            walletAddress.balance += value;
-            output.counted = true;
-        }
+        walletAddress.balance += value;
+        output.counted = true;
     }
     if (walletAddress.type === 'stealth') {
         output.stealth = true;
@@ -479,8 +472,7 @@ Wallet.prototype.processOutput = function(walletAddress, txHash, index, value, h
 
     // If it's a spend save the next output and spend height
     if (spend && !output.spend) {
-        output.spend = spend;
-        output.spendpending = true;
+        output.markSpend(spend)
     }
     if (spend) {
         output.spendheight = spendheight;
