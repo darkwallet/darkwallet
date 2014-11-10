@@ -107,7 +107,7 @@ c09fd9179e635bcfd95a2b989fc16b1e88ac00000000";
 
     it('gets the first outpocket', function() {
       var row = new HistoryRow('nolabel', identity);
-      expect(row.outPocket).toBe('2');
+      expect(row.outPocket).toBe(2);
     });
 
     it('gets the first inpocket', function() {

@@ -96,7 +96,11 @@ Object.defineProperty(HistoryRow.prototype, 'outPocket', {
         var impactkeys = Object.keys(this.impact);
         for(var i=0; i<impactkeys.length; i++) {
             if (this.impact[impactkeys[i]].outs && this.impact[impactkeys[i]].outs > this.impact[impactkeys[i]].ins) {
-                return impactkeys[i];
+                if (this.impact[impactkeys[i]].type == 'hd') {
+                    return parseInt(impactkeys[i]);
+                } else {
+                    return impactkeys[i];
+                }
             }
         }
     }
@@ -111,7 +115,12 @@ Object.defineProperty(HistoryRow.prototype, 'inPocket', {
         for(var i=0; i<impactkeys.length; i++) {
             // TODO: should think about change in this comparison
             if (this.impact[impactkeys[i]].ins && this.impact[impactkeys[i]].ins > this.impact[impactkeys[i]].outs) {
-                return impactkeys[i];
+                if (this.impact[impactkeys[i]].type == 'hd') {
+                    return parseInt(impactkeys[i]);
+                } else {
+                    return impactkeys[i];
+                }
+
             }
         }
     }
