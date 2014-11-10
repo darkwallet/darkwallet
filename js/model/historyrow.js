@@ -121,7 +121,8 @@ Object.defineProperty(HistoryRow.prototype, 'inPocket', {
  * User set label for the transaction (String)
  */
 Object.defineProperty(HistoryRow.prototype, 'label', {
-    get: function() { return this.identity.txdb.getLabel(this.hash); }
+    get: function() { return this.identity.txdb.getLabel(this.hash); },
+    set: function(val) { return this.identity.txdb.setLabel(this.hash, val); }
 });
 
 /**
