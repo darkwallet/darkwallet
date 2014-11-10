@@ -78,7 +78,7 @@ MultisigFund.prototype.detectParticipants = function() {
     });
 
     return participants;
-}
+};
 
 
 /**
@@ -101,7 +101,7 @@ MultisigFund.prototype.detectTasks = function() {
                 if (self.me.length > 0) {
                     task.pending.forEach(function(p){
                         var signed = Object.keys(p.signatures);
-                        canSign = canSign.filter(function(i) {return (signed.indexOf(""+i) === -1)});
+                        canSign = canSign.filter(function(i) {return (signed.indexOf(""+i) === -1);});
                     });
                 }
 
@@ -123,7 +123,7 @@ MultisigFund.prototype.findFundTask = function(task) {
             return this.tasks[i];
         }
     }
-}
+};
 
 /**
  * Order signatures for this multisig
@@ -134,12 +134,10 @@ MultisigFund.prototype.organizeSignatures = function(hexSigs) {
     multisig.pubKeys.forEach(function(participant, i) {
         if (hexSigs.hasOwnProperty(i)) {
             signatures.push(hexSigs[i]);
-        } else {
-            // do nothing
         }
     });
     return signatures;
-}
+};
 
 
 /**
@@ -186,7 +184,7 @@ MultisigFund.prototype.importInputSignature = function(tx, sig, input, script) {
         }
     });
     return added;
-}
+};
 
 /**
  * Import a signature
@@ -203,7 +201,7 @@ MultisigFund.prototype.importSignature = function(sigHex, spend) {
        try {
            sig = Bitcoin.ECSignature.fromDER(new Bitcoin.Buffer(sigHex, 'hex'));
        } catch(e) {
-           console.log(e.stack)
+           console.log(e.stack);
            throw new Error('Malformed signature');
        }
     }
@@ -287,7 +285,7 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
         }
     });
     if (found) {
-        var spends = this.tasks.filter(function(spend) {return spend.task === found})
+        var spends = this.tasks.filter(function(spend) {return spend.task === found;});
         this.finishTransaction(spends[0], true);
         return spends[0];
     }
@@ -298,7 +296,7 @@ MultisigFund.prototype.importTransaction = function(serializedTx) {
         // add as task in the store
         identity.tasks.addTask('multisig', task);
         // Maybe should be imported here but now it's done on the angular controller..
-        this.tasks.push(spend)
+        this.tasks.push(spend);
         return spend;
     }
 };
@@ -323,7 +321,7 @@ MultisigFund.prototype.signTransaction = function(password, spend, inputs) {
                     builder.sign(input.index, privKey, script, 1);
                     var sig = builder.signatures[input.index].signatures.slice(-1)[0];
                     var hexSig = sig.toDER().toString('hex');
-                    spend.task.pending[i].signatures[pIdx] = hexSig
+                    spend.task.pending[i].signatures[pIdx] = hexSig;
                     // propagate transaction
                     DarkWallet.service.multisigTrack.sign(self.multisig, spend.tx, hexSig);
                     signed = true;
@@ -384,7 +382,7 @@ MultisigFund.prototype.signTxForeign = function(foreignKey, spend) {
         this.finishTransaction(spend, true);
     }
     return signed;
-}
+};
 
 
 /**
