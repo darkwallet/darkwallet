@@ -20,6 +20,12 @@ function Output(store, outId, value, address) {
     // [outId, value, address, height, spend, counted, spendpending, spendheight, stealth]
 }
 
+Output.prototype.markSpend = function(outId) {
+    this.spend = outId;
+    this.spendpending = true;
+    this.spendheight = 0;
+}
+
 /**
  * Receive id for the output ("hash:index")
  */

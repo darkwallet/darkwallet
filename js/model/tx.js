@@ -102,7 +102,7 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
     if (reserveOutputs) {
         var hash = newTx.getId();
         txUtxo.forEach(function(output, i) {
-            wallet.markOutput(output, hash + ':' + i);
+            output.markSpend(hash + ':' + i);
         });
     }
     // Return the transaction and some metadata
@@ -149,7 +149,7 @@ Transaction.prototype.sign = function(newTx, txUtxo, password, callback) {
         }
     }
     txUtxo.forEach(function(utxo, i) {
-        wallet.markOutput(utxo, hash + ":" + i);
+        utxo.markSpend(hash + ":" + i);
     });
     // No error so callback with success
     callback(null, pending);

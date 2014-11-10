@@ -431,16 +431,6 @@ Wallet.prototype.getUtxoToPay = function(value, pocketId, type) {
 
 
 /**
- * Mark an output as spent
- */
-Wallet.prototype.markOutput = function(output, index) {
-    output.spend = index;
-    output.spendpending = true;
-    output.spendheight = 0;
-};
-
-
-/**
  * Process an output from an external source
  * See Bitcoin.Wallet.processOutput
  * @param {Object} walletAddress Wallet address structure. See {@link Wallet#getWalletAddress}

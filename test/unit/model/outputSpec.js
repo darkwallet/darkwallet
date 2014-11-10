@@ -51,6 +51,12 @@ define(['model/output'], function(Output) {
       output.stealth = true;
       expect(output.stealth).toBe(true);
     });
+    it('marks a spend', function() {
+      output.markSpend('outid');
+      expect(output.spend).toBe('outid');
+      expect(output.spendpending).toBe(true);
+      expect(output.spendheight).toBe(0);
+    });
 
   });
 });
