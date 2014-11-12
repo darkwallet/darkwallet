@@ -44,10 +44,6 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
             "address": "1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ",
             "balance": 40000,
             "height": 287813,
-            "history": [
-              ["a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329", 0, 287813, 40000, null, null, null],
-              ["64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6", 1, 287583, 3000000, null, null, null],
-            ],
             "index": [0, 0],
             "label": "unused",
             "nOutputs": 1,
@@ -58,15 +54,17 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
             "address": "1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs",
             "balance": 5000000,
             "height": 269614,
-            "history": [
-              ["c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c", 0, 269614, 5000000, null, null, null],
-            ],
             "index": [2, 0],
             "label": "unused",
             "nOutputs": 1,
             "pubKey": [2, 41, 140, 192, 149, 205, 83, 114, 37, 106, 0, 164, 123, 46, 88, 38, 11, 252, 215, 149, 236, 188, 150, 165, 89, 64, 40, 218, 206, 26, 13, 49, 27]
           }
         },
+        outputs: [
+          ["a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329:0", 40000, '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ', 287813, null, null, null],
+          ["64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6:1", 3000000, '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ', 287583, null, null, null],
+          ["c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c:0", 5000000, '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs', 269614, null, null, null]
+        ],
         scankeys: [
           {
             "priv": "xprv9xJCM5Y7Zn6TkwLiSZjUKtkREpxRpi7KFcKKja4kMLpU8gDXygR3JP1jUAL591CcKwgKJVNHd68e4HxVFTkuiVHX5zZfPLFkx13c1FRxfmA",
@@ -418,34 +416,17 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
     
     it('gets utxo to pay', function() {
       
-      var history00 = {
-        receive: 'a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329:0',
-        value: 40000, 
-        counted: true,
-        address: '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ',
-        height: 287813
-      };
-      var history01 = {
-        receive: '64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6:1',
-        value : 3000000,
-        counted: true,
-        address : '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ',
-        height: 287583
-      };
-      var history20 = {
-        receive: 'c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c:0',
-        value: 5000000,
-        counted: true,
-        address: '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs',
-        height: 269614
-      };
+      var history00 = [ 'a1b0c4cb40f018d379adf9ff5c1aaf62a8e4083a3b0dc125ad843b169af9f329:0', 40000, '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ', 287813, null, null, null ];
+      var history01 = [ '64a286efcfa61bd467b721fd3ae4bb566504c328bb7d7762898de966da49dea6:1', 3000000, '1NmG1PMcwkz9UGpfu3Aa1hsGyKCApTjPvJ', 287583, null, null, null ]
+      var history20 = [ 'c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c:0', 5000000, '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs', 269614, null, null, null ];
       
-      expect(wallet.getUtxoToPay(9000, 0)).toEqual([history00]);
-      expect(wallet.getUtxoToPay(400000, 0)).toEqual([history01]);
-      expect(wallet.getUtxoToPay(3040000, 0)).toEqual([history01, history00]);
+      expect(wallet.getUtxoToPay(9000, 0)[0].store).toEqual(history00);
+      expect(wallet.getUtxoToPay(400000, 0)[0].store).toEqual(history01);
+      expect(wallet.getUtxoToPay(3040000, 0)[0].store).toEqual(history01);
+      expect(wallet.getUtxoToPay(3040000, 0)[1].store).toEqual(history00);
       
       
-      expect(wallet.getUtxoToPay(9000, 1)).toEqual([history20]);
+      expect(wallet.getUtxoToPay(9000, 1)[0].store).toEqual([ 'c137710d91140ebaca2ca0f6e1608325c5dbf8ecef13dd50bacccb365a7d155c:0', 5000000, '1ptDzNsRy3CtGm8bGEfqx58PfGERmXCgs', 269614, null, null, null ]);
       
       // Throws if there isn't enought money in the wallet
       expect(function() {

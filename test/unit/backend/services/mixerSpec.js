@@ -112,11 +112,10 @@ define(['testUtils', 'bitcoinjs-lib', 'model/wallet', 'util/coinjoin', 'model/tx
               },
               pockets: {
                 hdPockets: hdPockets,
-                getAddressPocket: function() {
-                    return {deriveHDPrivateKey: HdPocket.prototype.deriveHDPrivateKey};
-                },
-                getPocket: function() {
+                getPocket: function(idx) {
                     return {
+                        store: hdPockets[idx],
+                        deriveHDPrivateKey: HdPocket.prototype.deriveHDPrivateKey,
                         getChangeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh', type: 'hd'}; },
                         getFreeAddress: function() { return {address: '1PPFJZx5TWRwwVkLd3kpuALPfU5u2coybh', type: 'hd'}; }
                     }

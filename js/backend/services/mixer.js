@@ -411,8 +411,17 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
   /*
    * Check join state to see if we need to delete, and do it
    */
-  MixerService.prototype.checkDelete = function(id) {
-      var coinJoin = this.ongoing[id];
+  MixerService.prototype.checkFinished = function(id, coinJoin) {
+      // Check state and perform appropriate tasks
+      if (coinJoin.state === 'finished' && coinJoin.task) {
+          var onBroadcast = function(error, data) {
+              console.log("broadcasting!", error, data);
+          };
+          var walletService = this.core.service.wallet;
+          coinJoin.task.tx = coinJoin.tx.toHex();
+          walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
+      }
+      // Now remove if we're on an end state
       if (['finished', 'cancelled'].indexOf(coinJoin.state) !== -1) {
           console.log("[mixer] Deleting coinjoin because " + coinJoin.state);
           delete this.ongoing[id];
@@ -454,14 +463,14 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
       var password = safe.get('mixer', 'pocket:'+pocketIndex);
 
       // Load master keys for the pockets
-      var pocket = identity.wallet.pockets.hdPockets[pocketIndex];
+      var pocket = identity.wallet.pockets.getPocket(pocketIndex, 'hd');
       var masterKey, oldMasterKey, oldChangeKey;
-      if (pocket.privKey) {
-          masterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.privKey));
+      if (pocket.store.privKey) {
+          masterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.store.privKey));
       }
-      if (pocket.oldPrivKey) {
-          oldMasterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.oldPrivKey));
-          oldChangeKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.oldPrivChangeKey));
+      if (pocket.store.oldPrivKey) {
+          oldMasterKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.store.oldPrivKey));
+          oldChangeKey = Bitcoin.HDNode.fromBase58(sjcl.decrypt(password, pocket.store.oldPrivChangeKey));
       }
 
       // Iterate over tx inputs and load private keys
@@ -492,7 +501,6 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           }
           // derive this key
           var change = isNewHd ? walletAddress.index[1] : (isNewStealth ? false : walletAddress.index[0]%2);
-          var pocket = identity.wallet.pockets.getAddressPocket(walletAddress);
           var seq = walletAddress.index.slice(0);
           if (isNewStealth) {
               var scanKey = identity.wallet.getScanKey(seq[0]);
@@ -572,29 +580,17 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           if (updatedTx) {
               Port.post('gui', {type: 'mixer', state: coinJoin.state});
           }
-          if (coinJoin.state === 'sign') {
-              console.log("task requires signing from user!");
-          }
           // copy coinjoin state to the store
           if (coinJoin.task) {
               coinJoin.task.ping = Date.now()/1000;
               coinJoin.task.state = coinJoin.state;
-          }
-          // Check state and perform appropriate tasks
-          if (coinJoin.state === 'finished' && coinJoin.task) {
-              var onBroadcast = function(_error, _data) {
-                  console.log("broadcasting!", _error, _data);
-              };
-              var walletService = this.core.service.wallet;
-              coinJoin.task.tx = coinJoin.tx.toHex();
-              walletService.broadcastTx(coinJoin.tx, coinJoin.task, onBroadcast);
           }
           // Update budget (only guest applies budgeting)
           if (coinJoin.state === 'finished' && prevState !== 'finished' && coinJoin.role === 'guest') {
               this.trackBudget(coinJoin);
           }
           // Check for deletion
-          this.checkDelete(msg.body.id);
+          this.checkFinished(msg.body.id, coinJoin);
 
           // See if we should desactivate mixing
           this.checkMixing();
@@ -611,7 +607,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
       var coinJoin = this.getOngoing(msg);
       if (coinJoin) {
         coinJoin.kill(msg.body, msg.peer);
-        this.checkDelete(msg.body.id);
+        this.checkFinished(msg.body.id, coinJoin);
       }
     }
   };

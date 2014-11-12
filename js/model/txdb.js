@@ -74,6 +74,58 @@ TransactionDatabase.prototype.getLabel = function(txHash) {
 };
 
 /**
+ * Generic par getter and setter
+ */
+TransactionDatabase.prototype.setGeneric = function(txHash, parIdx, val, save) {
+    if (!this.transactions.hasOwnProperty(txHash)) {
+        this.transactions[txHash] = [];
+    }
+    this.transactions[txHash][parIdx] = val;
+    if (save) {
+        this.store.save();
+    }
+};
+
+TransactionDatabase.prototype.getGeneric = function(txHash, parIdx) {
+    if (this.transactions.hasOwnProperty(txHash)) {
+        return this.transactions[txHash][parIdx];
+    }
+};
+
+TransactionDatabase.prototype.setHeight = function(txHash, name, save) {
+    this.setGeneric(txHash, 2, name, save);
+};
+
+TransactionDatabase.prototype.getHeight = function(txHash) {
+    return this.getGeneric(txHash, 2);
+};
+
+TransactionDatabase.prototype.setImpact = function(txHash, impact, save) {
+    this.setGeneric(txHash, 3, impact, save);
+};
+
+TransactionDatabase.prototype.getImpact = function(txHash) {
+    return this.getGeneric(txHash, 3);
+};
+
+TransactionDatabase.prototype.setOutAddresses = function(txHash, outAddresses, save) {
+    this.setGeneric(txHash, 4, outAddresses, save);
+};
+
+TransactionDatabase.prototype.getOutAddresses = function(txHash) {
+    return this.getGeneric(txHash, 4);
+};
+
+TransactionDatabase.prototype.setAddress = function(txHash, address, save) {
+    this.setGeneric(txHash, 5, address, save);
+};
+
+TransactionDatabase.prototype.getAddress = function(txHash) {
+    return this.getGeneric(txHash, 5);
+};
+
+
+/**
  * Get the body for a transaction
  * @param {String} txHash Transaction hash
  */
