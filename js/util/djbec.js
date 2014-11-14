@@ -69,6 +69,9 @@ function bi(s, base) {
 }
 
 function sha512(s) {                      // Requires jsSHA
+  // if we don't convert to word array manually here the string
+  // may be incorrectly decoded and we get a bad hash
+  s = convert.bytesToWordArray(convert.stringToBytes(s));
   var hashed = SHA512(s);
   return convert.wordArrayToBytes(hashed);
 }
