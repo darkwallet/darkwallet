@@ -103,6 +103,11 @@ define(['util/djbec', 'bitcoinjs-lib'], function(Djbec, Bitcoin) {
         expect(res).toBe(true);
     });
 
+    it('ecDH', function() {
+        expect(Djbec.ecDH(sk1, pk2).toString()).toEqual(Djbec.curve25519(sk1, pk2).toString());
+        expect(Djbec.ecDH(sk2, pk1).toString()).toEqual(Djbec.curve25519(sk2, pk1).toString());
+    });
+
 
    });
 
@@ -204,6 +209,61 @@ define(['util/djbec', 'bitcoinjs-lib'], function(Djbec, Bitcoin) {
         expect(res).toBe(true);
     });
 
+
+   });
+
+   describe('ecDH timing', function () {
+    xit('test if the branches in zpt_sm take different time', function() {
+        var base = new Uint8Array(32);
+        var n = new Uint8Array(32);
+        window.crypto.getRandomValues(base);
+        var bi_base = Djbec.curve25519(Djbec.bytes2bi(base));
+        var guess0 = [];
+        var guess1 = [];
+        var samples = 1000;
+        for (var i = 0; i < samples + 1; i++) {
+            window.crypto.getRandomValues(n);
+            /* pretend the first 7 bits have been guessed to be 1010100 and
+             * we're trying to guess the next bit from the timing
+             * difference */
+            n[31] = 84;
+            var bi_n = Djbec.bytes2bi(n);
+            var t_start, t_end;
+            t_start = window.performance.now();
+            Djbec.curve25519(bi_n, bi_base);
+            t_end = window.performance.now();
+            /* the first one is slow (because of javascript optimization?) */
+            if (i > 0)
+                guess0.push(t_end - t_start);
+
+            n[31] = 84 + 128;
+            bi_n = Djbec.bytes2bi(n);
+            t_start = window.performance.now();
+            Djbec.curve25519(bi_n, bi_base);
+            t_end = window.performance.now();
+            if (i > 0)
+                guess1.push(t_end - t_start);
+        }
+
+        /* basic stat functions */
+        var sum = function(nums) {
+            return nums.reduce(function(a, b) { return a + b; }, 0);
+        };
+
+        var mean = function(nums) {
+            return sum(nums) / nums.length;
+        };
+
+        var variance = function(nums) {
+            return Math.sqrt((1 / nums.length) * sum(nums.map(function (x) {return (x - this) * (x - this)}, mean(nums))));
+        };
+
+        /* calculate the stats */
+        var t_value = (mean(guess0) - mean(guess1)) / (Math.sqrt(0.5*(variance(guess0) + variance(guess1))) * Math.sqrt(2/samples));
+        console.log(t_value);
+        console.log(mean(guess0));
+        console.log(mean(guess1));
+    });
 
    });
 });
