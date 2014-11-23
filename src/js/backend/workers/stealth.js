@@ -1,5 +1,5 @@
 
-importScripts('/js/backend/workers/loader.js');
+importScripts('/src/js/backend/workers/loader.js');
 
 require(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
 

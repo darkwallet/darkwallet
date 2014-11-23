@@ -29,7 +29,7 @@ define(['backend/port'], function(Port) {
             stealthJobs = {};
         }
         lastStealthRequested = identity.wallet.store.get('lastStealth');
-        stealthWorker = new Worker('/js/backend/workers/stealth.js');
+        stealthWorker = new Worker('/src/js/backend/workers/stealth.js');
         stealthWorker.onmessage = function(oEvent) {
             if (oEvent.data.type == 'stealth') {
                 onStealthResults(oEvent.data.id, oEvent.data.matches, oEvent.data.height);

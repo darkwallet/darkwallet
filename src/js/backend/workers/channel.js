@@ -1,4 +1,4 @@
-importScripts('/js/backend/workers/loader.js');
+importScripts('/src/js/backend/workers/loader.js');
 
 // workaround for sjcl looking for window
 var window = self;

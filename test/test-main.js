@@ -9,16 +9,16 @@ for (var file in window.__karma__.files) {
 
 requirejs.config({
     // Karma serves files from '/base'
-    baseUrl: '/base/js',
+    baseUrl: '/base/src/js',
     
     paths: {
       'angular-mocks': '../vendors/angular-mocks/angular-mocks',
-      'date-mock': '../test/mock/date',
-      'chrome': '../test/mock/chrome_mock',
-      'testUtils': '../test/mock/testUtils',
-      'frontend/app': '../test/mock/frontend_app',
-      'darkwallet': '../test/mock/darkwallet_mock',
-      'available_languages': '../test/mock/available_languages'
+      'date-mock': '../../test/mock/date',
+      'chrome': '../../test/mock/chrome_mock',
+      'testUtils': '../../test/mock/testUtils',
+      'frontend/app': '../../test/mock/frontend_app',
+      'darkwallet': '../../test/mock/darkwallet_mock',
+      'available_languages': '../../test/mock/available_languages'
     },
     
     shim: {

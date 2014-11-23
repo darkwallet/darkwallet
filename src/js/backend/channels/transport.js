@@ -71,7 +71,7 @@ function (Bitcoin, Peer, Curve25519, Encryption, Channel) {
   Transport.prototype.initWorker = function() {
     var self = this;
     this.killWorker();
-    this.channelWorker = new Worker('/js/backend/workers/channel.js');
+    this.channelWorker = new Worker('/src/js/backend/workers/channel.js');
     this.channelWorker.onmessage = function(oEvent) {
         if (oEvent.data.channelName) {
             self.onWorkerChannelData(oEvent.data);
