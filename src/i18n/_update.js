@@ -4,8 +4,8 @@ var recursive = require('recursive-readdir');
 var fs = require('fs');
 var beautify = require('js-beautify').js_beautify;
 
-recursive('html', function (err, htmlFiles) {
-  recursive('js', function (err, jsFiles) {
+recursive('src/html', function (err, htmlFiles) {
+  recursive('src/js', function (err, jsFiles) {
     var files = htmlFiles.concat(jsFiles);
     var arr = [];
     var obj = {};
