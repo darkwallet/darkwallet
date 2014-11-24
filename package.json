@@ -1,8 +1,10 @@
 {
   "name": "darkwallet",
-  "description": "You only need to install this if you are compiling SCSS for the frontend",
+  "title": "Darkwallet",
+  "description": "The Bitcoin Power Wallet",
   "version": "0.7.0",
-  "homepage": "",
+  "license": "AGPLv3+",
+  "homepage": "https://darkwallet.is",
   "author": {
     "name": "",
     "email": ""
@@ -37,5 +39,8 @@
   "scripts": {
     "test": "./node_modules/karma/bin/karma start test/karma.conf.js --single-run",
     "i18n-update": "node src/i18n/_update.js > src/i18n/en_US.json"
-  }
+  },
+  "id": "jid1-ldWOxA2VeMkhSw",
+  "data": "src",
+  "lib": "firefox"
 }
