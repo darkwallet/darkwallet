@@ -242,8 +242,6 @@ if (typeof chrome !== 'undefined') {
         });
     })(self);
 
-    unsafeWindow.contentScriptOptions = cloneInto(self.options, {
-        defineAs: 'contentScriptOptions'
-    });
+    unsafeWindow.contentScriptOptions = cloneInto(self.options, unsafeWindow);
 
 }

@@ -13,7 +13,7 @@ var init = function(_chrome) {
           self.port.emit('backgroundAPI', Object.keys(unsafeWindow));\
         }\
       };",
-        contentScriptFile: self.data.url("chrome-sdk.js"),
+        contentScriptFile: self.data.url("js/chrome-sdk.js"),
         contentURL: self.data.url("html/background.html"),
         contentScriptWhen: 'start'
     });
@@ -22,7 +22,7 @@ var init = function(_chrome) {
     backgroundWorker.port.on('backgroundAPI', function(api) {
         require("sdk/page-mod").PageMod({
             include: self.data.url("*"),
-            contentScriptFile: self.data.url("chrome-sdk.js"),
+            contentScriptFile: self.data.url("js/chrome-sdk.js"),
             contentScriptWhen: 'start',
             contentScriptOptions: {
                 api: api
