@@ -236,7 +236,7 @@ if (typeof chrome !== 'undefined') {
             });
             worker.port.on(eventName, function(data) {
                 var evt = document.createEvent("CustomEvent");
-                evt.initCustomEvent(eventName, true, false, data);
+                evt.initCustomEvent(eventName, true, false, cloneInto(data, unsafeWindow));
                 window.dispatchEvent(evt);
             });
         });

@@ -10,7 +10,7 @@ var init = function(_chrome) {
         contentScript: "\
       document.onreadystatechange = function () {\
         if (document.readyState == 'interactive') {\
-          self.port.emit('backgroundAPI', Object.keys(unsafeWindow));\
+          self.port.emit('backgroundAPI', unsafeWindow.api);\
         }\
       };",
         contentScriptFile: self.data.url("js/chrome-sdk.js"),
