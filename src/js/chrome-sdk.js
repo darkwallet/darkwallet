@@ -240,6 +240,9 @@ if (typeof chrome !== 'undefined') {
                 window.dispatchEvent(evt);
             });
         });
+        window.addEventListener('backgroundReady', function() {
+          worker.port.emit('backgroundReady', Object.keys(unsafeWindow.api));
+        });
     })(self);
 
     unsafeWindow.contentScriptOptions = cloneInto(self.options, unsafeWindow);

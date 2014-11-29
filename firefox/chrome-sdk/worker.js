@@ -7,19 +7,13 @@ var backgroundWorker;
 var init = function(_chrome) {
     chrome = _chrome;
     backgroundWorker = require("sdk/page-worker").Page({
-        contentScript: "\
-      document.onreadystatechange = function () {\
-        if (document.readyState == 'interactive') {\
-          self.port.emit('backgroundAPI', unsafeWindow.api);\
-        }\
-      };",
         contentScriptFile: self.data.url("js/chrome-sdk.js"),
         contentURL: self.data.url("html/background.html"),
         contentScriptWhen: 'start'
     });
     activeChromeAPI(backgroundWorker);
 
-    backgroundWorker.port.on('backgroundAPI', function(api) {
+    backgroundWorker.port.on('backgroundReady', function(api) {
         require("sdk/page-mod").PageMod({
             include: self.data.url("*"),
             contentScriptFile: self.data.url("js/chrome-sdk.js"),

@@ -177,10 +177,14 @@ window.initAddress = function(_w) {return service.initAddress(_w);};
 window.addListener = addListener;
 window.sendInternalMessage = sendInternalMessage;
 
-});
-
 // API exposed to frontend (used by Firefox)
 window.api = ['connect', 'loadIdentity', 'getIdentity', 'getCurrentIdentity',
     'getKeyRing', 'servicesStatus', 'getLobbyTransport', 'getClient', 'getServices',
     'initAddress', 'addListener', 'sendInternalMessage'
 ];
+
+var evt = document.createEvent("CustomEvent");
+evt.initCustomEvent('backgroundReady', true, false, null);
+window.dispatchEvent(evt);
+
+});
