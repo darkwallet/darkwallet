@@ -159,29 +159,25 @@ var service = new DarkWalletService(serviceClasses);
 /* Bindings for the page window so we can have easy access
  */
 
-window.connect = function(_server) { return service.connect(_server); };
-
-window.loadIdentity = service.loadIdentity;
-window.getIdentity = function(idx) { return service.getIdentity(idx); };
-window.getCurrentIdentity = service.getCurrentIdentity;
-
-window.getKeyRing = service.getKeyRing;
-window.servicesStatus = service.servicesStatus;
-window.getLobbyTransport = service.getLobbyTransport;
-
-window.getClient = service.getClient;
-window.getServices = service.getServices;
-
-window.initAddress = function(_w) {return service.initAddress(_w);};
-
-window.addListener = addListener;
-window.sendInternalMessage = sendInternalMessage;
-
-// API exposed to frontend (used by Firefox)
-window.api = ['connect', 'loadIdentity', 'getIdentity', 'getCurrentIdentity',
-    'getKeyRing', 'servicesStatus', 'getLobbyTransport', 'getClient', 'getServices',
-    'initAddress', 'addListener', 'sendInternalMessage'
-];
+window.api = {
+    connect: function(_server) { return service.connect(_server);},
+    
+    loadIdentity: service.loadIdentity,
+    getIdentity: function(idx) { return service.getIdentity(idx); },
+    getCurrentIdentity: service.getCurrentIdentity,
+    
+    getKeyRing: service.getKeyRing,
+    servicesStatus: service.servicesStatus,
+    getLobbyTransport: service.getLobbyTransport,
+    
+    getClient: service.getClient,
+    getServices: service.getServices,
+    
+    initAddress: function(_w) {return service.initAddress(_w);},
+    
+    addListener: addListener,
+    sendInternalMessage: sendInternalMessage
+};
 
 var evt = document.createEvent("CustomEvent");
 evt.initCustomEvent('backgroundReady', true, false, null);

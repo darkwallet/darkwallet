@@ -21,7 +21,7 @@ var DarkWallet = {
      * 
      * @returns {Object}
      */
-    get core() {return chrome.extension.getBackgroundPage();},
+    get core() {return chrome.extension.getBackgroundPage().api;},
 
     /**
      * Get a service from the background script.

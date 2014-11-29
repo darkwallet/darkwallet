@@ -110,7 +110,7 @@ if (typeof chrome !== 'undefined') {
                 return;
             }
             console.log(data);
-            var func = window;
+            var func = window.api;
             data.name.split('.').splice(1).forEach(function(chunck) {
                 func = func[chunck];
             });
@@ -130,13 +130,13 @@ if (typeof chrome !== 'undefined') {
     };
 
     var background = (function() {
-        if (!window.contentScriptOptions) {
+        if (!window.contentScriptOptions) { // backend
             return backgroundListenCalls();
         }
-        var background = {};
+        var background = {api: {}};
         var api = window.contentScriptOptions.api;
         api.forEach(function(func) {
-            background[func] = backgroundCall('background.' + func);
+            background.api[func] = backgroundCall('background.' + func);
         });
         return background;
     })();
