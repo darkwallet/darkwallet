@@ -133,11 +133,9 @@ if (typeof chrome !== 'undefined') {
         if (!window.contentScriptOptions) { // backend
             return backgroundListenCalls();
         }
-        var background = {api: {}};
-        var api = window.contentScriptOptions.api;
-        api.forEach(function(func) {
-            background.api[func] = backgroundCall('background.' + func);
-        });
+        var background = {api: window.contentScriptOptions.api};
+        activeAPI('background', background.api);
+    
         return background;
     })();
 
@@ -240,8 +238,19 @@ if (typeof chrome !== 'undefined') {
                 window.dispatchEvent(evt);
             });
         });
+        
+        function exportBackendAPI() {
+            var json = JSON.stringify(unsafeWindow.api, function(key, value) {
+                if (typeof value === "function") {
+                    return null;
+                }
+                return value;
+            });
+            return JSON.parse(json);
+        }
+
         window.addEventListener('backgroundReady', function() {
-          worker.port.emit('backgroundReady', Object.keys(unsafeWindow.api));
+            worker.port.emit('backgroundReady', exportBackendAPI());
         });
     })(self);
 
