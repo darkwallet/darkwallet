@@ -57,8 +57,23 @@ IdentityKeyRing.prototype.remove = function(name, callback) {
  * Get names for all identities available.
  * @return {String[]} List of the available identities.
  */
-IdentityKeyRing.prototype.getIdentityNames = function() {
+IdentityKeyRing.prototype.getIdentityNames = function(cb) {
+    if (cb) {
+        cb(this.availableIdentities);
+    }
     return this.availableIdentities;
+};
+
+/**
+ * Get data of loaded identities.
+ * @return {Object} JSONable object with the loaded identities.
+ */
+IdentityKeyRing.prototype.getIdentities = function(cb) {
+    var identities = JSON.parse(JSON.stringify(this.identities));
+    if (cb) {
+        cb(identities);
+    }
+    return identities;
 };
 
 /**
@@ -120,14 +135,14 @@ IdentityKeyRing.prototype.createIdentity = function(name, network, seed, passwor
  * @param {Function} callback Callback providing results for the function.
  * @private
  */
-IdentityKeyRing.prototype.loadIdentities = function(callback) {
+IdentityKeyRing.prototype.loadIdentities = function(callback) {console.log('falla',this)
     var self = this;
     var _callback = callback;
 
     // See if we have cached list
     if (this.availableIdentities.length) {
        if (_callback) {
-            _callback(this.availableIdentities);
+            _callback(this.availableIdentities, this.identities);
        }
        return;
     }
@@ -145,7 +160,7 @@ IdentityKeyRing.prototype.loadIdentities = function(callback) {
             }
         }
         if (_callback) {
-            _callback(self.availableIdentities);
+            _callback(self.availableIdentities, self.identities);
         }
     });
 };

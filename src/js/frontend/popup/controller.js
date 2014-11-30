@@ -59,12 +59,9 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
       // just so the service gets disconnected when we close.
   });
 
-
-  var keyRing = DarkWallet.getKeyRing();
-
-  keyRing.loadIdentities(function(identityNames) {
+  DarkWallet.keyring.loadIdentities(function(availableIdentities, keyringIdentities) {
     var identities = [];
-    identityNames.forEach(function(item) {
+    availableIdentities.forEach(function(item) {
       identities.push({id: item});
     });
     $scope.identities = identities;
@@ -72,10 +69,10 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
         try {
             $scope.currentIdentity = DarkWallet.service.wallet.getCurrentIdentity().name;
         } catch (e) {
-            $scope.currentIdentity = identityNames[0];
+            $scope.currentIdentity = availableIdentities[0];
         }
     }
-    if (keyRing.identities.hasOwnProperty($scope.currentIdentity)) {
+    if (keyringIdentities.hasOwnProperty($scope.currentIdentity)) {
         $scope.identityLoaded = true;
     }
     if(!$scope.$$phase) {
@@ -85,11 +82,13 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port'], function 
 
 
   $scope.loadIdentity = function(name) {
-      var identityIdx = DarkWallet.getKeyRing().availableIdentities.indexOf(name);
-      DarkWallet.service.obelisk.disconnect(function() {
-          $scope.needsOpen = !$scope.identityLoaded;
-          DarkWallet.core.loadIdentity(identityIdx);
-      });
+        DarkWallet.keyring.getIdentityNames(function(availableIdentities) {
+            var identityIdx = availableIdentities.indexOf(name);
+            DarkWallet.service.obelisk.disconnect(function() {
+                $scope.needsOpen = !$scope.identityLoaded;
+                DarkWallet.core.loadIdentity(identityIdx);
+            });
+        });
   }
 
 }]);

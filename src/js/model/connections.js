@@ -85,6 +85,19 @@ Connections.prototype.getSelectedServer = function() {
   return this.servers[this.selectedServer];
 }
 
+/**
+ * Provides a customized result for JSON.stringify(connections).
+ * @returns Public JSON
+ */
+Connections.prototype.toJSON = function() {
+    return {
+        connections: this.connections,
+        servers: this.servers,
+        selectedServer: this.selectedServer,
+        alwaysConnect: this.alwaysConnect,
+    };
+}
+
 return Connections;
 
 });

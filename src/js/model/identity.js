@@ -120,5 +120,24 @@ Identity.prototype.generate = function(seed, password, network) {
     this.store.save();
 };
 
+/**
+ * Provides a customized result for JSON.stringify(identity).
+ * @returns Public JSON
+ */
+Identity.prototype.toJSON = function() {
+    return {
+        name: this.name,
+        settings: this.settings,
+        //tx: this.tx,
+        //txdb: this.txdb,
+        wallet: this.wallet,
+        //history: this.history,
+        //contacts: this.contacts,
+        conections: this.connections,
+        //tasks: this.tasks,
+        reseed: this.reseed
+    };
+}
+
 return Identity;
 });

@@ -604,5 +604,29 @@ Wallet.prototype.checkNewStealth = function(recipient, address, ephemKey, pubKey
     }
 };
 
+
+/**
+ * Provides a customized result for JSON.stringify(wallet).
+ * @returns Public JSON
+ */
+Wallet.prototype.toJSON = function() {
+    return {
+        network: this.network,
+        fee: this.fee,
+        //pubKeys: this.pubKeys,
+        //scanKeys: this.scanKeys,
+        //oldScanKeys: this.oldScanKeys,
+        //idKeys: this.idKeys,
+        dust: this.dust,
+        addresses: this.addresses,
+        //mpk: this.mpk,
+        //oldMpk: this.oldMpk,
+        //multisig: this.multisig,
+        //pockets: this.pockets,
+        //wallet: this.wallet,
+        balance: this.balance
+    };
+}
+
 return Wallet;
 });

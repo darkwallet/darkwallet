@@ -33,9 +33,11 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
       if (identity) {
           callback(identity);
       } else {
-          if (DarkWallet.getKeyRing().availableIdentities.length) {
-              DarkWallet.core.loadIdentity(0);
-          }
+          DarkWallet.keyring.getIdentityNames(function(availableIdentities) {
+              if (availableIdentities.length) {
+                  DarkWallet.core.loadIdentity(0);
+              }
+          });
       }
   }
 

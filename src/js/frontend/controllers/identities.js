@@ -6,12 +6,19 @@ define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port,
       if (data.type == 'ready' || data.type == 'rename') {
         // identity is ready here
         $scope.currentIdentity = DarkWallet.getIdentity().name;
-        $scope.identities = DarkWallet.getKeyRing().identities;
-        $scope.loadedIdentities = Object.keys($scope.identities);
-        $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
-        if (!$scope.$$phase) {
-            $scope.$apply();
-        }
+        DarkWallet.keyring.getIdentities(function(identities) {
+            $scope.identities = identities;
+            $scope.loadedIdentities = Object.keys($scope.identities);
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+        });
+        DarkWallet.keyring.getIdentityNames(function(availableIdentities) {
+            $scope.availableIdentities = availableIdentities;
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+        });
       }
     });
 
@@ -31,8 +38,7 @@ define(['./module', 'frontend/port', 'darkwallet'], function (controllers, Port,
     };
 
     var deleteOtherIdentity = function(identityName) {
-        var keyRing = DarkWallet.getKeyRing();
-        keyRing.remove(identityName, function() {
+        DarkWallet.keyring.remove(identityName, function() {
             var identityIdx = $scope.availableIdentities.indexOf(identityName);
             if (identityIdx > -1) {
                 $scope.availableIdentities.splice(identityIdx, 1);

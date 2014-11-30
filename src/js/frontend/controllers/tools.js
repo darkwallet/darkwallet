@@ -17,14 +17,14 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
    */
   var onLoadIdentity = function(name) {
       // Get partial size
-      DarkWallet.getKeyRing().getSize(name, function(value) {
+      DarkWallet.keyring.getSize(name, function(value) {
           $scope.storeSize = Math.ceil(value/1024);
           if(!$scope.$$phase) {
               $scope.$apply();
           }
       });
       // Get full size
-      DarkWallet.getKeyRing().getSize(null, function(value) {
+      DarkWallet.keyring.getSize(null, function(value) {
           $scope.totalStoreSize = Math.ceil(value/1024);
           if(!$scope.$$phase) {
               $scope.$apply();
@@ -44,8 +44,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
 
   // Clear the local storage
   var finishClearStorage = function() {
-      var keyRing = DarkWallet.getKeyRing();
-      keyRing.clear();
+      DarkWallet.keyring.clear();
       notify.note(_('Storage cleared, please restart your browser.'));
   }
 

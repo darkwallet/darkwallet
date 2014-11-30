@@ -84,8 +84,22 @@ function DarkWalletService(serviceClasses) {
             }
         });
     };
-    this.getKeyRing = function() {
-        return services.wallet.getKeyRing();
+    var keyring = services.wallet.getKeyRing();
+    var proxify = function(f) {
+        return function() {
+            return f.apply(keyring, arguments);
+        };
+    };
+    this.keyring = {
+        getIdentities: proxify(keyring.getIdentities),
+        getIdentityNames: proxify(keyring.getIdentityNames),
+        loadIdentities: proxify(keyring.loadIdentities),
+        save: proxify(keyring.save),
+        close: proxify(keyring.close),
+        getSize: proxify(keyring.getSize),
+        getRaw: proxify(keyring.getRaw),
+        clear: proxify(keyring.clear),
+        remove: proxify(keyring.remove)
     };
 
     this.getClient = function() {
@@ -166,7 +180,7 @@ window.api = {
     getIdentity: function(idx) { return service.getIdentity(idx); },
     getCurrentIdentity: service.getCurrentIdentity,
     
-    getKeyRing: service.getKeyRing,
+    keyring: service.keyring,
     servicesStatus: service.servicesStatus,
     getLobbyTransport: service.getLobbyTransport,
     

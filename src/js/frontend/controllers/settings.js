@@ -66,16 +66,17 @@ define(['./module', 'darkwallet', 'util/fiat', 'mnemonicjs', 'dwutil/currencyfor
 
   // Identity settings
   $scope.setIdentityName = function(newName) {
-      var keyRing = DarkWallet.getKeyRing();
-      if (keyRing.availableIdentities.indexOf(newName) > -1) {
+      DarkWallet.keyring.getIdentityNames(function(availableIdentities) {
+        if (availableIdentities.indexOf(newName) > -1) {
           notify.warning(_('You have another identity with that name!'));
           return;
-      }
-      DarkWallet.service.wallet.renameIdentity(newName, function() {
+        }
+        DarkWallet.service.wallet.renameIdentity(newName, function() {
           notify.success(_('Identity renamed to {0}', newName));
           if (!$scope.$$phase) {
               $scope.$apply();
           }
+        });
       });
   };
 

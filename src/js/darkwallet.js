@@ -35,7 +35,19 @@ var DarkWallet = {
      * 
      * @returns {Object}
      */
-    getKeyRing: function() {return DarkWallet.core.getKeyRing();},
+    get keyring() {
+        return {
+            getIdentities: DarkWallet.core.keyring.getIdentities,
+            getIdentityNames: DarkWallet.core.keyring.getIdentityNames,
+            loadIdentities: DarkWallet.core.keyring.loadIdentities,
+            save: DarkWallet.core.keyring.save,
+            close: DarkWallet.core.keyring.close,
+            getSize: DarkWallet.core.keyring.getSize,
+            getRaw: DarkWallet.core.keyring.getRaw,
+            clear: DarkWallet.core.keyring.clear,
+            remove: DarkWallet.core.keyring.remove
+        };
+    },
 
     /**
      * Light client

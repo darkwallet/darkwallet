@@ -41,7 +41,9 @@ function (controllers, DarkWallet, Port) {
       }
       else if (data.type == 'rename') {
           $scope.identityName = data.newName;
-          $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
+          DarkWallet.keyring.getIdentityNames(function(availableIdentities) {
+              $scope.availableIdentities = availableIdentities;
+          });
       }
       else if (data.type == 'height') {
           $scope.currentHeight = data.value;
@@ -91,7 +93,9 @@ function (controllers, DarkWallet, Port) {
       $scope.updateReadOnly(identity);
 
       // set some links
-      $scope.availableIdentities = DarkWallet.getKeyRing().availableIdentities;
+      DarkWallet.keyring.getIdentityNames(function(availableIdentities) {
+          $scope.availableIdentities = availableIdentities;
+      });
       $scope.settings = identity.settings;
 
       // get the balance for the wallet

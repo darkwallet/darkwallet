@@ -19,8 +19,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
 
     $scope.backupIdentity = function(identityName) {
         modals.password(_('Password for encrypting the backups'), function(password) {
-            var keyRing = DarkWallet.getKeyRing();
-            keyRing.getRaw(identityName, function(obj) {
+            DarkWallet.keyring.getRaw(identityName, function(obj) {
                 var fileName = identityName || 'all';
                 download('darkwallet-'+fileName+'.json', sjcl.encrypt(password, JSON.stringify(obj), {ks: 256, ts: 128}));
             });
@@ -70,18 +69,19 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib', 'sjcl'], function (controller
      */
     var loadBackup = function(identity) {
         var running = DarkWallet.getIdentity();
-        var keyRing = DarkWallet.getKeyRing();
         if (identity.name == running.name) {
             var walletService = DarkWallet.service.wallet;
             walletService.reloadIdentity(identity, function() {
                 DarkWallet.core.connect();
             });
         } else {
-            keyRing.save(identity.name, identity, function(){ });
-            if (keyRing.identities[identity.name]) {
-                keyRing.close(identity.name);
-            }
-               // identity reloaded
+            DarkWallet.keyring.save(identity.name, identity, function(){ });
+            DarkWallet.keyring.getIdentities(function(identities) {
+                if (identities[identity.name]) {
+                    DarkWallet.keyring.close(identity.name);
+                }
+                // identity reloaded
+            });
         }
     };
 
