@@ -27,7 +27,7 @@ function (controllers, DarkWallet, Port) {
   $scope.clipboard = clipboard;
 
   $scope.openWallet = $tabs.openWallet;
- 
+
   /**
    * Wallet Port
    * Sends notifications about wallet state and identity change
@@ -100,16 +100,16 @@ function (controllers, DarkWallet, Port) {
 
       // get the balance for the wallet
       var balance = identity.wallet.getBalance();
-      
+
       $scope.totalBalance = balance.confirmed;
       $scope.totalUnconfirmed = balance.unconfirmed;
 
       $scope.identityName = identity.name;
-      
+
       $animate.enabled(identity.settings.animations.enabled);
-      
+
       $translate.use(identity.settings.language);
-      
+
   }
 
   $scope.$watch('allReadOnly', function() {
@@ -152,7 +152,7 @@ function (controllers, DarkWallet, Port) {
       linkIdentity(identity);
 
       // this will connect to obelisk if we're not yet connected
-      if (DarkWallet.getClient() && DarkWallet.getClient().connected) {
+      if (DarkWallet.getClient().connected) {
           // Already connected, set height
           $scope.currentHeight = DarkWallet.service.wallet.currentHeight;
       } else {

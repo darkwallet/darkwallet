@@ -1,5 +1,13 @@
 /**
  * Client to connect to a darkwallet gateway.
+ */
+function GatewayClient() {
+    this.handler_map = {};
+    this.connected = false;
+    this.websocket = null;
+}
+
+/**
  *
  * @param {String}   connect_uri Gateway websocket URI
  * @param {Function} handle_connect Callback to run when connected
@@ -8,12 +16,10 @@
  *
  * handle_* callbacks take parameters as (error, data)
  */
-function GatewayClient(connect_uri, handle_connect, handle_disconnect, handle_error) {
-    var self = this;
-    this.handler_map = {};
-    this.connected = false;
+GatewayClient.prototype.connect = function(connect_uri, handle_connect, handle_disconnect, handle_error) {
     this.websocket = new WebSocket(connect_uri);
     var closingCb;
+    var self = this;
     this.close = function(_cb) {
         self.connected = false;
         self.handler_map = {};
@@ -66,7 +72,7 @@ GatewayClient.prototype.fetch_last_height = function(handle_fetch) {
  *
  * @param {String}   tx_hash Transaction identifier hash
  * @param {Function} handle_fetch Callback to handle the JSON object
- * representing the transaction 
+ * representing the transaction
  */
 GatewayClient.prototype.fetch_transaction = function(tx_hash, handle_fetch) {
     GatewayClient._check_function(handle_fetch);
@@ -297,7 +303,7 @@ GatewayClient.prototype.fetch_ticker = function(currency, handle_fetch)
  *
  * @param {String} command
  * @param {Array} params
- * @param {Function} handler 
+ * @param {Function} handler
  */
 GatewayClient.prototype.make_request = function(command, params, handler) {
     GatewayClient._check_function(handler);
@@ -371,7 +377,7 @@ GatewayClient.prototype.on_message = function(evt) {
  * @private
  */
 GatewayClient._random_integer = function() {
-    return Math.floor((Math.random() * 4294967296)); 
+    return Math.floor((Math.random() * 4294967296));
 };
 
 /**
@@ -387,4 +393,3 @@ GatewayClient._check_function = function(func) {
         throw "Parameter is not a function";
     }
 };
-

@@ -11,20 +11,20 @@ function(Port) {
       var self = this;
       this.name = 'obelisk';
       this.core = core;
-      this.client = null;
+      this.client = new GatewayClient();
       this.connected = false;
       this.shouldConnect = false;
       this.connecting = false;
       this.reconnectTimeout;
-    
+
       // Port for communication with the frontend
       Port.listen('obelisk', function() {
         }, function(port) {
             // Client connected
             var client = self.client;
-            if (client && client.connected) {
+            if (client.connected) {
                 port.postMessage({'type': 'connected'});
-            } else if (client && client.connecting) {
+            } else if (client.connecting) {
                 port.postMessage({'type': 'connecting'});
             }
       }, function() {
@@ -99,7 +99,7 @@ function(Port) {
       this.core.servicesStatus.gateway = 'offline';
       this.core.servicesStatus.obelisk = 'offline';
       this.shouldConnect = false;
-      if (this.client && (this.connected || this.connecting)) {
+      if (this.connected || this.connecting) {
           if (this.reconnectTimeout) {
               clearTimeout(this.reconnectTimeout);
               this.reconnectTimeout = false;
@@ -107,11 +107,10 @@ function(Port) {
           this.connected = false;
           this.connecting = false;
           this.client.close(cb);
-          this.client = null;
       } else {
           cb ? cb() : null;
       }
-      
+
   };
 
 
@@ -120,7 +119,7 @@ function(Port) {
    */
   ObeliskService.prototype.connectClient = function(connectUri, handleConnect, handleDisconnect, handleError) {
       this.connecting = true;
-      this.client = new GatewayClient(connectUri, handleConnect, handleDisconnect, handleError);
+      this.client.connect(connectUri, handleConnect, handleDisconnect, handleError);
   };
 
 

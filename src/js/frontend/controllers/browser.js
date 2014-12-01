@@ -49,7 +49,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       tx.ins.forEach(function(anIn, i) {
           anIn.address = $scope.showInput(anIn);
           anIn.outpoint = {hash: Bitcoin.bufferutils.reverse(anIn.hash).toString('hex'), index: anIn.index};
-        
+
       })
       tx.outs.forEach(function(anOut, i) {
           try {
@@ -68,7 +68,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
                   anOut.address = '';
               }
           }
-        
+
       })
   };
 
@@ -101,7 +101,7 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
       var tx = DarkWallet.getIdentity().txdb.getBody(txHash);
       if (tx) {
           onFetchTransaction(false, tx);
-      } else if (client) {
+      } else if (client.connected) {
           client.fetch_transaction(txHash, onFetchTransaction);
       }
   }

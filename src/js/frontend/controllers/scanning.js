@@ -74,7 +74,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       if (pocketAddressesUsed) {
           createMasterAddresses(results);
       }
- 
+
       // Now generate addresses
       Object.keys(maxIndex).forEach(function(branchId) {
           var pocketIndex = Math.floor(branchId/2);
@@ -179,7 +179,7 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       $scope.scanStatus = _('Scanning...');
       $scope.scanProgress = 0;
       var client = DarkWallet.getClient();
-      if (client) {
+      if (client.connected) {
           var identity = DarkWallet.getIdentity();
           // we need to ask for password if scanning bip44 keyring, or first time scanning for
           // old addresses if we don't have the old mpk available

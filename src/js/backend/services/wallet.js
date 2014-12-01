@@ -226,7 +226,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
     // Start up history for an address
     this.initAddress = function(walletAddress) {
         var client = core.getClient();
-        if (!client) {
+        if (!client.connected) {
             // TODO manage this case better
             console.log("trying to init address but not connected yet!... skipping :P");
             return;
@@ -250,7 +250,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             callback ? callback() : null;
         });
     };
- 
+
     // Handle a block header arriving from obelisk
     function handleBlockHeader(height, headerHex) {
         var header = BtcUtils.decodeBlockHeader(headerHex);
@@ -501,4 +501,3 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
   }
   return WalletService;
 });
-
