@@ -20,14 +20,13 @@ function TransactionDatabase(store) {
 TransactionDatabase.prototype.fetchTransaction = function(txHash, callback, userData) {
     var self = this;
     if (!this.transactions[txHash] || !this.transactions[txHash][0]) {
-        var client = DarkWallet.getClient();
         var gotTransaction = function(err, tx) {
             if(!err) {
                 self.storeTransaction(txHash, tx);
                 callback(tx, userData);
             }
         };
-        client.fetch_transaction(txHash, gotTransaction);
+        DarkWallet.client.fetch_transaction(txHash, gotTransaction);
     } else {
         callback(this.transactions[txHash][0], userData);
     }

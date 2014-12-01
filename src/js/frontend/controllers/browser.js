@@ -96,13 +96,16 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * Direct search for a transaction
    */
   $scope.searchTransaction = function(txHash) {
-      var client = DarkWallet.getClient();
       $scope.fetching = true;
       var tx = DarkWallet.getIdentity().txdb.getBody(txHash);
       if (tx) {
           onFetchTransaction(false, tx);
-      } else if (client.connected) {
-          client.fetch_transaction(txHash, onFetchTransaction);
+      } else {
+          DarkWallet.client.is_connected(function(is_connected) {
+              if (is_connected) {
+                  DarkWallet.client.fetch_transaction(txHash, onFetchTransaction);
+              }
+          });
       }
   }
 
@@ -167,10 +170,9 @@ define(['./module', 'darkwallet', 'frontend/port', 'bitcoinjs-lib', 'util/btc'],
    * Direct address search
    */
   $scope.searchAddress = function(address) {
-      var client = DarkWallet.getClient();
       $scope.address = address;
       $scope.fetching = true;
-      client.fetch_history(address, 0, onFetchHistory);
+      DarkWallet.client.fetch_history(address, 0, onFetchHistory);
   }
 
 

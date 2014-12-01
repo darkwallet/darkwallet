@@ -152,15 +152,17 @@ function (controllers, DarkWallet, Port) {
       linkIdentity(identity);
 
       // this will connect to obelisk if we're not yet connected
-      if (DarkWallet.getClient().connected) {
-          // Already connected, set height
-          $scope.currentHeight = DarkWallet.service.wallet.currentHeight;
-      } else {
-          // Request connecting to blockchain
-          setTimeout(function() {
-            DarkWallet.core.connect();
-          });
-      }
+      DarkWallet.client.is_connected(function(is_connected) {
+          if (is_connected) {
+              // Already connected, set height
+              $scope.currentHeight = DarkWallet.service.wallet.currentHeight;
+          } else {
+              // Request connecting to blockchain
+              setTimeout(function() {
+                  DarkWallet.core.connect();
+              });
+          }
+      });
       console.log("[WalletCtrl] loadIdentity", identity.name);
       // apply scope changes
       return true;

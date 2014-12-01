@@ -14,7 +14,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   // not very strict about ip, but allows domain names too:
   $scope.validIPPort = /^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*(:\d{1,5})?$/i;
 
-  
+
   // Apply scope
   var applyScope = function() {
       if (!$scope.$$phase) {
@@ -49,7 +49,6 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   // Track obelisk status
   Port.connectNg('obelisk', $scope, function(data) {
     if (data.type == 'connected') {
-      var client = DarkWallet.getClient();
       $scope.connectionStatus = 'Connected';
       applyScope();
     } else
@@ -104,4 +103,3 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
 }]);
 
 });
-

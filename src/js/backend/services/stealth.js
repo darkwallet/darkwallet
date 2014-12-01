@@ -129,12 +129,11 @@ define(['backend/port'], function(Port) {
         }
 
         // Request fetching the stealth using the client
-        var client = core.getClient();
         var fromHeight = lastStealthRequested || 0;
         if (height > fromHeight) {
             console.log("[stealth] Requesting from block " + fromHeight + " for " + height);
             lastStealthRequested = height;
-            client.fetch_stealth([0,0], onStealthReceived, fromHeight);
+            core.client.fetch_stealth([0,0], onStealthReceived, fromHeight);
             // register the id so we can check later its not cancelled
             fetchJobId = stealthJobIndex;
             stealthJobs[stealthJobIndex] = {type: 'request'};
@@ -144,4 +143,3 @@ define(['backend/port'], function(Port) {
   }
   return StealthService;
 });
-

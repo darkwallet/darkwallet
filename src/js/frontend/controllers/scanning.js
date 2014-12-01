@@ -178,19 +178,19 @@ define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWa
       $scope.scanned = {max: 100, scanned: 0};
       $scope.scanStatus = _('Scanning...');
       $scope.scanProgress = 0;
-      var client = DarkWallet.getClient();
-      if (client.connected) {
-          var identity = DarkWallet.getIdentity();
-          // we need to ask for password if scanning bip44 keyring, or first time scanning for
-          // old addresses if we don't have the old mpk available
-          if ((identity.store.get('version') > 4 && !$scope.scanParams.scanOld) || (identity.store.get('version') > 4 && $scope.scanParams.scanOld && !identity.wallet.oldMpk)) {
-              modals.password(_('Write your password for scanning'), function(password) {
-                  runScanner(client, identity, password);
-              });
-          } else {
-              runScanner(client, identity);
+      DarkWallet.client.is_connected(function(is_connected) {
+          if (is_connected) {
+              // we need to ask for password if scanning bip44 keyring, or first time scanning for
+              // old addresses if we don't have the old mpk available
+              if ((identity.store.get('version') > 4 && !$scope.scanParams.scanOld) || (identity.store.get('version') > 4 && $scope.scanParams.scanOld && !identity.wallet.oldMpk)) {
+                  modals.password(_('Write your password for scanning'), function(password) {
+                      runScanner(DarkWallet.client, identity, password);
+                  });
+              } else {
+                  runScanner(DarkWallet.client, identity);
+              }
           }
-      }
+      });
   };
 
 }]);

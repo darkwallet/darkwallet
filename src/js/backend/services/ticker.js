@@ -59,10 +59,9 @@ function(Port) {
 
     TickerService.prototype.setFiatCurrency = function(currency) {
         var self = this;
-        var client = this.core.getClient();
         if (!this.rates.hasOwnProperty(currency)) {
             console.log("[ticker] fetching ticker for", currency);
-            client.fetch_ticker(currency, function(err, lastRates) {
+            this.core.client.fetch_ticker(currency, function(err, lastRates) {
                 self.handleTicker(err, currency, lastRates);
             });
         }

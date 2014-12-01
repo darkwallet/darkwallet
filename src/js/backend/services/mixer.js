@@ -112,13 +112,12 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
    * TODO: does not detect if output does not exist!
    */
   MixerService.prototype.checkOutputs = function(addresses, callback, msg) {
-      var client = this.core.getClient();
       var pending = addresses.length;
       var anySpent = false;
       // Check all address - outputs pairs for funds
       Object.keys(addresses).forEach(function(address) {
           var indexes = addresses[address];
-          client.fetch_history(address, 0, function(err, history) {
+          this.core.client.fetch_history(address, 0, function(err, history) {
               if (!err) {
                   history.forEach(function(row) {
                       if (row[4] && indexes.indexOf(row[0]+":"+row[1]) > -1) {
@@ -142,7 +141,6 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
   MixerService.prototype.isTransactionFunded = function(txHex, callback, msg) {
       var identity = this.core.getCurrentIdentity();
       var self  = this;
-      var client = this.core.getClient();
       var addresses = {};
       var tx = Bitcoin.Transaction.fromHex(txHex);
       var pending = tx.ins.length;
@@ -154,7 +152,8 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
                pending -= 1;
                return;
            }
-           client.fetch_transaction(Bitcoin.bufferutils.reverse(anIn.hash).toString('hex'), function(err, txBody) {
+           var txHash = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex');
+           this.core.client.fetch_transaction(txHash, function(err, txBody) {
                var outTx = Bitcoin.Transaction.fromHex(txBody);
                var address = Bitcoin.Address.fromOutputScript(outTx.outs[anIn.index].script, Bitcoin.networks[identity.wallet.network]).toString();
                if (!addresses.hasOwnProperty(address)) {
@@ -357,7 +356,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
               // other addresses get 0 (we treat them like a public address)
               mixingLevel = 0;
           }
-          
+
       });
       return mixingLevel;
   };
@@ -529,7 +528,7 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
           privKeys = this.hostPrivateKeys(coinJoin);
       } else {
           privKeys = this.guestPrivateKeys(coinJoin);
-          
+
       }
       var signed = identity.tx.signMyInputs(coinJoin.myTx.ins, coinJoin.tx, privKeys);
       return signed;

@@ -85,27 +85,40 @@ function DarkWalletService(serviceClasses) {
         });
     };
     var keyring = services.wallet.getKeyRing();
-    var proxify = function(f) {
+    var proxify = function(f, obj) {
         return function() {
-            return f.apply(keyring, arguments);
+            return f.apply(obj, arguments);
         };
     };
     this.keyring = {
-        getIdentities: proxify(keyring.getIdentities),
-        getIdentityNames: proxify(keyring.getIdentityNames),
-        loadIdentities: proxify(keyring.loadIdentities),
-        save: proxify(keyring.save),
-        close: proxify(keyring.close),
-        getSize: proxify(keyring.getSize),
-        getRaw: proxify(keyring.getRaw),
-        clear: proxify(keyring.clear),
-        remove: proxify(keyring.remove)
+        getIdentities: proxify(keyring.getIdentities, keyring),
+        getIdentityNames: proxify(keyring.getIdentityNames, keyring),
+        loadIdentities: proxify(keyring.loadIdentities, keyring),
+        save: proxify(keyring.save, keyring),
+        close: proxify(keyring.close, keyring),
+        getSize: proxify(keyring.getSize, keyring),
+        getRaw: proxify(keyring.getRaw, keyring),
+        clear: proxify(keyring.clear, keyring),
+        remove: proxify(keyring.remove, keyring)
     };
 
-    this.getClient = function() {
-        return services.obelisk.getClient();
+
+    var client = services.obelisk.getClient();
+    this.client = {
+        is_connected: function(cb) {cb(!!client.connected)},
+
+        fetch_history: proxify(client.fetch_history, client),
+        fetch_transaction: proxify(client.fetch_transaction, client),
+        fetch_stealth: proxify(client.fetch_stealth, client),
+        fetch_ticker: proxify(client.fetch_ticker, client),
+        fetch_block_header: proxify(client.fetch_block_header, client),
+        fetch_last_height: proxify(client.fetch_last_height, client),
+
+        subscribe: proxify(client.subscribe, client),
+        unsubscribe: proxify(client.unsubscribe, client),
+        broadcast_transaction: proxify(client.broadcast_transaction, client)
     };
-    
+
     this.getServices = function() {
         return self.service;
     };
@@ -122,7 +135,7 @@ function DarkWalletService(serviceClasses) {
 DarkWalletService.prototype.initializeServices = function(serviceClasses) {
     this.service = {};
     var services = {};
-    
+
     for(var i in serviceClasses) {
         var service = new serviceClasses[i](this);
         if (!service.name) {
@@ -133,7 +146,7 @@ DarkWalletService.prototype.initializeServices = function(serviceClasses) {
         }
         services[service.name] = service;
     }
-    
+
     // Public API
     for(var i in services) {
         Object.defineProperty(this.service, i, {
@@ -175,20 +188,20 @@ var service = new DarkWalletService(serviceClasses);
 
 window.api = {
     connect: function(_server) { return service.connect(_server);},
-    
+
     loadIdentity: service.loadIdentity,
     getIdentity: function(idx) { return service.getIdentity(idx); },
     getCurrentIdentity: service.getCurrentIdentity,
-    
+
     keyring: service.keyring,
     servicesStatus: service.servicesStatus,
     getLobbyTransport: service.getLobbyTransport,
-    
-    getClient: service.getClient,
+
+    client: service.client,
     getServices: service.getServices,
-    
+
     initAddress: function(_w) {return service.initAddress(_w);},
-    
+
     addListener: addListener,
     sendInternalMessage: sendInternalMessage
 };

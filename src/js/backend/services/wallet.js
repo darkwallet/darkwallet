@@ -195,7 +195,6 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             return;
         }
         core.servicesStatus.obelisk = 'ok';
-        var client = core.getClient();
         var identity = self.getCurrentIdentity();
 
         // pass to the wallet to process outputs
@@ -213,7 +212,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             return;
         }
         // now subscribe the address for notifications
-        client.subscribe(walletAddress.address, function(err, res) {
+        core.client.subscribe(walletAddress.address, function(err, res) {
             core.servicesStatus.syncing -= 1;
             // fill history after subscribing to ensure we got all histories already (for now).
             var pocketId = identity.wallet.pockets.getAddressPocketId(walletAddress);
@@ -225,28 +224,27 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
 
     // Start up history for an address
     this.initAddress = function(walletAddress) {
-        var client = core.getClient();
-        if (!client.connected) {
-            // TODO manage this case better
-            console.log("trying to init address but not connected yet!... skipping :P");
-            return;
-        }
-        var identity = self.getCurrentIdentity();
+        core.client.is_connected(function(is_connected) {
+            if (!is_connected) {
+                // TODO manage this case better
+                console.log("trying to init address but not connected yet!... skipping :P");
+                return;
+            }
 
-        if (!core.servicesStatus.syncing) {
-            core.servicesStatus.syncing = 0;
-        }
-        core.servicesStatus.syncing += 1;
-        var fromHeight = walletAddress.height+1;
-        // Now fetch history
-        client.fetch_history(walletAddress.address, fromHeight, function(err, res) { historyFetched(err, walletAddress, res, true); });
+            if (!core.servicesStatus.syncing) {
+                core.servicesStatus.syncing = 0;
+            }
+            core.servicesStatus.syncing += 1;
+            var fromHeight = walletAddress.height+1;
+            // Now fetch history
+            core.client.fetch_history(walletAddress.address, fromHeight, function(err, res) { historyFetched(err, walletAddress, res, true); });
+        });
     };
 
     // Unsusbscribe an address from the backend
     this.removeAddress = function(walletAddress, callback) {
-        var client = core.getClient();
         // Unsubscribe the address
-        client.unsubscribe(walletAddress.address, function() {
+        core.client.unsubscribe(walletAddress.address, function() {
             callback ? callback() : null;
         });
     };
@@ -269,10 +267,9 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         Object.keys(identity.wallet.pubKeys).forEach(function(pubKeyIndex) {
             var walletAddress = identity.wallet.pubKeys[pubKeyIndex];
             if (identity.settings.scanPocketMaster || walletAddress.index.length > 1) {
-                var client = core.getClient();
                 var fromHeight = walletAddress.height+1;
                 // Now fetch history
-                client.fetch_history(walletAddress.address, fromHeight, function(err, res) { historyFetched(err, walletAddress, res, false); });
+                core.client.fetch_history(walletAddress.address, fromHeight, function(err, res) { historyFetched(err, walletAddress, res, false); });
             }
         });
 
@@ -293,8 +290,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             core.servicesStatus.syncing += 1;
             Port.post('wallet', {type: 'height', value: height});
             Port.post('gui', {type: 'height', value: height});
-            var client = core.getClient();
-            client.fetch_block_header(height, function(err, data) {
+            core.client.fetch_block_header(height, function(err, data) {
                 core.servicesStatus.syncing -= 1;
                 if (!err) {
                     handleBlockHeader(height, data);
@@ -312,12 +308,11 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
             clearInterval(heightTimeout);
         }
 
-        var client = core.getClient();
-        client.fetch_last_height(handleHeight);
+        core.client.fetch_last_height(handleHeight);
 
         // Run again in one minute to get last height (gateway doesn't give this yet..)
         heightTimeout = setInterval(function() {
-            var client = core.getClient();
+            var client = core.client;
             if (client && client.connected) {
                 client.fetch_last_height(handleHeight);
             }
@@ -496,7 +491,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
          console.log("send tx", serialized);
          var identity = self.getCurrentIdentity();
          identity.tx.process(serialized, 0);
-         core.getClient().broadcast_transaction(newTx.toHex(), notifyTx);
+         core.client.broadcast_transaction(newTx.toHex(), notifyTx);
      };
   }
   return WalletService;

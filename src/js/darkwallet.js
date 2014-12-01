@@ -18,21 +18,21 @@ var DarkWallet = {
 
     /**
      * Get the wallet service.
-     * 
+     *
      * @returns {Object}
      */
     get core() {return chrome.extension.getBackgroundPage().api;},
 
     /**
      * Get a service from the background script.
-     * 
+     *
      * @returns {Object}
      */
     get service() {return DarkWallet.core.getServices();},
 
     /**
      * Identity key ring. Holds all identities.
-     * 
+     *
      * @returns {Object}
      */
     get keyring() {
@@ -51,14 +51,29 @@ var DarkWallet = {
 
     /**
      * Light client
-     * 
+     *
      * @returns {Object}
      */
-    getClient: function() {return DarkWallet.core.getClient();},
+    get client() {
+        return {
+            is_connected: DarkWallet.core.client.is_connected,
+            
+            fetch_history: DarkWallet.core.client.fetch_history,
+            fetch_transaction: DarkWallet.core.client.fetch_transaction,
+            fetch_stealth: DarkWallet.core.client.fetch_stealth,
+            fetch_ticker: DarkWallet.core.client.fetch_ticker,
+            fetch_block_header: DarkWallet.core.client.fetch_block_header,
+            fetch_last_height: DarkWallet.core.client.fetch_last_height,
+
+            subscribe: DarkWallet.core.client.subscribe,
+            unsubscribe: DarkWallet.core.client.unsubscribe,
+            broadcast_transaction: DarkWallet.core.client.broadcast_transaction
+        };
+    },
 
     /**
      * Get identity
-     * 
+     *
      * @param {Number} [idx] Index of the identity, default is current.
      * @returns {Object}
      */
@@ -66,7 +81,7 @@ var DarkWallet = {
 
     /**
      * Lobby transport
-     * 
+     *
      * @returns {Object}
      */
     getLobbyTransport: function() {return DarkWallet.core.getLobbyTransport();}
