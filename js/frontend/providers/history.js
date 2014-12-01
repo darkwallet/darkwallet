@@ -173,9 +173,9 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       // set some type information
       this.pocket.isAll = false;
       this.pocket.isFund = false;
-      // warning: where index is an int but gets converted to a string, we need
-      // to be careful in the line below
-      this.pocket.index = (""+rowIndex === pocketId) ? rowIndex : pocketId;
+      // warning: we need to save pocketId as int for hd pockets so it can be
+      // autodetected
+      this.pocket.index = (type === 'hd') ? parseInt(pocketId) : pocketId;
       this.pocket.type = type;
       this.pocket.lastIndex = rowIndex;
       this.pocket.name = pocket.name;
