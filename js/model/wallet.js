@@ -201,6 +201,13 @@ Wallet.prototype.loadPubKeys = function() {
             delete self.pubKeys[index];
             return;
         }
+        if (walletAddress.type === 'hd' || walletAddress.type === 'stealth') {
+            if (typeof walletAddress.index[0] === 'string') {
+                walletAddress.index[0] = parseInt(walletAddress.index[0]);
+                console.log("[wallet] fixed address " + walletAddress.index, walletAddress.index);
+            }
+        }
+
         // Add all to the wallet
         self.wallet.addresses.push(walletAddress.address);
         self.pockets.addToPocket(walletAddress);
