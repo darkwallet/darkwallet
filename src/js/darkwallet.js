@@ -57,7 +57,7 @@ var DarkWallet = {
     get client() {
         return {
             is_connected: DarkWallet.core.client.is_connected,
-            
+
             fetch_history: DarkWallet.core.client.fetch_history,
             fetch_transaction: DarkWallet.core.client.fetch_transaction,
             fetch_stealth: DarkWallet.core.client.fetch_stealth,
@@ -84,7 +84,23 @@ var DarkWallet = {
      *
      * @returns {Object}
      */
-    getLobbyTransport: function() {return DarkWallet.core.getLobbyTransport();}
+    get lobbyTransport() {
+        return {
+            channel: {
+                addCallback: DarkWallet.core.lobbyTransport.channel.addCallback,
+                removeCallback: DarkWallet.core.lobbyTransport.channel.removeCallback,
+                sendOpening: DarkWallet.core.lobbyTransport.channel.sendOpening,
+                sendPairing: DarkWallet.core.lobbyTransport.channel.sendPairing,
+                sendBeacon: DarkWallet.core.lobbyTransport.channel.sendBeacon,
+                newSession: DarkWallet.core.lobbyTransport.channel.newSession,
+                postEncrypted: DarkWallet.core.lobbyTransport.channel.postEncrypted,
+                postDH: DarkWallet.core.lobbyTransport.channel.postDH
+            },
+            getTransport: DarkWallet.core.lobbyTransport.getTransport,
+            initChannel: DarkWallet.core.lobbyTransport.initChannel,
+            closeChannel: DarkWallet.core.lobbyTransport.closeChannel
+        };
+    }
 };
 return DarkWallet;
 });

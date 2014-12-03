@@ -3,9 +3,8 @@
 define(['darkwallet'], function (DarkWallet) {
   var ChannelLink = function(name, scope) {
       this.callbacks = [];
-      var transport = DarkWallet.getLobbyTransport();
-      this.channel = transport.getChannel(name);
-      console.log("[LobbyCtrl] Link channel", this.channel);
+      this.channelName = name;
+      console.log("[LobbyCtrl] Link channel", this.channelName);
       if (scope) {
           this.linkNg(scope);
       }
@@ -20,12 +19,12 @@ define(['darkwallet'], function (DarkWallet) {
   };
   ChannelLink.prototype.addCallback = function(name, callback) {
       this.callbacks.push([name, callback]);
-      return this.channel.addCallback(name, callback);
+      return DarkWallet.lobbyTransport.channel.addCallback(this.channelName, name, callback);
   };
   ChannelLink.prototype.disconnect = function() {
       var self = this;
       this.callbacks.forEach(function(cbArgs) {
-          self.channel.removeCallback(cbArgs[0], cbArgs[1]);
+          DarkWallet.lobbyTransport.channel.removeCallback(self.channelName, cbArgs[0], cbArgs[1]);
       });
       this.callbacks = [];
   };
@@ -48,7 +47,7 @@ define(['darkwallet'], function (DarkWallet) {
           channelLink.addCallback('subscribed', function() {
               notify.success(_('channel'), _('subscribed successfully'));
               channelLink.scope.lastTimestamp = Date.now();
-              channelLink.channel.sendOpening();
+              DarkWallet.lobbyTransport.channel.sendOpening(channelLink.channelName);
               if(!channelLink.scope.$$phase) {
                   channelLink.scope.$apply();
               }
@@ -67,20 +66,22 @@ define(['darkwallet'], function (DarkWallet) {
               channelLink.scope.updateChat();
           });
           channelLink.addCallback('Shout', function(data) {
-              var channel = channelLink.channel;
+              DarkWallet.lobbyTransport.getTransport(function(transport) {
+                  var channel = transport.channels[channelLink.channelName];
 
-              // add user pubKeyHex to use as identicon
-              if (!data.peer) {
-                  // lets set a dummy hex code for now
-                  console.log("[Lobby] no peer!!!")
-                  data.peer = {pubKeyHex: "deadbeefdeadbeefdeadbeef"};
-              }
+                  // add user pubKeyHex to use as identicon
+                  if (!data.peer) {
+                      // lets set a dummy hex code for now
+                      console.log("[Lobby] no peer!!!")
+                      data.peer = {pubKeyHex: "deadbeefdeadbeefdeadbeef"};
+                  }
 
-              // show notification
-              if (data.sender != channel.fingerprint) {
-                  notify.note(data.peer.name, data.body.text);
-              }
-              channelLink.scope.updateChat();
+                  // show notification
+                  if (data.sender != channel.fingerprint) {
+                      notify.note(data.peer.name, data.body.text);
+                  }
+                  channelLink.scope.updateChat();
+              });
           });
       }
       return channelLink;

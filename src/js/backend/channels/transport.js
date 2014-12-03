@@ -104,7 +104,7 @@ function (Bitcoin, Peer, Curve25519, Encryption, Channel) {
        this.channelWorker = undefined;
     }
   };
- 
+
   /**
    * Initialize a new discardable session key
    */
@@ -188,6 +188,19 @@ function (Bitcoin, Peer, Curve25519, Encryption, Channel) {
           self.closeChannel(name);
       });
       this.killWorker();
+  };
+
+  Transport.prototype.toJSON = function() {
+      return {
+          channels: this.channels,
+          comms: this.comms,
+          myself: this.myself,
+          peerIds: this.peerIds,
+          peers: this.peers,
+          //sessionKey: this.sessionKey,
+          obelisk: this.obelisk,
+          subsribed: this.subscribed
+      };
   };
   return Transport;
 });

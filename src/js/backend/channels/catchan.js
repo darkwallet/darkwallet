@@ -154,7 +154,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       this.requested.push(fingerprint);
       // Prepare request
       var data = Protocol.PublicKeyRequestMsg(fingerprint);
- 
+
       // Send encrypted
       this.postEncrypted(data, function(err, data){
           //console.log("announcement posted", err, data)
@@ -195,7 +195,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   Channel.prototype.sendOpening = function() {
       // Send announcement
       var data = Protocol.PublicKeyMsg(this.fingerprint, this.pub);
- 
+
       // Send encrypted
       this.postEncrypted(data, function(err, data){
           //console.log("announcement posted", err, data)
@@ -232,7 +232,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       // prepare the message
       var msg = {
           type: 'postDH',
-          fingerprint: this.fingerprint, 
+          fingerprint: this.fingerprint,
           channelName: this.name,
           otherKey: otherKey,
           privKey: this.priv.toByteArrayUnsigned(),
@@ -255,7 +255,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       // prepare the message
       var msg = {
           type: 'postEncrypted',
-          fingerprint: this.fingerprint, 
+          fingerprint: this.fingerprint,
           channelName: this.name,
           hiding: hiding,
           data: data
@@ -503,7 +503,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
                            enqueue = true;
                        }
                    } else {
-                       console.log("failed signature check!");   
+                       console.log("failed signature check!");
                    }
                }
            }
@@ -521,6 +521,21 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
   Channel.prototype.startPairing = function(fingerprint, pubKey) {
      console.log('[catchan] stored pubkey', fingerprint);
   };
+
+  Channel.prototype.toJSON = function() {
+      return {
+          channelHash: this.channelHash,
+          comms: this.comms,
+          fingerprint: this.fingerprint,
+          chatLog: this.chatLog,
+          lastRequest: this.lastRequest,
+          maxChatLog: this.maxChatLog,
+          subscribed: this.subscribed,
+          name: this.name,
+          peerRequests: this.peerRequests,
+          requested: this.requested
+      };
+  }
 
   return Channel;
 });

@@ -34,11 +34,11 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
     Port.connect('channel', function(data) {
         if (data.type === 'initChannel') {
             console.log("[msTrack] connecting", data.name);
-            var channel = core.getLobbyTransport().getChannel(data.name);
-            channel.addCallback('MultisigAnnounce', function(msg) { self.onMultisigAnnounce(msg); });
-            channel.addCallback('MultisigSpend', function(msg) { self.onMultisigSpend(msg); } );
-            channel.addCallback('MultisigAck', function(msg) { self.onMultisigAck(msg); } );
-            channel.addCallback('MultisigSign', function(msg) { self.onMultisigSign(msg); } );
+            var addCallback = core.lobbyTransport.channel.addCallback;
+            addCallback(data.name, 'MultisigAnnounce', function(msg) { self.onMultisigAnnounce(msg); });
+            addCallback(data.name, 'MultisigSpend', function(msg) { self.onMultisigSpend(msg); } );
+            addCallback(data.name, 'MultisigAck', function(msg) { self.onMultisigAck(msg); } );
+            addCallback(data.name, 'MultisigSign', function(msg) { self.onMultisigSign(msg); } );
         }
     });
 
@@ -264,7 +264,7 @@ define(['backend/port', 'util/protocol', 'util/btc', 'dwutil/multisig', 'bitcoin
       } else if (section === 'multisig-sign') {
           msg = Protocol.MultisigSignMsg(task.address, task.hash, [task.signature]);
       }
- 
+
       if (msg) {
           // keep track of sent until ack arrives
           msg.body.id = Math.random();

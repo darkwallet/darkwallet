@@ -71,13 +71,12 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
   MixerService.prototype.ensureMixing = function() {
     var self = this;
     console.log("[mixer] Check mixing...");
-    var lobbyTransport = this.core.getLobbyTransport();
     if (!this.channel) {
       var network = this.core.getIdentity().wallet.network;
       if (network === 'bitcoin') {
-          this.channel = lobbyTransport.initChannel('CoinJoin');
+          this.channel = this.core.lobbyTransport.initChannel('CoinJoin');
       } else {
-          this.channel = lobbyTransport.initChannel('CoinJoin:'+network);
+          this.channel = this.core.lobbyTransport.initChannel('CoinJoin:'+network);
       }
       this.channel.addCallback('CoinJoinOpen', function(_d) {self.onCoinJoinOpen(_d);});
       this.channel.addCallback('CoinJoin', function(_d) {self.onCoinJoin(_d, true);});
@@ -91,9 +90,8 @@ function(Port, Protocol, Bitcoin, CoinJoin, sjcl, Stealth) {
   MixerService.prototype.stopMixing = function() {
     console.log("[mixer] Stop mixing...");
     if (this.channel) {
-      var lobbyTransport = this.core.getLobbyTransport();
       try {
-          lobbyTransport.closeChannel(this.channel.name);
+          this.core.lobbyTransport.closeChannel(this.channel.name);
       } catch(e) {
           // doesnt exist any more
       }

@@ -47,8 +47,46 @@ function DarkWalletService(serviceClasses) {
     this.getCurrentIdentity = function() {
         return services.wallet.getCurrentIdentity();
     };
-    this.getLobbyTransport = function() {
-        return services.lobby.getLobbyTransport();
+    var lobbyTransport = function() {return services.lobby.getLobbyTransport();};
+    this.lobbyTransport = {
+        channel: {
+            addCallback: function(channel, d, cb) {
+                lobbyTransport().getChannel(channel).addCallback(d, cb);
+            },
+            removeCallback: function(channel, d, cb) {
+                lobbyTransport().getChannel(channel).removeCallback(d, cb);
+            },
+            sendOpening: function(channel) {
+                lobbyTransport().getChannel(channel).sendOpening();
+            },
+            sendPairing: function(channel, nick, peer, address, callback) {
+                lobbyTransport().getChannel(channel).sendPairing(nick, peer, address, callback);
+            },
+            sendBeacon: function(channel, beaconKey, callback) {
+                lobbyTransport().getChannel(channel).sendBeacon(beaconKey, callback);
+            },
+            newSession: function(channel) {
+                lobbyTransport().getChannel(channel).newSession();
+            },
+            postEncrypted: function(channel, data, callback, hiding) {
+                lobbyTransport().getChannel(channel).postEncrypted(data, callback, hiding);
+            },
+            postDH: function(channel, otherKey, data, callback) {
+                lobbyTransport().getChannel(channel).postDH(otherKey, data, callback);
+            }
+        },
+        getTransport: function(cb) {
+            //cb(JSON.parse(JSON.stringify(lobbyTransport())));
+            cb(lobbyTransport());
+        },
+        initChannel: function() {
+            var transport = lobbyTransport();
+            proxify(transport.initChannel, transport)
+        },
+        closeChannel: function() {
+            var transport = lobbyTransport();
+            proxify(transport.closeChannel, transport);
+        }
     };
 
     // Start up history for an address
@@ -195,7 +233,7 @@ window.api = {
 
     keyring: service.keyring,
     servicesStatus: service.servicesStatus,
-    getLobbyTransport: service.getLobbyTransport,
+    lobbyTransport: service.lobbyTransport,
 
     client: service.client,
     getServices: service.getServices,
