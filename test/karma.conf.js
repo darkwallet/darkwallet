@@ -15,7 +15,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
         'src/js/backend/loader.js',
-        
+
         {pattern: 'src/vendors/**/*.js', included: false},
         {pattern: 'src/js/**/*.js', included: false},
         {pattern: 'test/**/*Spec.js', included: false},
@@ -25,7 +25,7 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      'js/**/*.js': 'coverage'
+      'src/js/**/*.js': 'coverage'
     },
 
     // list of files to exclude
@@ -42,7 +42,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: ['progress', 'coverage'],
-    
+
     coverageReporter: {
 	  type : 'lcov',
 	  dir : 'test/coverage/'
