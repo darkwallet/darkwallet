@@ -3,7 +3,7 @@
  */
 'use strict';
 
-require([
+requirejs([
     'darkwallet',
     'backend/port',
     'backend/services/crypto',
