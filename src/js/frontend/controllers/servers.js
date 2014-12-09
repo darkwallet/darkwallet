@@ -24,7 +24,9 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
 
   var identityLoaded = function(identity) {
       $scope.servers = identity.connections.servers;
-      $scope.servicesStatus = DarkWallet.core.servicesStatus;
+      DarkWallet.core.getServicesStatus(function(servicesStatus) {
+          $scope.servicesStatus = servicesStatus;
+      });
       $scope.selectedServerIdx = identity.connections.selectedServer;
       $scope.selectedServer = identity.connections.servers[$scope.selectedServerIdx];
       if (identity.wallet.network == 'testnet') {

@@ -197,8 +197,7 @@ DarkWalletService.prototype.initializeServices = function(serviceClasses) {
         });
     };
 
-    // We save the apiVersion here so we can check what version the backend is running
-    this.servicesStatus = { gateway: 'offline', obelisk: 'offline', apiVersion: DarkWallet.apiVersion };
+    this.servicesStatus = { gateway: 'offline', obelisk: 'offline' };
     return services;
 };
 
@@ -239,6 +238,8 @@ window.api = {
     getServices: service.getServices,
 
     initAddress: function(_w) {return service.initAddress(_w);},
+    isApiUpdated: function(frontendVersion, cb) {cb(frontendVersion !== DarkWallet.apiVersion);},
+    getServicesStatus: function(cb) {cb(service.servicesStatus);},
 
     addListener: addListener,
     sendInternalMessage: sendInternalMessage

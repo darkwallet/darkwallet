@@ -4,6 +4,9 @@
 'use strict';
 
 define(function() {
+
+var background = function() {return chrome.extension.getBackgroundPage().api; };
+
 // DarkWallet object.
 var DarkWallet = {
 
@@ -12,7 +15,7 @@ var DarkWallet = {
      * so frontend code can see if the backend needs to be restarted.
      * check like:
      *
-     *  DarkWallet.apiVersion === DarkWallet.core.servicesStatus.apiVersion
+     *  DarkWallet.core.isApiUpdated(DarkWallet.apiVersion, callback);
      */
     apiVersion: 5,
 
@@ -21,14 +24,22 @@ var DarkWallet = {
      *
      * @returns {Object}
      */
-    get core() {return chrome.extension.getBackgroundPage().api;},
+    get core() {
+        return {
+            initAddress: background().initAddress,
+            isApiUpdated: background().isApiUpdated,
+            getServicesStatus: background().getServicesStatus,
+            connect: background().connect,
+            loadIdentity: background().loadIdentity
+        };
+    },
 
     /**
      * Get a service from the background script.
      *
      * @returns {Object}
      */
-    get service() {return DarkWallet.core.getServices();},
+    get service() {return background().getServices();},
 
     /**
      * Identity key ring. Holds all identities.
@@ -37,15 +48,15 @@ var DarkWallet = {
      */
     get keyring() {
         return {
-            getIdentities: DarkWallet.core.keyring.getIdentities,
-            getIdentityNames: DarkWallet.core.keyring.getIdentityNames,
-            loadIdentities: DarkWallet.core.keyring.loadIdentities,
-            save: DarkWallet.core.keyring.save,
-            close: DarkWallet.core.keyring.close,
-            getSize: DarkWallet.core.keyring.getSize,
-            getRaw: DarkWallet.core.keyring.getRaw,
-            clear: DarkWallet.core.keyring.clear,
-            remove: DarkWallet.core.keyring.remove
+            getIdentities: background().keyring.getIdentities,
+            getIdentityNames: background().keyring.getIdentityNames,
+            loadIdentities: background().keyring.loadIdentities,
+            save: background().keyring.save,
+            close: background().keyring.close,
+            getSize: background().keyring.getSize,
+            getRaw: background().keyring.getRaw,
+            clear: background().keyring.clear,
+            remove: background().keyring.remove
         };
     },
 
@@ -56,18 +67,18 @@ var DarkWallet = {
      */
     get client() {
         return {
-            is_connected: DarkWallet.core.client.is_connected,
+            is_connected: background().client.is_connected,
 
-            fetch_history: DarkWallet.core.client.fetch_history,
-            fetch_transaction: DarkWallet.core.client.fetch_transaction,
-            fetch_stealth: DarkWallet.core.client.fetch_stealth,
-            fetch_ticker: DarkWallet.core.client.fetch_ticker,
-            fetch_block_header: DarkWallet.core.client.fetch_block_header,
-            fetch_last_height: DarkWallet.core.client.fetch_last_height,
+            fetch_history: background().client.fetch_history,
+            fetch_transaction: background().client.fetch_transaction,
+            fetch_stealth: background().client.fetch_stealth,
+            fetch_ticker: background().client.fetch_ticker,
+            fetch_block_header: background().client.fetch_block_header,
+            fetch_last_height: background().client.fetch_last_height,
 
-            subscribe: DarkWallet.core.client.subscribe,
-            unsubscribe: DarkWallet.core.client.unsubscribe,
-            broadcast_transaction: DarkWallet.core.client.broadcast_transaction
+            subscribe: background().client.subscribe,
+            unsubscribe: background().client.unsubscribe,
+            broadcast_transaction: background().client.broadcast_transaction
         };
     },
 
@@ -77,7 +88,7 @@ var DarkWallet = {
      * @param {Number} [idx] Index of the identity, default is current.
      * @returns {Object}
      */
-    getIdentity: function(idx) {return DarkWallet.core.getIdentity(idx);},
+    getIdentity: function(idx) {return background().getIdentity(idx);},
 
     /**
      * Lobby transport
@@ -87,18 +98,18 @@ var DarkWallet = {
     get lobbyTransport() {
         return {
             channel: {
-                addCallback: DarkWallet.core.lobbyTransport.channel.addCallback,
-                removeCallback: DarkWallet.core.lobbyTransport.channel.removeCallback,
-                sendOpening: DarkWallet.core.lobbyTransport.channel.sendOpening,
-                sendPairing: DarkWallet.core.lobbyTransport.channel.sendPairing,
-                sendBeacon: DarkWallet.core.lobbyTransport.channel.sendBeacon,
-                newSession: DarkWallet.core.lobbyTransport.channel.newSession,
-                postEncrypted: DarkWallet.core.lobbyTransport.channel.postEncrypted,
-                postDH: DarkWallet.core.lobbyTransport.channel.postDH
+                addCallback: background().lobbyTransport.channel.addCallback,
+                removeCallback: background().lobbyTransport.channel.removeCallback,
+                sendOpening: background().lobbyTransport.channel.sendOpening,
+                sendPairing: background().lobbyTransport.channel.sendPairing,
+                sendBeacon: background().lobbyTransport.channel.sendBeacon,
+                newSession: background().lobbyTransport.channel.newSession,
+                postEncrypted: background().lobbyTransport.channel.postEncrypted,
+                postDH: background().lobbyTransport.channel.postDH
             },
-            getTransport: DarkWallet.core.lobbyTransport.getTransport,
-            initChannel: DarkWallet.core.lobbyTransport.initChannel,
-            closeChannel: DarkWallet.core.lobbyTransport.closeChannel
+            getTransport: background().lobbyTransport.getTransport,
+            initChannel: background().lobbyTransport.initChannel,
+            closeChannel: background().lobbyTransport.closeChannel
         };
     }
 };

@@ -133,17 +133,18 @@ function (controllers, DarkWallet, Port) {
           return false;
       }
 
-      if (DarkWallet.core.servicesStatus.apiVersion !== DarkWallet.apiVersion) {
-          $scope.alert = 'api'
-          return false;
-      }
+      DarkWallet.core.isApiUpdated(DarkWallet.apiVersion, function(isUpdated) {
+          $scope.alert = !isUpdated ? 'api' : $scope.alert;
+      });
 
       if (identity.reseed) {
           $scope.alert = 'reseed';
       } else {
           $scope.alert = false;
       }
-      $scope.status = DarkWallet.core.servicesStatus;
+      DarkWallet.core.getServicesStatus(function(servicesStatus) {
+          $scope.status = servicesStatus;
+      });
 
       // Inform the wallet service
       $wallet.onIdentityLoaded(identity);
