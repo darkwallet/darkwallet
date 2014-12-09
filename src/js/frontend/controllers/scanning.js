@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./module', 'darkwallet', 'util/scanner'], function (controllers, DarkWallet, Scanner) {
+define(['./module', 'darkwallet', 'util/scanner', 'bitcoinjs-lib'], function (controllers, DarkWallet, Scanner, Bitcoin) {
 
   // Controller
   controllers.controller('ScanningCtrl', ['$scope', 'notify', '$wallet', '_Filter', 'modals', function($scope, notify, $wallet, _, modals) {

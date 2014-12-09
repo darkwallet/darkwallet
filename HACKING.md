@@ -24,7 +24,7 @@ Code organization
 The code is structured as follows:
 
 <pre>
-js/			Code Root
+src/js/			Code Root
 ├── backend		Background page specific code (runs on the background)
 │   ├── channels	Communication channels and transport
 │   └── services	Backend services
@@ -44,14 +44,14 @@ Frontend development
 From the frontend, You use the Darkwallet global object to access main objects for the
 application.
 
-The "main" files for the frontend are the js/frontend/controllers/ files, wallet.js is the
+The "main" files for the frontend are the src/js/frontend/controllers/ files, wallet.js is the
 top level controller at the moment.
 
 Backend development
 -----------
-The "main" file for the backend is js/backend/main.js.
+The "main" file for the backend is src/js/backend/main.js.
 
-The backend hosts several services (js/backend/services/) taking care of different aspects
+The backend hosts several services (src/js/backend/services/) taking care of different aspects
 of the application.
 
 Frontend and backend communication

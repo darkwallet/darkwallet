@@ -233,7 +233,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           } else if (task && task.type == 'signatures') {
               notify.note(_('Signatures pending'), _(amountNote))
               enableSending();
-              $tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
+              $tabs.updateTabs($history.pocket.type, $history.pocket.tasks);
 
           } else if (task && task.type == 'radar') {
               if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {

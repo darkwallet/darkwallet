@@ -4,7 +4,7 @@
  */
 'use strict';
 
-require.config({
+requirejs.config({
   baseUrl: '../js',
   paths: {
     'angular': '../vendors/angular/angular.min',

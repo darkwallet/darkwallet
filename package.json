@@ -36,6 +36,6 @@
   },
   "scripts": {
     "test": "./node_modules/karma/bin/karma start test/karma.conf.js --single-run",
-    "i18n-update": "node i18n/_update.js > i18n/en_US.json"
+    "i18n-update": "node src/i18n/_update.js > src/i18n/en_US.json"
   }
 }

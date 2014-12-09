@@ -6,14 +6,14 @@ module.exports = function(grunt) {
 
 		sass: {
 			options: {
-				includePaths: ['vendors/foundation/scss']
+				includePaths: ['src/vendors/foundation/scss']
 			},
 			dist: {
 				options: {
 					outputStyle: 'extended'
 				},
 				files: {
-					'css/app.css': 'sass/app.scss'
+					'src/css/app.css': 'src/sass/app.scss'
 				}
 			}
 		},
@@ -24,7 +24,7 @@ module.exports = function(grunt) {
 				tasks: ['sass']
 			},
 			sass: {
-				files: 'sass/**/*.scss',
+				files: 'src/sass/**/*.scss',
 				tasks: ['sass']
 			}
 		}

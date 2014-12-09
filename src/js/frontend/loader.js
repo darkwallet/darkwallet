@@ -4,7 +4,7 @@
  */
 'use strict';
 
-require.config({
+requirejs.config({
   deps: [
     'frontend/app',
     'frontend/routes'

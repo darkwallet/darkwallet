@@ -34,7 +34,7 @@ define(['backend/port'], function(Port) {
             worker.terminate();
             jobs = {};
         }
-        worker = new Worker('/js/backend/workers/crypto.js');
+        worker = new Worker('/src/js/backend/workers/crypto.js');
         worker.onmessage = function(oEvent) {
             if (jobs.hasOwnProperty(oEvent.data.id)) {
                 var job = jobs[oEvent.data.id];

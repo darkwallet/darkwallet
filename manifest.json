@@ -5,15 +5,15 @@
   "version": "0.7.0",
   "manifest_version": 2,
   "icons": {
-    "128": "images/icon_128.png"
+    "128": "src/images/icon_128.png"
   },
   "browser_action": {
     "default_title": "Darkwallet",
-    "default_icon": "images/icon_128.png",
-    "default_popup": "html/popup.html"
+    "default_icon": "src/images/icon_128.png",
+    "default_popup": "src/html/popup.html"
   },
   "background": {
-    "page": "html/background.html"
+    "page": "src/html/background.html"
   },
   "permissions": [
     "tabs", "storage", "clipboardRead", "clipboardWrite", "contextMenus", "notifications"
@@ -21,9 +21,9 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/frontend/scripts/inject.js"]
+      "js": ["src/js/frontend/scripts/inject.js"]
     }
   ],
-  "options_page": "html/index.html#/settings",
+  "options_page": "src/html/index.html#/settings",
   "minimum_chrome_version": "34.0"
 }

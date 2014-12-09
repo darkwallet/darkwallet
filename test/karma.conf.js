@@ -14,10 +14,10 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'js/backend/loader.js',
-        
-        {pattern: 'vendors/**/*.js', included: false},
-        {pattern: 'js/**/*.js', included: false},
+        'src/js/backend/loader.js',
+
+        {pattern: 'src/vendors/**/*.js', included: false},
+        {pattern: 'src/js/**/*.js', included: false},
         {pattern: 'test/**/*Spec.js', included: false},
         {pattern: 'test/mock/*.js', included: false},
 
@@ -25,24 +25,24 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      'js/**/*.js': 'coverage'
+      'src/js/**/*.js': 'coverage'
     },
 
     // list of files to exclude
     exclude: [
-        'js/frontend/loader.js',
-        'js/frontend/app.js',
-        'js/frontend/popup/loader.js',
-        'js/frontend/popup/app.js',
-        'js/backend/main.js',
-        'js/darkwallet.js'
+        'src/js/frontend/loader.js',
+        'src/js/frontend/app.js',
+        'src/js/frontend/popup/loader.js',
+        'src/js/frontend/popup/app.js',
+        'src/js/backend/main.js',
+        'src/js/darkwallet.js'
     ],
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: ['progress', 'coverage'],
-    
+
     coverageReporter: {
 	  type : 'lcov',
 	  dir : 'test/coverage/'

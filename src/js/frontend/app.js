@@ -21,7 +21,7 @@ define([
     'frontend/directives/index',
     'frontend/filters/index',
     'frontend/providers/index'
-], function (require, angular, AvailableLanguages) {
+], function (requirejs, angular, AvailableLanguages) {
     var app = angular.module('DarkWallet', [
       'ngRoute', 'mm.foundation', 'xeditable', 'pascalprecht.translate',
       'ngProgress', 'ngAnimate', 'toaster', 'angularMoment',
@@ -30,7 +30,7 @@ define([
       'DarkWallet.filters',
       'DarkWallet.providers'
     ]);
-    require(['domReady!'], function (document) {
+    requirejs(['domReady!'], function (document) {
         // * NOTE: the ng-app attribute should not be on the index.html when using ng.bootstrap
         angular.bootstrap(document, ['DarkWallet']);
     });

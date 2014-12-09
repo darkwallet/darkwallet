@@ -8,7 +8,7 @@
  * @param {Object} $scope Angular scope.
  * @constructor
  */
-define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require'], function (controllers, DarkWallet, Port, require) {
+define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require'], function (controllers, DarkWallet, Port, requirejs) {
   controllers.controller('NotificationsCtrl', ['$scope', '$window', 'modals', 'notify', '$brc', '_Filter', function($scope, $window, modals, notify, $brc, _) {
 
   $scope.tasks = [];
@@ -72,7 +72,7 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require']
    * Continue signing after getting the password
    */
   function finishSignFundTx(password, guiTask) {
-      require(['dwutil/multisig'], function(MultisigFund) {
+      requirejs(['dwutil/multisig'], function(MultisigFund) {
           var identity = DarkWallet.getIdentity();
 
           var fund = new MultisigFund(guiTask.fund);
