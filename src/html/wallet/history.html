@@ -65,6 +65,9 @@
 		  <li ng-show="!currentRow.contact&&!currentRow.internal&&currentRow.address!='unknown'">
 			  <a ng-click="modals.open('pick-contact', {type: 'any', allowCreate: true, newContact: {address: currentRow.address}}, addToContact)" class="fa fa-user"> {{currentRow.inMine?('Add destination address to contact'|_):('Add origin address to contact'|_)}}</a>
 		  </li>
+	 	 <li ng-show="!currentRow.height && currentRow.inMine">
+			  <a ng-click="rowUndo(currentRow)" class="fa fa-trash-o"> {{'Clear transaction'|_}}</a>
+		  </li>
 	        </ul>
 
 

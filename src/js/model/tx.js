@@ -261,7 +261,7 @@ Transaction.prototype.forAddress = function(walletAddress, tx) {
  * Undo the effects of the transaction on the wallet
  */
 // was undoTransaction
-Transaction.prototype.undo = function(tx) {
+Transaction.prototype.undo = function(tx, row) {
     var wallet = this.identity.wallet;
     var txHash = tx.getId();
     tx.ins.forEach(function(anIn) {
@@ -293,6 +293,13 @@ Transaction.prototype.undo = function(tx) {
     var task = this.identity.tasks.search('send', 'hash', txHash);
     if (task) {
         this.identity.tasks.removeTask('send', task);
+    }
+    // TODO: Row should be found automatically if not provided...
+    if (row) {
+        var historyIndex = this.identity.history.history.indexOf(row);
+        if (historyIndex > -1) {
+            this.identity.history.history.splice(historyIndex, 1);
+        }
     }
 };
 
