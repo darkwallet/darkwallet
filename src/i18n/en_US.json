@@ -78,6 +78,7 @@
     "Check": "Check",
     "Clear Notifications": "Clear Notifications",
     "Clear Storage": "Clear Storage",
+    "Clear pending spends": "Clear pending spends",
     "Clear transaction": "Clear transaction",
     "Clearing the pending transaction will free the funds but it can still be confirmed if it reached the network.": "Clearing the pending transaction will free the funds but it can still be confirmed if it reached the network.",
     "Cloak": "Cloak",
