@@ -272,9 +272,7 @@ Transaction.prototype.undo = function(tx, row) {
                 var walletAddress = wallet.getWalletAddress(output.address);
                 walletAddress.balance += output.value;
             }
-            delete output.spend;
-            delete output.spendheight;
-            delete output.spendpending;
+            output.clearSpend();
         }
     });
     tx.outs.forEach(function(anOut, i) {

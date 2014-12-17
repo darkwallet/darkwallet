@@ -32,6 +32,18 @@ Output.prototype.markSpend = function(outId, height) {
 }
 
 /**
+ * Clear this output's spend
+ */
+Output.prototype.clearSpend = function() {
+    if (this.spendheight) {
+        throw Error("Output is already confirmed!");
+    }
+    this.spend = false;
+    this.spendpending = false;
+};
+
+
+/**
  * Receive id for the output ("hash:index")
  */
 Object.defineProperty(Output.prototype, 'receive', {
