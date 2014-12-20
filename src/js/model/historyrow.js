@@ -24,17 +24,23 @@ function HistoryRow(hash, identity, txObj) {
  * @private
  */
 HistoryRow.prototype.getTransferLabel = function() {
-    var identity = this.identity;
+    var pockets = this.identity.wallet.pockets;
     var pocketImpact = this.impact;
     var keys = Object.keys(pocketImpact);
 
     // Input pockets
     var inKeys = keys.filter(function(key) { return pocketImpact[key].ins!==0; } );
-    inKeys = inKeys.map(function(key) { return identity.wallet.pockets.getPocket(key, pocketImpact[key].type).name; });
+    // filter in unexisting pockets
+    inKeys = inKeys.filter(function(key) { return pockets.getPocket(key, pocketImpact[key].type); } );
+    // map in names
+    inKeys = inKeys.map(function(key) { return pockets.getPocket(key, pocketImpact[key].type).name; });
 
     // Output pockets (minus change pockets)
     var outKeys = keys.filter(function(key) { return pocketImpact[key].outs!==0 && pocketImpact[key].ins===0; } );
-    outKeys = outKeys.map(function(key) { return identity.wallet.pockets.getPocket(key, pocketImpact[key].type).name; });
+    // filter out unexisting pockets
+    outKeys = outKeys.filter(function(key) { return pockets.getPocket(key, pocketImpact[key].type); } );
+    // map to names
+    outKeys = outKeys.map(function(key) { return pockets.getPocket(key, pocketImpact[key].type).name; });
 
     // Compose the final label
     var label = inKeys.join(' ,');
