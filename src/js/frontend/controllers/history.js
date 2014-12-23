@@ -5,7 +5,7 @@
 
 define(['./module', 'darkwallet', 'frontend/port'],
 function (controllers, DarkWallet, Port) {
-  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', '$location', '$routeParams', '$route', 'watch', function($scope, $history, $tabs, $location, $routeParams, $route, watch) {
+  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', '$location', '$routeParams', '$route', 'watch', 'modals', '_Filter', function($scope, $history, $tabs, $location, $routeParams, $route, watch, modals, _) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
@@ -252,6 +252,18 @@ function (controllers, DarkWallet, Port) {
           $history.refreshAddresses();
       }
       $history.chooseRows();
+  };
+
+  /**
+   * Clear selected transaction
+   */
+  $scope.rowUndo = function(row) {
+      modals.open('confirm', {message: _('Are you sure?'),
+                              detail: _('Clearing the pending transaction will free the funds but it can still be confirmed if it reached the network.')}, function() {
+          var identity = DarkWallet.getIdentity();
+          identity.tx.undo(row.tx, row);
+          $history.chooseRows();
+      });
   };
 
 }]);
