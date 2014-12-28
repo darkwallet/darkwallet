@@ -16,7 +16,7 @@
     "page": "src/html/background.html"
   },
   "permissions": [
-    "tabs", "storage", "clipboardRead", "clipboardWrite", "contextMenus", "notifications"
+    "tabs", "storage", "clipboardRead", "clipboardWrite", "contextMenus", "notifications", "unlimitedStorage"
   ],
   "content_scripts": [
     {
