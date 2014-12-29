@@ -30,7 +30,7 @@ function (Bitcoin, Mnemonic, Encryption) {
       var mnemonic = new Mnemonic(64);
       mnemonic.random = [];
       mnemonic.random[0] = Bitcoin.convert.bytesToNum(dataBytes.slice(0,4));
-      mnemonic.random[1] = Bitcoin.convert.bytesToNum(dataBytes.slice(8,16));
+      mnemonic.random[1] = Bitcoin.convert.bytesToNum(dataBytes.slice(8,12));
       var mnemoName = mnemonic.toWords().slice(0,4).join(" ");
       return mnemoName;
 
