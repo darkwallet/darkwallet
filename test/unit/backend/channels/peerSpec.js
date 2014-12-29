@@ -25,14 +25,14 @@ define(['backend/channels/peer'], function (Peer) {
 
     it('gets the right mnemoname', function() {
         var peer = new Peer(pubKey);
-        expect(peer.name).toBe("focus remember true water")
+        expect(peer.name).toBe("focus remember true focus")
     });
 
     it('updates a pubkey', function() {
         var peer = new Peer(null, "D8824D14A42BB927DC078415AC677EC828169112");
         expect(peer.name).toBe("door wet image door");
         peer.updateKey(pubKey);
-        expect(peer.name).toBe("focus remember true water")
+        expect(peer.name).toBe("focus remember true focus")
     });
 
     it('updates with no pubkey', function() {
