@@ -267,7 +267,8 @@ Transaction.prototype.undo = function(tx, row) {
     tx.ins.forEach(function(anIn) {
         var index = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex') + ':' + anIn.index;
         var output = wallet.wallet.outputs[index];
-        if (output && output.spend) {
+        // If output.spendheight is > 0 means the transaction is a double spend
+        if (output && output.spend && !output.spendheight) {
             if (!output.spendpending) {
                 var walletAddress = wallet.getWalletAddress(output.address);
                 walletAddress.balance += output.value;
@@ -299,6 +300,11 @@ Transaction.prototype.undo = function(tx, row) {
             this.identity.history.history.splice(historyIndex, 1);
         }
     }
+    // And remove the transaction from our cache
+    if (Object.keys(this.identity.txdb.transactions).indexOf(txHash) > -1) {
+        delete this.identity.txdb.transactions[txHash];
+    }
+    this.identity.store.save();
 };
 
 
