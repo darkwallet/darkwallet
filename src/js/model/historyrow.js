@@ -144,7 +144,7 @@ Object.defineProperty(HistoryRow.prototype, 'label', {
  * Per pocket impact for the transaction (Object)
  */
 Object.defineProperty(HistoryRow.prototype, 'impact', {
-    get: function() { return this.identity.txdb.getImpact(this.hash); }
+    get: function() { return this.identity.txdb.getImpact(this.hash) || {}; }
 });
 
 /**
