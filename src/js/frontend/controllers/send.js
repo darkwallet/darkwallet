@@ -258,7 +258,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
               // Since it didn't go out at all, let's undo the transaction.
               if (!radarCache.radar) {
-                  DarkWallet.getIdentity().tx.undo(metadata.tx);
+                  //DarkWallet.getIdentity().tx.undo(metadata.tx);
                   DarkWallet.service.badge.setItems();
               }
           } else {
