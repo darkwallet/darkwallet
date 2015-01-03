@@ -22,7 +22,7 @@ You are *very welcome* to test, just remember the following:
  * Write down your seed and be always ready to use it to restore the identity.
  * First thing you should do is get familiar with creating and restoring an identity.
  * You can do: "create new identity", choose same name as before and restore, this will upgrade your store (you will still need to re add pockets and addresses, contacts etc...)
- * If you notice strange behaviour after upgrading, you should:
+ * If you notice strange behavior after upgrading, you should:
     1. Restart the background process from darkwallet (from "manage extensions")
     2. If that doesn't work: Clear Darkwallet storage, (from darkwallet settings), restart chromium
 
