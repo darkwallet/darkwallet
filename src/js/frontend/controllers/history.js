@@ -5,7 +5,8 @@
 
 define(['./module', 'darkwallet', 'frontend/port'],
 function (controllers, DarkWallet, Port) {
-  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', '$location', '$routeParams', '$route', 'watch', 'modals', '_Filter', function($scope, $history, $tabs, $location, $routeParams, $route, watch, modals, _) {
+  controllers.controller('HistoryCtrl', ['$scope', '$history', '$tabs', '$location', '$routeParams', '$route', 'watch', 'modals', 'notify', '_Filter',
+      function($scope, $history, $tabs, $location, $routeParams, $route, watch, modals, notify, _) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
@@ -263,6 +264,22 @@ function (controllers, DarkWallet, Port) {
           var identity = DarkWallet.getIdentity();
           identity.tx.undo(row.tx, row);
           $history.chooseRows();
+      });
+  };
+
+  /**
+   * Re-broadcast selected transaction
+   */
+  $scope.rowBroadcast = function(row) {
+      var done = false;
+      var client = DarkWallet.getClient();
+      client.broadcast_transaction(row.tx.toHex(), function(error, count) {
+          if (error) {
+              notify.error("Error broadcasting");
+          } else if (!done && count) {
+              notify.success("Broadcasted ok!");
+              done = true;
+          };
       });
   };
 
