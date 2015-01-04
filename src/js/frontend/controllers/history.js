@@ -273,7 +273,7 @@ function (controllers, DarkWallet, Port) {
   $scope.rowBroadcast = function(row) {
       var done = false;
       var client = DarkWallet.getClient();
-      client.broadcast_transaction(row.tx.toHex(), function(error, count) {
+      client.broadcast_transaction(row.tx.toHex(), function(error, count, type) {
           if (error) {
               notify.error("Error broadcasting");
           } else if (!done && count) {

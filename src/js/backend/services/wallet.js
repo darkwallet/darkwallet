@@ -478,17 +478,17 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
              var hash = newTx.getId();
              core.getCurrentIdentity().txdb.setLabel(hash, task.label);
          }
-         var notifyTx = function(error, count) {
+         var notifyTx = function(error, count, type) {
              if (error) {
-                 console.log("Error sending tx: " + error);
+                 console.log("Error sending tx: " + error, count, type);
                  callback({data: error, text: "Error sending tx"});
              } else {
                  TransactionTasks.processRadar(task, count);
 
                  // notify gui about radar updates
-                 Port.post('gui', {type: 'radar', count: count});
+                 Port.post('gui', {type: type, count: count});
 
-                 callback(null, {radar: count, type: 'radar'});
+                 callback(null, {radar: count, type: type});
                  console.log("tx radar: " + count);
              }
          };

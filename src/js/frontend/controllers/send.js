@@ -235,6 +235,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               enableSending();
               $tabs.updateTabs($history.pocket.type, $history.pocket.tasks);
 
+          } else if (task && task.type == 'brc') {
+              console.log("broadcaster feedback!", task);
           } else if (task && task.type == 'radar') {
               if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {
                   enableSending(true);
