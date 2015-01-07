@@ -235,6 +235,8 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               enableSending();
               $tabs.updateTabs($history.pocket.type, $history.pocket.tasks);
 
+          } else if (task && task.type == 'brc') {
+              console.log("broadcaster feedback!", task);
           } else if (task && task.type == 'radar') {
               if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {
                   enableSending(true);
@@ -258,7 +260,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
               // Since it didn't go out at all, let's undo the transaction.
               if (!radarCache.radar) {
-                  DarkWallet.getIdentity().tx.undo(metadata.tx);
+                  //DarkWallet.getIdentity().tx.undo(metadata.tx);
                   DarkWallet.service.badge.setItems();
               }
           } else {

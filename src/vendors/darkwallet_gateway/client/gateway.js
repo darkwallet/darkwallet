@@ -196,7 +196,7 @@ GatewayClient.prototype.broadcast_transaction = function(
     GatewayClient._check_function(handle_fetch);
 
     this.make_request("broadcast_transaction", [raw_tx], function(response) {
-        handle_fetch(response["error"], response["result"][0]);
+        handle_fetch(response["error"], response["result"][0], response["result"][1]);
     });
 };
 

@@ -84,6 +84,20 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       $history.chooseRows();
   };
 
+  // Clear orphan outputs
+  $scope.clearOrphanOutputs = function() {
+      var identity = DarkWallet.getIdentity();
+      var todelete = identity.wallet.wallet._outputs.filter(function(out) {return !identity.txdb.transactions[out[0].split(":")[0]];});
+      todelete.forEach(function(orphan) {identity.wallet.wallet._outputs.splice(identity.wallet.wallet._outputs.indexOf(orphan), 1);});
+      identity.store.save();
+      identity.wallet.loadOutputs();
+  }
+
+  $scope.cleanOutputs = function() {
+      $scope.clearPendingSpends();
+      $scope.clearOrphanOutputs();
+  }
+
   $scope.newModal = function(name) {
       modals.open(name, {});
   }

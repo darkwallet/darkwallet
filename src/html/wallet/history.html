@@ -68,6 +68,9 @@
 	 	 <li ng-show="!currentRow.height && currentRow.inMine">
 			  <a ng-click="rowUndo(currentRow)" class="fa fa-trash-o"> {{'Clear transaction'|_}}</a>
 		  </li>
+	 	 <li ng-show="!currentRow.height && currentRow.inMine">
+			  <a ng-click="rowBroadcast(currentRow)" class="fa fa-trash-o"> {{'Rebroadcast'|_}}</a>
+		  </li>
 	        </ul>
 
 
