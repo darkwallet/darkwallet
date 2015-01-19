@@ -12,6 +12,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
   $scope.resetSendForm = function() {
       sendForm.sending = false;
       sendForm.title = '';
+      sendForm.propagated = false;
       $scope.sendEnabled = false;
       sendForm.recipients = {
           fields: [
@@ -98,7 +99,9 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               if (warning) {
                   notify.warning(_(warning));
               } else {
-                  notify.success(_('Transaction finished propagating'));
+                  if (!sendForm.propagated) {
+                      notify.success(_('Transaction finished propagating'));
+                  }
               }
               button.classList.remove('working');
           }
@@ -237,6 +240,13 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
 
           } else if (task && task.type == 'brc') {
               console.log("broadcaster feedback!", task);
+              if (task.radar) {
+                  notify.success(_('Transaction sent'), _(amountNote));
+                  isBroadcasted = true;
+                  sendForm.propagated = true;
+              } else if (!sendForm.propagated) {
+                  notify.warning(_('The transaction did not propagate'));
+              }
           } else if (task && task.type == 'radar') {
               if (onUpdateRadar(task.radar || 0, radarCache) && timeoutId) {
                   enableSending(true);
@@ -256,17 +266,11 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
           if (sendTimeout == 6) {
               timeoutId = undefined;
               onUpdateRadar(radarCache.radar, radarCache, _('Timeout broadcasting, total: ') + (radarCache.radar*100).toFixed(2) + '%');
-              enableSending(radarCache.radar>0.0);
-
-              // Since it didn't go out at all, let's undo the transaction.
-              if (!radarCache.radar) {
-                  //DarkWallet.getIdentity().tx.undo(metadata.tx);
-                  DarkWallet.service.badge.setItems();
-              }
+              enableSending(sendForm.propagated||radarCache.radar>0.0);
           } else {
               timeoutId = $timeout(function(){onSendTimeout()}, 10000);
               sendTimeout+=1;
-              if ([1, 3, 5].indexOf(sendTimeout) != -1) {
+              if ([1, 3, 5].indexOf(sendTimeout) != -1 && !sendForm.propagated) {
                   notify.note(_('Broadcasting going slow'), (radarCache.radar*100).toFixed(2) + '%');
               }
           }
@@ -385,6 +389,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       }
 
       sendForm.sending = true;
+      sendForm.propagated = false;
       var fee = CurrencyFormat.asSatoshis(sendForm.fee);
 
       // prepare the transaction

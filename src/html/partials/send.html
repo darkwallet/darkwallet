@@ -58,7 +58,7 @@
         <a ng-click="forms.send.advanced=!forms.send.advanced" class="button small radius fa fa-eye"> {{!forms.send.advanced ? ('Show advanced options'|_) : ('Hide advanced options'|_)}}</a>
       </div>
       <div class="medium-2 columns aright">
-        <button id="send-button" href="" ng-class="{'glow':sendEnabled}" ng-disabled="!sendEnabled" class="button radius expand"><span>{{'Send'|_}}</span><div id="send-progress" class="progbar"></div></button>
+        <button id="send-button" href="" ng-class="{'glow':sendEnabled}" ng-disabled="!sendEnabled" class="button radius expand"><span ng-show="!forms.send.sending">{{'Send'|_}}</span><span ng-show="forms.send.sending&&!forms.send.propagated">{{'Sending'|_}}</span><span ng-show="forms.send.sending&&forms.send.propagated">{{'Sent'|_}}</span><div id="send-progress" class="progbar"></div></button>
       </div>
     </div>
 
