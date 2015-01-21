@@ -75,7 +75,6 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat'], function (controller
                     tickets[$scope.txId].finished = true;
                     tickets[$scope.txId].status = data.status;
                     tickets[$scope.txId].ticketId = data.ticket;
-                    $scope.lastPage();
                     $scope.status = "confirmed";
                 } else if (data.expired) {
                     $scope.qrcode = "";
@@ -105,14 +104,6 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat'], function (controller
            $timeout.cancel(checkTimeout);
            checkTimeout = null;
        }
-    };
-
-
-    /*
-     * Go to the last page
-     */
-    $scope.lastPage = function() {
-        $scope.page = "screen3";
     };
 
 

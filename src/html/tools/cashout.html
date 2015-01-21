@@ -73,9 +73,6 @@
             </div>
             <div><em><a ng-click="showLegal()">{{serviceTitle}} terms</a></em></div>
         </div>
-        <div ng-show="page=='screen3'" ng-if="send.connected">
-            <h1>Done!</h1>
-        </div>
         <div ng-show="page=='tickets'">
             <h2>Tickets</h2>
             <div ng-repeat="ticketId in allTickets">{{tickets[ticketId].timestamp|date}}, {{tickets[ticketId].amount}}, {{tickets[ticketId].status}} <a ng-click="openTicket(tickets[ticketId])">view</a></div>
