@@ -5,8 +5,7 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat'], function (controller
     var identity = DarkWallet.getIdentity();
 
     $scope.page = "screen1";
-    $scope.send = $scope.forms.cashout || {phone: "", amount: 10, country: "ES", server: identity.settings.cashout_url || ""};
-    $scope.forms.cashout = $scope.send;
+    $scope.send = {phone: "", amount: 10, country: "ES", server: identity.settings.cashout_url || ""};
     $scope.status = "";
     $scope.qrcode = "";
     $scope.lastpage = "";

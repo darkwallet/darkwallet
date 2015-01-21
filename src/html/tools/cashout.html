@@ -1,7 +1,7 @@
 <div ng-controller="CashoutCtrl" class="row">
         <div class="columns large-12" ng-show="page=='screen1'">
             <div ng-show="!send.connected" class="row collapse">
-                <label>Server</label>
+                <label>Banking endpoint</label>
                 <div class="columns small-9">
                     <input id="server" class="server" type="text" ng-model=send.server></input>
                 </div>
@@ -46,17 +46,25 @@
                     </div>
                 </div>
             </div>
-            <div ng-show="['expired', 'cancelled', 'sent'].indexOf(currentTicket.status)>-1">
-                {{currentTicket.status}}
+            <div ng-show="['expired', 'cancelled', 'sent', 'ok'].indexOf(currentTicket.status)>-1">
+                <div class="row">{{currentTicket.status}}</div>
+                <div class="row">PIN: {{currentTicket.pin}}</div>
+                <div class="row" ng-show="currentTicket.status=='ok'">
+                Wait for transaction to get 2 confirmations.
+                Current confirmations: {{currentTicket.confirmations}}
+                </div>
+                <div class="row" ng-show="currentTicket.status=='sent'">
+                Ticket sent: {{currentTicket.ticketId}}
+                </div>
             </div>
             <div class="row">
-                <div class="medium-6 columns" ng-show="['expired', 'cancelled', 'sent'].indexOf(currentTicket.status)===-1">
+                <div class="medium-6 columns" ng-show="['expired', 'ok', 'cancelled', 'sent'].indexOf(currentTicket.status)===-1">
                     <button ng-click="modals.showQr(qrcode)" class="postfix button fa fa-qrcode">{{'Show QR'|_}}</button>
                 </div>
                 <div class="medium-6 columns">
                     <a ng-click="checkTicket()" class="button postfix">Check</a></h3>
                 </div>
-                <div class="medium-6 columns" ng-show="['expired', 'cancelled', 'sent'].indexOf(currentTicket.status)===-1">
+                <div class="medium-6 columns" ng-show="['expired', 'cancelled', 'sent', 'ok'].indexOf(currentTicket.status)===-1">
                     <a class="postfix button fa fa-times" ng-click="cancel()" type="submit">Cancel</a>
                 </div>
                 <div class="medium-6 columns">
