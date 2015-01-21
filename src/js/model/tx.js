@@ -281,9 +281,24 @@ Transaction.prototype.undo = function(tx, row) {
         var output = wallet.wallet.outputs[index];
         if (output) {
             delete wallet.wallet.outputs[index];
-            if (output.counted) {
-                var walletAddress = wallet.getWalletAddress(output.address);
-                walletAddress.balance -= output.value;
+            var storeIndex = wallet.wallet._outputs.indexOf(output.store);
+            if (storeIndex) {
+                wallet.wallet._outputs.splice(storeIndex, 1);
+            } else {
+                // shouldn't happen
+                console.log("warning: output store does not exist");
+            }
+            var walletAddress = wallet.getWalletAddress(output.address);
+            if (walletAddress) {
+                walletAddress.nOutputs -= 1;
+                if (output.counted) {
+                    walletAddress.balance -= output.value;
+                }
+                if (walletAddress.outputs.indexOf(index) > -1) {
+                    walletAddress.outputs.slice(index, 1);
+                }
+            } else {
+                console.log("warning: address does not exist while deleting output");
             }
         }
     });
