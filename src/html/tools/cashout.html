@@ -32,7 +32,7 @@
         </div>
         <div ng-cloak ng-if="page=='screen2'">
             <em>{{status}}</em>
-            <div ng-show="['expired', 'cancelled', 'sent'].indexOf(currentTicket.status)===-1||currentTicket.confirmations>-1">
+            <div ng-show="['expired', 'cancelled', 'ok', 'sent'].indexOf(currentTicket.status)===-1">
                 <h2>Pay {{currentTicket.btcamount/100000000}} btc</h2>
                 <p>to <a ng-click="payTicket()">{{currentTicket.address}}</a></p>
                 <div class="row">
