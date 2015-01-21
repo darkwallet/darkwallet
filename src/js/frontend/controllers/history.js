@@ -274,12 +274,17 @@ function (controllers, DarkWallet, Port) {
       var done = false;
       var client = DarkWallet.getClient();
       client.broadcast_transaction(row.tx.toHex(), function(error, count, type) {
-          if (error) {
-              notify.error("Error broadcasting");
-          } else if (!done && count) {
-              notify.success("Broadcasted ok!");
-              done = true;
-          };
+          if (type === 'brc' && !done) {
+              if (error || !count) {
+                  notify.error("Error broadcasting");
+              } else {
+                  notify.success("Broadcasted ok!");
+                  done = true;
+              };
+              if (!$scope.$$phase) {
+                  $scope.$apply();
+              }
+          }
       });
   };
 
