@@ -280,14 +280,8 @@ Transaction.prototype.undo = function(tx, row) {
         var index = txHash + ':' + i;
         var output = wallet.wallet.outputs[index];
         if (output) {
-            delete wallet.wallet.outputs[index];
-            var storeIndex = wallet.wallet._outputs.indexOf(output.store);
-            if (storeIndex) {
-                wallet.wallet._outputs.splice(storeIndex, 1);
-            } else {
-                // shouldn't happen
-                console.log("warning: output store does not exist");
-            }
+            wallet.deleteOutput(index);
+            // clear address counters
             var walletAddress = wallet.getWalletAddress(output.address);
             if (walletAddress) {
                 walletAddress.nOutputs -= 1;

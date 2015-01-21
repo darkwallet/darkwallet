@@ -157,6 +157,8 @@ Wallet.prototype.resetHistory = function() {
 
     // delete wallet outputs
     Object.keys(this.wallet.outputs).forEach(function(outId) {
+        // No need to delete from _outputs here since we just
+        // wiped it out
         delete self.wallet.outputs[outId];
     });
     
@@ -171,6 +173,19 @@ Wallet.prototype.resetHistory = function() {
     });
     this.store.save();
 };
+
+Wallet.prototype.deleteOutput = function(outId) {
+    var output = this.wallet.outputs[outId];
+    // delete from actual store
+    var storeIndex = this.wallet._outputs.indexOf(output.store);
+    if (storeIndex > -1) {
+        this.wallet._outputs.splice(storeIndex, 1);
+    } else {
+        // shouldn't happen
+        console.log("warning: output store does not exist");
+    }
+    delete this.wallet.outputs[outId];
+}
 
 Wallet.prototype.loadOutputs = function() {
     var self = this;
