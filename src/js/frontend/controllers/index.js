@@ -11,6 +11,7 @@ define([
     './backups',
     './browser',
     './bitid',
+    './cashout',
     './contacts',
     './history',
     './history_rows',

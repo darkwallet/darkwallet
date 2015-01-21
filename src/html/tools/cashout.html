@@ -1,0 +1,92 @@
+<div ng-controller="CashoutCtrl" class="row">
+        <div class="columns large-12" ng-show="page=='screen1'">
+            <div ng-show="!send.connected" class="row collapse">
+                <label>Server</label>
+                <div class="columns small-9">
+                    <input id="server" class="server" type="text" ng-model=send.server></input>
+                </div>
+                <div class="columns small-3">
+                    <a ng-disabled="serverUrl.indexOf('api/')==-1" ng-click="connectService()" class="button small">{{'Connect'|_}}</a>
+                </div>
+            </div>
+            <div ng-show="send.connected" class="row collapse">
+                <div class="columns small-9">
+                    <h3>{{serviceTitle}}
+                </div>
+                <div class="columns small-3">
+                    <a ng-click="clearServer()">x</a></h3>
+                </div>
+
+            </div>
+            <div class="row">
+                <form ng-if="send.connected && legal">
+                    <label>Phone</label><br /> <input id="phone" class="phone" type="number" ng-model=send.phone></input>
+                    <label>Amount</label><br /> <input class="amount" type="number" step="10" min="10" max="{{dailyLimit}}" required ng-model="send.amount"></input><br />
+                    <div ng-if="status" class="alert alert-warning">{{status}}</div>
+                    <div><em>service bound by the <a ng-click="showLegal()">{{serviceTitle}} terms</a></em></div>
+                    <a class="button" ng-click="nextPage()">Next</a>
+                    <a class="button" ng-click="toggleSettings()">Settings</a>
+                    <a class="button" ng-show="allTickets.length" ng-click="toggleTickets()">Tickets</a>
+                </form>
+            </div>
+        </div>
+        <div ng-cloak ng-if="page=='screen2'">
+            <em>{{status}}</em>
+            <div ng-show="['expired', 'cancelled', 'sent'].indexOf(currentTicket.status)===-1||currentTicket.confirmations>-1">
+                <h2>Pay {{currentTicket.btcamount/100000000}} btc</h2>
+                <p>to <a ng-click="payTicket()">{{currentTicket.address}}</a></p>
+                <div class="row">
+                    <div class="medium-12 columns">
+                        Please note down the following PIN:
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="medium-12 columns">
+                        <h3>{{pin}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="['expired', 'cancelled', 'sent'].indexOf(currentTicket.status)>-1">
+                {{currentTicket.status}}
+            </div>
+            <div class="row">
+                <div class="medium-6 columns" ng-show="['expired', 'cancelled', 'sent'].indexOf(currentTicket.status)===-1">
+                    <button ng-click="modals.showQr(qrcode)" class="postfix button fa fa-qrcode">{{'Show QR'|_}}</button>
+                </div>
+                <div class="medium-6 columns">
+                    <a ng-click="checkTicket()" class="button postfix">Check</a></h3>
+                </div>
+                <div class="medium-6 columns" ng-show="['expired', 'cancelled', 'sent'].indexOf(currentTicket.status)===-1">
+                    <a class="postfix button fa fa-times" ng-click="cancel()" type="submit">Cancel</a>
+                </div>
+                <div class="medium-6 columns">
+                    <a class="postfix button fa fa-arrow-left" ng-click="start()">Back</a>
+                </div>
+            </div>
+            <div><em><a ng-click="showLegal()">{{serviceTitle}} terms</a></em></div>
+        </div>
+        <div ng-show="page=='screen3'" ng-if="send.connected">
+            <h1>Done!</h1>
+        </div>
+        <div ng-show="page=='tickets'">
+            <h2>Tickets</h2>
+            <div ng-repeat="ticketId in allTickets">{{tickets[ticketId].timestamp|date}}, {{tickets[ticketId].amount}}, {{tickets[ticketId].status}} <a ng-click="openTicket(tickets[ticketId])">view</a></div>
+            <a class="button" ng-click="toggleTickets()">Back</a>
+        </div>
+        <div ng-show="page=='settings'" ng-if="send.connected">
+            <h1>Settings</h1>
+            <p>Language: {{lang}}</p>
+            <p ng-if="btcPrice">Btc price: {{btcPrice}} EUR</p>
+            <p ng-if="timeout">Timeout: {{timeout/60}} min</p>
+            <p ng-if="dailyLimit">Daily limit: {{dailyLimit}} EUR</p>
+            <p ng-if="monthlyLimit">Monthly limit: {{monthlyLimit}} EUR</p>
+            <p ng-if="fixedFee">Fixed fee: {{fixedFee}} EUR</p>
+            <p ng-if="variableFee">Variable fee: {{variableFee}}%</p>
+            <p ng-if="allTickets.length">Started tickets: {{allTickets.length}}</p>
+            <p><a ng-click="showLegal()">{{serviceTitle}} terms</a></p>
+            <form>
+                <a class="button" ng-click="getConditions(send.server)" type="submit">Refresh</a>
+                <a class="button" ng-click="toggleSettings()">Back</a>
+            </form>
+        </div>
+</div>
