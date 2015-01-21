@@ -39,6 +39,10 @@ define(['frontend/controllers/module', 'darkwallet', 'frontend/port', 'require']
                       // Get this here so we don't need Object in angular :-P
                       guiTask.nSigs = Object.keys(task.pending[0].signatures).length;
                       guiTask.fund = identity.wallet.multisig.search({address: task.address||task.inPocket});
+                      if (!guiTask.fund) {
+                          console.log("warning: fund not available for task ", guiTask);
+                          return;
+                      }
                       var canSign = identity.wallet.multisig.canSign(guiTask.fund);
                       // TODO: move setting the finished state to a better place
                       if (guiTask.nSigs >= guiTask.fund.m) {
