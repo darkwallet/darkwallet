@@ -24,7 +24,7 @@
                     <label>Amount</label><br /> <input class="amount" type="number" step="10" min="10" max="{{dailyLimit}}" required ng-model="send.amount"></input><br />
                     <div ng-if="status" class="alert alert-warning">{{status}}</div>
                     <div><em>service bound by the <a ng-click="showLegal()">{{serviceTitle}} terms</a></em></div>
-                    <a class="button" ng-click="nextPage()">Next</a>
+                    <a class="button" ng-disabled="!send.phone||send.phone<99999999" ng-click="nextPage()">Next</a>
                     <a class="button" ng-click="toggleSettings()">Settings</a>
                     <a class="button" ng-show="allTickets.length" ng-click="toggleTickets()">Tickets</a>
                 </form>
