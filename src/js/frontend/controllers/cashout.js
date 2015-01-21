@@ -246,11 +246,11 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat'], function (controller
 
 
     $scope.clearServer = function() {
-        $scope.send.server = '';
+        //$scope.send.server = '';
         $scope.send.connected = false;
         
-        delete identity.settings.cashout_url;
-        identity.store.save();
+        //delete identity.settings.cashout_url;
+        //identity.store.save();
     };
 
     $scope.connectService = function() {
