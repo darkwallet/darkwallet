@@ -6,7 +6,7 @@
                     <input id="server" class="server" type="text" ng-model=send.server></input>
                 </div>
                 <div class="columns small-3">
-                    <a ng-disabled="serverUrl.indexOf('api/')==-1" ng-click="connectService()" class="button small">{{'Connect'|_}}</a>
+                    <a ng-disabled="send.server.indexOf('api/')===-1" ng-click="connectService()" class="button small">{{'Connect'|_}}</a>
                 </div>
             </div>
             <div ng-show="send.connected" class="row collapse">
