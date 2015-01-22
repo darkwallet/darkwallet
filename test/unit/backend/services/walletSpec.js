@@ -70,7 +70,7 @@ define(['testUtils', 'bitcoinjs-lib', 'util/btc'], function(testUtils, Bitcoin, 
       var client = {
           subscribe: function(address, cb) {cb();},
           unsubscribe: function(address, cb) {cb();},
-          broadcast_transaction: function(txHex, cb) {cb(null, 0.5);},
+          broadcast_transaction: function(txHex, cb) {cb(null, 0.5, 'radar');},
           fetch_history: function(address, height, cb) {cb(null, []);},
           fetch_last_height: function(cb) {cb(null, 326765);},
           fetch_block_header: function(height, cb) {cb(null, blockHeader);}
