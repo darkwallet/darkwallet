@@ -24,14 +24,16 @@ var bitcoinUri = function(uri) {
   return false;
 };
 
-document.body.addEventListener('click', function(e) {
-  var elem = e.target;
-  while (elem && elem.tagName != 'A') {
-    elem = elem.parentNode;
-  }
-  if (elem && elem.tagName == 'A' && bitcoinUri(elem.href)) {
-    var u = bitcoinUri(elem.href);
-    chrome.runtime.sendMessage({ type: 'newTab', url: u });
-    e.preventDefault();
-  }
-}, false);
+if (document.body) {
+  document.body.addEventListener('click', function(e) {
+    var elem = e.target;
+    while (elem && elem.tagName != 'A') {
+      elem = elem.parentNode;
+    }
+    if (elem && elem.tagName == 'A' && bitcoinUri(elem.href)) {
+      var u = bitcoinUri(elem.href);
+      chrome.runtime.sendMessage({ type: 'newTab', url: u });
+      e.preventDefault();
+    }
+  }, false);
+}
