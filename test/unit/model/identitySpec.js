@@ -9,7 +9,7 @@ define(['model/identity', 'util/fiat'], function(Identity, FiatCurrency) {
     var identity, store, _store, _password;
     
     beforeEach(function() {
-      _store = { name: "Sean\'s Outpost" };
+      _store = { name: "Sean\'s Outpost", network: 'bitcoin' };
       store = {
         init: function(key, value) {
           return value;
