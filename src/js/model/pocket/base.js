@@ -121,6 +121,16 @@ BasePocket.prototype.destroy = function() {
     // Now delete our index in the wallet
     var pocketId = this.getPocketId();
     delete wallet.pockets.pockets[this.type][pocketId];
+
+    // Cleanup impact
+    wallet.identity.history.history.forEach(function(historyRow) {
+        var impact = historyRow.impact;
+        if (impact && impact.hasOwnProperty(pocketId) && impact[pocketId].type === self.type) {
+            delete impact[pocketId];
+        }
+    });
+
+    // Save
     wallet.store.save();
     return removed;
 };

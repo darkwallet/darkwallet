@@ -97,6 +97,9 @@ define(['model/wallet', 'bitcoinjs-lib'], function(Wallet, Bitcoin) {
           },
           save: function() {
           }
+        },
+        history: {
+          history: []
         }
       };
       wallet = new Wallet(identity.store, identity);
