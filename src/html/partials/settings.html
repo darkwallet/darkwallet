@@ -52,8 +52,7 @@
           <h5>{{'Language'|_}}</h5>
           <select id="select-language" ng-model="settings.language" ng-change="languageChanged()" ng-options="language.code as language.name for language in languages"></select>
         </div>
-        <button class="expand ng-animate-disabled" ng-show="!serversTool" ng-click="serversTool=!serversTool">{{'Servers'|_}}</button>
-        <div ng-controller="ServersCtrl" class="panel setback net" ng-show="serversTool">
+        <div ng-controller="ServersCtrl" class="panel setback net">
           <h5>{{'Servers'|_}}</h5>
           <div ng-show="addServerError" class="row collapse">
             <div class="small-8 columns">
