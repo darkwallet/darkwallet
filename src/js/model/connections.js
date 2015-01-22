@@ -15,7 +15,7 @@ function Connections(store, identity) {
     this.store = store;
 
     var defaultServers = {'bitcoin': [{name: 'unsystem', type: 'gateway', address: 'wss://gateway.unsystem.net'}],
-                          'testnet': [{name: 'unsystem testnet', type: 'gateway', address: 'ws://85.25.198.97:8888'}]};
+                          'testnet': [{name: 'unsystem testnet', type: 'gateway', address: 'wss://testnet.unsystem.net'}]};
 
     this.connections = store.init('connections', {servers: defaultServers[store.get('network')],
                                               selectedServer: 0,
