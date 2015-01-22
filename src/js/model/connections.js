@@ -20,7 +20,14 @@ function Connections(store, identity) {
     this.connections = store.init('connections', {servers: defaultServers[store.get('network')],
                                               selectedServer: 0,
                                               alwaysConnect: 0});
-    
+
+    // forcibly upgrade old clients to ssl
+    this.connections.servers.forEach(function(server) {
+        if (server.address === 'ws://85.25.198.97:8888') {
+            server.address = 'wss://testnet.unsystem.net';
+        }
+    });
+   
     this.servers = this.connections.servers;
     this.selectedServer = this.connections.selectedServer;
     this.alwaysConnect = this.connections.alwaysConnect;
