@@ -11,12 +11,14 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   // Store size
   $scope.storeSize = 0;
   $scope.totalStoreSize = 0;
+  $scope.storeVersion = 0;
 
   /**
    * An identity is being loaded
    */
   var onLoadIdentity = function(name) {
       // Get partial size
+      $scope.storeVersion = DarkWallet.getIdentity().store.get('version');
       DarkWallet.getKeyRing().getSize(name, function(value) {
           $scope.storeSize = Math.ceil(value/1024);
           if(!$scope.$$phase) {
