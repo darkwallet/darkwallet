@@ -76,10 +76,9 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat'], function (controller
                     tickets[$scope.txId].status = data.status;
                     tickets[$scope.txId].ticketId = data.ticket;
                     $scope.status = "confirmed";
-                } else if (data.expired) {
+                } else if (data.status === 'expired') {
                     $scope.qrcode = "";
                     tickets[$scope.txId].status = 'expired';
-                    $scope.cancel("Expired");
                 }
                 identity.store.save();
             }).
