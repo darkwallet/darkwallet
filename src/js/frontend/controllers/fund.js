@@ -141,6 +141,10 @@ function (controllers, DarkWallet) {
   var finishDelete = function(fund) {
       var identity = DarkWallet.getIdentity();
       identity.wallet.multisig.deleteFund(fund.multisig);
+      identity.tasks.removeTasks("multisig", "inPocket", fund.multisig.address);
+      identity.tasks.removeTasks("multisig", "address", fund.multisig.address);
+      identity.tasks.removeTasks("multisig-sign", "address", fund.multisig.address);
+      identity.tasks.removeTasks("multisig-invite", "address", fund.multisig.address);
       $scope.selectPocket();
   };
   $scope.deleteFund = function(fund) {
