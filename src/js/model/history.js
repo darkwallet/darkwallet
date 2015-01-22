@@ -92,7 +92,7 @@ History.prototype.buildHistoryRow = function(transaction, height) {
         var anIn = txObj.ins[idx];
         var outIdx = Bitcoin.bufferutils.reverse(anIn.hash).toString('hex')+":"+anIn.index;
         var output = btcWallet.outputs[outIdx];
-        var inWalletAddress;
+        var inWalletAddress = null;
         if (output) {
             inWalletAddress = identity.wallet.getWalletAddress(output.address);
             if (!inWalletAddress) {
