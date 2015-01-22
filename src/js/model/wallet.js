@@ -340,6 +340,15 @@ Wallet.prototype.deleteAddress = function(seq) {
     this.wallet.addresses.splice(this.wallet.addresses.indexOf(walletAddress.address), 1);
     delete this.pubKeys[seq];
     delete this.addresses[walletAddress.address];
+
+    // Delete related outputs
+    var self = this;
+    Object.keys(this.wallet.outputs).forEach(function(outputId) {
+        var output = self.wallet.outputs[outputId];
+        if (output.address === walletAddress.address) {
+            self.deleteOutput(output);
+        }
+    });
 };
 
 /**
