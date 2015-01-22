@@ -158,6 +158,15 @@ define(['./module', 'darkwallet', 'util/scanner', 'bitcoinjs-lib'], function (co
                scanMaster = $scope.scanParams.scanMaster;
            }
       }
+
+      // Update scope
+      notify.note(_('Start Scanning'));
+
+      $scope.scanning = true;
+      $scope.scanned = {max: 100, scanned: 0};
+      $scope.scanStatus = _('Scanning...');
+      $scope.scanProgress = 0;
+
       var scanner = new Scanner(client, identity, masterKey,
                                 function (par1, par2, par3) { onScanFinish(par1, par2, par3, password); },
                                 onScanUpdate, scanMaster);
@@ -173,11 +182,6 @@ define(['./module', 'darkwallet', 'util/scanner', 'bitcoinjs-lib'], function (co
 
   // Scan all addresses from seed
   $scope.scanSeed = function() {
-      $scope.scanning = true;
-      notify.note(_('Start Scanning'));
-      $scope.scanned = {max: 100, scanned: 0};
-      $scope.scanStatus = _('Scanning...');
-      $scope.scanProgress = 0;
       var client = DarkWallet.getClient();
       if (client) {
           var identity = DarkWallet.getIdentity();
@@ -185,7 +189,16 @@ define(['./module', 'darkwallet', 'util/scanner', 'bitcoinjs-lib'], function (co
           // old addresses if we don't have the old mpk available
           if ((identity.store.get('version') > 4 && !$scope.scanParams.scanOld) || (identity.store.get('version') > 4 && $scope.scanParams.scanOld && !identity.wallet.oldMpk)) {
               modals.password(_('Write your password for scanning'), function(password) {
-                  runScanner(client, identity, password);
+                  try {
+                      runScanner(client, identity, password);
+                  } catch(e) {
+                      if (e.message.indexOf("ccm:") === 0) {
+                          notify.warning(_("Invalid Password"));
+                      } else {
+                          notify.error(_("Fatal error"), e.message);
+                          console.log(e, e.message);
+                      }
+                  }
               });
           } else {
               runScanner(client, identity);
