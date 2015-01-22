@@ -10,6 +10,7 @@ define(['frontend/app'], function (app) {
     $routeProvider.when('/contact/:contactId', {templateUrl: 'partials/contact.html', controller: 'ContactsCtrl'});
     $routeProvider.when('/contact/:section/:contactId', {templateUrl: 'partials/contact.html', controller: 'ContactsCtrl'});
     $routeProvider.when('/tools', {templateUrl: 'partials/tools.html', controller: 'ToolsCtrl'});
+    $routeProvider.when('/dev', {templateUrl: 'partials/dev.html', controller: 'ToolsCtrl'});
     $routeProvider.when('/wallet', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
     $routeProvider.when('/wallet/:section', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
     $routeProvider.when('/wallet/:section/:pocketId', {templateUrl: 'partials/wallet.html', controller: 'HistoryCtrl'});
