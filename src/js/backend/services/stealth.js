@@ -20,6 +20,7 @@ define(['backend/port'], function(Port) {
     var lastStealthRequested = 0;
     var queue = [];
     var workerStarted = false;
+    var tries = 0;
     /**
      * Initialize the stealth worker for an identity
      */
@@ -49,7 +50,11 @@ define(['backend/port'], function(Port) {
         };
         stealthWorker.onerror = function(error) {
             if (error.message.indexOf("importScript") > -1) {
-                console.log("[stealth] worker failed importing");
+                console.log("[stealth] worker failed importing, retrying...");
+                if (tries < 5) {
+                    tries += 1;
+                    setTimeout(function() {self.initWorker(identity)}, 500);
+                }
             } else {
                 console.log("[stealth] worker error!")
                 console.log(error)
@@ -100,6 +105,7 @@ define(['backend/port'], function(Port) {
         // If requesting for height 0 force last requested to 0 too and
         // restart worker to make sure there is no pending work.
         if (height === 0) {
+            tries = 0;
             lastStealthRequested = 0;
             identity.store.set('lastStealth', 0);
             self.initWorker(identity);
