@@ -98,17 +98,20 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   }
 
   $scope.resetHistory = function() {
-      var identity = DarkWallet.getIdentity();
-      identity.wallet.resetHistory();
-      DarkWallet.service.obelisk.disconnect(function() {
+      modals.open('confirm-delete', {name: _('Your WHOLE history'), object: {}}, function() {
+          var identity = DarkWallet.getIdentity();
+          identity.wallet.resetHistory();
+          var walletService = DarkWallet.service.wallet;
+          walletService.fetchMissingHistory(0, walletService.currentHeight);
           notify.success(_("History Reset"));
-          DarkWallet.service.obelisk.connect();
+          
       });
   }
 
   $scope.cleanOutputs = function() {
       $scope.clearPendingSpends();
       $scope.clearOrphanOutputs();
+      notify.success(_("Orphan and pending outputs cleaned"));
   }
 
   $scope.newModal = function(name) {

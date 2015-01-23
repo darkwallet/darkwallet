@@ -277,6 +277,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         });
 
     }
+    this.fetchMissingHistory = fetchMissingHistory;
 
     // Handle height arriving from obelisk
     function handleHeight(err, height) {
