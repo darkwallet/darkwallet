@@ -37,6 +37,11 @@ define(['backend/port'], function(Port) {
                 console.log("[stealth] Invalid message from the worker!");
             }
         };
+        stealthWorker.onerror = function(error) {
+            console.log("[stealth] worker error!")
+            console.log(error)
+        };
+
     };
 
     /**
