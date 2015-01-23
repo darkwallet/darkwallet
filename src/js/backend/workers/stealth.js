@@ -74,6 +74,7 @@ requirejs(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       });
       return matches;
   }
+  postMessage({type: 'init'});
 
 });
 

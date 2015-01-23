@@ -18,7 +18,8 @@ define(['backend/port'], function(Port) {
     var stealthJobIndex = 0;
     var stealthJobs = {};
     var lastStealthRequested = 0;
-
+    var queue = [];
+    var workerStarted = false;
     /**
      * Initialize the stealth worker for an identity
      */
@@ -26,6 +27,8 @@ define(['backend/port'], function(Port) {
         if (stealthWorker) {
             // kill the previous worker
             stealthWorker.terminate();
+            queue = [];
+            workerStarted = false;
             stealthJobs = {};
         }
         lastStealthRequested = identity.wallet.store.get('lastStealth');
@@ -33,13 +36,24 @@ define(['backend/port'], function(Port) {
         stealthWorker.onmessage = function(oEvent) {
             if (oEvent.data.type == 'stealth') {
                 onStealthResults(oEvent.data.id, oEvent.data.matches, oEvent.data.height);
+                workerStarted = true;
+            } else if (oEvent.data.type == 'init') {
+                console.log("[stealth] worker started");
+                queue.forEach(function(msg) {
+                    stealthWorker.postMessage(msg);
+                });
+                queue = [];
             } else {
                 console.log("[stealth] Invalid message from the worker!");
             }
         };
         stealthWorker.onerror = function(error) {
-            console.log("[stealth] worker error!")
-            console.log(error)
+            if (error.message.indexOf("importScript") > -1) {
+                console.log("[stealth] worker failed importing");
+            } else {
+                console.log("[stealth] worker error!")
+                console.log(error)
+            }
         };
 
     };
@@ -128,7 +142,11 @@ define(['backend/port'], function(Port) {
                     stealthJobs[stealthJobIndex] = {type: 'process', cb: cb, nResults: results.length}
 
                     stealthJobIndex += 1;
-                    stealthWorker.postMessage(request);
+                    if (workerStarted) {
+                        stealthWorker.postMessage(request);
+                    } else {
+                        queue.push(request);
+                    }
                 }
             });
         }
