@@ -98,7 +98,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   }
 
   $scope.resetHistory = function() {
-      modals.open('confirm-delete', {name: _('Your WHOLE history'), object: {}}, function() {
+      modals.open('confirm', {message: _('Rescan history'), detail: _('This will reset your history and fetch it from scratch. Are you sure?')}, function() {
           var identity = DarkWallet.getIdentity();
           identity.wallet.resetHistory();
           var walletService = DarkWallet.service.wallet;
