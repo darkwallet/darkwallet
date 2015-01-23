@@ -11,6 +11,9 @@
  */
 
 var bitcoinUri = function(uri) {
+  if (!chrome.runtime) {
+      return false;
+  }
   var _uri = 'chrome-extension://' + chrome.runtime.id + '/src/html/index.html#/';
   if (typeof uri != 'string') {
     return false;
