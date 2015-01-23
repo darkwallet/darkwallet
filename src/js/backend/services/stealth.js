@@ -37,9 +37,9 @@ define(['backend/port'], function(Port) {
         stealthWorker.onmessage = function(oEvent) {
             if (oEvent.data.type == 'stealth') {
                 onStealthResults(oEvent.data.id, oEvent.data.matches, oEvent.data.height);
-                workerStarted = true;
             } else if (oEvent.data.type == 'init') {
                 console.log("[stealth] worker started");
+                workerStarted = true;
                 queue.forEach(function(msg) {
                     stealthWorker.postMessage(msg);
                 });
@@ -127,7 +127,7 @@ define(['backend/port'], function(Port) {
                 cb ? cb(error, null) : null;
                 return;
             }
-            console.log("[stealth] Processing");
+            console.log("[stealth] Processing " + results.length);
 
             // prepare a requests for the worker
             identity.wallet.pockets.hdPockets.forEach(function(pocket, i) {
