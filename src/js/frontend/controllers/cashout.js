@@ -162,11 +162,11 @@ define(['./module', 'darkwallet', 'dwutil/currencyformat'], function (controller
             error(function(data, status, headers, config) {
               // called asynchronously if an error occurs
               // or server returns response with an error status.
-              $scope.status = "Error querying server";
-              createTimeout = $timeout(1000, function() {
+              $scope.status = "Error querying server: " + data.message;
+              /*createTimeout = $timeout(function() {
                   createTimeout = null;
                   postRetry();
-              });
+              }, 1000);*/
             });
     };
 
