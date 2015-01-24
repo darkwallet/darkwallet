@@ -1,0 +1,15 @@
+<div ng-controller="FaucetCtrl" class="row">
+        <div class="columns large-12">
+            <div class="row collapse">
+                <h3>Testnet faucet</h3>
+                <div>Thanks to <a href="http://faucet.xeno-genesis.com/">Haskoin</a> and <a href="https://helloblock.io/">Helloblock</a> for providing this service.</div>
+                <div class="columns large-6">
+                    <a ng-click="pokeHelloblockFaucet()" class="button">{{'Get from helloblock'|_}}</a>
+                </div>
+                <div class="columns large-6">
+                    <a ng-disabled="faucetDisabled" ng-click="pokeHaskoinFaucet()" class="button">{{'Get coins haskoin'|_}}</a>
+                </div>
+            </div>
+            <div>You can also get coins at the <a href="http://kuttler.eu/bitcoin/btc/faucet/">kuttler's faucet</a> and <a href="http://tpfaucet.appspot.com/">tpfaucet</a></div>
+        </div>
+</div>

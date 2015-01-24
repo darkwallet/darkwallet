@@ -19,6 +19,11 @@
           <div ng-include="'tools/cashout.html'"></div>
         </div>
       </div>
+      <div ng-show="network==='testnet'" class="large-5 columns">
+        <div class="panel setback fiat-background">
+          <div ng-include="'tools/faucet.html'"></div>
+        </div>
+      </div>
       <div class="large-3 columns">
         <a class="button fa fa-sitemap postfix" href="#browser">{{'Browser'|_}}</a>
       </div>

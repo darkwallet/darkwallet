@@ -13,6 +13,7 @@ define([
     './bitid',
     './cashout',
     './contacts',
+    './faucet',
     './history',
     './history_rows',
     './identities',
