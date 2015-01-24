@@ -33,14 +33,22 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
             return;
         }
 
-        var participant = { address: data };
+        // Check for duplicates
+        var res = $scope.multisig.participants.some(function(_participant) {
+            return data === _participant.address;
+        });
 
-        // Generate an identifying hash
-        participant.hash = identity.contacts.generateContactHash(data);
+        if (res) {
+            notify.warning(_('Duplicate key'), _("You can't add duplicate participants"));
+        } else {
+            var participant = { address: data };
+            // Generate an identifying hash
+            participant.hash = identity.contacts.generateContactHash(data);
 
-        // Add to scope participants
-        $scope.multisig.participants.push(participant);
-        $scope.multisig.m = $scope.multisig.participants.length-1;
+            // Add to scope participants
+            $scope.multisig.participants.push(participant);
+            $scope.multisig.m = $scope.multisig.participants.length-1;
+        }
     };
 
     $scope.removeParticipant = function(i) {
