@@ -34,6 +34,7 @@
           <h5 ng-show="settings.advanced">{{'Mixing'|_}}</h5>
           <div ng-show="settings.advanced">
              <input id="checkbox-mixer" title="{{'If mixing is enabled when sending, will only send if successfull mixing, otherwise will just not send'|_}}" ng-model="settings.hardMixing" ng-change="storeSettings()" type="checkbox"><label for="checkbox-mixer">{{'Enforced mixing'|_}}</label><br>
+             <input ng-show="network==='testnet'" id="checkbox-mixer" title="{{'Use new stealth mechanism'|_}}" ng-model="settings.newStealth" ng-change="storeSettings()" type="checkbox"><label ng-show="network==='testnet'" for="checkbox-mixer">{{'New Stealth'|_}}</label><br>
           </div>
 
         </div>

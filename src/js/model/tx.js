@@ -78,6 +78,7 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
 
     // Add Outputs
     var versions = wallet.versions;
+    var newStealth = this.identity.settings.newStealth;
     recipients.forEach(function(recipient, i) {
         if (change && (i === changeInto)) {
             newTx.addOutput(changeAddress.address, change);
@@ -86,7 +87,9 @@ Transaction.prototype.prepare = function(pocketId, recipients, changeAddress, fe
         // test for stealth
         if (address[0] === versions.stealth.prefix) {
             isStealth = true;
-            var res = Stealth.addStealth(address, newTx, versions.address, versions.stealth.nonce);
+            // Set the nonce version to 0 for new stealth
+            var nonceVersion = newStealth ? 0 : versions.stealth.nonce;
+            var res = Stealth.addStealth(address, newTx, versions.address, nonceVersion);
             address = res.address.toString();
             var newAddress = wallet.checkNewStealth(recipient.address, address, res.ephemKey, res.pubKey);
             if (newAddress) {
