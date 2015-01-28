@@ -288,6 +288,7 @@ li.colorhead h6 { color: white; margin: 0; }
 	 /* ----------------------- */
 ul.off-canvas-list {
 	overflow-x: hidden;
+	white-space: nowrap;
 	li a:hover {  }
 	li a.cornerbutton {
 		color: $primary-color-dark;

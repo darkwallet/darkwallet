@@ -5083,7 +5083,8 @@ li.colorhead h6 {
 
 /* ----------------------- */
 ul.off-canvas-list {
-  overflow-x: hidden; }
+  overflow-x: hidden;
+  white-space: nowrap; }
   ul.off-canvas-list li a.cornerbutton {
     color: rgba(30, 170, 80, 0.9);
     padding: 0rem 0.3rem;
