@@ -3807,6 +3807,7 @@ meta.foundation-mq-topbar {
   bottom: 0;
   position: absolute;
   overflow-y: auto;
+  white-space: nowrap;
   background: #333;
   z-index: 1001;
   box-sizing: content-box;
