@@ -438,6 +438,7 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
       if ((!peer.sentBeacon || (Date.now()-peer.sentBeacon>10000)) && peer.contact && peer.contact.trust.trust > 1) {
           // send beacon to contact
           var idKey = peer.contact.findIdentityKey();
+          this.onContactAvailable(peer, peer.contact);
           if (idKey) {
               var keys = bufToArray(Bitcoin.base58check.decode(idKey.data.substr(3)).slice(1));
               var beaconKey = keys.slice(0, 32);
@@ -499,7 +500,6 @@ function (Bitcoin, Curve25519, Encryption, Protocol, Peer, ChannelUtils, Port) {
                                self.acceptBeacon(decoded);
                            }
                        } else {
-                           self.onContactAvailable(decoded.peer, contact);
                            enqueue = true;
                        }
                    } else {
