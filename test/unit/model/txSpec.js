@@ -88,6 +88,8 @@ define(['model/wallet', 'model/tx', 'bitcoinjs-lib'], function(Wallet, Transacti
       };
       
       identity = {
+        settings: {
+        },
         store: {
           init: function(key, value) {
             return _store[key] || value;
