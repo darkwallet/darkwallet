@@ -296,9 +296,9 @@ Stealth.buildNonceNewScript = function(ephemKeyBytes, nonce) {
 
 Stealth.buildNonceScript = function(ephemKeyBytes, nonce, version) {
     if (version) {
-        return this.buildNonceNewScript(ephemKeyBytes, nonce, version);
-    } else {
         return this.buildNonceOldScript(ephemKeyBytes, nonce, version);
+    } else {
+        return this.buildNonceNewScript(ephemKeyBytes, nonce, version);
     }
 };
 
