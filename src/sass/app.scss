@@ -342,7 +342,11 @@ textarea.script {
 
 .transaction-icon.red { color: $alert-color; }
 
-.pocket-square { min-height: 120px; margin-bottom: -0.3rem; }
+.pocket-square {
+	min-height: 120px;
+	margin-bottom: -0.3rem;
+	overflow-x: hidden;
+}
 
 .contact-mosaic .panel:hover,
 div.notifications .panel:hover,

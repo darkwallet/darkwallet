@@ -5149,7 +5149,8 @@ textarea.script {
 
 .pocket-square {
   min-height: 120px;
-  margin-bottom: -0.3rem; }
+  margin-bottom: -0.3rem;
+  overflow-x: hidden; }
 
 .contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover {
   background: rgba(30, 190, 90, 0.9);
