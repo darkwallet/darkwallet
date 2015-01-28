@@ -47,6 +47,7 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
             console.log("[delivery] connecting", data.name);
             var channel = core.getLobbyTransport().getChannel(data.name);
             channel.addCallback('Ack', function(msg) { self.onAck(msg); } );
+            channel.addCallback('DeliveryTest', function(msg) { self.onDeliveryTest(msg); } );
         }
     });
 
@@ -57,7 +58,11 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
    * Send message
    */
   DeliveryService.prototype.sendMessage = function(contact, message) {
-      this.messages.push({id: contact.findIdentityKey().data, msg: message});
+      var newTask = {id: contact.findIdentityKey().data, msg: message};
+      this.messages.push(newTask);
+      if (contact.online) {
+          this.send(contact.online, newTask);
+      }
   };
 
   /**
@@ -71,6 +76,17 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
           identity.tasks.tasks['delivery'] = [];
       }
       this.messages = identity.tasks.tasks['delivery'];
+  };
+
+  /**
+   * A contact becomes available.
+   */
+  DeliveryService.prototype.onContactAvailable = function(peer) {
+      // See if we have anything to send to this contact
+      var idKey = peer.contact.findIdentityKey();
+      if (idKey) {
+          this.checkPeerMessages(peer, idKey);
+      }
   };
 
   /**
@@ -105,17 +121,6 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
   };
 
   /**
-   * A contact becomes available.
-   */
-  DeliveryService.prototype.onContactAvailable = function(peer) {
-      // See if we have anything to send to this contact
-      var idKey = peer.contact.findIdentityKey();
-      if (idKey) {
-          this.checkPeerMessages(peer, idKey);
-      }
-  };
-
-  /**
    * Acknowledge receiving a spend request
    * @private
    */
@@ -135,6 +140,23 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
           tracking.ack = Date.now();
           delete this.ongoing[msg.body.id];
       }
+  };
+
+  /**
+   * Send test message
+   */
+  DeliveryService.prototype.sendDeliveryTest = function(contact) {
+      var peer = contact.online;
+      var msg = Protocol.packMessage('DeliveryTest', {'text': 'test'});
+      this.sendMessage(contact, msg);
+  };
+
+  /**
+   * Receive test message
+   */
+  DeliveryService.prototype.onDeliveryTest = function(msg) {
+      var peer = msg.peer;
+      this.sendAck(peer, msg.body);
   };
 
   return DeliveryService;
