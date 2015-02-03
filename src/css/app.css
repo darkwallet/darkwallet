@@ -5082,18 +5082,21 @@ li.colorhead h6 {
   border-radius: 4px; }
 
 /* ----------------------- */
-ul.off-canvas-list li a.cornerbutton {
-  color: rgba(30, 170, 80, 0.9);
-  padding: 0rem 0.3rem;
-  border-bottom: none; }
-ul.off-canvas-list li a.cornerbutton.active {
-  background: rgba(30, 170, 80, 0.9);
-  color: #bbb; }
-ul.off-canvas-list li.active a {
-  color: rgba(30, 170, 80, 0.9); }
-ul.off-canvas-list li.active, ul.off-canvas-list li.active a:hover {
-  font-weight: 300;
-  background: #222; }
+ul.off-canvas-list {
+  overflow-x: hidden;
+  white-space: nowrap; }
+  ul.off-canvas-list li a.cornerbutton {
+    color: rgba(30, 170, 80, 0.9);
+    padding: 0rem 0.3rem;
+    border-bottom: none; }
+  ul.off-canvas-list li a.cornerbutton.active {
+    background: rgba(30, 170, 80, 0.9);
+    color: #bbb; }
+  ul.off-canvas-list li.active a {
+    color: rgba(30, 170, 80, 0.9); }
+  ul.off-canvas-list li.active, ul.off-canvas-list li.active a:hover {
+    font-weight: 300;
+    background: #222; }
 
 .fiat:not(:empty)::before {
   content: '('; }
@@ -5149,7 +5152,8 @@ textarea.script {
 
 .pocket-square {
   min-height: 120px;
-  margin-bottom: -0.3rem; }
+  margin-bottom: -0.3rem;
+  overflow-x: hidden; }
 
 .contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover {
   background: rgba(30, 190, 90, 0.9);
