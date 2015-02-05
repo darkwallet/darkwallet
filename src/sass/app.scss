@@ -30,11 +30,11 @@ html.popup { width: auto; height: auto; max-height: 100%; overflow: hidden; }
 
 a, input[type="text"], span, textarea { text-rendering: geometricPrecision; }
 
-div.modal-ng { 
-	z-index: 20; 
-	position: absolute; 
-	width: 100%; 
-	height: 100%; 
+div.modal-ng {
+	z-index: 20;
+	position: absolute;
+	width: 100%;
+	height: 100%;
 	background: rgba(0,0,0,0.7);
 	-webkit-transform: translate3d(0,0,0);
 	opacity: 1;
@@ -51,11 +51,11 @@ span.tooltip.fade { opacity: 0; }
 span.tooltip.fade.in { opacity: 1; }
 
 
-.popupcontainer .panel { 
-	background: #333; 
+.popupcontainer .panel {
+	background: #333;
 	a { color: white; }
 }
-.popupcontainer { 
+.popupcontainer {
 	height: auto;
 	max-height: 100%;
 	min-width: 250px;
@@ -63,18 +63,18 @@ span.tooltip.fade.in { opacity: 1; }
 	overflow: hidden;
 }
 
-div.container { 
+div.container {
 	height: 100%;
 }
 
-div.cardflipper { 
+div.cardflipper {
 	margin-top: 2em;
 	-webkit-perspective: 800px;
 }
 
 div.tab-scroller { padding-top: 1em; }
 
-div.scroller { 
+div.scroller {
 	padding-top: 50px;
 	background: black;
 	height: 100%;
@@ -84,7 +84,7 @@ div.scroller {
 	overflow-x: hidden;
 }
 
-span.input-status { 
+span.input-status {
 	position: absolute;
 	opacity: 0;
 	right: 5px;
@@ -141,7 +141,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .postfix.button, .prefix.button { line-height: 2.4375rem; }
 
-button:active .button:active, table tr:nth-child(odd) a.button:active { 
+button:active .button:active, table tr:nth-child(odd) a.button:active {
 	background: darken($primary-color, 20%);
 	-webkit-transition: none;
 	-moz-transition: none;
@@ -153,7 +153,7 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 .button.square:before, button.square:before { position: absolute; top: 50%; left: 50%; margin: -1.2em 0 0 -0.4em; }
 
 .button.square.righted {
-	z-index: 2; 
+	z-index: 2;
 	position: absolute;
 	right: 0;
 	top: 0;
@@ -171,16 +171,16 @@ button:active .button:active, table tr:nth-child(odd) a.button:active {
 button.righted ~ form.editable-wrap input { padding-right: 39px; }
 
 .button.square.lefted {
-	z-index: 2; 
+	z-index: 2;
 	float: left;
 	&:first-of-type { border-radius: $global-radius 0 0 $global-radius; }
 	&:before { position: absolute; top: 50%; left: 50%; margin: -8px 0 0 -7px; }
 }
 
-.button.postfix.fa:not(.square):before, button.postfix.fa:not(.square):before { 
+.button.postfix.fa:not(.square):before, button.postfix.fa:not(.square):before {
 
-	background: darken($primary-color, 10%); 
-	position: absolute; 
+	background: darken($primary-color, 10%);
+	position: absolute;
 	left: 0px; top: 0px;
 	width: 39px;
 	height: 39px;
@@ -198,9 +198,9 @@ div.address-row button.tiny { margin: 0;}
 
 /* TABLES ----------- */
 
-span.ellipsis, div.ellipsis { 
-	text-align: left; 
-	overflow: hidden; 
+span.ellipsis, div.ellipsis {
+	text-align: left;
+	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
  }
@@ -245,12 +245,12 @@ div.identitylist:last-child { margin-bottom: 1em; }
 
 div.identitylist:hover { cursor: pointer; background: $primary-color-dark; }
 
-.transactions div.row:nth-child(even), .address-row:nth-child(even) { 
+.transactions div.row:nth-child(even), .address-row:nth-child(even) {
 	background: $dark-transparent;
-	
+
 }
 
-.transactions div.row:nth-child(odd), .address-row:nth-child(odd) { 
+.transactions div.row:nth-child(odd), .address-row:nth-child(odd) {
 	background: $darker-transparent;
 }
 
@@ -262,24 +262,24 @@ div.identitylist:hover { cursor: pointer; background: $primary-color-dark; }
 
 /* Wallets dropdown ---------------------  */
 
-li.colorhead, li.colorhead:hover { 
+li.colorhead, li.colorhead:hover {
 	text-align: center;
 	padding: 0.6em 0;
-	background: #444; 
+	background: #444;
 	}
 
 li.colorhead h6 { color: white; margin: 0; }
 
 #wallets:before, #wallets:after { border-bottom-color: #444; }
 
-#wallets li:not(.colorhead) { 
+#wallets li:not(.colorhead) {
 	background: $primary-color;
 	&:hover { background: lighten($primary-color, 10%); }
 }
 
 #wallets li a { color: white; }
 
-#wallets { 
+#wallets {
 	border: 2px solid #444;
 	border-radius: 4px;
 	 }
@@ -326,8 +326,8 @@ ul.off-canvas-list {
 
 span.meter { padding: 5px 0 0 5px; }
 
-textarea.seed { 
-	font-size: 125%;  
+textarea.seed {
+	font-size: 125%;
 	text-align: center;
 	padding: 4em 0;
 	min-height: 10em;
@@ -352,23 +352,23 @@ textarea.script {
 
 .contact-mosaic .panel:hover,
 div.notifications .panel:hover,
-.pocket-square:hover { 
-	background: $primary-color; 
-	cursor: pointer; 
+.pocket-square:hover {
+	background: $primary-color;
+	cursor: pointer;
 }
 
-.contact-mosaic { 
-	max-height: 85%; 
-	overflow-y: scroll; 
-	overflow-x: hidden; 
+.contact-mosaic {
+	max-height: 85%;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 .contact-mosaic-full { overflow: hidden; }
 
-.contact-mosaic-square { 
-	text-align: center; 
-	border-radius: $global-radius; 
-	background: rgba(40,40,40,0.8); 
+.contact-mosaic-square {
+	text-align: center;
+	border-radius: $global-radius;
+	background: rgba(40,40,40,0.8);
 	img { padding: 0.6em; -webkit-transform: scale(1) translateY(0); }
 }
 
@@ -390,29 +390,29 @@ span.contact-name { font-size: 200%; vertical-align: middle; }
 
 .select-list { min-height: 100px; background-image: none; }
 
-.showqr > div { 
+.showqr > div {
 	text-align: center;
 }
 
 .showqr > div canvas { display: none; }
 
-.showqr > div img { 
+.showqr > div img {
 	max-width: 86%;
 	image-rendering: -webkit-optimize-contrast;
 	border: 10px solid white;
  }
 
-.qractions { 
-	position: absolute; 
-	top: 0; 
-	right: 0; 
+.qractions {
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 
-.qractions a.button { 
+.qractions a.button {
 	font-size: 160%;
-	position: absolute; 
-	top: 0; right: 0; 
-	padding: 8px 0; 
+	position: absolute;
+	top: 0; right: 0;
+	padding: 8px 0;
 	width: 50px;
 }
 
@@ -458,7 +458,7 @@ ul.off-canvas-list li.pocketpinned {
 
 @media #{$small-only} {
 	.top-bar ul.title-area { z-index: 2; background: $topbar-bg;}
-	.top-bar section ul { 
+	.top-bar section ul {
 		-webkit-transform: translate3d(0,-100%,0);
 	 }
 	.top-bar.expanded section ul {
@@ -467,27 +467,27 @@ ul.off-canvas-list li.pocketpinned {
 }
 
 @media #{$medium-only} {
-	.top-bar ul li a { font-size: 88%; } 
+	.top-bar ul li a { font-size: 88%; }
 	.top-bar ul.right li:last-child a { max-width: 175px; overflow: hidden; height: $topbar-height; text-overflow: ellipsis; }
 }
 
-@media #{$large-up} { 
+@media #{$large-up} {
 	nav.tab-bar { width: 150%; }
 	.pocketnav { opacity: 1; -webkit-transform: translate3d(0,0,0); }
-	.scroller > div.inner-wrap.pinned { 
+	.scroller > div.inner-wrap.pinned {
 		-webkit-transform: translate3d($off-canvas-width, 0, 0);
-		padding-right: $off-canvas-width; 
+		padding-right: $off-canvas-width;
 		.pocketnav { -webkit-transform: translate3d(-10%,0,0); opacity: 0; }
 		.tab-bar-section.middle { left: 0px; }
 	}
-	
+
 }
 .pocketnav { cursor: pointer; }
 
 
 
 
- section.left { 
+ section.left {
 	 background: $primary-color;
 	 span { color: white; }
 	 padding-left: 1em;
@@ -497,16 +497,16 @@ ul.off-canvas-list li.pocketpinned {
  .tab-bar { overflow: hidden; }
 
  .lin { display: inline-block; }
- 
+
  h1.lin { margin: 0 1rem; }
- 
- div.lin { 
+
+ div.lin {
 	 border-left: 1px solid $darker-transparent;
  	 padding: 0 1rem;
 	 &:first-of-type {  }
   }
 
-div.tri { 
+div.tri {
 	@include css-triangle(1.44rem, $primary-color, left);
 	display: inline-block;
  }
@@ -542,12 +542,12 @@ div.chat-text .wrapper .shoutText {
 
 .setback.notifications { background: url(../images/notifications.svg) right/contain no-repeat; }
 
-.lobbyback { 
+.lobbyback {
 	background: url(../images/virtual.svg) top/cover no-repeat;
-	-webkit-box-shadow: inset -0 0px 130px black;	
+	-webkit-box-shadow: inset -0 0px 130px black;
  }
 
-div.wizard { 
+div.wizard {
 	background: $body-bg;
 	border-radius: $global-radius;
 	padding: 1.5em;

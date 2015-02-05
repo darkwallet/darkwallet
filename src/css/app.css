@@ -361,8 +361,8 @@ body {
   color: #fff;
   padding: 0;
   margin: 0;
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
+  font-family: "ClearSans", sans-serif;
+  font-weight: 400;
   font-style: normal;
   line-height: 150%;
   position: relative;
@@ -1172,7 +1172,7 @@ select {
   border-style: solid;
   border-width: 1px;
   display: block;
-  font-weight: 300;
+  font-weight: 400;
   margin-bottom: 1.25rem;
   position: relative;
   padding: 0.875rem 1.5rem 0.875rem 0.875rem;
@@ -1497,8 +1497,8 @@ button, .button {
   border-style: none;
   border-width: 0px;
   cursor: pointer;
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
+  font-family: "ClearSans", sans-serif;
+  font-weight: 400;
   line-height: normal;
   margin: 0 0 1.25rem;
   position: relative;
@@ -2004,7 +2004,7 @@ label {
   color: white;
   cursor: pointer;
   display: block;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.5;
   margin-bottom: 0;
   /* Styles for required inputs */ }
@@ -2198,7 +2198,7 @@ fieldset {
   margin-top: -1px;
   margin-bottom: 1rem;
   font-size: 0.75rem;
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
   background: #c92441;
   color: #fff; }
@@ -2211,7 +2211,7 @@ span.error, small.error {
   margin-top: -1px;
   margin-bottom: 1rem;
   font-size: 0.75rem;
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
   background: #c92441;
   color: #fff; }
@@ -2228,7 +2228,7 @@ span.error, small.error {
   margin-top: -1px;
   margin-bottom: 1rem;
   font-size: 0.75rem;
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
   background: #c92441;
   color: #fff; }
@@ -2344,8 +2344,8 @@ label.error {
       display: block; }
 
 .label {
-  font-weight: 300;
-  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-family: "ClearSans", sans-serif;
   text-align: center;
   text-decoration: none;
   line-height: 1;
@@ -2440,7 +2440,7 @@ ul.pagination {
   .panel.callout {
     border-style: solid;
     border-width: 1px;
-    border-color: rgba(193, 245, 212, 0.9);
+    border-color: rgba(193, 245, 211, 0.9);
     margin-bottom: 1.25rem;
     padding: 1.25rem;
     background: rgba(239, 252, 244, 0.9); }
@@ -2575,7 +2575,7 @@ ul.pagination {
   padding: 0.875rem 0;
   list-style-type: none;
   list-style-position: outside;
-  font-family: "Roboto", sans-serif; }
+  font-family: "ClearSans", sans-serif; }
   .side-nav li {
     margin: 0 0 0.4375rem 0;
     font-size: 0.875rem; }
@@ -2589,8 +2589,8 @@ ul.pagination {
         color: rgba(79, 227, 133, 0.9); }
     .side-nav li.active > a:first-child:not(.button) {
       color: white;
-      font-weight: 300;
-      font-family: "Roboto", sans-serif; }
+      font-weight: 400;
+      font-family: "ClearSans", sans-serif; }
     .side-nav li.divider {
       border-top: 1px solid;
       height: 0;
@@ -2618,8 +2618,8 @@ ul.pagination {
     display: inline;
     margin-left: 1rem;
     margin-bottom: 0.625rem;
-    font-family: "Roboto", sans-serif;
-    font-weight: 300;
+    font-family: "ClearSans", sans-serif;
+    font-weight: 400;
     font-size: 0.875rem;
     color: #999; }
     .sub-nav dt a, .sub-nav dd a, .sub-nav li a {
@@ -2630,7 +2630,7 @@ ul.pagination {
         color: #737373; }
     .sub-nav dt.active a, .sub-nav dd.active a, .sub-nav li.active a {
       border-radius: 3px;
-      font-weight: 300;
+      font-weight: 400;
       background: rgba(30, 190, 90, 0.9);
       padding: 0.1875rem 1rem;
       cursor: default;
@@ -2850,7 +2850,7 @@ a {
 /* Default paragraph styles */
 p {
   font-family: inherit;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 1.25rem;
@@ -2865,9 +2865,9 @@ p {
 
 /* Default header styles */
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
-  font-style: 300;
+  font-family: "ClearSans", sans-serif;
+  font-weight: 400;
+  font-style: 400;
   color: #eee;
   text-rendering: geometricPrecision;
   margin-top: 0.2rem;
@@ -2899,7 +2899,7 @@ h6 {
 .subheader {
   line-height: 1.4;
   color: #f4f4f4;
-  font-weight: 300;
+  font-weight: 400;
   margin-top: 0.2rem;
   margin-bottom: 0.5rem; }
 
@@ -2925,7 +2925,7 @@ small {
 
 code {
   font-family: Consolas, 'Liberation Mono', Courier, monospace;
-  font-weight: 300;
+  font-weight: 400;
   color: #333;
   background-color: #ebebeb;
   border-width: 1px;
@@ -3118,7 +3118,7 @@ blockquote, blockquote p {
       background: #222;
       color: #fff;
       padding: 0.625rem 1.25rem;
-      font-family: "Roboto", sans-serif;
+      font-family: "ClearSans", sans-serif;
       font-size: 1rem; }
       .tabs dd > a:hover, .tabs .tab-title > a:hover {
         background: #9d9d9d; }
@@ -3193,7 +3193,7 @@ blockquote, blockquote p {
   display: none;
   position: absolute;
   z-index: 999;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 0.875rem;
   line-height: 1.3;
   padding: 0.75rem;
@@ -3228,7 +3228,7 @@ blockquote, blockquote p {
   display: block;
   font-size: 0.625rem;
   color: #777;
-  font-weight: 300; }
+  font-weight: 400; }
 
 @media only screen and (min-width:40.063em) {
   .tooltip > .nub {
@@ -3316,10 +3316,10 @@ meta.foundation-mq-topbar {
     font-size: 16px; }
     .top-bar .name h1 {
       line-height: 50px;
-      font-size: 1.0625rem;
+      font-size: 1.125rem;
       margin: 0; }
       .top-bar .name h1 a {
-        font-weight: 300;
+        font-weight: 400;
         color: #fff;
         width: 75%;
         display: block;
@@ -3394,12 +3394,12 @@ meta.foundation-mq-topbar {
       color: #fff;
       padding: 12px 0 12px 0;
       padding-left: 16.66667px;
-      font-family: "Roboto", sans-serif;
-      font-size: 1rem;
-      font-weight: 300;
+      font-family: "ClearSans", sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 400;
       text-transform: none; }
       .top-bar-section ul li > a.button {
-        font-size: 1rem;
+        font-size: 0.8125rem;
         padding-right: 16.66667px;
         padding-left: 16.66667px;
         background-color: rgba(30, 190, 90, 0.9);
@@ -3434,7 +3434,7 @@ meta.foundation-mq-topbar {
         .top-bar-section ul li > a.button.alert:hover, .top-bar-section ul li > a.button.alert:focus {
           color: #fff; }
     .top-bar-section ul li > button {
-      font-size: 1rem;
+      font-size: 0.8125rem;
       padding-right: 16.66667px;
       padding-left: 16.66667px;
       background-color: rgba(30, 190, 90, 0.9);
@@ -3524,10 +3524,10 @@ meta.foundation-mq-topbar {
       width: 100%;
       height: auto; }
       .top-bar-section .dropdown li a {
-        font-weight: 300;
+        font-weight: 400;
         padding: 8px 16.66667px; }
         .top-bar-section .dropdown li a.parent-link {
-          font-weight: 300; }
+          font-weight: 400; }
       .top-bar-section .dropdown li.title h5, .top-bar-section .dropdown li.parent-link {
         margin-bottom: 0;
         margin-top: 0; }
@@ -4592,49 +4592,36 @@ a.glow.button, button.glow, input[type="submit"].glow {
     transform: scale(0.8); } }
 
 *.fa {
-  font-family: "Roboto", sans-serif; }
+  font-family: "ClearSans", sans-serif; }
 
 *.fa:before {
   font-family: FontAwesome; }
 
-/* Light */
-@font-face {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 300;
-  src: url("../fonts/Roboto-Light.ttf") format('truetype'); }
-
-@font-face {
-  font-family: "Roboto";
-  font-style: italic;
-  font-weight: 300;
-  src: url("../fonts/Roboto-LightItalic.ttf") format('truetype'); }
-
 /* Normal */
 @font-face {
-  font-family: "Roboto";
+  font-family: "ClearSans";
   font-style: normal;
   font-weight: 400;
-  src: url("../fonts/Roboto-Regular.ttf") format('truetype'); }
+  src: url("../fonts/ClearSans-Regular.ttf") format('truetype'); }
 
 @font-face {
-  font-family: "Roboto";
+  font-family: "ClearSans";
   font-style: italic;
   font-weight: 400;
-  src: url("../fonts/Roboto-Italic.ttf") format('truetype'); }
+  src: url("../fonts/ClearSans-Italic.ttf") format('truetype'); }
 
 /* Bold */
 @font-face {
-  font-family: "Roboto";
+  font-family: "ClearSans";
   font-style: normal;
   font-weight: 700;
-  src: url("../fonts/Roboto-Bold.ttf") format('truetype'); }
+  src: url("../fonts/ClearSans-Bold.ttf") format('truetype'); }
 
 @font-face {
-  font-family: "Roboto";
+  font-family: "ClearSans";
   font-style: italic;
   font-weight: 700;
-  src: url("../fonts/Roboto-BoldItalic.ttf") format('truetype'); }
+  src: url("../fonts/ClearSans-BoldItalic.ttf") format('truetype'); }
 
 @font-face {
   font-family: 'dw';
@@ -5095,7 +5082,7 @@ ul.off-canvas-list {
   ul.off-canvas-list li.active a {
     color: rgba(30, 170, 80, 0.9); }
   ul.off-canvas-list li.active, ul.off-canvas-list li.active a:hover {
-    font-weight: 300;
+    font-weight: 400;
     background: #222; }
 
 .fiat:not(:empty)::before {

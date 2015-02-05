@@ -35,14 +35,15 @@ $row-width: rem-calc(1200);
 // Global
 
 // We use these to define default font weights
- $font-weight-normal: 300 !default;
+ $font-weight-normal: 400 !default;
  $font-weight-bold: bold !default;
 
 // We use these to control various global styles
 $body-bg: #222 !default;
+$font-name: "ClearSans";
 $body-font-color: #fff;
-$body-font-family: "Roboto", sans-serif;
-$body-font-weight: $font-weight-normal;
+$body-font-family: $font-name, sans-serif;
+// $body-font-weight: $font-weight-normal;
 // $body-font-style: normal;
 
 // We use this to control font-smoothing
@@ -775,7 +776,7 @@ $side-nav-link-color-active: scale-color(#fff, $lightness: 30%);
 
 // Controlling the styles for the title in the top bar
 // $topbar-title-weight: $font-weight-normal;
-// $topbar-title-font-size: rem-calc(17);
+ $topbar-title-font-size: rem-calc(18);
 
 // Style the top bar dropdown elements
 // $topbar-dropdown-bg: #333;
@@ -791,8 +792,8 @@ $side-nav-link-color-active: scale-color(#fff, $lightness: 30%);
 // $topbar-link-color-hover: #fff;
 $topbar-link-color-active: #111;
 // $topbar-link-color-active-hover: #fff;
-$topbar-link-weight: $font-weight-normal;
-$topbar-link-font-size: rem-calc(16);
+// $topbar-link-weight: $font-weight-normal;
+// $topbar-link-font-size: rem-calc(14);
 // $topbar-link-hover-lightness: -10%; // Darken by 10%
 // $topbar-link-bg: $topbar-bg;
 // $topbar-link-bg-color-hover: #555555;
