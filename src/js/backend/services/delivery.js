@@ -57,12 +57,19 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
   /**
    * Send message
    */
-  DeliveryService.prototype.sendMessage = function(contact, message) {
-      var newTask = {id: contact.findIdentityKey().data, msg: message};
+  DeliveryService.prototype.sendMessage = function(contacts, message) {
+      var newTask = {peers: {}, msg: message, timestamp: Date.now()};
+      var online = [];
+      contacts.forEach(function(contact) {
+          newTask.peers[contact.findIdentityKey().data] = {};
+          if (contact.online) {
+              online.push(contact);
+          }
+      });
       this.messages.push(newTask);
-      if (contact.online) {
+      online.forEach(function(contact) {
           this.send(contact.online, newTask);
-      }
+      });
   };
 
   /**
@@ -80,6 +87,7 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
 
   /**
    * A contact becomes available.
+   * @private
    */
   DeliveryService.prototype.onContactAvailable = function(peer) {
       // See if we have anything to send to this contact
@@ -91,15 +99,16 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
 
   /**
    * Check for peer messages
+   * @private
    */
   DeliveryService.prototype.checkPeerMessages = function(peer, idKey) {
       console.log("[delivery] contact available", peer.contact.data.name, idKey.data);
       var self = this;
 
       // Iterate over tasks
-      this.messages.forEach(function(element) {
-          if (!element.ack && idKey && element.id === idKey) {
-              self.send(peer, element);
+      this.messages.forEach(function(message) {
+          if (idKey && message.peers[idKey] && !message.peers[idKey].ack) {
+              self.send(peer, message);
           }
       });
   };
@@ -110,7 +119,8 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
    */
   DeliveryService.prototype.send = function(peer, task) {
       var msg = task.msg;
-      task.sent = Date.now();
+      var idKey = peer.contact.findIdentityKey();
+      task.peers[idKey].sent = Date.now();
       if (msg && msg.body) {
           // keep track of sent until ack arrives
           msg.body.id = Math.random();
@@ -132,12 +142,14 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
 
   /**
    * A new multisig ack has arrived
+   * @private
    */
   DeliveryService.prototype.onAck = function(msg) {
       var peer = msg.peer;
       var tracking = this.ongoing[msg.body.id];
       if (tracking) {
-          tracking.ack = Date.now();
+          var idKey = peer.contact.findIdentityKey();
+          tracking.peers[idKey].ack = Date.now();
           delete this.ongoing[msg.body.id];
       }
   };
@@ -148,11 +160,12 @@ define(['backend/port', 'util/protocol'], function(Port, Protocol) {
   DeliveryService.prototype.sendDeliveryTest = function(contact) {
       var peer = contact.online;
       var msg = Protocol.packMessage('DeliveryTest', {'text': 'test'});
-      this.sendMessage(contact, msg);
+      this.sendMessage([contact], msg);
   };
 
   /**
    * Receive test message
+   * @private
    */
   DeliveryService.prototype.onDeliveryTest = function(msg) {
       var peer = msg.peer;
