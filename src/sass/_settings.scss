@@ -39,7 +39,7 @@ $row-width: rem-calc(1200);
  $font-weight-bold: bold !default;
 
 // We use these to control various global styles
-$body-bg: #222 !default;
+$body-bg: #000 !default;
 $font-name: "ClearSans";
 $body-font-color: #fff;
 $body-font-family: $font-name, sans-serif;
@@ -510,7 +510,7 @@ $select-bg-color: $input-bg-color;
 // $tabbar-height: rem-calc(45);
 // $tabbar-icon-width: $tabbar-height;
 // $tabbar-line-height: $tabbar-height;
- $tabbar-color: $body-bg;
+ $tabbar-color: $body-font-color;
 // $tabbar-middle-padding: 0 rem-calc(10);
 
 // Off Canvas Divider Styles
@@ -518,21 +518,21 @@ $select-bg-color: $input-bg-color;
 // $tabbar-left-section-border: solid 1px scale-color($tabbar-bg, $lightness: -50%);
 
 // Off Canvas Tab Bar Headers
- $tabbar-header-color: $body-bg;
+ $tabbar-header-color: $body-font-color;
 // $tabbar-header-weight: $font-weight-bold;
 // $tabbar-header-line-height: $tabbar-height;
 // $tabbar-header-margin: 0;
 
 // Off Canvas Menu Variables
 // $off-canvas-width: rem-calc(250);
-// $off-canvas-bg: #333;
+ $off-canvas-bg: #222;
 
 // Off Canvas Menu List Variables
 // $off-canvas-label-padding: 0.3rem rem-calc(15);
 // $off-canvas-label-color: #999;
 // $off-canvas-label-text-transform: uppercase;
 // $off-canvas-label-font-weight: $font-weight-bold;
-// $off-canvas-label-bg: #444;
+ $off-canvas-label-bg: #333;
 // $off-canvas-label-border-top: 1px solid scale-color(#444, $lightness: 14%);
 // $off-canvas-label-border-bottom: none;
 // $off-canvas-label-margin:0;
@@ -723,7 +723,7 @@ $side-nav-link-color-active: scale-color(#fff, $lightness: 30%);
  $tabs-navigation-active-bg-color: $secondary-color;
  $tabs-navigation-hover-bg-color: scale-color($tabs-navigation-active-bg-color, $lightness: -16%);
  $tabs-navigation-font-color: $body-font-color;
-// $tabs-navigation-active-font-color: $tabs-navigation-font-color;
+ $tabs-navigation-active-font-color: $body-font-color;
  $tabs-navigation-font-size: rem-calc(16);
 // $tabs-navigation-font-family: $body-font-family;
 
@@ -767,7 +767,7 @@ $side-nav-link-color-active: scale-color(#fff, $lightness: 30%);
 // $include-html-top-bar-classes: $include-html-classes;
 
 // Background color for the top bar
-// $topbar-bg-color: #333;
+ $topbar-bg-color: #222;
 // $topbar-bg: $topbar-bg-color;
 
 // Height and margin
@@ -790,7 +790,7 @@ $side-nav-link-color-active: scale-color(#fff, $lightness: 30%);
 // Set the link colors and styles for top-level nav
 // $topbar-link-color: #fff;
 // $topbar-link-color-hover: #fff;
-$topbar-link-color-active: #111;
+// $topbar-link-color-active: #111;
 // $topbar-link-color-active-hover: #fff;
 // $topbar-link-weight: $font-weight-normal;
 // $topbar-link-font-size: rem-calc(14);

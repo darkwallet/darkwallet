@@ -4,7 +4,7 @@
 $primary-color: rgba(30, 190, 90,0.9) !default;
 $primary-color-dark: rgba(30, 170, 80,0.9);
 $alternative-color: #002B29;
-$secondary-color: #bbb;
+$secondary-color: #333;
 $alert-color: #c92441;
 $success-color: #43AC6A;
 $dark-transparent: rgba(0,0,0,0.3);
@@ -289,7 +289,7 @@ li.colorhead h6 { color: white; margin: 0; }
 ul.off-canvas-list {
 	overflow-x: hidden;
 	white-space: nowrap;
-	li a:hover {  }
+	li a:hover { background: $dark-transparent; }
 	li a.cornerbutton {
 		color: $primary-color-dark;
 		padding: 0.0rem 0.3rem;
@@ -299,10 +299,8 @@ ul.off-canvas-list {
 		background: $primary-color-dark;
 		color: $secondary-color;
 	}
-	li.active a {
-		color: $primary-color-dark;
-	}
-	li.active, li.active a:hover { font-weight: $font-weight-normal; background: $body-bg; }
+
+	li.active, li.active a:hover { background: $body-bg; }
  }
 
 .fiat:not(:empty) {
@@ -315,10 +313,6 @@ ul.off-canvas-list {
 .ellipsis.contact-address { color: white; margin-bottom: 0.6em; }
 
 .tabs { border-bottom: 1px solid $topbar-link-bg-active; }
-
-
-
-.tabs dd.active > a { background: $topbar-link-bg-active; color: black; }
 
 .labels { position: absolute; top: 50%; margin-top: -11px; right: 0; z-index: 3; }
 
