@@ -35,7 +35,7 @@
       <form ng-submit="passwordSubmit()">
           <div class="row topmargin">
             <div class="small-6 columns">
-              <input type="text" ng-model="form.name" placeholder="{{'Name for this wallet'|_}}" autofocus ng-required="true" />
+              <input type="text" ng-model="form.name" maxlength="12" placeholder="{{'Name for this wallet'|_}}" autofocus ng-required="true" />
             </div>
             <div class="small-6 columns">
               <select id="select-language" ng-model="form.language" ng-change="changeLanguage()" ng-options="language.code as language.name for language in languages"></select>
@@ -79,5 +79,5 @@
             </div>
       </form>
     </div>
-  </div> 
+  </div>
 </div>
