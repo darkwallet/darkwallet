@@ -3856,7 +3856,7 @@ ul.off-canvas-list {
     font-size: 0.75rem;
     font-weight: bold;
     background: #333;
-    border-top: 1px solid #505050;
+    border-top: none;
     border-bottom: none;
     margin: 0; }
   ul.off-canvas-list li a {
