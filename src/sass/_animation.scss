@@ -141,7 +141,7 @@ a.glow.button, button.glow, input[type="submit"].glow {
   &:hover, &.working { -webkit-animation: none; }
   span, .progbar { @include single-transition(); }
   &.working .progbar { opacity: 1; }
-  &.working span { opacity: 0; }
+  &.working span { opacity: 1; }
 }
 
 .animations-disabled a.glow.button, button.glow, input[type="submit"].glow {

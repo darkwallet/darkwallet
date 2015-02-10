@@ -45,6 +45,9 @@ requirejs(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
           stealthCache[pocketIndex].push(txId+address);
 
           // Try out the stealth row
+          if (ephemKey.length === 32) {
+              ephemKey.splice(0,0,2);
+          }
           var myKeyBuf = Stealth.uncoverPublic(scanKey, ephemKey, spendKey);
 
           // Turn to address
@@ -71,6 +74,7 @@ requirejs(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       });
       return matches;
   }
+  postMessage({type: 'init'});
 
 });
 

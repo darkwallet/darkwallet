@@ -4489,7 +4489,7 @@ a.glow.button, button.glow, input[type="submit"].glow {
   a.glow.button.working .progbar, button.glow.working .progbar, input[type="submit"].glow.working .progbar {
     opacity: 1; }
   a.glow.button.working span, button.glow.working span, input[type="submit"].glow.working span {
-    opacity: 0; }
+    opacity: 1; }
 
 .animations-disabled a.glow.button, button.glow, input[type="submit"].glow {
   -webkit-animation-name: simplepulse;

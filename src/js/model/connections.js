@@ -15,12 +15,19 @@ function Connections(store, identity) {
     this.store = store;
 
     var defaultServers = {'bitcoin': [{name: 'unsystem', type: 'gateway', address: 'wss://gateway.unsystem.net'}],
-                          'testnet': [{name: 'unsystem testnet', type: 'gateway', address: 'ws://85.25.198.97:8888'}]};
+                          'testnet': [{name: 'unsystem testnet', type: 'gateway', address: 'wss://testnet.unsystem.net'}]};
 
     this.connections = store.init('connections', {servers: defaultServers[store.get('network')],
                                               selectedServer: 0,
                                               alwaysConnect: 0});
-    
+
+    // forcibly upgrade old clients to ssl
+    this.connections.servers.forEach(function(server) {
+        if (server.address === 'ws://85.25.198.97:8888') {
+            server.address = 'wss://testnet.unsystem.net';
+        }
+    });
+   
     this.servers = this.connections.servers;
     this.selectedServer = this.connections.selectedServer;
     this.alwaysConnect = this.connections.alwaysConnect;

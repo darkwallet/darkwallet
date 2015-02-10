@@ -157,6 +157,8 @@ Wallet.prototype.resetHistory = function() {
 
     // delete wallet outputs
     Object.keys(this.wallet.outputs).forEach(function(outId) {
+        // No need to delete from _outputs here since we just
+        // wiped it out
         delete self.wallet.outputs[outId];
     });
     
@@ -166,11 +168,24 @@ Wallet.prototype.resetHistory = function() {
     // delete tx metadata
     Object.keys(this.identity.txdb.transactions).forEach(function(txId) {
         [2, 3, 4, 5].forEach(function(idx) {
-            delete self.identity.txdb.transactions[idx];
+            delete self.identity.txdb.transactions[txId][idx];
         });
     });
     this.store.save();
 };
+
+Wallet.prototype.deleteOutput = function(outId) {
+    var output = this.wallet.outputs[outId];
+    // delete from actual store
+    var storeIndex = this.wallet._outputs.indexOf(output.store);
+    if (storeIndex > -1) {
+        this.wallet._outputs.splice(storeIndex, 1);
+    } else {
+        // shouldn't happen
+        console.log("warning: output store does not exist");
+    }
+    delete this.wallet.outputs[outId];
+}
 
 Wallet.prototype.loadOutputs = function() {
     var self = this;
@@ -325,6 +340,15 @@ Wallet.prototype.deleteAddress = function(seq) {
     this.wallet.addresses.splice(this.wallet.addresses.indexOf(walletAddress.address), 1);
     delete this.pubKeys[seq];
     delete this.addresses[walletAddress.address];
+
+    // Delete related outputs
+    var self = this;
+    Object.keys(this.wallet.outputs).forEach(function(outputId) {
+        var output = self.wallet.outputs[outputId];
+        if (output.address === walletAddress.address) {
+            self.deleteOutput(output);
+        }
+    });
 };
 
 /**

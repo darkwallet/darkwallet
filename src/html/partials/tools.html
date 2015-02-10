@@ -4,7 +4,6 @@
 <div class="row">
       <div class="large-4 columns">
         <div class="panel setback seed">
-          <em ng-show="!tools.open">{{'Experimental tools...'|_}}</em>
           <div ng-controller="SigningCtrl">
               <div ng-include="'tools/signing.html'"></div>
               <div ng-include="'tools/verifying.html'"></div>
@@ -15,41 +14,17 @@
           <div ng-include="'tools/scanning.html'"></div>
         </div>
       </div>
-      <div class="large-5 columns">
-        <div class="panel setback notifications">
-           <code>{{tools.status}}</code>
-           <div ng-show="tools.output">
-             <div class="row">
-               <div class="large-6 columns">
-                 <button ng-click="clipboard.copy(tools.output)" class="button postfix fa fa-clipboard">{{'Copy'|_}}</button>
-               </div>
-               <div class="large-6 columns">
-                 <button ng-click="tools.output=false" class="button postfix fa fa-check">{{'Accept'|_}}</button>
-               </div>
-             </div>
-             <code><pre>{{tools.output}}</pre></code>
-           </div>
-           <div ng-show="!tools.output"><code>{{'Storage size'|_}}: {{storeSize}} kB {{'total'|_}}: {{totalStoreSize}} kB</code></div>
+      <div ng-show="network==='bitcoin'" class="large-5 columns">
+        <div class="panel setback fiat-background">
+          <div ng-include="'tools/cashout.html'"></div>
         </div>
-        <div class="panel setback seed">
-          <h4>{{'Advanced settings'|_}}</h4>
-          <input id="checkbox-devmode" ng-model="settings.advanced" ng-change="setAdvanced()" type="checkbox"><label for="checkbox-devmode">{{'Enable developer mode'|_}}</label><br>
-          <input ng-show="settings.scanPocketMaster" id="checkbox-scanmaster" ng-model="settings.scanPocketMaster" type="checkbox"><label ng-show="settings.scanPocketMaster" for="checkbox-scanmaster">{{'Scan for pocket master address'|_}}</label><br>
+      </div>
+      <div ng-show="network==='testnet'" class="large-5 columns">
+        <div class="panel setback fiat-background">
+          <div ng-include="'tools/faucet.html'"></div>
         </div>
       </div>
       <div class="large-3 columns">
-        <div class="panel setback coins">
-          <h4>{{'Development'|_}}</h4>
-          <h5>{{'Browsing'|_}}</h5>
-          <a class="button fa fa-sitemap postfix" href="#browser">{{'Browser'|_}}</a>
-          <h5>{{'Stealth'|_}}</h5>
-        <div ng-controller="ReceiveStealthCtrl">
-          <a class="button fa fa-fighter-jet postfix" ng-click="modals.open('confirm', {message: 'Scan complete stealth history', detail: 'This can take a long time, are you sure?'}, receiveStealth);">{{'Receive Stealth'|_}}</a>
-        </div>
-          <h5>{{'Storage'|_}}</h5>
-          <a class="button fa fa-trash-o postfix" ng-click="cleanOutputs();">{{'Clean outputs'|_}}</a>
-          <a class="button fa fa-eraser postfix" ng-click="modals.open('confirm', {message: 'Clear notifications', detail: 'This will clear all pending notifications, are you sure?'}, clearTasks);">{{'Clear Notifications'|_}}</a>
-          <a class="button fa fa-trash-o postfix alert" ng-click="clearStorage();">{{'Clear Storage'|_}}</a>
-
+        <a class="button fa fa-sitemap postfix" href="#browser">{{'Browser'|_}}</a>
       </div>
 </div>

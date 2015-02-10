@@ -277,6 +277,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
         });
 
     }
+    this.fetchMissingHistory = fetchMissingHistory;
 
     // Handle height arriving from obelisk
     function handleHeight(err, height) {
@@ -481,7 +482,7 @@ function(IdentityKeyRing, Port, CurrencyFormatting, TransactionTasks, Bitcoin, B
          var notifyTx = function(error, count, type) {
              if (error) {
                  console.log("Error sending tx: " + error, count, type);
-                 callback({data: error, text: "Error sending tx"});
+                 callback({data: error, text: "Error sending tx"}, {type: type, count: count});
              } else {
                  TransactionTasks.processRadar(task, count);
 

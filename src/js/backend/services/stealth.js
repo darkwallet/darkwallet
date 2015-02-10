@@ -18,7 +18,9 @@ define(['backend/port'], function(Port) {
     var stealthJobIndex = 0;
     var stealthJobs = {};
     var lastStealthRequested = 0;
-
+    var queue = [];
+    var workerStarted = false;
+    var tries = 0;
     /**
      * Initialize the stealth worker for an identity
      */
@@ -26,6 +28,8 @@ define(['backend/port'], function(Port) {
         if (stealthWorker) {
             // kill the previous worker
             stealthWorker.terminate();
+            queue = [];
+            workerStarted = false;
             stealthJobs = {};
         }
         lastStealthRequested = identity.wallet.store.get('lastStealth');
@@ -33,10 +37,30 @@ define(['backend/port'], function(Port) {
         stealthWorker.onmessage = function(oEvent) {
             if (oEvent.data.type == 'stealth') {
                 onStealthResults(oEvent.data.id, oEvent.data.matches, oEvent.data.height);
+            } else if (oEvent.data.type == 'init') {
+                console.log("[stealth] worker started");
+                workerStarted = true;
+                queue.forEach(function(msg) {
+                    stealthWorker.postMessage(msg);
+                });
+                queue = [];
             } else {
                 console.log("[stealth] Invalid message from the worker!");
             }
         };
+        stealthWorker.onerror = function(error) {
+            if (error.message.indexOf("importScript") > -1) {
+                console.log("[stealth] worker failed importing, retrying...");
+                if (tries < 5) {
+                    tries += 1;
+                    setTimeout(function() {self.initWorker(identity)}, 500);
+                }
+            } else {
+                console.log("[stealth] worker error!")
+                console.log(error)
+            }
+        };
+
     };
 
     /**
@@ -81,6 +105,7 @@ define(['backend/port'], function(Port) {
         // If requesting for height 0 force last requested to 0 too and
         // restart worker to make sure there is no pending work.
         if (height === 0) {
+            tries = 0;
             lastStealthRequested = 0;
             identity.store.set('lastStealth', 0);
             self.initWorker(identity);
@@ -102,7 +127,7 @@ define(['backend/port'], function(Port) {
                 cb ? cb(error, null) : null;
                 return;
             }
-            console.log("[stealth] Processing");
+            console.log("[stealth] Processing " + results.length);
 
             // prepare a requests for the worker
             identity.wallet.pockets.hdPockets.forEach(function(pocket, i) {
@@ -123,7 +148,11 @@ define(['backend/port'], function(Port) {
                     stealthJobs[stealthJobIndex] = {type: 'process', cb: cb, nResults: results.length}
 
                     stealthJobIndex += 1;
-                    stealthWorker.postMessage(request);
+                    if (workerStarted) {
+                        stealthWorker.postMessage(request);
+                    } else {
+                        queue.push(request);
+                    }
                 }
             });
         }

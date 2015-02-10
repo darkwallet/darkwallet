@@ -11,12 +11,16 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   // Store size
   $scope.storeSize = 0;
   $scope.totalStoreSize = 0;
+  $scope.storeVersion = 0;
 
   /**
    * An identity is being loaded
    */
   var onLoadIdentity = function(name) {
       // Get partial size
+      var identity = DarkWallet.getIdentity();
+      $scope.storeVersion = identity.store.get('version');
+      $scope.network = identity.wallet.network;
       DarkWallet.getKeyRing().getSize(name, function(value) {
           $scope.storeSize = Math.ceil(value/1024);
           if(!$scope.$$phase) {
@@ -93,9 +97,21 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       identity.wallet.loadOutputs();
   }
 
+  $scope.resetHistory = function() {
+      modals.open('confirm', {message: _('Rescan history'), detail: _('This will reset your history and fetch it from scratch. Are you sure?')}, function() {
+          var identity = DarkWallet.getIdentity();
+          identity.wallet.resetHistory();
+          var walletService = DarkWallet.service.wallet;
+          walletService.fetchMissingHistory(0, walletService.currentHeight);
+          notify.success(_("History Reset"));
+          
+      });
+  }
+
   $scope.cleanOutputs = function() {
       $scope.clearPendingSpends();
       $scope.clearOrphanOutputs();
+      notify.success(_("Orphan and pending outputs cleaned"));
   }
 
   $scope.newModal = function(name) {

@@ -436,7 +436,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           case 'all':
               return true;
           case 'unused':
-              return !row.nOutputs;
+              return !row.nOutputs && row.label !== 'change';
           case 'top':
               return row.balance>0;
           case 'labelled':

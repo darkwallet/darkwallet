@@ -280,10 +280,19 @@ Transaction.prototype.undo = function(tx, row) {
         var index = txHash + ':' + i;
         var output = wallet.wallet.outputs[index];
         if (output) {
-            delete wallet.wallet.outputs[index];
-            if (output.counted) {
-                var walletAddress = wallet.getWalletAddress(output.address);
-                walletAddress.balance -= output.value;
+            wallet.deleteOutput(index);
+            // clear address counters
+            var walletAddress = wallet.getWalletAddress(output.address);
+            if (walletAddress) {
+                walletAddress.nOutputs -= 1;
+                if (output.counted) {
+                    walletAddress.balance -= output.value;
+                }
+                if (walletAddress.outputs.indexOf(index) > -1) {
+                    walletAddress.outputs.slice(index, 1);
+                }
+            } else {
+                console.log("warning: address does not exist while deleting output");
             }
         }
     });

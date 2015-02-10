@@ -1,0 +1,44 @@
+<div class="row">
+  <div class="small-12 columns"><h3>{{'Development Tools'|_}}</h3></div>
+</div>
+<div class="row">
+      <div class="large-4 columns">
+        <div class="panel setback seed">
+          <h4>{{'Advanced settings'|_}}</h4>
+          <input id="checkbox-devmode" ng-model="settings.advanced" ng-change="setAdvanced()" type="checkbox"><label for="checkbox-devmode">{{'Enable developer mode'|_}}</label><br>
+          <input ng-show="settings.scanPocketMaster" id="checkbox-scanmaster" ng-model="settings.scanPocketMaster" type="checkbox"><label ng-show="settings.scanPocketMaster" for="checkbox-scanmaster">{{'Scan for pocket master address'|_}}</label><br>
+        </div>
+      </div>
+
+      <div class="large-4 columns">
+        <div class="panel setback notifications">
+           <code>{{tools.status}}</code>
+           <div ng-show="tools.output">
+             <div class="row">
+               <div class="large-6 columns">
+                 <button ng-click="clipboard.copy(tools.output)" class="button postfix fa fa-clipboard">{{'Copy'|_}}</button>
+               </div>
+               <div class="large-6 columns">
+                 <button ng-click="tools.output=false" class="button postfix fa fa-check">{{'Accept'|_}}</button>
+               </div>
+             </div>
+             <code><pre>{{tools.output}}</pre></code>
+           </div>
+           <div ng-show="!tools.output"><code>{{'Storage size'|_}}: {{storeSize}} kB {{'total'|_}}: {{totalStoreSize}} kB v.{{storeVersion}}</code></div>
+        </div>
+      </div>
+
+      <div class="large-4 columns">
+        <div class="panel setback coins">
+          <h5>{{'History'|_}}</h5>
+        <div ng-controller="ReceiveStealthCtrl">
+          <a class="button fa fa-fighter-jet postfix" ng-click="modals.open('confirm', {message: 'Scan complete stealth history', detail: 'This can take a long time, are you sure?'}, receiveStealth);">{{'Rescan Stealth'|_}}</a>
+          <a class="button fa fa-trash-o postfix" ng-click="resetHistory();">{{'Rescan history'|_}}</a>
+        </div>
+          <h5>{{'Storage'|_}}</h5>
+          <a class="button fa fa-trash-o postfix" ng-click="cleanOutputs();">{{'Clean outputs'|_}}</a>
+          <a class="button fa fa-eraser postfix" ng-click="modals.open('confirm', {message: 'Clear notifications', detail: 'This will clear all pending notifications, are you sure?'}, clearTasks);">{{'Clear Notifications'|_}}</a>
+          <a class="button fa fa-trash-o postfix alert" ng-click="clearStorage();">{{'Clear Storage'|_}}</a>
+
+      </div>
+</div>
