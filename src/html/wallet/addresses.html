@@ -30,7 +30,7 @@
 			          <li>
 			            <a ng-click="modals.showBtcQr(currentAddress.address)" class="fa fa-qrcode"> {{'Show QR code'|_}}</a>
 			          </li>
-					  <li>
+					  <li ng-show="currentAddress.type !== 'hd' || currentAddress.index[1] === 0">
 						  <a ng-click="currentForm.$show()" class="fa fa-pencil-square"> {{'Edit name'|_}}</a>
 					  </li>
 					  <li>

@@ -131,7 +131,7 @@ Stealth.parseAddress = function(recipient) {
  * @param {Object} ephemKeyBytes (optional) Ephemeral private key as byte array,
  *                                if null will be generated.
  */
-Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKeyBytes) {
+Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKeyBytes, newStealth) {
     if (version === null || version === undefined) { version = Bitcoin.networks.bitcoin.pubKeyHash; };
     // Parse public keys into api objects
     var scanKey = Stealth.importPublic(scanKeyBytes);
@@ -140,6 +140,10 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKe
     // new ephemeral key
     var encKey = Bitcoin.ECKey.fromBytes(ephemKeyBytes);
     var ephemKey = bufToArray(encKey.pub.Q.getEncoded(true));
+    if (newStealth) {
+        // For new stealth remove the first byte
+        ephemKey.splice(0, 1);
+    }
 
     // Generate shared secret
     var c = Stealth.stealthDH(encKey.d, scanKey);
@@ -160,6 +164,10 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKe
  * @private
  */
 Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes) {
+    if (ephemKeyBytes.length === 32) {
+        // Set the first byte as 0 for new Stealth
+        ephemKeyBytes.splice(0, 0, 2);
+    }
     // Parse public keys into api objects
     var decKey = Stealth.importPublic(ephemKeyBytes);
 
@@ -258,7 +266,7 @@ Stealth.deriveAddress = function(spendKey, c, version) {
  * @returns {Bitcoin.TransactionOut} stealth transaction output
  * @private
  */
-Stealth.buildNonceScript = function(ephemKeyBytes, nonce, version) {
+Stealth.buildNonceOldScript = function(ephemKeyBytes, nonce, version) {
     if (version === null || version === undefined) { version = Stealth.nonceVersion; };
 
     // Initialize chunks with op_return
@@ -271,6 +279,27 @@ Stealth.buildNonceScript = function(ephemKeyBytes, nonce, version) {
     chunks.push(new Buffer(ephemScript));    
 
     return Bitcoin.Script.fromChunks(chunks);
+};
+
+Stealth.buildNonceNewScript = function(ephemKeyBytes, nonce) {
+    // Initialize chunks with op_return
+    var chunks = [Bitcoin.opcodes.OP_RETURN];
+
+    // Add the ephemkey chunk
+    var nonceBytes = Convert.numToBytes(nonce, 4);
+
+    var ephemScript = ephemKeyBytes.concat(nonceBytes);
+    chunks.push(new Buffer(ephemScript));
+
+    return Bitcoin.Script.fromChunks(chunks);
+};
+
+Stealth.buildNonceScript = function(ephemKeyBytes, nonce, version) {
+    if (version) {
+        return this.buildNonceOldScript(ephemKeyBytes, nonce, version);
+    } else {
+        return this.buildNonceNewScript(ephemKeyBytes, nonce, version);
+    }
 };
 
 /*
@@ -333,7 +362,7 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
     var spendKeyBytes = stealthAddress.spendKeys[0];
     var nonce;
     do {
-        var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, addressVersion, ephemKeyBytes);
+        var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, addressVersion, ephemKeyBytes, !nonceVersion);
         recipient = stealthData[0];
         ephemKey = stealthData[1];
         pubKey = stealthData[2];

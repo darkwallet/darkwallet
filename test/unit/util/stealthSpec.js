@@ -125,7 +125,7 @@ define(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
     it('builds the stealth nonce output', function() {
       var nonce = 20;
       var ephemBytes = ephemKeyPubBytes;
-      var script = Stealth.buildNonceScript(ephemBytes, nonce)
+      var script = Stealth.buildNonceScript(ephemBytes, nonce, Stealth.nonceVersion)
 
       //expect(stealthOut.value).toBe(0);
       expect(script.buffer.length).toBe(2+1+4+33);

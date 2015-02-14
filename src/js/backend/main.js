@@ -18,6 +18,7 @@ requirejs([
     'backend/services/safe',
     'backend/services/badge',
     'backend/services/notifier',
+    'backend/services/delivery',
     'backend/services/content',
     'backend/services/ctxmenus'],
     function(DarkWallet, Port) {

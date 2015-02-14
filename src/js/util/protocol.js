@@ -81,6 +81,11 @@ var Protocol = {
     data['id'] = id;
     return Protocol.packMessage('MultisigAck', data);
   },
+  AckMsg: function(id) {
+    var data = {};
+    data['id'] = id;
+    return Protocol.packMessage('Ack', data);
+  },
   MultisigSpendMsg: function(address, tx) {
     var data = {};
     data['address'] = address;
