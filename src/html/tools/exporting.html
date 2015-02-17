@@ -1,19 +1,18 @@
 <h3 ng-show="!tools.open || tools.exportOpen">{{'Key management'|_}}</h3>
 <a class="button fa fa-upload postfix ng-animate-disabled" ng-click="tools.open=true;tools.exportOpen=true" ng-show="!tools.open" novalidate>{{'Export private keys'|_}}</a>
 <form name="exportingForm" ng-show="tools.exportOpen" ng-submit="exportKeys()">
-    <label ng-show="!tools.exportAddresses">{{'All private keys will be exported by default (this might take a while).'|_}}</label>
+    <label ng-show="!tools.exportAddresses">{{'All private keys will be exported (this might take a while).'|_}}</label>
     <div class="row collapse">
       <div class="medium-12 columns">
-        <label>{{'Addresses'|_}}:</label>
         <textarea ng-model="tools.exportAddresses" rows="4" cols="50" placeholder="{{'Addresses to export, one per line...'|_}}"></textarea>
       </div>
     </div>
     <div class="row collapse">
       <div class="medium-6 columns">
-        <button type="submit" class="button fa fa-pencil postfix">{{'Export'|_}}</button>
+        <button type="submit" ng-disabled="tools.exportComplete" class="button fa fa-upload postfix">{{'Export'|_}}</button>
       </div>
       <div class="medium-6 columns">
-        <a class="button alert fa fa-times postfix" ng-click="tools.exportAddresses='';tools.exportOpen=false;tools.open=false;">{{'Close'|_}}</a>
+        <a class="button alert fa fa-times postfix" ng-click="exportKeysClose()">{{'Close'|_}}</a>
       </div>
     </div>
 </form>
