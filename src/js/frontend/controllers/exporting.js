@@ -12,15 +12,15 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
       $scope.tools.exportComplete = false;
       if ($scope.tools.exportAddresses) {
           allAddresses = $scope.tools.exportAddresses.split('\n');
-	  userProvidedInput = true;
+          userProvidedInput = true;
       } else {
           allAddresses = identity.wallet.getPocketAddresses('all');
-	  userProvidedInput = false;
+          userProvidedInput = false;
       }
 
       modals.password(_('Write your password'), function(password) {
           try {
-	      var output = '';
+              var output = '';
               for (var i = 0; i < allAddresses.length; i++) {
                   var address = allAddresses[i];
                   var walletAddress = identity.wallet.getWalletAddress(address);
@@ -35,7 +35,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
               }
 
               $scope.tools.exportAddresses = output;
-	      $scope.tools.exportComplete = true;
+              $scope.tools.exportComplete = true;
               $scope.tools.status = 'ok';
 
               notify.success(_('Exported'));
