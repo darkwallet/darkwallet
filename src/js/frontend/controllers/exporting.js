@@ -8,10 +8,13 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
   $scope.exportKeys = function() {
       var identity = DarkWallet.getIdentity();
       var allAddresses;
+      var userProvidedInput;
       if ($scope.tools.exportAddresses) {
           allAddresses = $scope.tools.exportAddresses.split('\n');
+	  userProvidedInput = true;
       } else {
           allAddresses = identity.wallet.getPocketAddresses('all');
+	  userProvidedInput = false;
       }
 
       modals.password(_('Write your password'), function(password) {
@@ -25,8 +28,8 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
                       identity.wallet.getPrivateKey(walletAddress, password, function(privKey) {
                           output += address + ',' + privKey.toWIF(Bitcoin.networks[identity.wallet.network]) + '\n';
                       } );
-                  } else if (allAddresses.length == 1) {
-                      notify.error(_('Address not from this wallet'));
+                  } else if (userProvidedInput) {
+                      notify.error(_('Address not from this wallet'), _(address));
                   }
               }
 
