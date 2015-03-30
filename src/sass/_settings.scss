@@ -423,7 +423,7 @@ $input-border-color: transparent;
 $input-focus-border-color: lighten($input-bg-color, 10%);// $input-border-style: solid;
 // $input-border-width: 1px;
 // $input-border-radius: $global-radius;
-$input-disabled-bg: #888;
+$input-disabled-bg: $body-bg;
 // $input-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 $input-include-glowing-effect: false;
 
@@ -533,7 +533,7 @@ $select-bg-color: $input-bg-color;
 // $off-canvas-label-text-transform: uppercase;
 // $off-canvas-label-font-weight: $font-weight-bold;
  $off-canvas-label-bg: #333;
-// $off-canvas-label-border-top: 1px solid scale-color(#444, $lightness: 14%);
+ $off-canvas-label-border-top: none;
 // $off-canvas-label-border-bottom: none;
 // $off-canvas-label-margin:0;
 // $off-canvas-link-padding: rem-calc(10, 15);
