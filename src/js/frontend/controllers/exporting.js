@@ -22,6 +22,7 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
           try {
               var output = '';
               for (var i = 0; i < allAddresses.length; i++) {
+		  // Fill wallet address structure with index, type, etc.
                   var address = allAddresses[i];
                   var walletAddress = identity.wallet.getWalletAddress(address);
                   // Make sure we only export normal and stealth keys
