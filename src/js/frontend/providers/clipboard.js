@@ -10,7 +10,7 @@ var clipboard = {
     text = text.replace(/\n/g, "<br />");
     var copyDiv = $window.document.createElement('div');
     copyDiv.contentEditable = true;
-    copyDiv.style="position: fixed;";
+    //copyDiv.style="position: fixed;";
     $window.document.getElementById('fixed').appendChild(copyDiv);
     copyDiv.innerHTML = text;
     copyDiv.unselectable = "off";
