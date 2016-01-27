@@ -140,10 +140,7 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKe
     // new ephemeral key
     var encKey = Bitcoin.ECKey.fromBytes(ephemKeyBytes);
     var ephemKey = bufToArray(encKey.pub.Q.getEncoded(true));
-    if (newStealth) {
-        // For new stealth remove the first byte
-        ephemKey.splice(0, 1);
-    }
+    // For new stealth we will later remove the first byte of the ephem
 
     // Generate shared secret
     var c = Stealth.stealthDH(encKey.d, scanKey);
@@ -343,7 +340,7 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
 Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ephemKeyBytes, initialNonce) {
     if (nonceVersion === undefined) { nonceVersion = Stealth.nonceVersion; };
     if (addressVersion === undefined) { addressVersion = Bitcoin.networks.bitcoin.pubKeyHash; };
-    var outHash, ephemKey, pubKey;
+    var outHash, ephemKey, pubKey, ephemKeyRaw;
     var stealthAddress = Stealth.parseAddress(recipient);
     var stealthPrefix = stealthAddress.prefix;
     var scanKeyBytes = stealthAddress.scanKey;
@@ -360,7 +357,11 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
     do {
         var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, addressVersion, ephemKeyBytes, !nonceVersion);
         recipient = stealthData[0];
-        ephemKey = stealthData[1];
+        ephemKeyRaw = stealthData[1];
+        ephemKey = ephemKeyRaw.slice(0);
+        if (!nonceVersion) {
+            ephemKey.splice(0, 1);
+        }
         pubKey = stealthData[2];
         nonce = startingNonce;
         var iters = 0;
@@ -383,7 +384,7 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
     // we finally mined the ephemKey that makes the hash match
     var stealthOut = Stealth.buildNonceScript(ephemKey, nonce-1, nonceVersion);
     newTx.addOutput(stealthOut, 0);
-    return {address: recipient, ephemKey: ephemKey, pubKey: pubKey};
+    return {address: recipient, ephemKey: ephemKeyRaw, pubKey: pubKey};
 };
 
 return Stealth;
