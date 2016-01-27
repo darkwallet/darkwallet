@@ -131,7 +131,7 @@ Stealth.parseAddress = function(recipient) {
  * @param {Object} ephemKeyBytes (optional) Ephemeral private key as byte array,
  *                                if null will be generated.
  */
-Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKeyBytes, newStealth) {
+Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKeyBytes) {
     if (version === null || version === undefined) { version = Bitcoin.networks.bitcoin.pubKeyHash; };
     // Parse public keys into api objects
     var scanKey = Stealth.importPublic(scanKeyBytes);
@@ -355,7 +355,7 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
     var spendKeyBytes = stealthAddress.spendKeys[0];
     var nonce;
     do {
-        var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, addressVersion, ephemKeyBytes, !nonceVersion);
+        var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, addressVersion, ephemKeyBytes);
         recipient = stealthData[0];
         ephemKeyRaw = stealthData[1];
         ephemKey = ephemKeyRaw.slice(0);
