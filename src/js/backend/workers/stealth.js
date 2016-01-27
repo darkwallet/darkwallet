@@ -35,6 +35,8 @@ requirejs(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
       // Check the array
       stealthArray.forEach(function(stealthData) {
           var ephemKey = Bitcoin.convert.hexToBytes(stealthData[0]);
+          var checkSign = (ephemKey.length == 32);
+
           var address = stealthData[1];
           var txId = stealthData[2];
 
@@ -45,14 +47,26 @@ requirejs(['util/stealth', 'bitcoinjs-lib'], function(Stealth, Bitcoin) {
           stealthCache[pocketIndex].push(txId+address);
 
           // Try out the stealth row
-          var myKeyBuf = Stealth.uncoverPublic(scanKey, ephemKey, spendKey);
+          var myKeyBuf = Stealth.uncoverPublic(scanKey, checkSign?[2].concat(ephemKey):ephemKey, spendKey);
 
           // Turn to address
           var myKeyHash = Bitcoin.crypto.hash160(myKeyBuf);
           var myAddress = new Bitcoin.Address(myKeyHash, versions.address);
 
           if (address == myAddress.toString()) {
-              matches.push({address: address, ephemKey: ephemKey, pocketIndex: pocketIndex, pubKey: myKeyBuf.toJSON().data});
+              matches.push({address: address, ephemKey: checkSign?[2].concat(ephemKey):ephemKey, pocketIndex: pocketIndex, pubKey: myKeyBuf.toJSON().data});
+          } else if (checkSign) {
+              // Final stealth spec doesn't send the sign for ephemeral key :P
+              // Try out the stealth row
+              var myKeyBuf3 = Stealth.uncoverPublic(scanKey, [3].concat(ephemKey), spendKey);
+
+              // Turn to address
+              var myKeyHash3 = Bitcoin.crypto.hash160(myKeyBuf3);
+              var myAddress = new Bitcoin.Address(myKeyHash3, versions.address);
+
+              if (address == myAddress.toString()) {
+                  matches.push({address: address, ephemKey: [3].concat(ephemKey), pocketIndex: pocketIndex, pubKey: myKeyBuf3.toJSON().data});
+              }
           } else if (oldMode) {
               // Backwards compatibility introduced in 0.4.0, remove later... we don't do this from v5 (bip44) store on,
               // since scanning old stealth addresses is discontinued anyways (starting on 0.7.0).

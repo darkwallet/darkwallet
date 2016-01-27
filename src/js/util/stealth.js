@@ -164,10 +164,6 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKe
  * @private
  */
 Stealth.uncoverStealth = function(scanSecret, ephemKeyBytes) {
-    if (ephemKeyBytes.length === 32) {
-        // Set the first byte as 0 for new Stealth
-        ephemKeyBytes.splice(0, 0, 2);
-    }
     // Parse public keys into api objects
     var decKey = Stealth.importPublic(ephemKeyBytes);
 
