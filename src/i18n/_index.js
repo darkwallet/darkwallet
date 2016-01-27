@@ -3,12 +3,14 @@
 define(function() {
     var lang = [
         {"name": "English (US)", "code": "en_US"},
-        {"name": "Español (España)", "code": "es_ES"}
+        {"name": "Español (España)", "code": "es_ES"},
+        {"name": "Français (France)", "code": "fr_FR"}
     ];
     
     var fallbacks = {
         "en": "en_US",
-        "es": "es_ES"
+        "es": "es_ES",
+        "fr": "fr_FR"
     };
     
     Object.defineProperty(lang, 'preferedLanguage', {
