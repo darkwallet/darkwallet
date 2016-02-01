@@ -134,12 +134,13 @@ a.button,
 button.square { @include single-transition(); }
 
 #maintitle {
-	-webkit-perspective: 100px;
+	-webkit-perspective: 140px;
 
  }
 
 
 #logo.busy {
+		-webkit-backface-visibility: visible;
     -webkit-animation-name: logoactive;
     -webkit-animation-duration: 1.4s;
     -webkit-animation-iteration-count: infinite;
