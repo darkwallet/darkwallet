@@ -5,28 +5,30 @@
         </div>
     </div>
   </div>
+  <div class="row" ng-hide="overviewPocket">
+    <div ng-include="'tools/quicksend.html'" class="small-12 large-6 columns"></div>
+    <div class="small-12 large-6 columns">
+
+    		<div class="row collapse panel radius">
+              <div class="small-12 columns">
+                <h5>{{pocket.type=='multisig'?('Fund address'|_):pocket.stealth?('Stealth address'|_):('Main address'|_)}} ({{pocket.name | pocket}})</h5>
+    			    </div>
+    	        <div class="small-8 medium-10 columns">
+    	          <input type="text" class="prefix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
+    	        </div>
+    	        <div class="small-2 medium-1 columns">
+    	          <a href="" tooltip-append-to-body="true" tooltip="{{'Copy to clipboard'|_}}" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square icon-copy"></a>
+    	        </div>
+    	        <div class="small-2 medium-1 columns">
+    	          <a class="button postfix square radius icon-qrcode" tooltip-append-to-body="true" tooltip="{{'Show QR code'|_}}" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
+    	        </div>
+    		</div>
+
+    </div>
+
+
+  </div>
   <div class="row" ng-hide="pocket.isAll||pocket.readOnly">
-    <div ng-include="'tools/quicksend.html'" class="large-6 columns">
-    </div>
-    <div class="large-6 columns">
-      <div class="panel radius">
-		<div class="row collapse">
-	        <h5>{{pocket.type=='multisig'?('Fund address'|_):pocket.stealth?('Stealth address'|_):('Main address'|_)}}</h5>
-			<div class="small-1 columns text-center">
-				<identicon ng-hide="row.contact" icon-size="38" hash="pocket.mainHash"></identicon>
-			</div>
-	        <div class="small-9 columns">
-	          <input type="text" class="prefix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
-	        </div>
-	        <div class="small-1 columns">
-	          <a href="" tooltip-append-to-body="true" tooltip="{{'Copy to clipboard'|_}}" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square icon-copy"></a>
-	        </div>
-	        <div class="small-1 columns">
-	          <a class="button postfix square radius icon-qrcode" tooltip-append-to-body="true" tooltip="{{'Show QR code'|_}}" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
-	        </div>
-		</div>
-      </div>
-    </div>
   </div>
   <div class="row">
 	  <div class="small-12 columns" ng-if="pocket.isAll" ng-controller="OverviewCtrl">
@@ -35,7 +37,7 @@
 			<li ng-repeat="pocket in allPockets" ng-click="selectGridPocket(pocket)">
 				<div class="panel radius pocket-square">
 	           		<h5>{{pocket.name | pocket}} <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small></h5>
-        
+
 	           		<span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.confirmed | formatFiat}}</span></span>
 	           		<span ng-show="!pocket.balance.confirmed">{{'No coins'|_}}</span>
 	           		<span ng-show="pocket.balance.unconfirmed"><small><br>{{'Unconfirmed'|_}}: {{pocket.balance.unconfirmed | amountFilter}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></small></span>
@@ -49,37 +51,37 @@
 
         <div class="row collapse panel radius transactions">
             <h5>{{'Latest transactions'|_}}</h5>
-            <div class="row collapse"  ng-repeat="row in historyRows track by $index">
-             <div class="small-5 medium-4 large-7 columns">
+            <div class="row collapse" ng-repeat="row in historyRows track by $index" ng-class="{'unconfirmed': !row.height}">
+             <div class="small-12 medium-6 large-7 columns">
                <div tooltip-append-to-body="true" class="ellipsis">
-                <i tooltip="{{row.address}}" ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
-                <identicon ng-show="row.contact" icon-size="24" hash="row.contact.data.hash"></identicon>
-				<identicon ng-hide="row.contact" icon-size="24" data="row.address"></identicon>
-				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> {{'stealth'|_}}</span>
-                <span ng-show="!row.label">
-                {{row.contact ? row.contact.data.name : row.address}}
-                </span>
-                <span tooltip="{{row.address}}" tooltip-append-to-body="true" ng-show="row.label">
-                {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
-                </span>
-		<span class="label radius address" ng-repeat="outAddress in row.outAddresses" ng-show="[undefined, 'change', 'unused'].indexOf(outAddress.label)==-1&&outAddress.type!='multisig'&&outAddress.label!=outAddress.address">{{outAddress.label}}</span>
+                 <i tooltip="{{row.address}}" ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
+                 <identicon ng-show="row.contact" icon-size="24" hash="row.contact.data.hash"></identicon>
+				         <identicon ng-hide="row.contact" icon-size="24" data="row.address"></identicon>
+				         <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> {{'stealth'|_}}</span>
+                 <span ng-show="!row.label">
+                   {{row.contact ? row.contact.data.name : row.address}}
+                 </span>
+                 <span tooltip="{{row.address}}" tooltip-append-to-body="true" ng-show="row.label">
+                   {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
+                 </span>
+		             <span class="label radius address" ng-repeat="outAddress in row.outAddresses" ng-show="[undefined, 'change', 'unused'].indexOf(outAddress.label)==-1&&outAddress.type!='multisig'&&outAddress.label!=outAddress.address">{{outAddress.label}}</span>
                </div>
              </div>
-             <div ng-show="row.height" class="small-3 medium-2 columns ellipsis">
-               <span title="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
+
+             <div class="small-4 medium-2 columns ellipsis">
+               <span ng-show="row.height" tooltip-append-to-body="true" tooltip="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
+               <span ng-show="!row.height">{{'Unconfirmed'|_}}</span>
              </div>
-             <div ng-show="!row.height" class="small-3 medium-2 columns">
-               {{'none'|_}}
-             </div>
-             <div class="small-3 large-1 columns">
-                
+
+             <div class="small-4 medium-1 large-1 columns">
+
              {{row.partial | amountFilter}}
              </div>
-             <div class="hide-for-small medium-3 large-2 columns text-right">
+             <div class="small-4 medium-2 large-2 columns text-right">
               {{row.current | formatBtc:true}}
              </div>
             </div>
-  
+
         </div>
       </div>
   </div>

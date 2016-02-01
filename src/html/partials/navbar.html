@@ -1,0 +1,70 @@
+<div class="pocketnav left-off-canvas-toggle ">
+    <section class="left" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
+        <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> {{'Pockets'|_}}</span>
+        <span ng-show="pocket.type==='multisig'" class="fa fa-list"> {{'Multisig'|_}}</span>
+        <span ng-show="pocket.type==='readonly'" class="fa fa-list"> {{'Watch-only'|_}}</span>
+    </section>
+    <section class="left" >
+        <span class="fa fa-list" ng-show="selectedPocket==='newMultisig'"> {{'Multisig'|_}}</span>
+        <span class="fa fa-list" ng-show="selectedPocket==='newPocket'"> {{'Pocket'|_}}</span>
+    </section>
+    <div class="tri"></div>
+</div>
+<div ng-click="titleClick()" class="pocketnav ng-hide">
+    <section class="left" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
+        <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> {{'Pockets'|_}}</span>
+        <span ng-show="pocket.type==='multisig'" class="fa fa-list"> {{'Multisig'|_}}</span>
+        <span ng-show="pocket.type==='readonly'" class="fa fa-list"> {{'Watch-only'|_}}</span>
+    </section>
+    <section class="left" >
+        <span class="fa fa-list" ng-show="selectedPocket==='newMultisig'"> {{'Multisig'|_}}</span>
+        <span class="fa fa-list" ng-show="selectedPocket==='newPocket'"> {{'Pocket'|_}}</span>
+    </section>
+    <div class="tri"></div>
+</div>
+  <!-- Pocket name and balance -->
+<section class="middle tab-bar-section" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
+
+<h1 class="title lin">
+    <span class="hide-for-small"><identicon ng-hide="overviewPocket" class="" icon-size="24" hash="pocket.mainHash"></identicon></span>
+    {{pocket.name | pocket}}
+</h1>
+
+        <div id="currentbalance" class="lin" ng-if="pocket.balance" tooltip="{{'Confirmed'|_}}: {{pocket.balance.confirmed | formatBtc}}">
+          {{pocket.balance.current | formatBtc}}
+        </div>
+        <div class="lin" ng-if="pocket.balance" ng-show="!pocket.incoming && !pocket.outgoing">
+          {{pocket.balance.current | formatFiat}}
+        </div>
+        <div class="lin" ng-show="pocket.incoming || pocket.outgoing">
+
+          <i ng-show="pocket.incoming" class="fa-sign-in green fa transaction-icon"></i>
+          <span ng-show="pocket.incoming" class="pocket-activity">{{'Receiving'|_}}</span>
+          <span ng-show="pocket.incoming"> {{pocket.incoming | formatBtc}}</span>
+
+          <span ng-show="pocket.incoming && pocket.outgoing"> / </span>
+
+          <i ng-show="pocket.outgoing" class="fa-sign-out red fa transaction-icon"></i>
+          <span ng-show="pocket.outgoing" class="pocket-activity">{{'Sending'|_}}</span>
+          <span ng-show="pocket.outgoing"> {{pocket.outgoing | formatBtc}}</span>
+        </div>
+        <div class="lin" ng-if="overviewPocket && overviewPocket.current && overviewPocket.current !== pocket.balance.current">
+          <b>{{'Including Multisig'|_}}:</b> {{overviewPocket.current | formatBtc}}
+        </div>
+        <div class="lin" ng-if="overviewPocket && overviewPocket.current && overviewPocket.current !== pocket.balance.current">
+          {{overviewPocket.current | formatFiat}}
+        </div>
+
+</section>
+  <!-- New multisig header -->
+<section class="middle tab-bar-section" ng-if="selectedPocket==='newMultisig'">
+<h1 class="title lin">
+    {{'New Multisig Fund'|_}}
+</h1>
+  </section>
+  <!-- New pocket header -->
+  <section class="middle tab-bar-section" ng-if="selectedPocket==='newPocket'">
+<h1 class="title lin">
+    {{'New Pocket'|_}}
+</h1>
+  </section>

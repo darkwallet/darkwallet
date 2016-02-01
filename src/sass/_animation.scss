@@ -1,35 +1,35 @@
-div.cardflipper > div.wizard.ng-animate { 
-	position: absolute; 
+div.cardflipper > div.wizard.ng-animate {
+	position: absolute;
 	width: 100%;
 	@include single-transition(all,500ms,linear);
 }
 
-div.cardflipper > div.wizard.ng-enter { 
+div.cardflipper > div.wizard.ng-enter {
 	-webkit-transform: rotateY(-180deg);
 	opacity:0.3;
 }
 
-div.cardflipper > div.wizard.ng-leave.ng-leave-active { 
+div.cardflipper > div.wizard.ng-leave.ng-leave-active {
 	-webkit-transform: rotateY(180deg);
 	opacity: 0.3;
 }
 
 div.cardflipper > div.wizard.ng-leave,
-div.cardflipper > div.wizard.ng-enter.ng-enter-active { 
+div.cardflipper > div.wizard.ng-enter.ng-enter-active {
 	-webkit-transform: rotateY(0deg);
 	opacity: 1;
 }
 
 div.totheright div.tab-scroller.ng-enter,
-div.totheleft div.tab-scroller.ng-leave.ng-leave-active { 
+div.totheleft div.tab-scroller.ng-leave.ng-leave-active {
 	opacity: 0;
-	-webkit-transform: translate3d(25%,0,0) scale3d(0.3,1,1); 
+	-webkit-transform: translate3d(25%,0,0) scale3d(0.3,1,1);
 	-webkit-transform-origin: right;
 }
 
 div.totheright div.tab-scroller.ng-leave.ng-leave-active,
-div.totheleft div.tab-scroller.ng-enter { 
-	opacity: 0; 
+div.totheleft div.tab-scroller.ng-enter {
+	opacity: 0;
 	-webkit-transform: translate3d(-25%,0,0) scale3d(0.3,1,1);
 	-webkit-transform-origin: left;
 }
@@ -37,22 +37,28 @@ div.totheleft div.tab-scroller.ng-enter {
 div.totheright div.tab-scroller.ng-enter-active,
 div.totheleft div.tab-scroller.ng-enter-active,
 div.totheleft div.tab-scroller.ng-leave,
-div.totheright div.tab-scroller.ng-leave { 
-	opacity: 1; 
+div.totheright div.tab-scroller.ng-leave {
+	opacity: 1;
 	-webkit-transform: translate3d(0,0,0) scale3d(1,1,1);
 	position: absolute;
 	width: 97%;
 }
 
-.transactions div.ng-leave-active,
+
+.tab-bar-section.middle.ng-hide,
+.tab-bar-section.middle.ng-leave-active,
+.tab-bar-section.middle.ng-enter,
+.transactions div.ng-leave.ng-leave-active,
 .transactions div.ng-enter {
   opacity:0;
 }
 
+.tab-bar-section.middle.ng-enter.ng-enter-active,
 .transactions div.ng-enter.ng-enter-active,
 .transactions div.ng-leave {
   opacity:1;
 }
+
 
 
 div.modal-ng.ng-animate.ng-enter,
@@ -68,7 +74,7 @@ div.modal-ng + div.container.animations-disabled { -webkit-transform: none; disp
 
 div.scroller.ng-animate {
 	position: absolute;
- 	width: 100%;	
+ 	width: 100%;
 }
 
 div.scroller.ng-animate.ng-enter, nav.top-bar {
@@ -85,8 +91,8 @@ div.scroller.ng-animate.ng-leave {
 
 div.send-advanced.ng-leave.ng-leave-active,
 div.send-advanced.ng-enter,
-div.popuptabs > div.ng-enter { 
-	-webkit-transform: scale3d(1,0,1); 
+div.popuptabs > div.ng-enter {
+	-webkit-transform: scale3d(1,0,1);
 	-webkit-transform-origin: top;
 	opacity: 0;
 }
@@ -109,6 +115,7 @@ div.modal-ng.ng-animate.ng-enter { @include single-transition(all, 300ms, ease-o
 nav.top-bar { @include single-transition(height, 300ms, ease-out); }
 .top-bar section ul { @include single-transition(all, 300ms, ease-out); }
 
+li.active,
 .pocketnav,
 section.left,
 .tab-bar-section.middle,
@@ -117,21 +124,30 @@ div.send-advanced.ng-hide,
 span.tooltip.fade.ng-animate,
 .pocket-square,
 .contact-mosaic-square,
-.contact-mosaic-square img, 
-.contact-mosaic-square .contact-label, 
-.contact-mosaic-square .contact-menu, 
-.top-bar a, 
-.tabs dd > a, 
-button.button, 
-a.button, 
+.contact-mosaic-square img,
+.contact-mosaic-square .contact-label,
+.contact-mosaic-square .contact-menu,
+.top-bar a,
+.tabs dd > a,
+button.button,
+a.button,
 button.square { @include single-transition(); }
 
-#maintitle { -webkit-perspective: 100px; }
+#maintitle {
+	-webkit-perspective: 100px;
+
+ }
+
 
 #logo.busy {
-    -webkit-animation-name: spin;
-    -webkit-animation-duration: 1.6s;
+    -webkit-animation-name: logoactive;
+    -webkit-animation-duration: 1.4s;
     -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes logoactive {
+  from { -webkit-transform: rotateY(0deg); }
+  to { -webkit-transform: rotateY(360deg); }
 }
 
 a.glow.button, button.glow, input[type="submit"].glow {
@@ -161,12 +177,6 @@ a.glow.button, button.glow, input[type="submit"].glow {
   from { background-color: $primary-color; }
   50% { background-color: darken($primary-color, 10%); }
   to { background-color: $primary-color; }
-}
-
-@-webkit-keyframes spin {
-  from { -webkit-transform: rotateY(0deg); }
-  50% { -webkit-transform: rotateY(180deg); }
-  to { -webkit-transform: rotateY(360deg); }
 }
 
 @-webkit-keyframes rotateFoldBottom {

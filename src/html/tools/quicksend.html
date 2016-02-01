@@ -2,16 +2,16 @@
   <form name="quickSendForm" ng-submit="quicksend.next=true;validateSendForm();" novalidate ng-hide="quicksend.next">
     <div class="row collapse">
       <h5>{{'Send'|_}}</h5>
-      <div class="small-1 columns">
-        <a href="" tooltip-append-to-body="true" tooltip="{{'Select from contacts'|_}}" ng-click="modals.open('pick-contact', {type: 'address', field: quicksend}, addAddress)" class="fa button square prefix radius fa-users"></a>
+      <div class="small-2 medium-1 columns">
+        <a href="" tooltip-append-to-body="true" tooltip="{{'Select from contacts'|_}}" ng-click="modals.open('pick-contact', {type: 'address', field: quicksend}, addAddress)" class="button square prefix radius icon-contacts"></a>
       </div>
-      <div class="small-1 columns">
-        <a href="" tooltip-append-to-body="true" tooltip="{{'Scan QR code'|_}}" ng-click="modals.scanQr(quicksend)" class="fa button square prefix fa-qrcode"></a>
+      <div class="small-2 medium-1 columns">
+        <a href="" tooltip-append-to-body="true" tooltip="{{'Scan QR code'|_}}" ng-click="modals.scanQr(quicksend)" class="button square prefix icon-qrcode"></a>
       </div>
-      <div class="small-6 columns">
+      <div class="small-8 medium-7 large-6 columns">
         <input ng-change="validateSendForm()" type="text" ng-model="quicksend.address" required btc-address placeholder="{{'Bitcoin address...'|_}}" class="nomarginbottom" />
       </div>
-      <div class="small-4 columns">
+      <div class="small-6 medium-3 large-4 columns">
         <button type="submit" ng-disabled="!quickSendForm.$valid" ng-class="{glow:quickSendForm.$valid}" class="button postfix radius nomarginbottom fa fa-arrow-right">{{'Next'|_}}</button>
       </div>
     </div>

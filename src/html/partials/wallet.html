@@ -1,106 +1,28 @@
-    <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include>
-    <div class="inner-wrap pinned">
+    <!-- Content area -->
+    		<div ng-hide="selectedPocket==='newMultisig'||selectedPocket==='newPocket'">
 
-        <nav class="tab-bar">
-			<div class="pocketnav left-off-canvas-toggle hide-for-large-up">
-	            <section class="left" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
-	                <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> {{'Pockets'|_}}</span>
-	                <span ng-show="pocket.type==='multisig'" class="fa fa-list"> {{'Multisig'|_}}</span>
-	                <span ng-show="pocket.type==='readonly'" class="fa fa-list"> {{'Watch-only'|_}}</span>
-	            </section>
-		    	<section class="left" >
-	                <span class="fa fa-list" ng-show="selectedPocket==='newMultisig'"> {{'Multisig'|_}}</span>
-	                <span class="fa fa-list" ng-show="selectedPocket==='newPocket'"> {{'Pocket'|_}}</span>
-	            </section>
-				<div class="tri"></div>
-			</div>
-			<div ng-click="titleClick()" class="pocketnav">
-	            <section class="left" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
-	                <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> {{'Pockets'|_}}</span>
-	                <span ng-show="pocket.type==='multisig'" class="fa fa-list"> {{'Multisig'|_}}</span>
-	                <span ng-show="pocket.type==='readonly'" class="fa fa-list"> {{'Watch-only'|_}}</span>
-	            </section>
-		    	<section class="left" >
-	                <span class="fa fa-list" ng-show="selectedPocket==='newMultisig'"> {{'Multisig'|_}}</span>
-	                <span class="fa fa-list" ng-show="selectedPocket==='newPocket'"> {{'Pocket'|_}}</span>
-	            </section>
-				<div class="tri"></div>
-			</div>
-            <!-- Pocket name and balance -->
-            <section class="middle tab-bar-section" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
-			    <h1 class="title lin">
-			        {{pocket.name | pocket}}
-			    </h1>
-				<div class="lin" ng-if="pocket.balance" tooltip="{{'Confirmed'|_}}: {{pocket.balance.confirmed | formatBtc}}">
-					{{pocket.balance.current | formatBtc}}
-				</div>
-				<div class="lin" ng-if="pocket.balance">
-					{{pocket.balance.current | formatFiat}}
-				</div>
-				<div class="lin" ng-show="pocket.incoming">
-					{{'Receiving'|_}}: {{pocket.incoming | formatBtc}}
-				</div>
-				<div class="lin" ng-show="pocket.outgoing">
-					{{'Sending'|_}}: {{pocket.outgoing | formatBtc}}
-				</div>
-				<div class="lin" ng-if="overviewPocket && overviewPocket.current && overviewPocket.current !== pocket.balance.current">
-					<b>{{'Including Multisig'|_}}:</b> {{overviewPocket.current | formatBtc}}
-				</div>
-				<div class="lin" ng-if="overviewPocket && overviewPocket.current && overviewPocket.current !== pocket.balance.current">
-					{{overviewPocket.current | formatFiat}}
-				</div>
-            </section>
-            <!-- New multisig header -->
-            <section class="middle tab-bar-section" ng-if="selectedPocket==='newMultisig'">
-			    <h1 class="title lin">
-			        {{'New Multisig Fund'|_}}
-			    </h1>
-            </section>
-            <!-- New pocket header -->
-            <section class="middle tab-bar-section" ng-if="selectedPocket==='newPocket'">
-			    <h1 class="title lin">
-			        {{'New Pocket'|_}}
-			    </h1>
-            </section>
-        </nav>
+      <!-- Tabs -->
+      		<div class="tabbable" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
+  					<div class="row topmargin">
+  						<div class="small-12 columns">
+  	        				<dl class="tabs">
+  	          				  	<dd ng-show="tab.isVisible()" ng-class="{active: tab.isActive()}" ng-repeat="tab in tabs.pages">
+  	                         <a ng-click="tab.select()">{{tab.heading|_}}</a>
+  	          					</dd>
+  	        				</dl>
+  						</div>
+  					</div>
+         		<div class="tab-scroller ng-animate-disabled" ng-include="tabs.pages[tabs.current].tplUrl"></div>
+      		 </div>
+    	  </div>
+   		 <!-- New multisig dialog -->
+    		<div ng-if="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 medium-9 columns">
+        	  <ng-include src="'wallet/new_fund.html'">
+        		</ng-include>
+    		</div>
 
-        <aside class="left-off-canvas-menu">
-            <ng-include src="'wallet/pockets.html'"></ng-include>
-        </aside>
-        <section class="main-section">
-
-  <!-- Content area -->
-  			<div ng-hide="selectedPocket==='newMultisig'||selectedPocket==='newPocket'">
-    
-    <!-- Tabs -->
-    			<div class="tabbable" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
-					<div class="row topmargin">
-						<div class="small-12 columns">
-	        				<dl class="tabs">
-	          				  	<dd ng-show="tab.isVisible()" ng-class="{active: tab.isActive()}" ng-repeat="tab in tabs.pages">
-	              <a ng-click="tab.select()">{{tab.heading|_}}</a>
-	          					</dd>
-	        				</dl>
-						</div>
-					</div>
-       			 <div class="tab-scroller ng-animate-disabled" ng-include="tabs.pages[tabs.current].tplUrl">
-        		 </div>
-    		 </div>
-  	   </div>
- 		 <!-- New multisig dialog -->
-  		<div ng-if="selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 medium-9 columns">
-      	  <ng-include src="'wallet/new_fund.html'">
-      		</ng-include>
-  		</div>
-
- 		 <!-- New pocket dialog -->
-  		<div ng-if="selectedPocket==='newPocket'" class="large-10 medium-9 columns">
-      	  <ng-include src="'wallet/new_pocket.html'">
-      		</ng-include>
-  		</div>
-
-
-        </section>
-
-        <a class="exit-off-canvas"></a>
-    </div>
+   		 <!-- New pocket dialog -->
+    		<div ng-if="selectedPocket==='newPocket'" class="large-10 medium-9 columns">
+        	  <ng-include src="'wallet/new_pocket.html'">
+        		</ng-include>
+    		</div>
