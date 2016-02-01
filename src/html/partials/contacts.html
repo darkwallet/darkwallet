@@ -53,7 +53,7 @@
       				<div ng-click="openContact(contact)" class="contact-mosaic-square">
         				<identicon icon-size="64" hash="contact.data.hash" title="{{contact.mainKey.address}}"></identicon>
 
-					<div class="contact-label"> <i ng-class="{'icon-bitcoin': contact.data.idKey===undefined&&contact.mainKey.type=='address', 'icon-key': contact.data.idKey===undefined&&contact.mainKey.type=='pubkey', 'icon-stealth': contact.data.idKey===undefined&&contact.mainKey.type=='stealth', 'icon-pcode': contact.data.idKey===undefined&&contact.mainKey.type=='pcode', 'icon-id': !(contact.data.idKey===undefined)}"></i> {{contact.data.name}} <span class="label radius" ng-show="contact.online && contact.online.timestamp + fadeTimeout > lastTimestamp">online</span>
+					<div class="contact-label"> <i ng-class="{'icon-bitcoin': contact.data.idKey===undefined&&contact.mainKey.type=='address', 'icon-key': contact.data.idKey===undefined&&contact.mainKey.type=='pubkey', 'icon-stealth': contact.data.idKey===undefined&&contact.mainKey.type=='stealth', 'fa-ticket': contact.data.idKey===undefined&&contact.mainKey.type=='pcode', 'fa': contact.data.idKey===undefined&&contact.mainKey.type=='pcode', 'icon-id': !(contact.data.idKey===undefined)}"></i> {{contact.data.name}} <span class="label radius" ng-show="contact.online && contact.online.timestamp + fadeTimeout > lastTimestamp">online</span>
             				</div>
 				</div>
       			  </li>
