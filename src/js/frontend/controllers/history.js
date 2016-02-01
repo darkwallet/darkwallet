@@ -143,58 +143,11 @@ function (controllers, DarkWallet, Port) {
 
 
   /**
-   * Select fund as current pocket
-   */
-  $scope.selectFund = function(fund, rowIndex) {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = false;
-      $tabs.open('multisig', rowIndex);
-  };
-
-
-  /**
    * Set overview information (for extra balance on the dashboard area header)
    */
   $scope.setOverview = function(overview) {
       $scope.overviewPocket = overview;
   }
-
-  /**
-   * Select an hd pocket
-   */
-  $scope.selectPocket = function(pocketName, rowIndex) {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = false;
-      if (pocketName === undefined) {
-          $tabs.open();
-      } else {
-          $tabs.open(undefined, rowIndex);
-      }
-  };
-
-  $scope.selectReadOnly = function(pocket, rowIndex) {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = false,
-      $tabs.open('readonly', rowIndex);
-  };
-
-  /**
-   * Start creating a new multisig
-   */
-  $scope.newMultiSig = function() {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = 'newMultisig';
-      $scope.pocket.isAll = false;
-  };
-
-  /**
-   * Start creating a new pocket
-   */
-  $scope.newPocket = function() {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = 'newPocket';
-      $scope.pocket.isAll = false;      
-  };
 
 
   /**
