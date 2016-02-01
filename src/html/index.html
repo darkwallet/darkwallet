@@ -32,9 +32,9 @@
             <section class="main-section">
 
               <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include>
-              <div class="" ng-if="identityName||isActive('/new_wallet')" ng-view>
+              <div class="scrolldiv container">
+                <div class="" ng-if="identityName||isActive('/new_wallet')" ng-view></div>
               </div>
-
 
             </section>
 

@@ -4829,9 +4829,6 @@ span.tooltip.fade.in {
   padding-top: 0.6em;
   overflow: hidden; }
 
-div.container {
-  height: 100%; }
-
 div.cardflipper {
   margin-top: 2em;
   -webkit-perspective: 800px; }
@@ -5327,6 +5324,12 @@ div.tri {
   right: 0;
   padding: 0;
   opacity: 1; }
+
+section.main-section, div.container {
+  height: 100%; }
+
+div.scrolldiv {
+  overflow-y: scroll; }
 
 nav.tab-bar {
   overflow: hidden; }
