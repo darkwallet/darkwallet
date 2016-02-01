@@ -9,7 +9,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   /**
    * History provider class
-   */
+   */ 
   function HistoryProvider($scope, $wallet) {
       this.pocket = {index: undefined, name: _('All Pockets'), mpk: undefined, addresses: $wallet.allAddresses, isAll: true, type: 'init', incoming: 0, outgoing: 0};
       this.txFilter = 'last';
@@ -20,7 +20,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   /**
    * Balance
-   */
+   */ 
   HistoryProvider.prototype.calculateBalance = function(pocket) {
       var identity = DarkWallet.getIdentity();
       return identity.wallet.getBalance(pocket.index, pocket.type);
@@ -28,7 +28,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   /**
    * Pocket change
-   */
+   */ 
   HistoryProvider.prototype.isCurrentPocket = function(pocketId) {
       if (this.pocket.isAll) {
           return true;
@@ -73,7 +73,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           }
       }
 
-      // If type is the same or
+      // If type is the same or 
       if (type === this.pocket.type && idx === this.pocket.lastIndex && !force) {
           return false;
       }
@@ -126,7 +126,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
 
   HistoryProvider.prototype.selectAll = function() {
       var identity = DarkWallet.getIdentity();
-      this.pocket.name = DarkWallet.getIdentity().name;
+      this.pocket.name = _('All Pockets');
       this.pocket.index = undefined;
       this.pocket.mpk = undefined;
       this.pocket.type = 'all';
@@ -224,7 +224,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
           }
       }
   };
-
+ 
   // Filter the rows we want to show
   HistoryProvider.prototype.chooseRows = function() {
       this.pocket.incoming = 0;
@@ -366,7 +366,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
       while(idx<rows.length) {
           var row = rows[idx];
           this.fillRowContact(contacts, row);
-
+          
           var value = prevRow.partial;
 
           row.partial = this.getRowImpact(row);
@@ -405,7 +405,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
                   this.pocket.outgoing += -rowImpact;
               } else {
                   this.pocket.incoming += rowImpact;
-              }
+              } 
           }
           // only add pocket transactions for now
           return ((typeof row.inPocket === 'number') || (typeof row.outPocket === 'number'));
