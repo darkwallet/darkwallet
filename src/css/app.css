@@ -5143,6 +5143,9 @@ textarea.script {
 .transaction-icon.red {
   color: #c92441; }
 
+.pocket-square-wrapper {
+  overflow: hidden; }
+
 .pocket-square {
   min-height: 120px;
   margin-bottom: -0.3rem;
@@ -5254,6 +5257,21 @@ ul #maintitle {
 
 div.pockets {
   z-index: 2; }
+
+.editpocket {
+  text-align: right; }
+
+.editpocket a {
+  position: absolute;
+  margin-left: -2rem;
+  padding: 0.6rem;
+  background: black;
+  color: white;
+  opacity: 0.4; }
+  .editpocket a:hover {
+    background: white;
+    color: black;
+    opacity: 1; }
 
 div.inner-wrap {
   min-height: inherit;
