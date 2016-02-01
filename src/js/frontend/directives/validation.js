@@ -12,6 +12,7 @@ directives.directive('btcAddress', function() {
           var validAddresses = [
               identity.wallet.versions.address,
               identity.wallet.versions.stealth.address,
+              identity.wallet.versions.pcode.address,
               identity.wallet.versions.p2sh
           ]
 

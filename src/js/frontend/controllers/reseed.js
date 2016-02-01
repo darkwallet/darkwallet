@@ -18,7 +18,7 @@ define(['./module', 'darkwallet', 'model/upgrade'], function (controllers, DarkW
                 return;
             }
             if (res) {
-                if (identity.store.get('version') === 5) {
+                if (identity.store.get('version') === 6) {
                     identity.store.save();
                     $wallet.onIdentityLoaded(identity);
                     notify.success(_('Reseed successfull'));

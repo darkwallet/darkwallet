@@ -1,7 +1,7 @@
 'use strict';
 
-define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat', 'bitcoinjs-lib'],
-function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
+define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat', 'bitcoinjs-lib', 'util/bip47'],
+function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, PaymentCode) {
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', '$history', '$tabs', '_Filter',
       function($scope, $window, notify, modals, $wallet, $timeout, $history, $tabs, _) {
   
@@ -356,15 +356,56 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       }
   };
 
+  var getContactPCodeKey = function(contact, address) {
+      if (contact.mainKey.address == address) {
+          return contact.mainKey;
+      }
+      for(var i=0; i<contact.pubKeys.length; i++) {
+          if (contact.pubKeys[i].address == address) {
+              return contact.pubKeys[i];
+          }
+      }
+
+  }
+
+  var getPCodeSend = function(contact, address) {
+     var contactKey = getContactPCodeKey(contact, address);
+     for(var i=0; i<contactKey.addresses; i++) {
+         if (contactKey.addresses[1] == false) {
+             contactKey.addresses[1] = true;
+             return contactKey.addresses[0];
+         }
+     }
+  }
+
+
+  var replacePaymentCodes = function(spend) {
+      var identity = DarkWallet.getIdentity();
+      var recipients = spend.recipients;
+      
+      for(var i=0; i<recipients.length; i++) {
+          if (BtcUtils.isPaymentCode(recipients[i].address)) {
+              var contact = recipients[i].contact;
+              var otherCode = recipients[i].address;
+              var address = getPCodeSend(contact, recipients[i].address);
+              recipients[i].address = address.toString();
+          }
+      }
+  }
  
   $scope.sendBitcoins = function() {
 
       // Prepare recipients
       var spend = prepareRecipients();
+      $scope.spendBitcoins(spend);
+  }
+
+  $scope.spendBitcoins = function(spend, hasPaymentCodes) {
+
       var recipients = spend.recipients;
       var totalAmount = spend.amount;
-      var title = sendForm.title;
 
+      var title = sendForm.title;
       if (sendForm.sending) {
           console.log("already sending");
           return;
@@ -382,9 +423,28 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               notify.note(_('The amount for some recipients is below the dust threshold'), totalAmount+'<'+identity.wallet.dust);
               return;
           }
+          if (BtcUtils.isPaymentCode(recipients[i].address)) {
+             // We need a contact to extract pairing information
+             if (!recipients[i].contact) {
+                 notify.note(_('Payment codes need to have a contact add a contact and pair the address first'));
+                 sendForm.sending = false;
+                 return;
+             }
+
+             // Run the password callback
+             replacePaymentCodes(spend);
+             $scope.spendBitcoins(spend, true);
+             return;
+          }
       }
       if (totalAmount < identity.wallet.dust) {
           notify.note(_('Amount is below the dust threshold'), totalAmount+'<'+identity.wallet.dust);
+          return;
+      }
+
+      if (hasPaymentCodes) {
+          console.log(spend);
+          notify.warning('Sending to Payment Codes not supported yet')
           return;
       }
 
@@ -502,6 +562,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       initialized = identity.name;
       validAddresses = [
           identity.wallet.versions.address,
+          identity.wallet.versions.pcode.address,
           identity.wallet.versions.stealth.address,
           identity.wallet.versions.p2sh
       ]

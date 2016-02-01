@@ -3,9 +3,9 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', 'notify', '_Filter',
-      function($scope, $routeParams, $location, $route, $wallet, watch, $history, notify, _) {
+define(['./module', 'darkwallet', 'util/bip47', "bitcoinjs-lib"], function (controllers, DarkWallet, PaymentCodes, Bitcoin) {
+  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', 'notify', '_Filter', "modals",
+      function($scope, $routeParams, $location, $route, $wallet, watch, $history, notify, _, modals) {
 
   $scope.newContact = {};
   $scope.contactToEdit = {};
@@ -76,13 +76,13 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   var getContactTypes = function() {
     var types;
     if (filterType === 'any') {
-        types = ['stealth', 'address', 'pubkey', 'id', 'oldstealth'];
+        types = ['pcode', 'stealth', 'address', 'pubkey', 'id', 'oldstealth'];
     } else if (filterType === 'pubKey') {
         types = ['pubkey', 'stealth'];
     } else if (filterType === 'idKey') {
         types = ['id'];
     } else {
-        types = ['stealth', 'address', 'pubkey'];
+        types = ['pcode', 'stealth', 'address', 'pubkey'];
     }
     return types;
   };
@@ -301,6 +301,59 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     // go to contacts
     $location.path('/contacts');
   };
+
+  $scope.pairPaymentCode = function(contact, pcodeKey) {
+    modals.password(_('Write your password for unlocking payment code'), function(password) {
+        $scope.finishPairPaymentCode(password, contact, pcodeKey);
+    });
+  };
+
+  $scope.finishPairPaymentCode = function(password, contact, pcodeKey) {
+    var identity = DarkWallet.getIdentity();
+    var pCodePriv = Bitcoin.HDNode.fromBase58(identity.store.getPrivateData(password).pCodeKey);
+    var pCodePocketPriv = pCodePriv.deriveHardened(0);
+    var otherCode = pcodeKey.address;
+    var sending = [];
+
+    for(var seq=0; seq<10; seq++) {
+      // create sending addresses (default 10)
+      var sendPubKey = PaymentCodes.send(pCodePocketPriv, otherCode, seq);
+
+      sending.push([sendPubKey.getAddress().toString(), false]);
+
+      // create receiving addresses (default 10)
+      var recvPubKey = PaymentCodes.receive(pCodePocketPriv, otherCode, seq);
+      var id = [0, 'p', otherCode, seq];
+      var walletAddress = identity.wallet.pubKeys[id];
+
+      if (!walletAddress) {
+         walletAddress = identity.wallet.storePublicKey(id, recvPubKey, {'type': 'pcode'});
+      }
+      $wallet.initAddress(walletAddress);
+    }
+    // addresses must now be added to wallet...
+    pcodeKey.addresses = sending;
+
+    pcodeKey.paired = true;
+  }
+  $scope.unpairPaymentCode = function(contact, pcodeKey) {
+    var otherCode = pcodeKey.address;
+    var deleted=true;
+    var index=-1;
+    var pocket = identity.wallet.pockets.getPocket(0, 'hd');
+    while(deleted) {
+        deleted = false;
+        index += 1;
+        var id = [0, 'p', otherCode, index];
+        var walletAddress = identity.wallet.pubKeys[id];
+        $wallet.removeAddress(walletAddress);
+        if (walletAddress) {
+            deleted = true;
+            pocket.removeAddress(walletAddress);
+        }
+    }
+    pcodeKey.paired = false;
+  }
 
   // Toggle watch on a contact
   $scope.toggleWatch = function(contact) {

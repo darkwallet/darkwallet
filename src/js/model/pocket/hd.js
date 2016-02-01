@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'model/pocket/base', 'util/stealth', 'util/btc'], function(Bitcoin, BasePocket, Stealth, BtcUtils) {
+define(['bitcoinjs-lib', 'model/pocket/base', 'util/stealth', 'util/btc', 'util/bip47'], function(Bitcoin, BasePocket, Stealth, BtcUtils, PaymentCodes) {
 
 /**
  * Hierarchical Deterministic Pocket functionality.
@@ -19,7 +19,7 @@ HdPocket.prototype = Object.create(BasePocket.prototype);
 
 // Pocket definition
 HdPocket.prototype.type = 'hd';
-HdPocket.prototype.types = [undefined, 'hd', 'pocket', 'stealth', 'oldstealth'];
+HdPocket.prototype.types = [undefined, 'hd', 'pocket', 'stealth', 'oldstealth', 'pcode'];
 HdPocket.prototype.autoCreate = true;
 
 /**
@@ -220,12 +220,22 @@ HdPocket.prototype.deriveStealthPrivateKey = function(seq, masterKey, keyStore, 
     return Stealth.uncoverPrivate(scanKey.toBytes(), seq.slice(2), spendKey.toBytes());
 };
 
+HdPocket.prototype.derivePCodePrivateKey = function(seq, keyStore) {
+    var otherCode = seq[2];
+    var pCodePriv = Bitcoin.HDNode.fromBase58(keyStore.pCodeKey);
+    var pCodePocketPriv = pCodePriv.deriveHardened(0);
+    var privKey = PaymentCodes.receivePrivate(pCodePocketPriv, otherCode, seq[seq.length-1]);
+    return privKey;
+}
+
 HdPocket.prototype.getPrivateKey = function(walletAddress, password, keyStore, callback) {
     var seq = walletAddress.index.slice(0);
     var masterKey = Bitcoin.HDNode.fromBase58(keyStore.privKey);
     var privKey;
     if (walletAddress.type === 'stealth') {
         privKey = this.deriveStealthPrivateKey(seq, masterKey, keyStore);
+    } else if (walletAddress.type === 'pcode') {
+        privKey = this.derivePCodePrivateKey(seq, keyStore);
     } else if (walletAddress.type === 'oldstealth') {
         masterKey = Bitcoin.HDNode.fromBase58(keyStore.oldPrivKey);
         privKey = this.deriveStealthPrivateKey(seq, masterKey, keyStore, true);

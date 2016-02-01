@@ -76,7 +76,8 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
         var history = {refreshAddresses: function() {}, clearRowContacts: function() {}, removePocket: function(){}};
         var route = {contactId: undefined, current: {templateUrl: "bla"}};
         var wallet = {addToScope: function() {}};
-        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet, watch: watch, $history: history, notify: notify, _Filter: _});
+        var modals = {};
+        contactsController = $controller('ContactsCtrl', {$scope: scope, $routeParams: routeParams, $location: location, $route: route, $wallet: wallet, watch: watch, $history: history, notify: notify, _Filter: _, modals: modals});
       }]);
     };
     

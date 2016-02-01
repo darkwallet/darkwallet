@@ -3,6 +3,6 @@
     <div ng-show="status.syncing||status.gateway!=='ok'" class="row">{{'(Wait for wallet to sync to reseed)'|_}}</div>
     <div ng-show="!status.syncing&&status.gateway==='ok'" class="row"><b>{{'Please'|_}} <a ng-click="reseedIdentity()">{{'click here to reseed'|_}}</a>.</b></div>
     <div class="row topmargin"><em>{{'We recommend making a backup and making sure you have access to your funds before reseed.'|_}}</em></div>
-    <div class="row">{{'Check'|_}} <a href="https://wiki.unsystem.net/en/index.php/DarkWallet/Bip44Reseed">{{'More information'|_}}</a>.</div>
+    <div class="row">{{'Check'|_}} <a href="https://wiki.unsystem.net/en/index.php/DarkWallet/Bip47Reseed">{{'More information'|_}}</a>.</div>
     <a ng-click="alert=false" class="close">&times;</a>
 </div>
