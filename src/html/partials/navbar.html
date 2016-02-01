@@ -26,7 +26,7 @@
 <section class="middle tab-bar-section" ng-show="selectedPocket!=='newMultisig' && selectedPocket!=='newPocket'">
 
 <h1 class="title lin">
-    <span class="hide-for-small"><identicon ng-hide="overviewPocket" class="" icon-size="24" hash="pocket.mainHash"></identicon></span>
+    <span class="hide-for-small"><identicon ng-hide="pocket.isAll" class="" icon-size="24" hash="pocket.mainHash"></identicon></span>
     {{pocket.name | pocket}}
 </h1>
 
