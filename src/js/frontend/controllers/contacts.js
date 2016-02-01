@@ -319,7 +319,7 @@ define(['./module', 'darkwallet', 'util/bip47', "bitcoinjs-lib"], function (cont
       // create sending addresses (default 10)
       var sendPubKey = PaymentCodes.send(pCodePocketPriv, otherCode, seq);
 
-      sending.push([sendPubKey.getAddress().toString(), false]);
+      sending.push([sendPubKey.getAddress(Bitcoin.networks[identity.wallet.network]).toString(), false]);
 
       // create receiving addresses (default 10)
       var recvPubKey = PaymentCodes.receive(pCodePocketPriv, otherCode, seq);
