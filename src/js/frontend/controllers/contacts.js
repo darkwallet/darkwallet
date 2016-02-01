@@ -346,8 +346,8 @@ define(['./module', 'darkwallet', 'util/bip47', "bitcoinjs-lib"], function (cont
         index += 1;
         var id = [0, 'p', otherCode, index];
         var walletAddress = identity.wallet.pubKeys[id];
-        $wallet.removeAddress(walletAddress);
         if (walletAddress) {
+            $wallet.removeAddress(walletAddress);
             deleted = true;
             pocket.removeAddress(walletAddress);
         }
