@@ -370,10 +370,10 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, Paym
 
   var getPCodeSend = function(contact, address) {
      var contactKey = getContactPCodeKey(contact, address);
-     for(var i=0; i<contactKey.addresses; i++) {
-         if (contactKey.addresses[1] == false) {
-             contactKey.addresses[1] = true;
-             return contactKey.addresses[0];
+     for(var i=0; i<contactKey.addresses.length; i++) {
+         if (contactKey.addresses[i][1] == false) {
+             contactKey.addresses[i][1] = true;
+             return contactKey.addresses[i][0];
          }
      }
   }
@@ -381,14 +381,14 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, Paym
 
   var replacePaymentCodes = function(spend) {
       var identity = DarkWallet.getIdentity();
+      var contacts = spend.contacts;
       var recipients = spend.recipients;
       
-      for(var i=0; i<recipients.length; i++) {
-          if (BtcUtils.isPaymentCode(recipients[i].address)) {
-              var contact = recipients[i].contact;
-              var otherCode = recipients[i].address;
-              var address = getPCodeSend(contact, recipients[i].address);
-              recipients[i].address = address.toString();
+      for(var i=0; i<contacts.length; i++) {
+          if (BtcUtils.isPaymentCode(contacts[i].address)) {
+              var contact = contacts[i].contact;
+              var address = getPCodeSend(contact, contacts[i].address);
+              recipients[i].address = address;
           }
       }
   }
@@ -400,9 +400,10 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, Paym
       $scope.spendBitcoins(spend);
   }
 
-  $scope.spendBitcoins = function(spend, hasPaymentCodes) {
-
+  $scope.spendBitcoins = function(spend) {
+      var hasPaymentCodes = false;
       var recipients = spend.recipients;
+      var contacts = spend.contacts;
       var totalAmount = spend.amount;
 
       var title = sendForm.title;
@@ -425,7 +426,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, Paym
           }
           if (BtcUtils.isPaymentCode(recipients[i].address)) {
              // We need a contact to extract pairing information
-             if (!recipients[i].contact) {
+             if (!contacts[i].contact || !contacts[i].contact.mainKey) {
                  notify.note(_('Payment codes need to have a contact add a contact and pair the address first'));
                  sendForm.sending = false;
                  return;
@@ -433,8 +434,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, Paym
 
              // Run the password callback
              replacePaymentCodes(spend);
-             $scope.spendBitcoins(spend, true);
-             return;
+             hasPaymentCodes = true;
           }
       }
       if (totalAmount < identity.wallet.dust) {
@@ -442,11 +442,11 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, Paym
           return;
       }
 
-      if (hasPaymentCodes) {
+      /*if (hasPaymentCodes) {
           console.log(spend);
           notify.warning('Sending to Payment Codes not supported yet')
           return;
-      }
+      }*/
 
       sendForm.sending = true;
       sendForm.propagated = false;
