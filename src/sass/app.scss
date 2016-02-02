@@ -44,7 +44,7 @@ div.modal-ng {
 
 .nomarginbottom { margin-bottom: 0 !important; }
 
-.topmargin { margin-top: 1.6em !important; }
+.topmargin { margin-top: 1.6em }
 
 
 span.tooltip.fade { opacity: 0; }
@@ -70,7 +70,6 @@ div.cardflipper {
 	-webkit-perspective: 800px;
 }
 
-div.tab-scroller { padding-top: 1em; }
 
 div.scroller {
 	padding-top: 50px;
@@ -354,11 +353,14 @@ textarea.script {
 
 .transaction-icon.red { color: $alert-color; }
 
-.pocket-square-wrapper { overflow: hidden; }
+li.pocket-square-wrapper {
+	overflow: hidden;
+	padding-bottom: 0;
+ }
 
 .pocket-square {
 	min-height: 120px;
-	margin-bottom: -0.3rem;
+	margin-bottom: 1rem;
 	overflow-x: hidden;
 }
 
@@ -460,7 +462,7 @@ div.pockets { z-index: 2; }
 div.inner-wrap { min-height: inherit; padding: 0; }
 
 li#mainpocket a {
-	padding: 0.3rem 0;
+	padding: 0.35rem 0;
 	font-size: 1.2rem;
 }
 
@@ -522,14 +524,37 @@ div.tri {
 
 	nav.tab-bar { overflow: hidden; }
 
+	.panel.pocketoverview {
+		padding: 0.6rem;
+	}
+
+	div.panel { padding: 0.6rem; }
+
+	.pocket-square.editing {
+			border: 1px solid $light-transparent;
+			background: $secondary-color;
+	 }
 
 @media #{$small-only} {
+
+	.pocket-square {
+		min-height: 40px;
+		margin-bottom: 0.3rem;
+		h5 { margin-bottom: 0.2em; }
+	}
+
+	.topmargin { margin-top: 0.6rem }
+
+	div.panel {
+		padding: 0.6rem;
+		font-size: 0.8rem;
+	 }
 
 	.tab-bar-section.middle { text-align: left; }
 
 	.tabs dd a {
 		font-size: 0.8rem;
-		padding: 0.8rem;
+		padding: 0.65rem;
 	 }
 
 	h1.title {
