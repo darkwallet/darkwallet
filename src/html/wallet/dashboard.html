@@ -24,6 +24,12 @@
     	        </div>
     		</div>
 
+        <div class="row collapse panel radius">
+            <h5>Mixer</h5>
+            <a ng-click="setMixing(pocket)" ng-class="{'fa-square-o':!pocket.mixing, 'fa-check-square-o': pocket.mixing}" class="fa button postfix">{{'Mix funds on this pocket (CoinJoin)'|_}}</a>
+            
+        </div>
+
     </div>
 
 
@@ -32,19 +38,18 @@
   </div>
   <div class="row">
 	  <div class="small-12 columns" ng-if="pocket.isAll" ng-controller="OverviewCtrl">
+      <div class="panel pocket-square">103.443546436 B
 
+      </div>
 	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
-        <li><div class="panel radius pocket-square">
-          bla
-        </div></li>
+
 			<li class="pocket-square-wrapper" ng-repeat="pocket in allPockets" ng-click="selectGridPocket(pocket)">
 
-            <div class="editpocket"><a class="fa fa-pencil"></a></div>
+            <div class="editpocket"><a class="fa fa-cog"></a></div>
 
 				    <div class="panel radius pocket-square">
 	           		  <h5>
                       {{pocket.name | pocket}}
-
                   </h5>
 
                   <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small>
@@ -57,20 +62,24 @@
 	  		</li>
         <li class="pocket-square-wrapper">
 
-  				    <div class="panel radius pocket-square">
-                  <h5>Create</h5>
-                  <div class="row">
-                      <div class="small-6 columns">
-                        <a class="button radius small expand nomarginbottom">Pocket</a>
+              <div class="editpocket"><a class="fa fa-times"></a></div>
 
-                      </div>
-                      <div class="small-6 columns">
-                        <a class="button radius small expand nomarginbottom">Multisig</a>
+              <div class="panel radius pocket-square editing">
+                    <h5>
+                        Name
+                    </h5>
+                    <div class="row collapse">
+                        <div class="small-6 columns">
+                            <a class="button alert expand prefix radius nomarginbottom">Delete</a>
+                        </div>
+                        <div class="small-6 columns">
+                          <a class="button expand postfix radius nomarginbottom">Rename</a>
 
-                      </div>
-                  </div>
-  	        	</div>
-  	  		</li>
+                        </div>
+                    </div>
+
+                </div>
+          </li>
 	    </ul>
 	  </div>
 	</div>
