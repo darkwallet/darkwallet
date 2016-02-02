@@ -5137,15 +5137,6 @@ textarea.script {
 .transaction-icon.red {
   color: #c92441; }
 
-li.pocket-square-wrapper {
-  overflow: hidden;
-  padding-bottom: 0; }
-
-.pocket-square {
-  min-height: 120px;
-  margin-bottom: 1rem;
-  overflow-x: hidden; }
-
 .contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover {
   background: rgba(30, 190, 90, 0.9);
   cursor: pointer; }
@@ -5333,14 +5324,24 @@ nav.tab-bar {
   overflow: hidden; }
 
 .panel.pocketoverview {
-  padding: 0.6rem; }
+  padding: 0.6rem;
+  min-height: 1rem; }
 
 div.panel {
-  padding: 0.6rem; }
+  padding: 0.6rem;
+  margin-botton: 0.6em; }
 
 .pocket-square.editing {
   border: 1px solid rgba(100, 100, 100, 0.2);
   background: #333; }
+
+li.pocket-square-wrapper {
+  overflow: hidden;
+  padding-bottom: 0; }
+
+.pocket-square {
+  min-height: 120px;
+  overflow-x: hidden; }
 
 @media only screen and (max-width: 40em) {
   .pocket-square {
@@ -5352,7 +5353,8 @@ div.panel {
     margin-top: 0.6rem; }
   div.panel {
     padding: 0.6rem;
-    font-size: 0.8rem; }
+    font-size: 0.8rem;
+    margin-bottom: 0; }
   .tab-bar-section.middle {
     text-align: left; }
   .tabs dd a {

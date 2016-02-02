@@ -1,6 +1,6 @@
   <div class="row" ng-show="pocket.readOnly">
     <div class="small-12 columns">
-        <div class="row collapse panel radius transactions">
+        <div class="panel radius">
         {{'Read only pocket.'|_}}
         </div>
     </div>
@@ -8,8 +8,9 @@
   <div class="row" ng-hide="overviewPocket">
     <div ng-include="'tools/quicksend.html'" class="small-12 large-6 columns"></div>
     <div class="small-12 large-6 columns">
+      <div class="panel radius">
+    		<div class="row collapse">
 
-    		<div class="row collapse panel radius">
               <div class="small-12 columns">
                 <h5>{{pocket.type=='multisig'?('Fund address'|_):pocket.stealth?('Stealth address'|_):('Main address'|_)}} ({{pocket.name | pocket}})</h5>
     			    </div>
@@ -23,11 +24,12 @@
     	          <a class="button postfix square radius icon-qrcode" tooltip-append-to-body="true" tooltip="{{'Show QR code'|_}}" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
     	        </div>
     		</div>
+      </div>
 
         <div class="row collapse panel radius">
             <h5>Mixer</h5>
             <a ng-click="setMixing(pocket)" ng-class="{'fa-square-o':!pocket.mixing, 'fa-check-square-o': pocket.mixing}" class="fa button postfix">{{'Mix funds on this pocket (CoinJoin)'|_}}</a>
-            
+
         </div>
 
     </div>
@@ -38,7 +40,7 @@
   </div>
   <div class="row">
 	  <div class="small-12 columns" ng-if="pocket.isAll" ng-controller="OverviewCtrl">
-      <div class="panel pocket-square">103.443546436 B
+      <div class="panel pocket-square pocketoverview">103.443546436 B
 
       </div>
 	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
