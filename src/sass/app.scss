@@ -306,8 +306,13 @@ ul.off-canvas-list {
 	white-space: nowrap;
 	li a:hover { background: $dark-transparent; }
 	li a.cornerbutton {
+		background: $light-transparent;
+		&:hover { background: $dark-transparent; }
+		position: absolute;
+		right: 0;
+		margin-top: -1.4rem;
 		color: $primary-color-dark;
-		padding: 0.0rem 0.3rem;
+		padding: 0.45rem;
 		border-bottom: none;
 	}
 	li a.cornerbutton.active {

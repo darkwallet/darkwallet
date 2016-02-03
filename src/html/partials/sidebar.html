@@ -11,7 +11,7 @@
     <li class="divider"></li>
     <li><label>{{'multisig funds'|_}} <a class="cornerbutton right" ng-class="{active: isActive('/new_fund')}" ng-click="newMultiSig()" title="{{'Add new multisig'|_}}"> + </a></label></li>
     <li ng-class="{active: 'multisig:'+$index===forms.selectedPocket&&isActive('/wallet')}" ng-click="selectFund(fund, $index)" ng-repeat="fund in allFunds track by $index"><a href="">{{fund.name}}</a></li>
-    <li ng-show="forms.readOnlyArray.length"><label>{{'Watch-only pockets'|_}}</label></li>
+    <li ng-show="forms.readOnlyArray.length"><label>{{'Watch-only pockets'|_}} <a class="cornerbutton right fa fa-arrow-up" ng-class="" ng-click=""></a></label></li>
     <li ng-class="{active: 'readonly:'+$index===forms.selectedPocket&&isActive('/wallet')}" ng-repeat="readOnlyPocket in forms.readOnlyArray track by $index"><a ng-click="selectReadOnly(readOnlyPocket, $index)"href="">{{readOnlyPocket.name}}</a></li>
 
 
