@@ -10,9 +10,9 @@ function (controllers, DarkWallet, Port) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
-  $scope.selectedPocket = $history.selectedPocket;
+  $scope.forms.selectedPocket = $history.selectedPocket;
 
-  $scope.overviewPocket = false;
+  $scope.forms.overviewPocket = false;
 
   // Link tabs from service
   $scope.tabs = $tabs;
@@ -46,8 +46,8 @@ function (controllers, DarkWallet, Port) {
    * Select fund as current pocket
    */
   $scope.selectFund = function(fund, rowIndex) {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = 'multisig:'+rowIndex;
+      $scope.forms.overviewPocket = false;
+      $scope.forms.selectedPocket = 'multisig:'+rowIndex;
       $tabs.open('multisig', rowIndex);
   };
 
@@ -57,8 +57,8 @@ function (controllers, DarkWallet, Port) {
    */
   $scope.selectPocket = function(pocketName, rowIndex) {
       console.log("selectPocket");
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = false;
+      $scope.forms.overviewPocket = false;
+      $scope.forms.selectedPocket = false;
       if (pocketName === undefined) {
           $tabs.open();
       } else {
@@ -67,8 +67,8 @@ function (controllers, DarkWallet, Port) {
   };
 
   $scope.selectReadOnly = function(pocket, rowIndex) {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = false,
+      $scope.forms.overviewPocket = false;
+      $scope.forms.selectedPocket = false,
       $tabs.open('readonly', rowIndex);
   };
 
@@ -76,8 +76,8 @@ function (controllers, DarkWallet, Port) {
    * Start creating a new multisig
    */
   $scope.newMultiSig = function() {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = 'newMultisig';
+      $scope.forms.overviewPocket = false;
+      $scope.forms.selectedPocket = 'newMultisig';
       $scope.pocket.isAll = false;
   };
 
@@ -85,8 +85,8 @@ function (controllers, DarkWallet, Port) {
    * Start creating a new pocket
    */
   $scope.newPocket = function() {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = 'newPocket';
+      $scope.forms.overviewPocket = false;
+      $scope.forms.selectedPocket = 'newPocket';
       $scope.pocket.isAll = false;      
   };
 
