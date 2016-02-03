@@ -52,7 +52,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   var calculateBalances = function() {
       var identity = DarkWallet.getIdentity();
 
-      var total = {confirmed: 0, unconfirmed: 0, current: 0};
+      var total = {confirmed: 0, unconfirmed: 0, current: 0, hd: {confirmed: 0, unconfirmed: 0, current: 0, number: 0}, multisig: {confirmed: 0, unconfirmed: 0, current: 0, number: 0}};
 
       identity.wallet.pockets.hdPockets.forEach(function(pocket, i) {
           if (!pocket) {
@@ -64,6 +64,10 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           total.confirmed += balance.confirmed;
           total.current += balance.current;
           total.unconfirmed += balance.unconfirmed;
+          total.hd.confirmed += balance.confirmed;
+          total.hd.current += balance.current;
+          total.hd.unconfirmed += balance.unconfirmed;
+          total.hd.number += 1;
 
           // Save the pocket information
           updatePocket({name: pocket.name, mixing: pocket.mixing, balance: balance, type: 'pocket', index: i});
@@ -78,6 +82,10 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           total.current += balance.current;
           total.confirmed += balance.confirmed;
           total.unconfirmed += balance.unconfirmed;
+          total.multisig.current += balance.current;
+          total.multisig.confirmed += balance.confirmed;
+          total.multisig.unconfirmed += balance.unconfirmed;
+          total.multisig.number += 1;
 
           // Save the pocket information
           updatePocket({name: fund.name, mixing: fund.mixing, balance: balance, type: 'fund', fund: fund, index: i});
