@@ -40,8 +40,11 @@
   </div>
   <div class="row">
 	  <div class="small-12 columns" ng-if="pocket.isAll" ng-controller="OverviewCtrl">
-      <div class="panel radius pocketoverview">NN BTC <span>XX€</span> in 3 pockets
-          <a class="button newpocket radius fa fa-plus"></a>
+      <div class="panel radius pocketoverview" ng-controller="SidebarCtrl">
+          NN BTC
+          <span>XX€</span>
+          in 3 pockets
+          <a class="button newpocket radius fa fa-plus" ng-click="newPocket()"></a>
           <a class="button collapseoverview radius fa fa-arrow-up"></a>
 
       </div>
@@ -90,8 +93,11 @@
           </div>
 	  		</li>
 	    </ul>
-      <div class="panel radius pocketoverview">NN BTC <span>XX€</span> in 3 pockets
-          <a class="button newpocket radius fa fa-plus"></a>
+      <div class="panel radius pocketoverview" ng-controller="SidebarCtrl">
+          NN BTC
+          <span>XX€</span>
+          in 3 multisig funds
+          <a class="button newpocket radius fa fa-plus" ng-click="newMultiSig()"></a>
           <a class="button collapseoverview radius fa fa-arrow-up"></a>
 
       </div>
