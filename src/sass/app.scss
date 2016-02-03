@@ -531,12 +531,14 @@ div.tri {
 		padding: 0.6rem;
 		margin: 0;
 		position: absolute;
-		height: 2.8rem;
+		height: 2.85rem;
 		top: 1rem;
-		right: 1rem;
+		right: 0.96rem;
+		background: $dark-transparent;
+		&:hover { background: $primary-color-dark; }
 	 }
 
-	a.button.newpocket { right: 3rem; }
+	a.button.newpocket { right: 3.3rem; padding: 0.65em }
 
 	.pocket-square.editing {
 			border: 1px solid $light-transparent;
