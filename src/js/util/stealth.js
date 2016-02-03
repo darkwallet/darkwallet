@@ -131,7 +131,7 @@ Stealth.parseAddress = function(recipient) {
  * @param {Object} ephemKeyBytes (optional) Ephemeral private key as byte array,
  *                                if null will be generated.
  */
-Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKeyBytes) {
+Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKeyBytes, newStealth) {
     if (version === null || version === undefined) { version = Bitcoin.networks.bitcoin.pubKeyHash; };
     // Parse public keys into api objects
     var scanKey = Stealth.importPublic(scanKeyBytes);
@@ -140,7 +140,10 @@ Stealth.initiateStealth = function(scanKeyBytes, spendKeyBytes, version, ephemKe
     // new ephemeral key
     var encKey = Bitcoin.ECKey.fromBytes(ephemKeyBytes);
     var ephemKey = bufToArray(encKey.pub.Q.getEncoded(true));
-    // For new stealth we will later remove the first byte of the ephem
+    if (newStealth) {
+        // For new stealth remove the first byte
+        ephemKey.splice(0, 1);
+    }
 
     // Generate shared secret
     var c = Stealth.stealthDH(encKey.d, scanKey);
@@ -340,7 +343,7 @@ Stealth.checkPrefix = function(outHash, stealthPrefix) {
 Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ephemKeyBytes, initialNonce) {
     if (nonceVersion === undefined) { nonceVersion = Stealth.nonceVersion; };
     if (addressVersion === undefined) { addressVersion = Bitcoin.networks.bitcoin.pubKeyHash; };
-    var outHash, ephemKey, pubKey, ephemKeyRaw;
+    var outHash, ephemKey, pubKey;
     var stealthAddress = Stealth.parseAddress(recipient);
     var stealthPrefix = stealthAddress.prefix;
     var scanKeyBytes = stealthAddress.scanKey;
@@ -355,13 +358,9 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
     var spendKeyBytes = stealthAddress.spendKeys[0];
     var nonce;
     do {
-        var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, addressVersion, ephemKeyBytes);
+        var stealthData = Stealth.initiateStealth(scanKeyBytes, spendKeyBytes, addressVersion, ephemKeyBytes, !nonceVersion);
         recipient = stealthData[0];
-        ephemKeyRaw = stealthData[1];
-        ephemKey = ephemKeyRaw.slice(0);
-        if (!nonceVersion) {
-            ephemKey.splice(0, 1);
-        }
+        ephemKey = stealthData[1];
         pubKey = stealthData[2];
         nonce = startingNonce;
         var iters = 0;
@@ -384,7 +383,7 @@ Stealth.addStealth = function(recipient, newTx, addressVersion, nonceVersion, ep
     // we finally mined the ephemKey that makes the hash match
     var stealthOut = Stealth.buildNonceScript(ephemKey, nonce-1, nonceVersion);
     newTx.addOutput(stealthOut, 0);
-    return {address: recipient, ephemKey: ephemKeyRaw, pubKey: pubKey};
+    return {address: recipient, ephemKey: ephemKey, pubKey: pubKey};
 };
 
 return Stealth;
