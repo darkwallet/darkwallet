@@ -28,14 +28,7 @@ function (controllers, DarkWallet, Port) {
   var identityLoaded = function(identity) {
       identity = identity || DarkWallet.getIdentity();
       if ($history.previousIdentity != identity.name) {
-          // prevents loading the first time...
-
-          // Update tabs
-          //$scope.tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
-
-          if (!$scope.$$phase) {
-              $scope.$apply();
-          }
+          $scope.forms.selectedPocket = $history.selectedPocket;
       }
   }
 
