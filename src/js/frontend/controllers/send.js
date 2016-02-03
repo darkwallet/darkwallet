@@ -357,11 +357,6 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, PCod
   };
 
 
-  var replacePaymentCodes = function(spend) {
-      var needsExtension = PCodeUtils.replace(spend);
-      return needsExtension;
-  }
- 
   $scope.sendBitcoins = function() {
 
       // Prepare recipients
@@ -410,7 +405,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, PCod
       }
 
       if (hasPaymentCodes) {
-          var needsExtension = replacePaymentCodes(spend);
+          var needsExtension = PCodeUtils.replace(spend);
           if (needsExtension.contacts.length) {
               notify.note(_("Some payment codes need extension. Can't complete right now"));
               return;
