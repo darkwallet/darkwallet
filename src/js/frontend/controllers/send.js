@@ -1,7 +1,7 @@
 'use strict';
 
-define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat', 'bitcoinjs-lib', 'util/bip47'],
-function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, PaymentCode) {
+define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat', 'bitcoinjs-lib', 'dwutil/pcodeutils'],
+function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, PCodeUtils) {
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', '$history', '$tabs', '_Filter',
       function($scope, $window, notify, modals, $wallet, $timeout, $history, $tabs, _) {
   
@@ -356,41 +356,10 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, Paym
       }
   };
 
-  var getContactPCodeKey = function(contact, address) {
-      if (contact.mainKey.address == address) {
-          return contact.mainKey;
-      }
-      for(var i=0; i<contact.pubKeys.length; i++) {
-          if (contact.pubKeys[i].address == address) {
-              return contact.pubKeys[i];
-          }
-      }
-
-  }
-
-  var getPCodeSend = function(contact, address) {
-     var contactKey = getContactPCodeKey(contact, address);
-     for(var i=0; i<contactKey.addresses.length; i++) {
-         if (contactKey.addresses[i][1] == false) {
-             contactKey.addresses[i][1] = true;
-             return contactKey.addresses[i][0];
-         }
-     }
-  }
-
 
   var replacePaymentCodes = function(spend) {
-      var identity = DarkWallet.getIdentity();
-      var contacts = spend.contacts;
-      var recipients = spend.recipients;
-      
-      for(var i=0; i<contacts.length; i++) {
-          if (BtcUtils.isPaymentCode(contacts[i].address)) {
-              var contact = contacts[i].contact;
-              var address = getPCodeSend(contact, contacts[i].address);
-              recipients[i].address = address;
-          }
-      }
+      var needsExtension = PCodeUtils.replace(spend);
+      return needsExtension;
   }
  
   $scope.sendBitcoins = function() {
@@ -432,8 +401,6 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, Paym
                  return;
              }
 
-             // Run the password callback
-             replacePaymentCodes(spend);
              hasPaymentCodes = true;
           }
       }
@@ -442,11 +409,13 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, Paym
           return;
       }
 
-      /*if (hasPaymentCodes) {
-          console.log(spend);
-          notify.warning('Sending to Payment Codes not supported yet')
-          return;
-      }*/
+      if (hasPaymentCodes) {
+          var needsExtension = replacePaymentCodes(spend);
+          if (needsExtension.contacts.length) {
+              notify.note(_("Some payment codes need extension. Can't complete right now"));
+              return;
+          }
+      }
 
       sendForm.sending = true;
       sendForm.propagated = false;

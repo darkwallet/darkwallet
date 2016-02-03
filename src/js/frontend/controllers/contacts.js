@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet', 'util/bip47', "bitcoinjs-lib"], function (controllers, DarkWallet, PaymentCodes, Bitcoin) {
+define(['./module', 'darkwallet', "bitcoinjs-lib", "dwutil/pcodeutils"], function (controllers, DarkWallet, Bitcoin, PCodeUtils) {
   controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', 'notify', '_Filter', "modals",
       function($scope, $routeParams, $location, $route, $wallet, watch, $history, notify, _, modals) {
 
@@ -309,50 +309,10 @@ define(['./module', 'darkwallet', 'util/bip47', "bitcoinjs-lib"], function (cont
   };
 
   $scope.finishPairPaymentCode = function(password, contact, pcodeKey) {
-    var identity = DarkWallet.getIdentity();
-    var pCodePriv = Bitcoin.HDNode.fromBase58(identity.store.getPrivateData(password).pCodeKey);
-    var pCodePocketPriv = pCodePriv.deriveHardened(0);
-    var otherCode = pcodeKey.address;
-    var sending = [];
-
-    for(var seq=0; seq<10; seq++) {
-      // create sending addresses (default 10)
-      var sendPubKey = PaymentCodes.send(pCodePocketPriv, otherCode, seq);
-
-      sending.push([sendPubKey.getAddress(Bitcoin.networks[identity.wallet.network]).toString(), false]);
-
-      // create receiving addresses (default 10)
-      var recvPubKey = PaymentCodes.receive(pCodePocketPriv, otherCode, seq);
-      var id = [0, 'p', otherCode, seq];
-      var walletAddress = identity.wallet.pubKeys[id];
-
-      if (!walletAddress) {
-         walletAddress = identity.wallet.storePublicKey(id, recvPubKey, {'type': 'pcode'});
-      }
-      $wallet.initAddress(walletAddress);
-    }
-    // addresses must now be added to wallet...
-    pcodeKey.addresses = sending;
-
-    pcodeKey.paired = true;
+    PCodeUtils.link(password, pcodeKey, $wallet);
   }
   $scope.unpairPaymentCode = function(contact, pcodeKey) {
-    var otherCode = pcodeKey.address;
-    var deleted=true;
-    var index=-1;
-    var pocket = identity.wallet.pockets.getPocket(0, 'hd');
-    while(deleted) {
-        deleted = false;
-        index += 1;
-        var id = [0, 'p', otherCode, index];
-        var walletAddress = identity.wallet.pubKeys[id];
-        if (walletAddress) {
-            $wallet.removeAddress(walletAddress);
-            deleted = true;
-            pocket.removeAddress(walletAddress);
-        }
-    }
-    pcodeKey.paired = false;
+    PCodeUtils.unlink(pcodeKey, $wallet);
   }
 
   // Toggle watch on a contact
