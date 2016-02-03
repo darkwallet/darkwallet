@@ -529,10 +529,9 @@ div.tri {
 
 	a.button.collapseoverview, a.button.newpocket {
 		padding: 0.6rem;
-		margin: 0;
+		margin: -0.65rem 0 0 0;
 		position: absolute;
-		height: 2.85rem;
-		top: 1rem;
+		height: 2.8rem;
 		right: 0.96rem;
 		background: $dark-transparent;
 		&:hover { background: $primary-color-dark; }
