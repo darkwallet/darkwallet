@@ -407,7 +407,10 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, PCod
       if (hasPaymentCodes) {
           var needsExtension = PCodeUtils.replace(spend);
           if (needsExtension.contacts.length) {
-              notify.note(_("Some payment codes need extension. Can't complete right now"));
+              modals.password(_("Please input password to unlock payment codes"), function(password) {
+                  PCodeUtils.extendSend(password, needsExtension);
+              });
+              notify.note(_("Some payment codes need extension. Please try again."));
               return;
           }
       }

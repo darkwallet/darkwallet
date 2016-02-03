@@ -2,19 +2,37 @@
 
 define(['darkwallet', 'bitcoinjs-lib', 'util/btc', 'util/bip47'], function(DarkWallet, Bitcoin, BtcUtils, PaymentCodes) {
 
-function linkPaymentCode(password, pcodeKey, $wallet) {
+function linkPaymentCode(password, pCodeKey, $wallet) {
     var identity = DarkWallet.getIdentity();
     var pCodePriv = Bitcoin.HDNode.fromBase58(identity.store.getPrivateData(password).pCodeKey);
     var pCodePocketPriv = pCodePriv.deriveHardened(0);
-    var otherCode = pcodeKey.address;
-    var sending = [];
+    createSendAddresses(pCodePocketPriv, pCodeKey, 0);
+    createReceiveAddresses(pCodePocketPriv, pCodeKey, $wallet, 0);
+    pCodeKey.paired = true;
+}
 
-    for(var seq=0; seq<10; seq++) {
+function createSendAddresses(pCodePocketPriv, pCodeKey, start) {
+    var identity = DarkWallet.getIdentity();
+    var otherCode = pCodeKey.address;
+    var sending = start?pCodeKey.addresses:[];
+
+    for(var seq=start; seq<start+10; seq++) {
       // create sending addresses (default 10)
       var sendPubKey = PaymentCodes.send(pCodePocketPriv, otherCode, seq);
 
       sending.push([sendPubKey.getAddress(Bitcoin.networks[identity.wallet.network]).toString(), false]);
+    }
+    // addresses must now be added to wallet...
+    console.log(sending, otherCode, pCodeKey);
 
+    pCodeKey.addresses = sending;
+}
+
+function createReceiveAddresses(pCodePocketPriv, pCodeKey, $wallet, start) {
+    var identity = DarkWallet.getIdentity();
+    var otherCode = pCodeKey.address;
+
+    for(var seq=start; seq<start+10; seq++) {
       // create receiving addresses (default 10)
       var recvPubKey = PaymentCodes.receive(pCodePocketPriv, otherCode, seq);
       var id = [0, 'p', otherCode, seq];
@@ -26,14 +44,27 @@ function linkPaymentCode(password, pcodeKey, $wallet) {
       $wallet.initAddress(walletAddress);
     }
     // addresses must now be added to wallet...
-    pcodeKey.addresses = sending;
 
-    pcodeKey.paired = true;
 }
 
-function unlinkPaymentCode(pcodeKey, $wallet) {
+
+function extendSend(password, needsExtension) {
     var identity = DarkWallet.getIdentity();
-    var otherCode = pcodeKey.address;
+    var pCodePriv = Bitcoin.HDNode.fromBase58(identity.store.getPrivateData(password).pCodeKey);
+    var pCodePocketPriv = pCodePriv.deriveHardened(0);
+    for(var i=0; i<needsExtension.contacts.length; i++) {
+        var contact = needsExtension.contacts[i];
+        var otherCode = contact.address;
+        var pCodeKey = getContactPCodeKey(contact, otherCode);
+        var last = pCodeKey.addresses.length;
+        createSendAddresses(pCodePocketPriv, pCodeKey, last);
+    }
+}
+
+
+function unlinkPaymentCode(pCodeKey, $wallet) {
+    var identity = DarkWallet.getIdentity();
+    var otherCode = pCodeKey.address;
     var deleted=true;
     var index=-1;
     var pocket = identity.wallet.pockets.getPocket(0, 'hd');
@@ -48,7 +79,7 @@ function unlinkPaymentCode(pcodeKey, $wallet) {
             pocket.removeAddress(walletAddress);
         }
     }
-    pcodeKey.paired = false;
+    pCodeKey.paired = false;
 }
 
 var getContactPCodeKey = function(contact, address) {
@@ -95,12 +126,6 @@ var replacePaymentCodes = function(spend) {
     return needsExtension;
 }
 
-
-var extendSend = function(password, spend, needsExtension) {
-    for(var i=0; i<needsExtension.contacts.length; i++) {
-        var toExtend = needsExtension.contacts[i];
-    }
-}
 
 
 return {link: linkPaymentCode,
