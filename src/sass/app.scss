@@ -522,8 +522,16 @@ div.tri {
 
 	div.panel { padding: 0.6rem; margin-top: 1rem; margin-bottom: 0; }
 
-	a.button.collapseoverview { padding: 0.6rem; margin: 0; position: absolute; height: 2.8rem; top: 1rem; right: 1rem; }
+	a.button.collapseoverview, a.button.newpocket {
+		padding: 0.6rem;
+		margin: 0;
+		position: absolute;
+		height: 2.8rem;
+		top: 1rem;
+		right: 1rem;
+	 }
 
+	a.button.newpocket { right: 3rem; }
 
 	.pocket-square.editing {
 			border: 1px solid $light-transparent;
@@ -543,6 +551,9 @@ div.tri {
 
 
 @media #{$small-only} {
+
+	a.button.collapseoverview, a.button.newpocket { top: 0.4rem; }
+
 
 	.pocket-square {
 		min-height: 40px;

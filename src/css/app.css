@@ -5333,13 +5333,16 @@ div.panel {
   margin-top: 1rem;
   margin-bottom: 0; }
 
-a.button.collapseoverview {
+a.button.collapseoverview, a.button.newpocket {
   padding: 0.6rem;
   margin: 0;
   position: absolute;
   height: 2.8rem;
   top: 1rem;
   right: 1rem; }
+
+a.button.newpocket {
+  right: 3rem; }
 
 .pocket-square.editing {
   border: 1px solid rgba(100, 100, 100, 0.2);
@@ -5354,6 +5357,8 @@ li.pocket-square-wrapper {
   overflow-x: hidden; }
 
 @media only screen and (max-width: 40em) {
+  a.button.collapseoverview, a.button.newpocket {
+    top: 0.4rem; }
   .pocket-square {
     min-height: 40px;
     margin-bottom: 0.3rem; }
