@@ -5329,7 +5329,7 @@ nav.tab-bar {
 
 div.panel {
   padding: 0.6rem;
-  margin-top: 0.6em;
+  margin-top: 1rem;
   margin-bottom: 0; }
 
 .pocket-square.editing {
@@ -5355,6 +5355,7 @@ li.pocket-square-wrapper {
   div.panel {
     padding: 0.6rem;
     font-size: 0.8rem;
+    margin-top: 0.4rem;
     margin-bottom: 0; }
   .tab-bar-section.middle {
     text-align: left; }

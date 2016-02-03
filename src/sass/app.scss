@@ -519,7 +519,7 @@ div.tri {
 		min-height: 1rem;
 	}
 
-	div.panel { padding: 0.6rem; margin-top: 0.6em; margin-bottom: 0; }
+	div.panel { padding: 0.6rem; margin-top: 1rem; margin-bottom: 0; }
 
 	.pocket-square.editing {
 			border: 1px solid $light-transparent;
@@ -551,6 +551,7 @@ div.tri {
 	div.panel {
 		padding: 0.6rem;
 		font-size: 0.8rem;
+		margin-top: 0.4rem;
 		margin-bottom: 0;
 	 }
 
