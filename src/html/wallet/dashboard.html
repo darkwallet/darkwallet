@@ -47,26 +47,10 @@
       </div>
 	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
 
-			<li class="pocket-square-wrapper" ng-repeat="pocket in allPockets" ng-click="selectGridPocket(pocket)">
+			<li class="pocket-square-wrapper" ng-repeat="pocket in allPockets">
+        <div ng-if="editing[pocket.type+pocket.index]">
 
-            <div class="editpocket"><a class="button radius fa fa-cog"></a></div>
-
-				    <div class="panel radius pocket-square">
-	           		  <h5>
-                      {{pocket.name | pocket}}
-                  </h5>
-
-                  <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small>
-	           		  <span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.confirmed | formatFiat}}</span></span>
-	           		  <span ng-show="!pocket.balance.confirmed">{{'No coins'|_}}</span>
-	           		  <span ng-show="pocket.balance.unconfirmed"><small><br>{{'Unconfirmed'|_}}: {{pocket.balance.unconfirmed | amountFilter}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></small></span>
-
-
-	           	</div>
-	  		</li>
-        <li class="pocket-square-wrapper">
-
-              <div class="editpocket"><a class="button radius fa fa-times"></a></div>
+              <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-times"></a></div>
 
               <div class="panel radius pocket-square editing">
                     <h5>
@@ -85,7 +69,26 @@
                     <span>Can't delete the first pocket!</span>
                     <span>Can't delete pocket with funds</span>
                 </div>
-          </li>
+          </div>
+
+
+        <div ng-if="!editing[pocket.type+pocket.index]" ng-click="selectGridPocket(pocket)">
+            <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-cog"></a></div>
+
+				    <div class="panel radius pocket-square">
+	           		  <h5>
+                      {{pocket.name | pocket}}
+                  </h5>
+
+                  <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small>
+	           		  <span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.confirmed | formatFiat}}</span></span>
+	           		  <span ng-show="!pocket.balance.confirmed">{{'No coins'|_}}</span>
+	           		  <span ng-show="pocket.balance.unconfirmed"><small><br>{{'Unconfirmed'|_}}: {{pocket.balance.unconfirmed | amountFilter}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></small></span>
+
+
+	           	</div>
+          </div>
+	  		</li>
 	    </ul>
 	  </div>
 	</div>

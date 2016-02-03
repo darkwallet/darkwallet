@@ -8,6 +8,12 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
 
   $scope.allPockets = [];
 
+  $scope.editing = {};
+
+  $scope.toggleEdit = function(pocket) {
+      $scope.editing[pocket.type+pocket.index] = !$scope.editing[pocket.type+pocket.index];
+  }
+
   /**
    * Select a pocket from the grid
    */
