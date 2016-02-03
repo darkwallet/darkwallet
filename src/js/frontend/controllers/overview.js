@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
-  controllers.controller('OverviewCtrl', ['$scope', '$history', function($scope, $history) {
+  controllers.controller('OverviewCtrl', ['$scope', '$history', '$location', function($scope, $history, $location) {
 
   $scope.allPockets = [];
 
@@ -13,9 +13,9 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
    */
   $scope.selectGridPocket = function(pocket) {
       if (pocket.type == 'pocket') {
-          $scope.selectPocket(pocket.name, pocket.index);
+          $location.path('/wallet/dashboard/'+pocket.index);
       } else if (pocket.type == 'fund') {
-          $scope.selectFund(pocket.fund, pocket.index);
+          $location.path('/wallet/dashboard/multisig/'+pocket.index);
       }
   };
 
