@@ -437,7 +437,7 @@ div.pockets { z-index: 2; }
 .editpocket a {
 		min-width: 34px;
 		position: absolute;
-		margin: 1rem 0 0 -2.08rem;
+		margin-left: -2.08rem;
 		padding: 0.4rem 0.6rem;
 		background: black;
 		color: white;
@@ -522,7 +522,7 @@ div.tri {
 
 	div.panel { padding: 0.6rem; margin-top: 1rem; margin-bottom: 0; }
 
-	a.button.collapseoverview { padding: 0.6rem; margin: 0; position: absolute; height: 2.8rem; top: 1rem; right: 1rem; }
+	a.button.collapseoverview { padding: 0.6rem; margin: 0; position: absolute; height: 2.8rem; top: 1rem; right: 1remz; }
 
 
 	.pocket-square.editing {
@@ -549,8 +549,6 @@ div.tri {
 		margin-bottom: 0.3rem;
 		h5 { margin-bottom: 0.2em; }
 	}
-
-	.editpocket a { margin-top: 0.4rem; }
 
 	.topmargin { margin-top: 0.6rem }
 
