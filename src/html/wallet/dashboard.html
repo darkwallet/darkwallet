@@ -56,7 +56,7 @@
                     <h5>
                         {{pocket.name | pocket}}
                     </h5>
-                    <input class="radius" value="NAME" type="text"></input>
+                    <input class="radius" value="{{pocket.name | pocket}}" autofocus type="text">
                     <div class="row collapse">
                         <div class="small-6 columns">
                             <a ng-class="{'disabled': (pocket.type=='pocket' && pocket.index==0) || (pocket.type=='pocket'&&(pocket.balance.confirmed||pocket.balance.unconfirmed))}" class="button alert expand prefix radius nomarginbottom">Delete</a>
