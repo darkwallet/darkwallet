@@ -89,18 +89,14 @@ function (controllers, DarkWallet, Port) {
    * Start creating a new multisig
    */
   $scope.newMultiSig = function() {
-      $scope.forms.overviewPocket = false;
-      $scope.forms.selectedPocket = 'newMultisig';
-      $scope.pocket.isAll = false;
+      $location.path("/new_fund");
   };
 
   /**
    * Start creating a new pocket
    */
   $scope.newPocket = function() {
-      $scope.forms.overviewPocket = false;
-      $scope.forms.selectedPocket = 'newPocket';
-      $scope.pocket.isAll = false;      
+      $location.path("/new_pocket");
   };
 
 }]);

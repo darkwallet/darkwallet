@@ -1,5 +1,5 @@
     <!-- Content area -->
-    		<div ng-hide="forms.selectedPocket==='newMultisig'||forms.selectedPocket==='newPocket'">
+    		<div>
 
       <!-- Tabs -->
       		<div class="tabbable" ng-class="{totheright: tabs.previous<tabs.current, totheleft: tabs.previous>tabs.current}">
@@ -15,14 +15,4 @@
          		<div class="tab-scroller ng-animate-disabled" ng-include="tabs.pages[tabs.current].tplUrl"></div>
       		 </div>
     	  </div>
-   		 <!-- New multisig dialog -->
-    		<div ng-if="forms.selectedPocket==='newMultisig'" ng-controller="NewFundCtrl" class="large-10 medium-9 columns">
-        	  <ng-include src="'wallet/new_fund.html'">
-        		</ng-include>
-    		</div>
 
-   		 <!-- New pocket dialog -->
-    		<div ng-if="forms.selectedPocket==='newPocket'" class="large-10 medium-9 columns">
-        	  <ng-include src="'wallet/new_pocket.html'">
-        		</ng-include>
-    		</div>

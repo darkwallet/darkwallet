@@ -1,29 +1,29 @@
 <div class="pocketnav left-off-canvas-toggle ">
-    <section class="left" ng-show="forms.selectedPocket!=='newMultisig' && forms.selectedPocket!=='newPocket'">
+    <section class="left" ng-show="isActive('/wallet')">
         <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> {{'Pockets'|_}}</span>
         <span ng-show="pocket.type==='multisig'" class="fa fa-list"> {{'Multisig'|_}}</span>
         <span ng-show="pocket.type==='readonly'" class="fa fa-list"> {{'Watch-only'|_}}</span>
     </section>
     <section class="left" >
-        <span class="fa fa-list" ng-show="forms.selectedPocket==='newMultisig'"> {{'Multisig'|_}}</span>
-        <span class="fa fa-list" ng-show="forms.selectedPocket==='newPocket'"> {{'Pocket'|_}}</span>
+        <span class="fa fa-list" ng-show="isActive('/new_fund')"> {{'Multisig'|_}}</span>
+        <span class="fa fa-list" ng-show="isActive('/new_pocket')"> {{'Pocket'|_}}</span>
     </section>
     <div class="tri"></div>
 </div>
 <div ng-click="titleClick()" class="pocketnav ng-hide">
-    <section class="left" ng-show="forms.selectedPocket!=='newMultisig' && forms.selectedPocket!=='newPocket'">
+    <section class="left" ng-show="isActive('/wallet')">
         <span ng-show="pocket.type!=='multisig'&&pocket.type!=='readonly'" class="fa fa-list"> {{'Pockets'|_}}</span>
         <span ng-show="pocket.type==='multisig'" class="fa fa-list"> {{'Multisig'|_}}</span>
         <span ng-show="pocket.type==='readonly'" class="fa fa-list"> {{'Watch-only'|_}}</span>
     </section>
     <section class="left" >
-        <span class="fa fa-list" ng-show="forms.selectedPocket==='newMultisig'"> {{'Multisig'|_}}</span>
-        <span class="fa fa-list" ng-show="forms.selectedPocket==='newPocket'"> {{'Pocket'|_}}</span>
+        <span class="fa fa-list" ng-show="isActive('/new_fund')"> {{'Multisig'|_}}</span>
+        <span class="fa fa-list" ng-show="isActive('/new_pocket')"> {{'Pocket'|_}}</span>
     </section>
     <div class="tri"></div>
 </div>
   <!-- Pocket name and balance -->
-<section class="middle tab-bar-section" ng-show="forms.selectedPocket!=='newMultisig' && forms.selectedPocket!=='newPocket'">
+<section class="middle tab-bar-section" ng-show="isActive('/wallet')">
 
 <h1 class="title lin">
     <span class="hide-for-small"><identicon ng-hide="pocket.isAll" class="" icon-size="24" hash="pocket.mainHash"></identicon></span>
@@ -57,13 +57,13 @@
 
 </section>
   <!-- New multisig header -->
-<section class="middle tab-bar-section" ng-if="forms.selectedPocket==='newMultisig'">
+<section class="middle tab-bar-section" ng-if="isActive('/new_fund')">
 <h1 class="title lin">
     {{'New Multisig Fund'|_}}
 </h1>
   </section>
   <!-- New pocket header -->
-  <section class="middle tab-bar-section" ng-if="forms.selectedPocket==='newPocket'">
+  <section class="middle tab-bar-section" ng-if="isActive('/new_pocket')">
 <h1 class="title lin">
     {{'New Pocket'|_}}
 </h1>
