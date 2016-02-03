@@ -11,7 +11,7 @@ function (controllers, DarkWallet, Port) {
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
   $scope.forms.selectedPocket = $history.selectedPocket;
-  $scope.forms.overviewPocket = ($history.selectedPocket == 'pocket:all');
+  $scope.forms.overviewPocket = false;
   // pages
   $scope.nPages = 0;
   $scope.page = 0;
@@ -54,7 +54,6 @@ function (controllers, DarkWallet, Port) {
         $scope.pocket = $history.getCurrentPocket();
         setHistoryRows($history.rows, true);
         $scope.forms.selectedPocket = $history.selectedPocket;
-        $scope.forms.overviewPocket = ($history.selectedPocket == 'pocket:all');
         $tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
         // If the rename form is open we need to change the default shown there
         if ($scope.forms.pocketName) {
