@@ -58,7 +58,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           updatePocket({name: pocket.name, mixing: pocket.mixing, balance: balance, type: 'pocket', index: i});
       });
       identity.wallet.multisig.funds.forEach(function(fund, i) {
-          if (!fund) {
+          if (!fund || !identity.wallet.pockets.getPocket(fund.address, 'multisig')) {
               return;
           }
           var balance = identity.wallet.getBalance(fund.address, 'multisig');
