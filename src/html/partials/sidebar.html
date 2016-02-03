@@ -4,12 +4,12 @@
     	<a class="fa fa-arrow-left" ng-click="titleClick()"></a>
     </li>
     <li id="mainpocket" ng-class="{active: pocket.isAll}"><a ng-click="selectOverview()" id="maintitle"><img id="logo" src="../images/logo.svg" width="32" height="32" ng-class="{'busy': status.syncing}" /> Darkwallet</a></li>
-  	<li><label>{{'my pockets'|_}} <a class="cornerbutton right" ng-class="{active: isActive('/new_pocket')}" ng-click="newPocket()" title="{{'Add a new pocket'|_}}"> + </a></label></li>
+  	<li><label>{{'my pockets'|_}} <a class="cornerbutton right fa fa-arrow-up" ng-class="" ng-click=""></a></label></li>
   	<li ng-show="hdPocket" ng-class="{active: 'hd:'+$index===pocket.type+':'+pocket.lastIndex&&isActive('/wallet')}" ng-repeat="hdPocket in hdPockets track by $index">
       <a href="" ng-click="selectPocket(hdPocket.name, $index)">{{hdPocket.name | pocket}}</a>
     </li>
     <li class="divider"></li>
-    <li><label>{{'multisig funds'|_}} <a class="cornerbutton right" ng-class="{active: isActive('/new_fund')}" ng-click="newMultiSig()" title="{{'Add new multisig'|_}}"> + </a></label></li>
+    <li><label>{{'multisig funds'|_}} <a class="cornerbutton right fa fa-arrow-up" ng-class="" ng-click=""></a></label></li>
     <li ng-class="{active: 'multisig:'+$index===forms.selectedPocket&&isActive('/wallet')}" ng-click="selectFund(fund, $index)" ng-repeat="fund in allFunds track by $index"><a href="">{{fund.name}}</a></li>
     <li ng-show="forms.readOnlyArray.length"><label>{{'Watch-only pockets'|_}} <a class="cornerbutton right fa fa-arrow-up" ng-class="" ng-click=""></a></label></li>
     <li ng-class="{active: 'readonly:'+$index===forms.selectedPocket&&isActive('/wallet')}" ng-repeat="readOnlyPocket in forms.readOnlyArray track by $index"><a ng-click="selectReadOnly(readOnlyPocket, $index)"href="">{{readOnlyPocket.name}}</a></li>
