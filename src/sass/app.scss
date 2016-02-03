@@ -435,9 +435,10 @@ div.pockets { z-index: 2; }
 .editpocket { text-align: right; }
 
 .editpocket a {
+		min-width: 34px;
 		position: absolute;
-		margin-left: -2rem;
-		padding: 0.6rem;
+		margin: 1rem 0 0 -2.08rem;
+		padding: 0.4rem 0.6rem;
 		background: black;
 		color: white;
 		opacity: 0.4;
@@ -545,6 +546,8 @@ div.tri {
 		margin-bottom: 0.3rem;
 		h5 { margin-bottom: 0.2em; }
 	}
+
+	.editpocket a { margin-top: 0.4rem; }
 
 	.topmargin { margin-top: 0.6rem }
 
