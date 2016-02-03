@@ -517,10 +517,13 @@ div.tri {
 
 	.panel.pocketoverview {
 		padding: 0.6rem;
-		min-height: 1rem;
+		min-height: 2rem;
 	}
 
 	div.panel { padding: 0.6rem; margin-top: 1rem; margin-bottom: 0; }
+
+	a.button.collapseoverview { padding: 0.6rem; margin: 0; position: absolute; height: 2.8rem; top: 1rem; right: 1rem; }
+
 
 	.pocket-square.editing {
 			border: 1px solid $light-transparent;
