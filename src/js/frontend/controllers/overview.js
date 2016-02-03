@@ -8,10 +8,15 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
 
   $scope.allPockets = [];
 
-  $scope.editing = {};
+  $scope.editing = false;
 
   $scope.toggleEdit = function(pocket) {
-      $scope.editing[pocket.type+pocket.index] = !$scope.editing[pocket.type+pocket.index];
+      var pocketId = pocket.type+pocket.index;
+      if ($scope.editing == pocketId) {
+          $scope.editing = false;
+      } else {
+          $scope.editing = pocketId;
+      }
   }
 
   /**

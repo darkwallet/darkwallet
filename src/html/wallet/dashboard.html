@@ -48,7 +48,7 @@
 	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
 
 			<li class="pocket-square-wrapper" ng-repeat="pocket in allPockets">
-        <div ng-if="editing[pocket.type+pocket.index]">
+        <div ng-if="editing==(pocket.type+pocket.index)">
 
               <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-times"></a></div>
 
@@ -59,20 +59,20 @@
                     <input class="radius" value="NAME" type="text"></input>
                     <div class="row collapse">
                         <div class="small-6 columns">
-                            <a class="button alert expand prefix radius nomarginbottom">Delete</a>
+                            <a ng-class="{'disabled': (pocket.type=='pocket' && pocket.index==0) || pocket.balance.confirmed||pocket.balance.unconfirmed}" class="button alert expand prefix radius nomarginbottom">Delete</a>
                         </div>
                         <div class="small-6 columns">
-                          <a class="button expand postfix radius nomarginbottom">Rename</a>
+                          <a class="button expand postfix radius nomarginbottom">{{'Rename'|_}}</a>
 
                         </div>
                     </div>
-                    <span>Can't delete the first pocket!</span>
-                    <span>Can't delete pocket with funds</span>
+                    <span ng-if="pocket.type=='pocket' && pocket.index==0">{{"Can't delete the first pocket!"|_}}</span>
+                    <span ng-if="pocket.balance.confirmed||pocket.balance.unconfirmed">{{"Can't delete pocket with funds"|_}}</span>
                 </div>
           </div>
 
 
-        <div ng-if="!editing[pocket.type+pocket.index]" ng-click="selectGridPocket(pocket)">
+        <div ng-if="editing!=pocket.type+pocket.index" ng-click="selectGridPocket(pocket)">
             <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-cog"></a></div>
 
 				    <div class="panel radius pocket-square">
