@@ -78,19 +78,5 @@ function (controllers, DarkWallet, Port) {
       $tabs.open('readonly', rowIndex);
   };
 
-  /**
-   * Start creating a new multisig
-   */
-  $scope.newMultiSig = function() {
-      $location.path("/new_fund");
-  };
-
-  /**
-   * Start creating a new pocket
-   */
-  $scope.newPocket = function() {
-      $location.path("/new_pocket");
-  };
-
 }]);
 });
