@@ -17,6 +17,10 @@ function (controllers, DarkWallet, Port) {
   // Link tabs from service
   $scope.tabs = $tabs;
 
+  $history.watch('selectedPocket', function(value) {
+      $scope.forms.selectedPocket = value;
+      $scope.pocket = $history.getCurrentPocket();
+  });
 
   /**
    * Identity Loading
@@ -51,17 +55,26 @@ function (controllers, DarkWallet, Port) {
       $tabs.open('multisig', rowIndex);
   };
 
+  /**
+   * Select the wallet overview
+   */
+  $scope.selectOverview = function() {
+      if ($scope.forms.selectedPocket !== 'pocket:all') {
+          $scope.forms.overviewPocket = false;
+          $scope.forms.selectedPocket = false;
+          $tabs.open();
+      }
+  }
 
   /**
    * Select an hd pocket
    */
   $scope.selectPocket = function(pocketName, rowIndex) {
-      console.log("selectPocket");
-      $scope.forms.overviewPocket = false;
-      $scope.forms.selectedPocket = false;
       if (pocketName === undefined) {
-          $tabs.open();
+          $scope.selectOverview();
       } else {
+          $scope.forms.overviewPocket = false;
+          $scope.forms.selectedPocket = false;
           $tabs.open(undefined, rowIndex);
       }
   };

@@ -86,20 +86,15 @@ function (controllers, DarkWallet, Port) {
           var mainAddress = identity.wallet.getAddress([0]);
           $scope.pocket.mainAddress = mainAddress.stealth;
       }
-      if ($history.previousIdentity != identity.name) {
-          // prevents loading the first time...
-          //if ($history.previousIdentity) {
-          var pocketId = $routeParams.pocketId;
-          checkChanges($routeParams.pocketType, pocketId?parseInt(pocketId):undefined, true);
+      var pocketId = $routeParams.pocketId;
+      checkChanges($routeParams.pocketType, pocketId?parseInt(pocketId):undefined, true);
 
-          // Update tabs
-          $scope.tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
-          //}
+      // Update tabs
+      $scope.tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
 
-          $history.previousIdentity = identity.name;
-          if (!$scope.$$phase) {
-              $scope.$apply();
-          }
+      $history.previousIdentity = identity.name;
+      if (!$scope.$$phase) {
+          $scope.$apply();
       }
   }
 
