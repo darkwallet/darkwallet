@@ -45,12 +45,12 @@
           <span>{{forms.overviewPocket.hd.current|formatFiat}}</span>
           in {{forms.overviewPocket.hd.number}} pockets
           <a class="button newpocket radius fa fa-plus" href="#new_pocket"></a>
-          <a class="button collapseoverview radius fa fa-arrow-up"></a>
+          <a class="button collapseoverview radius fa" ng-class="{'fa-arrow-up': forms.hdOverview, 'fa-arrow-down': !forms.hdOverview}" ng-click="forms.hdOverview=!forms.hdOverview"></a>
 
       </div>
-	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
+	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1" ng-if="forms.hdOverview">
 
-			<li class="pocket-square-wrapper" ng-repeat="pocket in allPockets">
+			<li class="pocket-square-wrapper" ng-repeat="pocket in hdPockets">
         <div ng-if="editing==(pocket.type+pocket.index)">
 
               <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-times"></a></div>
@@ -98,12 +98,12 @@
           <span>{{forms.overviewPocket.multisig.current|formatFiat}}</span>
           in {{forms.overviewPocket.multisig.number}} funds
           <a class="button newpocket radius fa fa-plus" href="#new_fund"></a>
-          <a class="button collapseoverview radius fa fa-arrow-up"></a>
+          <a class="button collapseoverview radius fa" ng-class="{'fa-arrow-up': forms.multisigOverview, 'fa-arrow-down': !forms.multisigOverview}" ng-click="forms.multisigOverview=!forms.multisigOverview"></a>
 
       </div>
-      <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
+      <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1" ng-if="forms.multisigOverview">
 
-      <li class="pocket-square-wrapper" ng-repeat="pocket in allPockets">
+      <li class="pocket-square-wrapper" ng-repeat="pocket in multisigPockets">
         <div ng-if="editing==(pocket.type+pocket.index)">
 
               <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-times"></a></div>

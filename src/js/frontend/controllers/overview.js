@@ -6,7 +6,8 @@
 define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkWallet, Port) {
   controllers.controller('OverviewCtrl', ['$scope', '$history', '$location', function($scope, $history, $location) {
 
-  $scope.allPockets = [];
+  $scope.hdPockets = [];
+  $scope.multisigPockets = [];
 
   $scope.editing = false;
 
@@ -33,16 +34,16 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
   /**
    * Update a pocket's information in place
    */
-  var updatePocket = function(newData, position) {
-      var found = $scope.allPockets.filter(function(pocket) {return (newData.type == pocket.type && newData.name == pocket.name)});
+  var updatePocket = function(newData, position, arr) {
+      var found = arr.filter(function(pocket) {return (newData.type == pocket.type && newData.name == pocket.name)});
       if (found.length) {
           Object.keys(newData).forEach(function(key) {
               found[key] = newData[key];
           });
       } else if (position) {
-          $scope.allPockets.splice(position, 0, newData);
+          arr.splice(position, 0, newData);
       } else {
-          $scope.allPockets.push(newData);
+          arr.push(newData);
       }
   };
 
@@ -70,7 +71,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           total.hd.number += 1;
 
           // Save the pocket information
-          updatePocket({name: pocket.name, mixing: pocket.mixing, balance: balance, type: 'pocket', index: i});
+          updatePocket({name: pocket.name, mixing: pocket.mixing, balance: balance, type: 'pocket', index: i}, null, $scope.hdPockets);
       });
       identity.wallet.multisig.funds.forEach(function(fund, i) {
           if (!fund || !identity.wallet.pockets.getPocket(fund.address, 'multisig')) {
@@ -88,7 +89,7 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
           total.multisig.number += 1;
 
           // Save the pocket information
-          updatePocket({name: fund.name, mixing: fund.mixing, balance: balance, type: 'fund', fund: fund, index: i});
+          updatePocket({name: fund.name, mixing: fund.mixing, balance: balance, type: 'fund', fund: fund, index: i}, null, $scope.multisigPockets);
       });
       $scope.setOverview(total);
       // updatePocket({name: 'Total', balance: total, type: 'total'}, identity.wallet.pockets.hdPockets.length-1);
@@ -111,7 +112,8 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       if (data.type === 'ready' && data.identity !== loaded) {
           // Ready event, recalculate balances and cleanup pockets
           loaded = data.identity;
-          $scope.allPockets.splice(0, $scope.allPockets.length);
+          $scope.hdPockets.splice(0, $scope.hdPockets.length);
+          $scope.multisigPockets.splice(0, $scope.multisigPockets.length);
           calculateBalances();
       }
       else if (data.type === 'height') {

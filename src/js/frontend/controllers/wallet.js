@@ -17,7 +17,7 @@ function (controllers, DarkWallet, Port) {
   // Scope variables
   $scope.rates = {};
   $scope.totalBalance = 0;
-  $scope.forms = {readOnlyArray: [], selectedPocket: false, overviewPocket: false};
+  $scope.forms = {readOnlyArray: [], selectedPocket: false, overviewPocket: false, hdOverview: true, multisigOverview: true};
   $scope.identityName = false;
 
   $scope.allReadOnly = {};
