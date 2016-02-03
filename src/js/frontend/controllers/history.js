@@ -10,9 +10,7 @@ function (controllers, DarkWallet, Port) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
-  $scope.selectedPocket = $history.selectedPocket;
-
-  $scope.overviewPocket = false;
+  $scope.forms.selectedPocket = $history.selectedPocket;
 
   // pages
   $scope.nPages = 0;
@@ -55,7 +53,7 @@ function (controllers, DarkWallet, Port) {
     if (changed) {
         $scope.pocket = $history.getCurrentPocket();
         setHistoryRows($history.rows, true);
-        $scope.selectedPocket = $history.selectedPocket;
+        $scope.forms.selectedPocket = $history.selectedPocket;
         $tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
         // If the rename form is open we need to change the default shown there
         if ($scope.forms.pocketName) {
@@ -146,7 +144,7 @@ function (controllers, DarkWallet, Port) {
    * Set overview information (for extra balance on the dashboard area header)
    */
   $scope.setOverview = function(overview) {
-      $scope.overviewPocket = overview;
+      $scope.forms.overviewPocket = overview;
   }
 
 
