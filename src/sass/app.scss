@@ -9,7 +9,9 @@ $alert-color: #c92441;
 $success-color: #43AC6A;
 $dark-transparent: rgba(0,0,0,0.3);
 $darker-transparent: rgba(0,0,0,0.4);
-$light-transparent: rgba(100,100,100,0.2);
+$light-transparent: rgba(255,255,255,0.2);
+$lighter-transparent: rgba(255,255,255,0.6);
+
 
 @import "settings";
 @import "foundation";
@@ -55,6 +57,7 @@ span.tooltip.fade.in { opacity: 1; }
 	background: #333;
 	a { color: white; }
 }
+
 .popupcontainer {
 	height: auto;
 	max-height: 100%;
@@ -62,7 +65,6 @@ span.tooltip.fade.in { opacity: 1; }
 	padding-top: 0.6em;
 	overflow: hidden;
 }
-
 
 
 div.cardflipper {
@@ -302,19 +304,44 @@ li.colorhead h6 { color: white; margin: 0; }
 
 	 /* ----------------------- */
 ul.off-canvas-list {
+
 	overflow-x: hidden;
 	white-space: nowrap;
+
 	li a:hover { background: $dark-transparent; }
+
 	li a.cornerbutton {
-		background: $light-transparent;
-		&:hover { background: $dark-transparent; }
 		position: absolute;
 		right: 0;
-		margin-top: -1.4rem;
-		color: $primary-color-dark;
-		padding: 0.45rem;
 		border-bottom: none;
+		padding: 0;
+		-webkit-perspective: 300px;
+		width: 100%;
+
+		label {
+			padding: 0.3rem 0.5rem;
+			float: right;
+			background: $secondary-color;
+		}
+
+		i {
+			font-size: 0.8rem;
+			color: $light-transparent;
+			-webkit-backface-visibility: visible;
+			-webkit-transform: rotateX(0deg);
+		 }
+
+		&:hover i {
+			color: white;
+			-webkit-transform: rotateX(180deg);
+		 }
+
+		 &:hover { background: $light-transparent; }
+
 	}
+
+
+
 	li a.cornerbutton.active {
 		background: $primary-color-dark;
 		color: $secondary-color;
@@ -532,9 +559,14 @@ div.tri {
 		margin: -0.65rem 0 0 0;
 		position: absolute;
 		height: 2.8rem;
-		right: 0.96rem;
-		background: $dark-transparent;
+		right: 0.7rem;
+		background: transparent;
 		&:hover { background: $primary-color-dark; }
+		i {
+			-webkit-backface-visibility: visible;
+			-webkit-transform: rotateX(0deg);
+		}
+		&:hover i { -webkit-transform: rotateX(180deg); }
 	 }
 
 	a.button.newpocket { right: 3.3rem; padding: 0.65em }
