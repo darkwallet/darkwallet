@@ -56,7 +56,6 @@
           {{forms.overviewPocket.hd.current|formatBtc}}
           <span>{{forms.overviewPocket.hd.current|formatFiat}}</span>
           in {{forms.overviewPocket.hd.number}} pockets
-          <a class="button newpocket radius fa fa-plus" href="#new_pocket"></a>
           <a class="button collapseoverview radius fa" ng-click="forms.hdOverview=!forms.hdOverview"><i class="fa" ng-class="{'fa-chevron-up': forms.hdOverview, 'fa-chevron-down': !forms.hdOverview}"></i></a>
 
       </div>
@@ -105,20 +104,11 @@
 	           	</div>
           </div>
 	  		</li>
-        <li class="pocket-square-wrapper">
-          <div class="editpocket add" ng-hide="1"><a class="button radius fa fa-times"></a></div>
+        <li class="pocket-square-wrapper" ng-click="openLink('new_pocket')">
           <div class="panel radius pocket-square">
               <div class="text-center">
-                  <h1 class="fa fa-plus" ng-hide="0"></h1>
+                  <h1 class="fa fa-plus"></h1>
                   <p class="nomarginbottom">Add pocket</p>
-              </div>
-              <div class="row collapse" ng-hide="1">
-                  <div class="small-10 columns">
-                      <input class="prefix radius nomarginbottom" placeholder="Name" type="text">
-                  </div>
-                  <div class="small-2 columns">
-                      <a class="postfix radius button nomarginbottom">ok</a>
-                  </div>
               </div>
           </div>
         </li>
@@ -127,7 +117,6 @@
           {{forms.overviewPocket.multisig.current|formatBtc}}
           <span>{{forms.overviewPocket.multisig.current|formatFiat}}</span>
           in {{forms.overviewPocket.multisig.number}} funds
-          <a class="button newpocket radius fa fa-plus" href="#new_fund"></a>
           <a class="button collapseoverview radius fa" ng-click="forms.multisigOverview=!forms.multisigOverview"><i ng-class="{'fa-chevron-up': forms.multisigOverview, 'fa-chevron-down': !forms.multisigOverview}" class="fa"></i></a>
 
       </div>
@@ -172,20 +161,11 @@
               </div>
           </div>
         </li>
-        <li class="pocket-square-wrapper">
-          <div class="editpocket add" ng-hide="1"><a class="button radius fa fa-times"></a></div>
-            <div class="panel radius pocket-square" ng-click="#new_pocket">
+        <li class="pocket-square-wrapper" ng-click="openLink('new_fund')">
+            <div class="panel radius pocket-square">
                 <div class="text-center">
-                    <h1 class="fa fa-plus" ng-hide="0"></h1>
+                    <h1 class="fa fa-plus"></h1>
                     <p class="nomarginbottom">Add fund</p>
-                </div>
-                <div class="row" ng-hide="1">
-                    <div class="small-6 columns">
-                        <a class="button radius expand nomarginbottom">Create</a>
-                    </div>
-                    <div class="small-6 columns">
-                        <a class="button radius expand nomarginbottom">Import</a>
-                    </div>
                 </div>
             </div>
         </li>

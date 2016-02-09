@@ -31,6 +31,10 @@ define(['./module', 'darkwallet', 'frontend/port'], function (controllers, DarkW
       }
   };
 
+  $scope.openLink = function(path) {
+      $location.path('/'+path);
+  };
+
   /**
    * Update a pocket's information in place
    */
