@@ -115,6 +115,7 @@ div.modal-ng.ng-animate.ng-enter { @include single-transition(all, 300ms, ease-o
 nav.top-bar { @include single-transition(height, 300ms, ease-out); }
 .top-bar section ul { @include single-transition(all, 300ms, ease-out); }
 
+#viewwrapper,
 a.collapseoverview i,
 li a.cornerbutton,
 li a.cornerbutton i,
@@ -126,6 +127,8 @@ div.identitylist,
 div.send-advanced.ng-hide,
 span.tooltip.fade.ng-animate,
 .pocket-square,
+.pocket-square h1,
+.pocketoverview,
 .contact-mosaic-square,
 .contact-mosaic-square img,
 .contact-mosaic-square .contact-label,
@@ -134,7 +137,24 @@ span.tooltip.fade.ng-animate,
 .tabs dd > a,
 button.button,
 a.button,
+ul.gridlist,
+li.pocket-square-wrapper,
 button.square { @include single-transition(); }
+
+ul.small-block-grid-1.ng-hide-add {
+	opacity: 1;
+	li { max-height: 125px; }
+}
+ul.small-block-grid-1.ng-hide-add-active,
+ul.small-block-grid-1.ng-hide-remove {
+	opacity: 0;
+	li { max-height: 1px; }
+ }
+
+ ul.small-block-grid-1.ng-hide-remove-active {
+	 opacity: 1;
+	 li { max-height: 170px; }
+ }
 
 #maintitle {
 	-webkit-perspective: 140px;
