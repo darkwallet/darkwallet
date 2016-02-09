@@ -2080,7 +2080,7 @@ select::-ms-expand {
 span.prefix, label.prefix {
   background: rgba(255, 255, 255, 0.2);
   border-right: none;
-  color: #333;
+  color: white;
   border-color: #cccccc; }
   span.prefix.radius, label.prefix.radius {
     border-radius: 0;
@@ -2090,7 +2090,7 @@ span.prefix, label.prefix {
 span.postfix, label.postfix {
   background: rgba(255, 255, 255, 0.2);
   border-left: none;
-  color: #333;
+  color: white;
   border-color: #cccccc; }
   span.postfix.radius, label.postfix.radius {
     border-radius: 0;
@@ -4467,8 +4467,23 @@ nav.top-bar {
 .top-bar section ul {
   transition: all 300ms ease-out; }
 
-a.collapseoverview i, li a.cornerbutton, li a.cornerbutton i, li.active, .pocketnav, section.left, .tab-bar-section.middle, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
+#viewwrapper, a.collapseoverview i, li a.cornerbutton, li a.cornerbutton i, li.active, .pocketnav, section.left, .tab-bar-section.middle, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .pocket-square h1, .pocketoverview, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, ul.gridlist, li.pocket-square-wrapper, button.square {
   transition: all 300ms ease-out; }
+
+ul.small-block-grid-1.ng-hide-add {
+  opacity: 1; }
+  ul.small-block-grid-1.ng-hide-add li {
+    max-height: 125px; }
+
+ul.small-block-grid-1.ng-hide-add-active, ul.small-block-grid-1.ng-hide-remove {
+  opacity: 0; }
+  ul.small-block-grid-1.ng-hide-add-active li, ul.small-block-grid-1.ng-hide-remove li {
+    max-height: 1px; }
+
+ul.small-block-grid-1.ng-hide-remove-active {
+  opacity: 1; }
+  ul.small-block-grid-1.ng-hide-remove-active li {
+    max-height: 170px; }
 
 #maintitle {
   -webkit-perspective: 140px; }
@@ -4985,6 +5000,9 @@ span.ellipsis, div.ellipsis {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
+.transactions {
+  margin: 1rem 0; }
+
 .transactions div.row, .transactions.hide-for-small {
   padding: 0.5em;
   font-size: 90%;
@@ -5155,7 +5173,7 @@ textarea.script {
   color: #c92441; }
 
 .contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover {
-  background: rgba(30, 190, 90, 0.9);
+  background: #333;
   cursor: pointer; }
 
 .contact-mosaic {
@@ -5276,9 +5294,22 @@ div.pockets {
   color: white;
   opacity: 0.4; }
   .editpocket a:hover {
-    background: white;
+    background: rgba(255, 255, 255, 0.6);
     color: black;
     opacity: 1; }
+    .editpocket a:hover i {
+      -webkit-animation-name: spin;
+      -webkit-animation-duration: 4s;
+      -webkit-animation-iteration-count: 2; }
+
+div#viewwrapper {
+  transform: translate3d(0, 0, 0);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%; }
+
+div#viewwrapper.moveup {
+  transform: translate3d(0, -50px, 0); }
 
 div.inner-wrap {
   min-height: inherit;
@@ -5338,15 +5369,16 @@ div.tri {
 section.main-section, div.container {
   height: 100%; }
 
-div.scrolldiv {
-  overflow-y: scroll; }
-
 nav.tab-bar {
   overflow: hidden; }
 
 .panel.pocketoverview {
   padding: 0.6rem;
-  min-height: 2rem; }
+  min-height: 2rem;
+  background: #333; }
+  .panel.pocketoverview:hover {
+    background: #4d4d4d;
+    cursor: pointer; }
 
 div.panel {
   padding: 0.6rem;
@@ -5372,6 +5404,10 @@ a.button.newpocket {
   right: 3.3rem;
   padding: 0.65em; }
 
+.pocket-square:hover h1 {
+  font-size: 3.5rem;
+  -webkit-transform: rotateZ(90deg); }
+
 .pocket-square.editing {
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: #333; }
@@ -5382,11 +5418,10 @@ li.pocket-square-wrapper {
 
 .pocket-square {
   min-height: 120px;
+  max-height: 160px;
   overflow-x: hidden; }
 
 @media only screen and (max-width: 40em) {
-  a.button.collapseoverview, a.button.newpocket {
-    top: 0.4rem; }
   .pocket-square {
     min-height: 40px;
     margin-bottom: 0.3rem; }

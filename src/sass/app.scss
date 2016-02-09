@@ -215,6 +215,7 @@ span.ellipsis, div.ellipsis {
 	white-space: nowrap;
  }
 
+.transactions { margin: 1rem 0; }
 
 .transactions div.row, .transactions.hide-for-small {
 	padding: 0.5em;
@@ -389,7 +390,7 @@ textarea.script {
 .contact-mosaic .panel:hover,
 div.notifications .panel:hover,
 .pocket-square:hover {
-	background: $primary-color;
+	background: $secondary-color;
 	cursor: pointer;
 }
 
@@ -477,12 +478,24 @@ div.pockets { z-index: 2; }
 		color: white;
 		opacity: 0.4;
 		&:hover {
-			 background: white;
+			 background: $lighter-transparent;
 			 color: black;
 			 opacity: 1;
-		  }
+			 i {
+			 -webkit-animation-name: spin;
+			 -webkit-animation-duration: 4s;
+			 -webkit-animation-iteration-count: 2;
+		 		}
+		}
  }
 
+div#viewwrapper {
+	transform: translate3d(0,0,0);
+	overflow-y: scroll;
+	overflow-x: hidden;
+	height: 100%;
+}
+div#viewwrapper.moveup { transform: translate3d(0,-50px,0) }
 
 div.inner-wrap { min-height: inherit; padding: 0; }
 
@@ -545,13 +558,17 @@ div.tri {
 		height: 100%;
 	}
 
-	div.scrolldiv { overflow-y: scroll; }
 
 	nav.tab-bar { overflow: hidden; }
 
 	.panel.pocketoverview {
 		padding: 0.6rem;
 		min-height: 2rem;
+		background: $secondary-color;
+		&:hover {
+			background: lighten($secondary-color, 10%);
+			cursor: pointer;
+			}
 	}
 
 	div.panel { padding: 0.6rem; margin-top: 1rem; margin-bottom: 0; }
@@ -573,11 +590,14 @@ div.tri {
 
 	a.button.newpocket { right: 3.3rem; padding: 0.65em }
 
+	.pocket-square:hover h1 { font-size: 3.5rem; -webkit-transform: rotateZ(90deg); }
+
 	.pocket-square.editing {
 			border: 1px solid $light-transparent;
 			background: $secondary-color;
 
 	 }
+
 
 	 li.pocket-square-wrapper {
 	 	overflow: hidden;
@@ -586,13 +606,12 @@ div.tri {
 
 	 .pocket-square {
 	 	min-height: 120px;
+		max-height: 160px;
 	 	overflow-x: hidden;
 	 }
 
 
 @media #{$small-only} {
-
-	a.button.collapseoverview, a.button.newpocket { top: 0.4rem; }
 
 
 	.pocket-square {
