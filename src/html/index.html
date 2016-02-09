@@ -21,23 +21,23 @@
 
         <div class="inner-wrap container pinned">
 
-            <nav class="tab-bar" ng-controller="NavbarCtrl">
-              <ng-include src="'partials/navbar.html'"></ng-include>
-
-            </nav>
-
             <aside class="left-off-canvas-menu container">
                 <ng-include src="'partials/sidebar.html'"></ng-include>
             </aside>
-            <section class="main-section">
+            <div id="viewwrapper" ng-class="">
+              <nav class="tab-bar" ng-controller="NavbarCtrl">
+                <ng-include src="'partials/navbar.html'"></ng-include>
 
-              <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include>
-              <div class="scrolldiv container">
+              </nav>
+
+
+              <section class="main-section">
+
+                <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include>
                 <div class="" ng-if="identityName||isActive('/new_wallet')" ng-view></div>
-              </div>
 
-            </section>
-
+              </section>
+            </div>
             <a class="exit-off-canvas"></a>
         </div>
 
