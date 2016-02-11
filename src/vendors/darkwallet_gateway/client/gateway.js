@@ -103,6 +103,18 @@ GatewayClient.prototype.fetch_stealth = function(
         });
 };
 
+GatewayClient.prototype.fetch_stealth2 = function(
+    prefix, handle_fetch, from_height)
+{
+    GatewayClient._check_function(handle_fetch);
+
+    this.make_request("fetch_stealth2", [prefix, from_height],
+        function(response) {
+            handle_fetch(response["error"], response["result"][0]);
+        });
+};
+
+
 /**
  * Subscribe
  *
