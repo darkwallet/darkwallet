@@ -163,7 +163,7 @@ define(['backend/port'], function(Port) {
         if (height > fromHeight) {
             console.log("[stealth] Requesting from block " + fromHeight + " for " + height);
             lastStealthRequested = height;
-            client.fetch_stealth([0,0], onStealthReceived, fromHeight);
+            client.fetch_stealth2([0,0], onStealthReceived, fromHeight);
             // register the id so we can check later its not cancelled
             fetchJobId = stealthJobIndex;
             stealthJobs[stealthJobIndex] = {type: 'request'};
