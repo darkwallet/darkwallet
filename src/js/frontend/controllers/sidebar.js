@@ -48,23 +48,14 @@ function (controllers, DarkWallet, Port) {
       $tabs.open('multisig', rowIndex);
   };
 
-  /**
-   * Select the wallet overview
-   */
-  $scope.selectOverview = function() {
-      if ($scope.forms.selectedPocket !== 'pocket:all') {
-          $scope.forms.overviewPocket = false;
-          $scope.forms.selectedPocket = false;
-          $tabs.open();
-      }
-  }
 
   /**
    * Select an hd pocket
    */
   $scope.selectPocket = function(pocketName, rowIndex) {
       if (pocketName === undefined) {
-          $scope.selectOverview();
+          // Shouldn't be called like this any more
+          console.log("Internal error: selectPocket called with no pocketName");
       } else {
           $scope.forms.overviewPocket = false;
           $scope.forms.selectedPocket = false;
