@@ -66,14 +66,14 @@
 
               <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-times"></a></div>
 
-              <div class="panel radius pocket-square editing">
-                    <input class="radius" value="{{pocket.name | pocket}}" autofocus type="text">
+              <div class="panel radius pocket-square editing" ng-controller="PocketActionCtrl">
+                    <input class="radius" ng-model="forms.pocketName" autofocus type="text">
                     <div class="row collapse">
                         <div class="small-6 columns">
-                            <a ng-class="{'disabled': (pocket.type=='pocket' && pocket.index==0) || (pocket.type=='pocket'&&(pocket.balance.confirmed||pocket.balance.unconfirmed))}" class="button alert expand prefix radius nomarginbottom">{{'Delete'|_}}</a>
+                            <a ng-class="{'disabled': (pocket.type=='pocket' && pocket.index==0) || (pocket.type=='pocket'&&(pocket.balance.confirmed||pocket.balance.unconfirmed))}" class="button alert expand prefix radius nomarginbottom" ng-click="deletePocket(pocket)">{{'Delete'|_}}</a>
                         </div>
                         <div class="small-6 columns">
-                          <a class="button expand postfix radius nomarginbottom">{{'Rename'|_}}</a>
+                          <a class="button expand postfix radius nomarginbottom" ng-click="renamePocket(pocket)">{{'Rename'|_}}</a>
 
                         </div>
                     </div>
@@ -127,14 +127,14 @@
 
               <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-times"></a></div>
 
-              <div class="panel radius pocket-square editing">
-                    <input class="radius" value="{{pocket.name | pocket}}" autofocus type="text">
+              <div class="panel radius pocket-square editing" ng-controller="PocketActionCtrl">
+                    <input class="radius" ng-model="forms.pocketName" autofocus type="text">
                     <div class="row collapse">
                         <div class="small-6 columns">
-                            <a ng-class="{'disabled': (pocket.type=='pocket' && pocket.index==0) || (pocket.type=='pocket'&&(pocket.balance.confirmed||pocket.balance.unconfirmed))}" class="button alert expand prefix radius nomarginbottom">Delete</a>
+                            <a ng-class="{'disabled': (pocket.type=='pocket' && pocket.index==0) || (pocket.type=='pocket'&&(pocket.balance.confirmed||pocket.balance.unconfirmed))}" class="button alert expand prefix radius nomarginbottom" ng-click="deletePocket(pocket)">Delete</a>
                         </div>
                         <div class="small-6 columns">
-                          <a class="button expand postfix radius nomarginbottom">{{'Rename'|_}}</a>
+                          <a class="button expand postfix radius nomarginbottom" ng-click="renamePocket(pocket)">{{'Rename'|_}}</a>
 
                         </div>
                     </div>
