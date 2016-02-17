@@ -41,9 +41,9 @@ function createReceiveAddresses(pCodePocketPriv, pCodeKey, $wallet, start) {
       if (!walletAddress) {
          walletAddress = identity.wallet.storePublicKey(id, recvPubKey, {'type': 'pcode'});
       }
+      // add the address to the wallet
       $wallet.initAddress(walletAddress);
     }
-    // addresses must now be added to wallet...
 
 }
 
@@ -94,32 +94,41 @@ var getContactPCodeKey = function(contact, address) {
 }
 
 var getPaymentAddresses = function(contact, address) {
+     var needsExtension = false;
      var contactKey = getContactPCodeKey(contact, address);
      for(var i=0; i<contactKey.addresses.length; i++) {
          if (contactKey.addresses[i][1] == false) {
              contactKey.addresses[i][1] = true;
-             return contactKey.addresses[i][0];
+             if (i > (contactKey.addresses.length-5)) {
+                 needsExtension = true;
+             }
+             return {address: contactKey.addresses[i][0], extend: needsExtension};
          }
      }
      // Need to extend addresses
-     return false;
+     return {address: false};
 }
 
 var replacePaymentCodes = function(spend) {
     var identity = DarkWallet.getIdentity();
     var contacts = spend.contacts;
     var recipients = spend.recipients;
-    var needsExtension = {contacts: [], recipients: []};
+    var needsExtension = {contacts: [], recipients: [], full: true};
 
     for(var i=0; i<contacts.length; i++) {
         if (BtcUtils.isPaymentCode(contacts[i].address)) {
             var contact = contacts[i].contact;
-            var address = PCodeUtils.getNext(contact, contacts[i].address);
-            if (address) {
-                recipients[i].address = address;
+            var next = PCodeUtils.getNext(contact, contacts[i].address);
+            if (next.address) {
+                recipients[i].address = next.address;
+                if (next.extend) {
+                    needsExtension.contacts.push(contacts[i]);
+                    needsExtension.recipients.push(recipients[i]);
+                }
             } else {
                 needsExtension.contacts.push(contacts[i]);
                 needsExtension.recipients.push(recipients[i]);
+                needsExtension.full = false;
             }
         }
     }

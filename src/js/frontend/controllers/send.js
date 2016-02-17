@@ -406,7 +406,12 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, PCod
 
       if (hasPaymentCodes) {
           var needsExtension = PCodeUtils.replace(spend);
-          if (needsExtension.contacts.length) {
+          if (!needsExtension.full) {
+              // Extend payment codes here since some could not get next address.
+              // TODO this shouldn't happen but atm can't completely avoid the situation so it's safer
+              // to do this... the issue is some addresses will be reserved but not used if sending
+              // to several payment codes
+              // For most cases the payment codes will be updated after send and this doesn't happen.
               modals.password(_("Please input password to unlock payment codes"), function(password) {
                   PCodeUtils.extendSend(password, needsExtension);
               });
@@ -466,6 +471,10 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, PCod
       modals.confirmSend(_('Write your password'), {pocket: pocket, metadata: metadata}, spend.contacts, function(password) {
           // Run the password callback
           onPassword(metadata, amountNote, password, pocketType);
+          // extend payment codes that are close to the limit
+          if (needsExtension.contacts.length) {
+              PCodeUtils.extendSend(password, needsExtension);
+          }
       }, function() {
           sendForm.sending = false;
       });
