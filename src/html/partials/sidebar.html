@@ -12,7 +12,7 @@
       <a href="" ng-click="selectPocket(hdPocket.name, $index)">{{hdPocket.name | pocket}}</a>
     </li>
     <li class="divider"></li>
-    <li>
+    <li ng-if="allFunds.length">
       <a class="cornerbutton" ng-class="" ng-click=""><label><i class="fa fa-chevron-up"></i></label></a>
       <label>{{'multisig funds'|_}} </label>
     </li>
@@ -26,17 +26,18 @@
 
     <li><label>Management</label></li>
 
+    <li title="{{'Identities'|_}}" ng-class="{active:isActive('/identities')}"><a ng-show="identityName" href="#identities"><i class="icon-wallet"></i> {{'Wallets'|_}} ({{identityName}})</a></li>
     <li ng-class="{active:isActive('/contact')}"><a href="#contacts"><i class="icon-contacts"></i> {{'Contacts'|_}}</a></li>
 
-    <li title="{{'Settings'|_}}" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> {{'Settings'|_}}</a></li>
-
-
-    <li title="{{'Identities'|_}}" ng-class="{active:isActive('/identities')}"><a ng-show="identityName" href="#identities"><i class="icon-wallet"></i> {{'Wallets'|_}} ({{identityName}})</a></li>
     <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="icon-rocket"></i> {{'Send'|_}}</a></li>
 
     <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="icon-chat"></i> {{'Lobby'|_}}</a></li>
 
     <li title="{{'Gateway'|_}}: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i> Disconnected!!</a></li>
-    <li ng-show="settings.advanced" title="{{'Block explorer'|_}}" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i> {{'Browser'|_}} {{currentHeight}}</a></li>
+    <li ng-show="settings.advanced"><label>Tools</label></li>
+    <li title="{{'Tools'|_}}" id="settings" ng-class="{active:isActive('/tools')}"><a href="#tools"><i class="icon-cog"></i> {{'Tools'|_}}</a></li>
+    <li title="{{'Settings'|_}}" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> {{'Settings'|_}}</a></li>
+    <li ng-if='settings.advanced' title="{{'Dev'|_}}" id="settings" ng-class="{active:isActive('/dev')}"><a href="#development"><i class="icon-cog"></i> {{'Dev'|_}}</a></li>
+    <li ng-show="settings.advanced" title="{{'Block explorer'|_}}" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i> {{currentHeight}}</a></li>
 
 </ul>

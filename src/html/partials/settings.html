@@ -52,6 +52,7 @@
           <input id="checkbox-notify" ng-model="settings.notifications.popup" type="checkbox" ng-change="storeSettings()"><label for="checkbox-notify">{{'For chat messages'|_}}</label><br>
           <h5>{{'Language'|_}}</h5>
           <select id="select-language" ng-model="settings.language" ng-change="languageChanged()" ng-options="language.code as language.name for language in languages"></select>
+          <input id="checkbox-devmode" ng-model="settings.advanced" ng-change="setAdvanced()" type="checkbox"><label for="checkbox-devmode">{{'Enable developer mode'|_}}</label><br>
         </div>
         <div ng-controller="ServersCtrl" class="panel setback net">
           <h5>{{'Servers'|_}}</h5>
@@ -127,7 +128,5 @@
           <select ng-model="selectedFiat" ng-options="key as value.name for (key , value) in fiatCurrencies" ng-change="fiatCurrencyChanged()">
           </select>
         </div>
-        <a class="button fa fa-gears postfix" href="#tools">{{'Tools'|_}}</a>
-        <a class="button fa fa-flask postfix" href="#dev">{{'Development'|_}}</a>
       </div>
 </div>
