@@ -15,6 +15,8 @@ define([
     './contacts',
     './faucet',
     './history',
+    './sidebar',
+    './navbar',
     './history_rows',
     './identities',
     './latest',

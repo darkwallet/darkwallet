@@ -4,7 +4,7 @@
 'use strict';
 
 define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('PocketCreateCtrl', ['$scope', '$wallet', '$history', 'watch', '$tabs', 'modals', 'notify', '_Filter', function($scope, $wallet, $history, watch, $tabs, modals, notify, _) {
+  controllers.controller('PocketCreateCtrl', ['$scope', '$wallet', '$history', 'watch', '$tabs', 'modals', 'notify', '$location', '_Filter', function($scope, $wallet, $history, watch, $tabs, modals, notify, $location, _) {
 
     /**
      * Scope variables
@@ -38,11 +38,11 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
                 // generate an address
                 $wallet.generateAddress(pocketIndex, 0);
 
-                // select the pocket
-                $scope.selectPocket($scope.newPocket.name, pocketIndex);
-
                 // reset pocket form
                 $scope.newPocket = {name:''};
+
+                // Go to the new pocket
+                $location.path('/wallet/dashboard/'+pocketIndex);
             });
         } else {
             // cancel

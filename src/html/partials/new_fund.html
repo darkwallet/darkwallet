@@ -10,18 +10,18 @@
 				<div class="small-6 columns">
 					<a class="button radius expand nomarginbottom fa fa-download" ng-click="multisig.page='multisig-create';multisig.createType='import'"> {{'Import'|_}}</a>
 				</div>
-				
+
 				<div class="small-6 columns">
 					<a class="button radius expand glow nomarginbottom fa fa-plus" ng-click="multisig.page='multisig-create';multisig.createType='new'"> {{'Create new'|_}}</a>
 				</div>
 			</div>
-		
+
 		</div>
 		<div class="wizard" ng-if="multisig.page=='multisig-create'&&multisig.createType=='import'">
 			<div class="row">
 				<div class="small-12 columns">
                     <h5>{{'Name for the pocket'|_}}</h5>
-                    <input ng-model="multisig.name"  type="text" class="radius" placeholder="{{'Enter the pocket name for your fund...'|_}}" autofocus>
+                    <input ng-model="multisig.name" maxlength="17" type="text" class="radius" placeholder="{{'Enter the pocket name for your fund...'|_}}" autofocus>
 					<h5>{{'Paste the multisig code here'|_}}</h5>
 					<textarea ng-model="scriptData" class="script"></textarea>
 				</div>
@@ -37,7 +37,7 @@
 					<a class="button radius expand nomarginbottom fa fa-download" ng-disabled="!scriptData" ng-class="{glow: scriptData}" ng-click="importMultisig(scriptData)"> {{'Import'|_}}</a>
 				</div>
 			</div>
-		
+
 		</div>
 		<div class="wizard" ng-if="multisig.page=='multisig-create'&&multisig.createType=='new'">
 			<div class="small-12 columns">
@@ -70,7 +70,7 @@
 			   	</div>
 			<!---	<input id="include-me" type="checkbox"><label for="include-me">Add this wallet ({{identityName}}) as a manager</label> -->
 			</div>
-				
+
 				<div class="row">
 					<div class="small-4 columns">
 						<a class="button radius expand nomarginbottom fa fa-arrow-left" ng-click="multisig.page='multisig-start'"> {{'Back'|_}}</a>
@@ -92,7 +92,7 @@
 						</div>
 						<div class="small-9 columns">
 							<span class="postfix radius">{{'of {0} signatures will be required to spend'|_:multisig.participants.length}}</span>
-						
+
 						</div>
 					</div>
 
@@ -103,7 +103,7 @@
 						<a class="button radius expand nomarginbottom fa fa-arrow-left" ng-click="multisig.page='multisig-create'"> {{'Back'|_}}</a>
 					</div>
 					<div class="small-4 columns">
-						
+
 					</div>
 					<div class="small-4 columns">
 						<a class="button radius expand nomarginbottom fa fa-plus" ng-click="createMultisig()" ng-class="{glow: multisig.name}" ng-disabled="!multisig.name"> {{'Create'|_}}</a>

@@ -2,7 +2,7 @@
 
 define(['./module', 'darkwallet', 'util/btc', 'bitcoinjs-lib'],
 function (controllers, DarkWallet, BtcUtils, Bitcoin) {
-  controllers.controller('NewFundCtrl', ['$scope', 'notify', '_Filter', function($scope, notify, _) {
+  controllers.controller('NewFundCtrl', ['$scope', 'notify', '$location', '_Filter', function($scope, notify, $location, _) {
 
     /**
      * Reset the multisig fund
@@ -112,10 +112,11 @@ function (controllers, DarkWallet, BtcUtils, Bitcoin) {
         if (multisig.name) {
             var walletAddress = identity.wallet.multisig.addFund(multisig);
             DarkWallet.service.multisigTrack.announce(multisig, walletAddress);
-            $scope.selectFund(multisig, identity.wallet.multisig.funds.length-1);
+            //$scope.selectFund(multisig, identity.wallet.multisig.funds.length-1);
             DarkWallet.core.initAddress(walletAddress);
             // clean up scope
             $scope.resetMultisigForm();
+            $location.path('/wallet/dashboard/multisig/'+(identity.wallet.multisig.funds.length-1));
         }
     };
   }]);

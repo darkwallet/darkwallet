@@ -30,6 +30,8 @@
 // $include-xl-html-grid-classes: false;
 
 $row-width: rem-calc(1200);
+$column-gutter: rem-calc(20) !default;
+
 // $total-columns: 12;
 
 // Global
@@ -445,7 +447,7 @@ $input-prefix-bg: $light-transparent;
 // $input-prefix-border-size: 1px;
 $input-prefix-border-type: none;
 // $input-prefix-overflow: hidden;
-// $input-prefix-font-color: #333;
+$input-prefix-font-color: white;
 // $input-prefix-font-color-alt: #fff;
 
 // We use these to style the error states for inputs and labels

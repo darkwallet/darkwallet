@@ -15,8 +15,16 @@ function (providers, BtcUtils, DarkWallet, MultisigFund, PaymentCodes, Bitcoin) 
       this.txFilter = 'last';
       this.addrFilter = 'unused';
       this.$wallet = $wallet;
+      this.$scope = $scope;
       this.rows = [];
   }
+
+  /**
+   * Subscribe for changes on history provider scope.
+   */ 
+  HistoryProvider.prototype.watch = function(name, cb) {
+      this.$scope.$watch(name, cb);
+  };
 
   /**
    * Balance
@@ -92,6 +100,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund, PaymentCodes, Bitcoin) 
                   if (pcode) {
                     this.pocket.pCode = PaymentCodes.formatAddress(Bitcoin.HDNode.fromBase58(pcode));
                   }
+                  this.$scope.selectedPocket = 'hd:' + idx;
               }
               break;
           case 'readonly':
@@ -125,6 +134,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund, PaymentCodes, Bitcoin) 
           this.pocket.tasks = this.pocket.fund.tasks;
           this.pocket.isFund = true;
           this.selectedPocket = 'multisig:' + fundIndex;
+          this.$scope.selectedPocket = 'multisig:' + fundIndex;
       }
   };
 
@@ -151,6 +161,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund, PaymentCodes, Bitcoin) 
 
       this.pocket.tasks = [];
       this.selectedPocket = 'pocket:all';
+      this.$scope.selectedPocket = 'pocket:all';
       return this.chooseRows();
   };
 
@@ -206,6 +217,7 @@ function (providers, BtcUtils, DarkWallet, MultisigFund, PaymentCodes, Bitcoin) 
 
       this.selectedPocket = type+':' + rowIndex;
       this.chooseRows();
+      this.$scope.selectedPocket = type+':' + rowIndex;
       return true;
   };
 
