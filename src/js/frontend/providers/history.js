@@ -3,8 +3,8 @@
  */
 'use strict';
 
-define(['./module', 'util/btc', 'darkwallet', 'dwutil/multisig'],
-function (providers, BtcUtils, DarkWallet, MultisigFund) {
+define(['./module', 'util/btc', 'darkwallet', 'dwutil/multisig', 'util/bip47', "bitcoinjs-lib"],
+function (providers, BtcUtils, DarkWallet, MultisigFund, PaymentCodes, Bitcoin) {
   providers.factory('$history', ['$rootScope', '$wallet', '$location', '_Filter', function($rootScope, $wallet, $location, _) {
 
   /**
@@ -88,6 +88,10 @@ function (providers, BtcUtils, DarkWallet, MultisigFund) {
               if (this.selectGenericPocket('hd', keys.indexOf(''+idx))) {
                   this.selectedPocket = 'hd:' + idx;
                   this.pocket.lastIndex = idx;
+                  var pcode = identity.wallet.pockets.getPocket(this.pocket.index, 'hd').store.pcode;
+                  if (pcode) {
+                    this.pocket.pCode = PaymentCodes.formatAddress(Bitcoin.HDNode.fromBase58(pcode));
+                  }
               }
               break;
           case 'readonly':

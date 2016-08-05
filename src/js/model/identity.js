@@ -99,9 +99,12 @@ Identity.prototype.generate = function(seed, password, network) {
     var idPubKey = idKey.toBase58(false);
     var idPrivKey = idKey.toBase58(true);
 
+    // Initialize the bip47 root
+    var pCodeKey = key.deriveHardened(47).deriveHardened(netId);
+
     // TODO we probably don't want to save the seed later here, but let's do it
     // for now to make development easier.
-    this.store.setPrivateData({privKey: privKey, seed: seed}, password);
+    this.store.setPrivateData({privKey: privKey, seed: seed, pCodeKey: pCodeKey.toBase58(true)}, password);
 
     // The scan and id keys need to be unprotected so they can be accessed
     // without prompting for send password, they are private derivations so
@@ -111,6 +114,7 @@ Identity.prototype.generate = function(seed, password, network) {
 
     // save some mpks for the pockets
     this.store.set('mpks', [rootKey.deriveHardened(0).toBase58(false), rootKey.deriveHardened(1).toBase58(false), rootKey.deriveHardened(2).toBase58(false)]);
+    this.store.set('pcodes', [pCodeKey.deriveHardened(0).toBase58(false), pCodeKey.deriveHardened(1).toBase58(false), pCodeKey.deriveHardened(2).toBase58(false)]);
 
     this.store.set('mpk', pubKey);
     // don't overwrite if reseeding

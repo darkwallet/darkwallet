@@ -30,7 +30,7 @@ define(['angular-mocks', 'testUtils'], function (mocks, testUtils) {
       },
       wallet: {
         dust: 460,
-        versions: {stealth: {address: 42}, address: 0, p2sh: 5},
+        versions: {stealth: {address: 42}, pcode: {address: 47}, address: 0, p2sh: 5},
         getWalletAddress: function() {},
         multisig: {
             search: function() {return {name: 'fundName', address: 'fundAddress'}}

@@ -3,9 +3,9 @@
  */
 'use strict';
 
-define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
-  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', 'notify', '_Filter',
-      function($scope, $routeParams, $location, $route, $wallet, watch, $history, notify, _) {
+define(['./module', 'darkwallet', "bitcoinjs-lib", "dwutil/pcodeutils"], function (controllers, DarkWallet, Bitcoin, PCodeUtils) {
+  controllers.controller('ContactsCtrl', ['$scope', '$routeParams', '$location', '$route', '$wallet', 'watch', '$history', 'notify', '_Filter', "modals",
+      function($scope, $routeParams, $location, $route, $wallet, watch, $history, notify, _, modals) {
 
   $scope.newContact = {};
   $scope.contactToEdit = {};
@@ -76,13 +76,13 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
   var getContactTypes = function() {
     var types;
     if (filterType === 'any') {
-        types = ['stealth', 'address', 'pubkey', 'id', 'oldstealth'];
+        types = ['pcode', 'stealth', 'address', 'pubkey', 'id', 'oldstealth'];
     } else if (filterType === 'pubKey') {
         types = ['pubkey', 'stealth'];
     } else if (filterType === 'idKey') {
         types = ['id'];
     } else {
-        types = ['stealth', 'address', 'pubkey'];
+        types = ['pcode', 'stealth', 'address', 'pubkey'];
     }
     return types;
   };
@@ -301,6 +301,19 @@ define(['./module', 'darkwallet'], function (controllers, DarkWallet) {
     // go to contacts
     $location.path('/contacts');
   };
+
+  $scope.pairPaymentCode = function(contact, pcodeKey) {
+    modals.password(_('Write your password for unlocking payment code'), function(password) {
+        $scope.finishPairPaymentCode(password, contact, pcodeKey);
+    });
+  };
+
+  $scope.finishPairPaymentCode = function(password, contact, pcodeKey) {
+    PCodeUtils.link(password, pcodeKey, $wallet);
+  }
+  $scope.unpairPaymentCode = function(contact, pcodeKey) {
+    PCodeUtils.unlink(pcodeKey, $wallet);
+  }
 
   // Toggle watch on a contact
   $scope.toggleWatch = function(contact) {

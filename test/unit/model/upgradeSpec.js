@@ -16,19 +16,27 @@ define(['model/upgrade'], function(Upgrade) {
     });
 
     it('checks for no upgrade', function() {
-      store.version = 5;
+      store.version = 6;
       var res = Upgrade(store);
       expect(res).toBe(false);
     });
 
-    it('checks for reseed from 4 to 5', function() {
+    it('checks for reseed from 5 to 6', function() {
+      store.version = 5;
+      var res = Upgrade(store);
+      expect(res).toBe(true);
+      expect(store.reseed).toBe(true);
+    });
+
+
+    it('checks for reseed from 4 to 6', function() {
       store.version = 4;
       var res = Upgrade(store);
       expect(res).toBe(true);
       expect(store.reseed).toBe(true);
     });
 
-    it('reseeds from 4 to 5', function() {
+    it('reseeds from 4 to 6', function() {
       var privData = {
           privKey: 'oldkey',
           privKeys: 'bar',
@@ -37,6 +45,7 @@ define(['model/upgrade'], function(Upgrade) {
       var identity = {
           generate: function() {
               privData.privKey = 'xprv9xTMAATdTvDVhc3xHZvK5sqUKAZPpZzKpsoT2pR3oDNz8XTdjkrTR3Uj26Rpy4CM46DDNb5Ae5Uf8ei1usbjK2qToDUFx97g8M2XduB7Cbe';
+              privData.pCodeKey = 'xprv9xTMAATdTvDVhc3xHZvK5sqUKAZPpZzKpsoT2pR3oDNz8XTdjkrTR3Uj26Rpy4CM46DDNb5Ae5Uf8ei1usbjK2qToDUFx97g8M2XduB7Cbe';
               identity.store.store.mpk = 'xpub6AANPpdT4JoeTLrgN159eHQXT4X1YiCtXnAJLV5zF48K2iDWWc1S7eYNFGe3oT2W5vDeFYHpWS8Y3Jr3xXeXFn18W6jMU9DhE3VG9mhyayG';
           },
           contacts: {

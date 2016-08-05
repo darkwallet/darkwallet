@@ -1,6 +1,6 @@
 'use strict';
 
-define(['bitcoinjs-lib', 'util/stealth', 'crypto-js'], function(Bitcoin, Stealth, CryptoJS) {
+define(['bitcoinjs-lib', 'util/stealth', 'crypto-js', 'util/bip47'], function(Bitcoin, Stealth, CryptoJS, PaymentCodes) {
   var convert = Bitcoin.convert;
 
   var genesisTime = 1231006505;
@@ -122,6 +122,16 @@ define(['bitcoinjs-lib', 'util/stealth', 'crypto-js'], function(Bitcoin, Stealth
           }
         }
     },
+    isPaymentCode: function(data) {
+        if (data.slice(0, 1) != "P") {
+          return false;
+        }
+        try {
+          var address = PaymentCodes.parseAddress(data);
+          return (address ? true : false);
+        } catch (e) {
+        }
+    },
 
     /*
      * Validate an address
@@ -129,6 +139,9 @@ define(['bitcoinjs-lib', 'util/stealth', 'crypto-js'], function(Bitcoin, Stealth
     validateAddress: function(address, allowed) {
        if (!allowed) allowed = allowedVersions;
        if (address) {
+          if (BtcUtils.isPaymentCode(address)) {
+            return true;
+          }
           // Check for base58 encoded addresses
           if (BtcUtils.isAddress(address, allowed)) {
             return true;

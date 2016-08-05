@@ -47,9 +47,11 @@ Wallet.prototype.initVersions = function(network) {
     switch(network) {
         case 'bitcoin':
             this.versions.stealth = {address: Stealth.version, nonce: Stealth.nonceVersion, prefix: 'v'};
+            this.versions.pcode = {address: 47, prefix: 'P'};
             break;
         case 'testnet':
             this.versions.stealth = {address: Stealth.testnet, nonce: Stealth.nonceVersion, prefix: 'w'};
+            this.versions.pcode = {address: 47, prefix: 'P'};
             break;
     }
 };

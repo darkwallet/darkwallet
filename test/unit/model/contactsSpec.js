@@ -3,7 +3,7 @@
  */
 'use strict';
 
-define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, Stealth, Contact) {
+define(['model/contacts', 'util/stealth', 'model/contact', 'util/bip47'], function(Contacts, Stealth, Contact, PaymentCode) {
   describe('Contacts model', function() {
     
     var contacts, satoshiForest, _store, satoshiForestNew, satoshiForestAddress;
@@ -24,6 +24,7 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
         versions: {
           address: 0,
           stealth: {address: Stealth.version, prefix: "v"},
+          pcode: {address: PaymentCode.addressVersion, prefix: "P"},
           p2sh: 5
         }
       }
@@ -319,7 +320,7 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
       set: function() {
       }
     };
-    var identity = {store: store, wallet: {versions: {stealth: ''}}};
+    var identity = {store: store, wallet: {versions: {stealth: '', pcode: ''}}};
  
     beforeEach(function() {
       contacts = new Contacts(store, identity);
@@ -365,6 +366,7 @@ define(['model/contacts', 'util/stealth', 'model/contact'], function(Contacts, S
         versions: {
           address: 0,
           stealth: {address: Stealth.version},
+          pcode: {address: PaymentCode.addressVersion},
           p2sh: 5
         }
       }
