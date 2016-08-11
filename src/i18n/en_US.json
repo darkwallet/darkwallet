@@ -189,7 +189,7 @@
     "Identity loaded {0}": "Identity loaded {0}",
     "Identity must be loaded to rename": "Identity must be loaded to rename",
     "Identity renamed to {0}": "Identity renamed to {0}",
-    "If mixing is enabled when sending, will only send if successfull mixing, otherwise will just not send": "If mixing is enabled when sending, will only send if successfull mixing, otherwise will just not send",
+    "If sending with mixing, only send if successful, otherwise don't send": "If sending with mixing, only send if successful, otherwise don't send"
     "Import": "Import",
     "Import Signature": "Import Signature",
     "Import Spend": "Import Spend",

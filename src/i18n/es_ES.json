@@ -185,7 +185,7 @@
     "Identity loaded {0}": "Las identidades se han cargado {0}",
     "Identity must be loaded to rename": "Tiene que cargarse la identidad para poder renombrarla",
     "Identity renamed to {0}": "La identidad ha sido renombrada a {0}",
-    "If mixing is enabled when sending, will only send if successfull mixing, otherwise will just not send": "Si el mezclador está habilitado cuando enviamos, solo se enviará si la mezcla tiene éxito, de otro modo no se enviará",
+    "If sending with mixing, only send if successful, otherwise don't send": "Si el mezclador está habilitado cuando enviamos, solo se enviará si la mezcla tiene éxito, de otro modo no se enviará",
     "Import": "Importar",
     "Import Signature": "Importar firma",
     "Import Spend": "Importar gasto",
