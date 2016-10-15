@@ -473,7 +473,7 @@
     "Your fee is bigger than reasonable (greater or equal to 1 mBTC), please **double check** before sending.": "La comisión es mayor de lo habitual (más grande o igual a 1 mBTC), por favor **compruébelo dos veces** antes  de enviar.",
     "Your fee is greater than your sent amount, please **triple check** before sending.": "La comisión es mayor de lo que envía, por favor **compruébelo tres veces** antes de enviar.",
     "Your fee is insanely high (greater or equal to 10 mBTC), please **triple check** before sending.": "La comisión es descabelladamente alta (mayor o igual que  10 mBTC), por favor **compruébelo tres veces** antes de enviar.",
-    "Your permanent identity": "Su identidad permanente ",
+    "Your permanent identity": "Su identidad permanente",
     "Your temporary identity": "Su identidad temporal",
     "Your trust level is {0}": "Su nivel de confianza es {0}",
     "Zero": "Cero",
