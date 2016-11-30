@@ -7,17 +7,22 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
 
   $scope.exportKeys = function() {
       var identity = DarkWallet.getIdentity();
-      var allAddresses
-      if ($scope.tools.exportAddress) {
-          allAddresses = [$scope.tools.exportAddress];
+      var allAddresses;
+      var userProvidedInput;
+      $scope.tools.exportComplete = false;
+      if ($scope.tools.exportAddresses) {
+          allAddresses = $scope.tools.exportAddresses.split('\n');
+          userProvidedInput = true;
       } else {
           allAddresses = identity.wallet.getPocketAddresses('all');
+          userProvidedInput = false;
       }
 
       modals.password(_('Write your password'), function(password) {
           try {
-	      var output = '';
+              var output = '';
               for (var i = 0; i < allAddresses.length; i++) {
+		  // Fill wallet address structure with index, type, etc.
                   var address = allAddresses[i];
                   var walletAddress = identity.wallet.getWalletAddress(address);
                   // Make sure we only export normal and stealth keys
@@ -25,20 +30,27 @@ define(['./module', 'darkwallet', 'bitcoinjs-lib'], function (controllers, DarkW
                       identity.wallet.getPrivateKey(walletAddress, password, function(privKey) {
                           output += address + ',' + privKey.toWIF(Bitcoin.networks[identity.wallet.network]) + '\n';
                       } );
-                  } else if (allAddresses.length == 1) {
-                      notify.error(_('Address not from this wallet'));
-                      return;
+                  } else if (userProvidedInput) {
+                      notify.error(_('Address not from this wallet'), _(address));
                   }
               }
-              $scope.tools.output = output;
+
+              $scope.tools.exportAddresses = output;
+              $scope.tools.exportComplete = true;
               $scope.tools.status = 'ok';
-              $scope.tools.exportOpen = false;
-              $scope.tools.open = false;
+
               notify.success(_('Exported'));
           } catch (e) {
               notify.error(_('Incorrect password'), _(e.message));
           }
       } );
+  }
+
+  $scope.exportKeysClose = function() {
+      $scope.tools.exportAddresses='';
+      $scope.tools.exportComplete = false;
+      $scope.tools.exportOpen=false;
+      $scope.tools.open=false;
   }
 
 
