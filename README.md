@@ -66,7 +66,7 @@ Use the following resources for communication with "the team"
 
 License
 ------------
-See the license [here](COPYRIGHT)
+See the license [here](COPYRIGHT).
 
 Support Us!
 ------------
