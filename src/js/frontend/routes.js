@@ -21,6 +21,8 @@ define(['frontend/app'], function (app) {
     $routeProvider.when('/settings', {templateUrl: 'partials/settings.html', controller: 'WalletSettingsCtrl'});
     $routeProvider.when('/identities', {templateUrl: 'partials/identities.html', controller: 'IdentitiesCtrl'});
     $routeProvider.when('/new_wallet', {templateUrl: 'partials/new_wallet.html', controller: 'NewWalletCtrl'});
+    $routeProvider.when('/new_fund', {templateUrl: 'partials/new_fund.html', controller: 'NewFundCtrl'});
+    $routeProvider.when('/new_pocket', {templateUrl: 'partials/new_pocket.html', controller: 'PocketCreateCtrl'});
     $routeProvider.when('/browser/:search', {templateUrl: 'partials/browser.html', controller: 'BrowserCtrl'});
     $routeProvider.when('/browser', {templateUrl: 'partials/browser.html', controller: 'BrowserCtrl'});
     $routeProvider.when('/bitid', {templateUrl: 'partials/bitid.html', controller: 'BitIdCtrl'});

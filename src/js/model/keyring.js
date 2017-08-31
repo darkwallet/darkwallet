@@ -107,7 +107,7 @@ IdentityKeyRing.prototype.rename = function(name, newName, callback) {
  * @return {Object} The new identity
  */
 IdentityKeyRing.prototype.createIdentity = function(name, network, seed, password) {
-    var identity = new Identity(new Store({name: name, network: network, version: 5}, this), seed, password);
+    var identity = new Identity(new Store({name: name, network: network, version: 6}, this), seed, password);
     this.identities[name] = identity;
     if (this.availableIdentities.indexOf(name) == -1) {
         this.availableIdentities.push(name);

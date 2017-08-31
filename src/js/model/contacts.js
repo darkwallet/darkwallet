@@ -96,6 +96,9 @@ Contacts.prototype.parseKey = function(data) {
   var versions = this.identity.wallet.versions;
   if (data.slice(0,3) === 'PSI') {
       newKey.type = 'id';
+  } else if (BtcUtils.isPaymentCode(data)) {
+      newKey.address = data;
+      newKey.type = 'pcode';
   } else if (BtcUtils.isAddress(data, this.validAddresses)) {
       newKey.address = data;
       if (data[0] === versions.stealth.prefix) {

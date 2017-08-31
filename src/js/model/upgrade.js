@@ -7,6 +7,38 @@ define(['util/btc', 'bitcoinjs-lib'], function(BtcUtils, Bitcoin) {
 // DarkWallet namespace for the local storage.
 var DW_NS = 'dw:identity:';
 
+function Upgrade5To6(store, identity, password) {
+    if (identity.store.get('pcodes')) {
+        console.log("Double reseed?");
+        return false;
+    }
+    var privData = identity.store.getPrivateData(password);
+
+    // generate completely overwrites the private data, calls store.save()
+    identity.generate(privData.seed, password, identity.wallet.network);
+
+
+    // get private data again and newly generated payment code root
+    privData = identity.store.getPrivateData(password);
+    var pCodeKey = Bitcoin.HDNode.fromBase58(privData.pCodeKey);
+
+    var pcodes = [];
+    identity.wallet.pockets.hdPockets.forEach(function(pocketStore, i) {
+        if (pocketStore) {
+            if (!pcodes[i]) {
+                pcodes[i] = pCodeKey.deriveHardened(i).toBase58(false);
+            }
+            pocketStore.pcode = pcodes[i];
+        }
+    });
+
+    identity.reseed = false;
+    identity.store.set('reseed', false);
+    identity.store.set('pcodes', pcodes);
+
+    return true;
+}
+
 function Upgrade4To5(store, identity, password) {
     if (identity.store.get('old-mpk')) {
         console.log("Double reseed?");
@@ -246,7 +278,7 @@ function Upgrade1To2(store) {
  * @return true of false if the store was changed and should be saved
  */
 function Upgrade(store, identity, password) {
-    if (store.version == 5) {
+    if (store.version == 6) {
         return false;
     }
 
@@ -282,6 +314,18 @@ function Upgrade(store, identity, password) {
             store.reseed = true;
         }
     }
+    if (store.version == 5) {
+        if (identity) {
+            // Upgrade of 5 to 6 needs reseeding with live identity and password
+            if (Upgrade5To6(store, identity, password)) {
+                store.version = 6
+                console.log("[upgrade] Upgraded to version 6")
+            }
+        } else {
+            store.reseed = true;
+        }
+    }
+
     return true;
 }
 

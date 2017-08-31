@@ -17,44 +17,31 @@
        <div class="inherit-height" ng-controller="NgModalCtrl" ng-include="modals.page" tabindex="6">
        </div>
     </div>
-    <div class="container" ng-cloak ng-class="{'animations-disabled': !settings.animations.enabled}">
-	    <top-bar scrolltop="false">
-	      <ul class="title-area">
-	        <li class="name">
-	          <h1 class="hide-for-medium"><a ng-click="titleClick()" id="maintitle"><img id="logo" src="../images/logo.svg" width="32" height="32" ng-class="{'busy': status.syncing}" /> Darkwallet</a></h1>
-	        </li>
-	        <li toggle-top-bar class="menu-icon"><a>{{'Menu'|_}}</a></li>
-	      </ul>
-    
-	      <top-bar-section ng-if="identityName">
-  	        <ul class="right">
-  		  <li title="{{'Gateway'|_}}: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i></a></li>
-  		  <li ng-show="settings.advanced && status.syncing" title="{{'Fetching data from obelisk!'|_}}"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
-  		  <li ng-show="settings.advanced" title="{{'Current height'|_}}"><a><i> {{currentHeight}}</i></a></li>
-  		  <li ng-show="settings.advanced" title="{{'Block explorer'|_}}" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i></a></li>
-          
-		  
-		  
-  			  <li ng-show="settings.advanced" title="{{'Settings'|_}}" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings" class="fa fa-cog"></a></li>
-          
-		  
-  			  <li ng-show="!settings.advanced" title="{{'Settings'|_}}" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> {{'Settings'|_}}</a></li>
-          
-		  
-  			  <li title="{{'Identities'|_}}" ng-class="{active:isActive('/identities')}"><a ng-show="identityName" href="#identities"><i class="icon-profile"></i> {{identityName}}</a></li>
-  	        </ul>
-	        <ul class="left">
-	          <li ng-class="{active:isActive('/wallet')}"><a ng-click="openWallet()"><i class="icon-wallet"></i> {{'Wallet'|_}}</a></li>
-	          <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="icon-rocket"></i> {{'Send'|_}}</a></li>
-	          <li ng-class="{active:isActive('/contact')}"><a href="#contacts"><i class="icon-contacts"></i> {{'Contacts'|_}}</a></li>
-			  <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="icon-chat"></i> {{'Lobby'|_}}</a></li>
-	        </ul>
-	      </top-bar-section>
-	    </top-bar>
-	    
- <!--     <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include> -->
-      <div class="scroller off-canvas-wrap" ng-if="identityName||isActive('/new_wallet')" ng-view>
-      </div>
+    <div class="container off-canvas-wrap" ng-cloak ng-class="{'animations-disabled': !settings.animations.enabled}">
+
+        <div class="inner-wrap container pinned">
+
+            <aside class="left-off-canvas-menu container">
+                <ng-include src="'partials/sidebar.html'"></ng-include>
+            </aside>
+            <div id="viewwrapper" ng-class="">
+              <nav class="tab-bar" ng-controller="NavbarCtrl">
+                <ng-include src="'partials/navbar.html'"></ng-include>
+
+              </nav>
+
+
+              <section class="main-section">
+
+                <ng-include ng-show="alert" src="alert?'alerts/'+alert+'.html':alert"></ng-include>
+                <div class="" ng-if="identityName||isActive('/new_wallet')" ng-view></div>
+
+              </section>
+            </div>
+            <a class="exit-off-canvas"></a>
+        </div>
+
+
     </div>
     <!-- Notification Controllers -->
     <span ng-controller="ConnectionNotifyCtrl"></span>

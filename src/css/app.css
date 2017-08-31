@@ -431,8 +431,8 @@ select {
     margin-right: 0; }
   .row .row {
     width: auto;
-    margin-left: -0.9375rem;
-    margin-right: -0.9375rem;
+    margin-left: -0.625rem;
+    margin-right: -0.625rem;
     margin-top: 0;
     margin-bottom: 0;
     max-width: none; }
@@ -452,8 +452,8 @@ select {
         clear: both; }
 
 .column, .columns {
-  padding-left: 0.9375rem;
-  padding-right: 0.9375rem;
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
   width: 100%;
   float: left; }
 
@@ -562,8 +562,8 @@ select {
     left: auto; }
   .column, .columns {
     position: relative;
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
     float: left; }
   .small-1 {
     width: 8.33333%; }
@@ -733,8 +733,8 @@ select {
     left: auto; }
   .column, .columns {
     position: relative;
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
     float: left; }
   .medium-1 {
     width: 8.33333%; }
@@ -1000,8 +1000,8 @@ select {
     left: auto; }
   .column, .columns {
     position: relative;
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
     float: left; }
   .large-1 {
     width: 8.33333%; }
@@ -2078,9 +2078,9 @@ select::-ms-expand {
 
 /* Separate prefix and postfix styles when on span or label so buttons keep their own */
 span.prefix, label.prefix {
-  background: rgba(100, 100, 100, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-right: none;
-  color: #fff;
+  color: white;
   border-color: #cccccc; }
   span.prefix.radius, label.prefix.radius {
     border-radius: 0;
@@ -2088,9 +2088,9 @@ span.prefix, label.prefix {
     border-top-left-radius: 3px; }
 
 span.postfix, label.postfix {
-  background: rgba(100, 100, 100, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-left: none;
-  color: #fff;
+  color: white;
   border-color: #cccccc; }
   span.postfix.radius, label.postfix.radius {
     border-radius: 0;
@@ -3148,17 +3148,17 @@ blockquote, blockquote p {
   .tabs-content > .content {
     display: none;
     float: left;
-    padding: 0.9375rem 0;
+    padding: 0.625rem 0;
     width: 100%; }
     .tabs-content > .content.active {
       display: block;
       float: none; }
     .tabs-content > .content.contained {
-      padding: 0.9375rem; }
+      padding: 0.625rem; }
   .tabs-content.vertical {
     display: block; }
     .tabs-content.vertical > .content {
-      padding: 0 0.9375rem; }
+      padding: 0 0.625rem; }
 
 @media only screen and (min-width:40.063em) {
   .tabs.vertical {
@@ -4397,10 +4397,10 @@ div.totheright div.tab-scroller.ng-enter-active, div.totheleft div.tab-scroller.
   position: absolute;
   width: 97%; }
 
-.transactions div.ng-leave-active, .transactions div.ng-enter {
+.tab-bar-section.middle.ng-hide, .tab-bar-section.middle.ng-leave-active, .tab-bar-section.middle.ng-enter, .transactions div.ng-leave.ng-leave-active, .transactions div.ng-enter {
   opacity: 0; }
 
-.transactions div.ng-enter.ng-enter-active, .transactions div.ng-leave {
+.tab-bar-section.middle.ng-enter.ng-enter-active, .transactions div.ng-enter.ng-enter-active, .transactions div.ng-leave {
   opacity: 1; }
 
 div.modal-ng.ng-animate.ng-enter, div.modal-ng.ng-animate.ng-leave-active {
@@ -4467,16 +4467,39 @@ nav.top-bar {
 .top-bar section ul {
   transition: all 300ms ease-out; }
 
-.pocketnav, section.left, .tab-bar-section.middle, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, button.square {
+#viewwrapper, a.collapseoverview i, li a.cornerbutton, li a.cornerbutton i, li.active, .pocketnav, section.left, .tab-bar-section.middle, div.identitylist, div.send-advanced.ng-hide, span.tooltip.fade.ng-animate, .pocket-square, .pocket-square h1, .pocketoverview, .contact-mosaic-square, .contact-mosaic-square img, .contact-mosaic-square .contact-label, .contact-mosaic-square .contact-menu, .top-bar a, .tabs dd > a, button.button, a.button, ul.gridlist, li.pocket-square-wrapper, button.square {
   transition: all 300ms ease-out; }
 
+ul.small-block-grid-1.ng-hide-add {
+  opacity: 1; }
+  ul.small-block-grid-1.ng-hide-add li {
+    max-height: 125px; }
+
+ul.small-block-grid-1.ng-hide-add-active, ul.small-block-grid-1.ng-hide-remove {
+  opacity: 0; }
+  ul.small-block-grid-1.ng-hide-add-active li, ul.small-block-grid-1.ng-hide-remove li {
+    max-height: 1px; }
+
+ul.small-block-grid-1.ng-hide-remove-active {
+  opacity: 1; }
+  ul.small-block-grid-1.ng-hide-remove-active li {
+    max-height: 170px; }
+
 #maintitle {
-  -webkit-perspective: 100px; }
+  -webkit-perspective: 140px; }
 
 #logo.busy {
-  -webkit-animation-name: spin;
-  -webkit-animation-duration: 1.6s;
+  -webkit-backface-visibility: visible;
+  -webkit-animation-name: logoactive;
+  -webkit-animation-duration: 1.4s;
   -webkit-animation-iteration-count: infinite; }
+
+@-webkit-keyframes logoactive {
+  from {
+    -webkit-transform: rotateY(0deg); }
+
+  to {
+    -webkit-transform: rotateY(360deg); } }
 
 a.glow.button, button.glow, input[type="submit"].glow {
   -webkit-animation-name: glowpulse;
@@ -4520,16 +4543,6 @@ a.glow.button, button.glow, input[type="submit"].glow {
 
   to {
     background-color: rgba(30, 190, 90, 0.9); } }
-
-@-webkit-keyframes spin {
-  from {
-    -webkit-transform: rotateY(0deg); }
-
-  50% {
-    -webkit-transform: rotateY(180deg); }
-
-  to {
-    -webkit-transform: rotateY(360deg); } }
 
 @-webkit-keyframes rotateFoldBottom {
   to {
@@ -4811,7 +4824,7 @@ div.modal-ng {
   margin-bottom: 0 !important; }
 
 .topmargin {
-  margin-top: 1.6em !important; }
+  margin-top: 1.6em; }
 
 span.tooltip.fade {
   opacity: 0; }
@@ -4831,15 +4844,9 @@ span.tooltip.fade.in {
   padding-top: 0.6em;
   overflow: hidden; }
 
-div.container {
-  height: 100%; }
-
 div.cardflipper {
   margin-top: 2em;
   -webkit-perspective: 800px; }
-
-div.tab-scroller {
-  padding-top: 1em; }
 
 div.scroller {
   padding-top: 50px;
@@ -4889,6 +4896,15 @@ input[type="range"]::-webkit-slider-thumb {
   background-color: rgba(30, 190, 90, 0.9);
   width: 16px;
   height: 16px; }
+
+#pocketaddress {
+  font-size: 0.8rem;
+  word-wrap: break-word;
+  margin: 0 2em 0 2em; }
+
+#pocket-name, #pocket-balance {
+  background: black;
+  min-height: 128px; }
 
 /* BUTTONS ----------- */
 .progbar {
@@ -4984,6 +5000,9 @@ span.ellipsis, div.ellipsis {
   text-overflow: ellipsis;
   white-space: nowrap; }
 
+.transactions {
+  margin: 1rem 0; }
+
 .transactions div.row, .transactions.hide-for-small {
   padding: 0.5em;
   font-size: 90%;
@@ -5033,11 +5052,15 @@ div.identitylist:hover {
   cursor: pointer;
   background: rgba(30, 170, 80, 0.9); }
 
-.transactions div.row:nth-child(even), .address-row:nth-child(even) {
+.transactions div.row:nth-child(even):not(.unconfirmed), .address-row:nth-child(even) {
   background: rgba(0, 0, 0, 0.3); }
 
-.transactions div.row:nth-child(odd), .address-row:nth-child(odd) {
+.transactions div.row:nth-child(odd):not(.unconfirmed), .address-row:nth-child(odd) {
   background: rgba(0, 0, 0, 0.4); }
+
+.transactions div.unconfirmed {
+  background: black;
+  border: 1px solid #333; }
 
 /* LABELS ----------- */
 .label.address {
@@ -5075,9 +5098,26 @@ ul.off-canvas-list {
   ul.off-canvas-list li a:hover {
     background: rgba(0, 0, 0, 0.3); }
   ul.off-canvas-list li a.cornerbutton {
-    color: rgba(30, 170, 80, 0.9);
-    padding: 0rem 0.3rem;
-    border-bottom: none; }
+    position: absolute;
+    right: 0;
+    border-bottom: none;
+    padding: 0;
+    -webkit-perspective: 300px;
+    width: 100%; }
+    ul.off-canvas-list li a.cornerbutton label {
+      padding: 0.3rem 0.5rem;
+      float: right;
+      background: #333; }
+    ul.off-canvas-list li a.cornerbutton i {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.2);
+      -webkit-backface-visibility: visible;
+      -webkit-transform: rotateX(0deg); }
+    ul.off-canvas-list li a.cornerbutton:hover i {
+      color: white;
+      -webkit-transform: rotateX(180deg); }
+    ul.off-canvas-list li a.cornerbutton:hover {
+      background: rgba(255, 255, 255, 0.2); }
   ul.off-canvas-list li a.cornerbutton.active {
     background: rgba(30, 170, 80, 0.9);
     color: #333; }
@@ -5096,7 +5136,7 @@ ul.off-canvas-list {
   color: white;
   margin-bottom: 0.6em; }
 
-.tabs {
+dl.tabs {
   border-bottom: 1px solid #333; }
 
 .labels {
@@ -5132,13 +5172,8 @@ textarea.script {
 .transaction-icon.red {
   color: #c92441; }
 
-.pocket-square {
-  min-height: 120px;
-  margin-bottom: -0.3rem;
-  overflow-x: hidden; }
-
 .contact-mosaic .panel:hover, div.notifications .panel:hover, .pocket-square:hover {
-  background: rgba(30, 190, 90, 0.9);
+  background: #333;
   cursor: pointer; }
 
 .contact-mosaic {
@@ -5230,25 +5265,65 @@ span.contact-name {
 #logo {
   margin: -2px 5px 0 -5px; }
 
+ul #logo {
+  margin-left: 20px; }
+
 #maintitle {
   margin-right: -1px; }
+
+ul #maintitle {
+  color: white;
+  position: relative;
+  opacity: 1; }
 
 div.pockets {
   z-index: 2; }
 
-.tab-bar-section.middle {
-  left: 120px;
-  padding: 0; }
+.editpocket {
+  text-align: right; }
+
+.editpocket.add {
+  margin-top: 1rem; }
+
+.editpocket a {
+  min-width: 34px;
+  position: absolute;
+  margin-left: -2.08rem;
+  padding: 0.4rem 0.6rem;
+  background: black;
+  color: white;
+  opacity: 0.4; }
+  .editpocket a:hover {
+    background: rgba(255, 255, 255, 0.6);
+    color: black;
+    opacity: 1; }
+    .editpocket a:hover i {
+      -webkit-animation-name: spin;
+      -webkit-animation-duration: 4s;
+      -webkit-animation-iteration-count: 2; }
+
+div#viewwrapper {
+  transform: translate3d(0, 0, 0);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%; }
+
+div#viewwrapper.moveup {
+  transform: translate3d(0, -50px, 0); }
 
 div.inner-wrap {
   min-height: inherit;
   padding: 0; }
 
+li#mainpocket a {
+  padding: 0.35rem 0;
+  font-size: 1.2rem; }
+
 ul.off-canvas-list li.pocketpinned a {
   position: absolute;
   padding: 0 1rem;
   background: transparent;
-  opacity: 0.1;
+  opacity: 0.4;
   right: 0;
   top: 0;
   height: 2.8125rem;
@@ -5264,51 +5339,6 @@ ul.off-canvas-list li.pocketpinned label {
   line-height: 2.8125rem;
   padding-top: 0;
   font-size: 96%; }
-
-@media only screen and (max-width: 40em) {
-  .top-bar ul.title-area {
-    z-index: 2;
-    background: #222; }
-  .top-bar section ul {
-    -webkit-transform: translate3d(0, -100%, 0); }
-  .top-bar.expanded section ul {
-    -webkit-transform: translate3d(0, 0, 0); } }
-
-@media only screen and (min-width:40.063em) and (max-width:64em) {
-  .top-bar ul li a {
-    font-size: 88%; }
-  .top-bar ul.right li:last-child a {
-    max-width: 175px;
-    overflow: hidden;
-    height: 50px;
-    text-overflow: ellipsis; } }
-
-@media only screen and (min-width:64.063em) {
-  nav.tab-bar {
-    width: 150%; }
-  .pocketnav {
-    opacity: 1;
-    -webkit-transform: translate3d(0, 0, 0); }
-  .scroller > div.inner-wrap.pinned {
-    -webkit-transform: translate3d(15.625rem, 0, 0);
-    padding-right: 15.625rem; }
-    .scroller > div.inner-wrap.pinned .pocketnav {
-      -webkit-transform: translate3d(-10%, 0, 0);
-      opacity: 0; }
-    .scroller > div.inner-wrap.pinned .tab-bar-section.middle {
-      left: 0px; } }
-
-.pocketnav {
-  cursor: pointer; }
-
-section.left {
-  background: rgba(30, 190, 90, 0.9);
-  padding-left: 1em; }
-  section.left span {
-    color: white; }
-
-.tab-bar {
-  overflow: hidden; }
 
 .lin {
   display: inline-block; }
@@ -5329,6 +5359,153 @@ div.tri {
   border-color: transparent transparent transparent rgba(30, 190, 90, 0.9);
   border-left-style: solid;
   display: inline-block; }
+
+.tab-bar-section.middle {
+  left: 120px;
+  right: 0;
+  padding: 0;
+  opacity: 1; }
+
+section.main-section, div.container {
+  height: 100%; }
+
+nav.tab-bar {
+  overflow: hidden; }
+
+.panel.pocketoverview {
+  padding: 0.6rem;
+  min-height: 2rem;
+  background: #333; }
+  .panel.pocketoverview:hover {
+    background: #4d4d4d;
+    cursor: pointer; }
+
+div.panel {
+  padding: 0.6rem;
+  margin-top: 1rem;
+  margin-bottom: 0; }
+
+a.button.collapseoverview, a.button.newpocket {
+  padding: 0.6rem;
+  margin: -0.65rem 0 0 0;
+  position: absolute;
+  height: 2.8rem;
+  right: 0.7rem;
+  background: transparent; }
+  a.button.collapseoverview:hover, a.button.newpocket:hover {
+    background: rgba(30, 170, 80, 0.9); }
+  a.button.collapseoverview i, a.button.newpocket i {
+    -webkit-backface-visibility: visible;
+    -webkit-transform: rotateX(0deg); }
+  a.button.collapseoverview:hover i, a.button.newpocket:hover i {
+    -webkit-transform: rotateX(180deg); }
+
+a.button.newpocket {
+  right: 3.3rem;
+  padding: 0.65em; }
+
+.pocket-square:hover h1 {
+  font-size: 3.5rem;
+  -webkit-transform: rotateZ(90deg); }
+
+.pocket-square.editing {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #333; }
+
+li.pocket-square-wrapper {
+  overflow: hidden;
+  padding-bottom: 0; }
+
+.pocket-square {
+  min-height: 120px;
+  max-height: 160px;
+  overflow-x: hidden; }
+
+@media only screen and (max-width: 40em) {
+  .pocket-square {
+    min-height: 40px;
+    margin-bottom: 0.3rem; }
+    .pocket-square h5 {
+      margin-bottom: 0.2em; }
+  .topmargin {
+    margin-top: 0.6rem; }
+  div.panel {
+    padding: 0.6rem;
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0; }
+  .tab-bar-section.middle {
+    text-align: left; }
+  dl.tabs dd a {
+    font-size: 0.8rem;
+    padding: 0.65rem; }
+  h1.title {
+    font-size: 0.9rem;
+    position: absolute;
+    top: -8px; }
+  div.lin {
+    float: right;
+    max-height: 20px;
+    padding: 0 0.2rem;
+    font-size: 0.75rem;
+    border: 0;
+    margin-top: 0.6rem;
+    text-align: left; }
+    div.lin span.pocket-activity {
+      display: none; }
+  div#currentbalance {
+    float: left;
+    position: absolute;
+    left: 0.8rem; }
+  .top-bar ul.title-area {
+    z-index: 2;
+    background: #222; }
+  .top-bar section ul {
+    -webkit-transform: translate3d(0, -100%, 0); }
+  .top-bar.expanded section ul {
+    -webkit-transform: translate3d(0, 0, 0); } }
+
+@media only screen and (min-width:40.063em) and (max-width:64em) {
+  .tab-bar-section.middle {
+    left: 120px; }
+  .top-bar ul li a {
+    font-size: 88%; }
+  .top-bar ul.right li:last-child a {
+    max-width: 175px;
+    overflow: hidden;
+    height: 50px;
+    text-overflow: ellipsis; } }
+
+@media only screen and (min-width:64.063em) {
+  /* Scrollbars ---------------------  */
+  nav.tab-bar {
+    width: 150%; }
+  .pocketnav {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0); }
+  div.inner-wrap.pinned {
+    -webkit-transform: translate3d(15.625rem, 0, 0);
+    padding-right: 15.625rem; }
+    div.inner-wrap.pinned .pocketnav {
+      -webkit-transform: translate3d(-10%, 0, 0); }
+    div.inner-wrap.pinned .tab-bar-section.middle {
+      left: 0px; }
+  ::-webkit-scrollbar {
+    width: 8px; }
+  ::-webkit-scrollbar-track {
+    background: #000; }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: rgba(30, 190, 90, 0.9); } }
+
+.pocketnav {
+  cursor: pointer; }
+
+section.left {
+  background: rgba(30, 190, 90, 0.9);
+  padding-left: 1em; }
+  section.left span {
+    color: white; }
 
 section.left:hover {
   padding-right: 0.8rem; }
@@ -5378,14 +5555,3 @@ form.send {
 
 .seed {
   background: url(../images/seed.svg) center/cover no-repeat; }
-
-/* Scrollbars ---------------------  */
-::-webkit-scrollbar {
-  width: 8px; }
-
-::-webkit-scrollbar-track {
-  background: #000; }
-
-::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background: rgba(30, 190, 90, 0.9); }

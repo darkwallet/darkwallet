@@ -15,6 +15,22 @@
 	        </div>
 	    </div>
 	</div>
+    	<div class="row collapse panel radius" ng-if="pocket.type=='hd' && pocket.index == 0">
+	        <div class="medium-2 columns">
+	            <span class="prefix radius">{{('Payment Code'|_)}}</span>
+	        </div>
+	        <div class="medium-6 columns">
+	            <input type="text" class="nomarginbottom" disabled="true" value="{{pocket.pCode}}" />
+	        </div>
+	        <div class="medium-2 columns">
+	            <button ng-click="clipboard.copy(pocket.pCode)" class="nomarginbottom button postfix fa fa-clipboard">{{'Copy'|_}}</button>
+	        </div>
+	        <div class="medium-2 columns">
+	            <button ng-click="modals.showBtcQr(pocket.pCode)" class="nomarginbottom button postfix radius fa fa-qrcode">{{'Show QR'|_}}</button>
+	        </div>
+	    </div>
+	</div>
+
 </div>
 <div class="row topmargin" ng-controller="AddressesCtrl">
 	<div class="small-12 columns">
@@ -54,6 +70,9 @@
 		            <div class="labels">
 		                <span class="label radius" ng-show="address.type=='stealth'||address.type=='oldstealth'">
 		                    <div class="fa fa-fighter-jet"></div> {{'stealth'|_}}
+		                </span>
+		                <span class="label radius" ng-show="address.type=='pcode'">
+		                    <div class="fa fa-ticket"></div> {{'pcode'|_}}
 		                </span>
 		                <span class="label radius" ng-show="address.type=='hd'&&address.index[1]>1">
 		                    mixed: {{address.index[1]-1}}

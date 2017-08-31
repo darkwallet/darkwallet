@@ -78,7 +78,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
   // Remove watched contact key
   WatchProvider.prototype.removeKey = function(contact, key) {
     var identity = DarkWallet.getIdentity();
-    if (key && key.address && key.type !== 'stealth') {
+    if (key && key.address && key.type !== 'stealth' && key.type !== 'pcode') {
         var pocket = identity.wallet.pockets.getPocket(contact.data.name, 'readonly');
         var walletAddress = pocket.getWalletAddress(key.address);
         if (walletAddress) {
@@ -106,7 +106,7 @@ define(['./module', 'darkwallet'], function (providers, DarkWallet) {
   WatchProvider.prototype.renameKey = function(contact, key) {
     var identity = DarkWallet.getIdentity();
     var pocket = identity.wallet.pockets.getPocket(contact.data.name, 'readonly');
-    if (key && key.address && key.type !== 'stealth') {
+    if (key && key.address && key.type !== 'stealth' && key.type !== 'pcode') {
         var seq = ['readonly:'+contact.data.name, key.address];
         var walletAddress = identity.wallet.pubKeys[seq];
         if (walletAddress) {

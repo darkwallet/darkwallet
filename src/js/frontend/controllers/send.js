@@ -1,7 +1,7 @@
 'use strict';
 
-define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat', 'bitcoinjs-lib'],
-function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
+define(['./module', 'frontend/port', 'darkwallet', 'util/btc', 'dwutil/currencyformat', 'bitcoinjs-lib', 'dwutil/pcodeutils'],
+function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin, PCodeUtils) {
   controllers.controller('WalletSendCtrl', ['$scope', '$window', 'notify', 'modals', '$wallet', '$timeout', '$history', '$tabs', '_Filter',
       function($scope, $window, notify, modals, $wallet, $timeout, $history, $tabs, _) {
   
@@ -356,15 +356,21 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       }
   };
 
- 
+
   $scope.sendBitcoins = function() {
 
       // Prepare recipients
       var spend = prepareRecipients();
-      var recipients = spend.recipients;
-      var totalAmount = spend.amount;
-      var title = sendForm.title;
+      $scope.spendBitcoins(spend);
+  }
 
+  $scope.spendBitcoins = function(spend) {
+      var hasPaymentCodes = false;
+      var recipients = spend.recipients;
+      var contacts = spend.contacts;
+      var totalAmount = spend.amount;
+
+      var title = sendForm.title;
       if (sendForm.sending) {
           console.log("already sending");
           return;
@@ -382,10 +388,36 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
               notify.note(_('The amount for some recipients is below the dust threshold'), totalAmount+'<'+identity.wallet.dust);
               return;
           }
+          if (BtcUtils.isPaymentCode(recipients[i].address)) {
+             // We need a contact to extract pairing information
+             if (!contacts[i].contact || !contacts[i].contact.mainKey) {
+                 notify.note(_('Payment codes need to have a contact add a contact and pair the address first'));
+                 sendForm.sending = false;
+                 return;
+             }
+
+             hasPaymentCodes = true;
+          }
       }
       if (totalAmount < identity.wallet.dust) {
           notify.note(_('Amount is below the dust threshold'), totalAmount+'<'+identity.wallet.dust);
           return;
+      }
+
+      if (hasPaymentCodes) {
+          var needsExtension = PCodeUtils.replace(spend);
+          if (!needsExtension.full) {
+              // Extend payment codes here since some could not get next address.
+              // TODO this shouldn't happen but atm can't completely avoid the situation so it's safer
+              // to do this... the issue is some addresses will be reserved but not used if sending
+              // to several payment codes
+              // For most cases the payment codes will be updated after send and this doesn't happen.
+              modals.password(_("Please input password to unlock payment codes"), function(password) {
+                  PCodeUtils.extendSend(password, needsExtension);
+              });
+              notify.note(_("Some payment codes need extension. Please try again."));
+              return;
+          }
       }
 
       sendForm.sending = true;
@@ -439,6 +471,10 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       modals.confirmSend(_('Write your password'), {pocket: pocket, metadata: metadata}, spend.contacts, function(password) {
           // Run the password callback
           onPassword(metadata, amountNote, password, pocketType);
+          // extend payment codes that are close to the limit
+          if (needsExtension.contacts.length) {
+              PCodeUtils.extendSend(password, needsExtension);
+          }
       }, function() {
           sendForm.sending = false;
       });
@@ -502,6 +538,7 @@ function (controllers, Port, DarkWallet, BtcUtils, CurrencyFormat, Bitcoin) {
       initialized = identity.name;
       validAddresses = [
           identity.wallet.versions.address,
+          identity.wallet.versions.pcode.address,
           identity.wallet.versions.stealth.address,
           identity.wallet.versions.p2sh
       ]

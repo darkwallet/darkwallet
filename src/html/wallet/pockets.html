@@ -1,18 +1,36 @@
-    <ul class="off-canvas-list">
-		<li class="pocketpinned show-for-large-up">
-			<label>{{'Pockets'|_}}</label>
-			<a class="fa fa-arrow-left" ng-click="titleClick()"></a>
-		</li>
-      	<li ng-class="{active: pocket.isAll}" ng-click="selectPocket()"><a>{{'All'|_}}</a></li>
-      	<li><label>{{'my pockets'|_}} <a class="cornerbutton right" ng-class="{active: selectedPocket==='newPocket'}" ng-click="newPocket()" title="{{'Add a new pocket'|_}}"> + </a></label></li>
-      	<li ng-show="hdPocket" ng-class="{active: 'hd:'+$index===pocket.type+':'+pocket.lastIndex}" ng-repeat="hdPocket in hdPockets track by $index">
-        <a href="" ng-click="selectPocket(hdPocket.name, $index)">{{hdPocket.name | pocket}}</a>
-      </li>
-      <li class="divider"></li>
-      <li><label>{{'multisig funds'|_}} <a class="cornerbutton right" ng-class="{active: selectedPocket==='newMultisig'}" ng-click="newMultiSig()" title="{{'Add new multisig'|_}}"> + </a></label></li>
-      <li ng-class="{active: 'multisig:'+$index===selectedPocket}" ng-click="selectFund(fund, $index)" ng-repeat="fund in allFunds track by $index"><a href="">{{fund.name}}</a></li>
-      <li>
-      </li>
-      <li ng-show="forms.readOnlyArray.length"><label>{{'Watch-only pockets'|_}}</label></li>
-      <li ng-class="{active: 'readonly:'+$index===selectedPocket}" ng-repeat="readOnlyPocket in forms.readOnlyArray track by $index"><a ng-click="selectReadOnly(readOnlyPocket, $index)"href="">{{readOnlyPocket.name}}</a></li>
-    </ul>
+<ul class="off-canvas-list">
+    <li class="pocketpinned" ng-hide="1">
+    	<a ng-click="titleClick()" id="maintitle"><img id="logo" src="../images/logo.svg" width="32" height="32" ng-class="{'busy': status.syncing}" /> Darkwallet</a>
+    	<a class="fa fa-arrow-left" ng-click="titleClick()"></a>
+    </li>
+    <li id="mainpocket" ng-class="{active: pocket.isAll}"><a ng-click="selectPocket()" id="maintitle"><img id="logo" src="../images/logo.svg" width="32" height="32" ng-class="{'busy': status.syncing}" /> Darkwallet</a></li>
+  	<li><label>{{'my pockets'|_}} <a class="cornerbutton right" ng-class="{active: forms.selectedPocket==='newPocket'}" ng-click="newPocket()" title="{{'Add a new pocket'|_}}"> + </a></label></li>
+  	<li ng-show="hdPocket" ng-class="{active: 'hd:'+$index===pocket.type+':'+pocket.lastIndex}" ng-repeat="hdPocket in hdPockets track by $index">
+      <a href="" ng-click="selectPocket(hdPocket.name, $index)">{{hdPocket.name | pocket}}</a>
+    </li>
+    <li class="divider"></li>
+    <li><label>{{'multisig funds'|_}} <a class="cornerbutton right" ng-class="{active: forms.selectedPocket==='newMultisig'}" ng-click="newMultiSig()" title="{{'Add new multisig'|_}}"> + </a></label></li>
+    <li ng-class="{active: 'multisig:'+$index===forms.selectedPocket}" ng-click="selectFund(fund, $index)" ng-repeat="fund in allFunds track by $index"><a href="">{{fund.name}}</a></li>
+    <li ng-show="forms.readOnlyArray.length"><label>{{'Watch-only pockets'|_}}</label></li>
+    <li ng-class="{active: 'readonly:'+$index===forms.selectedPocket}" ng-repeat="readOnlyPocket in forms.readOnlyArray track by $index"><a ng-click="selectReadOnly(readOnlyPocket, $index)"href="">{{readOnlyPocket.name}}</a></li>
+
+
+    <li title="{{'Gateway'|_}}: {{status.obelisk}}" ng-show="!settings.advanced && status.obelisk!='ok'"><a><i class="fa fa-chain-broken"></i></a></li>
+    <li ng-show="settings.advanced && status.syncing" title="{{'Fetching data from obelisk!'|_}}"><a><i class="fa fa-cloud-download"> {{status.syncing}}</i></a></li>
+    <li ng-show="settings.advanced" title="{{'Current height'|_}}"><a><i> {{currentHeight}}</i></a></li>
+    <li ng-show="settings.advanced" title="{{'Block explorer'|_}}" ng-class="{active:isActive('/browser')}"><a href="#browser"><i class="fa fa-sitemap"></i></a></li>
+    <li ng-show="settings.advanced" title="{{'Settings'|_}}" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings" class="fa fa-cog"></a></li>
+
+    <li><label>Management</label></li>
+
+    <li ng-class="{active:isActive('/contact')}"><a href="#contacts"><i class="icon-contacts"></i> {{'Contacts'|_}}</a></li>
+
+    <li ng-show="!settings.advanced" title="{{'Settings'|_}}" id="settings" ng-class="{active:isActive('/settings')}"><a href="#settings"><i class="icon-cog"></i> {{'Settings'|_}}</a></li>
+
+
+    <li title="{{'Identities'|_}}" ng-class="{active:isActive('/identities')}"><a ng-show="identityName" href="#identities"><i class="icon-wallet"></i> {{'Wallets'|_}} ({{identityName}})</a></li>
+    <li ng-class="{active:isActive('/send')}"><a href="#send"><i class="icon-rocket"></i> {{'Send'|_}}</a></li>
+
+    <li ng-class="{active:isActive('/lobby')}"><a href="#lobby"><i class="icon-chat"></i> {{'Lobby'|_}}</a></li>
+
+</ul>

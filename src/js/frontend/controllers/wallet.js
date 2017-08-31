@@ -17,7 +17,7 @@ function (controllers, DarkWallet, Port) {
   // Scope variables
   $scope.rates = {};
   $scope.totalBalance = 0;
-  $scope.forms = {readOnlyArray: []};
+  $scope.forms = {readOnlyArray: [], selectedPocket: false, overviewPocket: false, hdOverview: true, multisigOverview: true};
   $scope.identityName = false;
 
   $scope.allReadOnly = {};
@@ -28,6 +28,8 @@ function (controllers, DarkWallet, Port) {
 
   $scope.openWallet = $tabs.openWallet;
  
+
+
   /**
    * Wallet Port
    * Sends notifications about wallet state and identity change

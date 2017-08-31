@@ -1,85 +1,213 @@
   <div class="row" ng-show="pocket.readOnly">
     <div class="small-12 columns">
-        <div class="row collapse panel radius transactions">
+        <div class="panel radius">
         {{'Read only pocket.'|_}}
         </div>
     </div>
   </div>
-  <div class="row" ng-hide="pocket.isAll||pocket.readOnly">
-    <div ng-include="'tools/quicksend.html'" class="large-6 columns">
-    </div>
-    <div class="large-6 columns">
+  <div class="row" ng-hide="forms.selectedPocket=='pocket:all'">
+    <div ng-include="'tools/quicksend.html'" class="small-12 large-6 columns"></div>
+    <div class="small-12 large-6 columns">
       <div class="panel radius">
-		<div class="row collapse">
-	        <h5>{{pocket.type=='multisig'?('Fund address'|_):pocket.stealth?('Stealth address'|_):('Main address'|_)}}</h5>
-			<div class="small-1 columns text-center">
-				<identicon ng-hide="row.contact" icon-size="38" hash="pocket.mainHash"></identicon>
-			</div>
-	        <div class="small-9 columns">
-	          <input type="text" class="prefix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
-	        </div>
-	        <div class="small-1 columns">
-	          <a href="" tooltip-append-to-body="true" tooltip="{{'Copy to clipboard'|_}}" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square icon-copy"></a>
-	        </div>
-	        <div class="small-1 columns">
-	          <a class="button postfix square radius icon-qrcode" tooltip-append-to-body="true" tooltip="{{'Show QR code'|_}}" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
-	        </div>
-		</div>
+    		<div class="row collapse">
+
+              <div class="small-12 columns">
+                <h5>{{pocket.type=='multisig'?('Fund address'|_):pocket.stealth?('Stealth address'|_):('Main address'|_)}} ({{pocket.name | pocket}})</h5>
+    			    </div>
+    	        <div class="small-8 medium-10 columns">
+    	          <input type="text" class="prefix radius nomarginbottom" readonly value="{{pocket.mainAddress}}" />
+    	        </div>
+    	        <div class="small-2 medium-1 columns">
+    	          <a href="" tooltip-append-to-body="true" tooltip="{{'Copy to clipboard'|_}}" ng-click="clipboard.copy(pocket.mainAddress)" class="button prefix square icon-copy"></a>
+    	        </div>
+    	        <div class="small-2 medium-1 columns">
+    	          <a class="button postfix square radius icon-qrcode" tooltip-append-to-body="true" tooltip="{{'Show QR code'|_}}" ng-click="modals.showBtcQr(pocket.mainAddress)"></a>
+    	        </div>
+    		</div>
       </div>
+
+        <div class="panel radius">
+            <h5>CoinJoin</h5>
+            <div class="row collapse">
+              <div class="small-4 columns">
+                  <span class="prefix radius">Mix up to</span>
+              </div>
+              <div class="small-1 columns">
+                  <input type="number" value="2" min="1" max="9">
+              </div>
+              <div class="small-3 columns">
+                  <label class="prefix">times</label>
+              </div>
+              <div class="small-4 columns">
+                  <a class="button postfix radius">Start</a>
+              </div>
+            </div>
+        </div>
+
     </div>
+
+
+  </div>
+  <div class="row" ng-hide="pocket.isAll||pocket.readOnly">
   </div>
   <div class="row">
 	  <div class="small-12 columns" ng-if="pocket.isAll" ng-controller="OverviewCtrl">
+      <div class="panel radius pocketoverview">
+          {{forms.overviewPocket.hd.current|formatBtc}}
+          <span>{{forms.overviewPocket.hd.current|formatFiat}}</span>
+          in {{forms.overviewPocket.hd.number}} pockets
+          <a class="button collapseoverview radius fa" ng-click="forms.hdOverview=!forms.hdOverview"><i class="fa" ng-class="{'fa-chevron-up': forms.hdOverview, 'fa-chevron-down': !forms.hdOverview}"></i></a>
 
-	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1">
-			<li ng-repeat="pocket in allPockets" ng-click="selectGridPocket(pocket)">
-				<div class="panel radius pocket-square">
-	           		<h5>{{pocket.name | pocket}} <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small></h5>
-        
-	           		<span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.confirmed | formatFiat}}</span></span>
-	           		<span ng-show="!pocket.balance.confirmed">{{'No coins'|_}}</span>
-	           		<span ng-show="pocket.balance.unconfirmed"><small><br>{{'Unconfirmed'|_}}: {{pocket.balance.unconfirmed | amountFilter}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></small></span>
+      </div>
+	    <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1 gridlist" ng-show="forms.hdOverview">
+
+			<li class="pocket-square-wrapper" ng-repeat="pocket in hdPockets">
+        <div ng-if="editing==(pocket.type+pocket.index)">
+
+              <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-times"></a></div>
+
+              <div class="panel radius pocket-square editing" ng-controller="PocketActionCtrl">
+                    <input class="radius" ng-model="forms.pocketName" autofocus type="text">
+                    <div class="row collapse">
+                        <div class="small-6 columns">
+                            <a ng-class="{'disabled': (pocket.type=='pocket' && pocket.index==0) || (pocket.type=='pocket'&&(pocket.balance.confirmed||pocket.balance.unconfirmed))}" class="button alert expand prefix radius nomarginbottom" ng-click="deletePocket(pocket)">{{'Delete'|_}}</a>
+                        </div>
+                        <div class="small-6 columns">
+                          <a class="button expand postfix radius nomarginbottom" ng-click="renamePocket(pocket)">{{'Rename'|_}}</a>
+
+                        </div>
+                    </div>
+                    <span ng-if="pocket.type=='pocket' && pocket.index==0">{{"Can't delete the first pocket!"|_}}</span>
+                    <span ng-if="pocket.type=='pocket'&&(pocket.balance.confirmed||pocket.balance.unconfirmed)">{{"Can't delete pocket with funds"|_}}</span>
+                </div>
+          </div>
+
+
+        <div ng-if="editing!=pocket.type+pocket.index" ng-click="selectGridPocket(pocket)">
+            <div class="editpocket">
+                <a ng-click="toggleEdit(pocket)" class="button radius">
+                    <i class="fa fa-cog"></i>
+                </a>
+            </div>
+
+				    <div class="panel radius pocket-square">
+	           		  <h5>
+                      {{pocket.name | pocket}}
+                  </h5>
+
+                  <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small>
+	           		  <span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.confirmed | formatFiat}}</span></span>
+	           		  <span ng-show="!pocket.balance.confirmed">{{'No coins'|_}}</span>
+	           		  <span ng-show="pocket.balance.unconfirmed"><small><br>{{'Unconfirmed'|_}}: {{pocket.balance.unconfirmed | amountFilter}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></small></span>
+
+
 	           	</div>
+          </div>
 	  		</li>
+        <li class="pocket-square-wrapper" ng-click="openLink('new_pocket')">
+          <div class="panel radius pocket-square">
+              <div class="text-center">
+                  <h1 class="fa fa-plus"></h1>
+                  <p class="nomarginbottom">Add pocket</p>
+              </div>
+          </div>
+        </li>
 	    </ul>
+      <div class="panel radius pocketoverview">
+          {{forms.overviewPocket.multisig.current|formatBtc}}
+          <span>{{forms.overviewPocket.multisig.current|formatFiat}}</span>
+          in {{forms.overviewPocket.multisig.number}} funds
+          <a class="button collapseoverview radius fa" ng-click="forms.multisigOverview=!forms.multisigOverview"><i ng-class="{'fa-chevron-up': forms.multisigOverview, 'fa-chevron-down': !forms.multisigOverview}" class="fa"></i></a>
+
+      </div>
+      <ul class="large-block-grid-4 medium-block-grid-2 small-block-grid-1 gridlist" ng-show="forms.multisigOverview">
+
+      <li class="pocket-square-wrapper" ng-repeat="pocket in multisigPockets">
+        <div ng-if="editing==(pocket.type+pocket.index)">
+
+              <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius fa fa-times"></a></div>
+
+              <div class="panel radius pocket-square editing" ng-controller="PocketActionCtrl">
+                    <input class="radius" ng-model="forms.pocketName" autofocus type="text">
+                    <div class="row collapse">
+                        <div class="small-6 columns">
+                            <a ng-class="{'disabled': (pocket.type=='pocket' && pocket.index==0) || (pocket.type=='pocket'&&(pocket.balance.confirmed||pocket.balance.unconfirmed))}" class="button alert expand prefix radius nomarginbottom" ng-click="deletePocket(pocket)">Delete</a>
+                        </div>
+                        <div class="small-6 columns">
+                          <a class="button expand postfix radius nomarginbottom" ng-click="renamePocket(pocket)">{{'Rename'|_}}</a>
+
+                        </div>
+                    </div>
+                    <span ng-if="pocket.type=='pocket' && pocket.index==0">{{"Can't delete the first pocket!"|_}}</span>
+                    <span ng-if="pocket.type=='pocket'&&(pocket.balance.confirmed||pocket.balance.unconfirmed)">{{"Can't delete pocket with funds"|_}}</span>
+                </div>
+          </div>
+
+
+        <div ng-if="editing!=pocket.type+pocket.index" ng-click="selectGridPocket(pocket)">
+            <div class="editpocket"><a ng-click="toggleEdit(pocket)" class="button radius"><i class="fa fa-cog"></i></a></div>
+
+            <div class="panel radius pocket-square">
+                  <h5>
+                      {{pocket.name | pocket}}
+                  </h5>
+
+                  <small ng-show="pocket.type=='fund'">{{'{0} of {1}'|_:pocket.fund.m:pocket.fund.pubKeys.length}}</small>
+                  <span ng-show="pocket.balance.confirmed">{{pocket.balance.confirmed | formatBtc}} <br><span class="fiat">{{pocket.balance.confirmed | formatFiat}}</span></span>
+                  <span ng-show="!pocket.balance.confirmed">{{'No coins'|_}}</span>
+                  <span ng-show="pocket.balance.unconfirmed"><small><br>{{'Unconfirmed'|_}}: {{pocket.balance.unconfirmed | amountFilter}} <span class="fiat">{{pocket.balance.unconfirmed | formatFiat}}</span></small></span>
+
+
+              </div>
+          </div>
+        </li>
+        <li class="pocket-square-wrapper" ng-click="openLink('new_fund')">
+            <div class="panel radius pocket-square">
+                <div class="text-center">
+                    <h1 class="fa fa-plus"></h1>
+                    <p class="nomarginbottom">Add fund</p>
+                </div>
+            </div>
+        </li>
+      </ul>
 	  </div>
 	</div>
-  <div ng-show="historyRows.length" class="row" ng-controller="LatestCtrl">
+  <div ng-show="historyRows.length" class="row topmargin" ng-controller="LatestCtrl">
     <div class="small-12 columns">
 
         <div class="row collapse panel radius transactions">
             <h5>{{'Latest transactions'|_}}</h5>
-            <div class="row collapse"  ng-repeat="row in historyRows track by $index">
-             <div class="small-5 medium-4 large-7 columns">
+            <div class="row collapse" ng-repeat="row in historyRows track by $index" ng-class="{'unconfirmed': !row.height}">
+             <div class="small-12 medium-6 large-7 columns">
                <div tooltip-append-to-body="true" class="ellipsis">
-                <i tooltip="{{row.address}}" ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
-                <identicon ng-show="row.contact" icon-size="24" hash="row.contact.data.hash"></identicon>
-				<identicon ng-hide="row.contact" icon-size="24" data="row.address"></identicon>
-				<span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> {{'stealth'|_}}</span>
-                <span ng-show="!row.label">
-                {{row.contact ? row.contact.data.name : row.address}}
-                </span>
-                <span tooltip="{{row.address}}" tooltip-append-to-body="true" ng-show="row.label">
-                {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
-                </span>
-		<span class="label radius address" ng-repeat="outAddress in row.outAddresses" ng-show="[undefined, 'change', 'unused'].indexOf(outAddress.label)==-1&&outAddress.type!='multisig'&&outAddress.label!=outAddress.address">{{outAddress.label}}</span>
+                 <i tooltip="{{row.address}}" ng-class="{'fa-sign-in': row.partial>0 , 'fa-sign-out': row.partial<0, 'red': row.partial<0, 'green': row.partial>0}" class="fa transaction-icon"></i>
+                 <identicon ng-show="row.contact" icon-size="24" hash="row.contact.data.hash"></identicon>
+				         <identicon ng-hide="row.contact" icon-size="24" data="row.address"></identicon>
+				         <span class="label radius" ng-show="row.isStealth"><div class="fa fa-fighter-jet"></div> {{'stealth'|_}}</span>
+                 <span ng-show="!row.label">
+                   {{row.contact ? row.contact.data.name : row.address}}
+                 </span>
+                 <span tooltip="{{row.address}}" tooltip-append-to-body="true" ng-show="row.label">
+                   {{row.contact ? row.contact.data.name + ' (' + row.label + ')' : row.label}}
+                 </span>
+		             <span class="label radius address" ng-repeat="outAddress in row.outAddresses" ng-show="[undefined, 'change', 'unused'].indexOf(outAddress.label)==-1&&outAddress.type!='multisig'&&outAddress.label!=outAddress.address">{{outAddress.label}}</span>
                </div>
              </div>
-             <div ng-show="row.height" class="small-3 medium-2 columns ellipsis">
-               <span title="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
+
+             <div class="small-4 medium-2 columns ellipsis">
+               <span ng-show="row.height" tooltip-append-to-body="true" tooltip="{{row.height | heightToDate:'calendar'}}">{{row.height | heightToDate}}</span>
+               <span ng-show="!row.height">{{'Unconfirmed'|_}}</span>
              </div>
-             <div ng-show="!row.height" class="small-3 medium-2 columns">
-               {{'none'|_}}
-             </div>
-             <div class="small-3 large-1 columns">
-                
+
+             <div class="small-4 medium-1 large-1 columns">
+
              {{row.partial | amountFilter}}
              </div>
-             <div class="hide-for-small medium-3 large-2 columns text-right">
+             <div class="small-4 medium-2 large-2 columns text-right">
               {{row.current | formatBtc:true}}
              </div>
             </div>
-  
+
         </div>
       </div>
   </div>

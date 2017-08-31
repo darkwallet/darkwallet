@@ -10,10 +10,8 @@ function (controllers, DarkWallet, Port) {
 
   // Scope variables
   $scope.pocket = $history.getCurrentPocket();
-  $scope.selectedPocket = $history.selectedPocket;
-
-  $scope.overviewPocket = false;
-
+  $scope.forms.selectedPocket = $history.selectedPocket;
+  $scope.forms.overviewPocket = false;
   // pages
   $scope.nPages = 0;
   $scope.page = 0;
@@ -55,7 +53,7 @@ function (controllers, DarkWallet, Port) {
     if (changed) {
         $scope.pocket = $history.getCurrentPocket();
         setHistoryRows($history.rows, true);
-        $scope.selectedPocket = $history.selectedPocket;
+        $scope.forms.selectedPocket = $history.selectedPocket;
         $tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
         // If the rename form is open we need to change the default shown there
         if ($scope.forms.pocketName) {
@@ -88,20 +86,15 @@ function (controllers, DarkWallet, Port) {
           var mainAddress = identity.wallet.getAddress([0]);
           $scope.pocket.mainAddress = mainAddress.stealth;
       }
-      if ($history.previousIdentity != identity.name) {
-          // prevents loading the first time...
-          //if ($history.previousIdentity) {
-          var pocketId = $routeParams.pocketId;
-          checkChanges($routeParams.pocketType, pocketId?parseInt(pocketId):undefined, true);
+      var pocketId = $routeParams.pocketId;
+      checkChanges($routeParams.pocketType, pocketId?parseInt(pocketId):undefined, true);
 
-          // Update tabs
-          $scope.tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
-          //}
+      // Update tabs
+      $scope.tabs.updateTabs($scope.pocket.type, $scope.pocket.tasks);
 
-          $history.previousIdentity = identity.name;
-          if (!$scope.$$phase) {
-              $scope.$apply();
-          }
+      $history.previousIdentity = identity.name;
+      if (!$scope.$$phase) {
+          $scope.$apply();
       }
   }
 
@@ -143,58 +136,11 @@ function (controllers, DarkWallet, Port) {
 
 
   /**
-   * Select fund as current pocket
-   */
-  $scope.selectFund = function(fund, rowIndex) {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = false;
-      $tabs.open('multisig', rowIndex);
-  };
-
-
-  /**
    * Set overview information (for extra balance on the dashboard area header)
    */
   $scope.setOverview = function(overview) {
-      $scope.overviewPocket = overview;
+      $scope.forms.overviewPocket = overview;
   }
-
-  /**
-   * Select an hd pocket
-   */
-  $scope.selectPocket = function(pocketName, rowIndex) {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = false;
-      if (pocketName === undefined) {
-          $tabs.open();
-      } else {
-          $tabs.open(undefined, rowIndex);
-      }
-  };
-
-  $scope.selectReadOnly = function(pocket, rowIndex) {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = false,
-      $tabs.open('readonly', rowIndex);
-  };
-
-  /**
-   * Start creating a new multisig
-   */
-  $scope.newMultiSig = function() {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = 'newMultisig';
-      $scope.pocket.isAll = false;
-  };
-
-  /**
-   * Start creating a new pocket
-   */
-  $scope.newPocket = function() {
-      $scope.overviewPocket = false;
-      $scope.selectedPocket = 'newPocket';
-      $scope.pocket.isAll = false;      
-  };
 
 
   /**

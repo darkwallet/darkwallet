@@ -74,6 +74,8 @@ define(['model/identity', 'util/fiat'], function(Identity, FiatCurrency) {
       expect(_store.idkeys[0].pub).toBe('xpub6CAanHj7Ah74vRc9KGJ5dbBMpMW6t5WewAKnqc2kmwYXGXrCrDZ7mQVecW9FcJLrnE4qMitdPNp1vfGkAXFMajhNKWHzteoV5aFqyLgPWR6');
       expect(_store.idkeys[0].priv).toBe('xprv9yBENnCDLKYmhwXgDEm5GTEdGKfcUcnoZwQC3Dd9Dc1YPjX4JgEsDcBAmD82GoVTwoYZjVY6NdeUM9Aqpof83AgHBXUckSTMZYE3dz1XmrF');
       expect(_store.mpk).toBe('xpub6BBXLyFMfg5GJBijJzLm8RsX8bDTbUSEh9Zd5iPdssA1qN8vYTjwZyPPZV3Hrip7wrHxmnuk94ThHcaUuFLzyeE9rGZ9u1UN84qiEhrFtCA');
+      expect(_store.pcodes[0]).toBe('xpub6CDi5uEA5BsvfNe2KXMe1fK3nafkjfWteZmjcxg2Y2a9nfups3PbtBu4PnTzad8Ww1pPJ9cEMsoE9e7ThGnLZLWqVHodsAgweNpnoN7iBvk');
+      expect(_store.pcodes[1]).toBe('xpub6CDi5uEA5BsvhMgsUSXBkimRnn7RanrpQUYp326AQupxB5XKEoepmidqgrQyZaf6jLuJwaQvZ1yvgVfEe6fgsWKZUZtiFxdAd3fP3jc6zpY');
 
       /* v4
       expect(_store.scankeys[0].pub).toBe('xpub6BShZfzXJHmns5ySVJRbtfSUQ7F1yoW5JhSSieXk5TbUatLYvs6LzUPr7ucwmsAdkZpDENh8snvS6pMRAxGikQzCfiakdmHxH97wdcmRzdM');

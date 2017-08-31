@@ -101,10 +101,16 @@
 	<label>{{'The main address for this contact is'|_}}</label>	
       <div class="row collapse">
 		<div class="medium-1 columns">
-			<span class="prefix radius fa" title="{{'Type of address'|_}}" ng-class="{'fa-btc': vars.contact.mainKey.type=='address', 'fa-key': vars.contact.mainKey.type=='pubkey', 'fa-fighter-jet': vars.contact.mainKey.type=='stealth'}"> {{vars.contact.mainKey.type|_}}<!-- {{'address'|_}}{{'pubkey'|_}}{{'stealth'|_}}--></span>
+			<span class="prefix radius fa" title="{{'Type of address'|_}}" ng-class="{'fa-btc': vars.contact.mainKey.type=='address', 'fa-key': vars.contact.mainKey.type=='pubkey', 'fa-fighter-jet': vars.contact.mainKey.type=='stealth', 'fa-ticket': vars.contact.mainKey.type=='pcode'}"> {{vars.contact.mainKey.type|_}}<!-- {{'address'|_}}{{'pubkey'|_}}{{'stealth'|_}}--></span>
 		</div>
-        <div class="large-9 medium-7 columns">
+        <div class="large-8 medium-7 columns">
           <input type="text" readonly value="{{vars.contact.mainKey.address}}" />
+        </div>
+        <div class="large-1 medium-2 small-6 columns" ng-if="vars.contact.mainKey.type == 'pcode' && !vars.contact.mainKey.paired">
+          <a href="" tooltip-append-to-body="true" tooltip="{{'Make pairing'|_}}" ng-click="pairPaymentCode(vars.contact, vars.contact.mainKey)" class="button postfix fa fa-clipboard">{{'Pair'|_}}</a>
+        </div>
+        <div class="large-1 medium-2 small-6 columns" ng-if="vars.contact.mainKey.type == 'pcode' && vars.contact.mainKey.paired">
+          <a href="" tooltip-append-to-body="true" tooltip="{{'Remove pairing'|_}}" ng-click="unpairPaymentCode(vars.contact, vars.contact.mainKey)" class="button postfix fa fa-clipboard">{{'Unpair'|_}}</a>
         </div>
         <div class="large-1 medium-2 small-6 columns">
           <a href="" tooltip-append-to-body="true" tooltip="{{'Copy to clipboard'|_}}" ng-click="clipboard.copy(vars.contact.mainKey.address)" class="button postfix fa fa-clipboard">{{'Copy'|_}}</a>
@@ -119,6 +125,7 @@
       </div>
     
 </div>
+
 <!-- Addresses for the user -->
 <div class="row topmargin" ng-show="contactSection=='addresses'">
 	
@@ -149,7 +156,7 @@
 				<a ng-click="setCurrentPubKey(pubKey, $index)" dropdown-toggle="#contact-address-actions" class="fa button square lefted fa-chevron-circle-down"></a>
 	            <span class="address-type" title="{{'Type of address'|_}}">
 	               <div class="fa" 
-	                 ng-class="{'fa-question-circle': pubKey.type=='unknown', 'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth', 'fa-user': pubKey.type=='id'}">
+	                 ng-class="{'fa-question-circle': pubKey.type=='unknown', 'fa-btc': pubKey.type=='address', 'fa-key': pubKey.type=='pubkey', 'fa-fighter-jet': pubKey.type=='stealth', 'fa-user': pubKey.type=='id', 'fa-ticket': pubKey.type=='pcode'}">
 	               </div>
 				   {{pubKey.type|_}} <!--{{'unknown'|_}}{{'address'|_}}{{'pubkey'|_}}{{'stealth'|_}}{{'id'|_}}{{'revoked'|_}}-->
 				 </span>

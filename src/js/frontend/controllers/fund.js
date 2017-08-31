@@ -6,7 +6,7 @@
 define(['./module', 'darkwallet'],
 function (controllers, DarkWallet) {
 
-  controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', '$brc', '$tabs', '_Filter', function($scope, modals, notify, $brc, $tabs, _) {
+  controllers.controller('FundCtrl', ['$scope', 'modals', 'notify', '$brc', '$tabs', '$location', '_Filter', function($scope, modals, notify, $brc, $tabs, $location, _) {
 
   $scope.jsObjectKeys = Object.keys;
 
@@ -145,7 +145,7 @@ function (controllers, DarkWallet) {
       identity.tasks.removeTasks("multisig", "address", fund.multisig.address);
       identity.tasks.removeTasks("multisig-sign", "address", fund.multisig.address);
       identity.tasks.removeTasks("multisig-invite", "address", fund.multisig.address);
-      $scope.selectPocket();
+      $location.path("/wallet/dashboard");
   };
   $scope.deleteFund = function(fund) {
       modals.open('confirm-delete', {name: fund.name, object: fund}, finishDelete);
